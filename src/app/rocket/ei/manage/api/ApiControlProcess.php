@@ -93,7 +93,7 @@ class ApiControlProcess {
 	 * @param int $viewMode
      * @param string $eiTypeId
 	 */
-	function setupEiGuiFrame(int $viewMode, string $eiTypeId) {
+	function determineEiGuiFrame(int $viewMode, string $eiTypeId) {
 		try {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId);
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType);
@@ -260,6 +260,10 @@ class ApiControlProcess {
 		$eiEntryGui->save();
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 * @return \rocket\si\control\SiResult
+	 */
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
 			return $this->generalGuiControl->handle($this->eiFrame, $this->eiGuiModel, $this->inputEiEntries);

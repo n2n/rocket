@@ -59,29 +59,26 @@ class DetailController extends ControllerAdapter {
 				=> new EntryCommandViewModel($this->eiuCtrl->frame(), $entryGuiModel)));
 	}
 	
-	public function doLivePreview($pid, $previewType = null) {
+	public function doLivePreview($pid, $previewType) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		
-		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
-		if (empty($previewTypeOptions)) {
-			throw new PageNotFoundException();
-		}
+		$this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
-		if ($previewType === null) {
-			$this->redirectToController(array('preview', $pid, key($previewTypeOptions)));
-			return;
-		}
+		$this->eiuCtrl->pushOverviewBreadcrumb()
+				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_preview_label'));
 		
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
+		$this->eiuCtrl->forwardIframeUrlZone($this->getUrlToController(['livepreviewsrc', $pid, $previewType]));
 		
-		$this->applyBreadcrumbs($eiuEntry->object()->getEiObject(), $previewType);
+// 		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
-		$this->forward('..\view\detailPreview.html', array( 
-				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
-						->ext('livepreviewsrc', $pid, $previewType),
-				'currentPreviewType' => $previewType,
-				'previewTypeOptions' => $previewTypeOptions, 
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry)));
+// 		$this->applyBreadcrumbs($eiuEntry->object()->getEiObject(), $previewType);
+		
+// 		$this->forward('..\view\detailPreview.html', array( 
+// 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
+// 						->ext('livepreviewsrc', $pid, $previewType),
+// 				'currentPreviewType' => $previewType,
+// 				'previewTypeOptions' => $previewTypeOptions, 
+// 				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), null, $eiuEntry)));
 	}
 	
 	public function doLivePreviewSrc($pid, $previewType, array $delegateCmds = array()) {

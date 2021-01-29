@@ -3,6 +3,7 @@ import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { EmbeddedEntriesInConfig } from './embedded-entries-config';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
+import { Message } from 'src/app/util/i18n/message';
 
 
 export interface EmbeOutSource {
@@ -10,6 +11,8 @@ export interface EmbeOutSource {
 }
 export interface EmbeInSource extends EmbeOutSource {
 	setValues(values: SiEmbeddedEntry[]): void;
+
+	getMessages(): Message[];
 }
 
 export class EmbeOutCollection {

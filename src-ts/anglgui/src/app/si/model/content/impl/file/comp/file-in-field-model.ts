@@ -3,7 +3,7 @@ import { SiFile } from '../model/file-in-si-field';
 
 export interface FileInFieldModel extends FileFieldModel {
 
-	getApiUrl(): string;
+	getApiFieldUrl(): string;
 
 	getApiCallId(): object;
 

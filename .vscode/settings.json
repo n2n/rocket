@@ -1,9 +1,22 @@
 {
+    "files.exclude": {
+        "**/anglgui/e2e**": true,
+        "**/anglgui/node_modules**": true,
+        "**/anglgui/.*": true,
+      },
+    "search.exclude": {
+        "**/assets/rocket/**angl**": true,
+        // "anglgui/e2e**": true,
+        // "anglgui/node_modules**": true,
+        "**.css": true,
+        "**/theme-20**": true,
+      },
+
     "liveSassCompile.settings.formats":[
         {
             "format": "expanded",
             "extensionName": ".css",
-            "savePath": "/public/assets/rocket/css"
+            "savePath": "/src/public/assets/rocket/css"
         }
     ],
     "liveSassCompile.settings.excludeList": [

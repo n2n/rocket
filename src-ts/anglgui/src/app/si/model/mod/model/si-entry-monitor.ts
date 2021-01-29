@@ -14,9 +14,9 @@ export class SiEntryMonitor {
 	private entriesMap = new Map<string, SiEntry[]>();
 	private nextReloadJob: ReloadJob;
 
-	constructor(private apiUrl: string, private siService: SiService, private modStateService: SiModStateService,
+	constructor(private apiGetUrl: string, private siService: SiService, private modStateService: SiModStateService,
 			private controlsIncluded: boolean) {
-		this.nextReloadJob = new ReloadJob(apiUrl, siService, controlsIncluded);
+		this.nextReloadJob = new ReloadJob(apiGetUrl, siService, controlsIncluded);
 	}
 
 	private subscription: Subscription|null = null;
@@ -119,7 +119,7 @@ export class SiEntryMonitor {
 	private executeNextReloadJob() {
 		const rj = this.nextReloadJob;
 
-		this.nextReloadJob = new ReloadJob(this.apiUrl, this.siService, this.controlsIncluded);
+		this.nextReloadJob = new ReloadJob(this.apiGetUrl, this.siService, this.controlsIncluded);
 
 		rj.execute();
 	}
@@ -128,7 +128,7 @@ export class SiEntryMonitor {
 class ReloadJob {
 	private siEntriesMap = new Map<SiEntry, SiEntry>();
 
-	constructor(private apiUrl: string, private siService: SiService, private controlsIncluded: boolean) {
+	constructor(private apiGetUrl: string, private siService: SiService, private controlsIncluded: boolean) {
 	}
 
 	containsSiEntry(entry: SiEntry) {
@@ -161,7 +161,7 @@ class ReloadJob {
 			entries.push(entry);
 		}
 
-		this.siService.apiGet(this.apiUrl, new SiGetRequest(...getInstructions))
+		this.siService.apiGet(this.apiGetUrl, new SiGetRequest(...getInstructions))
 				.subscribe((response: SiGetResponse) => {
 					this.handleResults(response.results, entries);
 				});

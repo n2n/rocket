@@ -78,7 +78,8 @@ export class SiControlFactory {
 		btn.tooltip = extr.nullaString('tooltip');
 		btn.important = extr.reqBoolean('important');
 		btn.iconImportant = extr.reqBoolean('iconImportant');
-		btn.labelImportant = extr.reqBoolean('labelImportant');
+		btn.iconAlways = extr.reqBoolean('iconAlways');
+		btn.labelAlways = extr.reqBoolean('labelAlways');
 
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {

@@ -151,7 +151,11 @@ class EiEntryGuiTypeDef {
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
 		if ($this->eiMask->getEiType()->getId() != $siEntryInput->getTypeId()) {
-			throw new IllegalStateException('EiType missmatch.');
+			throw new \InvalidArgumentException('EiType missmatch.');
+		}
+		
+		if ($this->eiEntry->getPid() !== $siEntryInput->getIdentifier()->getId()) {
+			throw new \InvalidArgumentException('EiEntry id missmatch.');
 		}
 		
 		foreach ($this->guiFieldMap->getAllGuiFields() as $defPropPathStr => $guiField) {

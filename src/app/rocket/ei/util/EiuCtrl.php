@@ -21,34 +21,45 @@
  */
 namespace rocket\ei\util;
 
-use n2n\web\http\PageNotFoundException;
-use n2n\web\http\ForbiddenException;
-use rocket\ei\manage\ManageState;
-use rocket\ei\manage\preview\model\UnavailablePreviewException;
-use n2n\web\http\payload\impl\Redirect;
-use rocket\ei\manage\entry\UnknownEiObjectException;
-use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\manage\gui\ViewMode;
-use n2n\web\http\controller\impl\ControllingUtils;
-use rocket\si\content\impl\basic\CompactExplorerSiGui;
-use rocket\si\SiPayloadFactory;
-use n2n\persistence\orm\criteria\Criteria;
-use n2n\persistence\orm\util\NestedSetUtils;
-use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\si\content\SiPartialContent;
-use rocket\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\ei\manage\security\InaccessibleEiEntryException;
-use rocket\ei\manage\frame\EiFrameUtil;
-use rocket\ei\manage\LiveEiObject;
-use n2n\web\http\HttpContext;
-use rocket\si\control\SiNavPoint;
 use n2n\l10n\DynamicTextCollection;
+use n2n\persistence\orm\criteria\Criteria;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\uri\Url;
+use n2n\web\http\ForbiddenException;
+use n2n\web\http\HttpContext;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\http\controller\impl\ControllingUtils;
+use n2n\web\http\payload\impl\Redirect;
 use rocket\core\model\RocketState;
-use rocket\si\meta\SiBreadcrumb;
+use rocket\ei\manage\LiveEiObject;
+use rocket\ei\manage\ManageState;
+use rocket\ei\manage\entry\UnknownEiObjectException;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiGui;
 use rocket\ei\manage\gui\EiGuiUtil;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\ei\manage\preview\model\UnavailablePreviewException;
+use rocket\ei\manage\security\InaccessibleEiEntryException;
+use rocket\ei\util\entry\EiuEntry;
+use rocket\si\SiPayloadFactory;
+use rocket\si\content\impl\iframe\IframeSiGui;
+use rocket\si\control\SiNavPoint;
+use rocket\si\meta\SiBreadcrumb;
+use n2n\web\ui\UiComponent;
+use rocket\si\content\impl\SiFields;
+use rocket\si\content\impl\iframe\IframeData;
+use n2n\web\http\Method;
+use rocket\ei\manage\api\ApiControlProcess;
+use rocket\ei\manage\api\ZoneControlHandler;
+use rocket\ei\manage\api\ZoneApiControlProcess;
+use rocket\ei\manage\api\ZoneApiControlCallId;
+use n2n\web\http\controller\ParamPost;
+use rocket\ei\manage\gui\EiEntryGui;
+use rocket\ei\manage\gui\control\GuiControl;
+use n2n\util\type\ArgUtils;
+use rocket\ei\util\entry\EiuObject;
 
 class EiuCtrl {
 	private $eiu;
@@ -102,28 +113,25 @@ class EiuCtrl {
 	 * @throws ForbiddenException
 	 */
 	function lookupEntry(string $pid, int $ignoreConstraintTypes = 0) {
-		return $this->eiuFrame->entry($this->lookupEiObject($pid, $ignoreConstraintTypes));
+		return $this->eiuFrame->entry($this->lookupObject($pid, $ignoreConstraintTypes));
 	}
 	
 	/**
 	 * @param string $livePid
+	 * @return \rocket\ei\util\entry\EiuObject
 	 * @throws PageNotFoundException
 	 * @throws ForbiddenException
-	 * @return \rocket\ei\manage\EiObject
 	 */
-	private function lookupEiObject(string $pid, int $ignoreConstraintTypes = 0) {
-		$eiObject = null;
+	function lookupObject(string $pid, int $ignoreConstraintTypes = 0) {
 		try {
-			$eiObject = $this->eiuFrame->lookupEiObjectById($this->eiuFrame->pidToId($pid), $ignoreConstraintTypes);
+			return $this->eiuFrame->lookupObject($this->eiuFrame->pidToId($pid), $ignoreConstraintTypes, true);
 		} catch (UnknownEiObjectException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} catch (\InvalidArgumentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
-		} catch (InaccessibleEiEntryException $e) {
-			throw new ForbiddenException(null, 0, $e);
-		}
-		
-		return $eiObject;
+		} /*catch (InaccessibleEiEntryException $e) {
+		throw new ForbiddenException(null, 0, $e);
+		}*/
 	}
 	
 	
@@ -307,7 +315,7 @@ class EiuCtrl {
 		
 		$this->composeEiuGuiForList($eiGui, $pageSize);
 		
-		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiGui($pageSize, true, true);
+		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiGui($pageSize, true, true, []);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp,
@@ -350,14 +358,21 @@ class EiuCtrl {
 		}
 	}
 	
-	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true) {
+	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true,
+			array $generalGuiControls = []) {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
 		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->eiuFrame, 'eiEntryArg', true);
 		$eiuGui = $eiuEntry->newGui(true, $readOnly);
-		$siComp = $eiuGui->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
+		
+		if (null !== ($siResult = $this->handleSiCall($eiuGui->getEiGui()->getEiEntryGui(), $generalGuiControls))) {
+			$this->cu->sendJson($siResult);
+			return;
+		}
+		
+		$siComp = $eiuGui->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded, $generalGuiControls);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp,
@@ -365,52 +380,24 @@ class EiuCtrl {
 						$eiuEntry->createIdentityString()));
 	}
 	
-	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true) {
+	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
+			array $generalGuiControls = []) {
 		if ($this->forwardHtml()) {
 			return;
 		}
 		
-// 		$contextEiuType = $this->eiuFrame->engine()->type();
-		
-// 		$siEntry = new SiEntry($contextEiuType->supremeType()->getId(), !$editable, true);
-		
-// 		$siDeclaration = new SiDeclaration();
-		
-// 		if (!$contextEiuType->isAbstract()) {
-// 			$typeId = $contextEiuType->getId();
-// 			$eiEntryGui = $this->eiuFrame->newEntry()->newEntryGui()->getEiEntryGui();
-			
-// 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiEntryBuildup());
-// 			$siDeclaration->putFieldStructureDeclarations(
-// 					$eiEntryGui->getEiEntry()->getEiGuiSiFactory()->getSiStructureDeclaration());
-// 		}
-		
-// 		foreach ($contextEiuType->allSubTypes() as $eiuType) {
-// 			if ($eiuType->isAbstract()) {
-// 				continue;
-// 			}
-			
-// 			$typeId = $eiuType->getId();
-// 			$eiuEntryGui = $this->eiuFrame->entry($eiuType->newObject())->newEntryGui(true, $editable);
-// 			$eiEntryGui = $eiuEntryGui->getEiEntryGui();
-			
-// 			$siEntry->putBuildup($typeId, $eiEntryGui->createSiBuildup());
-// 			$siDeclaration->putFieldStructureDeclarations($typeId, 
-// 					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclaration());
-// 		}
-		
-// 		if (!empty($siEntry->getBuildups())) {
-// 			throw new EiuPerimeterException('Can not create a new EiEntryGui of ' . $contextEiuType->getEiType()
-// 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
-// 		}
-
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		
 		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
 		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
 		
-		$siComp = $eiGuiUtil->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded);
+		if (null !== ($siResult = $this->handleSiCall($eiGui->getEiEntryGui(), $generalGuiControls))) {
+			$this->cu->sendJson($siResult);
+			return;
+		}
+		
+		$siComp = $eiGuiUtil->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded, $generalGuiControls);
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($siComp, 
@@ -418,12 +405,74 @@ class EiuCtrl {
 						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
 	}
 	
-	function forwardIframeZone(Url $url, string $title = null) {
+// 	/**
+// 	 * @param GuiControl[] $guiControls
+// 	 */
+// 	private function createSiControls($guiControls) {
+// 		return array_map(function ($guiControl) use ($url) {
+// 			return $guiControl->toSiControl($this->cu->getRequest()->getUrl(), new ZoneApiControlCallId([$guiControl->getId()]));
+// 		}, $guiControls);
+// 	}
+	
+	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null) {
 		if ($this->forwardHtml()) {
 			return;
 		}
 		
-		$iframeSiGui = new IframeSiGui($url);
+		$iframeSiGui = null;
+		if ($useTemplate) {
+			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponentWithTemplate($uiComponent, $this->eiu->getN2nContext()));
+		} else {
+			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponent($uiComponent));
+		}
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($iframeSiGui,
+						$this->rocketState->getBreadcrumbs(),
+						$title ?? 'Iframe'));
+	}
+	
+	function forwardIframeUrlZone(Url $url, string $title = null) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+		
+		$iframeSiGui = new IframeSiGui(IframeData::createFromUrl($url));
+		
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($iframeSiGui,
+						$this->rocketState->getBreadcrumbs(),
+						$title ?? 'Iframe'));
+	}
+	
+	/**
+	 * @param EiEntryGui $eiEntryGui
+	 * @param GuiControl[] $guiControls
+	 * @return null|\rocket\si\control\SiResult
+	 */
+	private function handleSiCall(?EiEntryGui $eiEntryGui, array $generalGuiControls) {
+		if (!($this->cu->getRequest()->getMethod() === Method::POST && isset($_POST['apiCallId']))) {
+			return null;
+		}
+		
+		$process = new ZoneApiControlProcess($this->eiFrame);
+		$process->provideEiEntryGui($eiEntryGui);
+		$process->determineGuiControl(ZoneApiControlCallId::parse((new ParamPost($_POST['apiCallId']))->parseJson()), $generalGuiControls);
+		
+		if (isset($_POST['entryInputMaps']) 
+				&& null !== ($siResult = $process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson()))) {
+			return $siResult;
+		}
+		
+		return $process->callGuiControl();
+	}
+	
+	function forwardUrlIframeZone(Url $url, string $title = null) {
+		if ($this->forwardHtml()) {
+			return;
+		}
+		
+		$iframeSiGui = new IframeSiGui(IframeData::createFromUrl($url));
 		
 		$this->httpContext->getResponse()->send(
 				SiPayloadFactory::create($iframeSiGui,
@@ -578,3 +627,4 @@ class EiuCtrl {
 		return new EiuEntry($eiObjectObj, $this);
 	}
 }
+

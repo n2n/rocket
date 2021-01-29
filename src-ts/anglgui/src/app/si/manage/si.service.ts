@@ -17,6 +17,7 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiUiFactory } from '../build/si-ui-factory';
 import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
+import { SiFrame, SiFrameApiSection } from '../model/meta/si-frame';
 
 @Injectable({
 	providedIn: 'root'
@@ -60,7 +61,11 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string, apiCallId: object, input: SiInput): Observable<SiResult> {
+	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput): Observable<SiResult> {
+		if (apiUrl instanceof SiFrame) {
+			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
+		}
+
 		const formData = new FormData();
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 
@@ -75,7 +80,7 @@ export class SiService {
 			reportProgress: true
 		};
 
-		return this.httpClient.post<any>(apiUrl + '/execcontrol', formData, options)
+		return this.httpClient.post<any>(apiUrl, formData, options)
 				.pipe(map(data => {
 					const result = SiResultFactory.createResult(data);
 					this.handleResult(result);
@@ -83,7 +88,11 @@ export class SiService {
 				}));
 	}
 
-	fieldCall(apiUrl: string, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+	fieldCall(apiUrl: string|SiFrame, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+		if (apiUrl instanceof SiFrame) {
+			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
+		}
+
 		const formData = new FormData();
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 		formData.append('data', JSON.stringify(data));
@@ -103,31 +112,43 @@ export class SiService {
 			reportProgress: true
 		};
 
-		return this.httpClient.post<any>(apiUrl + '/callfield', formData, options)
+		return this.httpClient.post<any>(apiUrl, formData, options)
 		 		.pipe(map(responseData => {
 					return new Extractor(responseData).nullaObject('data');
 				}));
 	}
 
-	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
+	apiGet(apiUrl: string|SiFrame, getRequest: SiGetRequest): Observable<SiGetResponse> {
+		if (apiUrl instanceof SiFrame) {
+			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.GET);
+		}
+
 		return this.httpClient
-				.post<any>(apiUrl + '/get', getRequest)
+				.post<any>(apiUrl, getRequest)
 				.pipe(map(data => {
 					return new SiApiFactory(this.injector).createGetResponse(data, getRequest);
 				}));
 	}
 
-	apiVal(apiUrl: string, valRequest: SiValRequest): Observable<SiValResponse> {
+	apiVal(apiUrl: string|SiFrame, valRequest: SiValRequest): Observable<SiValResponse> {
+		if (apiUrl instanceof SiFrame) {
+			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.VAL);
+		}
+
 		return this.httpClient
-				.post<any>(apiUrl + '/val', valRequest)
+				.post<any>(apiUrl, valRequest)
 				.pipe(map(data => {
 					return new SiApiFactory(this.injector).createValResponse(data, valRequest);
 				}));
 	}
 
-	apiSort(apiUrl: string, sortRequest: SiSortRequest): Observable<SiResult> {
+	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiResult> {
+		if (apiUrl instanceof SiFrame) {
+			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.SORT);
+		}
+
 		return this.httpClient
-				.post(apiUrl + '/sort', sortRequest)
+				.post(apiUrl, sortRequest)
 				.pipe(map(data => {
 					const result = SiResultFactory.createResult(data);
 					this.handleResult(result);

@@ -6,7 +6,8 @@ import { EmbeddedEntryPanelsModel, PanelDef } from '../embedded-entry-panels-mod
 @Component({
 	selector: 'rocket-embedded-entries-panels-in',
 	templateUrl: './embedded-entry-panels.component.html',
-	styleUrls: ['./embedded-entry-panels.component.css']
+	styleUrls: ['./embedded-entry-panels.component.css'],
+	host: {class: 'rocket-embedded-entries-panels-in'}
 })
 export class EmbeddedEntryPanelsComponent implements OnInit {
 

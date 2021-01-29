@@ -26,6 +26,7 @@ use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\web\ui\UiComponent;
 use rocket\si\content\impl\iframe\IframeOutSiField;
+use rocket\si\content\impl\iframe\IframeInSiField;
 use rocket\si\content\impl\relation\QualifierSelectInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
@@ -43,6 +44,7 @@ use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\CrumbOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
+use rocket\si\content\impl\iframe\IframeData;
 
 class SiFields {
 	
@@ -96,8 +98,8 @@ class SiFields {
 	 * @param SiFile|null $file
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	static function fileIn(?SiFile $file, Url $apiUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle) {
-		return new FileInSiField($file, $apiUrl, $apiCallId, $fileHandle);
+	static function fileIn(?SiFile $file, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle) {
+		return new FileInSiField($file, $apiFieldUrl, $apiCallId, $fileHandle);
 	}
 	
 	/**
@@ -205,10 +207,33 @@ class SiFields {
 		return $siField;
 	}
 
-	static function iframeOut(N2nContext $n2nContext, UiComponent $uiComponent, $useTemplate) {
-		return new IframeOutSiField($n2nContext, $uiComponent, $useTemplate);
+	/**
+	 * @param UiComponent $uiComponent
+	 * @param N2nContext $templateN2nContext
+	 * @return \rocket\si\content\impl\iframe\IframeOutSiField
+	 */
+	static function iframeOut(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
+		return new IframeOutSiField($templateN2nContext === null 
+				? IframeData::createFromUiComponent($uiComponent)
+				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
+	}
+	
+	/**
+	 * @param Url $url
+	 * @return \rocket\si\content\impl\iframe\IframeOutSiField
+	 */
+	static function iframeUrlOut(Url $url) {
+		return new IframeOutSiField(IframeData::createFromUrl($url));
 	}
 
-	static function iframeIn() {
+	/**
+	 * @param UiComponent $uiComponent
+	 * @param N2nContext $templateN2nContext
+	 * @return \rocket\si\content\impl\iframe\IframeInSiField
+	 */
+	static function iframeIn(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
+		return new IframeInSiField($templateN2nContext === null
+				? IframeData::createFromUiComponent($uiComponent)
+				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
 	}
 }

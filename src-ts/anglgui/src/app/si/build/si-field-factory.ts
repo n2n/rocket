@@ -31,10 +31,9 @@ import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
 import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-in-si-field';
-import { SplitViewStateContext } from '../model/content/impl/split/model/state/split-view-state-context';
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
-import {SiFrame} from "../model/meta/si-frame";
+import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -127,7 +126,7 @@ export class SiFieldFactory {
 			return new FileOutSiField(SiGuiFactory.buildSiFile(dataExtr.nullaObject('value')));
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(dataExtr.reqString('apiUrl'),
+			const fileInSiField = new FileInSiField(dataExtr.reqString('apiFieldUrl'),
 					dataExtr.reqObject('apiCallId'), SiGuiFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
@@ -222,8 +221,8 @@ export class SiFieldFactory {
 		case SiFieldType.CRUMB_OUT:
 			return new CrumbOutSiField(SiGuiFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
 
-    case SiFieldType.IFRAME_OUT:
-      console.log(dataExtr);
+		case SiFieldType.IFRAME_OUT:
+			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
@@ -254,10 +253,10 @@ export class SiFieldFactory {
 				continue;
 			}
 
-			const apiUrl = extr.nullaString('apiUrl');
-			if (apiUrl) {
+			const apiGetUrl = extr.nullaString('apiGetUrl');
+			if (apiGetUrl) {
 				splitContextSiField.putSplitContent(SplitContent.createLazy(key, label, shortLabel, {
-					apiUrl,
+					apiGetUrl,
 					entryId: extr.nullaString('entryId'),
 					propIds: extr.nullaStringArray('propIds'),
 					bulky: extr.reqBoolean('bulky'),

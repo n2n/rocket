@@ -32,6 +32,10 @@ export class SiEntry {
 		return this._entryBuildupsMap.get(this.selectedTypeId) as SiEntryBuildup;
 	}
 
+	get typeSelected(): boolean {
+		return !!this.selectedTypeId;
+	}
+
 	get selectedTypeId(): string|null {
 		return this.selectedTypeIdSubject.getValue();
 	}

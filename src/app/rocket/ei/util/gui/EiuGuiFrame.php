@@ -224,14 +224,6 @@ class EiuGuiFrame {
 		return (bool) ($this->getViewMode() & ViewMode::read());
 	}
 	
-	/**
-	 * @param EiCommand $eiCommand
-	 * @return \rocket\ei\util\control\EiuControlFactory
-	 */
-	public function controlFactory(EiCommand $eiCommand) {
-		return new EiuControlFactory($this, $eiCommand, $this->eiuAnalyst);
-	}
-	
 // 	public function initWithUiCallback(\Closure $viewFactory, array $defPropPaths) {
 // 		$defPropPaths = DefPropPath::createArray($defPropPaths);
 		

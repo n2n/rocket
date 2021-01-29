@@ -101,7 +101,8 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			$siCrumbs[] = SiCrumb::createIcon($eiuEntry->mask()->getIconType())
-					->setTitle($eiuEntry->createIdentityString());
+					->setTitle($eiuEntry->createIdentityString())
+					->setSeverity(SiCrumb::SEVERITY_IMPORTANT);
 		}
 		
 		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();

@@ -83,6 +83,9 @@ class AnglTemplateModel implements Lookupable {
 			'maxlength_err' => ValidationMessages::maxlength('{maxlength}', '{field}')->t($n2nLocale),
 			'min_elements_err' => str_replace($nr, '{min}', ValidationMessages::minElements($nr, '{field}')->t($n2nLocale)),
 			'max_elements_err' => str_replace($nr, '{max}', ValidationMessages::maxElements($nr, '{field}')->t($n2nLocale)),
+			'user_title' =>  $dtc->t('user_title'),
+			'user_groups_title' =>  $dtc->t('user_groups_title'),
+			'tool_title' =>  $dtc->t('tool_title'),
 			'tool_backup_create_label' => $dtc->t('tool_backup_create_label'),
 			'tool_mail_center_title' => $dtc->t('tool_mail_center_title'),
 			'mail_center_mail_message_label' => $dtc->t('tool_mail_center_mail_message_label'),
@@ -95,6 +98,7 @@ class AnglTemplateModel implements Lookupable {
 			'original_image_txt' => $dtc->t('original_image_txt'),
 			'generated_images_txt' => $dtc->t('generated_images_txt'),
 			'image_dimensions_na_txt' => $dtc->t('image_dimensions_na_txt'),
+			'ei_impl_locale_not_active_label' => $dtc->t('ei_impl_locale_not_active_label'),
 		];
 	}
 	

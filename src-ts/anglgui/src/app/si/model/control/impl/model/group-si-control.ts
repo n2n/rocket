@@ -18,7 +18,7 @@ export class GroupSiControl implements SiControl {
 	}
 
 	isDisabled(): boolean {
-		return false;
+		return !!this.subControls.find(sc => sc.isDisabled());
 	}
 
 	createUiContent(uiZone: UiZone): UiContent {
@@ -27,7 +27,7 @@ export class GroupSiControl implements SiControl {
 		return new ButtonControlUiContent({
 			getSiButton: () => this.siButton,
 			isLoading: () => false,
-			isDisabled: () => false,
+			isDisabled: () => this.isDisabled(),
 			exec: () => {},
 			getSubUiContents: () => subUiContents,
 		}, uiZone);

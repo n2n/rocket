@@ -41,6 +41,7 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
 use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiFrame;
+use rocket\ei\manage\api\ApiController;
 
 class EiFrame {
 	
@@ -477,12 +478,14 @@ class EiFrame {
 				->ext(EiFrameController::createCmdUrlExt($result->getEiCommandPath())));
 	}
 
-	public function getApiUrl(EiCommandPath $eiCommandPath = null) {
+	public function getApiUrl(?EiCommandPath $eiCommandPath, string $apiSection) {
+		ArgUtils::valEnum($apiSection, ApiController::getApiSections());
+		
 		if ($eiCommandPath === null) {
 			$eiCommandPath = EiCommandPath::from($this->getEiExecution()->getEiCommand());
 		}
 		
-		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath]);
+		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath])->pathExt($apiSection);
 	}
 	
 	public function getCmdUrl(EiCommandPath $eiCommandPath) {
@@ -547,7 +550,9 @@ class EiFrame {
 	 * @return \rocket\si\meta\SiFrame
 	 */
 	function createSiFrame() {
-		return (new SiFrame($this->getApiUrl(), $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()))
+		$apUrlMap = array_combine(ApiController::getApiSections(), 
+				array_map(fn ($section) => $this->getApiUrl(null, $section), ApiController::getApiSections()));
+		return (new SiFrame($apUrlMap, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()))
 				->setSortable($this->ability->getSortAbility() !== null);
 	}
 }

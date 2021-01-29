@@ -100,7 +100,7 @@ class EiEntryGui {
 		$eiType = $eiEntryGuiTypeDef->getEiMask()->getEiType();
 		
 		ArgUtils::assertTrue($eiType->isA($this->contextEiMask->getEiType()));
-		
+				
 		$this->typeDefs[$eiType->getId()] = $eiEntryGuiTypeDef;
 	}
 	

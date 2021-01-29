@@ -1,17 +1,16 @@
 
 
-rocket-button-control {
+.rocket-button-control {
 	.dropdown > div {
 		position: absolute;
 		right: 0;
 		margin: $context-menu-offset-sm;
 		transform: translateX($context-menu-offset-sm);
-		width: 300px;
 		background:	$white;
 		padding: 1rem;
 		filter: $context-menu-drop-shadow-sm;
 		z-index: $context-menu-z-index;
-
+		
 		&:after {
 			content: "";
 			position: absolute;
@@ -22,24 +21,33 @@ rocket-button-control {
 			border-style: solid;
 			border-color: $white transparent;
 		}
-
 		div {
 			&:not(:last-child) {
-				border-bottom: 1px solid $input-border-color;
+				> .rocket-button-control > .btn,
+				> .btn {
+					border-bottom: 1px solid $input-border-color;
+				}
 			}
+			> .rocket-button-control > .btn,
 			> .btn {
 				display: flex;
+				padding-left: 1rem;
+				padding-right: 1rem;
 				width: 100%;
+				width: calc(100% + 2rem);
+				margin-left: -1rem;
 				background: $white;
 				border: none;
-				justify-content: space-between;
+				// justify-content: space-between;
 				align-items: baseline;
 				color: $body-color;
 				text-align: left;
-				padding-left: 0;
-				padding-right: 0;
 				font-weight: bold;
 				> i {
+					width: 1.2rem;
+					text-align: left;
+				}
+				> i:not(:first-child) {
 					margin-left: .5rem;
 				}
 				&:hover,
@@ -48,5 +56,8 @@ rocket-button-control {
 				}
 			}
 		}
+	}
+	&.rocket-fixed-width .dropdown > div {
+		width: 300px;
 	}
 }

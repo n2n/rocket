@@ -1,8 +1,9 @@
 import { AddPasteObtainer } from './add-paste-obtainer';
 import { EmbeInCollection } from '../model/embe/embe-collection';
 import { Embe } from '../model/embe/embe';
+import { MessageFieldModel } from '../../common/comp/message-field-model';
 
-export interface EmbeddedEntriesInModel {
+export interface EmbeddedEntriesInModel extends MessageFieldModel {
 
 	getMin(): number;
 

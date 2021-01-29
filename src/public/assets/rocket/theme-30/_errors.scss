@@ -23,12 +23,13 @@
 	padding: 0.5rem 2rem 0.5rem 1rem;
 	position: relative;
 	cursor: pointer;
-	&::after {
+	&:after {
 		position: absolute;
 		top: 0.75rem;
 		right: 1rem;
 		color: $danger;
 		content: '\f0e7';
+		font-weight: bold;
 		font-family: $font-name-icons;
 		font-size: $font-size-lg;
 	}
@@ -39,7 +40,7 @@
 			color: $white;
 		}
 	}
-	&:hover::after {
+	&:hover:after {
 		color: white;
 	}
 	> .rocket-error-index-message {

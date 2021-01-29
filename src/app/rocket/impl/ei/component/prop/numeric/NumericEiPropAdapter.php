@@ -46,17 +46,23 @@ use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
 			
 	private $numericConfig;
+	/**
+	 * @var AddonConfig
+	 */
+	private $addonConfig;
 	private $quickSearchConfig;
 		    
     function __construct() {
         parent::__construct();
         
         $this->numericConfig = new NumericConfig();
+        $this->addonConfig = new AddonConfig();
         $this->quickSearchConfig = new QuickSearchConfig();
     }
 
@@ -65,6 +71,13 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
      */
     function getNumericConfig() {
         return $this->numericConfig;
+    }
+    
+    /**
+     * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
+     */
+    protected function getAddonConfig() {
+    	return $this->addonConfig;
     }
     
 	function setEntityProperty(?EntityProperty $entityProperty) {
@@ -81,6 +94,7 @@ abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter
 
 	function prepare() {
 		$this->getConfigurator()->addAdaption($this->numericConfig)
+				->addAdaption($this->addonConfig)
 				->addAdaption($this->quickSearchConfig);
 	}
 	

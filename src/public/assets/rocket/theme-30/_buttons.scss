@@ -2,16 +2,32 @@
  * The small Buttons (without text)
  */
 
- .btn-warning {
-     color: $white;
+ .btn-loading {
+     .btn-name {
+         opacity: 0.25;
+     }
+ }
+ 
+ .btn .spinner-grow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$spinner-height/2;
+    margin-left: -$spinner-width/2;
+ }
+
+ .btn .spinner-grow-sm {
+    margin-top: -$spinner-height-sm/2;
+    margin-left: -$spinner-width-sm/2;
  }
 
 .rocket-simple-commands {
     // drop down button in simple-commands
     > .dropdown > button,
     > .btn,
-    > rocket-button-control > .dropdown > button, 
-    > rocket-button-control > .btn { 
+    > .rocket-button-control > .dropdown > button, 
+    > .rocket-button-control > .btn,
+    > .rocket-ui-toggler > .btn { 
         min-width: 2.25rem;
         text-align: center;
         background: transparent;
@@ -19,22 +35,50 @@
         box-shadow: none;
         color: $gray-700;
         padding: 0.375rem 0.5rem;
-        &:hover {
+        &:hover:not([disabled]) {
             background: transparent;
             color: $gray-900;
         }
         &:focus,
         &:visited,
-        &:active {
+        &:not([disabled]):active,
+        &:not([disabled]).active {
             box-shadow: none;
         }
-        &.btn-danger:hover {
+        &.btn-danger:hover:not([disabled]) {
             color: $danger;
         }
-        &.btn-warning:hover {
+        &.btn-warning:hover:not([disabled]) {
             color: $warning;
         }
-        &.btn-success:hover {
+        &.btn-success:hover:not([disabled]) {
+            color: $success;
+        }
+        &:not(.rocket-important) > span {
+            display: none;
+        }
+    }
+}
+
+th .rocket-simple-commands {
+    // drop down button in simple-commands
+    > .dropdown > button,
+    > .btn,
+    > .rocket-button-control > .dropdown > button, 
+    > .rocket-button-control > .btn,
+    > .rocket-ui-toggler > .btn { 
+        color: rgba($white, 0.6);
+        &:hover:not([disabled]),
+        &.active:not([disabled]) {
+            color: $white;
+        }
+        &.btn-danger:hover:not([disabled]) {
+            color: $danger;
+        }
+        &.btn-warning:hover:not([disabled]) {
+            color: $warning;
+        }
+        &.btn-success:hover:not([disabled]) {
             color: $success;
         }
         &:not(.rocket-important) > span {
@@ -58,10 +102,25 @@
     }
 }
 
+.rocket-ui-toggler > .btn,
+.rocket-simple-commands .rocket-ui-toggler > .btn {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+    box-shadow: none;
+    .rocket-toggler-in-field & {
+        padding-left: 0rem;
+        padding-right: 0rem;
+    }
+}
+
+
 // simple commands in table are bigger
 .rocket-simple-commands {
     > .btn,
-    > rocket-button-control > .btn {
+    > .rocket-button-control > .btn,
+    > .rocket-button-control > .dropdown > .btn {
         > i {
             font-size: $font-size-lg;
         }
@@ -75,7 +134,7 @@
 
 
 .rocket-zone-commands {
-    rocket-button-control:not(:last-child) .btn {
+    .rocket-button-control:not(:last-child) .btn {
         margin-right: $rocket-btn-group-spacing;
     }
 
@@ -119,7 +178,7 @@
 }
 
 
-.rocket-toolbar > .rocket-simple-commands > .rocket-important {
+.rocket-toolbar > .rocket-simple-commands > .btn.rocket-important {
     position: relative;
     > i[class*="fa-"] {
         color: white;
@@ -149,17 +208,4 @@
             background: $warning;
         }
     }
-
-    // &:hover {
-    //     > i::after {
-    //         background: darken($gray-600, 7.5%);
-    //     }
-    // }
-
-    // &.btn-warning:hover {
-    //     > i::after {
-    //         background: darken($warning, 7.5%);
-    //     }
-    // }
 }
-

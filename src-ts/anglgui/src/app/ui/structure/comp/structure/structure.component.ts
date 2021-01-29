@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 	templateUrl: './structure.component.html',
 	styleUrls: ['./structure.component.css']
 })
-export class StructureComponent implements OnInit, OnDestroy, DoCheck {
+export class StructureComponent implements OnInit, OnDestroy {
 	@Input()
 	labelVisible = true;
 	@Input()
@@ -20,6 +20,9 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 	asideVisible = true;
 	@Input()
 	contentVisible = true;
+	@HostBinding('class.rocket-compact')
+	@Input()
+	compact = false;
 
 	private _uiStructure: UiStructure;
 
@@ -44,32 +47,42 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 		this.clear();
 	}
 
-	ngDoCheck() {
-		if (!this.uiStructure) {
-			return;
-		}
+	// ngDoCheck() {
+	// 	if (!this.uiStructure) {
+	// 		return;
+	// 	}
 
-		// const classList = this.elRef.nativeElement.classList;
+	// 	// const classList = this.elRef.nativeElement.classList;
 
-		// if (this.uiStructure.isItemCollection()) {
-		// 	if (!classList.contains('rocket-item-collection')) {
-		// 		classList.add('rocket-item-collection');
-		// 	}
-		// } else {
-		// 	if (classList.contains('rocket-item-collection')) {
-		// 		classList.remove('rocket-item-collection');
-		// 	}
-		// }
+	// 	// if (this.uiStructure.isItemCollection()) {
+	// 	// 	if (!classList.contains('rocket-item-collection')) {
+	// 	// 		classList.add('rocket-item-collection');
+	// 	// 	}
+	// 	// } else {
+	// 	// 	if (classList.contains('rocket-item-collection')) {
+	// 	// 		classList.remove('rocket-item-collection');
+	// 	// 	}
+	// 	// }
 
-		// if (this.uiStructure.isDoubleItem()) {
-		// 	if (!classList.contains('rocket-double-item')) {
-		// 		classList.add('rocket-double-item');
-		// 	}
-		// } else {
-		// 	if (classList.contains('rocket-double-item')) {
-		// 		classList.remove('rocket-double-item');
-		// 	}
-		// }
+	// 	// if (this.uiStructure.isDoubleItem()) {
+	// 	// 	if (!classList.contains('rocket-double-item')) {
+	// 	// 		classList.add('rocket-double-item');
+	// 	// 	}
+	// 	// } else {
+	// 	// 	if (classList.contains('rocket-double-item')) {
+	// 	// 		classList.remove('rocket-double-item');
+	// 	// 	}
+	// 	// }
+	// }
+
+	@HostBinding('class.rocket-item-collection')
+	get itemCollection(): boolean {
+		return this.uiStructure.isItemCollection();
+	}
+
+	@HostBinding('class.rocket-double-item')
+	get doubleItem(): boolean {
+		return this.uiStructure.isDoubleItem();
 	}
 
 	private clear() {
@@ -81,22 +94,16 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 		}
 	}
 
-	@HostBinding('class.rocket-bulky')
-	get bulky(): boolean {
-		return !this.uiStructure.compact;
-	}
-
-	@HostBinding('class.rocket-compact')
-	get compact(): boolean {
-		return this.uiStructure.compact;
-	}
+	// @HostBinding('class.rocket-bulky')
+	// get bulky(): boolean {
+	// 	return !this.uiStructure.compact;
+	// }
 
 	@Input()
 	set uiStructure(uiStructure: UiStructure) {
 		this.clear();
 
 		this._uiStructure = uiStructure;
-		this.applyCssClass();
 
 		this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
 			this.toolbarUiStructures = toolbarUiStructures;
@@ -172,35 +179,23 @@ export class StructureComponent implements OnInit, OnDestroy, DoCheck {
 // 		this.applyCssClass();
 // 	}
 
-	private applyCssClass() {
-		const classList = this.elRef.nativeElement.classList;
-
-		classList.remove('rocket-item');
-		classList.remove('rocket-group');
-		classList.remove('rocket-simple-group');
-		classList.remove('rocket-main-group');
-		classList.remove('rocket-light-group');
-		classList.remove('rocket-panel');
-
+	@HostBinding('class')
+	get typeCssClass(): string {
 		switch (this.getType()) {
 			case UiStructureType.ITEM:
-				classList.add('rocket-item');
-				break;
+				return 'rocket-item';
 			case UiStructureType.SIMPLE_GROUP:
-				classList.add('rocket-group');
-				classList.add('rocket-simple-group');
-				break;
+				return 'rocket-group rocket-simple-group';
 			case UiStructureType.MAIN_GROUP:
-				classList.add('rocket-group');
-				classList.add('rocket-main-group');
-				break;
+				return 'rocket-group rocket-main-group';
 			case UiStructureType.LIGHT_GROUP:
-				classList.add('rocket-group');
-				classList.add('rocket-light-group');
-				break;
+				return 'rocket-group rocket-light-group';
 			case UiStructureType.PANEL:
-				classList.add('rocket-panel');
-				break;
+				return 'rocket-panel';
+			case UiStructureType.MINIMAL:
+				return 'rocket-minimal';
+			default:
+				return '';
 		}
 	}
 

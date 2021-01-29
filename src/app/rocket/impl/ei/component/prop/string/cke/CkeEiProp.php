@@ -33,6 +33,7 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
 use rocket\ei\util\factory\EifGuiField;
+use n2n\impl\web\ui\view\html\HtmlElement;
 
 class CkeEiProp extends AlphanumericEiProp {
 	/**
@@ -72,11 +73,35 @@ class CkeEiProp extends AlphanumericEiProp {
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$ckeInField = SiFields::ckeIn($eiu->field()->getValue())
-				->setMinlength($this->getAlphanumericConfig()->getMinlength())
-				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
-				->setMandatory($this->getEditConfig()->isMandatory())
-				->setMode($this->ckeConfig->getMode());
+		
+		/**
+		 * 
+		 
+		 $view  = $eiu->createView('v');
+		  
+		 * view
+		  
+		$ckeHtml = new CkeHtmlBuilder($htmlView);
+		
+		return $ckeHtml->getEditor($propertyPath,
+				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
+				$this->ckeCssConfig, $this->ckeLinkProviders);
+		*/
+		
+		$siField = SiFields::stringIn('Ich bin ein Cke!');
+		
+// 		$siField = SiFields::iframeIn($view, $eiu->getN2nContext())
+// 				->setParams(['content' => $eiu->field()->getValue()]);
+		
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$eiu->field()->setValue($siField->getParams()['content'] ?? null);	
+		});
+				
+// 		$ckeInField = SiFields::ckeIn($eiu->field()->getValue())
+// 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
+// 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
+// 				->setMandatory($this->getEditConfig()->isMandatory())
+// 				->setMode($this->ckeConfig->getMode());
 		
 // 		if (null !== ($ckeCssConfig = $this->ckeConfig->getCkeCssConfig())) {
 // 			$contentCssUrls = $ckeCssConfig->getContentCssUrls($eiu);
@@ -88,7 +113,7 @@ class CkeEiProp extends AlphanumericEiProp {
 // 					->setBodyClass($ckeCssConfig->getAdditionalStyles());
 // 		}
 
-		return $eiu->factory()->newGuiField($ckeInField);
+		
 		
 		
 		

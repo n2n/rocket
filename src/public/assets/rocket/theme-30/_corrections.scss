@@ -67,6 +67,18 @@ h1, .h1 {
     top: 0.5rem;
 }
 
+.table-hover tbody tr:hover {
+    background: inherit;
+}
+
+.table-hover tbody:not(.cdk-drop-list-dragging) tr:hover {
+    background-color: $table-hover-bg;
+        > td,
+        > th {
+          background-color: $table-hover-bg;
+        }
+}
+
 // 1. reset for moz firefox on mac
 @supports (-moz-osx-font-smoothing: auto) {
     .form-check-input {

@@ -88,38 +88,40 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 		}
 		
 		$dtc = $eiu->dtc(Rocket::NS);
-		$eiuControlFactory = $eiu->guiFrame()->controlFactory($this);
+		$eiuControlFactory = $eiu->factory()->controls();
 		
-		$siButton = new SiButton(
-				$dtc->t('ei_impl_detail_label'),
-				$dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, $iconType);
+		$siButton = SiButton::secondary($dtc->t('ei_impl_detail_label'), $iconType)
+				->setTooltip($dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
 		
-		$controls = array($eiuControlFactory->createCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
+		$controls = array($eiuControlFactory->newCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
 		
 		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
 		}
 		
-		$siButton = new SiButton(
-				$dtc->t('ei_impl_detail_preview_label'),
-				$dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())),
-				false, null, SiIconType::ICON_R_EYE);
+		$siButton = SiButton::success($dtc->t('ei_impl_detail_preview_label'), SiIconType::ICON_R_EYE)
+				->setTooltip($dtc->t('ei_impl_detail_preview_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
 		
-		$previewType = $eiuEntry->getDefaultPreviewType();
-		if ($previewType === null) {
-			$controls[] = $eiuControlFactory->createDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
+		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
+		
+		if (empty($previewTypeOptions)) {
+			$controls[] = $eiuControlFactory->newDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
 			return $controls;
 		}
 		
-		if (!$eiuEntry->isDraft()) {
-			$pathExt = new Path(array('livepreview', $eiuEntry->getPid(), $previewType));
-		} else {
-			$pathExt = new Path(array('draftpreview', $eiuEntry->getDraftId(), $previewType));
+		if (count($previewTypeOptions) === 1) {
+			$controls[] = $eiuControlFactory->newCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, 
+					new Path(['livepreview', $eiuEntry->getPid(), $eiuEntry->getDefaultPreviewType()]));
+			return $controls;
 		}
 		
+		$controls[] = $groupControl = $eiuControlFactory->newGroup(self::CONTROL_PREVIEW_KEY, $siButton);
 		
-		$controls[] = $eiuControlFactory->createCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, $pathExt->toUrl());
+		foreach ($previewTypeOptions as $previewType => $label) {
+			$groupControl->add($eiuControlFactory->newCmdRef($previewType, 
+					SiButton::success($label, SiIconType::ICON_R_EYE),
+					new Path(['livepreview', $eiuEntry->getPid(), $previewType])));
+		}
 		
 		return $controls;
 	}
@@ -132,10 +134,10 @@ class DetailEiCommand extends IndependentEiCommandAdapter implements PrivilegedE
 // 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint)->toUrl();
 // 	}
 	
-	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
-		$dtc = $eiu->dtc(Rocket::NS);
-		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
-	}
+// 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
+// 		$dtc = $eiu->dtc(Rocket::NS);
+// 		return $eiu->factory()->newCommandPrivilege($dtc->t('ei_impl_detail_label'));
+// 	}
 	
 	public function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint {
 		return SiNavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());

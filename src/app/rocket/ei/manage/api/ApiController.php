@@ -33,6 +33,12 @@ use rocket\si\api\SiValRequest;
 use rocket\si\api\SiValResponse;
 
 class ApiController extends ControllerAdapter {
+	const API_CONTROL_SECTION = 'execcontrol';
+	const API_FIELD_SECTION = 'callfield';
+	const API_GET_SECTION = 'get';
+	const API_VAL_SECTION = 'val';
+	const API_SORT_SECTION = 'sort';
+	
 	private $eiFrame;
 	
 	function prepare(ManageState $manageState) {
@@ -41,6 +47,10 @@ class ApiController extends ControllerAdapter {
 	
 	function index() {
 		echo 'very apisch';
+	}
+	
+	static function getApiSections() {
+		return [self::API_CONTROL_SECTION, self::API_FIELD_SECTION, self::API_GET_SECTION, self::API_VAL_SECTION, self::API_SORT_SECTION];
 	}
 
 	private function parseApiControlCallId(Param $paramQuery) {
@@ -120,7 +130,7 @@ class ApiController extends ControllerAdapter {
 			$callProcess->determineNewEiEntry($newEiTypeType);
 		}
 			
-		$callProcess->setupEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypeId());
+		$callProcess->determineEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypeId());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		if ($entryInputMaps !== null

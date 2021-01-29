@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { ButtonControlModel } from '../button-control-model';
 import { SiButton } from '../../model/si-button';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
@@ -8,7 +8,8 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 @Component({
 	selector: 'rocket-button-control',
 	templateUrl: './button-control.component.html',
-	styleUrls: ['./button-control.component.css']
+	styleUrls: ['./button-control.component.css'],
+	host: {class: 'rocket-button-control'}
 })
 export class ButtonControlComponent implements OnInit {
 
@@ -23,6 +24,11 @@ export class ButtonControlComponent implements OnInit {
 	}
 
 	ngOnInit() {
+	}
+	
+	@HostBinding('class.rocket-fixed-width')
+	get fixedWidth(): boolean {
+		return !!this.model.getSubTooltip && !!this.model.getSubTooltip();
 	}
 
 	get siButton(): SiButton {

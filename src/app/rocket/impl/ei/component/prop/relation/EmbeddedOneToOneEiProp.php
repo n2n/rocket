@@ -37,6 +37,9 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToOneGuiField;
 use n2n\util\type\CastUtils;
+use rocket\si\content\impl\meta\SiCrumb;
+use rocket\si\content\impl\SiFields;
+use rocket\ei\util\entry\EiuEntry;
 
 class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiProp {
 	
@@ -105,7 +108,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 		CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 		
 		return $eiu->factory()->newGuiField(SiFields::crumbOut(
-				SiCrumb::createIcon($eiuEntry->mask()->getIconType()),
+				SiCrumb::createIcon($eiuEntry->mask()->getIconType())->setSeverity(SiCrumb::SEVERITY_IMPORTANT),
 				SiCrumb::createLabel($eiuEntry->object()->createIdentityString())))->toGuiField();
 	}
 }

@@ -43,7 +43,8 @@
         "rocket\\impl\\ei\\component\\command\\common\\EditEiCommand",
         "rocket\\impl\\ei\\component\\command\\common\\AddEiCommand",
         "rocket\\impl\\ei\\component\\command\\common\\DeleteEiCommand",
-        "rocket\\impl\\ei\\component\\command\\tree\\TreeMoveEiCommand"
+        "rocket\\impl\\ei\\component\\command\\tree\\TreeMoveEiCommand",
+        "rocket\\impl\\ei\\component\\command\\iframe\\IframeEiCommand"
     ],
     "eiCommandGroups": {
         "List": [

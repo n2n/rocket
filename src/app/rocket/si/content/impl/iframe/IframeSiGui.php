@@ -1,20 +1,13 @@
 <?php
-namespace rocket\si\content\impl\basic;
+namespace rocket\si\content\impl\iframe;
 
 use rocket\si\content\SiGui;
-use n2n\util\uri\Url;
-use n2n\web\ui\UiComponent;
 
 class IframeSiGui implements SiGui {
-	private $url;
-	private $srcDoc;
+	private $iframeData;
 	
-	function __construct(/*Url|UiComponent*/ $arg) {
-		if ($arg instanceof Url) {
-			$this->url = $arg;
-		} else {
-			$this->srcDoc = $arg;
-		}
+	public function __construct(IframeData $iframeData) {
+		$this->iframeData = $iframeData;
 	}
 	
 	function getTypeName(): string {
@@ -22,10 +15,7 @@ class IframeSiGui implements SiGui {
 	}
 
 	function getData(): array {
-		return [
-			'url' => (string) $this->url,
-			'srcDoc' => $this->srcDoc 
-		];
+		return $this->iframeData->toArray();
 	}
 
 }

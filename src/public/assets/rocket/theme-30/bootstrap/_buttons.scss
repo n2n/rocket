@@ -45,13 +45,17 @@
       @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
     }
   }
-}
 
-// Future-proof disabling of clicks on `<a>` elements
-a.btn.disabled,
-fieldset:disabled a.btn {
+  // Future-proof disabling of clicks on `<a>` elements
+&:disabled,
+&.disabled,
+fieldset:disabled & {
   pointer-events: none;
 }
+
+}
+
+
 
 
 //

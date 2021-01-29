@@ -26,6 +26,13 @@ use rocket\ei\EiCommandPath;
 
 class GuiControlPath extends IdPath {
 	
+	/**
+	 * @return \rocket\ei\EiCommandPath
+	 */
+	function getEiCommandPath() {
+		return EiCommandPath::create($this->getFirstId());
+	}
+	
 	public function ext(...$args): GuiControlPath {
 		return new GuiControlPath(array_merge($this->ids, $this->argsToIds($args)));
 	}

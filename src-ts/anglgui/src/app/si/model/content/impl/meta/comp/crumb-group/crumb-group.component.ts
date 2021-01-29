@@ -5,6 +5,7 @@ import { SiCrumbGroup, SiCrumb } from '../../model/si-crumb';
 	selector: 'rocket-crumb-group',
 	templateUrl: './crumb-group.component.html',
 	styleUrls: ['./crumb-group.component.css'],
+	host: {class: 'rocket-crumb-group'}
 })
 export class CrumbGroupComponent implements OnInit {
 
@@ -24,7 +25,19 @@ export class CrumbGroupComponent implements OnInit {
 		return siCrumb.type === SiCrumb.Type.LABEL;
 	}
 
+	isNumber(siCrumb: SiCrumb) {
+		return siCrumb.type === SiCrumb.Type.NUMBER;
+	}
+
 	isInactive(siCrumb: SiCrumb) {
 		return siCrumb.severity === SiCrumb.Severity.INACTIVE;
+	}
+
+	isImportant(siCrumb: SiCrumb) {
+		return siCrumb.severity === SiCrumb.Severity.IMPORTANT;
+	}
+
+	isUnimportant(siCrumb: SiCrumb) {
+		return siCrumb.severity === SiCrumb.Severity.UNIMPORTANT;
 	}
 }

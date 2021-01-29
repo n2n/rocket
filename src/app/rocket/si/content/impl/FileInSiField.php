@@ -38,7 +38,7 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @var Url
 	 */
-	private $apiUrl;
+	private $apiFieldUrl;
 	
 	/**
 	 * @var \JsonSerializable
@@ -69,9 +69,9 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?SiFile $value, Url $apiUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandler) {
+	function __construct(?SiFile $value, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandler) {
 		$this->value = $value;	
-		$this->apiUrl = $apiUrl;
+		$this->apiFieldUrl = $apiFieldUrl;
 		$this->apiCallId = $apiCallId;
 		$this->fileHandler = $fileHandler;
 	}
@@ -174,7 +174,7 @@ class FileInSiField extends InSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'mandatory' => $this->mandatory,
-			'apiUrl' => (string) $this->apiUrl,
+			'apiFieldUrl' => (string) $this->apiFieldUrl,
 			'apiCallId' => $this->apiCallId,
 			'maxSize' => $this->maxSize ?? IoUtils::determineFileUploadMaxSize(),
 			'acceptedExtensions' => $this->acceptedExtensions,

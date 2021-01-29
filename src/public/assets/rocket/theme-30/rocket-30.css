@@ -6567,18 +6567,18 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   }
 }
 
-rocket-qualifier-tiling {
+.rocket-qualifier-tiling {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr;
       grid-template-columns: 1fr;
 }
 
-rocket-choose-paste.rocket-multi-type-menu-simple > rocket-qualifier-tiling {
+rocket-choose-paste.rocket-multi-type-menu-simple > .rocket-qualifier-tiling {
   grid-gap: 1px;
 }
 
-rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling {
+rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling {
   -ms-grid-columns: (minmax(25%, 1fr))[auto-fit];
       grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
   grid-gap: 5px;
@@ -6594,11 +6594,11 @@ rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling {
   background: #F7F5F5;
 }
 
-rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-qualifier-btn {
+rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-qualifier-btn {
   text-align: center;
 }
 
-rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-si-qualifier-item {
+rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-si-qualifier-item {
   text-align: center;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6610,7 +6610,7 @@ rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-si-
   padding: 10px 5px;
 }
 
-rocket-choose-paste.rocket-multi-type-menu > rocket-qualifier-tiling .rocket-si-qualifier-item > .fa {
+rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-si-qualifier-item > .fa {
   margin-bottom: 0.5rem;
 }
 
@@ -6723,6 +6723,7 @@ rocket-si-qualifier > .fa::before,
   cursor: default;
 }
 
+rocket-summary > rocket-si-qualifier > .fa.fa-rocket-empty:before,
 .rocket-impl-content-type-empty > .fa.fa-rocket-empty:before {
   content: "0";
   display: block;
@@ -6730,7 +6731,7 @@ rocket-si-qualifier > .fa::before,
   width: 15px;
   text-align: center;
 }
-
+rocket-summary > rocket-si-qualifier > .fa.fa-rocket-empty:after,
 .rocket-impl-content-type-empty > .fa.fa-rocket-empty:after {
   background: none;
   border: 1px solid #DAD7D3;
@@ -7092,14 +7093,15 @@ rocket-add-past > button::after {
 }
 
 .rocket-simple-commands > .btn > i,
-.rocket-simple-commands > rocket-button-control .btn > i {
+.rocket-simple-commands > .rocket-button-control .btn > i,
+.rocket-simple-commands > .rocket-button-control > .dropdown > .btn > i {
   font-size: 1.25rem;
 }
 
 /*
  * Zone Commands (the ones on the bottom of the page)
  */
-.rocket-zone-commands rocket-button-control:not(:last-child) .btn {
+.rocket-zone-commands .rocket-button-control:not(:last-child) .btn {
   margin-right: 0.5rem;
 }
 

@@ -25,13 +25,14 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { EmbeInCollection, EmbeInSource } from './embe/embe-collection';
 import { Embe } from './embe/embe';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
+import { Message } from 'src/app/util/i18n/message';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInCol: EmbeInCollection;
 	private embeInUiStructureManager: EmbeInUiStructureManager|null = null;
 
 	constructor(private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
-			embeInSource: EmbeInSource, private config: EmbeddedEntriesInConfig,
+			private embeInSource: EmbeInSource, private config: EmbeddedEntriesInConfig,
 			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
 		super();
 		this.disabled$ = disabledSubject;
@@ -154,6 +155,10 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		}
 
 		return errors;
+	}
+
+	getMessages(): Message[] {
+		return this.embeInSource.getMessages();
 	}
 }
 

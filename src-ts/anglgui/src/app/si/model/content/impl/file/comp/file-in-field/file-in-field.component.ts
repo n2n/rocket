@@ -19,7 +19,8 @@ import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 @Component({
 	selector: 'rocket-file-in-field',
 	templateUrl: './file-in-field.component.html',
-	styleUrls: ['./file-in-field.component.css']
+	styleUrls: ['./file-in-field.component.css'],
+	host: {class: 'rocket-file-in-field'}
 })
 export class FileInFieldComponent implements OnInit {
 	private uploader: CommonImageEditorModel;
@@ -225,7 +226,7 @@ class CommonImageEditorModel implements ImageEditorModel {
 		this.uploadingFile = file;
 		this.uploadInitiated = true;
 
-		const data = await this.siService.fieldCall(this.model.getApiUrl(), this.model.getApiCallId(),
+		const data = await this.siService.fieldCall(this.model.getApiFieldUrl(), this.model.getApiCallId(),
 				{ fileName }, new Map().set('upload', file)).toPromise();
 
 		this.uploadingFile = null;

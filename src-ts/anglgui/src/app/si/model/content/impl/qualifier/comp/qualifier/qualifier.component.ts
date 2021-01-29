@@ -17,6 +17,8 @@ export class QualifierComponent implements OnInit {
 	showIcon = true;
 	@Input()
 	showName = true;
+	@Input()
+	iconImportant = false;
 
 	constructor() { }
 
@@ -31,7 +33,7 @@ export class QualifierComponent implements OnInit {
 		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier.maskQualifier;
 
 		if (siMaskQualifier) {
-			return siMaskQualifier.iconClass;
+			return siMaskQualifier.iconClass + (this.iconImportant ? ' rocket-important' : '');
 		}
 
 		return null;

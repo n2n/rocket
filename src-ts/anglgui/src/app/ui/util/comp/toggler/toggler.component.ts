@@ -3,17 +3,20 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 @Component({
 	selector: 'rocket-ui-toggler',
 	templateUrl: './toggler.component.html',
-	styleUrls: ['./toggler.component.css']
+	styleUrls: ['./toggler.component.css'],
+	host: {class: 'rocket-ui-toggler'}
 })
 export class TogglerComponent implements OnInit {
 
 	private _enabled = false;
 
 	@Input() labeled = false;
+	
 	@Output() enabledChange = new EventEmitter<boolean>();
 
 	@Input() enabledTextCode: string|null = 'enabled_txt';
 	@Input() disabledTextCode: string|null = 'disabled_txt';
+	@Input() mode: string|null = 'toggler';
 
 	ngOnInit(): void {
 	}

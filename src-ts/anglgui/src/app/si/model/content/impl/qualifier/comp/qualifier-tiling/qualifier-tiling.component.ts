@@ -5,7 +5,8 @@ import { SiEntryQualifier } from '../../../../si-entry-qualifier';
 @Component({
 	selector: 'rocket-qualifier-tiling',
 	templateUrl: './qualifier-tiling.component.html',
-	styleUrls: ['./qualifier-tiling.component.css']
+	styleUrls: ['./qualifier-tiling.component.css'],
+	host: {class: "rocket-qualifier-tiling"}
 })
 export class QualifierTilingComponent implements OnInit {
 
@@ -23,6 +24,8 @@ export class QualifierTilingComponent implements OnInit {
 	siTypeSelected = new EventEmitter<SiMaskQualifier>();
 	@Output()
 	siEntrySelected = new EventEmitter<SiEntryQualifier>();
+	@Input()
+	simple = false;
 
 	constructor() { }
 

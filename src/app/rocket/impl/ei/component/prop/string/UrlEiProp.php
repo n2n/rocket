@@ -111,7 +111,6 @@ class UrlEiProp extends AlphanumericEiProp {
 		return $value;
 	}
 	
-	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())

@@ -93,6 +93,7 @@ export class Embe {
 
 		this._summaryUiStructure = this.getUiStructure().createChild();
 		this._summaryUiStructure.model = this.summaryUiStructureModel;
+		// this._summaryUiStructure.compact = true;
 
 		this._summaryUiStructure.disposed$.pipe(skip(1)).subscribe(() => {
 			this._summaryUiStructure = null;
