@@ -59,7 +59,7 @@ class ProcessUtil {
 		}
 		
 		try {
-			return $eiType->getSubEiTypeById($typeId)->createNewEiObject();
+			return $eiType->getSubEiTypeById($typeId, true)->createNewEiObject();
 		} catch (\rocket\ei\UnknownEiTypeException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}

@@ -3,7 +3,7 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { skip } from 'rxjs/operators';
+import {filter, skip} from 'rxjs/operators';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
 
 export class Embe {
@@ -76,7 +76,7 @@ export class Embe {
 		this._uiStructure = this.getUiStructure().createChild(null, null, this.uiStructureModel);
 		this._uiStructure.model = this.uiStructureModel;
 
-		this._uiStructure.disposed$.pipe(skip(1)).subscribe(() => {
+		this._uiStructure.disposed$.pipe(filter(d => d)).subscribe(() => {
 			this._uiStructure = null;
 		});
 
@@ -95,7 +95,7 @@ export class Embe {
 		this._summaryUiStructure.model = this.summaryUiStructureModel;
 		// this._summaryUiStructure.compact = true;
 
-		this._summaryUiStructure.disposed$.pipe(skip(1)).subscribe(() => {
+		this._summaryUiStructure.disposed$.pipe(filter(d => d)).subscribe(() => {
 			this._summaryUiStructure = null;
 		});
 
