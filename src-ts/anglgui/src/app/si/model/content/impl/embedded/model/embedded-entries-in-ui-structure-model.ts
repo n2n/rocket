@@ -26,6 +26,7 @@ import { EmbeInCollection, EmbeInSource } from './embe/embe-collection';
 import { Embe } from './embe/embe';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 import { Message } from 'src/app/util/i18n/message';
+import { SiEmbeddedEntry } from './si-embedded-entry';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInCol: EmbeInCollection;
@@ -214,20 +215,19 @@ class EmbeInUiStructureManager {
 
 		const uiZone = this.uiStructure.getZone();
 
-		let bakEmbes: Embe[]|null = [...this.embeCol.embes];
+		let bakEmbeddedEntries: SiEmbeddedEntry[]|null = [...this.embeCol.embes.map(embe => embe.siEmbeddedEntry)];
 		const bakEntries = this.embeCol.createEntriesResetPoints();
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		this.popupUiLayer.onDispose(() => {
 			this.popupUiLayer = null;
 
-			if (bakEmbes) {
-				this.resetEmbeCol(bakEmbes, bakEntries);
+			if (bakEmbeddedEntries) {
+				this.resetEmbeCol(bakEmbeddedEntries, bakEntries);
 				return;
 			}
 
 			this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
-			this.embeCol.writeEmbes();
 		});
 
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
@@ -244,7 +244,7 @@ class EmbeInUiStructureManager {
 			title: 'Some Title',
 			breadcrumbs: [],
 			structureModel: popupUiStructureModel,
-			mainCommandContents: this.createPopupControls(() => { bakEmbes = null; })
+			mainCommandContents: this.createPopupControls(() => { bakEmbeddedEntries = null; })
 					.map(siControl => siControl.createUiContent(zone))
 		};
 	}
@@ -265,14 +265,16 @@ class EmbeInUiStructureManager {
 		];
 	}
 
-	private resetEmbeCol(bakEmbes: Embe[], bakEntries: SiGenericEntry[]) {
+	private resetEmbeCol(bakEmbeddedEntries: SiEmbeddedEntry[], bakEntries: SiGenericEntry[]) {
 		this.embeCol.removeEmbes();
 
-		bakEmbes.forEach((embe, i) => {
-			embe.siEmbeddedEntry.entry.resetToPoint(bakEntries[i]);
+		bakEmbeddedEntries.forEach((emeddedEntry, i) => {
+			emeddedEntry.entry.resetToPoint(bakEntries[i]);
 
-			this.embeCol.createEmbe(embe.siEmbeddedEntry);
+			this.embeCol.createEmbe(emeddedEntry);
 		});
+
+		this.embeCol.writeEmbes();
 	}
 
 	apply() {

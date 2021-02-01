@@ -70,6 +70,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	remove(embe: Embe) {
 		if (this.embeCol.embes.length > this.model.getMin()) {
 			this.embeCol.removeEmbe(embe);
+			this.embeCol.writeEmbes();
 			return;
 		}
 
