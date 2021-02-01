@@ -4,7 +4,7 @@ import { EmbeddedEntriesInConfig } from './embedded-entries-config';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
 import { Message } from 'src/app/util/i18n/message';
-import {IllegalSiStateError} from "../../../../../../util/illegal-si-state-error";
+import {IllegalSiStateError} from '../../../../../../util/illegal-si-state-error';
 
 
 export interface EmbeOutSource {
@@ -35,7 +35,7 @@ export class EmbeOutCollection {
 		let embe: Embe;
 		// tslint:disable-next-line: no-conditional-assignment
 		while (undefined !== (embe = this.embes.pop())) {
-      embe.clear();
+				embe.clear();
 		}
 	}
 
@@ -104,7 +104,7 @@ export class EmbeInCollection extends EmbeOutCollection {
 	}
 
 	changeEmbePosition(oldIndex: number, newIndex: number) {
-	  const moveEmbe = this.embes[oldIndex];
+		const moveEmbe = this.embes[oldIndex];
 
 		if (oldIndex < newIndex) {
 			for (let i = oldIndex + 1; i <= newIndex; i++) {
@@ -121,7 +121,7 @@ export class EmbeInCollection extends EmbeOutCollection {
 		this.embes[newIndex] = moveEmbe;
 
 		if ((new Set(this.embes)).size !== this.embes.length) {
-      throw new IllegalSiStateError('embes array not unique: ' + (new Set(this.embes)).size + ' !== ' + this.embes.length);
-    }
+			throw new IllegalSiStateError('embes array not unique: ' + (new Set(this.embes)).size + ' !== ' + this.embes.length);
+		}
 	}
 }
