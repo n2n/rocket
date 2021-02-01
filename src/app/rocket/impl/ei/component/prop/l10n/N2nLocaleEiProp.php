@@ -51,6 +51,7 @@ use rocket\si\content\SiField;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp, IdNameEiProp {
@@ -77,10 +78,9 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->entry()->getValue($this);
-		if ($value === null) return null;
 		
-		$n2nLocale = N2nLocale::create($value);
-		return $this->generateDisplayNameForN2nLocale($n2nLocale, $view->getN2nContext()->getN2nLocale());
+		return $eiu->factory()->newGuiField(SiFields::stringOut($value === null ? '' 
+				: $this->generateDisplayNameForN2nLocale($value, $eiu->getN2nLocale())));
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {

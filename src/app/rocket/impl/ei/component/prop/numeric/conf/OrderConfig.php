@@ -32,6 +32,7 @@ use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+use rocket\ei\util\spec\EiuMask;
 
 class OrderConfig extends PropConfigAdaption {
 
@@ -70,22 +71,8 @@ class OrderConfig extends PropConfigAdaption {
 	}
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		return $magDispatchable;
-		
-		$magCollection = $magDispatchable->getMagCollection();
-		$magCollection->addMag(new EnumMag(self::OPTION_REFERENCE_FIELD_KEY, 
-				'Reference Field', $this->generateReferenceEnumMags()));
-		return $magDispatchable;
-	}
-
-	private function generateReferenceEnumMags() {
-		$referenceFields = array();
-		foreach ($this->eiComponent->getEiType()->getEiPropCollection()->combineAll() as $eiProp) {
-			if (!($eiProp instanceof EntityPropertyConfigurable)) continue;
-			$referenceFields[$eiProp->getId()] = $eiProp->getLabelCode();
-		}
-		return $referenceFields;
+		$magCollection->addMag(self::OPTION_REFERENCE_FIELD_KEY, 
+				new EnumMag('Reference Field', $eiu->engine()->getGenericEiPropertyOptions()));
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {

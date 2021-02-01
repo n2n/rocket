@@ -49,13 +49,14 @@ use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 
 	/**
 	 * @var DateTimeConfig
 	 */
-	private $dataTimeConfig;
+	private $dateTimeConfig;
 	
 	function __construct() {
 		$this->dateTimeConfig = new DateTimeConfig();
@@ -77,8 +78,10 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return $view->getHtmlBuilder()->getL10nDateTime($eiu->field()->getValue(EiPropPath::from($this)), 
-				$this->getDateStyle(), $this->getTimeStyle());
+		$dateTime = $eiu->field()->getValue();
+		
+		return $eiu->factory()->newGuiField(SiFields::stringOut($dateTime === null ? ''
+				: L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->dateTimeConfig->getDateStyle(), $this->dateTimeConfig->getTimeStyle())));
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {

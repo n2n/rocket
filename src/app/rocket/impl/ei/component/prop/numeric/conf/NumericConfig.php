@@ -29,6 +29,8 @@ use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class NumericConfig extends PropConfigAdaption {
 	const ATTR_MIN_VALUE_KEY = 'minValue';
@@ -71,14 +73,14 @@ class NumericConfig extends PropConfigAdaption {
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		if ($this->isGeneratedId()) {
-			$dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-			$dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-			$dataSet->set(self::ATTR_READ_ONLY_KEY, true);
+			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+			$dataSet->set(EditConfig::ATTR_READ_ONLY_KEY, true);
 		}
 		
 		if ($column instanceof IntegerColumn) {
-			$dataSet->set(self::ATTR_MIN_VALUE_KEY, $column->getMinValue());
-			$dataSet->set(self::ATTR_MAX_VALUE_KEY, $column->getMaxValue());
+			$dataSet->set(NumericConfig::ATTR_MIN_VALUE_KEY, $column->getMinValue());
+			$dataSet->set(NumericConfig::ATTR_MAX_VALUE_KEY, $column->getMaxValue());
 		}
 	}
 	
@@ -93,7 +95,7 @@ class NumericConfig extends PropConfigAdaption {
 	}
 	
 	protected function isGeneratedId(): bool {
-		$entityProperty = $this->getAssignedEntityProperty();
+		$entityProperty = $this->getPropertyAssignation()->getEntityProperty(false);
 		if ($entityProperty === null) return false;
 		
 		$idDef = $entityProperty->getEntityModel()->getIdDef();

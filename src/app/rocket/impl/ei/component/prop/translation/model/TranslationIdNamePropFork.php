@@ -67,9 +67,9 @@ class TranslationIdNamePropFork implements IdNamePropFork {
 		$targetEiuEngine = $this->relationModel->getTargetEiuEngine();
 		
 		$r = $targetEiuEngine->mask()->type()->newObject($targetObject)->getEiObject();
-		if (ReflectionUtils::atuschBreak(100)) {
-			throw new e();
-		}
+// 		if (ReflectionUtils::atuschBreak(100)) {
+// 			throw new e();
+// 		}
 		return $r;
 		
 // 		return LiveEiObject::create($this->relationModel->getTargetEiuEngine()->getEiEngine()->getEiMask()->getEiType(), 

@@ -71,9 +71,9 @@ class DateTimeConfig extends PropConfigAdaption {
 		$lar = new LenientAttributeReader($dataSet);
 		
 		$magCollection->addMag(self::ATTR_DATE_STYLE_KEY, new EnumMag('Date Style', $styleOptions, 
-				$lar->getEnum(self::ATTR_DATE_STYLE_KEY, $styles, $this->dateTimeEiProp->getDateStyle()), true));
+				$lar->getEnum(self::ATTR_DATE_STYLE_KEY, $styles, $this->getDateStyle()), true));
 		$magCollection->addMag(self::ATTR_TIME_STYLE_KEY, new EnumMag('Time Style', $styleOptions, 
-				$lar->getEnum(self::ATTR_TIME_STYLE_KEY, $styles, $this->dateTimeEiProp->getTimeStyle()), true));
+				$lar->getEnum(self::ATTR_TIME_STYLE_KEY, $styles, $this->getTimeStyle()), true));
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
