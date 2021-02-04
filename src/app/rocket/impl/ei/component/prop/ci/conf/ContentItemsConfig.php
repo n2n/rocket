@@ -85,7 +85,7 @@ class ContentItemsConfig extends PropConfigAdaption {
 		
 		$magCollection->addMag(self::ATTR_PANELS_KEY, $panelDeclarationMag);
 		
-		$lar = new LenientAttributeReader($this->dataSet);
+		$lar = new LenientAttributeReader($dataSet);
 // 		if ($lar->contains(self::ATTR_PANELS_KEY)) {
 // 			$magValue = $lar->getArray(self::ATTR_PANELS_KEY, array(), TypeConstraint::createArrayLike('array',
 // 					false, TypeConstraint::createSimple('scalar')));
