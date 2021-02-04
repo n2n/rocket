@@ -108,7 +108,7 @@ class AddController extends ControllerAdapter {
 			} else if ($this->beforeEiuObject !== null) {
 				$result = $inputEiu->entry()->insertBefore($this->beforeEiuObject);
 			} else if ($this->afterEiuObject !== null) {
-				$result = $inputEiu->entry()->insertAfter($this->afterEiuObject->getLiveObject());
+				$result = $inputEiu->entry()->insertAfter($this->afterEiuObject);
 			} else {
 				$result = $inputEiu->entry()->save();
 			}
