@@ -1172,6 +1172,10 @@ class EiuFrame {
 		
 		return $this;
 	}
+	
+	function getQuickSearchDefinition() {
+		return $this->eiFrame->getQuickSearchDefinition();
+	}
 }
 
 class EiuCallbackSortAbility implements SortAbility {

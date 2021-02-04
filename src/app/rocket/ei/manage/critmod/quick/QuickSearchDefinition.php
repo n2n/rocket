@@ -25,10 +25,17 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\DefPropPath;
+use rocket\ei\mask\EiMask;
+use n2n\util\thread\RecursionAsserters;
 
 class QuickSearchDefinition {
+	private $eiMask;
 	private $quickSearchProps = [];
 	private $quickSearchPropForks = [];
+	
+	function __construct(EiMask $eiMask) {
+		$this->eiMask = $eiMask;
+	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
@@ -80,6 +87,10 @@ class QuickSearchDefinition {
 	 * @return null|\rocket\ei\manage\critmod\filter\ComparatorConstraintGroup
 	 */
 	public function buildCriteriaConstraint(string $searchStr, array $defPropPaths = null) {
+		if (!RecursionAsserters::unique(self::class)->tryPush((string) $this->eiMask->getEiTypePath())) {
+			return;
+		}
+		
 		$quickSearchProps = null;
 		if ($defPropPaths === null) {
 			$quickSearchProps = $this->quickSearchProps;
@@ -91,6 +102,7 @@ class QuickSearchDefinition {
 		} 
 		
 		if (empty($quickSearchProps)) {
+			RecursionAsserters::unique(self::class)->pop((string) $this->eiMask->getEiTypePath());
 			return null;
 		}
 		
@@ -102,7 +114,6 @@ class QuickSearchDefinition {
 			}
 			
 			$queryComparatorConstraintGroup = new ComparatorConstraintGroup(false);
-			
 			foreach ($quickSearchProps as $quickSearchProp) {
 				if (null !== ($comparatorConstraint = $quickSearchProp->buildComparatorConstraint($searchStrPart))) {
 					$queryComparatorConstraintGroup->addComparatorConstraint($comparatorConstraint);
@@ -113,6 +124,8 @@ class QuickSearchDefinition {
 				$comparatorConstraintGroup->addComparatorConstraint($queryComparatorConstraintGroup);
 			}
 		}
+		
+		RecursionAsserters::unique(self::class)->pop((string) $this->eiMask->getEiTypePath());
 		
 		if ($comparatorConstraintGroup->isEmpty()) {
 			return null;

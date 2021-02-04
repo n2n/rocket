@@ -226,4 +226,11 @@ class EiuType  {
 	function getEntityModel() {
 		return $this->eiType->getEntityModel();
 	}
+	
+	/**
+	 * @return \ReflectionClass
+	 */
+	function getClass() {
+		return $this->eiType->getEntityModel()->getClass();
+	}
 }

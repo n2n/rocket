@@ -34,7 +34,6 @@ use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
-use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\ei\component\prop\FieldEiProp;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
@@ -51,7 +50,8 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 		
 		$this->setup(
 				new DisplayConfig(ViewMode::all()),
-				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, new EditConfig()));
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
+						(new EditConfig())->setMandatoryChoosable(false)->setMandatory(false)));
 	}
 	
 	

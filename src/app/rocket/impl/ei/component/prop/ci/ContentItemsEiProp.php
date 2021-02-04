@@ -53,8 +53,8 @@ class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
 		
 		$this->setup(
 				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
-				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
-						(new EditConfig())->setMandatory(false)));
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED,
+						(new EditConfig())->setMandatoryChoosable(false)->setMandatory(false)));
 		
 		$this->contentItemsConfig = new ContentItemsConfig();
 		

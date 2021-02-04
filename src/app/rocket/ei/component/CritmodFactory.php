@@ -139,7 +139,7 @@ class CritmodFactory {
 	
 	public function createFramedQuickSearchDefinition(EiFrame $eiFrame) {
 		$eiu = new Eiu($eiFrame);
-		$quickSearchDefinition = new QuickSearchDefinition();
+		$quickSearchDefinition = new QuickSearchDefinition($this->eiPropCollection->getEiMask());
 	
 		foreach ($this->eiPropCollection as $id => $eiProp) {
 			if (!($eiProp instanceof QuickSearchableEiProp)) continue;

@@ -159,12 +159,13 @@ class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, Qu
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiu->frame()->getEiFrame());
+		$targetEiuFrame = $eiu->frame()->forkDiscover($this)
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
 		
 		return new TranslationQuickSearchProp(
-				$this->eiPropRelation->getRelationEntityProperty(),
-				$this->eiPropRelation->getTargetEiType()->getEntityModel()->getClass(), 
-				$targetEiFrame->getContextEiEngine()->createFramedQuickSearchDefinition($targetEiFrame));
+				$this->getRelationModel()->getRelationEntityProperty(),
+				$this->getRelationModel()->getTargetEiuEngine()->mask()->type()->getClass(), 
+				$targetEiuFrame->getQuickSearchDefinition());
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {

@@ -203,7 +203,6 @@ class EiuEngine {
 	public function getFilterDefinition() {
 		return $this->getManageState()->getDef()->getFilterDefinition($this->eiEngine->getEiMask());
 	}
-	
 	/**
 	 * @return boolean
 	 */

@@ -34,7 +34,6 @@ class ToOneQuickSearchProp implements QuickSearchProp {
 				->buildCriteriaConstraint($queryStr, $this->targetDefPropPaths);
 		
 		if ($targetComparatorContraint === null) {
-			test($this->targetDefPropPaths);
 			return null;
 		}
 		

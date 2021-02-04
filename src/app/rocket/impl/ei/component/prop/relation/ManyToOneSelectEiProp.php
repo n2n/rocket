@@ -113,8 +113,9 @@ class ManyToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp
 			return null;
 		}
 		
-		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, 
-				$eiu->frame()->forkDiscover($this));
+		$targetEiu = $eiu->frame()->forkDiscover($this);
+		$targetEiu->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, $targetEiu);
 	}
 
 	
