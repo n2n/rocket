@@ -113,6 +113,11 @@ class ToOneEiField extends EiFieldAdapter {
 		}
 		
 		$validationResult->addError(ValidationMessages::mandatory($this->eiu->prop()->getLabel()));
+		
+		if (($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) && $value !== null) {
+			CastUtils::assertTrue($value instanceof EiuEntry);
+			$value->getEiEntry()->validate();
+		}
 	}
 
 	public function isWritable(): bool {

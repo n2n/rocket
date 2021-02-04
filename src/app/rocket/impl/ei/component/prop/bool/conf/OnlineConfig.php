@@ -30,6 +30,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
 class OnlineConfig extends PropConfigAdaption {
 	const COMMON_ONLINE_PROP_NAME = 'online';
@@ -53,9 +54,9 @@ class OnlineConfig extends PropConfigAdaption {
 	}
 	
 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		$dataSet->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-		$dataSet->set(self::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-		$dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
+		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
+		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
+		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {

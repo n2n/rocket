@@ -142,6 +142,10 @@ class ToManyEiField extends EiFieldAdapter {
 			$validationResult->addError(ValidationMessages::maxElements($max, $this->eiu->prop()->getLabel()));
 		}
 		
+		if (!($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated())) {
+			return;
+		}
+		
 		foreach ($value as $targetEiuEntry) {
 			ArgUtils::assertTrue($targetEiuEntry instanceof EiuEntry);
 			$targetEiuEntry->getEiEntry()->validate();
