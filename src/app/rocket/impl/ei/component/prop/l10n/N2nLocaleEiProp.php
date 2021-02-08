@@ -117,7 +117,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return $this->buildIdentityString($eiu);
+			return $this->buildIdentityString($eiu, $eiu->getN2nLocale());
 		})->toIdNameProp();
 	}
 	
