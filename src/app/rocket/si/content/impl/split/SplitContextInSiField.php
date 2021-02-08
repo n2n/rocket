@@ -218,16 +218,21 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$entryInputsData = (new DataSet($data))->reqArray('entryInputs', 'array');
+		$ds = (new DataSet($data));
 		
 		$this->activeKeys = [];
-		
-		foreach ($entryInputsData as $key => $entryInputData) {
+		foreach ($ds->reqArray('activeKeys', 'string') as $key) {
 			if (!isset($this->splitContents[$key])) {
 				throw new CorruptedSiInputDataException('Unknown or unavailable key: ' . $key);
 			}
 			
 			$this->activeKeys[] = $key;
+		}
+		
+		foreach ($ds->reqArray('entryInputs', 'array') as $key => $entryInputData) {
+			if (!in_array($key, $this->activeKeys)) {
+				throw new CorruptedSiInputDataException('Unknown or active key: ' . $key);
+			}
 			
 			$siEntry = $this->splitContents[$key]->getEntry(); 
 			if ($siEntry === null && isset($this->siEntryCallbacks[$key])) {

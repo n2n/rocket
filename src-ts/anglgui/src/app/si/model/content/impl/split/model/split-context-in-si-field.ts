@@ -28,6 +28,7 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 			}
 		}
 		return {
+			activeKeys: this.activeKeys,
 			entryInputs: entryInputObj
 		};
 	}
