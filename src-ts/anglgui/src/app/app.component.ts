@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
 		this.translationService.map = extr.reqStringMap('translationMap');
 		this.menuGroups = new SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));
+		this.appState.pageName = extr.reqString('pageName');
 
 		this.appState.assetsUrl = this.elemRef.nativeElement.getAttribute('data-rocket-assets-url');
 	}
@@ -42,6 +43,10 @@ export class AppComponent implements OnInit {
 
 	get user(): User {
 		return this.appState.user;
+	}
+	
+	get pageName(): string {
+		return this.appState.pageName;
 	}
 
 	get logoSrc(): string {

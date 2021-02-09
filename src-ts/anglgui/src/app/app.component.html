@@ -4,14 +4,14 @@
 			<img [src]="logoSrc" />
 		</a>
 	</div>
-	<h2 id="rocket-customer-name">[Page Name]</h2>
+	<h2 id="rocket-customer-name">{{ pageName }}</h2>
 	<nav id="rocket-conf-nav" class="navbar-expand-lg" data-jhtml-comp="rocket-conf-nav">
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
 				data-target="#rocket-conf-nav" aria-controls="navbarText" aria-expanded="false"
 				aria-label="Toggle navigation">
 			<i class="fas fa-navicon"></i>
 		</button>
-		<h2 class="sr-only">{{ 'conf_nav_title' }}</h2>
+		<h2 class="sr-only">{{ 'conf_nav_title' | translate }}</h2>
 		<ul class="nav rocket-meta-nav justify-content-end">
 			<ng-container *ngIf="user.isAdmin()">
 				<li class="nav-item">
@@ -32,7 +32,7 @@
 			</ng-container>
 			<li class="nav-item">
 				<a routerLink="/users/profile" class="nav-link rocket-conf-user">
-					<i class="fas fa-user mr-2"></i><span>[User Name]</span>
+					<i class="fas fa-user mr-2"></i><span>{{ user.fullname }}</span>
 				</a>
 			</li>
 			<li class="nav-item">
@@ -50,7 +50,7 @@
 </header>
 
 <nav id="rocket-global-nav">
-	<h2 class="sr-only">manage_nav_title</h2>
+	<h2 class="sr-only">{{ 'manage_nav_title' | translate }}</h2>
 	<ng-container *ngFor="let menuGroup of menuGroups">
 		<div class="rocket-nav-group">
 			<h3 class="rocket-global-nav-group-title">

@@ -32,23 +32,28 @@ use rocket\user\model\LoginContext;
 use n2n\web\http\controller\ControllerContext;
 use rocket\si\control\SiNavPoint;
 use n2n\util\uri\Path;
+use n2n\core\N2N;
+use n2n\core\config\AppConfig;
 
 class AnglTemplateModel implements Lookupable {
 	private $n2nContext;
 	private $rocket;
 	private $loginContext;
+	private $appConfig;
 	
-	private function _init(N2nContext $n2nContext, Rocket $rocket, LoginContext $loginContext) {
+	private function _init(N2nContext $n2nContext, Rocket $rocket, LoginContext $loginContext, AppConfig $appConfig) {
 		$this->n2nContext = $n2nContext;
 		$this->rocket = $rocket;
 		$this->loginContext = $loginContext;
+		$this->appConfig = $appConfig;
 	}
 	
 	function createData(ControllerContext $controllerContext) {
 		return [
 			'translationMap' => $this->createTranslationMap(),	
 			'menuGroups' => $this->createSiMenuGroup($controllerContext),
-			'user' => $this->loginContext->getCurrentUser()
+			'user' => $this->loginContext->getCurrentUser(),
+			'pageName' => $this->appConfig->general()->getPageName()
 		];
 	}
 	
@@ -66,7 +71,10 @@ class AnglTemplateModel implements Lookupable {
 			'show_errors_txt' => $dtc->t('show_errors_txt'),
 			'activate_txt' => $dtc->t('activate_txt'),
 			'close_layer_text' => $dtc->t('close_layer_text'),
-			'search_placeholder_txt' => $dtc->t('search_placeholder_txt'),
+			'manage_nav_title' => $dtc->t('manage_nav_title'),
+			'conf_nav_title' => $dtc->t('conf_nav_title'),
+			'reset_txt' => $dtc->t('reset_txt'),
+			'quick_search_placeholder' => $dtc->t('quick_search_placeholder'),
 			'common_list_tools_label' => $dtc->t('common_list_tools_label'),
 			'common_select_label' => $dtc->t('common_select_label'),
 			'common_apply_label' => $dtc->t('common_apply_label'),
