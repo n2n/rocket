@@ -9,7 +9,7 @@
 				<th *ngFor="let siProp of getSiProps()">
 					{{ siProp.label }}
 				</th>
-				<th [class.text-right]="sortable" class="rocket-table-commands">
+				<th [class.text-right]="sortable" class="rocket-table-commands" >
 					<div *ngIf="sortable" class="rocket-simple-commands">
 						<button class="btn btn-link" (click)="switchToEntryControlMode()" [class.active]="isEntryControModeEnabled()"><i class="fa fa-wrench"></i></button>
 
@@ -33,7 +33,7 @@
 									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
 						</ng-container>
 					</td>
-					<td *ngIf="sortable" class="rocket-entry-selector">
+					<td class="rocket-entry-selector" [class.d-none]="!sortable">
 						<div cdkDragHandle class="rocket-handle">
 							<i class="fa fa-bars"></i>
 						</div>
