@@ -81,7 +81,7 @@ class DisplayConfig extends PropConfigAdaption {
 	 * @return boolean
 	 */
 	public function isBulkyViewCompatible(): bool {
-		return (boolean) (self::BULKY_VIEW_MODES & $this->compatibleViewModes);
+		return (boolean) (ViewMode::bulky() & $this->compatibleViewModes);
 	}
 	
 	/**

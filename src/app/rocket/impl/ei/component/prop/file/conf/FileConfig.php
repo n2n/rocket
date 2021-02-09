@@ -162,7 +162,7 @@ class FileConfig extends PropConfigAdaption {
 	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 		if (false !== stripos($this->requirePropertyName(), 'image')) {
 			$dataSet->set(self::ATTR_ALLOWED_MIME_TYPES_KEY, ImageSourceFactory::getSupportedMimeTypes());
-			$dataSet->set(self::ATTR_DIMENSION_IMPORT_MODE_KEY, FileEiProp::DIM_IMPORT_MODE_ALL);
+			$dataSet->set(self::ATTR_DIMENSION_IMPORT_MODE_KEY, ThumbResolver::DIM_IMPORT_MODE_ALL);
 		}
 	}
 	

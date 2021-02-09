@@ -50,7 +50,8 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 		parent::__construct();
 		
 		$this->setup(
-				(new DisplayConfig(ViewMode::bulky()))->setSiStructureType(SiStructureType::SIMPLE_GROUP),
+				(new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
+						->setDefaultDisplayedViewModes(ViewMode::bulky()),
 				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditConfig()));
 	}
 
@@ -105,6 +106,12 @@ class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiPro
 	 */
 	private function createCompactGuiField(Eiu $eiu) {
 		$eiuEntry = $eiu->field()->getValue();
+		
+		if ($eiuEntry === null) {
+			return $eiu->factory()->newGuiField(SiFields::crumbOut(SiCrumb::createLabel('0')
+					->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT)))->toGuiField();
+		}
+		
 		CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 		
 		return $eiu->factory()->newGuiField(SiFields::crumbOut(
