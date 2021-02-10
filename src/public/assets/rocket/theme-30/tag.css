@@ -134,7 +134,7 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  font: normal normal normal 14px/1 "FontAwesome";
+  font: normal normal normal 14px/1 "Font Awesome 5 Free";
 }
 
 .tag-editor .tag-editor-delete i:before {

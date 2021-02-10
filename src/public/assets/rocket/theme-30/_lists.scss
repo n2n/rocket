@@ -219,6 +219,15 @@ td > .rocket-split {
         grid-column-end: 2;
     }
 
+    .rocket-ui-string-out-field {
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        display: -webkit-box;
+        text-overflow: ellipsis;
+        max-width: 100px;
+        -moz-box-orient: vertical;
+    }
+
     // > .rocket-structure-content:not(:empty) {
     //     padding: 0 .5em 0 0;
     // }
