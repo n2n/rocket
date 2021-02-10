@@ -6133,6 +6133,14 @@ td > *:last-child {
   margin-bottom: 0;
 }
 
+td .rocket-ui-string-out-field {
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
 td > .rocket-split {
   display: inline-block;
 }
@@ -6166,6 +6174,14 @@ td > .rocket-split {
   -ms-grid-column: 1;
       grid-column-start: 1;
   grid-column-end: 2;
+}
+
+td .rocket-ui-string-out-field {
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  max-width: 100px;
 }
 
 .rocket-crumb-group {
