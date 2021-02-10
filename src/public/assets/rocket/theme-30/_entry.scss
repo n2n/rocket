@@ -363,18 +363,34 @@
 }
 
 
-
-rocket-qualifier-tiling {
+.rocket-multi-type-menu .rocket-qualifiers,
+.rocket-multi-type-menu-simple .rocket-qualifiers {
     display: grid;
     grid-template-columns: 1fr;
+}
 
-    rocket-choose-paste.rocket-multi-type-menu-simple > & {
-        grid-gap: 1px;
+.rocket-multi-type-menu-simple .rocket-qualifiers {
+    grid-gap: 1px;
+}
+
+.rocket-multi-type-menu .rocket-qualifiers {
+    grid-template-columns: repeat( auto-fit, minmax(25%, 1fr) );
+    grid-gap: 5px;
+}
+
+
+.rocket-multi-type-menu {
+    .rocket-qualifier-btn:hover,
+    .rocket-qualifier-btn:focus {
+        border: 1px solid $gray-400;
+        background: $gray-300;
     }
+}
 
-    rocket-choose-paste.rocket-multi-type-menu > & {
-        grid-template-columns: repeat( auto-fit, minmax(25%, 1fr) );
-        grid-gap: 5px;
+.rocket-multi-type-menu-simple {
+    .rocket-qualifier-btn:hover,
+    .rocket-qualifier-btn:focus {
+        background: $gray-300;
     }
 }
 
@@ -383,41 +399,34 @@ rocket-qualifier-tiling {
     width: 100%;
     text-align: left;
 
-    &:hover,
-    &:focus {
-        background: $gray-200;
-    }
-
-    rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling & {
+    .rocket-multi-type-menu > .rocket-qualifier-tiling & {
         text-align: center;
     }
 }
 
-.rocket-si-qualifier-item {
-    rocket-choose-paste.rocket-multi-type-menu > .rocket-qualifier-tiling & {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        padding: 10px 5px;
+.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-si-qualifier-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 5px;
 
-        > i[class*="fa-"]{
-            margin-bottom: 0.5rem;
-        }
+    > i[class*="fa-"]{
+        margin-bottom: 0.5rem;
     }
+}
 
-    rocket-choose-paste.rocket-multi-type-menu-simple > .rocket-qualifier-tiling & {
-        align-items: baseline;
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: 1.2em 1fr;
-        > i {
-            grid-column: 1/1;
-            text-align: center;
-            padding: 0;
-        }
-        >span {
-            grid-column: 2/2;
-        }
+.rocket-multi-type-menu-simple > .rocket-qualifier-tiling .rocket-si-qualifier-item {
+    align-items: baseline;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1.2em 1fr;
+    > i {
+        grid-column: 1/1;
+        text-align: center;
+        padding: 0;
+    }
+    >span {
+        grid-column: 2/2;
     }
 }
 
@@ -439,7 +448,7 @@ rocket-qualifier-tiling {
     }
 }
 
-rocket-choose-paste.rocket-multi-type-menu-simple {
+.rocket-multi-type-menu-simple {
     display: block;
     position: absolute;
     left: 50%;

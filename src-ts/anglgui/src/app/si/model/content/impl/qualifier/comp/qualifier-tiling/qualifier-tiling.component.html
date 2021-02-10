@@ -2,26 +2,28 @@
 	<i class="fa fa-search align-self-baseline"></i><input type="search" class="form-control" placeholder="{{ 'search_placeholder_txt' | translate }}"/>
 </div>
 
-<div *ngFor="let siMaskQualifier of siMaskQualifiers">
-	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled" class="btn rocket-qualifier-btn">
-		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
-	</button>
-</div>
-
-<div *ngFor="let siMaskQualifier of illegalSiMaskQualifiers">
-	<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="true" class="rocket-illegal" class="btn rocket-qualifier-btn">
-		<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
-	</button>
-</div>
-
-<div *ngFor="let siEntryQualifier of siEntryQualifiers">
-	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled" class="btn rocket-qualifier-item">
-		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
-	</button>
-</div>
-
-<div *ngFor="let siEntryQualifier of illegalSiEntryQualifiers">
-	<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="true" class="rocket-illegal" class="btn rocket-qualifier-btn">
-		<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
-	</button>
+<div class="rocket-qualifiers">
+	<div *ngFor="let siMaskQualifier of siMaskQualifiers">
+		<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled" class="btn rocket-qualifier-btn">
+			<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
+		</button>
+	</div>
+	
+	<div *ngFor="let siMaskQualifier of illegalSiMaskQualifiers">
+		<button type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="true" class="rocket-illegal" class="btn rocket-qualifier-btn">
+			<rocket-si-qualifier [siMaskQualifier]="siMaskQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
+		</button>
+	</div>
+	
+	<div *ngFor="let siEntryQualifier of siEntryQualifiers">
+		<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled" class="btn rocket-qualifier-item">
+			<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
+		</button>
+	</div>
+	
+	<div *ngFor="let siEntryQualifier of illegalSiEntryQualifiers">
+		<button type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="true" class="rocket-illegal" class="btn rocket-qualifier-btn">
+			<rocket-si-qualifier [siEntryQualifier]="siEntryQualifier" class="rocket-si-qualifier-item" [iconImportant]="!simple"></rocket-si-qualifier>
+		</button>
+	</div>
 </div>
