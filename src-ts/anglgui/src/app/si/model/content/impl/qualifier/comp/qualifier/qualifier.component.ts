@@ -3,7 +3,7 @@ import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiEntryQualifier } from '../../../../si-entry-qualifier';
 
 @Component({
-	selector: 'rocket-si-qualifier',
+	selector: '[rocketSiQualifier]',
 	templateUrl: './qualifier.component.html',
 	styleUrls: ['./qualifier.component.css']
 })

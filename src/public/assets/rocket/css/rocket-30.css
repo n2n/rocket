@@ -6641,8 +6641,7 @@ td .rocket-ui-string-out-field {
   padding-bottom: 1.2rem;
 }
 
-.rocket-summary rocket-si-qualifier,
-.rocket-summary .rocket-si-qualifier,
+.rocket-summary .rocket-qualifier-btn,
 .rocket-summary .rocket-impl-content-type {
   min-width: 10rem;
   padding: 1rem 0 1rem 0.5rem;
@@ -6732,8 +6731,7 @@ td .rocket-ui-string-out-field {
   border-color: #edecea;
 }
 
-.rocket-summary-ghost rocket-si-qualifier,
-.rocket-summary-ghost .rocket-si-qualifier {
+.rocket-summary-ghost > .rocket-qualifier-btn {
   border-right: none;
 }
 
@@ -6893,6 +6891,12 @@ td .rocket-ui-string-out-field {
   grid-gap: 5px;
 }
 
+.rocket-qualifier-btn {
+  background: white;
+  width: 100%;
+  text-align: left;
+}
+
 .rocket-multi-type-menu .rocket-qualifier-btn:hover,
 .rocket-multi-type-menu .rocket-qualifier-btn:focus {
   border: 1px solid #DAD7D3;
@@ -6904,17 +6908,7 @@ td .rocket-ui-string-out-field {
   background: #ECEBE9;
 }
 
-.rocket-qualifier-btn {
-  background: white;
-  width: 100%;
-  text-align: left;
-}
-
 .rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-qualifier-btn {
-  text-align: center;
-}
-
-.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-si-qualifier-item {
   text-align: center;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -6924,13 +6918,18 @@ td .rocket-ui-string-out-field {
       -ms-flex-direction: column;
           flex-direction: column;
   padding: 10px 5px;
+  text-align: center;
 }
 
-.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-si-qualifier-item > i[class*="fa-"] {
-  margin-bottom: 0.5rem;
+.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-qualifier-icon {
+  margin: 0.62rem 0 0.62rem 0;
 }
 
-.rocket-multi-type-menu-simple > .rocket-qualifier-tiling .rocket-si-qualifier-item {
+.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-qualifier-label {
+  margin-top: 0.5rem;
+}
+
+.rocket-multi-type-menu-simple .rocket-qualifier-tiling .rocket-qualifier-btn {
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
@@ -6941,16 +6940,16 @@ td .rocket-ui-string-out-field {
       grid-template-columns: 1.2em 1fr;
 }
 
-.rocket-multi-type-menu-simple > .rocket-qualifier-tiling .rocket-si-qualifier-item > i {
+.rocket-multi-type-menu-simple .rocket-qualifier-tiling .rocket-qualifier-label {
+  -ms-grid-column: 2;
+  grid-column: 2/2;
+}
+
+.rocket-multi-type-menu-simple .rocket-qualifier-tiling .rocket-qualifier-icon {
   -ms-grid-column: 1;
   grid-column: 1/1;
   text-align: center;
   padding: 0;
-}
-
-.rocket-multi-type-menu-simple > .rocket-qualifier-tiling .rocket-si-qualifier-item > span {
-  -ms-grid-column: 2;
-  grid-column: 2/2;
 }
 
 .qualifier-search {

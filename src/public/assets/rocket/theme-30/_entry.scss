@@ -177,8 +177,7 @@
 
         }
         
-        rocket-si-qualifier,
-        .rocket-si-qualifier,
+        .rocket-qualifier-btn,
         .rocket-impl-content-type {
             min-width: 10rem;
             padding: 1rem 0 1rem 0.5rem;
@@ -254,8 +253,7 @@
         .rocket-impl-content-type {
             border-color: lighten($gray-300, 0.5);
         }
-        rocket-si-qualifier, 
-        .rocket-si-qualifier {
+        > .rocket-qualifier-btn {
             border-right: none;
         }
     }
@@ -378,6 +376,11 @@
     grid-gap: 5px;
 }
 
+.rocket-qualifier-btn {
+    background: white;
+    width: 100%;
+    text-align: left;
+}
 
 .rocket-multi-type-menu {
     .rocket-qualifier-btn:hover,
@@ -394,39 +397,37 @@
     }
 }
 
-.rocket-qualifier-btn {
-    background: white;
-    width: 100%;
-    text-align: left;
-
-    .rocket-multi-type-menu > .rocket-qualifier-tiling & {
+.rocket-multi-type-menu > .rocket-qualifier-tiling {
+    .rocket-qualifier-btn {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        padding: 10px 5px;
         text-align: center;
     }
-}
+    .rocket-qualifier-icon {
+        margin: 0.62rem 0 0.62rem 0;
+    }
 
-.rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-si-qualifier-item {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    padding: 10px 5px;
-
-    > i[class*="fa-"]{
-        margin-bottom: 0.5rem;
+    .rocket-qualifier-label {
+        margin-top: 0.5rem;
     }
 }
 
-.rocket-multi-type-menu-simple > .rocket-qualifier-tiling .rocket-si-qualifier-item {
-    align-items: baseline;
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: 1.2em 1fr;
-    > i {
+.rocket-multi-type-menu-simple .rocket-qualifier-tiling {
+    .rocket-qualifier-btn {
+        align-items: baseline;
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: 1.2em 1fr;
+    }
+    .rocket-qualifier-label {
+        grid-column: 2/2;
+    }
+    .rocket-qualifier-icon {
         grid-column: 1/1;
         text-align: center;
         padding: 0;
-    }
-    >span {
-        grid-column: 2/2;
     }
 }
 
