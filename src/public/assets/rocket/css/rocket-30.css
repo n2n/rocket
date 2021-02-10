@@ -6134,11 +6134,13 @@ td > *:last-child {
 }
 
 td .rocket-ui-string-out-field {
-  -webkit-line-clamp: 1;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
   overflow: hidden;
-  display: -webkit-box;
   text-overflow: ellipsis;
-  max-width: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
 }
 
 td > .rocket-split {
@@ -6177,11 +6179,10 @@ td > .rocket-split {
 }
 
 td .rocket-ui-string-out-field {
-  -webkit-line-clamp: 1;
   overflow: hidden;
-  display: -webkit-box;
   text-overflow: ellipsis;
-  max-width: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
 }
 
 .rocket-crumb-group {
