@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription, fromEvent, merge } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 @Component({
 	selector: 'rocket-ui-select',
@@ -30,7 +31,7 @@ export class SelectComponent implements OnInit {
 	@Input()
 	resetLabel: string|null = null;
 
-	constructor() { }
+	constructor(private elemRef: ElementRef) { }
 
 	ngOnInit(): void {
 	}
@@ -62,6 +63,10 @@ export class SelectComponent implements OnInit {
 		return null;
 	}
 
+	get empty(): boolean {
+		return !this.findSelectedOption();
+	}
+
 	private findSelectedOption(): Option|null {
 		return this.options.find(option => option.value === this.value) || null;
 	}
@@ -76,18 +81,26 @@ export class SelectComponent implements OnInit {
 			return;
 		}
 
-		const thisUp$ = fromEvent<MouseEvent>(this.dropdownElemRef.nativeElement, 'mousedown');
-		const up$ = fromEvent<MouseEvent>(document, 'mouseup').pipe(takeUntil(thisUp$));
+		if (this.popupSubscription) {
+			throw new IllegalStateError('');
+		}
+
+		const up$ = fromEvent<MouseEvent>(document, 'click').pipe(filter(e => !this.elemRef.nativeElement.contains(e.target)));
 		const esc$ = fromEvent<KeyboardEvent>(document, 'keyup')
 				.pipe(filter((event: KeyboardEvent) => event.key === 'Escape'));
-		this.popupSubscription = merge(up$, esc$).subscribe((_mouseEvent: MouseEvent) => {
+		this.popupSubscription = merge(up$, esc$).subscribe(() => {
 			this.closePopup();
 		});
 	}
 
 	private closePopup() {
+		if (!this.popupSubscription) {
+			return;
+		}
+
 		this.popupSubscription.unsubscribe();
 		this.popupSubscription = null;
+		console.log('unsub');
 	}
 
 	get value(): string|null {
