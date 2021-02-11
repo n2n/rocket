@@ -155,6 +155,11 @@
             border-right: 1px solid $gray-500;
             width: 3.5rem;
 
+            &.invisible {
+                width: 0;
+                padding: 0;
+            }
+
             &.rocket-not-sortable {
                 width: 0;
                 border: 0;
@@ -180,7 +185,7 @@
         .rocket-qualifier-btn,
         .rocket-impl-content-type {
             min-width: 10rem;
-            padding: 1rem 0 1rem 0.5rem;
+            padding: 1rem 1px 1rem 0.5rem;
             border-right: 1px solid $gray-500;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -288,8 +293,11 @@
     }
 }
 
-.rocket-draggable {
+.rocket-draggable:not(tr) {
     position: relative;
+}
+
+.rocket-draggable {
     // z-index: 0;
     > rocket-si-add-past {
         > .rocket-add-paste {

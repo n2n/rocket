@@ -12,7 +12,7 @@
 					(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>
 
 		<div *ngIf="embe.isPlaceholder()">
-			<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+			<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 				<i class="fa fa-bars"></i>
 			</div>
 
@@ -28,7 +28,7 @@
 		
 		<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
 			<div class="rocket-summary rocket-summary-ghost">
-				<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+				<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 					<i class="fa fa-bars"></i>
 				</div>
 
@@ -49,7 +49,7 @@
 			<div rocketUiStructure class="rocket-summary" 
 						[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false">
 				<ng-container pre-content>
-					<div [class.d-none]="!model.isSortable()" cdkDragHandle class="rocket-handle">
+					<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 						<i class="fa fa-bars"></i>
 					</div>
 					<div class="rocket-qualifier-btn" rocketSiQualifier [siMaskQualifier]="embe.siEntry.qualifier.maskQualifier" [iconImportant]="true"></div>

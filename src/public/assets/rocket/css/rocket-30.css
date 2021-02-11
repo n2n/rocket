@@ -6024,22 +6024,34 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   cursor: move;
 }
 
-.rocket-locked {
+.rocket-locked,
+table tr.rocket-locked:hover {
   background: #EAF6FF;
 }
 
+.rocket-outdated,
+table tr.rocket-outdated:hover {
+  background: #F7F5F5;
+}
+
+.rocket-outdated > *,
+table tr.rocket-outdated:hover > * {
+  opacity: 0.4;
+}
+
 .rocket-removed,
-.rocket-outdated {
+table tr.rocket-removed:hover {
   background: #F7F5F5;
 }
 
 .rocket-removed > *,
-.rocket-outdated > * {
-  opacity: 0.4;
+table tr.rocket-removed:hover > * {
+  opacity: 0.2;
 }
 
-.rocket-reloading {
-  background: repeating-linear-gradient(75deg, #DEEDF9, #DEEDF9 20px, #EAF6FF 20px, #EAF6FF 35px);
+.rocket-reloading,
+table tr.rocket-reloading:hover {
+  background: repeating-linear-gradient(75deg, #DEEDF9, #DEEDF9 19px, #EAF6FF 19px, #EAF6FF 35px);
   background-size: 200% 200%;
   -webkit-animation: reload 40s linear infinite;
           animation: reload 40s linear infinite;
@@ -6060,6 +6072,13 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 /*
  * Table
  */
+.rocket-table td.invisible,
+.rocket-table th.invisible {
+  width: 0;
+  padding: 0;
+  font-size: 0;
+}
+
 .rocket-table > thead th {
   color: #fff;
   background-color: #4F4A46;
@@ -6073,16 +6092,16 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
   padding: 0;
 }
 
-.rocket-table > tbody tr.cdk-drag-placeholder > td:first-child.d-none + td,
+.rocket-table > tbody tr.cdk-drag-placeholder > td:first-child.invisible + td,
 .rocket-table > tbody tr.cdk-drag-placeholder > td:first-child,
-.rocket-table > tbody:not(.cdk-drop-list-dragging) tr:hover > td:first-child.d-none + td,
+.rocket-table > tbody:not(.cdk-drop-list-dragging) tr:hover > td:first-child.invisible + td,
 .rocket-table > tbody:not(.cdk-drop-list-dragging) tr:hover > td:first-child {
   position: relative;
 }
 
-.rocket-table > tbody tr.cdk-drag-placeholder > td:first-child.d-none + td:before,
+.rocket-table > tbody tr.cdk-drag-placeholder > td:first-child.invisible + td:before,
 .rocket-table > tbody tr.cdk-drag-placeholder > td:first-child:before,
-.rocket-table > tbody:not(.cdk-drop-list-dragging) tr:hover > td:first-child.d-none + td:before,
+.rocket-table > tbody:not(.cdk-drop-list-dragging) tr:hover > td:first-child.invisible + td:before,
 .rocket-table > tbody:not(.cdk-drop-list-dragging) tr:hover > td:first-child:before {
   content: "";
   position: absolute;
@@ -6621,6 +6640,11 @@ td .rocket-ui-string-out-field {
   width: 3.5rem;
 }
 
+.rocket-summary > .rocket-handle.invisible {
+  width: 0;
+  padding: 0;
+}
+
 .rocket-summary > .rocket-handle.rocket-not-sortable {
   width: 0;
   border: 0;
@@ -6644,7 +6668,7 @@ td .rocket-ui-string-out-field {
 .rocket-summary .rocket-qualifier-btn,
 .rocket-summary .rocket-impl-content-type {
   min-width: 10rem;
-  padding: 1rem 0 1rem 0.5rem;
+  padding: 1rem 1px 1rem 0.5rem;
   border-right: 1px solid #C2BDB6;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -6746,7 +6770,7 @@ td .rocket-ui-string-out-field {
   position: relative;
 }
 
-.rocket-draggable {
+.rocket-draggable:not(tr) {
   position: relative;
 }
 
@@ -8541,19 +8565,6 @@ h1, .h1 {
 
 .form-check-input {
   top: 0.5rem;
-}
-
-.table-hover tbody tr:hover {
-  background: inherit;
-}
-
-.table-hover tbody:not(.cdk-drop-list-dragging) tr:hover {
-  background-color: #ECEBE9;
-}
-
-.table-hover tbody:not(.cdk-drop-list-dragging) tr:hover > td,
-.table-hover tbody:not(.cdk-drop-list-dragging) tr:hover > th {
-  background-color: #ECEBE9;
 }
 
 @supports (-moz-osx-font-smoothing: auto) {

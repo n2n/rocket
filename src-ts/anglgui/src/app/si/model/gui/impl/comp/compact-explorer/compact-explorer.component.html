@@ -5,7 +5,7 @@
 		<thead>
 			<tr>
 				<th *ngIf="selectable" class="rocket-entry-selector"></th>
-				<th [class.d-none]="!sortable"></th>
+				<th [class.invisible]="!sortable"></th>
 				<th *ngFor="let siProp of getSiProps()">
 					{{ siProp.label }}
 				</th>
@@ -33,7 +33,7 @@
 									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
 						</ng-container>
 					</td>
-					<td class="rocket-entry-selector" [class.d-none]="!sortable">
+					<td class="rocket-entry-selector" [class.invisible]="!sortable">
 						<div cdkDragHandle class="rocket-handle">
 							<i class="fa fa-bars"></i>
 						</div>

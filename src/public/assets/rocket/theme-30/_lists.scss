@@ -70,20 +70,30 @@
     cursor: move;
 }
 
-.rocket-locked {
+.rocket-locked,
+table tr.rocket-locked:hover {
     background: $aczent-2;
 }
 
-.rocket-removed,
-.rocket-outdated {
+.rocket-outdated,
+table tr.rocket-outdated:hover {
     background: $gray-200;
     & > * {
         opacity: 0.4;
     }
 }
 
-.rocket-reloading {
-    background: repeating-linear-gradient( 75deg, #{$aczent-2-d-100}, #{$aczent-2-d-100} 20px, #{$aczent-2} 20px, #{$aczent-2} 35px);
+.rocket-removed,
+table tr.rocket-removed:hover {
+    background: $gray-200;
+    & > * {
+        opacity: 0.2;
+    }
+}
+
+.rocket-reloading,
+table tr.rocket-reloading:hover {
+    background: repeating-linear-gradient( 75deg, #{$aczent-2-d-100}, #{$aczent-2-d-100} 19px, #{$aczent-2} 19px, #{$aczent-2} 35px);
     background-size: 200% 200%;
     animation: reload 40s linear infinite;
 }
@@ -99,9 +109,15 @@
  */
 
 
-
-
 .rocket-table {
+    
+    td.invisible,
+    th.invisible {
+        width: 0;
+        padding: 0;
+        font-size: 0;
+    }
+
     > thead {
         // position: sticky;
         // top: 80px;
@@ -109,6 +125,7 @@
             color: $white;
             background-color: $gray-800;
         }
+
         .rocket-general-entry-selector {
             padding: 0 0.5rem;
             &:empty {
@@ -120,7 +137,7 @@
     > tbody {
         tr.cdk-drag-placeholder,
         &:not(.cdk-drop-list-dragging) tr:hover {
-            > td:first-child.d-none + td,
+            > td:first-child.invisible + td,
             > td:first-child {
                 position: relative;
                 &:before {
