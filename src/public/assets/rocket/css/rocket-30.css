@@ -6658,7 +6658,7 @@ td .rocket-ui-string-out-field {
   border-right: none;
 }
 
-.rocket-summary rocket-compact-entry,
+.rocket-summary .rocket-compact-entry,
 .rocket-summary .rocket-impl-content {
   position: relative;
   z-index: 0;
@@ -6672,7 +6672,7 @@ td .rocket-ui-string-out-field {
   overflow: hidden;
 }
 
-.rocket-summary rocket-compact-entry:before,
+.rocket-summary .rocket-compact-entry:before,
 .rocket-summary .rocket-impl-content:before {
   content: "";
   z-index: 1;
@@ -6685,26 +6685,26 @@ td .rocket-ui-string-out-field {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%);
 }
 
-.rocket-summary rocket-compact-entry > * > *,
-.rocket-summary .rocket-impl-content > * > * {
+.rocket-summary .rocket-compact-entry > *,
+.rocket-summary .rocket-impl-content > * {
   white-space: nowrap;
   -ms-flex-negative: 0;
       flex-shrink: 0;
   margin-bottom: 0;
 }
 
-.rocket-summary rocket-compact-entry > * > * > *:last-child,
-.rocket-summary .rocket-impl-content > * > * > *:last-child {
+.rocket-summary .rocket-compact-entry > * > *:last-child,
+.rocket-summary .rocket-impl-content > * > *:last-child {
   margin-bottom: 0;
 }
 
-.rocket-summary rocket-compact-entry > * > *:not(:last-child):not(:empty),
-.rocket-summary .rocket-impl-content > * > *:not(:last-child):not(:empty) {
+.rocket-summary .rocket-compact-entry > *:not(:last-child):not(:empty),
+.rocket-summary .rocket-impl-content > *:not(:last-child):not(:empty) {
   margin-right: 1.5rem;
 }
 
-.rocket-summary rocket-compact-entry > * > *.rocket-gui-field-fileImage,
-.rocket-summary .rocket-impl-content > * > *.rocket-gui-field-fileImage {
+.rocket-summary .rocket-compact-entry > .rocket-gui-field-fileImage,
+.rocket-summary .rocket-impl-content > .rocket-gui-field-fileImage {
   margin-top: -0.35rem;
   margin-bottom: -0.41rem;
 }
@@ -6741,6 +6741,7 @@ td .rocket-ui-string-out-field {
 
 .rocket-add-paste .btn-icon {
   float: right;
+  margin-right: 0.75rem;
   top: 4px;
   position: relative;
 }
@@ -6794,6 +6795,7 @@ td .rocket-ui-string-out-field {
   top: auto;
   left: auto;
   font-size: 10px;
+  margin: 0;
 }
 
 .rocket-draggable .rocket-add-paste.popup-open,
@@ -6879,16 +6881,14 @@ td .rocket-ui-string-out-field {
   display: grid;
   -ms-grid-columns: 1fr;
       grid-template-columns: 1fr;
-}
-
-.rocket-multi-type-menu-simple .rocket-qualifiers {
   grid-gap: 1px;
 }
 
 .rocket-multi-type-menu .rocket-qualifiers {
-  -ms-grid-columns: (minmax(25%, 1fr))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
-  grid-gap: 5px;
+  border: 3px solid #C2BDB6;
+  -ms-grid-columns: (minmax(16.666%, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(16.666%, 1fr));
+  background: #fff;
 }
 
 .rocket-qualifier-btn {
@@ -6897,15 +6897,19 @@ td .rocket-ui-string-out-field {
   text-align: left;
 }
 
+.rocket-multi-type-menu .rocket-qualifier-btn {
+  -webkit-box-shadow: 0 0 0 1px #C2BDB6;
+          box-shadow: 0 0 0 1px #C2BDB6;
+}
+
 .rocket-multi-type-menu .rocket-qualifier-btn:hover,
 .rocket-multi-type-menu .rocket-qualifier-btn:focus {
-  border: 1px solid #DAD7D3;
-  background: #ECEBE9;
+  background: #F7F5F5;
 }
 
 .rocket-multi-type-menu-simple .rocket-qualifier-btn:hover,
 .rocket-multi-type-menu-simple .rocket-qualifier-btn:focus {
-  background: #ECEBE9;
+  background: #F7F5F5;
 }
 
 .rocket-multi-type-menu > .rocket-qualifier-tiling .rocket-qualifier-btn {
@@ -7579,12 +7583,6 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   padding-right: 0rem;
 }
 
-.rocket-simple-commands > .btn > i,
-.rocket-simple-commands > .rocket-button-control > .btn > i,
-.rocket-simple-commands > .rocket-button-control > .dropdown > .btn > i {
-  font-size: 1.25rem;
-}
-
 /*
  * Zone Commands (the ones on the bottom of the page)
  */
@@ -7668,7 +7666,6 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important > i[class*="fa-"] {
   color: white;
   position: relative;
-  font-size: 1rem;
   z-index: 0;
   margin-left: 1.625em;
 }

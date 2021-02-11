@@ -3,27 +3,27 @@
 </div>
 
 <div class="rocket-qualifiers">
-	<div *ngFor="let siMaskQualifier of siMaskQualifiers">
+	<ng-container *ngFor="let siMaskQualifier of siMaskQualifiers">
 		<button rocketSiQualifier type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="disabled" class="btn rocket-qualifier-btn"
 				[siMaskQualifier]="siMaskQualifier" [iconImportant]="!simple">
 		</button>
-	</div>
+	</ng-container>
 	
-	<div *ngFor="let siMaskQualifier of illegalSiMaskQualifiers">
+	<ng-container *ngFor="let siMaskQualifier of illegalSiMaskQualifiers">
 		<button rocketSiQualifier type="button" (click)="chooseSiType(siMaskQualifier)" [disabled]="true" class="btn rocket-qualifier-btn rocket-illegal"
 				[siMaskQualifier]="siMaskQualifier" [iconImportant]="!simple">
 		</button>
-	</div>
+	</ng-container>
 	
-	<div *ngFor="let siEntryQualifier of siEntryQualifiers">
+	<ng-container *ngFor="let siEntryQualifier of siEntryQualifiers">
 		<button rocketSiQualifier type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="disabled" class="btn rocket-qualifier-btn"
 				[siEntryQualifier]="siEntryQualifier" [iconImportant]="!simple">
 		</button>
-	</div>
+	</ng-container>
 	
-	<div *ngFor="let siEntryQualifier of illegalSiEntryQualifiers">
+	<ng-container *ngFor="let siEntryQualifier of illegalSiEntryQualifiers">
 		<button rocketSiQualifier type="button" (click)="chooseSiEntry(siEntryQualifier)" [disabled]="true" class="btn rocket-qualifier-btn rocket-illegal"
 				[siEntryQualifier]="siEntryQualifier" [iconImportant]="!simple">
 		</button>
-	</div>
+	</ng-container>
 </div>

@@ -5,7 +5,8 @@ import { CompactEntryModel } from '../compact-entry-model';
 @Component({
 	selector: 'rocket-compact-entry',
 	templateUrl: './compact-entry.component.html',
-	styleUrls: ['./compact-entry.component.css']
+	styleUrls: ['./compact-entry.component.css'],
+	host: {"class": "rocket-compact-entry"}
 })
 export class CompactEntryComponent implements OnInit {
 	uiStructure: UiStructure;

@@ -194,7 +194,7 @@
             border-right: none;
         }
 
-        rocket-compact-entry,
+        .rocket-compact-entry,
         .rocket-impl-content {
             position: relative;
             z-index: 0;
@@ -214,21 +214,40 @@
                 background-image: linear-gradient(to right, rgba($white, 0), rgba($white, 1) 50%);
             }
 
-            > * > * {
+            // > * > * {
+            //     white-space: nowrap;
+            //     flex-shrink: 0;
+            //     margin-bottom: 0;
+            // }
+
+            // > * > * > *:last-child {
+            //     margin-bottom: 0;
+            // }
+
+            // > * > *:not(:last-child):not(:empty) {
+            //     margin-right: 1.5rem;
+            // }
+
+            // > * > *.rocket-gui-field-fileImage {
+            //     margin-top: -0.35rem;
+            //     margin-bottom: -0.41rem;
+            // }
+
+            > *  {
                 white-space: nowrap;
                 flex-shrink: 0;
                 margin-bottom: 0;
             }
 
-            > * > * > *:last-child {
+            > * > *:last-child {
                 margin-bottom: 0;
             }
 
-            > * > *:not(:last-child):not(:empty) {
+            > *:not(:last-child):not(:empty) {
                 margin-right: 1.5rem;
             }
 
-            > * > *.rocket-gui-field-fileImage {
+            > .rocket-gui-field-fileImage {
                 margin-top: -0.35rem;
                 margin-bottom: -0.41rem;
             }
@@ -263,6 +282,7 @@
     position: relative;
     .btn-icon {
         float: right;
+        margin-right: 0.75rem;
         top: 4px;
         position: relative;
     }
@@ -304,6 +324,7 @@
                 top: auto;
                 left: auto;
                 font-size: 10px;
+                margin: 0;
             }
         }
     }    
@@ -365,15 +386,14 @@
 .rocket-multi-type-menu-simple .rocket-qualifiers {
     display: grid;
     grid-template-columns: 1fr;
-}
-
-.rocket-multi-type-menu-simple .rocket-qualifiers {
     grid-gap: 1px;
 }
 
+
 .rocket-multi-type-menu .rocket-qualifiers {
-    grid-template-columns: repeat( auto-fit, minmax(25%, 1fr) );
-    grid-gap: 5px;
+    border: 3px solid $gray-500;
+    grid-template-columns: repeat( auto-fit, minmax(16.666%, 1fr) );
+    background: $white;
 }
 
 .rocket-qualifier-btn {
@@ -383,17 +403,19 @@
 }
 
 .rocket-multi-type-menu {
+    .rocket-qualifier-btn {
+        box-shadow:0 0 0 1px $gray-500;
+    }
     .rocket-qualifier-btn:hover,
     .rocket-qualifier-btn:focus {
-        border: 1px solid $gray-400;
-        background: $gray-300;
+        background: $gray-200;
     }
 }
 
 .rocket-multi-type-menu-simple {
     .rocket-qualifier-btn:hover,
     .rocket-qualifier-btn:focus {
-        background: $gray-300;
+        background: $gray-200;
     }
 }
 
