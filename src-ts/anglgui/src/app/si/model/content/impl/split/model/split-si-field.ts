@@ -171,6 +171,10 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 
 			this.loadedKeys.push(key);
 			this.getSiField$(key).then((siField) => {
+				if (childUiStructure.disposed) {
+					return;
+				}
+
 				if (!siField) {
 					childUiStructure.model = this.createNotActiveUism();
 					return;
@@ -182,9 +186,9 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 					childUiStructure.createToolbarChild(new SimpleUiStructureModel(new ButtonControlUiContent(
 							new SplitButtonControlModel(key, siField, this), childUiStructure.getZone())));
 				}
-			}).catch(() => {
+			})/*.catch((e) => {
 				childUiStructure.model = this.createNotActiveUism();
-			});
+			})*/;
 		}
 	}
 
