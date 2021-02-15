@@ -16,6 +16,10 @@ import { StructureUiZoneError } from 'src/app/ui/structure/model/impl/structure-
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiPartialContent } from '../../../content/si-partial-content';
 import { SiFrame } from '../../../meta/si-frame';
+import { StructurePageManager } from '../comp/compact-explorer/structure-page-manager';
+import { Observable, from } from 'rxjs';
+import { Message } from 'src/app/util/i18n/message';
+import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 
 export class CompactExplorerSiGui implements SiGui {
 
@@ -43,6 +47,7 @@ export class CompactExplorerSiGui implements SiGui {
 }
 
 class CompactExplorerListModelImpl extends UiStructureModelAdapter implements CompactExplorerModel {
+	private structurePageManager: StructurePageManager;
 
 	constructor(private comp: CompactExplorerSiGui, partialContent: SiPartialContent|null) {
 		super();
@@ -55,8 +60,8 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		}
 	}
 
-	getSiPageCollection(): SiPageCollection {
-		return this.comp.pageCollection;
+	getStructurePageManager(): StructurePageManager {
+		return this.structurePageManager;
 	}
 
 	getSiEntryQualifierSelection(): SiEntryQualifierSelection {
@@ -66,14 +71,20 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
+		this.structurePageManager = new StructurePageManager(uiStructure, this.comp.pageCollection);
+		// because of changes after view check;
+		this.structurePageManager.loadSingle(1, 0);
+
+		let comp: CompactExplorerComponent;
 		this.uiContent = new TypeUiContent(CompactExplorerComponent, (ref) => {
 			ref.instance.model = this;
 			ref.instance.uiStructure = uiStructure;
-
-			this.asideUiContents = [new TypeUiContent(PaginationComponent, (aisdeRef) => {
-				aisdeRef.instance.cec = ref.instance;
-			})];
+			comp = ref.instance;
 		});
+
+		this.asideUiContents = [new TypeUiContent(PaginationComponent, (aisdeRef) => {
+			aisdeRef.instance.cec = comp;
+		})];
 	}
 
 	unbind() {
@@ -92,13 +103,25 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		});
 	}
 
-	getZoneErrors(): UiZoneError[] {
-		const uiZoneErrors: UiZoneError[] = [];
-		for (const entry of this.getSiPageCollection().getEntries()) {
-			uiZoneErrors.push(...entry.getMessages()
-					.map((message) => new StructureUiZoneError(message, this.reqBoundUiStructure())));
-		}
-		return uiZoneErrors;
+	getMessages(): Message[] {
+		return [];
 	}
+
+	getStructureErrors(): UiStructureError[] {
+		return [];
+	}
+
+	getStructureErrors$(): Observable<UiStructureError[]> {
+		return from([]);
+	}
+
+	// getZoneErrors(): UiZoneError[] {
+	// 	const uiZoneErrors: UiZoneError[] = [];
+	// 	for (const entry of this.comp.pageCollection.getEntries()) {
+	// 		uiZoneErrors.push(...entry.getMessages()
+	// 				.map((message) => new StructureUiZoneError(message, this.reqBoundUiStructure())));
+	// 	}
+	// 	return uiZoneErrors;
+	// }
 }
 

@@ -121,7 +121,6 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	uiStructure: UiStructure;
 	model: CompactExplorerModel;
 
-	public spm: StructurePageManager;
 	private subscription = new Subscription();
 
 	private quickSearchSubject = new Subject<string>();
@@ -133,8 +132,11 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 	private sortSelectedMap = new Map<string, { identifier: SiEntryIdentifier, decendantIdStrs: string[] }>();
 
+	get spm(): StructurePageManager {
+		return this.model.getStructurePageManager();
+	}
+
 	ngOnInit() {
-		this.spm = new StructurePageManager(this.uiStructure, this.model.getSiPageCollection());
 
 		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(500).subscribe(() => {
 			if (this.quickSearching) {

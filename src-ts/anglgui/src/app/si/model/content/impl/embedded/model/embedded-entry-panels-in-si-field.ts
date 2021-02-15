@@ -17,6 +17,12 @@ import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.servi
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
 import { EmbeddedEntryPanelsComponent } from '../comp/embedded-entry-panels/embedded-entry-panels.component';
 import { PanelDef } from '../comp/embedded-entry-panels-model';
+import { Observable, from } from 'rxjs';
+import { Message } from 'src/app/util/i18n/message';
+import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
+import { EmbeInCollection } from './embe/embe-collection';
+import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
+import { map } from 'rxjs/operators';
 
 class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
@@ -53,14 +59,17 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 			const obtainer = new EmbeddedEntryObtainer(this.siService, this.siModState,
 					this.frame, panel.reduced, panel.allowedTypeIds);
 
+			const embeInCol = new EmbeInCollection(panel, panel);
+			embeInCol.readEmbes();
+
 			return {
 				panel,
-				structureModel: new EmbeddedEntriesInUiStructureModel(obtainer, this.frame, panel,
+				structureModel: new EmbeddedEntriesInUiStructureModel(obtainer, this.frame, embeInCol,
 						panel, this.translationService)
 			};
 		});
 
-		return new EmbeddedEntryPanelsInUiStructureModel(panelAssemblies);
+		return new EmbeddedEntryPanelsInUiStructureModel(this.messagesCollection, panelAssemblies);
 	}
 
 	// createUiContent(uiStructure: UiStructure): UiContent {
@@ -127,7 +136,8 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 
 class EmbeddedEntryPanelsInUiStructureModel extends UiStructureModelAdapter {
 
-	constructor(private panelAssemblies: Array<{panel: SiPanel, structureModel: EmbeddedEntriesInUiStructureModel}>) {
+	constructor(private messagesCollection: BehaviorCollection<Message>, 
+			private panelAssemblies: Array<{panel: SiPanel, structureModel: EmbeddedEntriesInUiStructureModel}>) {
 		super();
 	}
 
@@ -150,13 +160,16 @@ class EmbeddedEntryPanelsInUiStructureModel extends UiStructureModelAdapter {
 		});
 	}
 
+	getStructureErrors(): UiStructureError[] {
+		return this.messagesCollection.get().map((message) => ({message}));
+	}
 
-	getZoneErrors(): UiZoneError[] {
-		const uiZoneErrors = new Array<UiZoneError>();
-		for (const panelAssembly of this.panelAssemblies) {
-			uiZoneErrors.push(...panelAssembly.structureModel.getZoneErrors());
-		}
-		return uiZoneErrors;
+	getStructureErrors$(): Observable<UiStructureError[]> {
+		return this.messagesCollection.get$().pipe(map((messages) => messages.map((message) => ({ message }))));
+	}
+
+	getMessages(): Message[] {
+		return this.messagesCollection.get();
 	}
 }
 

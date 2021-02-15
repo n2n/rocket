@@ -1,25 +1,28 @@
 import { Embe } from './embe';
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { EmbeddedEntriesInConfig } from './embedded-entries-config';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
-import { Message } from 'src/app/util/i18n/message';
 import {IllegalSiStateError} from '../../../../../../util/illegal-si-state-error';
+import { Message } from 'src/app/util/i18n/message';
+import { Observable } from 'rxjs';
 
 
 export interface EmbeOutSource {
 	getValues(): SiEmbeddedEntry[];
-}
-export interface EmbeInSource extends EmbeOutSource {
-	setValues(values: SiEmbeddedEntry[]): void;
 
 	getMessages(): Message[];
+
+	getMessages$(): Observable<Message[]>;
+}
+
+export interface EmbeInSource extends EmbeOutSource {
+	setValues(values: SiEmbeddedEntry[]): void;
 }
 
 export class EmbeOutCollection {
 	public embes: Embe[] = [];
 
-	constructor(private source: EmbeOutSource, protected getUiStructure: () => UiStructure) {
+	constructor(readonly source: EmbeOutSource) {
 	}
 
 	// protected unregisterEmbe(embe: Embe) {
@@ -40,7 +43,7 @@ export class EmbeOutCollection {
 	}
 
 	createEmbe(siEmbeddedEntry: SiEmbeddedEntry|null = null): Embe {
-		const embe = new Embe(siEmbeddedEntry, this.getUiStructure);
+		const embe = new Embe(siEmbeddedEntry);
 		this.embes.push(embe);
 		return embe;
 	}
@@ -55,8 +58,8 @@ export class EmbeOutCollection {
 }
 
 export class EmbeInCollection extends EmbeOutCollection {
-	constructor(private inSource: EmbeInSource, getUiStructure: () => UiStructure, private config: EmbeddedEntriesInConfig) {
-		super(inSource, getUiStructure);
+	constructor(private inSource: EmbeInSource, private config: EmbeddedEntriesInConfig) {
+		super(inSource);
 	}
 
 	createEntriesResetPoints(): SiGenericEntry[] {

@@ -63,18 +63,18 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	private validate() {
-		this.messages = [];
+		this.resetError();
 
 		if (this.mandatory && this.value === null) {
-			this.messages.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}
 
 		if (this.minlength && this.value && this.value.length < this.minlength) {
-			this.messages.push(Message.createCode('minlength_err', new Map([['{field}', this.label], ['{minlength}', this.minlength.toString()]])));
+			this.addMessage(Message.createCode('minlength_err', new Map([['{field}', this.label], ['{minlength}', this.minlength.toString()]])));
 		}
 
 		if (this.maxlength && this.value && this.value.length > this.maxlength) {
-			this.messages.push(Message.createCode('maxlength_err', new Map([['{field}', this.label], ['{maxlength}', this.maxlength.toString()]])));
+			this.addMessage(Message.createCode('maxlength_err', new Map([['{field}', this.label], ['{maxlength}', this.maxlength.toString()]])));
 		}
 	}
 

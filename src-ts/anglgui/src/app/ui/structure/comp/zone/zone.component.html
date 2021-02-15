@@ -16,9 +16,11 @@
 			</ul>
 			<div class="rocket-additional-container">
 				<div class="rocket-additional-content">
-					<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry">
+					<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry" 
+							(mouseenter)="uiZoneError.marked(true)" (mouseleave)="uiZoneError.marked(false)"
+							(click)="uiZoneError.focus()">
 						<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
-						<a href="#">{{ 'show_errors_txt' | translate }} [@Andi Link machen]</a>
+						<span>{{ 'show_errors_txt' | translate }} [@Andi Link machen]</span>
 					</div>
 				</div>
 			</div>

@@ -2,7 +2,7 @@
 import { UiContent } from './ui-content';
 import { Observable } from 'rxjs';
 import { UiStructure } from './ui-structure';
-import { UiZoneError } from './ui-zone-error';
+import { UiStructureError } from './ui-structure-error';
 
 export interface UiStructureModel {
 
@@ -16,7 +16,9 @@ export interface UiStructureModel {
 
 	getAsideContents(): UiContent[];
 
-	getZoneErrors(): UiZoneError[];
+	getStructureErrors(): UiStructureError[];
+
+	getStructureErrors$(): Observable<UiStructureError[]>;
 
 	getDisabled$(): Observable<boolean>;
 

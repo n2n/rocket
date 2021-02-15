@@ -81,6 +81,18 @@ use n2n\core\N2N;
 // 				75% { transform:rotate(3deg) }
 // 				100% { transform:rotate(0deg) }
 // 			}
+
+			.rocket-marked {
+				outline: 3px solid #dc3545;
+				position: relative;
+				background: rgba(220, 53, 69, 0.1);
+			}
+			
+			.rocket-marked-remember {
+				outline: 3px solid transparent;
+				-webkit-transition: outline 1s;
+				transition: outline 1s;
+			}
 	');
 	
 	$anglTemplateModel = $view->lookup(AnglTemplateModel::class);

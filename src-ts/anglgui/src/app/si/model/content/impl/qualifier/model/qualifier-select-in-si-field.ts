@@ -57,19 +57,19 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	}
 
 	private validate() {
-		this.messages = [];
+		this.resetError();
 
 		if (this.values.length < this.min) {
 			if (this.max === 1 || this.min === 1) {
-				this.messages.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+				this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 			} else {
-				this.messages.push(Message.createCode('min_elements_err',
+				this.addMessage(Message.createCode('min_elements_err',
 						new Map([['{min}', this.min.toString()], ['{field}', this.label]])));
 			}
 		}
 
 		if (this.max !== null && this.values.length > this.max) {
-			this.messages.push(Message.createCode('max_elements_err',
+			this.addMessage(Message.createCode('max_elements_err',
 						new Map([['{max}', this.max.toString()], ['{field}', this.label]])));
 		}
 	}

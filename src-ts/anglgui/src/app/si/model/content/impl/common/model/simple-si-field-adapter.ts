@@ -20,8 +20,8 @@ export abstract class SimpleSiFieldAdapter extends SiFieldAdapter {
 	createUiStructureModel(): UiStructureModel {
 		const model = new SimpleUiStructureModel(null);
 		model.initCallback = (uiStructure) => { model.content = this.createUiContent(uiStructure); };
-		model.messagesCallback = () => this.getMessages();
-		model.setDisabled$(this.disabledSubject);
+		model.messagesCollection = this.messagesCollection;
+		model.setDisabled$(this.getDisabled$());
 		model.mode = this.getMode();
 		return model;
 	}

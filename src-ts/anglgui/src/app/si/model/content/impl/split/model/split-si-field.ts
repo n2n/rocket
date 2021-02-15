@@ -53,8 +53,8 @@ export class SplitSiField extends SiFieldAdapter {
 	createUiStructureModel(compactMode: boolean): UiStructureModel {
 		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService,
 				this.translationService, compactMode);
-		uism.messagesCallback = () => this.getMessages();
-		uism.setDisabled$(this.disabledSubject);
+		uism.messagesCollection = this.messagesCollection;
+		uism.setDisabled$(this.getDisabled$());
 		return uism;
 	}
 

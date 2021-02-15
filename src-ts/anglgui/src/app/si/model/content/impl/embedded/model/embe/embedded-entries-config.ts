@@ -3,7 +3,7 @@ export interface EmbeddedEntriesOutConfig {
 }
 
 
-export interface EmbeddedEntriesInConfig extends EmbeddedEntriesOutConfig{
+export interface EmbeddedEntriesInConfig extends EmbeddedEntriesOutConfig {
 	min: number;
 	max: number|null;
 	nonNewRemovable: boolean;

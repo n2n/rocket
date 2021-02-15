@@ -10,7 +10,7 @@ import { BulkyEntryModel } from '../comp/bulky-entry-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, from } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
@@ -25,6 +25,7 @@ import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { StructureBranchComponent } from 'src/app/ui/structure/comp/structure-branch/structure-branch.component';
+import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
@@ -37,10 +38,6 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 
 	getControlledEntries(): SiEntry[] {
 		return [this.entry];
-	}
-
-	getMessages(): Message[] {
-		return [];
 	}
 
 	// reload() {
@@ -63,7 +60,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 
 	createUiStructureModel(): UiStructureModel {
 		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls(),
-				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, 
+				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService,
 						this.siModStateService, this.entryControlsIncluded));
 	}
 
@@ -98,19 +95,31 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		return this.contentUiStructure;
 	}
 
-	getZoneErrors(): UiZoneError[] {
-		const zoneErrors = new Array<UiZoneError>();
-		const typeId = this.siEntry.selectedTypeId;
-
-		if (!typeId) {
-			return zoneErrors;
-		}
-
-		for (const [fieldId, field] of this.siEntry.selectedEntryBuildup.getFieldMap()) {
-			this.uiStructureModelCache.obtain(typeId, fieldId, field).getZoneErrors();
-		}
-		return zoneErrors;
+	getMessages(): Message[] {
+		return [];
 	}
+
+	getStructureErrors(): UiStructureError[] {
+		return [];
+	}
+
+	getStructureErrors$(): Observable<UiStructureError[]> {
+		return from([]);
+	}
+
+	// getZoneErrors(): UiZoneError[] {
+	// 	const zoneErrors = new Array<UiZoneError>();
+	// 	const typeId = this.siEntry.selectedTypeId;
+
+	// 	if (!typeId) {
+	// 		return zoneErrors;
+	// 	}
+
+	// 	for (const [fieldId, field] of this.siEntry.selectedEntryBuildup.getFieldMap()) {
+	// 		this.uiStructureModelCache.obtain(typeId, fieldId, field).getZoneErrors();
+	// 	}
+	// 	return zoneErrors;
+	// }
 
 	// getContentUiStructures(): UiStructure[] {
 	// 	return this.contentUiStructures;
@@ -178,6 +187,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	unbind(): void {
 		super.unbind();
 
+		if (!this.siEntry.isNew()) {
+			this.siEntryMonitor.unregisterEntry(this.siEntry);
+		}
 		this.siEntryMonitor.stop();
 		this.uiContent = null;
 

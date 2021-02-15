@@ -4,10 +4,11 @@ import { SiField } from '../../../si-field';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
 
 export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
-	protected messages = new Array<Message>();
-	protected disabledSubject = new BehaviorSubject<boolean>(false);
+	protected messagesCollection = new BehaviorCollection<Message>([]);
+	private disabledSubject = new BehaviorSubject<boolean>(false);
 
 	abstract hasInput(): boolean;
 
@@ -26,7 +27,7 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 	}
 
 	getDisabled$(): Observable<boolean> {
-		return this.disabledSubject;
+		return this.disabledSubject.asObservable();
 	}
 
 	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
@@ -37,16 +38,24 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 
 	abstract createUiStructureModel(compactMode: boolean): UiStructureModel;
 
+	getMessages$(): Observable<Message[]> {
+		return this.messagesCollection.get$();
+	}
+
 	getMessages(): Message[] {
-		return this.messages;
+		return this.messagesCollection.get();
 	}
 
 	handleError(error: SiFieldError): void {
-		this.messages.push(...error.getAllMessages());
+		this.addMessage(...error.getAllMessages());
+	}
+
+	protected addMessage(...newMessages: Message[]) {
+		this.messagesCollection.push(...newMessages);
 	}
 
 	resetError(): void {
-		this.messages = [];
+		this.messagesCollection.clear();
 	}
 
 	abstract copyValue(): SiGenericValue;

@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Embe } from '../../model/embe/embe';
+import { EmbeStructure } from '../../model/embe/embe-structure';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 @Component({
 	selector: 'rocket-embedded-entry',
@@ -9,7 +11,15 @@ import { Embe } from '../../model/embe/embe';
 export class EmbeddedEntryComponent /*implements OnInit */{
 
 	@Input()
-	embe: Embe;
+	embeStructure: EmbeStructure;
+
+	get embe(): Embe {
+		return this.embeStructure.embe;
+	}
+
+	get uiStructure(): UiStructure {
+		return this.embeStructure.uiStructure;
+	}
 
 	// @Input()
 	// copyPool: CopyPool;

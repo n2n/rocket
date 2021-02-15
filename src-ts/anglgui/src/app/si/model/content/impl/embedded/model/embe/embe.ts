@@ -11,10 +11,7 @@ export class Embe {
 	public uiStructureModel: UiStructureModel|null = null;
 	public summaryUiStructureModel: UiStructureModel|null = null;
 
-	private _uiStructure: UiStructure|null = null;
-	private _summaryUiStructure: UiStructure|null = null;
-
-	constructor(siEmbeddedEntry: SiEmbeddedEntry|null = null, protected getUiStructure: () => UiStructure|null) {
+	constructor(siEmbeddedEntry: SiEmbeddedEntry|null = null) {
 		if (siEmbeddedEntry) {
 			this.siEmbeddedEntry = siEmbeddedEntry;
 		}
@@ -42,16 +39,6 @@ export class Embe {
 		this._siEmbeddedEntry = null;
 		this.uiStructureModel = null;
 		this.summaryUiStructureModel = null;
-
-		if (this._uiStructure) {
-			this._uiStructure.dispose();
-			this._uiStructure = null;
-		}
-
-		if (this._summaryUiStructure) {
-			this._summaryUiStructure.dispose();
-			this._summaryUiStructure = null;
-		}
 	}
 
 	isPlaceholder(): boolean {
@@ -67,38 +54,38 @@ export class Embe {
 		return this._siEmbeddedEntry.entry;
 	}
 
-	get uiStructure(): UiStructure {
-		if (this._uiStructure) {
-			IllegalStateError.assertTrue(this._uiStructure.parent === this.getUiStructure());
-			return this._uiStructure;
-		}
+	// get uiStructure(): UiStructure {
+	// 	if (this._uiStructure) {
+	// 		IllegalStateError.assertTrue(this._uiStructure.parent === this.getUiStructure());
+	// 		return this._uiStructure;
+	// 	}
 
-		this._uiStructure = this.getUiStructure().createChild(null, null, this.uiStructureModel);
-		this._uiStructure.model = this.uiStructureModel;
+	// 	this._uiStructure = this.getUiStructure().createChild(null, null, this.uiStructureModel);
+	// 	this._uiStructure.model = this.uiStructureModel;
 
-		this._uiStructure.disposed$.pipe(filter(d => d)).subscribe(() => {
-			this._uiStructure = null;
-		});
+	// 	this._uiStructure.disposed$.pipe(filter(d => d)).subscribe(() => {
+	// 		this._uiStructure = null;
+	// 	});
 
-		return this._uiStructure;
-	}
+	// 	return this._uiStructure;
+	// }
 
-	get summaryUiStructure(): UiStructure {
-		IllegalStateError.assertTrue(!!this.summaryUiStructureModel);
+	// get summaryUiStructure(): UiStructure {
+	// 	IllegalStateError.assertTrue(!!this.summaryUiStructureModel);
 
-		if (this._summaryUiStructure) {
-			IllegalStateError.assertTrue(this._summaryUiStructure.parent === this.getUiStructure());
-			return this._summaryUiStructure;
-		}
+	// 	if (this._summaryUiStructure) {
+	// 		IllegalStateError.assertTrue(this._summaryUiStructure.parent === this.getUiStructure());
+	// 		return this._summaryUiStructure;
+	// 	}
 
-		this._summaryUiStructure = this.getUiStructure().createChild();
-		this._summaryUiStructure.model = this.summaryUiStructureModel;
-		// this._summaryUiStructure.compact = true;
+	// 	this._summaryUiStructure = this.getUiStructure().createChild();
+	// 	this._summaryUiStructure.model = this.summaryUiStructureModel;
+	// 	// this._summaryUiStructure.compact = true;
 
-		this._summaryUiStructure.disposed$.pipe(filter(d => d)).subscribe(() => {
-			this._summaryUiStructure = null;
-		});
+	// 	this._summaryUiStructure.disposed$.pipe(filter(d => d)).subscribe(() => {
+	// 		this._summaryUiStructure = null;
+	// 	});
 
-		return this._summaryUiStructure;
-	}
+	// 	return this._summaryUiStructure;
+	// }
 }
