@@ -86,7 +86,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		return new EnumMag($this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
-				null, $this->isMandatory($eiu));
+				null, $this->getEditConfig()->isMandatory());
 	}
 	
 	public function saveMagValue(Mag $mag, Eiu $eiu) {
