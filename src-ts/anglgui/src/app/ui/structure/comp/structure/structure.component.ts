@@ -44,7 +44,7 @@ export class StructureComponent implements OnInit, OnDestroy {
 // 		(<ZoneComponent> componentRef.instance).data = {};
 		this.focusedSbscription = this.uiStructure.focused$.subscribe(() => {
 			this.elRef.nativeElement.scrollIntoView({ behavior: 'smooth' });
-		})
+		});
 	}
 
 	ngOnDestroy() {

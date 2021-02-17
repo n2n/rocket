@@ -47,7 +47,7 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 	}
 
 	handleError(error: SiFieldError): void {
-		this.addMessage(...error.getAllMessages());
+		this.messagesCollection.push(...error.getAllMessages());
 	}
 
 	protected addMessage(...newMessages: Message[]) {
@@ -70,7 +70,7 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 		this.pasteValue(genericValue);
 	}
 
-	consume(consumeableSiField): SiField {
-		return consumeableSiField;
-	}
+	// consume(consumeableSiField): SiField {
+	// 	return consumeableSiField;
+	// }
 }

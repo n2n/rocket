@@ -266,7 +266,7 @@ class FabricatedEiField extends EiFieldAdapter {
 		}
 		
 		return Validate::value($value)->val(...$this->validators)
-		->test($this->eiu->getN2nContext());
+				->test($this->eiu->getN2nContext());
 	}
 	
 	/**
@@ -278,7 +278,14 @@ class FabricatedEiField extends EiFieldAdapter {
 			return;
 		}
 		
-		Validate::value($value, ...$this->validators)->exec($this->eiu->getN2nContext());
+		$valueValidationResult = Validate::value($value)->val(...$this->validators)->exec($this->eiu->getN2nContext());
+		if (!$valueValidationResult->hasErrors()) {
+			return;
+		}
+		
+		foreach ($valueValidationResult->getErrorMap()->getAllMessages() as $message) {
+			$validationResult->addError($message);
+		}
 	}
 	
 	/**
