@@ -1034,13 +1034,20 @@ class EiFieldAssemblerCache {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return GuiPropSetup
+	 * @return GuiPropSetup|null
 	 */
 	private function assemble(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		
-		if (isset($this->guiPropSetups[$eiPropPathStr])) {
+		if (array_key_exists($eiPropPathStr, $this->guiPropSetups)) {
 			return $this->guiPropSetups[$eiPropPathStr];
+		}
+		
+		$guiDefinition = $this->eiGuiFrame->getGuiDefinition();
+		
+		if (!$guiDefinition->containsEiPropPath($eiPropPath)) {
+			$this->guiPropSetups[$eiPropPathStr] = null;
+			return null;
 		}
 		
 		$guiPropWrapper = $this->eiGuiFrame->getGuiDefinition()->getGuiPropWrapper($eiPropPath);
@@ -1058,6 +1065,10 @@ class EiFieldAssemblerCache {
 	 */
 	function assignDefPropPath(DefPropPath $defPropPath) {
 		$guiPropSetup = $this->assemble($defPropPath->getFirstEiPropPath());
+		
+		if ($guiPropSetup === null) {
+			return null;
+		}
 		
 		$displayDefinition = null;
 		if (!$defPropPath->hasMultipleEiPropPaths()) {
