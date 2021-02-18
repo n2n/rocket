@@ -38,7 +38,7 @@ class IframeConfig extends ConfigAdaption {
 		$srcDocMag = $magCollection->getMagByPropertyName(self::ATTR_SRC_DOC_KEY);
 		$useTemplateMag = $magCollection->getMagByPropertyName(self::ATTR_USE_TEMPLATE_KEY);
 
-		$dataSet->set(self::ATTR_URL_KEY, $urlMag);
+		$dataSet->set(self::ATTR_URL_KEY, $urlMag->getValue());
 		$dataSet->set(self::ATTR_SRC_DOC_KEY, $srcDocMag->getValue());
 		$dataSet->set(self::ATTR_USE_TEMPLATE_KEY, $useTemplateMag->getValue());
 	}

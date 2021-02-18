@@ -171,7 +171,7 @@ class DisplayConfig extends PropConfigAdaption {
 	 */
 	public function setSiStructureType(string $siStructureType) {
 		ArgUtils::valEnum($siStructureType, SiStructureType::all());
-		$this->dispayItemType = $siStructureType;
+		$this->siStructureType = $siStructureType;
 		return $this;
 	}
 	
@@ -333,6 +333,7 @@ class DisplayConfig extends PropConfigAdaption {
 		
 		return $eiu->factory()->newGuiPropSetup($guiFieldAssembler)
 				->setDefaultDisplayed($this->isViewModeDefaultDisplayed($viewMode))
+				->setSiStructureType($this->getSiStructureType())
 				->toGuiPropSetup();
 	}
 }
