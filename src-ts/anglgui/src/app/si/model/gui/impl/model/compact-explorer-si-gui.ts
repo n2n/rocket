@@ -76,14 +76,23 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		this.structurePageManager.loadSingle(1, 0);
 
 		let comp: CompactExplorerComponent;
+		let pagiComp: PaginationComponent;
+
 		this.uiContent = new TypeUiContent(CompactExplorerComponent, (ref) => {
 			ref.instance.model = this;
 			ref.instance.uiStructure = uiStructure;
 			comp = ref.instance;
+
+			if (pagiComp) {
+				pagiComp.cec = comp;
+			}
 		});
 
 		this.asideUiContents = [new TypeUiContent(PaginationComponent, (aisdeRef) => {
-			aisdeRef.instance.cec = comp;
+			pagiComp = aisdeRef.instance;
+			if (comp) {
+				aisdeRef.instance.cec = comp;
+			}
 		})];
 	}
 
@@ -99,7 +108,7 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		}
 
 		return this.mainControlUiContents = this.comp.pageCollection.controls.map((control) => {
-			return control.createUiContent(this.boundUiStructure.getZone());
+			return control.createUiContent(() => this.boundUiStructure.getZone());
 		});
 	}
 
@@ -113,6 +122,10 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 
 	getStructureErrors$(): Observable<UiStructureError[]> {
 		return from([]);
+	}
+
+	getStructures$(): Observable<UiStructure[]> {
+		return this.structurePageManager.getUiStructures$();
 	}
 
 	// getZoneErrors(): UiZoneError[] {

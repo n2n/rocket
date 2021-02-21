@@ -4,10 +4,9 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 export class ButtonControlUiContent extends TypeUiContent<ButtonControlComponent> {
-	constructor(model: ButtonControlModel, uiZone: UiZone) {
+	constructor(model: ButtonControlModel) {
 		super(ButtonControlComponent, (ref) => {
 			ref.instance.model = model;
-			ref.instance.uiZone = uiZone;
 		});
 	}
 }

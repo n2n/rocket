@@ -5,5 +5,5 @@ export interface SiControl {
 
 	isDisabled(): boolean;
 
-	createUiContent(zone: UiZone): UiContent;
+	createUiContent(getUiZone: () => UiZone): UiContent;
 }

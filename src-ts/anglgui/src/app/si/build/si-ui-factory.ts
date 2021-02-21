@@ -5,6 +5,7 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGuiFactory } from './si-gui-factory';
 import { UiMenuItem, UiMenuGroup } from 'src/app/ui/structure/model/ui-menu';
 import { SiControlFactory } from './si-control-factory';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class SiUiFactory {
 
@@ -19,7 +20,7 @@ export class SiUiFactory {
 		return {
 			title: extr.reqString('title'),
 			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiLayer),
-			structureModel: comp.createUiStructureModel(),
+			structure: new UiStructure(null, null, comp.createUiStructureModel()),
 			mainCommandContents: [] /*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
 					.map(siControl => siControl.createUiContent(zone))*/
 		};

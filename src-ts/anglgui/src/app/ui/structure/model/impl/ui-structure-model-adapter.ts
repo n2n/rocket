@@ -1,10 +1,8 @@
 import { UiStructureModel, UiStructureModelMode } from '../ui-structure-model';
 import { UiContent } from '../ui-content';
-import { Observable, of } from 'rxjs';
+import { Observable, of, from, BehaviorSubject } from 'rxjs';
 import { UiStructure } from '../ui-structure';
-import { UiZoneError } from '../ui-zone-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
-import { Message } from 'src/app/util/i18n/message';
 import { UiStructureError } from '../ui-structure-error';
 
 export abstract class UiStructureModelAdapter implements UiStructureModel {
@@ -12,6 +10,7 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 	protected uiContent: UiContent|null = null;
 	protected mainControlUiContents: UiContent[] = [];
 	protected asideUiContents: UiContent[] = [];
+	protected toolbarStructureModelsSubject = new BehaviorSubject<UiStructureModel[]>([]);
 	protected disabled$: Observable<boolean>;
 
 	bind(uiStructure: UiStructure): void {
@@ -41,9 +40,9 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 		return this.asideUiContents;
 	}
 
-	abstract getStructureErrors(): UiStructureError[];
-
-	abstract getStructureErrors$(): Observable<UiStructureError[]>;
+	getToolbarStructureModels$(): Observable<UiStructureModel[]> {
+		return this.toolbarStructureModelsSubject.asObservable();
+	}
 
 	getDisabled$(): Observable<boolean> {
 		if (!this.disabled$) {
@@ -51,6 +50,12 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 		}
 
 		return this.disabled$;
+	}
+
+	abstract getStructures$(): Observable<UiStructure[]>;
+
+	getStructureErrors$(): Observable<UiStructureError[]> {
+		return from([]);
 	}
 
 	getMode(): UiStructureModelMode {

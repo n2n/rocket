@@ -16,5 +16,7 @@ export interface ButtonControlModel {
 
 	isDisabled(): boolean;
 
-	exec(uiZone: UiZone, subKey: string|null): void;
+	getUiZone(): UiZone;
+
+	exec(subKey: string|null): void;
 }

@@ -142,7 +142,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		this.splitViewStateSubscription = this.viewStateService.subscribe(uiStructure, this.getSplitOptions(), this.getSplitStyle());
 
 		for (const splitOption of this.getSplitOptions()) {
-			const child = uiStructure.createChild((this.compactMode ? UiStructureType.MINIMAL : UiStructureType.ITEM),
+			const child = new UiStructure((this.compactMode ? UiStructureType.MINIMAL : UiStructureType.ITEM),
 					splitOption.shortLabel);
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
@@ -183,13 +183,15 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 				childUiStructure.model = siField.createUiStructureModel(this.compactMode);
 
 				if (siField.hasInput() && siField.isGeneric()) {
-					childUiStructure.createToolbarChild(new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this), childUiStructure.getZone())));
+					childUiStructure.addExtraToolbarStructureModel(new SimpleUiStructureModel(new ButtonControlUiContent(
+							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone()))));
 				}
 			})/*.catch((e) => {
 				childUiStructure.model = this.createNotActiveUism();
 			})*/;
 		}
+
+		this.structuresCollection.set(Array.from(this.childUiStructureMap.values()));
 	}
 
 	private createNotActiveUism(): UiStructureModel {
@@ -225,7 +227,8 @@ class SplitButtonControlModel implements ButtonControlModel {
 	private siButton: SiButton;
 	private subSiButtons = new Map<string, SiButton>();
 
-	constructor(private key: string, private siField: SiField, private model: SplitUiStructureModel) {
+	constructor(private key: string, private siField: SiField, private model: SplitUiStructureModel,
+			public getUiZone: () => UiZone) {
 		this.siButton = new SiButton(null, 'btn btn-secondary', 'fas fa-reply-all');
 		this.siButton.tooltip = this.model.getCopyTooltip();
 
@@ -258,7 +261,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 		return this.loading;
 	}
 
-	exec(uiZone: UiZone, subKey: string|null): void {
+	exec(subKey: string|null): void {
 		if (this.loading || !subKey) {
 			return;
 		}

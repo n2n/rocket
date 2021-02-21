@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { UiStructure } from '../../model/ui-structure';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { Subscription } from 'rxjs';
+import { UiStructureModel } from '../../model/ui-structure-model';
 
 @Component({
 	selector: 'rocket-ui-structure-branch',
@@ -9,7 +10,8 @@ import { Subscription } from 'rxjs';
 	styleUrls: ['./structure-branch.component.css']
 })
 export class StructureBranchComponent implements OnInit, OnDestroy {
-	private _uiStructure: UiStructure;
+	@Input()
+	model: UiStructureModel;
 	// @Input()
 	// uiContent: UiContent|null = null;
 	// @Input()
@@ -21,36 +23,13 @@ export class StructureBranchComponent implements OnInit, OnDestroy {
 	constructor() { }
 
 	ngOnInit() {
-	}
-
-	@Input()
-	set uiStructure(uiStructure: UiStructure) {
-		if (this._uiStructure === uiStructure) {
-			throw new Error('Wow this really happens?');
-		}
-
-		this.clear();
-		this._uiStructure = uiStructure;
-		this.subscription = uiStructure.getContentChildren$().subscribe((contentUiStructures) => {
-			this.buildChildNodes(contentUiStructures);
+		this.subscription = this.model.getStructures$().subscribe((uiStructures) => {
+			this.buildChildNodes(uiStructures);
 		});
-	}
-
-	get uiStructure(): UiStructure {
-		return this.uiStructure;
 	}
 
 	ngOnDestroy() {
 		this.clear();
-	}
-
-	private clear() {
-		if (!this.subscription) {
-			return;
-		}
-
-		this.subscription.unsubscribe();
-		this.subscription = null;
 	}
 
 	private buildChildNodes(contentUiStructures: UiStructure[]) {
@@ -71,6 +50,15 @@ export class StructureBranchComponent implements OnInit, OnDestroy {
 
 			tabContainer.registerTab(childUiStructure);
 		}
+	}
+
+	private clear() {
+		if (!this.subscription) {
+			return;
+		}
+
+		this.subscription.unsubscribe();
+		this.subscription = null;
 	}
 }
 

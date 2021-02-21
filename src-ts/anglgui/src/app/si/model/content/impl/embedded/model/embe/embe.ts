@@ -1,15 +1,14 @@
 import { SiEntry } from 'src/app/si/model/content/si-entry';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import {filter, skip} from 'rxjs/operators';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 export class Embe {
 	private _siEmbeddedEntry: SiEmbeddedEntry;
-	public uiStructureModel: UiStructureModel|null = null;
-	public summaryUiStructureModel: UiStructureModel|null = null;
+	public uiStructure = new UiStructure(UiStructureType.SIMPLE_GROUP);
+	public summaryUiStructure = new UiStructure();
 
 	constructor(siEmbeddedEntry: SiEmbeddedEntry|null = null) {
 		if (siEmbeddedEntry) {
@@ -29,16 +28,16 @@ export class Embe {
 		IllegalStateError.assertTrue(!this._siEmbeddedEntry);
 
 		this._siEmbeddedEntry = siEmbeddedEntry;
-		this.uiStructureModel = siEmbeddedEntry.comp.createUiStructureModel();
+		this.uiStructure.model = siEmbeddedEntry.comp.createUiStructureModel();
 		if (siEmbeddedEntry.summaryComp) {
-			this.summaryUiStructureModel = siEmbeddedEntry.summaryComp.createUiStructureModel();
+			this.summaryUiStructure.model = siEmbeddedEntry.summaryComp.createUiStructureModel();
 		}
 	}
 
 	clear() {
 		this._siEmbeddedEntry = null;
-		this.uiStructureModel = null;
-		this.summaryUiStructureModel = null;
+		this.uiStructure.model = null;
+		this.summaryUiStructure.model = null;
 	}
 
 	isPlaceholder(): boolean {

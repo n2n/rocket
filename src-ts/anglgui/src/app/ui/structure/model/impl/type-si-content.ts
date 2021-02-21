@@ -3,7 +3,7 @@ import { ComponentFactoryResolver, ComponentRef, ViewContainerRef } from '@angul
 import { UiContent } from '../ui-content';
 
 export class TypeUiContent<T> implements UiContent {
-	public zoneErrors: UiZoneError[] = [];
+	// public zoneErrors: UiZoneError[] = [];
 
 	constructor(public type: new(...args: any[]) => T, public callback: (cr: ComponentRef<T>) => any) {
 	}
@@ -18,7 +18,7 @@ export class TypeUiContent<T> implements UiContent {
 		return componentRef;
 	}
 
-	getZoneErrors(): UiZoneError[] {
-		return this.zoneErrors;
-	}
+	// getZoneErrors(): UiZoneError[] {
+	// 	return this.zoneErrors;
+	// }
 }

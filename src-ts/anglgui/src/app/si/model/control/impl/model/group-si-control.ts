@@ -21,8 +21,8 @@ export class GroupSiControl implements SiControl {
 		return !!this.subControls.find(sc => sc.isDisabled());
 	}
 
-	createUiContent(uiZone: UiZone): UiContent {
-		const subUiContents = this.subControls.map(c => c.createUiContent(uiZone));
+	createUiContent(getUiZone: () => UiZone): UiContent {
+		const subUiContents = this.subControls.map(c => c.createUiContent(getUiZone));
 
 		return new ButtonControlUiContent({
 			getSiButton: () => this.siButton,
@@ -30,7 +30,8 @@ export class GroupSiControl implements SiControl {
 			isDisabled: () => this.isDisabled(),
 			exec: () => {},
 			getSubUiContents: () => subUiContents,
-		}, uiZone);
+			getUiZone
+		});
 	}
 
 	getSubTooltip(): string|null {

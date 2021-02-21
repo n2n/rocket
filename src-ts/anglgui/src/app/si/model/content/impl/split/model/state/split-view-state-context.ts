@@ -7,6 +7,7 @@ import { SplitOption } from '../split-option';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { SplitStyle } from '../split-context-si-field';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 	private toolbarUiStructure: UiStructure|null = null;
@@ -94,8 +95,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 	}
 
 	private triggerVisibleKeysObs() {
-		this.visibleKeysSubject.next([...this.visibleKeys])
+		this.visibleKeysSubject.next([...this.visibleKeys]);
 	}
+
+	private viewMenuUsm: UiStructureModel|null = null;
 
 	private updateStructure() {
 		const assigned = this.optionMap.size > 0;
@@ -111,7 +114,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 
 		if (this.optionMap.size > 0) {
 			if (!assigned) {
-				this.toolbarUiStructure = this.uiStructure.createToolbarChild(new SimpleUiStructureModel(
+				this.uiStructure.addExtraToolbarStructureModel(this.viewMenuUsm = new SimpleUiStructureModel(
 						new TypeUiContent(SplitViewMenuComponent, (ref) => {
 							ref.instance.model = this;
 						})));
@@ -124,7 +127,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			return;
 		}
 
-		this.toolbarUiStructure.dispose();
-		this.toolbarUiStructure = null;
+		this.uiStructure.removeExtraToolbarStructureModel(this.viewMenuUsm);
+		this.viewMenuUsm = null;
 	}
 }

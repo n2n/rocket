@@ -7,7 +7,7 @@
 		<h1>{{ uiZone.model.title }}</h1>
 	</header>
 	
-	<div rocketUiStructure [uiStructure]="uiZone.uiStructure" [asideVisible]="false" class="rocket-content"></div>
+	<div rocketUiStructure [uiStructure]="uiZone.model.structure" [asideVisible]="false" class="rocket-content"></div>
 
 	<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
 		<div>
