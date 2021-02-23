@@ -306,7 +306,8 @@ router-outlet + *,
 
 .rocket-main-layer,
 .rocket-layer {
-    overflow-y: scroll;
+    // overflow-y: scroll;
+    overflow: hidden;
     grid-row: 1;
     grid-column: span 1 / 1;
     display: grid;

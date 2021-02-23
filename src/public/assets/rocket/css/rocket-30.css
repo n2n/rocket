@@ -5191,7 +5191,7 @@ router-outlet + *,
 
 .rocket-main-layer,
 .rocket-layer {
-  overflow-y: scroll;
+  overflow: hidden;
   -ms-grid-row: 1;
   grid-row: 1;
   -ms-grid-column-span: 1;
@@ -5259,14 +5259,20 @@ router-outlet + *,
  * rocket zone
  */
 .rocket-zone {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: main;
+  overflow-y: scroll;
+}
+
+.rocket-zone-content {
   position: relative;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -ms-grid-row: 2;
-  -ms-grid-column: 1;
-  grid-area: main;
   display: -ms-grid;
   display: grid;
   padding: 0 3rem;
@@ -5279,7 +5285,7 @@ router-outlet + *,
       grid-template-columns: minmax(0, 1fr) minmax(0, min-content);
 }
 
-.rocket-zone > header {
+.rocket-zone-content > header {
   display: -ms-grid;
   display: grid;
   position: relative;
@@ -5297,13 +5303,13 @@ router-outlet + *,
   margin: 0 -3rem;
 }
 
-.rocket-zone > header > .breadcrumb {
+.rocket-zone-content > header > .breadcrumb {
   -ms-grid-row: 1;
   -ms-grid-row-span: 1;
   grid-row: 1 / 2;
 }
 
-.rocket-zone > header > h1 {
+.rocket-zone-content > header > h1 {
   -ms-grid-row: 2;
   -ms-grid-row-span: 1;
   grid-row: 2 / 3;
@@ -5313,7 +5319,7 @@ router-outlet + *,
   overflow: hidden;
 }
 
-.rocket-zone > .rocket-content {
+.rocket-zone-content > .rocket-content {
   -webkit-box-flex: 1;
       -ms-flex: 1 1 100%;
           flex: 1 1 100%;
@@ -5322,7 +5328,7 @@ router-outlet + *,
   grid-area: main;
 }
 
-.rocket-zone > .rocket-zone-commands {
+.rocket-zone-content > .rocket-zone-commands {
   padding: 10px 3rem;
   margin: 0 -3rem;
   position: sticky;
@@ -5337,14 +5343,14 @@ router-outlet + *,
 }
 
 @media (max-width: 991.98px) {
-  .rocket-zone {
+  .rocket-zone-content {
     padding: 0 1rem;
   }
-  .rocket-zone > header {
+  .rocket-zone-content > header {
     padding: 0 1rem;
     margin: 0 -1rem;
   }
-  .rocket-zone > .rocket-zone-commands {
+  .rocket-zone-content > .rocket-zone-commands {
     padding: 10px 1rem;
     margin: 0 -1rem;
   }
