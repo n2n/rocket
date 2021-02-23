@@ -1,11 +1,12 @@
 import { SiPageCollection } from '../model/si-page-collection';
 import { SiEntryQualifierSelection } from '../model/si-entry-qualifier-selection';
+import { StructurePageManager } from './compact-explorer/structure-page-manager';
 
 export interface CompactExplorerModel {
 
 	// getApiUrl(): string;
 
-	getSiPageCollection(): SiPageCollection;
+	getStructurePageManager(): StructurePageManager;
 
 	// getSiControlBoundry(): SiControlBoundry;
 

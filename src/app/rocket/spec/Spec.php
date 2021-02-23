@@ -623,7 +623,7 @@ class EiSetupQueue {
 			}
 		} catch (InvalidConfigurationException $e) {
 			throw new InvalidEiMaskConfigurationException('Failed to setup EiMask for: ' 
-					. $eiConfigurator->getEiComponent()->getEiMask() . '.', 0, $e);
+					. $eiConfigurator->getEiComponent() . '.', 0, $e);
 		}
 	}
 	

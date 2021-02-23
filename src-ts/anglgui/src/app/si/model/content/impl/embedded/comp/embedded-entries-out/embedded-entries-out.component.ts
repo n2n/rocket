@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EmbeddedEntriesOutModel } from '../embedded-entries-out-model';
-import { EmbeOutCollection } from '../../model/embe/embe-collection';
-import { Embe } from '../../model/embe/embe';
+import { EmbeStructure } from '../../model/embe/embe-structure';
 
 @Component({
 	selector: 'rocket-embedded-entries-out',
@@ -10,16 +9,14 @@ import { Embe } from '../../model/embe/embe';
 })
 export class EmbeddedEntriesOutComponent implements OnInit {
 	model: EmbeddedEntriesOutModel;
-	private embeCol: EmbeOutCollection;
 
 	constructor() { }
 
 	ngOnInit() {
-		this.embeCol = this.model.getEmbeOutCollection();
 	}
 
-	get embes(): Embe[] {
-		return this.embeCol.embes;
+	get embeStructures(): EmbeStructure[] {
+		return this.model.getEmbeStructures();
 	}
 
 }

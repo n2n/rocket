@@ -1,19 +1,24 @@
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, Subject } from 'rxjs';
 import { UiZone } from './ui-zone';
 import { UiStructureModel, UiStructureModelMode } from './ui-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
+import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
+import { UiStructureError } from './ui-structure-error';
 
 export class UiStructure {
 	private _model: UiStructureModel|null;
-	private children: UiStructure[] = [];
+	private children: Array<{ structure: UiStructure, subscription: Subscription }> = [];
 	private visibleSubject = new BehaviorSubject<boolean>(true);
 	private markedSubject = new BehaviorSubject<boolean>(false);
-	private toolbarChildren$ = new BehaviorSubject<UiStructure[]>([]);
-	private contentChildren$ = new BehaviorSubject<UiStructure[]>([]);
+	private toolbarChildrenSubject = new BehaviorSubject<UiStructure[]>([]);
+	private contentChildrenSubject = new BehaviorSubject<UiStructure[]>([]);
 	private disabledSubject = new BehaviorSubject<boolean>(false);
 	private disabledSubscription: Subscription;
+	private focusedSubject = new Subject<void>();
+	private messagesSubscription: Subscription;
+	private zoneErrorsCollection = new BehaviorCollection<UiZoneError>();
 
 	private disposedSubject = new BehaviorSubject<boolean>(false);
 	private _level: number|null = null;
@@ -86,9 +91,9 @@ export class UiStructure {
 	createToolbarChild(model: UiStructureModel): UiStructure {
 		const toolbarChild = new UiStructure(this, null, null, null, model);
 
-		const toolbarChildrean = this.toolbarChildren$.getValue();
+		const toolbarChildrean = this.toolbarChildrenSubject.getValue();
 		toolbarChildrean.push(toolbarChild);
-		this.toolbarChildren$.next(toolbarChildrean);
+		this.toolbarChildrenSubject.next(toolbarChildrean);
 
 		return toolbarChild;
 	}
@@ -97,9 +102,9 @@ export class UiStructure {
 			model: UiStructureModel|null = null): UiStructure {
 		const contentChild = new UiStructure(this, null, type, label, model);
 
-		const contentChildrean = this.contentChildren$.getValue();
+		const contentChildrean = this.contentChildrenSubject.getValue();
 		contentChildrean.push(contentChild);
-		this.contentChildren$.next(contentChildrean);
+		this.contentChildrenSubject.next(contentChildrean);
 
 		return contentChild;
 	}
@@ -114,11 +119,11 @@ export class UiStructure {
 	}
 
 	getToolbarChildren(): UiStructure[] {
-		return Array.from(this.toolbarChildren$.getValue());
+		return Array.from(this.toolbarChildrenSubject.getValue());
 	}
 
 	getToolbarChildren$(): Observable<UiStructure[]> {
-		return this.toolbarChildren$;
+		return this.toolbarChildrenSubject;
 	}
 
 	hasContentChildren(): boolean {
@@ -126,15 +131,15 @@ export class UiStructure {
 	}
 
 	getContentChildren(): UiStructure[] {
-		return Array.from(this.contentChildren$.getValue());
+		return Array.from(this.contentChildrenSubject.getValue());
 	}
 
 	getContentChildren$(): Observable<UiStructure[]> {
-		return this.contentChildren$;
+		return this.contentChildrenSubject.asObservable();
 	}
 
 	getChildren(): UiStructure[] {
-		return Array.from(this.children);
+		return this.children.map(c => c.structure);
 	}
 
 	getZone(): UiZone {
@@ -173,6 +178,7 @@ export class UiStructure {
 		this._model = model;
 		model.bind(this);
 		this.disabledSubscription = model.getDisabled$().subscribe(d => this.disabledSubject.next(d));
+		this.messagesSubscription = model.getStructureErrors$().subscribe(() => this.compileZoneErrors());
 
 // 		if (this.disabledSubject.getValue()) {
 // 			this.disabledSubject.next(false);
@@ -180,10 +186,10 @@ export class UiStructure {
 	}
 
 	private clear() {
-		this.toolbarChildren$.next([]);
+		this.toolbarChildrenSubject.next([]);
 
 		for (const child of [...this.children]) {
-			child.dispose();
+			child.structure.dispose();
 		}
 
 		if (this.children.length !== 0) {
@@ -195,6 +201,8 @@ export class UiStructure {
 			this._model = null;
 			this.disabledSubscription.unsubscribe();
 			this.disabledSubscription = null;
+			this.messagesSubscription.unsubscribe();
+			this.messagesSubscription = null;
 		}
 	}
 
@@ -214,7 +222,10 @@ export class UiStructure {
 
 		this.visibleSubject.complete();
 		this.markedSubject.complete();
-		this.toolbarChildren$.complete();
+		this.toolbarChildrenSubject.complete();
+		this.focusedSubject.complete();
+
+		this.zoneErrorsCollection.dispose();
 
 		if (this.parent) {
 			this.parent.unregisterChild(this);
@@ -224,35 +235,40 @@ export class UiStructure {
 	protected registerChild(child: UiStructure) {
 		this.ensureNotDisposed();
 
-		const i = this.children.indexOf(child);
+		const i = this.children.findIndex(c => c.structure === child);
 		if (i !== -1 || this === child) {
 			throw new IllegalSiStateError('Child already exists or is same as parent.');
 		}
 
-		this.children.push(child);
+		this.children.push({
+			structure: child,
+			subscription: child.getZoneErrors$().subscribe(() => {
+				this.compileZoneErrors();
+			})
+		});
 	}
 
 	protected unregisterChild(child: UiStructure) {
-		let i = this.children.indexOf(child);
+		let i = this.children.findIndex(c => c.structure === child);
 		if (i === -1) {
 			throw new IllegalSiStateError('Unknown child.');
 		}
 
 		this.children.splice(i, 1);
 
-		const toolbarChildren = this.toolbarChildren$.getValue();
+		const toolbarChildren = this.toolbarChildrenSubject.getValue();
 		i = toolbarChildren.indexOf(child);
 		if (i > -1) {
 			toolbarChildren.splice(i, 1);
 		}
-		this.toolbarChildren$.next(toolbarChildren);
+		this.toolbarChildrenSubject.next(toolbarChildren);
 
-		const contentChildren = this.contentChildren$.getValue();
+		const contentChildren = this.contentChildrenSubject.getValue();
 		i = contentChildren.indexOf(child);
 		if (i > -1) {
 			contentChildren.splice(i, 1);
 		}
-		this.contentChildren$.next(contentChildren);
+		this.contentChildrenSubject.next(contentChildren);
 	}
 
 	get marked(): boolean {
@@ -260,7 +276,7 @@ export class UiStructure {
 	}
 
 	set marked(marked: boolean) {
-		this.visibleSubject.next(marked);
+		this.markedSubject.next(marked);
 	}
 
 	get visible(): boolean {
@@ -283,33 +299,49 @@ export class UiStructure {
 		return this.disabledSubject.asObservable();
 	}
 
+	get focused$(): Observable<void> {
+		return this.focusedSubject.asObservable();
+	}
+
+	focus(): void {
+		this.focusedSubject.next();
+	}
+
+	getZoneErrors$(): Observable<UiZoneError[]> {
+		return this.zoneErrorsCollection.get$();
+	}
+
 	getZoneErrors(): UiZoneError[] {
 		this.ensureNotDisposed();
+		return this.zoneErrorsCollection.get();
+	}
 
+	private compileZoneErrors() {
 		const errors: UiZoneError[] = [];
 
 		if (this.model) {
-			errors.push(...this.assembleZoneErrors(this));
+			errors.push(...this.model.getStructureErrors().map(se => this.createZoneError(se)));
 		}
 
 		for (const child of this.children) {
-			errors.push(...child.getZoneErrors());
+			errors.push(...child.structure.getZoneErrors());
 		}
 
-		return errors;
+		this.zoneErrorsCollection.set(errors);
 	}
 
-	private assembleZoneErrors(structure: UiStructure): UiZoneError[] {
-		return structure.model.getZoneErrors().map((zoneError) => {
-			return {
-				message: zoneError.message,
-				marked: zoneError.marked || ((marked) => {
-					this.marked = marked;
-				}),
-				focus: zoneError.focus || (() => {
-					this.visible = true;
-				})
-			};
-		});
+	private createZoneError(structureError: UiStructureError): UiZoneError {
+		return {
+			message: structureError.message,
+			marked: structureError.marked  || ((marked) => {
+				this.marked = marked;
+			}),
+			focus: (() => {
+				this.visible = true;
+				if (structureError.focus) {
+					structureError.focus();
+				}
+			})
+		};
 	}
 }

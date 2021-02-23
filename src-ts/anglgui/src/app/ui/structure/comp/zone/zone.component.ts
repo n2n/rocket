@@ -1,50 +1,52 @@
-import { Component, OnInit, DoCheck, Input, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, DoCheck, Input, ElementRef, OnDestroy, ChangeDetectionStrategy, HostBinding } from '@angular/core';
 import { UiZone, UiZoneModel } from '../../model/ui-zone';
 import { UiZoneError } from '../../model/ui-zone-error';
 import { UiContent } from '../../model/ui-content';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'rocket-ui-zone',
 	templateUrl: './zone.component.html',
 	styleUrls: ['./zone.component.css']
 })
-export class ZoneComponent implements OnInit, DoCheck, OnDestroy {
+export class ZoneComponent implements OnInit, OnDestroy {
 
 	@Input() uiZone: UiZone;
 
-	uiZoneErrors: UiZoneError[] = [];
+	// uiZoneErrors: UiZoneError[] = [];
 
-	asideCommandUiContents: UiContent[] = [];
+	// private subscription: Subscription;
 
 	constructor(private elemRef: ElementRef) {
 	}
 
 	ngOnInit() {
+		// this.subscription = this.uiZone.uiStructure.getZoneErrors$().subscribe((uiZoneErrors) => {
+		// 	this.uiZoneErrors = uiZoneErrors;
+		// });
 	}
 
 	ngOnDestroy() {
+		// this.subscription.unsubscribe();
+		// this.subscription = null;
 	}
 
-	ngDoCheck() {
-		if (this.uiZone.model) {
-			this.uiZoneErrors = this.uiZone.uiStructure.getZoneErrors();
-			this.asideCommandUiContents = this.uiZone.uiStructure.model.getAsideContents();
-		} else {
-			this.uiZoneErrors = [];
-			this.asideCommandUiContents = [];
-		}
+	get uiZoneErrors(): UiZoneError[] {
+		return this.uiZone.uiStructure.getZoneErrors();
+	}
 
-		if (this.hasUiZoneErrors()) {
-			this.elemRef.nativeElement.classList.add('rocket-contains-additional');
-		} else {
-			this.elemRef.nativeElement.classList.remove('rocket-contains-additional');
+	get asideCommandUiContents(): UiContent[] {
+		if (!this.uiZone.uiStructure.model) {
+			return [];
 		}
+		return this.uiZone.uiStructure.model.getAsideContents()
 	}
 
 	get uiZoneModel(): UiZoneModel|null {
 		return this.uiZone.model;
 	}
 
+	@HostBinding('class.rocket-contains-additional')
 	hasUiZoneErrors() {
 		return this.uiZoneErrors.length > 0;
 	}

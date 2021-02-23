@@ -11,9 +11,8 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
-import { EmbeInSource } from './embe/embe-collection';
+import { EmbeInSource, EmbeInCollection } from './embe/embe-collection';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
-import { SiEntry } from '../../../si-entry';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -41,17 +40,17 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	}
 
 	private validate() {
-		this.messages = [];
+		this.messagesCollection.clear();
 
 		const values = this.getTypeSelectedValues();
 
 		if (values.length < this.config.min) {
-			this.messages.push(Message.createCode('min_elements_err',
+			this.messagesCollection.push(Message.createCode('min_elements_err',
 					new Map([['{field}', this.label], ['{min}', this.config.min.toString()]])));
 		}
 
 		if (this.config.max !== null && values.length > this.config.max) {
-			this.messages.push(Message.createCode('max_elements_err',
+			this.messagesCollection.push(Message.createCode('max_elements_err',
 					new Map([['{field}', this.label], ['{max}', this.config.max.toString()]])));
 		}
 	}
@@ -69,10 +68,13 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	}
 
 	createUiStructureModel(): UiStructureModel {
+		const embeInCol = new EmbeInCollection(this, this.config);
+		embeInCol.readEmbes();
+
 		return new EmbeddedEntriesInUiStructureModel(
 				new EmbeddedEntryObtainer(this.siService, this.siModState, this.frame, this.config.reduced, this.config.allowedTypeIds),
-				this.frame, this, this.config, this.translationService,
-				this.disabledSubject);
+				this.frame, embeInCol, this.config, this.translationService,
+				this.getDisabled$());
 	}
 
 	// copy(): SiField {

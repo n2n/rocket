@@ -7,7 +7,6 @@ import { AddPasteObtainer } from '../comp/add-paste-obtainer';
 import { EmbeddedEntryObtainer } from './embedded-entry-obtainer';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
@@ -17,33 +16,32 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, merge } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { EmbeddedEntryComponent } from '../comp/embedded-entry/embedded-entry.component';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
-import { EmbeInCollection, EmbeInSource } from './embe/embe-collection';
+import { EmbeInCollection } from './embe/embe-collection';
 import { Embe } from './embe/embe';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
-import { Message } from 'src/app/util/i18n/message';
 import { SiEmbeddedEntry } from './si-embedded-entry';
+import { EmbeStructureCollection, EmbeStructure } from './embe/embe-structure';
+import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
+import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
+import { Message } from 'src/app/util/i18n/message';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
-	private embeInCol: EmbeInCollection;
-	private embeInUiStructureManager: EmbeInUiStructureManager|null = null;
+	private embeInUiZoneManager: EmbeInUiZoneManager|null = null;
+	private embeStructureCollection: EmbeStructureCollection|null = null;
+	private subscription: Subscription|null = null;
+	private structureErrorCollection = new BehaviorCollection<UiStructureError>();
 
 	constructor(private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
-			private embeInSource: EmbeInSource, private config: EmbeddedEntriesInConfig,
-			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
+			private embeInCol: EmbeInCollection, private config: EmbeddedEntriesInConfig,
+			private translationService: TranslationService, disabled$: Observable<boolean>|null = null) {
 		super();
-		this.disabled$ = disabledSubject;
-
-		const getUiStucture = () => {
-			return this.reqBoundUiStructure();
-		};
-
-		this.embeInCol = new EmbeInCollection(embeInSource, getUiStucture, config);
-		this.embeInCol.readEmbes();
+		this.disabled$ = disabled$;
 	}
 
 	// getValues(): SiEmbeddedEntry[] {
@@ -54,9 +52,10 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	// 	this.values = values;
 	// }
 
-	getEmbeInCollection(): EmbeInCollection {
-		return this.embeInCol;
-	}
+	// getEmbeInCollection(): EmbeInCollection {
+	// 	return this.embeInCol;
+	// }
+
 
 	getMin(): number {
 		return this.config.min;
@@ -90,104 +89,224 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		return new EmbeddedAddPasteObtainer(this.obtainer);
 	}
 
-	private getEmbeInUiStructureManager(): EmbeInUiStructureManager {
-		IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
-		return this.embeInUiStructureManager;
+	private getEmbeInUiStructureManager(): EmbeInUiZoneManager {
+		IllegalStateError.assertTrue(!!this.embeInUiZoneManager);
+		return this.embeInUiZoneManager;
 	}
 
-	open(embe: Embe) {
-		this.getEmbeInUiStructureManager().open(embe);
+	private getEmbeStructureCollection(): EmbeStructureCollection {
+		IllegalStateError.assertTrue(!!this.embeStructureCollection);
+		return this.embeStructureCollection;
+	}
+
+	getEmbeStructures(): EmbeStructure[] {
+		return this.embeStructureCollection.embeStructures;
+	}
+
+	switch(previousIndex: number, currentIndex: number): void {
+		this.embeInCol.changeEmbePosition(previousIndex, currentIndex);
+		this.embeInCol.writeEmbes();
+		this.getEmbeStructureCollection().refresh();
+	}
+
+	add(siEmbeddedEntry: SiEmbeddedEntry): void {
+		this.embeInCol.createEmbe(siEmbeddedEntry);
+		this.embeInCol.writeEmbes();
+		this.getEmbeStructureCollection().refresh();
+	}
+
+	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embeStructure: EmbeStructure): void {
+		this.embeInCol.createEmbe(siEmbeddedEntry);
+		this.embeInCol.changeEmbePosition(this.embeInCol.embes.length - 1, this.embeInCol.embes.indexOf(embeStructure.embe));
+		this.embeInCol.writeEmbes();
+		this.getEmbeStructureCollection().refresh();
+	}
+
+	// place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+	// 	embe.siEmbeddedEntry = siEmbeddedEntry;
+	// 	this.embeCol.writeEmbes();
+	// }
+
+	remove(embeStructure: EmbeStructure): void {
+		if (this.embeInCol.embes.length > this.getMin()) {
+			this.embeInCol.removeEmbe(embeStructure.embe);
+			this.embeInCol.writeEmbes();
+			this.getEmbeStructureCollection().refresh();
+			return;
+		}
+
+		embeStructure.embe.siEmbeddedEntry = null;
+		this.getEmbeStructureCollection().refresh();
+
+		this.obtainer.obtainNew().then(siEmbeddedEntry => {
+			embeStructure.embe.siEmbeddedEntry = siEmbeddedEntry;
+			this.getEmbeStructureCollection().refresh();
+		});
+	}
+
+	open(embeStructure: EmbeStructure): void {
+		IllegalStateError.assertTrue(this.config.reduced);
+		this.getEmbeInUiStructureManager().open(embeStructure.embe).then((changed) => {
+			if (!changed) {
+				this.embeStructureCollection.refresh();
+			}
+		});
 	}
 
 	openAll() {
-		this.getEmbeInUiStructureManager().openAll();
+		this.getEmbeInUiStructureManager().openAll().then((changed) => {
+			if (!changed) {
+				this.embeStructureCollection.refresh();
+			}
+		});
 	}
 
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		if (this.config.reduced) {
-			this.embeInUiStructureManager = new EmbeInUiStructureManager(uiStructure, this.embeInCol, this, this.obtainer,
-					this.translationService);
-			this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
-				ref.instance.model = this;
-			});
-		} else {
+		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, uiStructure, this.embeInCol);
+		this.embeStructureCollection.refresh();
+		this.subscription = merge(this.embeInCol.source.getMessages$(), this.embeStructureCollection.reducedErrorsChanged$).subscribe(() => {
+			this.updateReducedStructureErrors();
+		});
+
+		if (!this.config.reduced) {
 			this.uiContent = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
 				ref.instance.model = this;
 			});
+			return;
 		}
+
+		this.embeInUiZoneManager = new EmbeInUiZoneManager(uiStructure.getZone(), this.embeInCol, this.frame, this.obtainer,
+				this.config, this.translationService, this.disabled$);
+		this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
+			ref.instance.model = this;
+		});
+	}
+
+	unbind(): void {
+		super.unbind();
+
+		this.embeInUiZoneManager = null;
+		this.subscription.unsubscribe();
+		this.subscription = null;
+		this.embeStructureCollection.clear();
+		this.embeStructureCollection = null;
 	}
 
 	getAsideContents(): UiContent[] {
 		return [];
 	}
 
-	getZoneErrors(): UiZoneError[] {
-		const errors = new Array<UiZoneError>();
+	// getZoneErrors(): UiZoneError[] {
+	// 	const errors = new Array<UiZoneError>();
 
-		for (const embe of this.embeInCol.embes) {
-			if (!embe.uiStructureModel) {
+	// 	for (const embe of this.embeInCol.embes) {
+	// 		if (!embe.uiStructureModel) {
+	// 			continue;
+	// 		}
+
+	// 		if (!this.config.reduced) {
+	// 			errors.push(...embe.uiStructureModel.getZoneErrors());
+	// 			continue;
+	// 		}
+
+	// 		for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
+	// 			errors.push({
+	// 				message: zoneError.message,
+	// 				marked: (marked) => {
+	// 					this.reqBoundUiStructure().marked = marked;
+	// 				},
+	// 				focus: () => {
+	// 					IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
+
+	// 					this.embeInUiStructureManager.open(embe);
+
+	// 					if (zoneError.focus) {
+	// 						zoneError.focus();
+	// 					}
+	// 				}
+	// 			});
+	// 		}
+	// 	}
+
+	// 	return errors;
+	// }
+
+	private updateReducedStructureErrors() {
+		const structureErrors = new Array<UiStructureError>();
+
+		structureErrors.push(...this.embeInCol.source.getMessages().map(message => ({ message })));
+
+		for (const embeStructure of this.embeStructureCollection.embeStructures) {
+			if (!embeStructure.embe.uiStructureModel) {
 				continue;
 			}
 
-			if (!this.config.reduced) {
-				errors.push(...embe.uiStructureModel.getZoneErrors());
-				continue;
-			}
-
-			for (const zoneError of embe.uiStructureModel.getZoneErrors()) {
-				errors.push({
-					message: zoneError.message,
-					marked: (marked) => {
-						this.reqBoundUiStructure().marked = marked;
+			structureErrors.push(...embeStructure.embe.uiStructureModel.getStructureErrors().map((se) => {
+				return {
+					message: se.message,
+					marked: (marked: boolean) => {
+						embeStructure.uiStructure.marked = marked;
 					},
 					focus: () => {
-						IllegalStateError.assertTrue(!!this.embeInUiStructureManager);
-
-						this.embeInUiStructureManager.open(embe);
-
-						if (zoneError.focus) {
-							zoneError.focus();
+						this.open(embeStructure);
+						if (se.focus) {
+							se.focus();
 						}
 					}
-				});
-			}
+				};
+			}));
 		}
 
-		return errors;
+		this.structureErrorCollection.set(structureErrors);
 	}
 
 	getMessages(): Message[] {
-		return this.embeInSource.getMessages();
+		return this.embeInCol.source.getMessages();
 	}
+
+	getStructureErrors(): UiStructureError[] {
+		return this.structureErrorCollection.get();
+	}
+
+	getStructureErrors$(): Observable<UiStructureError[]> {
+		return this.structureErrorCollection.get$();
+	}
+
 }
 
-class EmbeInUiStructureManager {
+class EmbeInUiZoneManager {
 
 	private popupUiLayer: PopupUiLayer|null = null;
 
-	constructor(private uiStructure: UiStructure, private embeCol: EmbeInCollection,
-			private model: EmbeddedEntriesInModel, private obtainer: EmbeddedEntryObtainer,
-			private translationService: TranslationService) {
+	constructor(private uiZone: UiZone, private embeCol: EmbeInCollection, private siFrame: SiFrame,
+			private obtainer: EmbeddedEntryObtainer, private config: EmbeddedEntriesInConfig,
+			private translationService: TranslationService, private disabled$: Observable<boolean>|null = null) {
 
 	}
 
 	private createEmbeUsm(embe: Embe): UiStructureModel {
-		return new SimpleUiStructureModel(new TypeUiContent(EmbeddedEntryComponent, (ref) => {
-			ref.instance.embe = embe;
-		}));
+		const model = new SimpleUiStructureModel();
+		model.initCallback = (uiStructure) => {
+			const child = uiStructure.createChild();
+			child.model = embe.uiStructureModel;
+
+			model.content = new TypeUiContent(EmbeddedEntryComponent, (ref) => {
+				ref.instance.embeStructure = new EmbeStructure(embe, child);
+			});
+		};
+		return model;
 	}
 
-	open(embe: Embe) {
+	open(embe: Embe): Promise<boolean> {
 		if (this.popupUiLayer) {
 			return;
 		}
 
-		const uiZone = this.uiStructure.getZone();
 		let bakEntry = embe.siEmbeddedEntry.entry.createResetPoint();
 
-		this.popupUiLayer = uiZone.layer.container.createLayer();
+		this.popupUiLayer = this.uiZone.layer.container.createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
 		zone.model = {
@@ -198,47 +317,58 @@ class EmbeInUiStructureManager {
 					.map(siControl => siControl.createUiContent(zone))
 		};
 
-		this.popupUiLayer.onDispose(() => {
-			this.popupUiLayer = null;
-			if (bakEntry) {
-				embe.siEmbeddedEntry.entry.resetToPoint(bakEntry);
-			} else {
-				this.obtainer.val([embe.siEmbeddedEntry]);
-			}
+		const promise = new Promise<boolean>((resolve) => {
+			this.popupUiLayer.onDispose(() => {
+				this.popupUiLayer = null;
+				if (bakEntry) {
+					embe.siEmbeddedEntry.entry.resetToPoint(bakEntry);
+					resolve(false);
+				} else {
+					this.obtainer.val([embe.siEmbeddedEntry]);
+					resolve(true);
+				}
+			});
 		});
+
+		return promise;
 	}
 
-	openAll() {
+	openAll(): Promise<boolean> {
 		if (this.popupUiLayer) {
 			return;
 		}
 
-		const uiZone = this.uiStructure.getZone();
-
 		let bakEmbeddedEntries: SiEmbeddedEntry[]|null = [...this.embeCol.embes.map(embe => embe.siEmbeddedEntry)];
 		const bakEntries = this.embeCol.createEntriesResetPoints();
 
-		this.popupUiLayer = uiZone.layer.container.createLayer();
-		this.popupUiLayer.onDispose(() => {
-			this.popupUiLayer = null;
+		this.popupUiLayer = this.uiZone.layer.container.createLayer();
 
-			if (bakEmbeddedEntries) {
-				this.resetEmbeCol(bakEmbeddedEntries, bakEntries);
-				return;
-			}
+		const promise = new Promise<boolean>((resolve) => {
+			this.popupUiLayer.onDispose(() => {
+				this.popupUiLayer = null;
 
-			this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
+				if (bakEmbeddedEntries) {
+					this.resetEmbeCol(bakEmbeddedEntries, bakEntries);
+					resolve(false);
+					return;
+				}
+
+				this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
+				resolve(true);
+			});
 		});
 
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		const popupUiStructureModel = new SimpleUiStructureModel();
-
-		popupUiStructureModel.initCallback = () => {
-			popupUiStructureModel.content = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
-				ref.instance.model = this.model;
-			});
-		};
+		const popupUiStructureModel = new EmbeddedEntriesInUiStructureModel(this.obtainer, this.siFrame, this.embeCol,
+				{
+					reduced: false,
+					min: this.config.min,
+					max: this.config.max,
+					nonNewRemovable: this.config.nonNewRemovable,
+					sortable: this.config.sortable,
+					allowedTypeIds: this.config.allowedTypeIds
+				}, this.translationService, this.disabled$);
 
 		zone.model = {
 			title: 'Some Title',
@@ -247,6 +377,8 @@ class EmbeInUiStructureManager {
 			mainCommandContents: this.createPopupControls(() => { bakEmbeddedEntries = null; })
 					.map(siControl => siControl.createUiContent(zone))
 		};
+
+		return promise;
 	}
 
 	private createPopupControls(applyCallback: () => any): SiControl[] {
@@ -275,15 +407,5 @@ class EmbeInUiStructureManager {
 		});
 
 		this.embeCol.writeEmbes();
-	}
-
-	apply() {
-		if (this.popupUiLayer) {
-			this.popupUiLayer.dispose();
-		}
-	}
-
-	cancel() {
-
 	}
 }

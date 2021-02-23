@@ -8,6 +8,7 @@ import { EmbeddedEntriesInModel } from '../embedded-entries-in-model';
 import { EmbeInCollection } from '../../model/embe/embe-collection';
 import { Embe } from '../../model/embe/embe';
 import { CopyPool } from '../../model/embe/embe-copy-pool';
+import { EmbeStructure } from '../../model/embe/embe-structure';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	model: EmbeddedEntriesInModel;
 
 	copyPool: CopyPool;
-	private embeCol: EmbeInCollection;
 	obtainer: AddPasteObtainer;
 
 	embeUiStructures = new Array<{embe: Embe, uiStructure: UiStructure}>();
@@ -30,7 +30,6 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.obtainer = this.model.getAddPasteObtainer();
-		this.embeCol = this.model.getEmbeInCollection();
 	}
 
 	ngOnDestroy() {
@@ -39,7 +38,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	maxReached(): boolean {
 		const max = this.model.getMax();
 
-		return max && max >= this.embeCol.embes.length;
+		return max && max >= this.embeUiStructures.length;
 	}
 
 	toOne(): boolean {
@@ -47,44 +46,43 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	}
 
 	drop(event: CdkDragDrop<string[]>) {
-		this.embeCol.changeEmbePosition(event.previousIndex, event.currentIndex);
-		this.embeCol.writeEmbes();
+		this.model.switch(event.previousIndex, event.currentIndex);
 	}
 
-	add(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.embeCol.createEmbe(siEmbeddedEntry);
-		this.embeCol.writeEmbes();
-	}
-
-	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
-		this.embeCol.createEmbe(siEmbeddedEntry);
-		this.embeCol.changeEmbePosition(this.embeCol.embes.length - 1, this.embeCol.embes.indexOf(embe));
-		this.embeCol.writeEmbes();
-	}
-
-	// place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
-	// 	embe.siEmbeddedEntry = siEmbeddedEntry;
+	// add(siEmbeddedEntry: SiEmbeddedEntry) {
+	// 	this.embeCol.createEmbe(siEmbeddedEntry);
 	// 	this.embeCol.writeEmbes();
 	// }
 
-	remove(embe: Embe) {
-		if (this.embeCol.embes.length > this.model.getMin()) {
-			this.embeCol.removeEmbe(embe);
-			this.embeCol.writeEmbes();
-			return;
-		}
+	// addBefore(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+	// 	this.embeCol.createEmbe(siEmbeddedEntry);
+	// 	this.embeCol.changeEmbePosition(this.embeCol.embes.length - 1, this.embeCol.embes.indexOf(embe));
+	// 	this.embeCol.writeEmbes();
+	// }
 
-		embe.siEmbeddedEntry = null;
-		this.obtainer.obtainNew().then(siEmbeddedEntry => {
-			embe.siEmbeddedEntry = siEmbeddedEntry;
-		});
+	// // place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+	// // 	embe.siEmbeddedEntry = siEmbeddedEntry;
+	// // 	this.embeCol.writeEmbes();
+	// // }
+
+	// remove(embe: Embe) {
+	// 	if (this.embeCol.embes.length > this.model.getMin()) {
+	// 		this.embeCol.removeEmbe(embe);
+	// 		this.embeCol.writeEmbes();
+	// 		return;
+	// 	}
+
+	// 	embe.siEmbeddedEntry = null;
+	// 	this.obtainer.obtainNew().then(siEmbeddedEntry => {
+	// 		embe.siEmbeddedEntry = siEmbeddedEntry;
+	// 	});
+	// }
+
+	get embeStructures(): EmbeStructure[] {
+		return this.model.getEmbeStructures();
 	}
 
-	get embes(): Embe[] {
-		return this.embeCol.embes;
-	}
-
-	open(embe: Embe) {
+	open(embe: EmbeStructure) {
 		this.model.open(embe);
 	}
 

@@ -25,6 +25,7 @@ export class StructureComponent implements OnInit, OnDestroy {
 	compact = false;
 
 	private _uiStructure: UiStructure;
+	private focusedSbscription: Subscription|null = null;
 
 	@ViewChild(StructureContentDirective, { static: true })
 	structureContentDirective: StructureContentDirective;
@@ -41,9 +42,15 @@ export class StructureComponent implements OnInit, OnDestroy {
 // 		const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
 
 // 		(<ZoneComponent> componentRef.instance).data = {};
+		this.focusedSbscription = this.uiStructure.focused$.subscribe(() => {
+			this.elRef.nativeElement.scrollIntoView({ behavior: 'smooth' });
+		});
 	}
 
 	ngOnDestroy() {
+		this.focusedSbscription.unsubscribe();
+		this.focusedSbscription = null;
+
 		this.clear();
 	}
 
@@ -83,6 +90,11 @@ export class StructureComponent implements OnInit, OnDestroy {
 	@HostBinding('class.rocket-double-item')
 	get doubleItem(): boolean {
 		return this.uiStructure.isDoubleItem();
+	}
+
+	@HostBinding('class.rocket-marked')
+	get marked(): boolean {
+		return this.uiStructure.marked;
 	}
 
 	private clear() {

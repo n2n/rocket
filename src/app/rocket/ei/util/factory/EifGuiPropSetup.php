@@ -29,7 +29,7 @@ class EifGuiPropSetup {
 
 	/**
 	 * @param string $siStructureType
-	 * @return \rocket\ei\util\factory\EifGuiField
+	 * @return \rocket\ei\util\factory\EifGuiPropSetup
 	 */
 	function setSiStructureType(string $siStructureType) {
 		ArgUtils::valEnum($siStructureType, SiStructureType::all());
@@ -46,7 +46,7 @@ class EifGuiPropSetup {
 	
 	/**
 	 * @param bool $defaultDisplayed
-	 * @return \rocket\ei\util\factory\EifGuiField
+	 * @return \rocket\ei\util\factory\EifGuiPropSetup
 	 */
 	function setDefaultDisplayed(bool $defaultDisplayed) {
 		$this->defaultDisplayed = $defaultDisplayed;
@@ -62,7 +62,7 @@ class EifGuiPropSetup {
 	
 	/**
 	 * @param string|null $overwriteLabel
-	 * @return \rocket\ei\util\factory\EifGuiField
+	 * @return \rocket\ei\util\factory\EifGuiPropSetup
 	 */
 	function setOverwriteLabel(?string $overwriteLabel) {
 		$this->overwriteLabel = $overwriteLabel;

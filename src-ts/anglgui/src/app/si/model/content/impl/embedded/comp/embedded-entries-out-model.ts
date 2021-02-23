@@ -1,11 +1,10 @@
-import { EmbeOutCollection } from '../model/embe/embe-collection';
-import { Embe } from '../model/embe/embe';
+import { EmbeStructure } from '../model/embe/embe-structure';
 
 export interface EmbeddedEntriesOutModel {
 
-	getEmbeOutCollection(): EmbeOutCollection;
+	getEmbeStructures(): EmbeStructure[];
 
-	open(embe: Embe): void;
+	open(EmbeStructure: EmbeStructure): void;
 
 	openAll(): void;
 }

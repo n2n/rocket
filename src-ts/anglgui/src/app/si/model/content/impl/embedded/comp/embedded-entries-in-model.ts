@@ -1,11 +1,11 @@
 import { AddPasteObtainer } from './add-paste-obtainer';
-import { EmbeInCollection } from '../model/embe/embe-collection';
-import { Embe } from '../model/embe/embe';
 import { MessageFieldModel } from '../../common/comp/message-field-model';
+import { EmbeStructure } from '../model/embe/embe-structure';
+import { SiEmbeddedEntry } from '../model/si-embedded-entry';
 
 export interface EmbeddedEntriesInModel extends MessageFieldModel {
 
-	getMin(): number;
+	// getMin(): number;
 
 	getMax(): number|null;
 
@@ -21,9 +21,22 @@ export interface EmbeddedEntriesInModel extends MessageFieldModel {
 
 	getAddPasteObtainer(): AddPasteObtainer;
 
-	getEmbeInCollection(): EmbeInCollection;
+	getEmbeStructures(): EmbeStructure[];
 
-	open(embe: Embe): void;
+	switch(previousIndex: number, currentIndex: number): void;
+
+	add(siEmbeddedEntry: SiEmbeddedEntry): void;
+
+	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embeStructure: EmbeStructure): void;
+
+	// place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
+	// 	embe.siEmbeddedEntry = siEmbeddedEntry;
+	// 	this.embeCol.writeEmbes();
+	// }
+
+	remove(embeStructure: EmbeStructure): void;
+
+	open(embeStructure: EmbeStructure): void;
 
 	openAll(): void;
 }

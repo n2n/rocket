@@ -9,13 +9,14 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { CompactEntryModel } from '../comp/compact-entry-model';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable, from } from 'rxjs';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
+import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private entrySubject = new BehaviorSubject<SiEntry|null>(null);
@@ -98,23 +99,35 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		return this.fieldUiStructures;
 	}
 
-	getZoneErrors(): UiZoneError[] {
-		if (!this.currentSiEntry) {
-			return [];
-		}
-
-		const zoneErrors = new Array<UiZoneError>();
-		const typeId = this.currentSiEntry.selectedTypeId;
-
-		if (!typeId) {
-			return zoneErrors;
-		}
-
-		for (const fieldUiStructure of this.fieldUiStructures) {
-			zoneErrors.push(...fieldUiStructure.getZoneErrors());
-		}
-		return zoneErrors;
+	getMessages(): Message[] {
+		return [];
 	}
+
+	getStructureErrors(): UiStructureError[] {
+		return [];
+	}
+
+	getStructureErrors$(): Observable<UiStructureError[]> {
+		return from([]);
+	}
+
+	// getZoneErrors(): UiZoneError[] {
+	// 	if (!this.currentSiEntry) {
+	// 		return [];
+	// 	}
+
+	// 	const zoneErrors = new Array<UiZoneError>();
+	// 	const typeId = this.currentSiEntry.selectedTypeId;
+
+	// 	if (!typeId) {
+	// 		return zoneErrors;
+	// 	}
+
+	// 	for (const fieldUiStructure of this.fieldUiStructures) {
+	// 		zoneErrors.push(...fieldUiStructure.getZoneErrors());
+	// 	}
+	// 	return zoneErrors;
+	// }
 
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
@@ -135,6 +148,8 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 			return control.createUiContent(uiStructure.getZone());
 		});
 	}
+
+	private curSiEntry: SiEntry|null;
 
 	private rebuild(siEntry: SiEntry|null) {
 		this.clear();
@@ -197,6 +212,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	unbind(): void {
 		super.unbind();
 
+		this.siEntryMonitor.unregisterAllEntries();
 		this.siEntryMonitor.stop();
 		this.uiContent = null;
 

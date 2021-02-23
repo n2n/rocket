@@ -100,7 +100,6 @@ export class SelectComponent implements OnInit {
 
 		this.popupSubscription.unsubscribe();
 		this.popupSubscription = null;
-		console.log('unsub');
 	}
 
 	get value(): string|null {

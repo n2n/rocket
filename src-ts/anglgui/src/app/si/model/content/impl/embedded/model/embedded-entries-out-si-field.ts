@@ -6,7 +6,7 @@ import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model'
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
-import { EmbeOutSource } from './embe/embe-collection';
+import { EmbeOutSource, EmbeOutCollection } from './embe/embe-collection';
 import { EmbeddedEntriesOutConfig } from './embe/embedded-entries-config';
 import { EmbeddedEntriesOutUiStructureModel } from './embedded-entries-out-ui-structure-model';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
@@ -33,8 +33,11 @@ export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOut
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		return new EmbeddedEntriesOutUiStructureModel(this.frame, this, this.config, this.translationService,
-				this.disabledSubject);
+		const embeOutCol = new EmbeOutCollection(this);
+		embeOutCol.readEmbes();
+
+		return new EmbeddedEntriesOutUiStructureModel(this.frame, embeOutCol, this.config, this.translationService,
+				this.getDisabled$());
 	}
 
 	hasInput(): boolean {

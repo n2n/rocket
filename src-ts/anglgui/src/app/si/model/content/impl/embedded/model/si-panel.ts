@@ -2,6 +2,8 @@ import { SiEmbeddedEntry } from './si-embedded-entry';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 import { EmbeInSource } from './embe/embe-collection';
 import { Message } from 'src/app/util/i18n/message';
+import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
+import { Observable } from 'rxjs';
 
 export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	values: SiEmbeddedEntry[] = [];
@@ -13,7 +15,7 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	sortable = false;
 	reduced = true;
 
-	private messages = new Array<Message>();
+	private messageCollection = new BehaviorCollection<Message>();
 
 	constructor(public name: string, public label: string) {
 	}
@@ -28,16 +30,16 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	}
 
 	private validate() {
-		this.messages = [];
+		this.messageCollection.clear();
 		const values = this.getTypeSelectedValues();
 
 		if (values.length < this.min) {
-			this.messages.push(Message.createCode('min_elements_err',
+			this.messageCollection.push(Message.createCode('min_elements_err',
 					new Map([['{field}', this.label], ['{min}', this.min.toString()]])));
 		}
 
 		if (this.max !== null && values.length > this.max) {
-			this.messages.push(Message.createCode('max_elements_err',
+			this.messageCollection.push(Message.createCode('max_elements_err',
 					new Map([['{field}', this.label], ['{max}', this.max.toString()]])));
 		}
 	}
@@ -47,7 +49,11 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	}
 
 	getMessages(): Message[] {
-		return this.messages;
+		return this.messageCollection.get();
+	}
+
+	getMessages$(): Observable<Message[]> {
+		return this.messageCollection.get$();
 	}
 
 	readInput(): object {

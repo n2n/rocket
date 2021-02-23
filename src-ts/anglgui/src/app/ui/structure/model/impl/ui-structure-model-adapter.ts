@@ -4,6 +4,8 @@ import { Observable, of } from 'rxjs';
 import { UiStructure } from '../ui-structure';
 import { UiZoneError } from '../ui-zone-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { Message } from 'src/app/util/i18n/message';
+import { UiStructureError } from '../ui-structure-error';
 
 export abstract class UiStructureModelAdapter implements UiStructureModel {
 	protected boundUiStructure: UiStructure|null = null;
@@ -39,7 +41,9 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 		return this.asideUiContents;
 	}
 
-	abstract getZoneErrors(): UiZoneError[];
+	abstract getStructureErrors(): UiStructureError[];
+
+	abstract getStructureErrors$(): Observable<UiStructureError[]>;
 
 	getDisabled$(): Observable<boolean> {
 		if (!this.disabled$) {

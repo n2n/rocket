@@ -7,11 +7,11 @@
 </div>
 
 <div cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
-	<div *ngFor="let embe of embes" cdkDrag class="rocket-draggable">
+	<div *ngFor="let embeStructure of embeStructures" cdkDrag class="rocket-draggable">
 		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer" 
-					(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>
+					(newEntry)="model.addBefore(embeStructure, $event)"></rocket-si-add-past>
 
-		<div *ngIf="embe.isPlaceholder()">
+		<div *ngIf="embeStructure.embe.isPlaceholder()">
 			<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 				<i class="fa fa-bars"></i>
 			</div>
@@ -26,7 +26,7 @@
 			</div>
 		</div>
 		
-		<ng-container *ngIf="!embe.isPlaceholder() && !embe.isTypeSelected()">
+		<ng-container *ngIf="!embeStructure.embe.isPlaceholder() && !embeStructure.embe.isTypeSelected()">
 			<div class="rocket-summary rocket-summary-ghost">
 				<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 					<i class="fa fa-bars"></i>
@@ -35,7 +35,7 @@
 				<div class="rocket-si-qualifier">
 				</div>
 				<div class="rocket-simple-commands">
-					<button class="btn btn-warning" (click)="open(embe)">
+					<button class="btn btn-warning" (click)="open(embeStructure)">
 						<span>{{ 'common_edit_label' | translate }}</span>
 						<i class="fa fa-plus"></i>
 					</button>
@@ -43,29 +43,30 @@
 			</div>
 		</ng-container>
 
-		<ng-container *ngIf="!embe.isPlaceholder() && embe.isTypeSelected()">
-			<rocket-si-add-past [obtainer]="obtainer" (newEntry)="addBefore($event, embe)"></rocket-si-add-past>
+		<ng-container *ngIf="!embeStructure.embe.isPlaceholder() && embeStructure.embe.isTypeSelected()">
+			<rocket-si-add-past [obtainer]="obtainer" (newEntry)="model.addBefore($event, embeStructure)"></rocket-si-add-past>
 
 			<div rocketUiStructure class="rocket-summary" 
-						[uiStructure]="embe.summaryUiStructure" [toolbarVisible]="false">
+						[uiStructure]="embeStructure.uiStructure" [toolbarVisible]="false">
 				<ng-container pre-content>
 					<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 						<i class="fa fa-bars"></i>
 					</div>
-					<div class="rocket-qualifier-btn" rocketSiQualifier [siMaskQualifier]="embe.siEntry.qualifier.maskQualifier" [iconImportant]="true"></div>
+					<div class="rocket-qualifier-btn" rocketSiQualifier [siMaskQualifier]="embeStructure.embe.siEntry.qualifier.maskQualifier" [iconImportant]="true"></div>
 				</ng-container>
 				
 				<ng-container post-content>
 					<div class="rocket-simple-commands">
-						<button class="btn btn-warning" (click)="open(embe)">
+						<button class="btn btn-warning" (click)="model.open(embeStructure)">
 							<span>{{ 'common_edit_label' | translate }}</span>
 							<i class="fa fa-pencil-alt"></i>
 						</button>
-						<button class="btn btn-danger" (click)="remove(embe)">
+						<button class="btn btn-danger" (click)="model.remove(embeStructure)">
 							<span>{{ 'common_delete_label' | translate }}</span>
 							<i class="fa fa-trash-alt"></i>
 						</button>
-						<button class="btn btn-success" [class.active]="copyPool.isCopied(embe)" (click)="copyPool.toggle(embe)">	
+						<button class="btn btn-success" [class.active]="copyPool.isCopied(embeStructure.embe)" 
+								(click)="copyPool.toggle(embeStructure.embe)">	
 							<span>{{ 'common_copy_label' | translate }}</span>
 							<i class="fa fa-copy"></i>
 						</button>
@@ -75,7 +76,7 @@
 		</ng-container>
 	</div>
 
-	<rocket-si-add-past [obtainer]="obtainer" (newEntry)="add($event)"></rocket-si-add-past>
+	<rocket-si-add-past [obtainer]="obtainer" (newEntry)="model.add($event)"></rocket-si-add-past>
 </div>
 
 <rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>

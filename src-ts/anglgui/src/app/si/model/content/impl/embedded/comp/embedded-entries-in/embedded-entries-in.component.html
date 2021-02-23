@@ -1,11 +1,11 @@
 <div>
-	<div *ngFor="let embe of embes">
+	<div *ngFor="let embeStructure of embeStructures">
 		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
-				(newEntry)="addBefore(embe, $event)"></rocket-si-add-past>	
+				(newEntry)="model.addBefore(embeStructure, $event)"></rocket-si-add-past>	
 
-		<rocket-embedded-entry [embe]="embe"></rocket-embedded-entry>
+		<rocket-embedded-entry [embeStructure]="embeStructure"></rocket-embedded-entry>
 	</div>
 	
 	<rocket-si-add-past *ngIf="!toOne || !maxReached" [disabled]="maxReached" [obtainer]="obtainer"
-			(newEntry)="add($event)"></rocket-si-add-past>
+			(newEntry)="model.add($event)"></rocket-si-add-past>
 </div>

@@ -21,7 +21,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	public suffixAddons: SiCrumbGroup[] = [];
 
 	private _value: number|null = null;
-	
+
 	constructor(public label: string) {
 		super();
 		this.validate();
@@ -37,7 +37,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			this.validate();
 			return;
 		}
-		
+
 		if (this.min !== null && this.min >= value) {
 			this._value = this.min;
 		}
@@ -71,8 +71,8 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			this.value = null;
 			return;
 		}
-		
-		let value = parseFloat(valueStr)
+
+		let value = parseFloat(valueStr);
 		if (isNaN(value)) {
 			value = null;
 		}
@@ -152,20 +152,20 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			cr.instance.model = this;
 		});
 	}
-	
+
 	private validate() {
-		this.messages = [];
+		this.messagesCollection.clear();
 
 		if (this.mandatory && this.value === null) {
-			this.messages.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}
 
 		if (this.min !== null && this.value !== null && this.value < this.min) {
-			this.messages.push(Message.createCode('min_err', new Map([['{field}', this.label], ['{min}', this.min.toString()]])));
+			this.messagesCollection.push(Message.createCode('min_err', new Map([['{field}', this.label], ['{min}', this.min.toString()]])));
 		}
 
 		if (this.max !== null && this.value !== null && this.value > this.max) {
-			this.messages.push(Message.createCode('max_err', new Map([['{field}', this.label], ['{max}', this.max.toString()]])));
+			this.messagesCollection.push(Message.createCode('max_err', new Map([['{field}', this.label], ['{max}', this.max.toString()]])));
 		}
 	}
 }

@@ -85,7 +85,7 @@ class EiuType  {
 	function extensionMask(string $eiTypeExtensionId, bool $required = true) {
 		try {
 			return new EiuMask(
-					$this->eiType->getEiTypeExtensionCollection()->getById($eiTypeExtensionId),
+					$this->eiType->getEiTypeExtensionCollection()->getById($eiTypeExtensionId)->getEiMask(),
 					null, $this->eiuAnalyst);
 		} catch (UnknownTypeException $e) {
 			if (!$required) return;
