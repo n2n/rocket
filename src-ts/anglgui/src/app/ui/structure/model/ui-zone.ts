@@ -23,8 +23,8 @@ export class UiZone {
 		this.resetModel();
 
 		if (model) {
-			model.structure.setZone(this);
 			this._model = model;
+			model.structure.setZone(this);
 		}
 	}
 

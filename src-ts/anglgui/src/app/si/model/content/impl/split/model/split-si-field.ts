@@ -69,11 +69,12 @@ export class SplitSiField extends SiFieldAdapter {
 
 
 class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel {
-
 	private splitViewStateSubscription: SplitViewStateSubscription;
 	readonly childUiStructureMap = new Map<string, UiStructure>();
 	private loadedKeys = new Array<string>();
 	private subscription: Subscription;
+
+	private zoneSubscription: Subscription|null = null;
 
 	constructor(private refPropId: string, private splitContext: SplitContextSiField|null,
 			private copyStyle: SplitStyle, private viewStateService: SplitViewStateService,
@@ -139,7 +140,36 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 			// ref.instance.uiStructure = uiStructure;
 		});
 
-		this.splitViewStateSubscription = this.viewStateService.subscribe(uiStructure, this.getSplitOptions(), this.getSplitStyle());
+		this.zoneSubscription = uiStructure.getZone$().subscribe((zone) => {
+			if (!zone) {
+				this.destroyStructures();
+			} else {
+				this.buildStructures(zone);
+			}
+		});
+	}
+
+	private destroyStructures() {
+		if (!this.splitViewStateSubscription) {
+			return;
+		}
+
+		this.splitViewStateSubscription.cancel();
+		this.splitViewStateSubscription = null;
+
+		for (const childUiStructure of this.childUiStructureMap.values()) {
+			childUiStructure.dispose();
+		}
+		this.childUiStructureMap.clear();
+
+		this.subscription.unsubscribe();
+		this.subscription = null;
+	}
+
+	private buildStructures(zone: UiZone) {
+		this.destroyStructures();
+
+		this.splitViewStateSubscription = this.viewStateService.subscribe(zone, this.getSplitOptions(), this.getSplitStyle());
 
 		for (const splitOption of this.getSplitOptions()) {
 			const child = new UiStructure((this.compactMode ? UiStructureType.MINIMAL : UiStructureType.ITEM),
@@ -155,10 +185,9 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		this.splitViewStateSubscription.visibleKeysChanged$.subscribe(() => {
 			this.checkChildUiStructureMap();
 		});
-
 		this.subscription = this.splitContext.activeKeys$.subscribe(() => {
 			this.checkChildUiStructureMap();
-		})
+		});
 	}
 
 	checkChildUiStructureMap() {
@@ -207,15 +236,12 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 	unbind() {
 		super.unbind();
 
-		this.splitViewStateSubscription.cancel();
-
-		for (const childUiStructure of this.childUiStructureMap.values()) {
-			childUiStructure.dispose();
+		if (this.zoneSubscription) {
+			this.zoneSubscription.unsubscribe();
+			this.zoneSubscription = null;
 		}
-		this.childUiStructureMap.clear();
 
-		this.subscription.unsubscribe();
-		this.subscription = null;
+		this.destroyStructures();
 	}
 }
 

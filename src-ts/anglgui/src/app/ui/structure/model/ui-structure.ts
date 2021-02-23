@@ -10,8 +10,9 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { filter } from 'rxjs/operators';
 
 export class UiStructure {
-	private zone: UiZone|null;
+	private zoneSubject = new BehaviorSubject<UiZone|null>(null);
 	private parent: UiStructure|null;
+	private parentSubscription: Subscription|null;
 
 	private _model: UiStructureModel|null;
 	private modelSubscription: Subscription|null = null;
@@ -40,11 +41,11 @@ export class UiStructure {
 	}
 
 	setZone(zone: UiZone|null) {
-		if (zone !== null &&  (this.zone || this.parent)) {
+		if (zone !== null &&  (this.zoneSubject.getValue() || this.parent)) {
 			throw new IllegalStateError('UiStructure has already been assigned to a zone or parent.');
 		}
 
-		this.zone = zone;
+		this.zoneSubject.next(zone);
 	}
 
 	protected setParent(uiStructure: UiStructure|null) {
@@ -56,17 +57,31 @@ export class UiStructure {
 			throw new IllegalStateError('UiStructure has already been assigned to a parent.');
 		}
 
+		if (this.parent) {
+			this.parent = null;
+			this.parentSubscription.unsubscribe();
+			this.parentSubscription = null;
+			this.zoneSubject.next(null);
+		}
+
+		if (!uiStructure) {
+			return;
+		}
+
 		this.parent = uiStructure;
+		this.parentSubscription = uiStructure.getZone$().subscribe((zone) => {
+			this.zoneSubject.next(zone);
+		});
 	}
 
 	private ensureAssigned() {
-		if (!this.parent && !this.zone) {
+		if (!this.parent && !this.zoneSubject.getValue()) {
 			throw new IllegalStateError('UiStructure has not yet been assigned to parent or zone.');
 		}
 	}
 
 	isBound(): boolean {
-		return !!this.parent || !!this.zone;
+		return !!this.parent || !!this.zoneSubject.getValue();
 	}
 
 	getParent(): UiStructure|null {
@@ -74,8 +89,17 @@ export class UiStructure {
 		return this.parent;
 	}
 
+	getZone(): UiZone|null {
+		this.ensureAssigned();
+		return this.zoneSubject.getValue();
+	}
+
+	getZone$(): Observable<UiZone|null> {
+		return this.zoneSubject.asObservable();
+	}
+
 	isRoot(): boolean {
-		return !!this.zone;
+		return !this.parent && !!this.zoneSubject.getValue();
 	}
 
 	getRoot(): UiStructure {
@@ -185,11 +209,6 @@ export class UiStructure {
 
 	getToolbarStructures(): UiStructure[] {
 		return this.toolbarItems.map(ti => ti.structure).concat(this.extraToolbarItems.map(eti => eti.structure));
-	}
-
-	getZone(): UiZone {
-		this.ensureAssigned();
-		return this.zone ? this.zone : this.parent.getZone();
 	}
 
 	get disposed(): boolean {
@@ -415,6 +434,7 @@ export class UiStructure {
 		this.visibleSubject.complete();
 		this.markedSubject.complete();
 		this.focusedSubject.complete();
+		this.zoneSubject.complete();
 
 		this.zoneErrorsCollection.dispose();
 	}

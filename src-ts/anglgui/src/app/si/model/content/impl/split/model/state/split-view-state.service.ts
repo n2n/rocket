@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SplitViewStateContext } from './split-view-state-context';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { SplitOption } from '../split-option';
 import { SplitStyle } from '../split-context-si-field';
-import { skip } from 'rxjs/operators';
+import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 
 @Injectable({
 	providedIn: 'root'
@@ -15,28 +14,26 @@ export class SplitViewStateService {
 	constructor() {
 	}
 
-	subscribe(uiStructure: UiStructure, splitOptions: SplitOption[], splitStyle: SplitStyle): SplitViewStateSubscription {
-		const context = this.getOrCreateContext(uiStructure.getRoot(), splitStyle);
+	subscribe(uiZone: UiZone, splitOptions: SplitOption[], splitStyle: SplitStyle): SplitViewStateSubscription {
+		const context = this.getOrCreateContext(uiZone, splitStyle);
 
 		return context.createSubscription(splitOptions);
 	}
 
-	private getOrCreateContext(uiStructure: UiStructure, splitStyle: SplitStyle): SplitViewStateContext {
+	private getOrCreateContext(uiZone: UiZone, splitStyle: SplitStyle): SplitViewStateContext {
 		let context = this.contexts.find((iContext) => {
-			return iContext.uiStructure === uiStructure;
+			return iContext.uiZone === uiZone;
 		});
 
 		if (context) {
 			return context;
 		}
 
-		context = new SplitViewStateContext(uiStructure, splitStyle);
+		context = new SplitViewStateContext(uiZone, splitStyle);
 		this.contexts.push(context);
 
-		uiStructure.disposed$.pipe(skip(1)).subscribe(() => {
-			if (uiStructure.disposed) {
-				this.removeContext(context);
-			}
+		uiZone.onDispose(() => {
+			this.removeContext(context);
 		});
 
 		return context;
