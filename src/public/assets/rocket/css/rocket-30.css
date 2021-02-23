@@ -5472,7 +5472,7 @@ rocket-ui-compact-explorer {
   min-height: 100%;
 }
 
-.rocket-zone > .rocket-content > .rocket-toolbar {
+.rocket-zone > .rocket-zone-content > .rocket-content > .rocket-toolbar {
   position: absolute;
   right: 3rem;
   top: 1.5rem;
