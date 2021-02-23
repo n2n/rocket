@@ -9,6 +9,7 @@ import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-c
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 
 @Component({
@@ -99,9 +100,9 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 		popupUiZone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: comp.createUiStructureModel(),
+			structure: new UiStructure(UiStructureType.SIMPLE_GROUP, null, comp.createUiStructureModel()),
 			mainCommandContents: this.createSiControls(comp)
-					.map(control => control.createUiContent(popupUiZone))
+					.map(control => control.createUiContent(() => popupUiZone))
 		};
 
 		comp.qualifierSelection = {

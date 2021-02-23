@@ -18,10 +18,11 @@ import { PanelDef } from '../comp/embedded-entry-panels-model';
 import { EmbeddedEntryPanelsComponent } from '../comp/embedded-entry-panels/embedded-entry-panels.component';
 import { Message } from 'src/app/util/i18n/message';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { EmbeOutCollection } from './embe/embe-collection';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
@@ -123,6 +124,7 @@ export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter  {
 }
 
 class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
+	private panelDefs: PanelDef[]|null = null;
 
 	constructor(private messagesCollection: BehaviorCollection<Message>,
 			private panelAssemblies: Array<{panel: SiPanel, structureModel: EmbeddedEntriesOutUiStructureModel}>) {
@@ -132,18 +134,18 @@ class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
 	bind(uiStructure: UiStructure) {
 		super.bind(uiStructure);
 
-		const panelDefs = new Array<PanelDef>();
+		this.panelDefs = new Array<PanelDef>();
 		for (const panelAssembly of this.panelAssemblies) {
-			panelDefs.push({
+			this.panelDefs.push({
 				siPanel: panelAssembly.panel,
-				uiStructure: uiStructure.createChild(UiStructureType.SIMPLE_GROUP,
+				uiStructure: new UiStructure(UiStructureType.SIMPLE_GROUP,
 						panelAssembly.panel.label, panelAssembly.structureModel)
 			});
 		}
 
 		this.uiContent = new TypeUiContent(EmbeddedEntryPanelsComponent, (ref) => {
 			ref.instance.model = {
-				getPanelDefs: () => panelDefs
+				getPanelDefs: () => this.panelDefs
 			};
 		});
 	}
@@ -152,9 +154,14 @@ class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
 		return this.messagesCollection.get();
 	}
 
-	getStructureErrors(): UiStructureError[] {
-		return this.messagesCollection.get().map((message) => ({message}));
+	getStructures$(): Observable<UiStructure[]> {
+		IllegalStateError.assertTrue(!!this.panelDefs, 'EmbeddedEntryPanelsInUiStructureModel not bound.');
+		return from([this.panelDefs.map(pa => pa.uiStructure)]);
 	}
+
+	// getStructureErrors(): UiStructureError[] {
+	// 	return this.messagesCollection.get().map((message) => ({message}));
+	// }
 
 	getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.messagesCollection.get$().pipe(map((messages) => messages.map((message) => ({ message }))));

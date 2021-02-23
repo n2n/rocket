@@ -15,8 +15,6 @@ export class ButtonControlComponent implements OnInit {
 
 	@Input()
 	model: ButtonControlModel;
-	@Input()
-	uiZone: UiZone;
 
 	private _subVisible = false;
 
@@ -25,7 +23,7 @@ export class ButtonControlComponent implements OnInit {
 
 	ngOnInit() {
 	}
-	
+
 	@HostBinding('class.rocket-fixed-width')
 	get fixedWidth(): boolean {
 		return !!this.model.getSubTooltip && !!this.model.getSubTooltip();
@@ -72,14 +70,14 @@ export class ButtonControlComponent implements OnInit {
 		const siConfirm = this.model.getSiButton().confirm;
 
 		if (!siConfirm) {
-			this.model.exec(this.uiZone, null);
+			this.model.exec(null);
 			return;
 		}
 
-		const cd = this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
+		const cd = this.model.getUiZone().createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
 		cd.danger = siConfirm.danger;
 		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
-					this.model.exec(this.uiZone, null);
+					this.model.exec(null);
 				});
 	}
 
@@ -89,14 +87,14 @@ export class ButtonControlComponent implements OnInit {
 		const siConfirm = this.model.getSubSiButtonMap().get(key).confirm;
 
 		if (!siConfirm) {
-			this.model.exec(this.uiZone, key);
+			this.model.exec(key);
 			return;
 		}
 
-		const cd = this.uiZone.createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
+		const cd = this.model.getUiZone().createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
 		cd.danger = siConfirm.danger;
 		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
-					this.model.exec(this.uiZone, key);
+					this.model.exec(key);
 				});
 	}
 

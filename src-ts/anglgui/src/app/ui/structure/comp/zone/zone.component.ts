@@ -17,7 +17,7 @@ export class ZoneComponent implements OnInit, OnDestroy {
 
 	// private subscription: Subscription;
 
-	constructor(private elemRef: ElementRef) {
+	constructor(/*private elemRef: ElementRef*/) {
 	}
 
 	ngOnInit() {
@@ -32,14 +32,14 @@ export class ZoneComponent implements OnInit, OnDestroy {
 	}
 
 	get uiZoneErrors(): UiZoneError[] {
-		return this.uiZone.uiStructure.getZoneErrors();
+		return this.uiZone.model.structure.getZoneErrors();
 	}
 
 	get asideCommandUiContents(): UiContent[] {
-		if (!this.uiZone.uiStructure.model) {
+		if (!this.uiZone.model.structure.model) {
 			return [];
 		}
-		return this.uiZone.uiStructure.model.getAsideContents()
+		return this.uiZone.model.structure.model.getAsideContents();
 	}
 
 	get uiZoneModel(): UiZoneModel|null {
@@ -56,7 +56,7 @@ export class ZoneComponent implements OnInit, OnDestroy {
 	}
 
 	get mainCommandUiContents(): UiContent[] {
-		return [...this.uiZone.model.mainCommandContents, ...this.uiZone.uiStructure.model.getMainControlContents()];
+		return [...this.uiZone.model.mainCommandContents, ...this.uiZone.model.structure.model.getMainControlContents()];
 	}
 
 

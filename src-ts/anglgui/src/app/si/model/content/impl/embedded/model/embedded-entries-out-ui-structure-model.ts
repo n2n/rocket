@@ -1,7 +1,6 @@
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
@@ -10,12 +9,12 @@ import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
-import { Observable, Subscription, merge } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { EmbeddedEntryComponent } from '../comp/embedded-entry/embedded-entry.component';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
-import { EmbeOutCollection, EmbeOutSource } from './embe/embe-collection';
+import { EmbeOutCollection } from './embe/embe-collection';
 import { EmbeddedEntriesOutModel } from '../comp/embedded-entries-out-model';
 import { EmbeddedEntriesOutComponent } from '../comp/embedded-entries-out/embedded-entries-out.component';
 import { EmbeddedEntriesSummaryOutComponent } from '../comp/embedded-entries-summary-out/embedded-entries-summary-out.component';
@@ -23,15 +22,19 @@ import { Embe } from './embe/embe';
 import { EmbeddedEntriesOutConfig } from './embe/embedded-entries-config';
 import { Message } from 'src/app/util/i18n/message';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
-import { map } from 'rxjs/operators';
 import { EmbeStructure, EmbeStructureCollection } from './embe/embe-structure';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesOutModel {
 	private embeOutUiStructureManager: EmbeOutUiStructureManager|null = null;
 	private embeStructureCollection: EmbeStructureCollection|null = null;
-	private subscription: Subscription|null = null;
 	private structureErrorCollection = new BehaviorCollection<UiStructureError>();
+	private subscription: Subscription|null = null;
+	private errorState = {
+		messages: new Array<Message>(),
+		structureErrors: new Array<UiStructureError>()
+	};
 
 	constructor(public frame: SiFrame, private embeOutCol: EmbeOutCollection, private config: EmbeddedEntriesOutConfig,
 			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
@@ -60,11 +63,17 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, uiStructure, this.embeOutCol);
+		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeOutCol);
 		this.embeStructureCollection.refresh();
-		this.subscription = merge(this.embeOutCol.source.getMessages$(), this.embeStructureCollection.reducedErrorsChanged$).subscribe(() => {
-			this.updateReducedStructureErrors();
-		});
+		this.subscription = new Subscription()
+				.add(this.embeOutCol.source.getMessages$().subscribe((messages) => {
+					this.errorState.messages = messages;
+					this.updateReducedStructureErrors();
+				}))
+				.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((structrueErrors) => {
+					this.errorState.structureErrors = structrueErrors;
+					this.updateReducedStructureErrors();
+				}));
 
 		if (!this.config.reduced) {
 			this.uiContent = new TypeUiContent(EmbeddedEntriesOutComponent, (ref) => {
@@ -79,6 +88,13 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		});
 	}
 
+	unbind() {
+		this.errorState.messages = [];
+		this.errorState.structureErrors = [];
+		this.embeStructureCollection.clear();
+		this.embeStructureCollection = null;
+	}
+
 	getAsideContents(): UiContent[] {
 		return [];
 	}
@@ -90,30 +106,18 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 	private updateReducedStructureErrors() {
 		const structureErrors = new Array<UiStructureError>();
 
-		structureErrors.push(...this.embeOutCol.source.getMessages().map(message => ({ message })));
-
-		for (const embeStructure of this.embeStructureCollection.embeStructures) {
-			structureErrors.push(...embeStructure.embe.uiStructureModel.getStructureErrors().map((se) => {
-				return {
-					message: se.message,
-					marked: (marked: boolean) => {
-						embeStructure.uiStructure.marked = marked;
-					},
-					focus: () => {
-						this.open(embeStructure);
-						if (se.focus) {
-							se.focus();
-						}
-					}
-				};
-			}));
-		}
+		structureErrors.push(...this.errorState.messages.map(message => ({ message })));
+		structureErrors.push(...this.errorState.structureErrors);
 
 		this.structureErrorCollection.set(structureErrors);
 	}
 
 	getMessages(): Message[] {
 		return this.embeOutCol.source.getMessages();
+	}
+
+	getStructures$(): Observable<UiStructure[]> {
+		throw new Error("Method not implemented.");
 	}
 
 	getStructureErrors(): UiStructureError[] {
@@ -172,18 +176,18 @@ class EmbeOutUiStructureManager {
 
 	}
 
-	private createEmbeUsm(embe: Embe): UiStructureModel {
-		const model = new SimpleUiStructureModel();
-		model.initCallback = (uiStructure) => {
-			const child = uiStructure.createChild();
-			child.model = embe.uiStructureModel;
+	// private createEmbeUsm(embe: Embe): UiStructureModel {
+	// 	const model = new SimpleUiStructureModel();
+	// 	model.initCallback = (uiStructure) => {
+	// 		const child = new UiStructure(null);
+	// 		child.model = embe.uiStructureModel;
 
-			model.content = new TypeUiContent(EmbeddedEntryComponent, (ref) => {
-				ref.instance.embeStructure = new EmbeStructure(embe, uiStructure);
-			});
-		};
-		return model;
-	}
+	// 		model.content = new TypeUiContent(EmbeddedEntryComponent, (ref) => {
+	// 			ref.instance.embeStructure = new EmbeStructure(embe, uiStructure);
+	// 		});
+	// 	};
+	// 	return model;
+	// }
 
 	open(embe: Embe) {
 		if (this.popupUiLayer) {
@@ -198,9 +202,9 @@ class EmbeOutUiStructureManager {
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: this.createEmbeUsm(embe),
+			structure: embe.uiStructure,
 			mainCommandContents: this.createPopupControls()
-					.map(siControl => siControl.createUiContent(zone))
+					.map(siControl => siControl.createUiContent(() => zone))
 		};
 
 		this.popupUiLayer.onDispose(() => {
@@ -213,15 +217,6 @@ class EmbeOutUiStructureManager {
 			return;
 		}
 
-		const uiZone = this.uiStructure.getZone();
-
-		this.popupUiLayer = uiZone.layer.container.createLayer();
-		this.popupUiLayer.onDispose(() => {
-			this.popupUiLayer = null;
-		});
-
-		const zone = this.popupUiLayer.pushRoute(null, null).zone;
-
 		const popupUiStructureModel = new SimpleUiStructureModel();
 
 		popupUiStructureModel.initCallback = () => {
@@ -230,12 +225,25 @@ class EmbeOutUiStructureManager {
 			});
 		};
 
+		const structure = new UiStructure(UiStructureType.SIMPLE_GROUP, null, popupUiStructureModel);
+
+		const uiZone = this.uiStructure.getZone();
+
+		this.popupUiLayer = uiZone.layer.container.createLayer();
+		this.popupUiLayer.onDispose(() => {
+			this.popupUiLayer = null;
+			structure.dispose();
+		});
+
+		const zone = this.popupUiLayer.pushRoute(null, null).zone;
+
+
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: popupUiStructureModel,
+			structure,
 			mainCommandContents: this.createPopupControls()
-					.map(siControl => siControl.createUiContent(zone))
+					.map(siControl => siControl.createUiContent(() => zone))
 		};
 	}
 

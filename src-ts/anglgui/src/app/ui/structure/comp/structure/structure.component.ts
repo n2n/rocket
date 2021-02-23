@@ -25,13 +25,10 @@ export class StructureComponent implements OnInit, OnDestroy {
 	compact = false;
 
 	private _uiStructure: UiStructure;
-	private focusedSbscription: Subscription|null = null;
+	private focusedSubscription: Subscription|null = null;
 
 	@ViewChild(StructureContentDirective, { static: true })
 	structureContentDirective: StructureContentDirective;
-
-	toolbarUiStructures: UiStructure[] = [];
-	private toolbarSubscription: Subscription|null = null;
 
 	constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
 	}
@@ -42,14 +39,14 @@ export class StructureComponent implements OnInit, OnDestroy {
 // 		const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
 
 // 		(<ZoneComponent> componentRef.instance).data = {};
-		this.focusedSbscription = this.uiStructure.focused$.subscribe(() => {
+		this.focusedSubscription = this.uiStructure.focused$.subscribe(() => {
 			this.elRef.nativeElement.scrollIntoView({ behavior: 'smooth' });
 		});
 	}
 
 	ngOnDestroy() {
-		this.focusedSbscription.unsubscribe();
-		this.focusedSbscription = null;
+		this.focusedSubscription.unsubscribe();
+		this.focusedSubscription = null;
 
 		this.clear();
 	}
@@ -99,11 +96,6 @@ export class StructureComponent implements OnInit, OnDestroy {
 
 	private clear() {
 		this._uiStructure = null;
-
-		if (this.toolbarSubscription) {
-			this.toolbarSubscription.unsubscribe();
-			this.toolbarSubscription = null;
-		}
 	}
 
 	// @HostBinding('class.rocket-bulky')
@@ -113,16 +105,19 @@ export class StructureComponent implements OnInit, OnDestroy {
 
 	@Input()
 	set uiStructure(uiStructure: UiStructure) {
+		// ensure UiStructure is root or assigned to parent
+		uiStructure.getParent();
+
 		this.clear();
 
 		this._uiStructure = uiStructure;
 
-		this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
-			this.toolbarUiStructures = toolbarUiStructures;
-			// if (!uiStructure.disposed) {
-			// 	this.cdRef.detectChanges();
-			// }
-		});
+		// this.toolbarSubscription = uiStructure.getToolbarChildren$().subscribe((toolbarUiStructures) => {
+		// 	this.toolbarUiStructures = toolbarUiStructures;
+		// 	// if (!uiStructure.disposed) {
+		// 	// 	this.cdRef.detectChanges();
+		// 	// }
+		// });
 
 		const classList = this.elRef.nativeElement.classList;
 		classList.add('rocket-level-' + uiStructure.level);
@@ -132,9 +127,9 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return this._uiStructure;
 	}
 
-	get contentStructuresAvailable(): boolean {
-		return this.uiStructure.getContentChildren().length > 0;
-	}
+	// get contentStructuresAvailable(): boolean {
+	// 	return this.uiStructure.getContentChildren().length > 0;
+	// }
 
 	get uiContent(): UiContent|null {
 		if (this._uiStructure.model) {
@@ -142,6 +137,14 @@ export class StructureComponent implements OnInit, OnDestroy {
 		}
 
 		return null;
+	}
+
+	get toolbarUiStructures(): UiStructure[] {
+		if (this._uiStructure.model) {
+			return this._uiStructure.getToolbarStructures();
+		}
+
+		return [];
 	}
 
 	get asideUiContents(): UiContent[] {
@@ -152,9 +155,9 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return [];
 	}
 
-	get contentUiStructures(): UiStructure[] {
-		return this._uiStructure.getContentChildren();
-	}
+	// get contentUiStructures(): UiStructure[] {
+	// 	return this._uiStructure.getContentChildren();
+	// }
 
 	getType(): UiStructureType|null {
 		return this.uiStructure.type;

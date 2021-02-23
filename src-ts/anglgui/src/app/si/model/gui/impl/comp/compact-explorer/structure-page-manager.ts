@@ -2,7 +2,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
 import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 import { SiPageCollection, SiEntryPosition } from '../../model/si-page-collection';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
@@ -125,6 +125,7 @@ export class StructureEntry {
 export class StructurePageManager {
 
 	private pagesMap = new Map<number, { structurePage: StructurePage, subscription: Subscription }>();
+	private uiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
 
 	constructor(private uiStructure: UiStructure, private siPageCollection: SiPageCollection) {
 	}
@@ -313,13 +314,20 @@ export class StructurePageManager {
 			for (const siEntry of entries) {
 				this.applyNewStructureEntry(sp, siEntry, null, null);
 			}
+
+			this.combineUiStructures();
 		});
 
 		sub.add(siPage.disposed$.subscribe(() => {
 			this.removePageByNo(siPage.no);
+			this.combineUiStructures();
 		}));
 
 		this.pagesMap.set(siPage.no, { structurePage: sp, subscription: sub });
+
+		if (!sp.isEmpty()) {
+			this.combineUiStructures();
+		}
 
 		return sp;
 	}
@@ -328,11 +336,12 @@ export class StructurePageManager {
 			insertIndex: number|null) {
 		const fieldUiStructures = this.createFieldUiStructures(siEntry);
 		const controlUiContents = siEntry.selectedEntryBuildup.controls
-				.map(siControl => siControl.createUiContent(this.uiStructure.getZone()));
+				.map(siControl => siControl.createUiContent(() => this.uiStructure.getZone()));
 
 		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents,
 				(replacementEntry) => {
 					this.applyNewStructureEntry(structurePage, replacementEntry, structureEntry, null);
+					this.combineUiStructures();
 				});
 
 		if (oldStructureEntry) {
@@ -355,7 +364,7 @@ export class StructurePageManager {
 		const uiStructures = new Array<UiStructure>();
 
 		for (const siProp of this.getSiProps()) {
-			const uiStructure = this.uiStructure.createChild();
+			const uiStructure = new UiStructure(null);
 			// uiStructure.compact = true;
 			uiStructure.model = siEntry.selectedEntryBuildup.getFieldById(siProp.id).createUiStructureModel(true);
 			uiStructures.push(uiStructure);
@@ -388,7 +397,7 @@ export class StructurePageManager {
 
 	moveAfter(identifiers: SiEntryIdentifier[], afterEntryIdentifier: SiEntryIdentifier) {
 		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
-		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(afterEntryIdentifier)
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(afterEntryIdentifier);
 		if (siEntries.length > 0 && targetSiEntry) {
 			this.siPageCollection.moveAfter(siEntries, targetSiEntry);
 		}
@@ -396,7 +405,7 @@ export class StructurePageManager {
 
 	moveBefore(identifiers: SiEntryIdentifier[], beforeEntryIdentifier: SiEntryIdentifier) {
 		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
-		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(beforeEntryIdentifier)
+		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(beforeEntryIdentifier);
 		if (siEntries.length > 0 && targetSiEntry) {
 			this.siPageCollection.moveBefore(siEntries, targetSiEntry);
 		}
@@ -412,6 +421,20 @@ export class StructurePageManager {
 
 	isTree(): boolean {
 		return this.siPageCollection.isTree();
+	}
+
+	private combineUiStructures() {
+		const uiStructures = new Array<UiStructure>();
+		for (const structurePage of this.pages) {
+			for (const structureEntry of structurePage.structureEntries) {
+				uiStructures.push(...structureEntry.fieldUiStructures);
+			}
+		}
+		this.uiStructuresSubject.next(uiStructures);
+	}
+
+	getUiStructures$(): Observable<UiStructure[]> {
+		return this.uiStructuresSubject.asObservable();
 	}
 }
 

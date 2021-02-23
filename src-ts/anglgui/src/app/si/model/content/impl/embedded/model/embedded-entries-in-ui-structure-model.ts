@@ -15,11 +15,9 @@ import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
-import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
-import { Observable, Subscription, merge } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
-import { EmbeddedEntryComponent } from '../comp/embedded-entry/embedded-entry.component';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { EmbeInCollection } from './embe/embe-collection';
 import { Embe } from './embe/embe';
@@ -29,13 +27,20 @@ import { EmbeStructureCollection, EmbeStructure } from './embe/embe-structure';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { Message } from 'src/app/util/i18n/message';
-import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { map } from 'rxjs/operators';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { UiContainer } from 'src/app/ui/structure/model/ui-container';
+import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInUiZoneManager: EmbeInUiZoneManager|null = null;
 	private embeStructureCollection: EmbeStructureCollection|null = null;
 	private subscription: Subscription|null = null;
 	private structureErrorCollection = new BehaviorCollection<UiStructureError>();
+	private errorState = {
+		messages: new Array<Message>(),
+		zoneErrors: new Array<UiZoneError>()
+	};
 
 	constructor(private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
 			private embeInCol: EmbeInCollection, private config: EmbeddedEntriesInConfig,
@@ -103,6 +108,10 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		return this.embeStructureCollection.embeStructures;
 	}
 
+	getStructures$(): Observable<UiStructure[]> {
+		return this.embeStructureCollection.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
+	}
+
 	switch(previousIndex: number, currentIndex: number): void {
 		this.embeInCol.changeEmbePosition(previousIndex, currentIndex);
 		this.embeInCol.writeEmbes();
@@ -154,6 +163,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	}
 
 	openAll() {
+		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().openAll().then((changed) => {
 			if (!changed) {
 				this.embeStructureCollection.refresh();
@@ -164,11 +174,17 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, uiStructure, this.embeInCol);
+		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeInCol);
 		this.embeStructureCollection.refresh();
-		this.subscription = merge(this.embeInCol.source.getMessages$(), this.embeStructureCollection.reducedErrorsChanged$).subscribe(() => {
-			this.updateReducedStructureErrors();
-		});
+		this.subscription = new Subscription()
+				.add(this.embeInCol.source.getMessages$().subscribe((messages) => {
+					this.errorState.messages = messages;
+					this.updateReducedStructureErrors();
+				}))
+				.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((zoneErrors) => {
+					this.errorState.zoneErrors = zoneErrors;
+					this.updateReducedStructureErrors();
+				}));
 
 		if (!this.config.reduced) {
 			this.uiContent = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
@@ -177,8 +193,8 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			return;
 		}
 
-		this.embeInUiZoneManager = new EmbeInUiZoneManager(uiStructure.getZone(), this.embeInCol, this.frame, this.obtainer,
-				this.config, this.translationService, this.disabled$);
+		this.embeInUiZoneManager = new EmbeInUiZoneManager(() => uiStructure.getZone().layer.container, this.embeInCol, 
+				this.frame, this.obtainer, this.config, this.translationService, this.disabled$);
 		this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 			ref.instance.model = this;
 		});
@@ -236,27 +252,17 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	private updateReducedStructureErrors() {
 		const structureErrors = new Array<UiStructureError>();
 
-		structureErrors.push(...this.embeInCol.source.getMessages().map(message => ({ message })));
+		structureErrors.push(...this.errorState.messages.map(message => ({ message })));
 
 		for (const embeStructure of this.embeStructureCollection.embeStructures) {
-			if (!embeStructure.embe.uiStructureModel) {
-				continue;
-			}
-
-			structureErrors.push(...embeStructure.embe.uiStructureModel.getStructureErrors().map((se) => {
-				return {
-					message: se.message,
-					marked: (marked: boolean) => {
-						embeStructure.uiStructure.marked = marked;
-					},
-					focus: () => {
-						this.open(embeStructure);
-						if (se.focus) {
-							se.focus();
-						}
-					}
-				};
-			}));
+			structureErrors.push(...embeStructure.embe.uiStructure.getZoneErrors().map((ze) => ({
+				message: ze.message,
+				marked: (marked) => { embeStructure.uiStructure.marked = marked; },
+				focus: () => {
+					this.getEmbeInUiStructureManager().open(embeStructure.embe);
+					ze.focus();
+				}
+			})));
 		}
 
 		this.structureErrorCollection.set(structureErrors);
@@ -280,24 +286,26 @@ class EmbeInUiZoneManager {
 
 	private popupUiLayer: PopupUiLayer|null = null;
 
-	constructor(private uiZone: UiZone, private embeCol: EmbeInCollection, private siFrame: SiFrame,
+	constructor(private getUiContainer: () => UiContainer, private embeCol: EmbeInCollection, private siFrame: SiFrame,
 			private obtainer: EmbeddedEntryObtainer, private config: EmbeddedEntriesInConfig,
 			private translationService: TranslationService, private disabled$: Observable<boolean>|null = null) {
 
 	}
 
-	private createEmbeUsm(embe: Embe): UiStructureModel {
-		const model = new SimpleUiStructureModel();
-		model.initCallback = (uiStructure) => {
-			const child = uiStructure.createChild();
-			child.model = embe.uiStructureModel;
+	// private createEmbeUsm(embe: Embe): UiStructureModel {
+	// 	return embe.uiStructureModel;
 
-			model.content = new TypeUiContent(EmbeddedEntryComponent, (ref) => {
-				ref.instance.embeStructure = new EmbeStructure(embe, child);
-			});
-		};
-		return model;
-	}
+	// 	// const model = new SimpleUiStructureModel();
+	// 	// model.initCallback = () => {
+	// 	// 	const child = new UiStructure(null);
+	// 	// 	child.model = embe.uiStructureModel;
+
+	// 	// 	model.content = new TypeUiContent(EmbeddedEntryComponent, (ref) => {
+	// 	// 		ref.instance.embeStructure = new EmbeStructure(embe, child);
+	// 	// 	});
+	// 	// };
+	// 	// return model;
+	// }
 
 	open(embe: Embe): Promise<boolean> {
 		if (this.popupUiLayer) {
@@ -306,20 +314,21 @@ class EmbeInUiZoneManager {
 
 		let bakEntry = embe.siEmbeddedEntry.entry.createResetPoint();
 
-		this.popupUiLayer = this.uiZone.layer.container.createLayer();
+		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: this.createEmbeUsm(embe),
+			structure: embe.uiStructure,
 			mainCommandContents: this.createPopupControls(() => { bakEntry = null; })
-					.map(siControl => siControl.createUiContent(zone))
+					.map(siControl => siControl.createUiContent(() => zone))
 		};
 
 		const promise = new Promise<boolean>((resolve) => {
 			this.popupUiLayer.onDispose(() => {
 				this.popupUiLayer = null;
+
 				if (bakEntry) {
 					embe.siEmbeddedEntry.entry.resetToPoint(bakEntry);
 					resolve(false);
@@ -341,22 +350,7 @@ class EmbeInUiZoneManager {
 		let bakEmbeddedEntries: SiEmbeddedEntry[]|null = [...this.embeCol.embes.map(embe => embe.siEmbeddedEntry)];
 		const bakEntries = this.embeCol.createEntriesResetPoints();
 
-		this.popupUiLayer = this.uiZone.layer.container.createLayer();
-
-		const promise = new Promise<boolean>((resolve) => {
-			this.popupUiLayer.onDispose(() => {
-				this.popupUiLayer = null;
-
-				if (bakEmbeddedEntries) {
-					this.resetEmbeCol(bakEmbeddedEntries, bakEntries);
-					resolve(false);
-					return;
-				}
-
-				this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
-				resolve(true);
-			});
-		});
+		this.popupUiLayer = this.getUiContainer().createLayer();
 
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
@@ -370,12 +364,30 @@ class EmbeInUiZoneManager {
 					allowedTypeIds: this.config.allowedTypeIds
 				}, this.translationService, this.disabled$);
 
+		const structure = new UiStructure(UiStructureType.SIMPLE_GROUP, null, popupUiStructureModel);
+
+		const promise = new Promise<boolean>((resolve) => {
+			this.popupUiLayer.onDispose(() => {
+				this.popupUiLayer = null;
+				structure.dispose();
+
+				if (bakEmbeddedEntries) {
+					this.resetEmbeCol(bakEmbeddedEntries, bakEntries);
+					resolve(false);
+					return;
+				}
+
+				this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
+				resolve(true);
+			});
+		});
+
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: popupUiStructureModel,
+			structure,
 			mainCommandContents: this.createPopupControls(() => { bakEmbeddedEntries = null; })
-					.map(siControl => siControl.createUiContent(zone))
+					.map(siControl => siControl.createUiContent(() => zone))
 		};
 
 		return promise;

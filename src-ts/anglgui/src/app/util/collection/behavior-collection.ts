@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export class BehaviorCollection<T> {
 
@@ -21,20 +22,25 @@ export class BehaviorCollection<T> {
 	}
 
 	get$(): Observable<T[]> {
-		return this.subject.asObservable();
+		return this.subject.pipe(map(ts => [...ts]));
 	}
 
 	get(): T[] {
-		return this.subject.getValue();
+		return [...this.subject.getValue()];
 	}
 
 	set(ts: T[]) {
-		this.subject.next(ts);
+		this.subject.next([...ts]);
 	}
 
 	dispose(): void {
 		this.subject.complete();
 		this.subject = null;
+	}
+
+	splice(start: number, deleteCount?: number, ...items: T[]): T[] {
+		const value = this.subject.getValue();
+		return value.splice(start, deleteCount, ...items);
 	}
 
 }

@@ -14,6 +14,7 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 
 @Component({
@@ -129,12 +130,12 @@ export class FileInFieldComponent implements OnInit {
 		zone.model = {
 			title: 'Some Title',
 			breadcrumbs: [],
-			structureModel: new SimpleUiStructureModel(
+			structure: new UiStructure(UiStructureType.SIMPLE_GROUP, null, new SimpleUiStructureModel(
 					new TypeUiContent(ImageEditorComponent, (cr) => {
 						cr.instance.model = this.uploader;
-					})),
+					}))),
 			mainCommandContents: this.createPopupControls(() => { bakSiFile = null; })
-					.map(siControl => siControl.createUiContent(zone))
+					.map(siControl => siControl.createUiContent(() => zone))
 		};
 
 		this.popupUiLayer.onDispose(() => {

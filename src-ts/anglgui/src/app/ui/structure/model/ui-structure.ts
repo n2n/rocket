@@ -6,37 +6,100 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { UiZoneError } from './ui-zone-error';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
 import { UiStructureError } from './ui-structure-error';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { filter } from 'rxjs/operators';
 
 export class UiStructure {
+	private zoneSubject = new BehaviorSubject<UiZone|null>(null);
+	private parent: UiStructure|null;
+	private parentSubscription: Subscription|null;
+
 	private _model: UiStructureModel|null;
+	private modelSubscription: Subscription|null = null;
+	private modelStructureErrors: UiStructureError[]|null = null;
 	private children: Array<{ structure: UiStructure, subscription: Subscription }> = [];
+	private toolbarItems: Array<{ structure: UiStructure, subscription: Subscription }> = [];
+	private extraToolbarItems: Array<{ structure: UiStructure, subscription: Subscription }> = [];
+	private zoneErrorsCollection = new BehaviorCollection<UiZoneError>();
+
 	private visibleSubject = new BehaviorSubject<boolean>(true);
 	private markedSubject = new BehaviorSubject<boolean>(false);
-	private toolbarChildrenSubject = new BehaviorSubject<UiStructure[]>([]);
-	private contentChildrenSubject = new BehaviorSubject<UiStructure[]>([]);
+	// private toolbarChildrenSubject = new BehaviorSubject<UiStructure[]>([]);
+	// private contentChildrenSubject = new BehaviorSubject<UiStructure[]>([]);
 	private disabledSubject = new BehaviorSubject<boolean>(false);
-	private disabledSubscription: Subscription;
 	private focusedSubject = new Subject<void>();
-	private messagesSubscription: Subscription;
-	private zoneErrorsCollection = new BehaviorCollection<UiZoneError>();
 
 	private disposedSubject = new BehaviorSubject<boolean>(false);
 	private _level: number|null = null;
 
 	// compact = false;
 
-	constructor(readonly parent: UiStructure|null, private _zone: UiZone|null, public type: UiStructureType|null = null,
+	constructor(public type: UiStructureType|null = null,
 			public label: string|null = null, model: UiStructureModel|null = null) {
-		if (parent) {
-			parent.registerChild(this);
-			// this.compact = parent.compact;
-		}
-
-		if (!!this._zone === !!parent) {
-			throw new IllegalSiStateError('Either zone or parent must be given but not both.');
-		}
 
 		this.model = model;
+	}
+
+	setZone(zone: UiZone|null) {
+		if (zone !== null &&  (this.zoneSubject.getValue() || this.parent)) {
+			throw new IllegalStateError('UiStructure has already been assigned to a zone or parent.');
+		}
+
+		this.zoneSubject.next(zone);
+	}
+
+	protected setParent(uiStructure: UiStructure|null) {
+		if (this.isRoot()) {
+			throw new IllegalStateError('UiStructure is at root.');
+		}
+
+		if (this.parent && uiStructure) {
+			throw new IllegalStateError('UiStructure has already been assigned to a parent.');
+		}
+
+		if (this.parent) {
+			this.parent = null;
+			this.parentSubscription.unsubscribe();
+			this.parentSubscription = null;
+			this.zoneSubject.next(null);
+		}
+
+		if (!uiStructure) {
+			return;
+		}
+
+		this.parent = uiStructure;
+		this.parentSubscription = uiStructure.getZone$().subscribe((zone) => {
+			this.zoneSubject.next(zone);
+		});
+	}
+
+	private ensureAssigned() {
+		if (!this.parent && !this.zoneSubject.getValue()) {
+			throw new IllegalStateError('UiStructure has not yet been assigned to parent or zone.');
+		}
+	}
+
+	isBound(): boolean {
+		return !!this.parent || !!this.zoneSubject.getValue();
+	}
+
+	getParent(): UiStructure|null {
+		this.ensureAssigned();
+		return this.parent;
+	}
+
+	getZone(): UiZone|null {
+		this.ensureAssigned();
+		return this.zoneSubject.getValue();
+	}
+
+	getZone$(): Observable<UiZone|null> {
+		return this.zoneSubject.asObservable();
+	}
+
+	isRoot(): boolean {
+		return !this.parent && !!this.zoneSubject.getValue();
 	}
 
 	getRoot(): UiStructure {
@@ -50,6 +113,8 @@ export class UiStructure {
 	}
 
 	get level(): number {
+		this.ensureAssigned();
+
 		if (this._level !== null) {
 			return this._level;
 		}
@@ -88,62 +153,62 @@ export class UiStructure {
 		return this.type === UiStructureType.ITEM && this.parent.isItemCollection();
 	}
 
-	createToolbarChild(model: UiStructureModel): UiStructure {
-		const toolbarChild = new UiStructure(this, null, null, null, model);
+	// createToolbarChild(model: UiStructureModel): UiStructure {
+	// 	const toolbarChild = new UiStructure(this, null, null, null, model);
 
-		const toolbarChildrean = this.toolbarChildrenSubject.getValue();
-		toolbarChildrean.push(toolbarChild);
-		this.toolbarChildrenSubject.next(toolbarChildrean);
+	// 	const toolbarChildrean = this.toolbarChildrenSubject.getValue();
+	// 	toolbarChildrean.push(toolbarChild);
+	// 	this.toolbarChildrenSubject.next(toolbarChildrean);
 
-		return toolbarChild;
-	}
+	// 	return toolbarChild;
+	// }
 
-	createContentChild(type: UiStructureType|null = null, label: string|null = null,
-			model: UiStructureModel|null = null): UiStructure {
-		const contentChild = new UiStructure(this, null, type, label, model);
+	// createContentChild(type: UiStructureType|null = null, label: string|null = null,
+	// 		model: UiStructureModel|null = null): UiStructure {
+	// 	const contentChild = new UiStructure(this, null, type, label, model);
 
-		const contentChildrean = this.contentChildrenSubject.getValue();
-		contentChildrean.push(contentChild);
-		this.contentChildrenSubject.next(contentChildrean);
+	// 	const contentChildrean = this.contentChildrenSubject.getValue();
+	// 	contentChildrean.push(contentChild);
+	// 	this.contentChildrenSubject.next(contentChildrean);
 
-		return contentChild;
-	}
+	// 	return contentChild;
+	// }
 
-	createChild(type: UiStructureType|null = null, label: string|null = null,
-			model: UiStructureModel|null = null): UiStructure {
-		return new UiStructure(this, null, type, label, model);
-	}
+	// createChild(type: UiStructureType|null = null, label: string|null = null,
+	// 		model: UiStructureModel|null = null): UiStructure {
+	// 	return new UiStructure(this, null, type, label, model);
+	// }
 
-	hasToolbarChildren(): boolean {
-		return this.getToolbarChildren().length > 0;
-	}
+	// hasToolbarChildren(): boolean {
+	// 	return this.getToolbarChildren().length > 0;
+	// }
 
-	getToolbarChildren(): UiStructure[] {
-		return Array.from(this.toolbarChildrenSubject.getValue());
-	}
+	// getToolbarChildren(): UiStructure[] {
+	// 	return Array.from(this.toolbarChildrenSubject.getValue());
+	// }
 
-	getToolbarChildren$(): Observable<UiStructure[]> {
-		return this.toolbarChildrenSubject;
-	}
+	// getToolbarChildren$(): Observable<UiStructure[]> {
+	// 	return this.toolbarChildrenSubject;
+	// }
 
-	hasContentChildren(): boolean {
-		return this.getContentChildren().length > 0;
-	}
+	// hasContentChildren(): boolean {
+	// 	return this.getContentChildren().length > 0;
+	// }
 
-	getContentChildren(): UiStructure[] {
-		return Array.from(this.contentChildrenSubject.getValue());
-	}
+	// getContentChildren(): UiStructure[] {
+	// 	return Array.from(this.contentChildrenSubject.getValue());
+	// }
 
-	getContentChildren$(): Observable<UiStructure[]> {
-		return this.contentChildrenSubject.asObservable();
-	}
+	// getContentChildren$(): Observable<UiStructure[]> {
+	// 	return this.contentChildrenSubject.asObservable();
+	// }
 
 	getChildren(): UiStructure[] {
 		return this.children.map(c => c.structure);
 	}
 
-	getZone(): UiZone {
-		return this._zone ? this._zone : this.parent.getZone();
+	getToolbarStructures(): UiStructure[] {
+		return this.toolbarItems.map(ti => ti.structure).concat(this.extraToolbarItems.map(eti => eti.structure));
 	}
 
 	get disposed(): boolean {
@@ -176,33 +241,179 @@ export class UiStructure {
 		}
 
 		this._model = model;
-		model.bind(this);
-		this.disabledSubscription = model.getDisabled$().subscribe(d => this.disabledSubject.next(d));
-		this.messagesSubscription = model.getStructureErrors$().subscribe(() => this.compileZoneErrors());
+		this.modelStructureErrors = [];
+		this.modelSubscription = new Subscription();
 
-// 		if (this.disabledSubject.getValue()) {
-// 			this.disabledSubject.next(false);
-// 		}
+		model.bind(this);
+
+		this.modelSubscription.add(model.getStructures$().subscribe((structures) => this.updateChildren(structures)));
+		this.modelSubscription.add(model.getToolbarStructureModels$().subscribe((structureModels) => this.updateToolbar(structureModels)));
+		this.modelSubscription.add(model.getDisabled$().subscribe(d => this.disabledSubject.next(d)));
+		this.modelSubscription.add(model.getStructureErrors$().subscribe((structureErrors) => {
+			this.modelStructureErrors = structureErrors;
+			this.compileZoneErrors();
+		}));
 	}
 
 	private clear() {
-		this.toolbarChildrenSubject.next([]);
-
-		for (const child of [...this.children]) {
-			child.structure.dispose();
-		}
-
-		if (this.children.length !== 0) {
-			throw new IllegalSiStateError('Leftover children!');
-		}
+		this.clearChildren();
+		this.clearToolbarItems();
+		this.clearExtraToolbarItems();
 
 		if (this._model) {
+			this.modelSubscription.unsubscribe();
+			this.modelSubscription = null;
 			this._model.unbind();
 			this._model = null;
-			this.disabledSubscription.unsubscribe();
-			this.disabledSubscription = null;
-			this.messagesSubscription.unsubscribe();
-			this.messagesSubscription = null;
+		}
+
+		this.zoneErrorsCollection.set([]);
+	}
+
+	private clearToolbarItems() {
+		let toolbarItem: { structure: UiStructure, subscription: Subscription };
+		while (toolbarItem = this.toolbarItems.pop()) {
+			toolbarItem.subscription.unsubscribe();
+			toolbarItem.structure.dispose();
+		}
+	}
+
+	private clearChildren() {
+		let child: { structure: UiStructure, subscription: Subscription };
+		while (child = this.children.pop()) {
+			child.subscription.unsubscribe();
+			child.structure.setParent(null);
+		}
+	}
+
+	private unregisterChild(structure: UiStructure) {
+		const i = this.children.findIndex(c => c.structure === structure);
+		if (i === -1) {
+			throw new IllegalStateError('Unknown child');
+		}
+
+		const child = this.children.splice(i, 1)[0];
+		child.subscription.unsubscribe();
+		child.structure.setParent(null);
+	}
+
+	private updateToolbar(structureModels: UiStructureModel[]) {
+		const updatedToolbarItems = new Array<{ structure: UiStructure, subscription: Subscription }>();
+
+		for (const structureModel of structureModels) {
+			const i = this.toolbarItems.findIndex(e => e.structure.model === structureModel);
+			if (i > -1) {
+				updatedToolbarItems.push(this.toolbarItems.splice(i, 1)[0]);
+				continue;
+			}
+
+			const structure = new UiStructure(null, null, structureModel);
+			updatedToolbarItems.push({
+				structure,
+				subscription: new Subscription()
+						.add(structure.getZoneErrors$().subscribe(() => {
+							this.compileZoneErrors();
+						}))
+			});
+
+			structure.setParent(this);
+		}
+
+		this.clearToolbarItems();
+
+		this.toolbarItems = updatedToolbarItems;
+	}
+
+	private updateChildren(structures: UiStructure[]) {
+		const updatedChildren = new Array<{ structure: UiStructure, subscription: Subscription }>();
+
+		for (const structure of structures) {
+			if (structure.disposed) {
+				continue;
+			}
+
+			const i = this.children.findIndex(e => e.structure === structure);
+			if (i > -1) {
+				updatedChildren.push(this.children.splice(i, 1)[0]);
+				continue;
+			}
+
+			updatedChildren.push({
+				structure,
+				subscription: new Subscription()
+						.add(structure.getZoneErrors$().subscribe(() => {
+							this.compileZoneErrors();
+						}))
+						.add(structure.disposed$.pipe(filter(d => d)).subscribe(() => {
+							this.unregisterChild(structure);
+							this.compileZoneErrors();
+						}))
+			});
+
+			structure.setParent(this);
+		}
+
+		this.clearChildren();
+
+		this.children = updatedChildren;
+	}
+
+	addExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
+		const models = this.getExtraToolbarStructureModels();
+		models.push(...uiStructureModels);
+		models.filter((value, index, self) => {
+  			return self.indexOf(value) === index;
+		});
+		this.setExtraToolbarStructureModels(models);
+	}
+
+	removeExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
+		const models = this.getExtraToolbarStructureModels();
+		for (const uiStructureModel of uiStructureModels) {
+			const i = models.indexOf(uiStructureModel);
+			if (i > -1) {
+				models.splice(i, 1);
+			}
+		}
+		this.setExtraToolbarStructureModels(models);
+	}
+
+	setExtraToolbarStructureModels(structureModels: UiStructureModel[]) {
+		const updatedExtraToolbarItems = new Array<{ structure: UiStructure, subscription: Subscription }>();
+
+		for (const structureModel of structureModels) {
+			const i = this.extraToolbarItems.findIndex(e => e.structure.model === structureModel);
+			if (i > -1) {
+				updatedExtraToolbarItems.push(this.toolbarItems.splice(i, 1)[0]);
+				continue;
+			}
+
+			const structure = new UiStructure(null, null, structureModel);
+			updatedExtraToolbarItems.push({
+				structure,
+				subscription: new Subscription()
+						.add(structure.getZoneErrors$().subscribe(() => {
+							this.compileZoneErrors();
+						}))
+			});
+
+			structure.setParent(this);
+		}
+
+		this.clearExtraToolbarItems();
+
+		this.extraToolbarItems = updatedExtraToolbarItems;
+	}
+
+	getExtraToolbarStructureModels(): UiStructureModel[] {
+		return this.extraToolbarItems.map(eti => eti.structure.model);
+	}
+
+	private clearExtraToolbarItems() {
+		let extraToolbarItem: { structure: UiStructure, subscription: Subscription };
+		while (extraToolbarItem = this.extraToolbarItems.pop()) {
+			extraToolbarItem.subscription.unsubscribe();
+			extraToolbarItem.structure.dispose();
 		}
 	}
 
@@ -222,54 +433,50 @@ export class UiStructure {
 
 		this.visibleSubject.complete();
 		this.markedSubject.complete();
-		this.toolbarChildrenSubject.complete();
 		this.focusedSubject.complete();
+		this.zoneSubject.complete();
 
 		this.zoneErrorsCollection.dispose();
-
-		if (this.parent) {
-			this.parent.unregisterChild(this);
-		}
 	}
 
-	protected registerChild(child: UiStructure) {
-		this.ensureNotDisposed();
+	// protected registerChild(child: UiStructure) {
+	// 	this.ensureNotDisposed();
 
-		const i = this.children.findIndex(c => c.structure === child);
-		if (i !== -1 || this === child) {
-			throw new IllegalSiStateError('Child already exists or is same as parent.');
-		}
+	// 	const i = this.children.findIndex(c => c.structure === child);
+	// 	if (i !== -1 || this === child) {
+	// 		throw new IllegalSiStateError('Child already exists or is same as parent.');
+	// 	}
 
-		this.children.push({
-			structure: child,
-			subscription: child.getZoneErrors$().subscribe(() => {
-				this.compileZoneErrors();
-			})
-		});
-	}
+	// 	this.children.push({
+	// 		structure: child,
+	// 		subscription: child.getZoneErrors$().subscribe(() => {
+	// 			this.compileZoneErrors();
+	// 		})
+	// 	});
+	// }
 
-	protected unregisterChild(child: UiStructure) {
-		let i = this.children.findIndex(c => c.structure === child);
-		if (i === -1) {
-			throw new IllegalSiStateError('Unknown child.');
-		}
+	// protected unregisterChild(child: UiStructure) {
+	// 	let i = this.children.findIndex(c => c.structure === child);
+	// 	if (i === -1) {
+	// 		throw new IllegalSiStateError('Unknown child.');
+	// 	}
 
-		this.children.splice(i, 1);
+	// 	this.children.splice(i, 1);
 
-		const toolbarChildren = this.toolbarChildrenSubject.getValue();
-		i = toolbarChildren.indexOf(child);
-		if (i > -1) {
-			toolbarChildren.splice(i, 1);
-		}
-		this.toolbarChildrenSubject.next(toolbarChildren);
+	// 	const toolbarChildren = this.toolbarChildrenSubject.getValue();
+	// 	i = toolbarChildren.indexOf(child);
+	// 	if (i > -1) {
+	// 		toolbarChildren.splice(i, 1);
+	// 	}
+	// 	this.toolbarChildrenSubject.next(toolbarChildren);
 
-		const contentChildren = this.contentChildrenSubject.getValue();
-		i = contentChildren.indexOf(child);
-		if (i > -1) {
-			contentChildren.splice(i, 1);
-		}
-		this.contentChildrenSubject.next(contentChildren);
-	}
+	// 	const contentChildren = this.contentChildrenSubject.getValue();
+	// 	i = contentChildren.indexOf(child);
+	// 	if (i > -1) {
+	// 		contentChildren.splice(i, 1);
+	// 	}
+	// 	this.contentChildrenSubject.next(contentChildren);
+	// }
 
 	get marked(): boolean {
 		return this.markedSubject.getValue();
@@ -316,11 +523,19 @@ export class UiStructure {
 		return this.zoneErrorsCollection.get();
 	}
 
-	private compileZoneErrors() {
+	private compileZoneErrors(): void {
 		const errors: UiZoneError[] = [];
 
+		for (const toolbarItem of this.toolbarItems) {
+			errors.push(...toolbarItem.structure.getZoneErrors());
+		}
+
+		for (const extraToolbarItem of this.extraToolbarItems) {
+			errors.push(...extraToolbarItem.structure.getZoneErrors());
+		}
+
 		if (this.model) {
-			errors.push(...this.model.getStructureErrors().map(se => this.createZoneError(se)));
+			errors.push(...this.modelStructureErrors.map(se => this.createZoneError(se)));
 		}
 
 		for (const child of this.children) {

@@ -9,14 +9,12 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { CompactEntryModel } from '../comp/compact-entry-model';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { Subscription, BehaviorSubject, Observable, from } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
-import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
-import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private entrySubject = new BehaviorSubject<SiEntry|null>(null);
@@ -61,7 +59,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 
 	createUiStructureModel(): UiStructureModel {
 		return new CompactUiStructureModel(this.entrySubject.asObservable(), this.declaration, this.controls,
-				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, 
+				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService,
 						this.siModStateService, this.entryControlsIncluded));
 	}
 
@@ -78,7 +76,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		super();
 	}
 
-	private fieldUiStructures: UiStructure[] = [];
+	private fieldUiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
 	private subscription: Subscription|null = null;
 
 	// getContentUiStructures(): UiStructure[] {
@@ -96,20 +94,26 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 	getFieldUiStructures(): UiStructure[] {
-		return this.fieldUiStructures;
+		return this.fieldUiStructuresSubject.getValue();
+	}
+
+	getStructures$(): Observable<UiStructure[]> {
+		return this.fieldUiStructuresSubject.asObservable();
 	}
 
 	getMessages(): Message[] {
 		return [];
 	}
 
-	getStructureErrors(): UiStructureError[] {
-		return [];
-	}
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
-		return from([]);
-	}
+
+	// getStructureErrors(): UiStructureError[] {
+	// 	return [];
+	// }
+
+	// getStructureErrors$(): Observable<UiStructureError[]> {
+	// 	return from([]);
+	// }
 
 	// getZoneErrors(): UiZoneError[] {
 	// 	if (!this.currentSiEntry) {
@@ -145,11 +149,10 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		});
 
 		this.mainControlUiContents = this.controls.map((control) => {
-			return control.createUiContent(uiStructure.getZone());
+			return control.createUiContent(() => uiStructure.getZone());
 		});
 	}
 
-	private curSiEntry: SiEntry|null;
 
 	private rebuild(siEntry: SiEntry|null) {
 		this.clear();
@@ -179,14 +182,16 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedTypeId);
 
 		this.asideUiContents = siEntryBuildup.controls
-					.map(control => control.createUiContent(this.boundUiStructure.getZone()));
+					.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
 
+		const fieldUiStructures = new Array<UiStructure>();
 		for (const siProp of siMaskDeclaration.getSiProps()) {
-			const structure = this.boundUiStructure.createChild();
+			const structure = new UiStructure(null);
 			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel(true);
 			// structure.compact = true;
-			this.fieldUiStructures.push(structure);
+			fieldUiStructures.push(structure);
 		}
+		this.fieldUiStructuresSubject.next(fieldUiStructures);
 	}
 
 	private monitorEntry(siEntry: SiEntry) {
@@ -234,10 +239,10 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 			this.currentSiEntry = null;
 		}
 
-		let fieldUiStructure: UiStructure;
-		while (fieldUiStructure = this.fieldUiStructures.pop()) {
+		for (const fieldUiStructure of this.fieldUiStructuresSubject.getValue()) {
 			fieldUiStructure.dispose();
 		}
+		this.fieldUiStructuresSubject.next([]);
 
 		this.asideUiContents = [];
 	}

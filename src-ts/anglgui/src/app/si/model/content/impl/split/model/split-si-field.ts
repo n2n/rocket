@@ -69,11 +69,12 @@ export class SplitSiField extends SiFieldAdapter {
 
 
 class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel {
-
 	private splitViewStateSubscription: SplitViewStateSubscription;
 	readonly childUiStructureMap = new Map<string, UiStructure>();
 	private loadedKeys = new Array<string>();
 	private subscription: Subscription;
+
+	private zoneSubscription: Subscription|null = null;
 
 	constructor(private refPropId: string, private splitContext: SplitContextSiField|null,
 			private copyStyle: SplitStyle, private viewStateService: SplitViewStateService,
@@ -139,10 +140,39 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 			// ref.instance.uiStructure = uiStructure;
 		});
 
-		this.splitViewStateSubscription = this.viewStateService.subscribe(uiStructure, this.getSplitOptions(), this.getSplitStyle());
+		this.zoneSubscription = uiStructure.getZone$().subscribe((zone) => {
+			if (!zone) {
+				this.destroyStructures();
+			} else {
+				this.buildStructures(zone);
+			}
+		});
+	}
+
+	private destroyStructures() {
+		if (!this.splitViewStateSubscription) {
+			return;
+		}
+
+		this.splitViewStateSubscription.cancel();
+		this.splitViewStateSubscription = null;
+
+		for (const childUiStructure of this.childUiStructureMap.values()) {
+			childUiStructure.dispose();
+		}
+		this.childUiStructureMap.clear();
+
+		this.subscription.unsubscribe();
+		this.subscription = null;
+	}
+
+	private buildStructures(zone: UiZone) {
+		this.destroyStructures();
+
+		this.splitViewStateSubscription = this.viewStateService.subscribe(zone, this.getSplitOptions(), this.getSplitStyle());
 
 		for (const splitOption of this.getSplitOptions()) {
-			const child = uiStructure.createChild((this.compactMode ? UiStructureType.MINIMAL : UiStructureType.ITEM),
+			const child = new UiStructure((this.compactMode ? UiStructureType.MINIMAL : UiStructureType.ITEM),
 					splitOption.shortLabel);
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
@@ -155,10 +185,9 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		this.splitViewStateSubscription.visibleKeysChanged$.subscribe(() => {
 			this.checkChildUiStructureMap();
 		});
-
 		this.subscription = this.splitContext.activeKeys$.subscribe(() => {
 			this.checkChildUiStructureMap();
-		})
+		});
 	}
 
 	checkChildUiStructureMap() {
@@ -183,13 +212,15 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 				childUiStructure.model = siField.createUiStructureModel(this.compactMode);
 
 				if (siField.hasInput() && siField.isGeneric()) {
-					childUiStructure.createToolbarChild(new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this), childUiStructure.getZone())));
+					childUiStructure.addExtraToolbarStructureModel(new SimpleUiStructureModel(new ButtonControlUiContent(
+							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone()))));
 				}
 			})/*.catch((e) => {
 				childUiStructure.model = this.createNotActiveUism();
 			})*/;
 		}
+
+		this.structuresCollection.set(Array.from(this.childUiStructureMap.values()));
 	}
 
 	private createNotActiveUism(): UiStructureModel {
@@ -205,15 +236,12 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 	unbind() {
 		super.unbind();
 
-		this.splitViewStateSubscription.cancel();
-
-		for (const childUiStructure of this.childUiStructureMap.values()) {
-			childUiStructure.dispose();
+		if (this.zoneSubscription) {
+			this.zoneSubscription.unsubscribe();
+			this.zoneSubscription = null;
 		}
-		this.childUiStructureMap.clear();
 
-		this.subscription.unsubscribe();
-		this.subscription = null;
+		this.destroyStructures();
 	}
 }
 
@@ -225,7 +253,8 @@ class SplitButtonControlModel implements ButtonControlModel {
 	private siButton: SiButton;
 	private subSiButtons = new Map<string, SiButton>();
 
-	constructor(private key: string, private siField: SiField, private model: SplitUiStructureModel) {
+	constructor(private key: string, private siField: SiField, private model: SplitUiStructureModel,
+			public getUiZone: () => UiZone) {
 		this.siButton = new SiButton(null, 'btn btn-secondary', 'fas fa-reply-all');
 		this.siButton.tooltip = this.model.getCopyTooltip();
 
@@ -258,7 +287,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 		return this.loading;
 	}
 
-	exec(uiZone: UiZone, subKey: string|null): void {
+	exec(subKey: string|null): void {
 		if (this.loading || !subKey) {
 			return;
 		}

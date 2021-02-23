@@ -9,7 +9,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiControlBoundry } from '../../si-control-bountry';
 import { SiEntryLock } from '../../../content/si-entry';
 
-export class ApiCallSiControl implements SiControl, ButtonControlModel {
+export class ApiCallSiControl implements SiControl {
 
 	inputSent = false;
 	private loading = false;
@@ -57,7 +57,13 @@ export class ApiCallSiControl implements SiControl, ButtonControlModel {
 		});
 	}
 
-	createUiContent(uiZone: UiZone): UiContent {
-		return new ButtonControlUiContent(this, uiZone);
+	createUiContent(getUiZone: () => UiZone): UiContent {
+		return new ButtonControlUiContent({
+			exec: (/*subKey: string|null*/) => this.exec(getUiZone()),
+			getUiZone,
+			isDisabled: () => this.isDisabled(),
+			isLoading: () => this.isLoading(),
+			getSiButton: () => this.getSiButton()
+		});
 	}
 }

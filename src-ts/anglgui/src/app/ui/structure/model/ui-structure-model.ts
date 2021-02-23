@@ -16,9 +16,13 @@ export interface UiStructureModel {
 
 	getAsideContents(): UiContent[];
 
-	getStructureErrors(): UiStructureError[];
+	getToolbarStructureModels$(): Observable<UiStructureModel[]>;
+
+	// getStructureErrors(): UiStructureError[];
 
 	getStructureErrors$(): Observable<UiStructureError[]>;
+
+	getStructures$(): Observable<UiStructure[]>;
 
 	getDisabled$(): Observable<boolean>;
 
