@@ -11,12 +11,12 @@ export class PaginationComponent implements OnInit {
 	@Input() currentPageNo = 1;
 	@Output() currentPageNoChange = new EventEmitter<number>();
 
-  constructor(elemRef: ElementRef) {
-    elemRef.nativeElement.classList.add('rocket-pagination');
-  }
+	constructor(elemRef: ElementRef) {
+	elemRef.nativeElement.classList.add('rocket-pagination');
+	}
 
 
-  set internalPageNo(pageNo) {
+	set internalPageNo(pageNo) {
 		if (!this.validatePageNo(pageNo)) {
 			return;
 		}

@@ -17,9 +17,10 @@ import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiPartialContent } from '../../../content/si-partial-content';
 import { SiFrame } from '../../../meta/si-frame';
 import { StructurePageManager } from '../comp/compact-explorer/structure-page-manager';
-import { Observable, from } from 'rxjs';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 import { Message } from 'src/app/util/i18n/message';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
+import { PaginationModel } from '../comp/pagination-model';
 
 export class CompactExplorerSiGui implements SiGui {
 
@@ -46,8 +47,9 @@ export class CompactExplorerSiGui implements SiGui {
 	}
 }
 
-class CompactExplorerListModelImpl extends UiStructureModelAdapter implements CompactExplorerModel {
+class CompactExplorerListModelImpl extends UiStructureModelAdapter implements CompactExplorerModel, PaginationModel {
 	private structurePageManager: StructurePageManager;
+	private currentPageNoSubject: BehaviorSubject<number>;
 
 	constructor(private comp: CompactExplorerSiGui, partialContent: SiPartialContent|null) {
 		super();
@@ -68,37 +70,45 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		return this.comp.qualifierSelection;
 	}
 
+	getCurrentPageNo$(): Observable<number> {
+		return this.currentPageNoSubject.asObservable();
+	}
+
+	set currentPageNo(currentPageNo: number) {
+		this.currentPageNoSubject.next(currentPageNo);
+	}
+
+	get currentPageNo() {
+		return this.currentPageNoSubject.getValue();
+	}
+
+	get pagesNum(): number {
+		return this.structurePageManager.possiablePagesNum;
+	}
+
 	bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
+		this.currentPageNoSubject = new BehaviorSubject<number>(1);
+
 		this.structurePageManager = new StructurePageManager(uiStructure, this.comp.pageCollection);
 		// because of changes after view check;
-		this.structurePageManager.loadSingle(1, 0);
-
-		let comp: CompactExplorerComponent;
-		let pagiComp: PaginationComponent;
+		this.structurePageManager.loadSingle(this.currentPageNo, 0);
 
 		this.uiContent = new TypeUiContent(CompactExplorerComponent, (ref) => {
 			ref.instance.model = this;
-			ref.instance.uiStructure = uiStructure;
-			comp = ref.instance;
-
-			if (pagiComp) {
-				pagiComp.cec = comp;
-			}
 		});
 
 		this.asideUiContents = [new TypeUiContent(PaginationComponent, (aisdeRef) => {
-			pagiComp = aisdeRef.instance;
-			if (comp) {
-				aisdeRef.instance.cec = comp;
-			}
+			aisdeRef.instance.model = this;
 		})];
 	}
 
 	unbind() {
 		super.unbind();
 		this.comp.pageCollection.clear();
+		this.currentPageNoSubject.unsubscribe();
+		this.currentPageNoSubject = null;
 	}
 
 	getMainControlContents(): UiContent[] {

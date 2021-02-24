@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CompactExplorerComponent } from '../compact-explorer/compact-explorer.component';
+import { PaginationModel } from '../pagination-model';
 
 @Component({
 	selector: 'rocket-si-pagination.rocket-pagination',
@@ -7,8 +7,7 @@ import { CompactExplorerComponent } from '../compact-explorer/compact-explorer.c
 	styleUrls: ['./pagination.component.css']
 })
 export class PaginationComponent implements OnInit {
-
-	public cec: CompactExplorerComponent;
+	public model: PaginationModel;
 
 	constructor() { }
 
@@ -16,18 +15,18 @@ export class PaginationComponent implements OnInit {
 	}
 
 	get visible(): boolean {
-		return this.cec && this.pagesNum > 1;
+		return this.model && this.model.pagesNum > 1;
 	}
 
 	get pagesNum(): number {
-		return this.cec.pagesNum;
+		return this.model.pagesNum;
 	}
 
 	get currentPageNo(): number {
-		return this.cec.currentPageNo;
+		return this.model.currentPageNo;
 	}
 
 	set currentPageNo(pageNo: number) {
-		this.cec.currentPageNo = pageNo;
+		this.model.currentPageNo = pageNo;
 	}
 }

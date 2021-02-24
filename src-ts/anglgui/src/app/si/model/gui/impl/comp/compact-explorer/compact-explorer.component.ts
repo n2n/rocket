@@ -118,7 +118,6 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.model.getSiEntryQualifierSelection().max === 1;
 	}
 
-	uiStructure: UiStructure;
 	model: CompactExplorerModel;
 
 	private subscription = new Subscription();
@@ -145,6 +144,11 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 			this.updateVisiblePages();
 		});
+
+
+		this.subscription.add(this.model.getCurrentPageNo$().subscribe((pageNo) => {
+			this.currentPageNo = pageNo;
+		}));
 
 		// this.subscription.add(fromEvent<MouseEvent>(this.parent.nativeElement, 'scroll').subscribe(() => {
 		// 	if (this.quickSearching) {
