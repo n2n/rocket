@@ -40,6 +40,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
 use rocket\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
+use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
 
 class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**
@@ -155,12 +156,15 @@ class EiuEntryGuiPool {
 	 */
 	private $embeddedGuiCollections = [];
 	private $orderEiPropPath;
+	private $panelEiPropPath;
 	private $panelLayout;
 	/**
 	 * @param PanelDeclaration[] $panelDeclarations
 	 */
 	function __construct(array $panelDeclarations, bool $readOnly, bool $reduced, EiuFrame $eiuFrame) {
 		$this->orderEiPropPath = new EiPropPath(['orderIndex']);
+		$this->panelEiPropPath = new EiPropPath(['panel']);
+		
 		$this->reduced = $reduced;
 		
 		$this->panelLayout = new PanelLayout();
@@ -261,8 +265,14 @@ class EiuEntryGuiPool {
 	function save() {
 		$eiuEntries = [];
 		
-		foreach ($this->embeddedGuiCollections as $collection) {
-			array_push($eiuEntries, ...$collection->save($this->orderEiPropPath));
+		foreach ($this->embeddedGuiCollections as $panelName => $collection) {
+			$panelEiuEntries = $collection->save($this->orderEiPropPath);
+			
+			foreach ($panelEiuEntries as $panelEiuEntry) {
+				$panelEiuEntry->setValue($this->panelEiPropPath, $panelName);
+			}
+			
+			array_push($eiuEntries, ...$panelEiuEntries);
 		}
 		
 		return $eiuEntries;

@@ -165,7 +165,7 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 		this.clear();
 
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
-					.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
+				.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
 
 		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
 		const toolbarResolver = new ToolbarResolver();

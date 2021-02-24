@@ -174,7 +174,6 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 // 		}
 
 		this.monitorEntry(siEntry);
-
 	}
 
 	private buildStructures(siEntry: SiEntry) {
