@@ -29,29 +29,6 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, min-content);
 
 
-	> header {
-		display: grid;
-		position: relative;
-		grid-template-columns: 1fr auto;
-		grid-template-rows: minmax(#{$zone-header-breadcrumb-min-height}, min-content) minmax(#{$zone-header-title-min-height}, min-content);
-		background: white;
-		padding: 0 $content-padding;
-        grid-area: header;
-        margin: 0 -#{$content-padding};
-		
-		> .breadcrumb {
-			grid-row: 1 / 2;
-		}
-		> h1 {
-			grid-row: 2 / 3;
-			display: -webkit-box;
-			-webkit-line-clamp: 2;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-		}
-	}
-
-
     > .rocket-content {
         flex: 1 1 100%;
         grid-area: main;
@@ -77,6 +54,33 @@
             padding: 10px $content-padding-xs;
             margin: 0 -#{$content-padding-xs};
         }
+	}
+}
+
+.rocket-zone-header {
+	display: grid;
+	position: relative;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: minmax(#{$zone-header-breadcrumb-min-height}, min-content) minmax(#{$zone-header-title-min-height}, min-content);
+	background: white;
+	padding: 0 $content-padding;
+	grid-area: header;
+	margin: 0 -#{$content-padding};
+	
+	> .breadcrumb {
+		grid-row: 1 / 2;
+	}
+	> h1 {
+		grid-row: 2 / 3;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	> .rocket-context-menu {
+		grid-column: 2 / -1;
+		grid-row: 1 / -1;
 	}
 }
 
