@@ -1,7 +1,15 @@
 import { UiNavPoint } from '../../util/model/ui-nav-point';
 
 export class UiMenuGroup {
+	
+	isOpen = true;
+	
 	constructor(public label: string, public menuItems: UiMenuItem[]) {
+	}
+	
+	toggle() {
+		console.log(this.isOpen);
+		this.isOpen = !this.isOpen;
 	}
 }
 

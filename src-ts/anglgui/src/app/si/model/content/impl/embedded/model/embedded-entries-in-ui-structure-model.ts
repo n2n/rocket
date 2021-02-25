@@ -30,6 +30,8 @@ import { map } from 'rxjs/operators';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { UiContainer } from 'src/app/ui/structure/model/ui-container';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
+import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
+import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInUiZoneManager: EmbeInUiZoneManager|null = null;
@@ -194,11 +196,26 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			return;
 		}
 
-		this.embeInUiZoneManager = new EmbeInUiZoneManager(() => uiStructure.getZone().layer.container, this.embeInCol, 
+		this.embeInUiZoneManager = new EmbeInUiZoneManager(() => uiStructure.getZone().layer.container, this.embeInCol,
 				this.frame, this.obtainer, this.config, this.translationService, this.disabled$);
 		this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 			ref.instance.model = this;
 		});
+
+
+		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'btn btn-warning', 'fa fa-pencil-alt');
+		button.important = true;
+		button.iconImportant = true;
+
+		const openAllUiContent = new ButtonControlUiContent({
+			getUiZone: () => uiStructure.getZone(),
+			getSiButton: () => button,
+			isLoading: () => false,
+			isDisabled: () => false,
+			exec: () => this.openAll()
+		});
+
+		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);
 	}
 
 	unbind(): void {
@@ -209,6 +226,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		this.subscription = null;
 		this.embeStructureCollection.clear();
 		this.embeStructureCollection = null;
+		this.toolbarStructureModelsSubject.next([]);
 	}
 
 	getAsideContents(): UiContent[] {

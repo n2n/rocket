@@ -38,5 +38,5 @@ export interface EmbeddedEntriesInModel extends MessageFieldModel {
 
 	open(embeStructure: EmbeStructure): void;
 
-	openAll(): void;
+	// openAll(): void;
 }

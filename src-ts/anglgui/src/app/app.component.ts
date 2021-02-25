@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, Injector } from '@angular/core';
 import { TranslationService } from './util/i18n/translation.service';
 import { Extractor } from './util/mapping/extractor';
-import { UiFactory } from './ui/build/ui-factory';
 import { UiMenuGroup } from './ui/structure/model/ui-menu';
 import { SiUiService } from './si/manage/si-ui.service';
 import { AppStateService } from './app-state.service';
@@ -10,11 +9,19 @@ import { User } from './op/user/bo/user';
 import { UiNavPoint } from './ui/util/model/ui-nav-point';
 import { PlatformService } from './util/nav/platform.service';
 import { SiUiFactory } from './si/build/si-ui-factory';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
 	selector: 'rocket-root',
 	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.css']
+	styleUrls: ['./app.component.css'],
+	animations: [
+	    trigger('openClose', [
+		  state('true', style({opacity: 1})),
+		  state('false', style({opacity: 0})),
+		  transition('false <=> true', animate('500ms'))
+		])
+	]
 })
 export class AppComponent implements OnInit {
 	title = 'rocket';
@@ -28,7 +35,7 @@ export class AppComponent implements OnInit {
 
 	ngOnInit() {
 		const extr = new Extractor(JSON.parse(this.elemRef.nativeElement.getAttribute('data-rocket-angl-data')));
-
+		
 		this.translationService.map = extr.reqStringMap('translationMap');
 		this.menuGroups = new SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));

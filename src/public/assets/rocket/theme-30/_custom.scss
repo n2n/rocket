@@ -72,6 +72,7 @@ $input-border-width: 			1px;
 
 $table-hover-bg: 				$gray-300;
 $table-border-color:          	$gray-400;
+$table-header-bg:               $gray-800;
 
 
 $dropdown-item-padding-x: 		1rem;
@@ -127,6 +128,7 @@ $rocket-toggler-active-color:           $gray-700;
 $rocket-toggler-border-width:           2px;
 $rocket-toggler-width:                  22px;
 
+$sticky-commands-enabled:               false;
 
 $rocket-tree-level-num:		            9;
 $rocket-tree-generic-offset:                        20px;

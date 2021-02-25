@@ -33,21 +33,36 @@ body > rocket-root {
     grid-area: header;
     display: flex;
     z-index: 1;
-    padding: 0 0 0 $content-padding;
+    padding: 0 0 0 1rem;
+}
+
+#rocket-branding {
+    display: block
 }
 
 
 @include media-breakpoint-down(md) {
-    #rocket-logo {
-        display: none;
+    #rocket-branding {
+        width: 30px;
+        margin-right: 0.5rem;
+        align-self: center;
+        > img {
+            max-width: 100%;
+            height: auto;
+        }
     }
 }
+@include media-breakpoint-up(lg) {
+    #rocket-branding {
+        position: absolute;
+        top: 0.5rem;
+        left: 1rem;
+        z-index: 1;
+    }
 
-#rocket-branding {
-    position: absolute;
-    top: 0.5rem;
-    left: 1rem;
-    z-index: 1;
+    #rocket-header {
+        padding: 0 0 0 $content-padding;
+    }
 }
 
 #rocket-customer-name {

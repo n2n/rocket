@@ -4924,20 +4924,37 @@ body > rocket-root {
   display: -ms-flexbox;
   display: flex;
   z-index: 1;
-  padding: 0 0 0 3rem;
-}
-
-@media (max-width: 991.98px) {
-  #rocket-logo {
-    display: none;
-  }
+  padding: 0 0 0 1rem;
 }
 
 #rocket-branding {
-  position: absolute;
-  top: 0.5rem;
-  left: 1rem;
-  z-index: 1;
+  display: block;
+}
+
+@media (max-width: 991.98px) {
+  #rocket-branding {
+    width: 30px;
+    margin-right: 0.5rem;
+    -ms-flex-item-align: center;
+        -ms-grid-row-align: center;
+        align-self: center;
+  }
+  #rocket-branding > img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  #rocket-branding {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    z-index: 1;
+  }
+  #rocket-header {
+    padding: 0 0 0 3rem;
+  }
 }
 
 #rocket-customer-name {
@@ -5857,6 +5874,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 .rocket-nav-group > .nav {
   padding-bottom: 1rem;
+  overflow: hidden;
 }
 
 .rocket-nav-group .nav-item {
@@ -5953,7 +5971,6 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 @media (min-width: 768px) {
   .rocket-impl-overview-tools {
-    position: -webkit-sticky;
     position: sticky;
     position: -webkit-sticky;
     top: 44px;
@@ -6163,6 +6180,8 @@ td > *:last-child {
   margin-bottom: 0;
 }
 
+th > span,
+td .rocket-crumb-group > span:not(.rocket-unimportant):not(.rocket-important),
 td .rocket-ui-string-out-field {
   /* autoprefixer: off */
   -webkit-box-orient: vertical;
@@ -6171,6 +6190,7 @@ td .rocket-ui-string-out-field {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  min-width: 5ch;
 }
 
 td > .rocket-split {
@@ -6180,8 +6200,9 @@ td > .rocket-split {
 .rocket-minimal {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: auto 1fr;
-      grid-template-columns: auto 1fr;
+  -ms-grid-columns: minmax(min-content, auto) 1fr;
+      grid-template-columns: minmax(-webkit-min-content, auto) 1fr;
+      grid-template-columns: minmax(min-content, auto) 1fr;
   gap: 5px;
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
@@ -6206,13 +6227,6 @@ td > .rocket-split {
   -ms-grid-column: 1;
       grid-column-start: 1;
   grid-column-end: 2;
-}
-
-td .rocket-ui-string-out-field {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
 }
 
 .rocket-crumb-group {
@@ -7280,8 +7294,8 @@ rocket-add-past > button::after {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  -ms-flex-wrap: now-wrap;
+      flex-wrap: now-wrap;
 }
 
 .rocket-panel,

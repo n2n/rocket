@@ -1,7 +1,6 @@
 
 
 <div class="rocket-zone-content">
-	
 	<header class="rocket-zone-header">
 		<rocket-ui-breadcrumbs [uiBreadcrumbs]="uiZone.breadcrumbs"></rocket-ui-breadcrumbs>
 		
@@ -12,7 +11,7 @@
 					rocketUiContent [uiContent]="uiContent"></ng-template>
 		</div>
 	</header>
-
+	
 	<div *ngIf="!uiZone.structure" class="rocket-loader"></div>
 	<div *ngIf="uiZone.structure" rocketUiStructure [uiStructure]="uiZone.structure" [asideVisible]="false" class="rocket-content"></div>
 
@@ -27,7 +26,7 @@
 							(mouseenter)="uiZoneError.marked(true)" (mouseleave)="uiZoneError.marked(false)"
 							(click)="uiZoneError.focus()">
 						<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
-						<span>{{ 'show_errors_txt' | translate }} [@Andi Link machen]</span>
+						<span>{{ 'show_errors_txt' | translate }}</span>
 					</div>
 				</div>
 			</div>

@@ -86,7 +86,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		this.model.open(embe);
 	}
 
-	openAll() {
-		this.model.openAll();
-	}
+	// openAll() {
+	// 	this.model.openAll();
+	// }
 }

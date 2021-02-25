@@ -14,15 +14,19 @@ export class UiStructureModelDecorator implements UiStructureModel {
 	bind(uiStructure: UiStructure): void {
 		this.decorated.bind(uiStructure);
 	}
+
 	unbind(): void {
 		this.decorated.unbind();
 	}
+
 	getContent(): UiContent|null {
 		return this.decorated.getContent();
 	}
+
 	getMainControlContents(): UiContent[] {
 		return this.decorated.getMainControlContents();
 	}
+
 	getAsideContents(): UiContent[] {
 		return this.decorated.getAsideContents();
 	}
@@ -39,15 +43,19 @@ export class UiStructureModelDecorator implements UiStructureModel {
 		return combineLatest([this.additionalToolbarStructureModelsSubject, this.decorated.getToolbarStructureModels$()])
 				.pipe(map(([mo1, mo2]) => [...mo1, ...mo2]));
 	}
+
 	getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.decorated.getStructureErrors$();
 	}
+
 	getStructures$(): Observable<UiStructure[]> {
 		return this.decorated.getStructures$();
 	}
+
 	getDisabled$(): Observable<boolean> {
 		return this.decorated.getDisabled$();
 	}
+
 	getMode(): UiStructureModelMode {
 		return this.decorated.getMode();
 	}

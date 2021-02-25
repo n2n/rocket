@@ -1,10 +1,10 @@
-<div class="rocket-toolbar">
+<!--<div class="rocket-toolbar">
 	<div class="rocket-simple-commands">
 		<button class="btn btn-warning rocket-important rocket-label-important" (click)="openAll()">
 			{{ 'common_edit_all_label' | translate }} <i class="fa fa-pencil-alt"></i>
 		</button>
 	</div>
-</div>
+</div>-->
 
 <div cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embeStructure of embeStructures" cdkDrag class="rocket-draggable">
