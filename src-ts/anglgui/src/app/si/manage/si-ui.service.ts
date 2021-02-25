@@ -11,10 +11,7 @@ import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiResult, SiDirective } from './si-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
-import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { PlatformService } from 'src/app/util/nav/platform.service';
-import { SiSortRequest } from '../model/api/si-sort-request';
-import { map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
@@ -30,16 +27,13 @@ export class SiUiService {
 			throw new SiCommandError('Zone contains no url.');
 		}
 
-		if (!force && zone.model) {
+		if (!force && zone.structure) {
 			return;
 		}
 
-		zone.model = null;
+		zone.reset();
 
-		this.service.lookupZoneModel(zone.url, zone)
-				.subscribe((zoneModel) => {
-					zone.model = zoneModel;
-				});
+		this.service.lookupZone(zone);
 	}
 
 	navigateByUrl(url: string, layer: UiLayer|null) {
@@ -74,9 +68,7 @@ export class SiUiService {
 	// execEntryControl(apiUrl: string, callId: object, entry: SiEntry, includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 	// 	if (!entry.qualifier.identifier.id) {
 	// 		throw new IllegalSiStateError('Entry control cannnot be executed on new entry.');
-	// 	}
-
-	// 	const entryInputs: SiEntryInput[] = [];
+	// 	// 	const entryInputs: SiEntryInput[] = [];
 	// 	const entries: SiEntry[] = [];
 	// 	if (includeInput) {
 	// 		entryInputs.push(entry.readInput());

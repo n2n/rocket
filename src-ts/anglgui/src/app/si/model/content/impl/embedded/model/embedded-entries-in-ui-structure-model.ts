@@ -18,7 +18,6 @@ import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { Observable, Subscription } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { EmbeInCollection } from './embe/embe-collection';
 import { Embe } from './embe/embe';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
@@ -319,13 +318,11 @@ class EmbeInUiZoneManager {
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		zone.model = {
-			title: 'Some Title',
-			breadcrumbs: [],
-			structure: embe.uiStructure,
-			mainCommandContents: this.createPopupControls(() => { bakEntry = null; })
-					.map(siControl => siControl.createUiContent(() => zone))
-		};
+		zone.title = 'Some Title';
+		zone.breadcrumbs = [];
+		zone.structure = embe.uiStructure;
+		zone.mainCommandContents = this.createPopupControls(() => { bakEntry = null; })
+					.map(siControl => siControl.createUiContent(() => zone));
 
 		const promise = new Promise<boolean>((resolve) => {
 			this.popupUiLayer.onDispose(() => {
@@ -384,13 +381,11 @@ class EmbeInUiZoneManager {
 			});
 		});
 
-		zone.model = {
-			title: 'Some Title',
-			breadcrumbs: [],
-			structure,
-			mainCommandContents: this.createPopupControls(() => { bakEmbeddedEntries = null; })
-					.map(siControl => siControl.createUiContent(() => zone))
-		};
+		zone.title = 'Some Title';
+		zone.breadcrumbs = [];
+		zone.structure = structure;
+		zone.mainCommandContents = this.createPopupControls(() => { bakEmbeddedEntries = null; })
+					.map(siControl => siControl.createUiContent(() => zone));
 
 		return promise;
 	}

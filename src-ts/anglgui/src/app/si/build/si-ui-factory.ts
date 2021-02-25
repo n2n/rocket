@@ -1,4 +1,4 @@
-import { UiBreadcrumb, UiZoneModel } from 'src/app/ui/structure/model/ui-zone';
+import { UiBreadcrumb, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { Injector } from '@angular/core';
 import { Extractor } from 'src/app/util/mapping/extractor';
@@ -12,18 +12,16 @@ export class SiUiFactory {
 	constructor(private injector: Injector) {
 	}
 
-	createZoneModel(data: any, uiLayer: UiLayer|null): UiZoneModel {
+	fillZone(data: any, uiZone: UiZone): void {
 		const extr = new Extractor(data);
 
 		const comp = new SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'));
 
-		return {
-			title: extr.reqString('title'),
-			breadcrumbs: this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiLayer),
-			structure: new UiStructure(null, null, comp.createUiStructureModel()),
-			mainCommandContents: [] /*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
-					.map(siControl => siControl.createUiContent(zone))*/
-		};
+		uiZone.title = extr.reqString('title');
+		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);
+		uiZone.structure = new UiStructure(null, null, comp.createUiStructureModel());
+		/*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
+			.map(siControl => siControl.createUiContent(zone))*/
 	}
 
 	createBreadcrumbs(dataArr: Array<any>, uiLayer: UiLayer|null): UiBreadcrumb[] {

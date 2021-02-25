@@ -36,7 +36,7 @@ export class PanelLayout {
 		}
 
 		return this.san.bypassSecurityTrustStyle('display: grid; grid-template-columns: repeat('
-				+ (this.numGridRows - 1) + ', 1fr');
+				+ (this.numGridCols - 1) + ', 1fr');
 	}
 
 	styleOf(panel: SiPanel): SafeStyle {

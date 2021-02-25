@@ -7,6 +7,14 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { UiConfirmDialog } from './ui-confirm-dialog';
 
 export class UiZone {
+	title: string|null = null;
+	breadcrumbs = new Array<UiBreadcrumb>();
+	partialCommandContents = new Array<UiContent>();
+	mainCommandContents = new Array<UiContent>();
+	contextMenuContents = new Array<UiContent>();
+	confirmDialog: UiConfirmDialog|null = null;
+	private disposeSubject = new Subject<void>();
+	private _structure: UiStructure|null = null;
 
 	constructor(readonly url: string|null, readonly layer: UiLayer) {
 	}
@@ -15,38 +23,44 @@ export class UiZone {
 		return this.layer.currentRoute.zone === this;
 	}
 
-	set model(model: UiZoneModel|null) {
-		if (this._model === model) {
+	set structure(structure: UiStructure|null) {
+		if (this._structure === structure) {
 			return;
 		}
 
-		this.resetModel();
+		this.resetStructure();
 
-		if (model) {
-			this._model = model;
-			model.structure.setZone(this);
+		if (structure) {
+			this._structure = structure;
+			structure.setZone(this);
 		}
 	}
 
-	get model(): UiZoneModel|null {
-		return this._model;
+	get structure(): UiStructure|null {
+		return this._structure;
 	}
 
 	// public content: SiGui|null;
-	private disposeSubject = new Subject<void>();
-	private _model: UiZoneModel|null = null;
 
-	confirmDialog: UiConfirmDialog|null = null;
 
-	private resetModel() {
-		if (this._model) {
-			this._model.structure.setZone(null);
+	private resetStructure() {
+		if (this._structure) {
+			this._structure.setZone(null);
 		}
-		this._model = null;
+		this._structure = null;
+	}
+
+	reset() {
+		this.resetStructure();
+		this.title = null;
+		this.breadcrumbs = [];
+		this.partialCommandContents = [];
+		this.mainCommandContents = [];
+		this.confirmDialog = null;
 	}
 
 	dispose() {
-		this.resetModel();
+		this.reset();
 
 		this.disposeSubject.next();
 		this.disposeSubject.complete();
@@ -67,15 +81,6 @@ export class UiZone {
 		});
 		return this.confirmDialog;
 	}
-}
-
-
-export interface UiZoneModel {
-	title: string;
-	breadcrumbs: UiBreadcrumb[];
-	structure: UiStructure;
-	partialCommandContents?: UiContent[];
-	mainCommandContents?: UiContent[];
 }
 
 export interface UiBreadcrumb {

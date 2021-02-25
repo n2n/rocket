@@ -22,6 +22,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subscription } from 'rxjs';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
+import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
 
 export class SplitSiField extends SiFieldAdapter {
 
@@ -209,12 +210,15 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 					return;
 				}
 
-				childUiStructure.model = siField.createUiStructureModel(this.compactMode);
+				let model = siField.createUiStructureModel(this.compactMode);
 
 				if (siField.hasInput() && siField.isGeneric()) {
-					childUiStructure.addExtraToolbarStructureModel(new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone()))));
+					const decorator = model = new UiStructureModelDecorator(model);
+					decorator.setAdditionalToolbarStructureModels([new SimpleUiStructureModel(new ButtonControlUiContent(
+							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone())))]);
 				}
+
+				childUiStructure.model = model;
 			})/*.catch((e) => {
 				childUiStructure.model = this.createNotActiveUism();
 			})*/;

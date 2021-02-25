@@ -19,6 +19,7 @@ import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { BranchUiStructureModel } from 'src/app/ui/structure/model/impl/branch-ui-structure-model';
+import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
@@ -161,6 +162,7 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 	private clear() {
 		this.uiStructures = [];
 		this.asideUiContents = [];
+		this.toolbarStructureModels = [];
 
 		this.uiStructureModelCache.clear();
 	}
@@ -186,6 +188,8 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 				toolbarResolver.fillContext(prop, this.siEntry.selectedEntryBuildup.getFieldById(prop.id));
 			}
 		}
+
+		this.toolbarStructureModels = toolbarResolver.toolbarUiStructureModels;
 	}
 
 	private isBoundStructureInsideGroup(): boolean {
@@ -250,14 +254,19 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 		if (ssd.prop) {
 			uiStructure.label = ssd.prop.label;
 			if (this.siEntry.selectedEntryBuildup.containsPropId(ssd.prop.id)) {
-				uiStructure.model = this.createUiStructureModel(ssd.prop);
+				const model = new UiStructureModelDecorator(this.createUiStructureModel(ssd.prop));
+				uiStructure.model = model;
+				toolbarResolver.registerDecorator(uiStructure, model);
+				toolbarResolver.register(ssd.prop.id, uiStructure);
 			}
-			toolbarResolver.register(ssd.prop.id, uiStructure);
 			return uiStructure;
 		}
 
 		uiStructure.label = ssd.label;
-		uiStructure.model = new BranchUiStructureModel(this.createStructures(ssd.children, toolbarResolver, false));
+		const branchModel = new UiStructureModelDecorator(new BranchUiStructureModel(
+				this.createStructures(ssd.children, toolbarResolver, false)));
+		uiStructure.model = branchModel;
+		toolbarResolver.registerDecorator(uiStructure, branchModel);
 
 		return uiStructure;
 	}
@@ -317,12 +326,22 @@ class TypeSelectInModel implements EnumInModel {
 
 class ToolbarResolver {
 	private uiStructuresMap = new Map<string, UiStructure>();
+	private decoratorItems = new Array<{ uiStructure: UiStructure, decorator: UiStructureModelDecorator }>();
+	public toolbarUiStructureModels = new Array<UiStructureModel>();
 
 	register(propId: string, uiStructure: UiStructure) {
 		this.uiStructuresMap.set(propId, uiStructure);
 	}
 
+	registerDecorator(uiStructure: UiStructure, decorator: UiStructureModelDecorator) {
+		this.decoratorItems.push({ uiStructure, decorator });
+	}
+
 	fillContext(conextSiProp: SiProp, contextSiField: SiField) {
+		if (!contextSiField.isDisplayable()) {
+			return;
+		}
+
 		let contextUiStructure: UiStructure|null = null;
 
 		for (const dependantPropId of conextSiProp.dependantPropIds) {
@@ -339,9 +358,24 @@ class ToolbarResolver {
 			contextUiStructure = this.deterOuter(contextUiStructure, uiStructure);
 		}
 
-		if (contextUiStructure && contextSiField.isDisplayable()) {
-			contextUiStructure.addExtraToolbarStructureModel(contextSiField.createUiStructureModel(false));
+		const uiStructureModel = contextSiField.createUiStructureModel(false);
+
+		let decorator: UiStructureModelDecorator;
+		if (contextUiStructure && (decorator = this.findDecorator(contextUiStructure))) {
+			decorator.setAdditionalToolbarStructureModels([uiStructureModel]);
+		} else {
+			this.toolbarUiStructureModels.push(uiStructureModel);
 		}
+	}
+
+	private findDecorator(uiStructure: UiStructure): UiStructureModelDecorator {
+		const di = this.decoratorItems.find(d => d.uiStructure === uiStructure);
+
+		if (di) {
+			return di.decorator;
+		}
+
+		return null;
 	}
 
 	private deterOuter(uiStructure1: UiStructure, uiStructure2: UiStructure): UiStructure {

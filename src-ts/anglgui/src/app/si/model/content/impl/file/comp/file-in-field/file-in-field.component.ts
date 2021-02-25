@@ -127,16 +127,14 @@ export class FileInFieldComponent implements OnInit {
 		});
 
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
-		zone.model = {
-			title: 'Some Title',
-			breadcrumbs: [],
-			structure: new UiStructure(UiStructureType.SIMPLE_GROUP, null, new SimpleUiStructureModel(
+		zone.title = 'Some Title';
+		zone.breadcrumbs = [];
+		zone.structure = new UiStructure(UiStructureType.SIMPLE_GROUP, null, new SimpleUiStructureModel(
 					new TypeUiContent(ImageEditorComponent, (cr) => {
 						cr.instance.model = this.uploader;
-					}))),
-			mainCommandContents: this.createPopupControls(() => { bakSiFile = null; })
-					.map(siControl => siControl.createUiContent(() => zone))
-		};
+					})));
+		zone.mainCommandContents = this.createPopupControls(() => { bakSiFile = null; })
+					.map(siControl => siControl.createUiContent(() => zone));
 
 		this.popupUiLayer.onDispose(() => {
 			this.popupUiLayer = null;

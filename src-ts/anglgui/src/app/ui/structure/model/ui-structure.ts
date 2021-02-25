@@ -8,6 +8,7 @@ import { BehaviorCollection } from 'src/app/util/collection/behavior-collection'
 import { UiStructureError } from './ui-structure-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { filter } from 'rxjs/operators';
+import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 
 export class UiStructure {
 	private zoneSubject = new BehaviorSubject<UiZone|null>(null);
@@ -19,7 +20,7 @@ export class UiStructure {
 	private modelStructureErrors: UiStructureError[]|null = null;
 	private children: Array<{ structure: UiStructure, subscription: Subscription }> = [];
 	private toolbarItems: Array<{ structure: UiStructure, subscription: Subscription }> = [];
-	private extraToolbarItems: Array<{ structure: UiStructure, subscription: Subscription }> = [];
+	// private extraToolbarItems: Array<{ structure: UiStructure, subscription: Subscription }> = [];
 	private zoneErrorsCollection = new BehaviorCollection<UiZoneError>();
 
 	private visibleSubject = new BehaviorSubject<boolean>(true);
@@ -41,7 +42,15 @@ export class UiStructure {
 	}
 
 	setZone(zone: UiZone|null) {
-		if (zone !== null &&  (this.zoneSubject.getValue() || this.parent)) {
+		if (zone && zone.structure !== this) {
+			throw new IllegalArgumentError('ZoneModel structure does not match.');
+		}
+
+		if (!zone && this.zoneSubject.getValue() && this.zoneSubject.getValue().structure) {
+			throw new IllegalArgumentError('ZoneModel structure not unset.');
+		}
+
+		if (zone &&  (this.zoneSubject.getValue() || this.parent)) {
 			throw new IllegalStateError('UiStructure has already been assigned to a zone or parent.');
 		}
 
@@ -214,7 +223,7 @@ export class UiStructure {
 	}
 
 	getToolbarStructures(): UiStructure[] {
-		return this.toolbarItems.map(ti => ti.structure).concat(this.extraToolbarItems.map(eti => eti.structure));
+		return this.toolbarItems.map(ti => ti.structure)/*.concat(this.extraToolbarItems.map(eti => eti.structure))*/;
 	}
 
 	get disposed(): boolean {
@@ -264,7 +273,7 @@ export class UiStructure {
 	private clear() {
 		this.clearChildren();
 		this.clearToolbarItems();
-		this.clearExtraToolbarItems();
+		// this.clearExtraToolbarItems();
 
 		if (this._model) {
 			this.modelSubscription.unsubscribe();
@@ -363,63 +372,63 @@ export class UiStructure {
 		this.children = updatedChildren;
 	}
 
-	addExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
-		const models = this.getExtraToolbarStructureModels();
-		models.push(...uiStructureModels);
-		models.filter((value, index, self) => {
-  			return self.indexOf(value) === index;
-		});
-		this.setExtraToolbarStructureModels(models);
-	}
+	// addExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
+	// 	const models = this.getExtraToolbarStructureModels();
+	// 	models.push(...uiStructureModels);
+	// 	models.filter((value, index, self) => {
+  	// 		return self.indexOf(value) === index;
+	// 	});
+	// 	this.setExtraToolbarStructureModels(models);
+	// }
 
-	removeExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
-		const models = this.getExtraToolbarStructureModels();
-		for (const uiStructureModel of uiStructureModels) {
-			const i = models.indexOf(uiStructureModel);
-			if (i > -1) {
-				models.splice(i, 1);
-			}
-		}
-		this.setExtraToolbarStructureModels(models);
-	}
+	// removeExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
+	// 	const models = this.getExtraToolbarStructureModels();
+	// 	for (const uiStructureModel of uiStructureModels) {
+	// 		const i = models.indexOf(uiStructureModel);
+	// 		if (i > -1) {
+	// 			models.splice(i, 1);
+	// 		}
+	// 	}
+	// 	this.setExtraToolbarStructureModels(models);
+	// }
 
-	setExtraToolbarStructureModels(structureModels: UiStructureModel[]) {
-		const updatedExtraToolbarItems = new Array<{ structure: UiStructure, subscription: Subscription }>();
+	// setExtraToolbarStructureModels(structureModels: UiStructureModel[]) {
+	// 	const updatedExtraToolbarItems = new Array<{ structure: UiStructure, subscription: Subscription }>();
 
-		for (const structureModel of structureModels) {
-			const i = this.extraToolbarItems.findIndex(e => e.structure.model === structureModel);
-			if (i > -1) {
-				updatedExtraToolbarItems.push(this.toolbarItems.splice(i, 1)[0]);
-				continue;
-			}
+	// 	for (const structureModel of structureModels) {
+	// 		const i = this.extraToolbarItems.findIndex(e => e.structure.model === structureModel);
+	// 		if (i > -1) {
+	// 			updatedExtraToolbarItems.push(this.toolbarItems.splice(i, 1)[0]);
+	// 			continue;
+	// 		}
 
-			const structure = new UiStructure(null, null, structureModel);
-			updatedExtraToolbarItems.push({
-				structure,
-				subscription: structure.getZoneErrors$().subscribe(() => {
-					this.compileZoneErrors();
-				})
-			});
+	// 		const structure = new UiStructure(null, null, structureModel);
+	// 		updatedExtraToolbarItems.push({
+	// 			structure,
+	// 			subscription: structure.getZoneErrors$().subscribe(() => {
+	// 				this.compileZoneErrors();
+	// 			})
+	// 		});
 
-			structure.setParent(this);
-		}
+	// 		structure.setParent(this);
+	// 	}
 
-		this.clearExtraToolbarItems();
+	// 	this.clearExtraToolbarItems();
 
-		this.extraToolbarItems = updatedExtraToolbarItems;
-	}
+	// 	this.extraToolbarItems = updatedExtraToolbarItems;
+	// }
 
-	getExtraToolbarStructureModels(): UiStructureModel[] {
-		return this.extraToolbarItems.map(eti => eti.structure.model);
-	}
+	// getExtraToolbarStructureModels(): UiStructureModel[] {
+	// 	return this.extraToolbarItems.map(eti => eti.structure.model);
+	// }
 
-	private clearExtraToolbarItems() {
-		let extraToolbarItem: { structure: UiStructure, subscription: Subscription };
-		while (extraToolbarItem = this.extraToolbarItems.pop()) {
-			extraToolbarItem.subscription.unsubscribe();
-			extraToolbarItem.structure.dispose();
-		}
-	}
+	// private clearExtraToolbarItems() {
+	// 	let extraToolbarItem: { structure: UiStructure, subscription: Subscription };
+	// 	while (extraToolbarItem = this.extraToolbarItems.pop()) {
+	// 		extraToolbarItem.subscription.unsubscribe();
+	// 		extraToolbarItem.structure.dispose();
+	// 	}
+	// }
 
 	get disposed$(): Observable<boolean> {
 		return this.disposedSubject;
@@ -534,9 +543,9 @@ export class UiStructure {
 			errors.push(...toolbarItem.structure.getZoneErrors());
 		}
 
-		for (const extraToolbarItem of this.extraToolbarItems) {
-			errors.push(...extraToolbarItem.structure.getZoneErrors());
-		}
+		// for (const extraToolbarItem of this.extraToolbarItems) {
+		// 	errors.push(...extraToolbarItem.structure.getZoneErrors());
+		// }
 
 		if (this.model) {
 			errors.push(...this.modelStructureErrors.map(se => this.createZoneError(se)));

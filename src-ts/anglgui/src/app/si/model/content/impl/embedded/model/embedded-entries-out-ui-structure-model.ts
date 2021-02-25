@@ -199,13 +199,11 @@ class EmbeOutUiStructureManager {
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		zone.model = {
-			title: 'Some Title',
-			breadcrumbs: [],
-			structure: embe.uiStructure,
-			mainCommandContents: this.createPopupControls()
-					.map(siControl => siControl.createUiContent(() => zone))
-		};
+		zone.title = 'Some Title';
+		zone.breadcrumbs = [];
+		zone.structure = embe.uiStructure;
+		zone.mainCommandContents = this.createPopupControls()
+					.map(siControl => siControl.createUiContent(() => zone));
 
 		this.popupUiLayer.onDispose(() => {
 			this.popupUiLayer = null;
@@ -238,13 +236,11 @@ class EmbeOutUiStructureManager {
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
 
-		zone.model = {
-			title: 'Some Title',
-			breadcrumbs: [],
-			structure,
-			mainCommandContents: this.createPopupControls()
-					.map(siControl => siControl.createUiContent(() => zone))
-		};
+		zone.title = 'Some Title';
+		zone.breadcrumbs = [];
+		zone.structure = structure;
+		zone.mainCommandContents = this.createPopupControls()
+					.map(siControl => siControl.createUiContent(() => zone));
 	}
 
 	private createPopupControls(): SiControl[] {

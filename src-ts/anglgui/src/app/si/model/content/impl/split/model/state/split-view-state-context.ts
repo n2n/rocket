@@ -1,21 +1,21 @@
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitViewMenuComponent } from '../../comp/split-view-menu/split-view-menu.component';
 import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
 import { SplitOption } from '../split-option';
-import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { SplitStyle } from '../split-context-si-field';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { UiContent } from 'src/app/ui/structure/model/ui-content';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
-	private toolbarUiStructure: UiStructure|null = null;
+
 	private subscriptions: Array<SplitViewStateSubscription> = [];
 	private optionMap = new Map<string, SplitOption>();
 	private visibleKeys: string[] = [];
 	private visibleKeysSubject = new BehaviorSubject<string[]>([]);
+
+	private viewMenuUc: UiContent|null = null;
 
 	constructor(readonly uiZone: UiZone, public splitStyle: SplitStyle) {
 	}
@@ -99,8 +99,6 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		this.visibleKeysSubject.next([...this.visibleKeys]);
 	}
 
-	private viewMenuUsm: UiStructureModel|null = null;
-
 	private updateStructure() {
 		const assigned = this.optionMap.size > 0;
 
@@ -115,10 +113,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 
 		if (this.optionMap.size > 0) {
 			if (!assigned) {
-				this.uiZone.model.structure.addExtraToolbarStructureModel(this.viewMenuUsm = new SimpleUiStructureModel(
-						new TypeUiContent(SplitViewMenuComponent, (ref) => {
-							ref.instance.model = this;
-						})));
+				this.viewMenuUc = new TypeUiContent(SplitViewMenuComponent, (ref) => {
+					ref.instance.model = this;
+				});
+				this.uiZone.contextMenuContents.push(this.viewMenuUc);
 			}
 
 			return;
@@ -128,7 +126,10 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			return;
 		}
 
-		this.uiZone.model.structure.removeExtraToolbarStructureModel(this.viewMenuUsm);
-		this.viewMenuUsm = null;
+		const i = this.uiZone.contextMenuContents.indexOf(this.viewMenuUc);
+		if (i > -1) {
+			this.uiZone.contextMenuContents.splice(i, 1);
+		}
+		this.viewMenuUc = null;
 	}
 }

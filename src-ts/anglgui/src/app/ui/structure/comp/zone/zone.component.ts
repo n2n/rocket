@@ -1,8 +1,7 @@
-import { Component, OnInit, DoCheck, Input, ElementRef, OnDestroy, ChangeDetectionStrategy, HostBinding } from '@angular/core';
-import { UiZone, UiZoneModel } from '../../model/ui-zone';
+import { Component, OnInit, Input, OnDestroy, HostBinding } from '@angular/core';
+import { UiZone } from '../../model/ui-zone';
 import { UiZoneError } from '../../model/ui-zone-error';
 import { UiContent } from '../../model/ui-content';
-import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'rocket-ui-zone',
@@ -32,18 +31,18 @@ export class ZoneComponent implements OnInit, OnDestroy {
 	}
 
 	get uiZoneErrors(): UiZoneError[] {
-		return this.uiZone.model.structure.getZoneErrors();
+		if (!this.uiZone.structure) {
+			return [];
+		}
+
+		return this.uiZone.structure.getZoneErrors();
 	}
 
 	get asideCommandUiContents(): UiContent[] {
-		if (!this.uiZone.model.structure.model) {
+		if (!this.uiZone.structure || !this.uiZone.structure.model) {
 			return [];
 		}
-		return this.uiZone.model.structure.model.getAsideContents();
-	}
-
-	get uiZoneModel(): UiZoneModel|null {
-		return this.uiZone.model;
+		return this.uiZone.structure.model.getAsideContents();
 	}
 
 	@HostBinding('class.rocket-contains-additional')
@@ -51,12 +50,20 @@ export class ZoneComponent implements OnInit, OnDestroy {
 		return this.uiZoneErrors.length > 0;
 	}
 
+	get contextMenuUiContents(): UiContent[] {
+		return this.uiZone.contextMenuContents;
+	}
+
 	get partialCommandUiContents(): UiContent[] {
-		return this.uiZone.model.partialCommandContents || [];
+		return this.uiZone.partialCommandContents;
 	}
 
 	get mainCommandUiContents(): UiContent[] {
-		return [...this.uiZone.model.mainCommandContents, ...this.uiZone.model.structure.model.getMainControlContents()];
+		if (this.uiZone.structure && this.uiZone.structure.model && this.uiZone.structure.model.getMainControlContents().length > 0) {
+			return [...this.uiZone.mainCommandContents, ...this.uiZone.structure.model.getMainControlContents()];
+		}
+
+		return this.uiZone.mainCommandContents;
 	}
 
 

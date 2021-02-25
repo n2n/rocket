@@ -1,50 +1,53 @@
-<div *ngIf="!uiZone.model" class="rocket-loader"></div>
+
 
 <div class="rocket-zone-content">
-	<ng-container *ngIf="uiZone.model">
-		<header class="rocket-zone-header">
-			<rocket-ui-breadcrumbs [uiBreadcrumbs]="uiZone.model.breadcrumbs"></rocket-ui-breadcrumbs>
-			
-			<h1>{{ uiZone.model.title }}</h1>
-			
-			<div class="rocket-context-menu">@Andi</div>
-		</header>
-		
-		<div rocketUiStructure [uiStructure]="uiZone.model.structure" [asideVisible]="false" class="rocket-content"></div>
 	
-		<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
-			<div>
-				<ul class="rocket-additional-nav">
-					<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
-				</ul>
-				<div class="rocket-additional-container">
-					<div class="rocket-additional-content">
-						<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry" 
-								(mouseenter)="uiZoneError.marked(true)" (mouseleave)="uiZoneError.marked(false)"
-								(click)="uiZoneError.focus()">
-							<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
-							<span>{{ 'show_errors_txt' | translate }} [@Andi Link machen]</span>
-						</div>
+	<header class="rocket-zone-header">
+		<rocket-ui-breadcrumbs [uiBreadcrumbs]="uiZone.breadcrumbs"></rocket-ui-breadcrumbs>
+		
+		<h1>{{ uiZone.title }}</h1>
+		
+		<div *ngIf="contextMenuUiContents.length > 0" class="rocket-context-menu">
+			<ng-template *ngFor="let uiContent of contextMenuUiContents" 
+					rocketUiContent [uiContent]="uiContent"></ng-template>
+		</div>
+	</header>
+
+	<div *ngIf="!uiZone.structure" class="rocket-loader"></div>
+	<div *ngIf="uiZone.structure" rocketUiStructure [uiStructure]="uiZone.structure" [asideVisible]="false" class="rocket-content"></div>
+
+	<div *ngIf="hasUiZoneErrors()" class="rocket-additional">
+		<div>
+			<ul class="rocket-additional-nav">
+				<li class="rocket-severity-danger rocket-active">{{ 'errors_txt' | translate }}</li>
+			</ul>
+			<div class="rocket-additional-container">
+				<div class="rocket-additional-content">
+					<div *ngFor="let uiZoneError of uiZoneErrors" class="rocket-error-index-entry" 
+							(mouseenter)="uiZoneError.marked(true)" (mouseleave)="uiZoneError.marked(false)"
+							(click)="uiZoneError.focus()">
+						<rocket-ui-message [message]="uiZoneError.message" class="rocket-error-index-message"></rocket-ui-message>
+						<span>{{ 'show_errors_txt' | translate }} [@Andi Link machen]</span>
 					</div>
 				</div>
 			</div>
 		</div>
-	
-		<div class="rocket-zone-commands">
-			<div *ngIf="partialCommandUiContents.length > 0" class="rocket-partial-commands">
-				<ng-template *ngFor="let uiContent of partialCommandUiContents" 
-						rocketUiContent [uiContent]="uiContent"></ng-template>
-			</div>
-			<div *ngIf="mainCommandUiContents.length > 0" class="rocket-main-commands">
-				<ng-template *ngFor="let uiContent of mainCommandUiContents" 
-						rocketUiContent [uiContent]="uiContent"></ng-template>
-			</div>
-			<div *ngIf="asideCommandUiContents.length > 0" class="rocket-aside-commands">
-				<ng-template *ngFor="let uiContent of asideCommandUiContents" 
-						rocketUiContent [uiContent]="uiContent"></ng-template>
-			</div>
+	</div>
+
+	<div class="rocket-zone-commands">
+		<div *ngIf="partialCommandUiContents.length > 0" class="rocket-partial-commands">
+			<ng-template *ngFor="let uiContent of partialCommandUiContents" 
+					rocketUiContent [uiContent]="uiContent"></ng-template>
 		</div>
-	</ng-container>
+		<div *ngIf="mainCommandUiContents.length > 0" class="rocket-main-commands">
+			<ng-template *ngFor="let uiContent of mainCommandUiContents" 
+					rocketUiContent [uiContent]="uiContent"></ng-template>
+		</div>
+		<div *ngIf="asideCommandUiContents.length > 0" class="rocket-aside-commands">
+			<ng-template *ngFor="let uiContent of asideCommandUiContents" 
+					rocketUiContent [uiContent]="uiContent"></ng-template>
+		</div>
+	</div>
 </div>
 
 

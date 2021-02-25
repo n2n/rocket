@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
-import { Subscription, BehaviorSubject, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { UiContainer } from 'src/app/ui/structure/model/ui-container';
 import { MainUiLayer } from 'src/app/ui/structure/model/ui-layer';
