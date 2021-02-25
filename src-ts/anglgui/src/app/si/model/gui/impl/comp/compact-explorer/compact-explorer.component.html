@@ -7,7 +7,7 @@
 				<th *ngIf="selectable" class="rocket-entry-selector"></th>
 				<th [class.invisible]="!sortable"></th>
 				<th *ngFor="let siProp of getSiProps()">
-					{{ siProp.label }}
+					<span>{{ siProp.label }}</span>
 				</th>
 				<th [class.text-right]="sortable" class="rocket-table-commands" >
 					<div *ngIf="sortable" class="rocket-simple-commands">

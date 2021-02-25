@@ -69,10 +69,8 @@ use rocket\user\model\LoginContext;
 			}');
 ?>
 <header id="rocket-header">
-	<div id="rocket-logo">
-		<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/rocket-logo.svg', 'logo'),
-				array('id' => 'rocket-branding')) ?>
-	</div>
+	<?php $html->link(Murl::controller('rocket'), $html->getImageAsset('img/rocket-logo.svg', 'logo'),
+			array('id' => 'rocket-branding')) ?>
 	<h2 id="rocket-customer-name"><?php $html->out(N2N::getAppConfig()->general()->getPageName()) ?></h2>
 	<nav id="rocket-conf-nav" class="navbar-expand-lg" data-jhtml-comp="rocket-conf-nav">
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"

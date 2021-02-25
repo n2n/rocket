@@ -4,7 +4,6 @@
 
 .rocket-impl-overview-tools {
     @include media-breakpoint-up(md) {
-        position: -webkit-sticky;
         position: sticky;
 		position: -webkit-sticky;
         top: 44px;    
@@ -120,10 +119,11 @@ table tr.rocket-reloading:hover {
 
     > thead {
         // position: sticky;
+        // position: -webkit-sticky;
         // top: 80px;
         th {
             color: $white;
-            background-color: $gray-800;
+            background-color: $table-header-bg;
         }
 
         .rocket-general-entry-selector {
@@ -165,20 +165,48 @@ table tr.rocket-reloading:hover {
         white-space: nowrap;
         width: 5%;
         padding: 0.4rem 0.75rem;
-        // sticky commands in table
-        // position: sticky;
-        // right: 0;
-        // &:after {
-        //     content: "";
-        //     border-left: 1.5px solid $table-border-color;
-        //     position: absolute;
-        //     top: 0;
-        //     left: 0;
-        //     width: 100%;
-        //     height: 100%;
-        //     background-color: $white;
-        //     z-index: -1;
-        // }
+        // z-index: 0;
+        @if ($sticky-commands-enabled) {
+            // // sticky commands in table
+            position: sticky;
+            position: -webkit-sticky;
+            right: 0;
+            &:after {
+                content: "";
+                border-left: 1px solid $table-border-color;
+                // border-bottom: 0.5px solid $table-border-color;
+                position: absolute;
+                top: 0;
+                left: -1px;
+                width: 100%;
+                bottom: 0px;
+                //chrome hack --> gets safari to a 1px point bug in der border left of the element
+                bottom: 0.016px;
+                background-color: $white;
+                z-index: -1;
+            }
+        }
+    }
+    @if ($sticky-commands-enabled) {
+        td.rocket-table-commands:hover,
+        td:hover ~ .rocket-table-commands {
+            &:after {
+                background-color: $table-hover-bg;
+            }
+        }
+    }
+    
+    @if ($sticky-commands-enabled) {
+        th.rocket-table-commands {
+            &:after {
+                border-left: 1.5px solid $table-header-bg;
+                border-top: 1px solid $table-border-color;
+                border-bottom: 3px solid $table-border-color;
+                top: -1px;
+                bottom: -2.984px;
+                background-color: $table-header-bg;
+            }
+        }
     }
 
     > tbody .rocket-table-commands {
@@ -210,6 +238,9 @@ td > *:last-child {
     margin-bottom: 0;
 }
 
+// td .rocket-minimal > label,
+th > span,
+td .rocket-crumb-group > span:not(.rocket-unimportant):not(.rocket-important),
 td .rocket-ui-string-out-field {
     // Tomekk: unsupported property, be carefull. Works in Firefox, Chrome, Safari on Mac
     /* autoprefixer: off */
@@ -219,15 +250,18 @@ td .rocket-ui-string-out-field {
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 1;
+    min-width: 5ch;
 }
 
 td > .rocket-split {
     display: inline-block;
 }
 
+
 .rocket-minimal {
     display: grid;
-    grid-template-columns: auto 1fr;
+    // grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(min-content, auto) 1fr;
     gap: 5px;
     align-items: baseline;
 
@@ -252,13 +286,8 @@ td > .rocket-split {
     // }
 }
 
-td .rocket-ui-string-out-field {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -moz-box-orient: vertical;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-}
+
+
 
 .rocket-crumb-group {
     display: grid;
