@@ -53,11 +53,11 @@
 	<h2 class="sr-only">{{ 'manage_nav_title' | translate }}</h2>
 	<ng-container *ngFor="let menuGroup of menuGroups">
 		<div class="rocket-nav-group">
-			<h3 class="rocket-global-nav-group-title">
+			<h3 class="rocket-global-nav-group-title" (click)="menuGroup.toggle()">
 				<a>{{ menuGroup.label }}</a>
-				<i class="fas fa-minus"><!-- fa-plus --></i>
+				<i class="fas {{menuGroup.isOpen ? 'fa-minus':'fa-plus'}}"><!-- fa-plus --></i>
 			</h3>
-			<ul class="nav flex-column">
+			<ul class="nav flex-column" [@openClose]="menuGroup.isOpen ? true : false">
 				<li *ngFor="let menuItem of menuGroup.menuItems" class="nav-item">
 					<a [routerLink]="navRouterLink(menuItem.navPoint)" class="nav-link">{{ menuItem.label }}</a>
 					<!-- <a rocketUiNavPoint [uiNavPoint]="menuItem.navPoint">
