@@ -15,6 +15,7 @@ import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-stru
 import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
+import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private entrySubject = new BehaviorSubject<SiEntry|null>(null);
@@ -71,19 +72,14 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 
 class CompactUiStructureModel extends UiStructureModelAdapter implements CompactEntryModel {
 
+	private fieldUiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
+	private subscription: Subscription|null = null;
+	private currentSiEntry: SiEntry|null = null;
+
 	constructor(private siEntry$: Observable<SiEntry>, private siDeclaration: SiDeclaration, private controls: SiControl[],
 			private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
-
-	private fieldUiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
-	private subscription: Subscription|null = null;
-
-	// getContentUiStructures(): UiStructure[] {
-	// 	return this.contentUiStructures;
-	// }
-
-	private currentSiEntry: SiEntry|null;
 
 	isLoading() {
 		return !this.currentSiEntry;
@@ -216,11 +212,14 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	unbind(): void {
 		super.unbind();
 
-		this.siEntryMonitor.unregisterAllEntries();
+		this.clear();
+
 		this.siEntryMonitor.stop();
+		IllegalStateError.assertTrue(this.siEntryMonitor.size === 0,
+				'Remaining monitor entries: ' + this.siEntryMonitor.size);
+
 		this.uiContent = null;
 
-		this.clear();
 
 		this.mainControlUiContents = [];
 

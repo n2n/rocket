@@ -70,7 +70,9 @@ export class UiStructure {
 
 		this.parent = uiStructure;
 		this.parentSubscription = uiStructure.getZone$().subscribe((zone) => {
-			this.zoneSubject.next(zone);
+			if (this.zoneSubject.getValue() !== zone) {
+				this.zoneSubject.next(zone);
+			}
 		});
 	}
 
@@ -87,6 +89,10 @@ export class UiStructure {
 	getParent(): UiStructure|null {
 		this.ensureAssigned();
 		return this.parent;
+	}
+
+	hasZone(): boolean {
+		return !!this.zoneSubject.getValue();
 	}
 
 	getZone(): UiZone|null {
@@ -308,12 +314,12 @@ export class UiStructure {
 			}
 
 			const structure = new UiStructure(null, null, structureModel);
+
 			updatedToolbarItems.push({
 				structure,
-				subscription: new Subscription()
-						.add(structure.getZoneErrors$().subscribe(() => {
-							this.compileZoneErrors();
-						}))
+				subscription: structure.getZoneErrors$().subscribe(() => {
+					this.compileZoneErrors();
+				})
 			});
 
 			structure.setParent(this);
@@ -338,17 +344,16 @@ export class UiStructure {
 				continue;
 			}
 
-			updatedChildren.push({
-				structure,
-				subscription: new Subscription()
-						.add(structure.getZoneErrors$().subscribe(() => {
-							this.compileZoneErrors();
-						}))
-						.add(structure.disposed$.pipe(filter(d => d)).subscribe(() => {
-							this.unregisterChild(structure);
-							this.compileZoneErrors();
-						}))
-			});
+			const subscription = new Subscription();
+			subscription.add(structure.getZoneErrors$().subscribe(() => {
+				this.compileZoneErrors();
+			}));
+			subscription.add(structure.disposed$.pipe(filter(d => d)).subscribe(() => {
+				this.unregisterChild(structure);
+				this.compileZoneErrors();
+			}));
+
+			updatedChildren.push({ structure, subscription });
 
 			structure.setParent(this);
 		}
@@ -391,10 +396,9 @@ export class UiStructure {
 			const structure = new UiStructure(null, null, structureModel);
 			updatedExtraToolbarItems.push({
 				structure,
-				subscription: new Subscription()
-						.add(structure.getZoneErrors$().subscribe(() => {
-							this.compileZoneErrors();
-						}))
+				subscription: structure.getZoneErrors$().subscribe(() => {
+					this.compileZoneErrors();
+				})
 			});
 
 			structure.setParent(this);

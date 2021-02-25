@@ -65,15 +65,15 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 
 		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeOutCol);
 		this.embeStructureCollection.refresh();
-		this.subscription = new Subscription()
-				.add(this.embeOutCol.source.getMessages$().subscribe((messages) => {
-					this.errorState.messages = messages;
-					this.updateReducedStructureErrors();
-				}))
-				.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((structrueErrors) => {
-					this.errorState.structureErrors = structrueErrors;
-					this.updateReducedStructureErrors();
-				}));
+		this.subscription = new Subscription();
+		this.subscription.add(this.embeOutCol.source.getMessages$().subscribe((messages) => {
+			this.errorState.messages = messages;
+			this.updateReducedStructureErrors();
+		}));
+		this.subscription.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((structrueErrors) => {
+			this.errorState.structureErrors = structrueErrors;
+			this.updateReducedStructureErrors();
+		}));
 
 		if (!this.config.reduced) {
 			this.uiContent = new TypeUiContent(EmbeddedEntriesOutComponent, (ref) => {

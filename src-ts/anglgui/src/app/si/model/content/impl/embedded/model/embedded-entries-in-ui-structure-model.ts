@@ -165,8 +165,10 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	openAll() {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().openAll().then((changed) => {
+			console.log(changed);
 			if (!changed) {
 				this.embeStructureCollection.refresh();
+				console.log('refresh');
 			}
 		});
 	}
@@ -176,12 +178,12 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 
 		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeInCol);
 		this.embeStructureCollection.refresh();
-		this.subscription = new Subscription()
-				.add(this.embeInCol.source.getMessages$().subscribe((messages) => {
+		this.subscription = new Subscription();
+		this.subscription.add(this.embeInCol.source.getMessages$().subscribe((messages) => {
 					this.errorState.messages = messages;
 					this.updateReducedStructureErrors();
-				}))
-				.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((zoneErrors) => {
+				}));
+		this.subscription.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((zoneErrors) => {
 					this.errorState.zoneErrors = zoneErrors;
 					this.updateReducedStructureErrors();
 				}));

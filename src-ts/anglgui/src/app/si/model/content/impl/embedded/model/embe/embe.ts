@@ -3,11 +3,10 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 export class Embe {
 	private _siEmbeddedEntry: SiEmbeddedEntry;
-	public uiStructure = new UiStructure(UiStructureType.SIMPLE_GROUP);
+	public uiStructure = new UiStructure();
 	public summaryUiStructure = new UiStructure();
 
 	constructor(siEmbeddedEntry: SiEmbeddedEntry|null = null) {

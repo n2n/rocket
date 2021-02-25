@@ -15,7 +15,6 @@ export class EmbeStructure {
 	}
 
 	dispose() {
-		this.uiStructure.dispose();
 	}
 }
 

@@ -100,6 +100,10 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 			this.toolbarStructureModels = [this.createTypeSwitchUiStructureModel()];
 		}
 
+		this.subscription.add(uiStructure.getZone$().subscribe(() => {
+			this.rebuildStructures();
+		}));
+
 		this.siEntryMonitor.start();
 		this.monitorEntry();
 
@@ -163,6 +167,10 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 
 	private rebuildStructures() {
 		this.clear();
+
+		if (!this.reqBoundUiStructure().hasZone()) {
+			return;
+		}
 
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));

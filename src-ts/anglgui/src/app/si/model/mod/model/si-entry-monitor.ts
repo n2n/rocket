@@ -53,6 +53,14 @@ export class SiEntryMonitor {
 		this.nextReloadJob.removeSiEntry(entry);
 	}
 
+	get size(): number {
+		let size = 0;
+		this.entriesMap.forEach((value) => {
+			size += value.length;
+		});
+		return size;
+	}
+
 	unregisterAllEntries() {
 		this.entriesMap.clear();
 		this.nextReloadJob.clear();
