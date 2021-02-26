@@ -21,6 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke\ui;
 
+use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\util\StringUtils;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
@@ -30,7 +31,8 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\util\uri\UnavailableUrlException;
 use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
+use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
+use rocket\si\content\impl\string\CkeStyle;
 use n2n\util\type\ArgUtils;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
@@ -121,17 +123,27 @@ class CkeHtmlBuilder {
 	 * @param CkeCssConfig[] $linkProviders
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getEditor($propertyExpression = null, CkeComposer $ckeComposer = null, 
+	public function getEditor($propertyExpression = null, CkeComposer $ckeComposer = null,
 			CkeCssConfig $ckeCssConfig = null, array $linkProviders = array(), array $attrs = null) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
-		
-		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-impl-cke-classic', 
+		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-impl-cke-classic',
 				'data-rocket-impl-toolbar' => StringUtils::jsonEncode($this->buildEditorAttrs($ckeComposer, $ckeCssConfig)),
 				'data-link-configurations' => StringUtils::jsonEncode($this->buildLinkConfigData($linkProviders))), (array) $attrs);
-		
-		
+
+
 		return $this->view->getFormHtmlBuilder()->getTextarea($propertyExpression, $attrs);
+	}
+
+	public function getTextarea(string $value = null, CkeComposer $ckeComposer = null,
+			CkeCssConfig $ckeCssConfig = null, array $linkProviders = array(), array $attrs = null) {
+		$this->html->meta()->addLibrary(new CkeLibrary());
+
+		$attrs = HtmlUtils::mergeAttrs(array('class' => 'rocket-impl-cke-classic',
+			'data-rocket-impl-toolbar' => StringUtils::jsonEncode($this->buildEditorAttrs($ckeComposer, $ckeCssConfig)),
+			'data-link-configurations' => StringUtils::jsonEncode($this->buildLinkConfigData($linkProviders))), (array) $attrs);
+
+		return new HtmlElement('textarea', $attrs, $value);
 	}
 
 	/**
@@ -182,41 +194,40 @@ class CkeHtmlBuilder {
 		return new Raw('<iframe scrolling="auto" ' . $bodyIdHtml . ' class="rocket-cke-detail" ' . $bodyClassHtml
 				. 'data-contents-css="' . $headLinkHtml . '" data-content-html-json="' . $this->view->getOut($contentsHtml) . '"></iframe>');
 	}
-	
-	
+
 	private function buildEditorAttrs(CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null) {
 		$ckeConfig = ($ckeComposer !== null) ? $ckeComposer->toCkeConfig() : $ckeConfig = CkeConfig::createDefault();
-		
+
 		$attrs = array('mode' => $ckeConfig->getMode(),
-				'tableEditing' => $ckeConfig->isTablesEnabled(),
-				'bbcode' => $ckeConfig->isBbcodeEnabled());
+			'tableEditing' => $ckeConfig->isTablesEnabled(),
+			'bbcode' => $ckeConfig->isBbcodeEnabled());
 		if ($ckeCssConfig == null) return $attrs;
-		
+
 		if (!empty($bodyId = $ckeCssConfig->getBodyId())) {
 			$attrs['bodyId'] = $bodyId;
 		}
-		
+
 		if (!empty($bodyClass = $ckeCssConfig->getBodyClass())) {
 			$attrs['bodyClass'] = $bodyClass;
 		}
-		
+
 		$contentCssUrls = $this->getContentCssUrls($ckeCssConfig);
 		if (!empty($contentCssUrls)) {
 			$attrs['contentsCss'] = $contentCssUrls;
 		}
-		
+
 		$ckeStyles = $ckeCssConfig->getAdditionalStyles();
 		if (!empty($ckeStyles)) {
 			ArgUtils::valArrayReturn($ckeStyles, $ckeCssConfig, 'getAdditionalStyles', CkeStyle::class);
 			$attrs['additionalStyles'] = $this->prepareAdditionalStyles($ckeStyles);
 		}
-		
+
 		$formatTags = $ckeCssConfig->getFormatTags();
 		if (!empty($formatTags)) {
 			ArgUtils::valArrayReturn($formatTags, $ckeCssConfig, 'getFormatTags', 'string');
 			$attrs['formatTags'] = implode(';', $formatTags);
 		}
-		
+
 		return $attrs;
 	}
 	
@@ -266,7 +277,7 @@ class CkeHtmlBuilder {
 		$encodable = array();
 		foreach ($additionalStyles as $style) {
 			CastUtils::assertTrue($style instanceof CkeStyle);
-			$encodable[] = $style->getValueForJsonEncode();
+			$encodable[] = $style->jsonSerialize();
 		}
 		return $encodable;
 	}

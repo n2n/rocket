@@ -1,13 +1,15 @@
 <?php
 namespace rocket\impl\ei\component\prop\string\cke\ui;
 
-use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
-
 class CkeConfig {
 	private $mode;
 	private $tableEnabled;
 	private $bbcodeEnabled;
-	
+
+	const MODE_SIMPLE = 'simple';
+	const MODE_NORMAL = 'normal';
+	const MODE_ADVANCED = 'advanced';
+
 	public function __construct(string $mode, bool $tablesEnabled, bool $bbcodeEnabled) {
 		$this->mode = $mode;
 		$this->tableEnabled = $tablesEnabled;
@@ -27,6 +29,10 @@ class CkeConfig {
 	}
 	
 	public static function createDefault() {
-		return new CkeConfig(CkeEiProp::MODE_NORMAL, false, false);
+		return new CkeConfig(self::MODE_NORMAL, false, false);
+	}
+
+	static function getModes() {
+		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
 	}
 }

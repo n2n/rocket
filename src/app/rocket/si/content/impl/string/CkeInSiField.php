@@ -23,17 +23,14 @@ namespace rocket\si\content\impl\string;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
+use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
 use rocket\si\content\impl\InSiFieldAdapter;
 
 class CkeInSiField extends InSiFieldAdapter {
-	const MODE_SIMPLE = 'simple';
-	const MODE_NORMAL = 'normal';
-	const MODE_ADVANCED = 'advanced';
-	
 	/**
 	 * @var string|null
 	 */
-	private $value;
+	protected $value;
 	/**
 	 * @var int|null
 	 */
@@ -47,16 +44,17 @@ class CkeInSiField extends InSiFieldAdapter {
 	 */
 	private $mandatory = false;
 	/**
-	 * @var string
+	 * @var CkeEditorConfig
 	 */
-	private $mode = self::MODE_NORMAL;
+	private $ckeConfig;
 	/**
 	 * @var CkeStyle[]
 	 */
 	private $styles = [];
 	
 	function __construct(?string $value) {
-		$this->value = $value;	
+		$this->value = $value;
+		$this->ckeConfig = new CkeEditorConfig();
 	}
 	
 	/**
@@ -106,23 +104,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	function getMaxlength() {
 		return $this->maxlength;
 	}
-	
-	/**
-	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\string\CkeInSiField
-	 */
-	function setMultiline(bool $multiline) {
-		$this->multiline = $multiline;
-		return $this;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function isMultiline() {
-		return $this->multiline;
-	}
-	
+
 	/**
 	 * @param bool $mandatory
 	 * @return \rocket\si\content\impl\string\CkeInSiField
@@ -140,19 +122,18 @@ class CkeInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @return string
+	 * @return CkeEditorConfig
 	 */
-	function getMode() {
-		return $this->mode;
+	function getCkeConfig() {
+		return $this->ckeConfig;
 	}
 	
 	/**
-	 * @param string $mode
+	 * @param CkeEditorConfig $ckeConfig
 	 * @return CkeInSiField
 	 */
-	function setMode(string $mode) {
-		ArgUtils::valEnum($mode, self::getModes());
-		$this->mode = $mode;
+	function setCkeConfig(CkeEditorConfig $ckeConfig) {
+		$this->ckeConfig = $ckeConfig;
 		return $this;
 	}
 	
@@ -172,11 +153,7 @@ class CkeInSiField extends InSiFieldAdapter {
 		$this->styles = $styles;
 		return $this;
 	}
-	
-	static function getModes() {
-		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
-	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
@@ -195,7 +172,6 @@ class CkeInSiField extends InSiFieldAdapter {
 			'minlength' => $this->minlength,
 			'maxlength' => $this->maxlength,
 			'mandatory' => $this->mandatory,
-			'mode' => $this->mode,
 			'styles' => $this->styles
 		];
 	}

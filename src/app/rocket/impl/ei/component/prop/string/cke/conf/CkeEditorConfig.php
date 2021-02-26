@@ -29,7 +29,6 @@ use rocket\ei\component\EiSetup;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\StringUtils;
-use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
@@ -44,16 +43,16 @@ use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\col\GenericArrayObject;
 use n2n\util\type\ArgUtils;
-use rocket\si\content\impl\string\CkeInSiField;
+use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
 
-class CkeConfig extends PropConfigAdaption {
+class CkeEditorConfig extends PropConfigAdaption {
 	const ATTR_MODE_KEY = 'mode';
 	const ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY = 'linkProviders';
 	const ATTR_CSS_CONFIG_LOOKUP_ID_KEY = 'cssConfig';
 	const ATTR_TABLES_SUPPORTED_KEY = 'tablesSupported';
 	const ATTR_BBCODE_KEY = 'bbcode';
-	
-	private $mode = CkeInSiField::MODE_SIMPLE;
+
+	private $mode = CkeConfig::MODE_SIMPLE;
 	private $ckeLinkProviders;
 	private $ckeCssConfig = null;
 	private $tableSupported = false;
@@ -68,12 +67,10 @@ class CkeConfig extends PropConfigAdaption {
 	}
 	
 	function setMode($mode) {
-		ArgUtils::valEnum($mode, CkeInSiField::getModes());
+		ArgUtils::valEnum($mode, CkeConfig::getModes());
 		$this->mode = $mode;
 	}
-	
-	
-	
+
 	/**
 	 * @return \ArrayObject
 	 */
@@ -124,10 +121,10 @@ class CkeConfig extends PropConfigAdaption {
 		CastUtils::assertTrue($ckeState instanceof CkeState);
 		
 		$lar = new LenientAttributeReader($dataSet);
-		
+
 		$magCollection->addMag(self::ATTR_MODE_KEY, new EnumMag('Mode',
-				array_combine(CkeEiProp::getModes(), CkeEiProp::getModes()), 
-				$lar->getEnum(self::ATTR_MODE_KEY, CkeEiProp::getModes(), $this->getMode())));
+				array_combine(CkeConfig::getModes(), CkeConfig::getModes()),
+				$lar->getEnum(self::ATTR_MODE_KEY, CkeConfig::getModes(), $this->getMode())));
 		
 		$magCollection->addMag(self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY, 
 				new StringArrayMag('Link Provider Lookup Ids', $lar->getScalarArray(self::ATTR_LINK_PROVIDER_LOOKUP_IDS_KEY), false,
@@ -163,7 +160,7 @@ class CkeConfig extends PropConfigAdaption {
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		$this->setMode($dataSet->optEnum(self::ATTR_MODE_KEY, CkeInSiField::getModes(), $this->getMode(), false));
+		$this->setMode($dataSet->optEnum(self::ATTR_MODE_KEY, CkeConfig::getModes(), $this->getMode(), false));
 		
 		$ckeState = $eiu->lookup(CkeState::class);
 		CastUtils::assertTrue($ckeState instanceof CkeState);

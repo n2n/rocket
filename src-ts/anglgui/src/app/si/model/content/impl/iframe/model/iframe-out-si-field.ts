@@ -3,8 +3,9 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { IframeOutComponent } from '../comp/iframe-out/iframe-out.component';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import {IframeOutModel} from '../comp/iframe-out-model';
 
-export class IframeOutSiField extends OutSiFieldAdapter {
+export class IframeOutSiField extends OutSiFieldAdapter implements IframeOutModel {
 
 	constructor(public url: string|null, public srcDoc: string|null) {
 		super();

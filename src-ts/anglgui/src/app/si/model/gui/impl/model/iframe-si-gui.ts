@@ -7,6 +7,7 @@ import { IframeOutComponent } from '../../../content/impl/iframe/comp/iframe-out
 import { Message } from 'src/app/util/i18n/message';
 
 export class IframeSiGui implements SiGui, IframeOutModel {
+
 	constructor(public url: string|null, public srcDoc: string|null) {
 	}
 
@@ -27,5 +28,4 @@ export class IframeSiGui implements SiGui, IframeOutModel {
 			ref.instance.model = this;
 		}));
 	}
-
 }

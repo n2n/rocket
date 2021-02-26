@@ -1,11 +1,10 @@
 <?php
 namespace rocket\impl\ei\component\prop\string\cke\ui;
 
-use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
 use n2n\util\type\ArgUtils;
 
 class CkeComposer {
-	private $mode = CkeEiProp::MODE_NORMAL;
+	private $mode = CkeConfig::MODE_NORMAL;
 	private $bbcodeEnabled = false;
 	private $tableEnabled = false;
 	
@@ -14,7 +13,7 @@ class CkeComposer {
 	 * @return \rocket\impl\ei\component\prop\string\cke\ui\CkeComposer
 	 */
 	public function mode(string $mode) {
-		ArgUtils::valEnum($mode, CkeEiProp::getModes());
+		ArgUtils::valEnum($mode, CkeConfig::getModes());
 		$this->mode = $mode;
 		return $this;
 	}

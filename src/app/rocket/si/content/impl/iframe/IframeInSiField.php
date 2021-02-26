@@ -7,7 +7,7 @@ use rocket\si\content\impl\InSiFieldAdapter;
 
 class IframeInSiField extends InSiFieldAdapter {
 	private $iframeData;
-	private array $params;
+	private $params = [];
 	
 	public function __construct(IframeData $iframeData) {
 		$this->iframeData = $iframeData;
@@ -53,6 +53,6 @@ class IframeInSiField extends InSiFieldAdapter {
 	 */
 	function handleInput(array $data) {
 		$ds = new DataSet($data);
-		$this->data = $ds->reqScalarArray('params');
+		$this->params = $ds->reqScalarArray('params');
 	}
 }

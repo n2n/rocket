@@ -220,7 +220,6 @@ export class SiGuiFactory {
 
 			case SiGuiType.IFRAME:
 				return new IframeSiGui(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
-
 			default:
 				throw new ObjectMissmatchError('Invalid si zone type: ' + data.type);
 		}

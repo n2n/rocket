@@ -371,14 +371,14 @@ export class SiEntry {
 	// get uiClaimed(): boolean {
 	// 	return this.uiClaimedSubject.getValue();
 	// }
-	
+
 	getFinalReplacementEntry(): SiEntry {
 		let siEntry: SiEntry = this;
-		
+
 		while (siEntry.replacementEntry) {
 			siEntry = siEntry.replacementEntry;
 		}
-		
+
 		return siEntry;
 	}
 }

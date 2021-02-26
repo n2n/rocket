@@ -1,6 +1,7 @@
 <?php
 namespace rocket\impl\ei\component\command\iframe;
 
+use n2n\util\uri\Path;
 use n2n\web\http\controller\Controller;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
@@ -29,7 +30,9 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 	}
 
 	function createGeneralGuiControls(Eiu $eiu): array {
-		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('run_txt');
+		if ($this->iframeConfig->isEntryCommand()) return [];
+
+		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('Iframe');
 		$siButton = SiButton::success($buttonLabel, $this->iframeConfig->getButtonIcon() ?? SiIconType::ICON_PLAY)
 				->setTooltip($this->iframeConfig->getButtonTooltip());
 
@@ -39,7 +42,16 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 	}
 	
 	function createEntryGuiControls(Eiu $eiu): array {
-		return [];
+		if (!$this->iframeConfig->isEntryCommand()) return [];
+
+		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('Iframe');
+		$siButton = SiButton::success($buttonLabel, $this->iframeConfig->getButtonIcon() ?? SiIconType::ICON_PLAY)
+				->setTooltip($this->iframeConfig->getButtonTooltip());
+
+		$siControl = $eiu->factory()->controls()->newCmdRef(self::CONTROL_RUN_KEY, $siButton,
+				new Path([$eiu->entry()->getPid()]));
+
+		return [$siControl];
 	}
 
 	function lookupController(Eiu $eiu): ?Controller {

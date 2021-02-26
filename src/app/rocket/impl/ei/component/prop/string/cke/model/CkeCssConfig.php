@@ -21,10 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke\model;
 
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\context\Lookupable;
-use n2n\util\uri\Url;
-use rocket\ei\util\Eiu;
+use rocket\si\content\impl\string\CkeStyle;
 
 interface CkeCssConfig extends Lookupable {
 	
@@ -50,7 +48,7 @@ interface CkeCssConfig extends Lookupable {
 // 	function getStyles(): array;
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeStyle[]
+	 * @return CkeStyle
 	 */
 	public function getAdditionalStyles(): ?array;
 	

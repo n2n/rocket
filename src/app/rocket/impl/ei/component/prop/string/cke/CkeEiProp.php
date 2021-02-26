@@ -27,17 +27,17 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
+use rocket\impl\ei\component\prop\string\cke\ui\CkeComposer;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
-use rocket\impl\ei\component\prop\string\cke\conf\CkeConfig;
+use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
 use rocket\ei\util\factory\EifGuiField;
-use n2n\impl\web\ui\view\html\HtmlElement;
 
 class CkeEiProp extends AlphanumericEiProp {
 	/**
-	 * @var CkeConfig
+	 * @var CkeEditorConfig
 	 */
 	private $ckeConfig;
 	
@@ -47,7 +47,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->getEditConfig()->setMandatory(false);
 		
-		$this->ckeConfig = new CkeConfig();
+		$this->ckeConfig = new CkeEditorConfig();
 	}
 	
 	public function prepare() {
@@ -65,63 +65,21 @@ class CkeEiProp extends AlphanumericEiProp {
 					SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...')));
 		}
 
-// 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
-
-// 		return $ckeHtmlBuidler->getIframe((string) $value, $this->ckeCssConfig, (array) $this->ckeLinkProviders);
-
 		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value));
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		
-		/**
-		 * 
-		 
-		 $view  = $eiu->createView('v');
-		  
-		 * view
-		  
-		$ckeHtml = new CkeHtmlBuilder($htmlView);
-		
-		return $ckeHtml->getEditor($propertyPath,
-				Cke::classic()->mode($this->mode)->table($this->tableEditing)->bbcode($this->bbcode),
-				$this->ckeCssConfig, $this->ckeLinkProviders);
-		*/
-		
-		$siField = SiFields::stringIn('Ich bin ein Cke!');
-		
-// 		$siField = SiFields::iframeIn($view, $eiu->getN2nContext())
-// 				->setParams(['content' => $eiu->field()->getValue()]);
-		
-		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
-			$eiu->field()->setValue($siField->getParams()['content'] ?? null);	
-		});
-				
-// 		$ckeInField = SiFields::ckeIn($eiu->field()->getValue())
-// 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
-// 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
-// 				->setMandatory($this->getEditConfig()->isMandatory())
-// 				->setMode($this->ckeConfig->getMode());
-		
-// 		if (null !== ($ckeCssConfig = $this->ckeConfig->getCkeCssConfig())) {
-// 			$contentCssUrls = $ckeCssConfig->getContentCssUrls($eiu);
-// 			ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
-			
-// 			$ckeInField->setContentCssUrls($contentCssUrls)
-// 					->setBodyId($ckeCssConfig->getBodyId())
-// 					->setBodyClass($ckeCssConfig->getBodyClass())
-// 					->setBodyClass($ckeCssConfig->getAdditionalStyles());
-// 		}
+		$ckeComposer = new CkeComposer();
+		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcode())
+				->table($this->ckeConfig->isTableSupported());
+        $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
+				['value' => $eiu->field()->getValue(), 'composer' => $ckeComposer, 'config' => $this->ckeConfig]));
 
-		
-		
-		
-		
-// 		$eiu->entry()->getEiEntry();
-		
-// 		return new CkeMag($this->getLabelLstr(), null, $this->isMandatory($eiu),
-// 				null, $this->getMaxlength(), $this->getMode(), $this->bbcode,
-// 				$this->isTableSupported(), (array) $this->getCkeLinkProviders(), $this->getCkeCssConfig());
+		$iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()]);
+
+		return $eiu->factory()->newGuiField($iframeInField)->setSaver(function () use ($iframeInField, $eiu) {
+			$eiu->field()->setValue($iframeInField->getParams()['content'] ?? null);
+		});
 	}
 	
 	function saveSiField(SiField $siField, Eiu $eiu) {
