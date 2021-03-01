@@ -30,8 +30,8 @@
 			[class.rocket-icon-always]="siButton.iconAlways"
 			[class.rocket-label-always]="siButton.labelAlways"
 			[class.btn-loading]="loading" [disabled]="disabled" (click)="exec()">
+		<span class="btn-label">{{ siButton.name }}</span>
 		<i [class]="siButton.iconClass" class="btn-icon"></i>
-		<span class="btn-name">{{ siButton.name }}</span>
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
 	</button>
 </ng-template>

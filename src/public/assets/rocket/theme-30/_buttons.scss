@@ -1,46 +1,33 @@
+// Button Loading State
+
+.btn-loading {
+    .btn-icon,
+    .btn-label {
+        opacity: 0.25;
+    }
+
+}
+
+.btn .spinner-grow {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   margin-top: -$spinner-height/2;
+   margin-left: -$spinner-width/2;
+}
+
+.btn .spinner-grow-sm {
+   margin-top: -$spinner-height-sm/2;
+   margin-left: -$spinner-width-sm/2;
+}
+
 /*
  * The small Buttons (without text)
  */
 
-//  @supports(display: grid) {
-//      .btn {
-//         display: inline-grid;
-//         grid-template-columns: 1fr auto;
-//         grid-gap: 0.5em;
-//         align-items: basleline;
-//      }
-
-//      .rocket-simple-commands > .dropdown > button, 
-//      .rocket-simple-commands > .btn, 
-//      .rocket-simple-commands > .rocket-button-control > .dropdown > button, 
-//      .rocket-simple-commands > .rocket-button-control > .btn, 
-//      .rocket-simple-commands > .rocket-ui-toggler > .btn,
-//      .rocket-zone-commands .btn:not(.rocket-icon-important) {
-//          grid-gap: 0;
-//      }
-//  }
-
- .btn-loading {
-     .btn-name {
-         opacity: 0.25;
-     }
- }
- 
- .btn .spinner-grow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -$spinner-height/2;
-    margin-left: -$spinner-width/2;
- }
-
- .btn .spinner-grow-sm {
-    margin-top: -$spinner-height-sm/2;
-    margin-left: -$spinner-width-sm/2;
- }
-
 .rocket-simple-commands {
     // drop down button in simple-commands
+    > * > .rocket-button-control > .btn,
     > .dropdown > button,
     > .btn,
     > .rocket-button-control > .dropdown > button, 
@@ -105,6 +92,8 @@ th .rocket-simple-commands {
     }
 }
 
+// for example online/offline Status in List-View
+
 .btn.rocket-icon-important {
     &.btn-success {
         color: $success;
@@ -119,6 +108,8 @@ th .rocket-simple-commands {
         color: $warning;
     }
 }
+
+// checkbox toggler Element
 
 .rocket-ui-toggler > .btn,
 .rocket-simple-commands .rocket-ui-toggler > .btn {
@@ -184,7 +175,7 @@ th .rocket-simple-commands {
     display: inline-block;
 }
 
-
+.rocket-toolbar > .rocket-simple-commands > * > .rocket-button-control > .btn.rocket-important,
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important {
     position: relative;
     > i[class*="fa-"] {

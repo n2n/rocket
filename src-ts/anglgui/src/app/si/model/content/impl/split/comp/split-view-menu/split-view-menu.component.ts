@@ -4,7 +4,8 @@ import { SplitViewMenuModel } from '../split-view-menu-model';
 @Component({
 	selector: 'rocket-split-view-menu',
 	templateUrl: './split-view-menu.component.html',
-	styleUrls: ['./split-view-menu.component.css']
+	styleUrls: ['./split-view-menu.component.css'],
+	host: {'class': 'rocket-split-view-menu'}
 })
 export class SplitViewMenuComponent implements OnInit {
 	model: SplitViewMenuModel;

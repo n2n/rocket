@@ -5376,6 +5376,10 @@ router-outlet + *,
 .rocket-zone-header > .rocket-context-menu {
   grid-column: 2 / -1;
   grid-row: 1 / -1;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  padding: 10px 0;
 }
 
 .rocket-layer-toolbar + .rocket-zone {
@@ -5609,8 +5613,8 @@ rocket-ui-compact-explorer {
   border-bottom: none;
 }
 
+.rocket-split-view-control,
 .rocket-impl-translation-manager {
-  text-align: right;
   position: relative;
 }
 
@@ -7447,10 +7451,8 @@ rocket-add-past > button::after {
   color: #373431;
 }
 
-/*
- * The small Buttons (without text)
- */
-.btn-loading .btn-name {
+.btn-loading .btn-icon,
+.btn-loading .btn-label {
   opacity: 0.25;
 }
 
@@ -7467,6 +7469,10 @@ rocket-add-past > button::after {
   margin-left: -0.5rem;
 }
 
+/*
+ * The small Buttons (without text)
+ */
+.rocket-simple-commands > * > .rocket-button-control > .btn,
 .rocket-simple-commands > .dropdown > button,
 .rocket-simple-commands > .btn,
 .rocket-simple-commands > .rocket-button-control > .dropdown > button,
@@ -7482,6 +7488,7 @@ rocket-add-past > button::after {
   padding: 0.375rem 0.5rem;
 }
 
+.rocket-simple-commands > * > .rocket-button-control > .btn:hover:not([disabled]),
 .rocket-simple-commands > .dropdown > button:hover:not([disabled]),
 .rocket-simple-commands > .btn:hover:not([disabled]),
 .rocket-simple-commands > .rocket-button-control > .dropdown > button:hover:not([disabled]),
@@ -7491,7 +7498,11 @@ rocket-add-past > button::after {
   color: #373431;
 }
 
-.rocket-simple-commands > .dropdown > button:focus, .rocket-simple-commands > .dropdown > button:visited, .rocket-simple-commands > .dropdown > button:not([disabled]):active, .rocket-simple-commands > .dropdown > button:not([disabled]).active,
+.rocket-simple-commands > * > .rocket-button-control > .btn:focus, .rocket-simple-commands > * > .rocket-button-control > .btn:visited, .rocket-simple-commands > * > .rocket-button-control > .btn:not([disabled]):active, .rocket-simple-commands > * > .rocket-button-control > .btn:not([disabled]).active,
+.rocket-simple-commands > .dropdown > button:focus,
+.rocket-simple-commands > .dropdown > button:visited,
+.rocket-simple-commands > .dropdown > button:not([disabled]):active,
+.rocket-simple-commands > .dropdown > button:not([disabled]).active,
 .rocket-simple-commands > .btn:focus,
 .rocket-simple-commands > .btn:visited,
 .rocket-simple-commands > .btn:not([disabled]):active,
@@ -7512,6 +7523,7 @@ rocket-add-past > button::after {
           box-shadow: none;
 }
 
+.rocket-simple-commands > * > .rocket-button-control > .btn.btn-danger:hover:not([disabled]),
 .rocket-simple-commands > .dropdown > button.btn-danger:hover:not([disabled]),
 .rocket-simple-commands > .btn.btn-danger:hover:not([disabled]),
 .rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-danger:hover:not([disabled]),
@@ -7520,6 +7532,7 @@ rocket-add-past > button::after {
   color: #b90f00;
 }
 
+.rocket-simple-commands > * > .rocket-button-control > .btn.btn-warning:hover:not([disabled]),
 .rocket-simple-commands > .dropdown > button.btn-warning:hover:not([disabled]),
 .rocket-simple-commands > .btn.btn-warning:hover:not([disabled]),
 .rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-warning:hover:not([disabled]),
@@ -7528,6 +7541,7 @@ rocket-add-past > button::after {
   color: #F6A723;
 }
 
+.rocket-simple-commands > * > .rocket-button-control > .btn.btn-success:hover:not([disabled]),
 .rocket-simple-commands > .dropdown > button.btn-success:hover:not([disabled]),
 .rocket-simple-commands > .btn.btn-success:hover:not([disabled]),
 .rocket-simple-commands > .rocket-button-control > .dropdown > button.btn-success:hover:not([disabled]),
@@ -7536,6 +7550,7 @@ rocket-add-past > button::after {
   color: #2D7F00;
 }
 
+.rocket-simple-commands > * > .rocket-button-control > .btn:not(.rocket-important) > span,
 .rocket-simple-commands > .dropdown > button:not(.rocket-important) > span,
 .rocket-simple-commands > .btn:not(.rocket-important) > span,
 .rocket-simple-commands > .rocket-button-control > .dropdown > button:not(.rocket-important) > span,
@@ -7708,10 +7723,12 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   display: inline-block;
 }
 
+.rocket-toolbar > .rocket-simple-commands > * > .rocket-button-control > .btn.rocket-important,
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important {
   position: relative;
 }
 
+.rocket-toolbar > .rocket-simple-commands > * > .rocket-button-control > .btn.rocket-important > i[class*="fa-"],
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important > i[class*="fa-"] {
   color: white;
   position: relative;
@@ -7719,10 +7736,12 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   margin-left: 1.625em;
 }
 
+.rocket-toolbar > .rocket-simple-commands > * > .rocket-button-control > .btn.rocket-important > i[class*="fa-"]::before,
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important > i[class*="fa-"]::before {
   z-index: 1;
 }
 
+.rocket-toolbar > .rocket-simple-commands > * > .rocket-button-control > .btn.rocket-important > i[class*="fa-"]::after,
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important > i[class*="fa-"]::after {
   position: absolute;
   content: " ";
@@ -7737,6 +7756,7 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   z-index: -1;
 }
 
+.rocket-toolbar > .rocket-simple-commands > * > .rocket-button-control > .btn.rocket-important.btn-warning > i[class*="fa-"]::after,
 .rocket-toolbar > .rocket-simple-commands > .btn.rocket-important.btn-warning > i[class*="fa-"]::after {
   background: #F6A723;
 }
