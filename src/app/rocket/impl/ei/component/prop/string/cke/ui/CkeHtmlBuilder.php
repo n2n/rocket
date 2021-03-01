@@ -32,7 +32,7 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeUtils;
 use n2n\util\uri\UnavailableUrlException;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
-use rocket\si\content\impl\string\CkeStyle;
+use rocket\impl\ei\component\prop\string\cke\model\CkeStyle;
 use n2n\util\type\ArgUtils;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
@@ -277,7 +277,7 @@ class CkeHtmlBuilder {
 		$encodable = array();
 		foreach ($additionalStyles as $style) {
 			CastUtils::assertTrue($style instanceof CkeStyle);
-			$encodable[] = $style->jsonSerialize();
+			$encodable[] = $style->getValueForJsonEncode();
 		}
 		return $encodable;
 	}
