@@ -27,6 +27,7 @@
     grid-template-rows: min-content 1fr min-content;
     //minmax(0,#) to prevent blowout -> x-scrollbar
     grid-template-columns: minmax(0, 1fr) minmax(0, min-content);
+	gap: 1rem;
 
 
     > .rocket-content {

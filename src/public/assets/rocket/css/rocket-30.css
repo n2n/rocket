@@ -5015,7 +5015,6 @@ body > rocket-root {
  * Content
  */
 .rocket-content {
-  margin-top: 1rem;
   display: block;
 }
 
@@ -5300,6 +5299,7 @@ router-outlet + *,
   -ms-grid-columns: minmax(0, 1fr) minmax(0, min-content);
       grid-template-columns: minmax(0, 1fr) minmax(0, -webkit-min-content);
       grid-template-columns: minmax(0, 1fr) minmax(0, min-content);
+  gap: 1rem;
 }
 
 .rocket-zone-content > .rocket-content {
