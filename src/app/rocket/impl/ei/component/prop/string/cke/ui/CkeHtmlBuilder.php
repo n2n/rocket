@@ -234,10 +234,13 @@ class CkeHtmlBuilder {
 	private function getContentCssUrls(CkeCssConfig $ckeCssConfig) {
 		$contentCssUrls = $ckeCssConfig->getContentCssUrls($this->view);
 		if (empty($contentCssUrls)) return [];
-		
+
 		ArgUtils::valArrayReturn($contentCssUrls, $ckeCssConfig, 'getContentCssUrls', Url::class);
 
 		return array_map(function(Url $contentCssUrl) {
+			if ($contentCssUrl->isRelative()) {
+				$contentCssUrl = $this->view->getRequest()->getHostUrl()->ext($contentCssUrl);
+			}
 			return (string) $contentCssUrl;
 		}, $contentCssUrls);
 	}
