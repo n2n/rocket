@@ -5878,7 +5878,6 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 
 .rocket-nav-group > .nav {
   padding-bottom: 1rem;
-  overflow: hidden;
 }
 
 .rocket-nav-group .nav-item {
@@ -7761,6 +7760,7 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   background: #F6A723;
 }
 
+.rocket-button-control .dropdown-subs,
 .rocket-button-control .dropdown > div {
   position: absolute;
   right: 0;
@@ -7774,6 +7774,7 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   z-index: 60;
 }
 
+.rocket-button-control .dropdown-subs:after,
 .rocket-button-control .dropdown > div:after {
   content: "";
   position: absolute;
@@ -7786,11 +7787,15 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   border-color: #fff transparent;
 }
 
+.rocket-button-control .dropdown-subs div:not(:last-child) > .rocket-button-control > .btn,
+.rocket-button-control .dropdown-subs div:not(:last-child) > .btn,
 .rocket-button-control .dropdown > div div:not(:last-child) > .rocket-button-control > .btn,
 .rocket-button-control .dropdown > div div:not(:last-child) > .btn {
   border-bottom: 1px solid #DAD7D3;
 }
 
+.rocket-button-control .dropdown-subs div > .rocket-button-control > .btn,
+.rocket-button-control .dropdown-subs div > .btn,
 .rocket-button-control .dropdown > div div > .rocket-button-control > .btn,
 .rocket-button-control .dropdown > div div > .btn {
   display: -webkit-box;
@@ -7811,18 +7816,26 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
   font-weight: bold;
 }
 
+.rocket-button-control .dropdown-subs div > .rocket-button-control > .btn > i,
+.rocket-button-control .dropdown-subs div > .btn > i,
 .rocket-button-control .dropdown > div div > .rocket-button-control > .btn > i,
 .rocket-button-control .dropdown > div div > .btn > i {
   width: 1.2rem;
   text-align: left;
 }
 
+.rocket-button-control .dropdown-subs div > .rocket-button-control > .btn > i:not(:first-child),
+.rocket-button-control .dropdown-subs div > .btn > i:not(:first-child),
 .rocket-button-control .dropdown > div div > .rocket-button-control > .btn > i:not(:first-child),
 .rocket-button-control .dropdown > div div > .btn > i:not(:first-child) {
   margin-left: .5rem;
 }
 
-.rocket-button-control .dropdown > div div > .rocket-button-control > .btn:hover, .rocket-button-control .dropdown > div div > .rocket-button-control > .btn:focus,
+.rocket-button-control .dropdown-subs div > .rocket-button-control > .btn:hover, .rocket-button-control .dropdown-subs div > .rocket-button-control > .btn:focus,
+.rocket-button-control .dropdown-subs div > .btn:hover,
+.rocket-button-control .dropdown-subs div > .btn:focus,
+.rocket-button-control .dropdown > div div > .rocket-button-control > .btn:hover,
+.rocket-button-control .dropdown > div div > .rocket-button-control > .btn:focus,
 .rocket-button-control .dropdown > div div > .btn:hover,
 .rocket-button-control .dropdown > div div > .btn:focus {
   background: #F7F5F5;
@@ -7830,6 +7843,33 @@ th .rocket-simple-commands > .rocket-ui-toggler > .btn:not(.rocket-important) > 
 
 .rocket-button-control.rocket-fixed-width .dropdown > div {
   width: 300px;
+}
+
+.rocket-button-control .dropdown > .dropdown-subs {
+  width: auto;
+}
+
+.rocket-button-control .dropdown > .dropdown-subs > div > .rocket-button-control > .btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-weight: normal;
+}
+
+.rocket-button-control .dropdown > .dropdown-subs > div > .rocket-button-control > .btn i {
+  -webkit-box-ordinal-group: 0;
+      -ms-flex-order: -1;
+          order: -1;
+  margin-left: 0 !important;
+  margin-right: 0.5em;
+}
+
+.rocket-button-control .dropdown-subs > div:first-child > .rocket-button-control > .btn {
+  margin-top: -1rem;
+}
+
+.rocket-button-control .dropdown-subs > div:last-child > .rocket-button-control > .btn {
+  margin-bottom: -1rem;
 }
 
 .rocket-messages {
