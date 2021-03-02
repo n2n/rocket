@@ -53,19 +53,36 @@
         </style>
 
         <script>
+            CKEDITOR.config.removeButtons = 'Maximize'; // maximize causes cke height = 0. Needs to be fixed
+
             CKEDITOR.on('instanceReady', function(e) {
+                var iframeJq = $(window.parent.document.getElementsByTagName("iframe")[0]);
+
                 var cke = CKEDITOR.instances['content'];
                 cke.on('change', function() {
                     cke.updateElement();
                     var element = cke.element.$;
                     if ('createEvent' in document) {
-                        var evt = document.createEvent('HTMLEvents');
-                        evt.initEvent('change', false, true);
-                        element.dispatchEvent(evt);
+                        var event = document.createEvent('HTMLEvents');
+                        event.initEvent('change', false, true);
+                        element.dispatchEvent(event);
                     } else {
                         element.fireEvent('onchange');
                     }
                 });
+
+                CKEDITOR.on('dialogDefinition', function (e) {
+                    var initialHeight = iframeJq.css('height');
+
+                    var dialog = e.data.definition.dialog;
+                    dialog.on('show', function () {
+                        iframeJq.css('height', this.getSize().height + 50);
+                    });
+                    dialog.on('hide', function () {
+                        iframeJq.css('height', initialHeight);
+                    });
+                });
+
             });
         </script>
     <?php $html->bodyEnd() ?>
