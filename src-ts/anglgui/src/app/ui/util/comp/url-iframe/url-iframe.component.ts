@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, SecurityContext, ViewChild} from '@angular/core';
-import {DomSanitizer} from "@angular/platform-browser";
+import {AfterViewInit, Component, ElementRef, Inject, Input, OnInit, SecurityContext, ViewChild} from '@angular/core';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {IframeComponent} from "../iframe/iframe.component";
 
 @Component({
@@ -7,26 +7,39 @@ import {IframeComponent} from "../iframe/iframe.component";
   templateUrl: './url-iframe.component.html',
   styleUrls: ['./url-iframe.component.css']
 })
-export class UrlIframeComponent implements AfterViewInit {
+export class UrlIframeComponent implements AfterViewInit, OnInit {
   @ViewChild('urlIframe') urlIframe: ElementRef;
 
   @Input()
   public srcUrl;
 
+  public sanitizedUrl: SafeUrl;
+
   constructor(private sanitizer: DomSanitizer) {
   }
 
+  ngOnInit(): void {
+    this.sanitizedUrl = this.sanitizeUrl();
+  }
+
+
   ngAfterViewInit() {
-    this.appendScriptsToIframeContent();
   }
 
   private appendScriptsToIframeContent() {
     const script = document.createElement('script');
     script.textContent = IframeComponent.createResizerJs();
-    this.urlIframe.nativeElement.insertAdjacentElement('beforeend', script);
+    this.urlIframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
+        .insertAdjacentElement('beforeend', script);
   }
 
-  sanitizedUrl() {
+  sanitizeUrl() {
     return this.sanitizer.bypassSecurityTrustResourceUrl(this.srcUrl);
+  }
+
+  iframeLoaded() {
+    if (!!this.urlIframe) {
+      this.appendScriptsToIframeContent();
+    }
   }
 }

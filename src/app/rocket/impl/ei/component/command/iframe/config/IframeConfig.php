@@ -16,6 +16,9 @@ class IframeConfig extends ConfigAdaption {
 	const ATTR_USE_TEMPLATE_KEY = 'useTemplate';
 	const ATTR_VIEW_NAME_KEY = 'viewName';
 	const ATTR_USE_ENTRY_COMMAND_KEY = 'entryCommand';
+	const ATTR_BUTTON_ICON_KEY = 'buttonIcon';
+	const ATTR_BUTTON_LABEL_KEY = 'buttonLabel';
+	const ATTR_BUTTON_TOOLTIP = 'buttonTooltip';
 
 	private $url;
 	private $controllerLookupId;
@@ -24,9 +27,9 @@ class IframeConfig extends ConfigAdaption {
 	private $useTemplate = true;
 	private $entryCommand = true;
 	private $entryIdParamName = 'id';
-	private $buttonIcon;
-	private $buttonLabel;
-	private $buttonTooltip;
+	private $buttonIcon = 'fa fa-play';
+	private $buttonLabel = 'Iframe';
+	private $buttonTooltip = 'Run Iframe Command';
 
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magCollection->addMag(self::ATTR_URL_KEY, new StringMag('Source URL',
@@ -46,6 +49,15 @@ class IframeConfig extends ConfigAdaption {
 
 		$magCollection->addMag(self::ATTR_USE_ENTRY_COMMAND_KEY, new BoolMag('Entry Command',
 			$dataSet->optBool(self::ATTR_USE_ENTRY_COMMAND_KEY, $this->isEntryCommand())));
+
+		$magCollection->addMag(self::ATTR_BUTTON_ICON_KEY, new StringMag('Button Icon',
+			$dataSet->optString(self::ATTR_BUTTON_ICON_KEY, $this->getButtonIcon())));
+
+		$magCollection->addMag(self::ATTR_BUTTON_LABEL_KEY, new StringMag('Button Label',
+			$dataSet->optString(self::ATTR_BUTTON_LABEL_KEY, $this->getButtonLabel())));
+
+		$magCollection->addMag(self::ATTR_BUTTON_TOOLTIP, new StringMag('Button Tooltip',
+			$dataSet->optString(self::ATTR_BUTTON_TOOLTIP, $this->getButtonTooltip())));
 	}
 
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
@@ -55,6 +67,9 @@ class IframeConfig extends ConfigAdaption {
 		$viewNameMag = $magCollection->getMagByPropertyName(self::ATTR_VIEW_NAME_KEY);
 		$useTemplateMag = $magCollection->getMagByPropertyName(self::ATTR_USE_TEMPLATE_KEY);
 		$entryCommand = $magCollection->getMagByPropertyName(self::ATTR_USE_ENTRY_COMMAND_KEY);
+		$buttonIconMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_ICON_KEY);
+		$buttonLabelMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_LABEL_KEY);
+		$buttonTooltipMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_TOOLTIP);
 
 		$dataSet->set(self::ATTR_URL_KEY, $urlMag->getValue());
 		$dataSet->set(self::ATTR_CONTROLLER_LOOKUP_ID_KEY, $controllerLookupIdMag->getValue());
@@ -62,6 +77,10 @@ class IframeConfig extends ConfigAdaption {
 		$dataSet->set(self::ATTR_VIEW_NAME_KEY, $viewNameMag->getValue());
 		$dataSet->set(self::ATTR_USE_TEMPLATE_KEY, $useTemplateMag->getValue());
 		$dataSet->set(self::ATTR_USE_ENTRY_COMMAND_KEY, $entryCommand->getValue());
+		$dataSet->set(self::ATTR_BUTTON_ICON_KEY, $buttonIconMag->getValue());
+		$dataSet->set(self::ATTR_BUTTON_LABEL_KEY, $buttonLabelMag->getValue());
+		$dataSet->set(self::ATTR_BUTTON_TOOLTIP, $buttonTooltipMag->getValue());
+
 	}
 
 	function setup(Eiu $eiu, DataSet $dataSet) {
@@ -71,6 +90,9 @@ class IframeConfig extends ConfigAdaption {
 		$this->setViewName($dataSet->optString(self::ATTR_VIEW_NAME_KEY));
 		$this->setUseTemplate($dataSet->optBool(self::ATTR_USE_TEMPLATE_KEY, $this->useTemplate));
 		$this->setEntryCommand($dataSet->optBool(self::ATTR_USE_ENTRY_COMMAND_KEY, $this->entryCommand));
+		$this->setButtonIcon($dataSet->optString(self::ATTR_BUTTON_ICON_KEY, $this->buttonIcon));
+		$this->setButtonLabel($dataSet->optString(self::ATTR_BUTTON_LABEL_KEY, $this->buttonLabel));
+		$this->setButtonTooltip($dataSet->optString(self::ATTR_BUTTON_TOOLTIP, $this->buttonTooltip));
 	}
 
 	/**
