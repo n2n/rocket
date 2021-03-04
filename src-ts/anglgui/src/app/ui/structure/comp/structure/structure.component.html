@@ -7,11 +7,9 @@
 </ng-container>
 
 <div *ngIf="toolbarVisible && (toolbarUiStructures.length > 0 || (asideVisible && asideUiContents.length > 0))" class="rocket-toolbar">
-	<div class="rocket-simple-commands">
-		<ng-container *ngFor="let toolbarUiStructure of toolbarUiStructures">
-			<div rocketUiStructure [uiStructure]="toolbarUiStructure"></div>		
-		</ng-container>
-	</div>
+	<ng-container *ngFor="let toolbarUiStructure of toolbarUiStructures">
+		<div rocketUiStructure [uiStructure]="toolbarUiStructure"></div>		
+	</ng-container>
 
 	<ng-container *ngIf="asideVisible">
 		<ng-container *ngFor="let asideUiContent of asideUiContents">
