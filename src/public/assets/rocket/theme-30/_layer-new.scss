@@ -47,13 +47,9 @@
 	}
 	// display flex for iframe purposes
 	rocket-ui-iframe {
-		flex: 1; 
+		flex: 1;
 	}
 
-	test {
-		
-	}
-    
     > .rocket-zone-commands {
         padding: 10px $content-padding;
         margin: 0 -#{$content-padding};
