@@ -40,13 +40,15 @@
     }
 	// display flex for iframe purposes
 	rocket-iframe-out,
-	rocket-ui-iframe {
+	rocket-ui-iframe,
+	rocket-ui-url-iframe {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
 	}
 	// display flex for iframe purposes
-	rocket-ui-iframe {
+	rocket-ui-iframe,
+	rocket-ui-url-iframe {
 		flex: 1;
 	}
 
