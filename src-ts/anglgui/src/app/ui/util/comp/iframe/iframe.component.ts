@@ -31,14 +31,15 @@ export class IframeComponent implements AfterViewInit, OnChanges, DoCheck {
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-	  this.appendScriptsToIframeContent();
+    this.srcDoc = this.sanitizer.bypassSecurityTrustHtml(this.srcDoc);
   }
 
-  private appendScriptsToIframeContent() {
+  public appendScriptsToIframeContent() {
+    if (!this.iframe) return;
     const script = document.createElement('script');
     script.textContent = IframeComponent.createResizerJs() + IframeComponent.createFormDataJs();
-    const content = this.srcDoc.concat(script.outerHTML);
-    this.srcDoc = this.sanitizer.bypassSecurityTrustHtml(content);
+    this.iframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
+      .insertAdjacentElement('beforeend', script);
   }
 
   /*! iFrame Resizer (iframeSizer.contentWindow.min.js ) - v4.3.1 - 2021-01-11
