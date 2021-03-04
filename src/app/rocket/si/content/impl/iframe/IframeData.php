@@ -11,24 +11,22 @@ use n2n\util\type\CastUtils;
 class IframeData {
 	private $url;
 	private $srcDoc;
-	private $formData;
 
 	/**
 	 * @param string|null $url
 	 * @param string|null $srcDoc
 	 */
-	private function __construct(string $url = null, string $srcDoc = null, array $formData = null) {
+	private function __construct(string $url = null, string $srcDoc = null) {
 		$this->url = $url;
 		$this->srcDoc = $srcDoc;
-		$this->formData = $formData;
 	}
 	
 	static function createFromUrl(Url $url) {
 		return new IframeData((string) $url);
 	}
 	 
-	static function createFromUiComponent(UiComponent $uiComponent, array $formData = null) {
-		return new IframeData(null, $uiComponent->build(new SimpleBuildContext()), $formData);
+	static function createFromUiComponent(UiComponent $uiComponent) {
+		return new IframeData(null, $uiComponent->build(new SimpleBuildContext()));
 	}
 	
 	static function createFromUiComponentWithTemplate(UiComponent $uiComponent, N2nContext $n2nContext) {
@@ -44,8 +42,7 @@ class IframeData {
 	function toArray() {
 		return [
 			'url' => $this->url,
-			'srcDoc' => $this->srcDoc,
-			'formData' => $this->formData
+			'srcDoc' => $this->srcDoc
 		];
 	}
 

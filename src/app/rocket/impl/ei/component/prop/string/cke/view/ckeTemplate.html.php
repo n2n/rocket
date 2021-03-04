@@ -29,8 +29,6 @@
     $config = $view->getParam('config');
     $view->assert($config instanceof CkeEditorConfig);
 
-    $value = $view->getParam('value');
-
     $html->meta()->addLibrary(new JQueryLibrary(3));
     $html->meta()->addLibrary(new CkeLibrary());
 
@@ -43,8 +41,6 @@
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart() ?>
 
-        <?php $html->out($ckeHtml->getTextarea($value, $ckeComposer, $config->getCkeCssConfig(),
-            $config->getCkeLinkProviders()->getArrayCopy(), $attrs)) ?>
         <style>
             /* fix cke collapse on focus */
             .cke_contents {
@@ -85,5 +81,8 @@
 
             });
         </script>
+
+        <?php $html->out($ckeHtml->getTextarea('', $ckeComposer, $config->getCkeCssConfig(),
+            $config->getCkeLinkProviders()->getArrayCopy(), $attrs)) ?>
     <?php $html->bodyEnd() ?>
 </html>
