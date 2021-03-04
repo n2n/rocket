@@ -6242,6 +6242,10 @@ td > .rocket-split {
           align-items: baseline;
 }
 
+.rocket-crumb-group i {
+  width: auto;
+}
+
 .rocket-crumb-group > i:only-child {
   line-height: 1.5;
 }
