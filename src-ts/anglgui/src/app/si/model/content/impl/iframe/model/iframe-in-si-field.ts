@@ -4,6 +4,7 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import {IframeInComponent} from '../comp/iframe-in/iframe-in.component';
 import {IframeInModel} from '../comp/iframe-in-model';
+import {GenericMissmatchError} from '../../../../generic/generic-missmatch-error';
 
 
 export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
@@ -18,7 +19,9 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
     });
   }
 
-  readInput(): object {
+  private formDataToObject() {
+    if (this.formData == null) return new Map<string, string>();
+
     var params = {};
     for (var [key, value] of this.formData) {
       params[key] = value;
@@ -26,12 +29,26 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
     return { params };
   }
 
-  copyValue(): SiGenericValue {
-    throw new Error('Not yet implemented');
+  readInput(): object {
+    return this.formDataToObject();
   }
 
-  pasteValue(): Promise<void> {
-    throw new Error('Not yet implemented');
+  copyValue(): SiGenericValue {
+    return new SiGenericValue(this.formDataToObject());
+  }
+
+  pasteValue(genericValue: SiGenericValue): Promise<void> {
+    if (genericValue.isNull()) {
+      this.formData = null;
+      return Promise.resolve();
+    }
+
+    if (genericValue.isInstanceOf(Map)) {
+      this.formData = new Map(Object.entries(genericValue.readInstance(Map).valueOf()));
+      return Promise.resolve();
+    }
+
+    throw new GenericMissmatchError('Map expected.');
   }
 
   getUrl(): string|null {
