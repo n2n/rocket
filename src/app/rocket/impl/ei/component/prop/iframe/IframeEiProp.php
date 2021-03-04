@@ -20,7 +20,6 @@ class IframeEiProp extends DisplayableEiPropAdapter {
 
 	protected function prepare() {
 		$this->getConfigurator()
-				->setDefaultCompatibilityLevel(CompatibilityLevel::SUITABLE)
 				->addAdaption($this->iframeConfig);
 	}
 
