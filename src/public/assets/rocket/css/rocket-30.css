@@ -5360,6 +5360,7 @@ rocket-ui-iframe > iframe > html > body {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
+  background: red;
 }
 
 .rocket-zone-content > .rocket-zone-commands {
