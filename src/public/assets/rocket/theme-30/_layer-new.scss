@@ -33,7 +33,22 @@
     > .rocket-content {
         flex: 1 1 100%;
         grid-area: main;
+
+		// display flex for iframe purposes
+		display: flex;
+		flex-direction: column;
     }
+	// display flex for iframe purposes
+	rocket-iframe-out,
+	rocket-ui-iframe {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+	// display flex for iframe purposes
+	rocket-ui-iframe {
+		flex: 1;
+	}
     
     > .rocket-zone-commands {
         padding: 10px $content-padding;
