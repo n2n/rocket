@@ -5220,6 +5220,32 @@ router-outlet + *,
       grid-template-columns: min-content 1fr;
 }
 
+html.rocket-iframe {
+  height: 100%;
+  overflow-y: hidden;
+}
+
+html.rocket-iframe > body {
+  position: relative;
+  min-height: 100%;
+  top: 0px;
+}
+
+rocket-ui-iframe > iframe {
+  height: auto !important;
+}
+
+rocket-ui-iframe > iframe > html {
+  height: 100%;
+  overflow-y: hidden;
+}
+
+rocket-ui-iframe > iframe > html > body {
+  position: relative;
+  min-height: 100%;
+  top: 0px;
+}
+
 @media (max-width: 991.98px) {
   #rocket-global-nav {
     -ms-grid-row: 2;
@@ -5309,6 +5335,33 @@ router-outlet + *,
   -ms-grid-row: 2;
   -ms-grid-column: 1;
   grid-area: main;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.rocket-zone-content rocket-iframe-out,
+.rocket-zone-content rocket-ui-iframe,
+.rocket-zone-content rocket-ui-url-iframe {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+}
+
+.rocket-zone-content rocket-ui-iframe,
+.rocket-zone-content rocket-ui-url-iframe {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 
 .rocket-zone-content > .rocket-zone-commands {
@@ -6240,6 +6293,10 @@ td > .rocket-split {
   -webkit-box-align: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
+}
+
+.rocket-crumb-group i {
+  width: auto;
 }
 
 .rocket-crumb-group > i:only-child {

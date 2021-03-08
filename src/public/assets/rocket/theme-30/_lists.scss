@@ -294,6 +294,10 @@ td > .rocket-split {
     grid-auto-flow: column;
     grid-gap: .5em;
     align-items: baseline;
+    
+    i {
+        width: auto;
+    }
 
     > i:only-child {
         line-height: 1.5;

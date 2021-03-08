@@ -13,7 +13,7 @@
 	$html->meta()->addCss('css/rocket-30.css');
 ?>
 <!DOCTYPE html>
-<html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>">
+<html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>" class="rocket-iframe">
 	<?php $html->headStart() ?>
 		<meta charset="<?php $html->out(N2N::CHARSET) ?>" />
 	<?php $html->headEnd() ?>
