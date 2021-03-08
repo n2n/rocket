@@ -9,7 +9,7 @@
 	
 	$uiComponent = $view->getParam('uiComponent');
 	$view->assert($uiComponent instanceof UiComponent);
-	
+
 	$html->meta()->addCss('css/rocket-30.css');
 ?>
 <!DOCTYPE html>
@@ -19,7 +19,6 @@
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart() ?>
 		<?php $view->out($uiComponent) ?>
-		
 	<?php $html->bodyEnd() ?>
 </html>
 <?php $view->importContentView() ?>

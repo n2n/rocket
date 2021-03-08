@@ -18,7 +18,8 @@ class IframeConfig extends ConfigAdaption {
 	const ATTR_USE_ENTRY_COMMAND_KEY = 'entryCommand';
 	const ATTR_BUTTON_ICON_KEY = 'buttonIcon';
 	const ATTR_BUTTON_LABEL_KEY = 'buttonLabel';
-	const ATTR_BUTTON_TOOLTIP = 'buttonTooltip';
+	const ATTR_BUTTON_TOOLTIP_KEY = 'buttonTooltip';
+	const ATTR_WINDOW_TITLE_KEY = 'windowTitle';
 
 	private $url;
 	private $controllerLookupId;
@@ -30,6 +31,7 @@ class IframeConfig extends ConfigAdaption {
 	private $buttonIcon = 'fa fa-play';
 	private $buttonLabel = 'Iframe';
 	private $buttonTooltip = 'Run Iframe Command';
+	private $windowTitle = 'Iframe';
 
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$magCollection->addMag(self::ATTR_URL_KEY, new StringMag('Source URL',
@@ -56,8 +58,11 @@ class IframeConfig extends ConfigAdaption {
 		$magCollection->addMag(self::ATTR_BUTTON_LABEL_KEY, new StringMag('Button Label',
 			$dataSet->optString(self::ATTR_BUTTON_LABEL_KEY, $this->getButtonLabel())));
 
-		$magCollection->addMag(self::ATTR_BUTTON_TOOLTIP, new StringMag('Button Tooltip',
-			$dataSet->optString(self::ATTR_BUTTON_TOOLTIP, $this->getButtonTooltip())));
+		$magCollection->addMag(self::ATTR_BUTTON_TOOLTIP_KEY, new StringMag('Button Tooltip',
+			$dataSet->optString(self::ATTR_BUTTON_TOOLTIP_KEY, $this->getButtonTooltip())));
+
+		$magCollection->addMag(self::ATTR_WINDOW_TITLE_KEY, new StringMag('Iframe Window Title',
+			$dataSet->optString(self::ATTR_WINDOW_TITLE_KEY, $this->getWindowTitle())));
 	}
 
 	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
@@ -69,7 +74,8 @@ class IframeConfig extends ConfigAdaption {
 		$entryCommand = $magCollection->getMagByPropertyName(self::ATTR_USE_ENTRY_COMMAND_KEY);
 		$buttonIconMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_ICON_KEY);
 		$buttonLabelMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_LABEL_KEY);
-		$buttonTooltipMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_TOOLTIP);
+		$buttonTooltipMag = $magCollection->getMagByPropertyName(self::ATTR_BUTTON_TOOLTIP_KEY);
+		$windowTitleMag = $magCollection->getMagByPropertyName(self::ATTR_WINDOW_TITLE_KEY);
 
 		$dataSet->set(self::ATTR_URL_KEY, $urlMag->getValue());
 		$dataSet->set(self::ATTR_CONTROLLER_LOOKUP_ID_KEY, $controllerLookupIdMag->getValue());
@@ -79,8 +85,8 @@ class IframeConfig extends ConfigAdaption {
 		$dataSet->set(self::ATTR_USE_ENTRY_COMMAND_KEY, $entryCommand->getValue());
 		$dataSet->set(self::ATTR_BUTTON_ICON_KEY, $buttonIconMag->getValue());
 		$dataSet->set(self::ATTR_BUTTON_LABEL_KEY, $buttonLabelMag->getValue());
-		$dataSet->set(self::ATTR_BUTTON_TOOLTIP, $buttonTooltipMag->getValue());
-
+		$dataSet->set(self::ATTR_BUTTON_TOOLTIP_KEY, $buttonTooltipMag->getValue());
+		$dataSet->set(self::ATTR_WINDOW_TITLE_KEY, $windowTitleMag->getValue());
 	}
 
 	function setup(Eiu $eiu, DataSet $dataSet) {
@@ -92,7 +98,8 @@ class IframeConfig extends ConfigAdaption {
 		$this->setEntryCommand($dataSet->optBool(self::ATTR_USE_ENTRY_COMMAND_KEY, $this->entryCommand));
 		$this->setButtonIcon($dataSet->optString(self::ATTR_BUTTON_ICON_KEY, $this->buttonIcon));
 		$this->setButtonLabel($dataSet->optString(self::ATTR_BUTTON_LABEL_KEY, $this->buttonLabel));
-		$this->setButtonTooltip($dataSet->optString(self::ATTR_BUTTON_TOOLTIP, $this->buttonTooltip));
+		$this->setButtonTooltip($dataSet->optString(self::ATTR_BUTTON_TOOLTIP_KEY, $this->buttonTooltip));
+		$this->setWindowTitle($dataSet->optString(self::ATTR_WINDOW_TITLE_KEY, $this->windowTitle));
 	}
 
 	/**
@@ -233,6 +240,20 @@ class IframeConfig extends ConfigAdaption {
 	 */
 	public function setEntryIdParamName(string $entryIdParamName) {
 		$this->entryIdParamName = $entryIdParamName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getWindowTitle() {
+		return $this->windowTitle;
+	}
+
+	/**
+	 * @param string $windowTitle
+	 */
+	public function setWindowTitle(?string $windowTitle) {
+		$this->windowTitle = $windowTitle;
 	}
 }
 

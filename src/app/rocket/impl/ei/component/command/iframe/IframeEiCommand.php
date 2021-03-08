@@ -32,7 +32,7 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 	function createGeneralGuiControls(Eiu $eiu): array {
 		if ($this->iframeConfig->isEntryCommand()) return [];
 
-		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('Iframe');
+		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('iframe_txt');
 		$siButton = SiButton::success($buttonLabel, $this->iframeConfig->getButtonIcon() ?? SiIconType::ICON_PLAY)
 				->setTooltip($this->iframeConfig->getButtonTooltip());
 
@@ -44,7 +44,7 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 	function createEntryGuiControls(Eiu $eiu): array {
 		if (!$this->iframeConfig->isEntryCommand()) return [];
 
-		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('Iframe');
+		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('iframe_run_txt');
 		$siButton = SiButton::success($buttonLabel, $this->iframeConfig->getButtonIcon() ?? SiIconType::ICON_PLAY)
 				->setTooltip($this->iframeConfig->getButtonTooltip());
 

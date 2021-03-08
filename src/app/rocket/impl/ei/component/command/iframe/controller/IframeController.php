@@ -31,14 +31,17 @@ class IframeController extends ControllerAdapter {
 
 		if (null !== ($url = $this->iframeConfig->getUrl())) {
 			$url = $url->ext($pid);
-			$eiuCtrl->forwardUrlIframeZone($url);
+			$eiuCtrl->forwardUrlIframeZone($url, $this->iframeConfig->getWindowTitle());
 		} else if (null !== ($controllerLookupId = $this->iframeConfig->getControllerLookupId())) {
-			$eiuCtrl->forwardUrlIframeZone($this->getUrlToController(['src', $pid]));
+			$eiuCtrl->forwardUrlIframeZone($this->getUrlToController(['src', $pid]),
+					$this->iframeConfig->getWindowTitle());
 		} else if (null !== ($viewName = $this->iframeConfig->getViewName())) {
 			$uiComponent = $eiuCtrl->eiu()->createView($viewName, [$this->iframeConfig->getEntryIdParamName() => $pid]);
-			$eiuCtrl->forwardIframeZone($uiComponent, $this->iframeConfig->isUseTemplate());
+			$eiuCtrl->forwardIframeZone($uiComponent, $this->iframeConfig->isUseTemplate(),
+					$this->iframeConfig->getWindowTitle());
 		} else {
-			$eiuCtrl->forwardIframeZone(new Raw($this->iframeConfig->getSrcDoc()), $this->iframeConfig->isUseTemplate());
+			$eiuCtrl->forwardIframeZone(new Raw($this->iframeConfig->getSrcDoc()), $this->iframeConfig->isUseTemplate(),
+					$this->iframeConfig->getWindowTitle());
 		}
 	}
 
