@@ -343,18 +343,20 @@ html.rocket-iframe {
     }
 }
 
-rocket-ui-iframe > iframe {
-    height: auto !important;
-    > html {
-        height: 100%;
-        overflow-y: hidden;
-        > body {
-            position: relative;
-            min-height: 100%;
-            top: 0px;
-        }
-    }
-}
+// rocket-ui-url-iframe > iframe,
+// rocket-ui-iframe > iframe {
+//     height: auto !important;
+//     flex: 1;
+//     > html {
+//         min-height: 100%;
+//         overflow-y: hidden;
+//         > body {
+//             position: relative;
+//             min-height: 100%;
+//             top: 0px;
+//         }
+//     }
+// }
 
 
 @include media-breakpoint-down(md) {
