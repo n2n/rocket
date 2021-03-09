@@ -280,6 +280,7 @@ class EiGuiModel {
 				$catEiEntries[$eiType->getId()] = $eiEntry;
 				break;
 			}
+			
 			while (null !== ($eiType = $eiType->getSuperEiType())) {
 				if (!isset($this->eiGuiFrames[$eiType->getId()])) {
 					continue;
@@ -288,8 +289,9 @@ class EiGuiModel {
 				if (!isset($catEiEntries[$eiType->getId()])) {
 					$catEiEntries[$eiType->getId()] = $eiEntry;
 				}
+				
 				break;
-			};
+			}
 		}
 		return $catEiEntries;
 	}
