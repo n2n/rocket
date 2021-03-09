@@ -7567,6 +7567,12 @@ rocket-add-past > button::after {
   color: #b90f00;
 }
 
+.rocket-group > .rocket-toolbar .rocket-btn-light {
+  margin-bottom: 0.5em;
+  margin-top: -0.1em;
+  margin-right: 1rem;
+}
+
 /*
  * The small Buttons (without text)
  */
