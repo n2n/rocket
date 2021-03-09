@@ -25,7 +25,7 @@
     border: none;
     font-family: $btn-font-family;
     font-weight: $btn-font-weight;
-    color: $body-color;
+    color: $gray-700;
     text-align: center;
     white-space: $btn-white-space;
     vertical-align: middle;
@@ -44,7 +44,7 @@
      i:after {
         content: " ";
         position: absolute;
-        background: $body-color;
+        background: $gray-700;
         width: 2.25em;
         height: 2.25em;
         border-radius: 50%;

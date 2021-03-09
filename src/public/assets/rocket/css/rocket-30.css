@@ -7507,7 +7507,7 @@ rocket-add-past > button::after {
   display: inline-block;
   border: none;
   font-weight: bold;
-  color: #373431;
+  color: #66615C;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
@@ -7528,7 +7528,7 @@ rocket-add-past > button::after {
 .rocket-btn-light i:after {
   content: " ";
   position: absolute;
-  background: #373431;
+  background: #66615C;
   width: 2.25em;
   height: 2.25em;
   border-radius: 50%;
