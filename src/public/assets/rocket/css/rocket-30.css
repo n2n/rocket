@@ -5220,17 +5220,6 @@ router-outlet + *,
       grid-template-columns: min-content 1fr;
 }
 
-html.rocket-iframe {
-  height: 100%;
-  overflow-y: hidden;
-}
-
-html.rocket-iframe > body {
-  position: relative;
-  min-height: 100%;
-  top: 0px;
-}
-
 @media (max-width: 991.98px) {
   #rocket-global-nav {
     -ms-grid-row: 2;
