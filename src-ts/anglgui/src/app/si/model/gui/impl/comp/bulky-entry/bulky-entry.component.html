@@ -1,3 +1,14 @@
+
+<ng-container *ngIf="!typeSelected">
+
+    <rocket-qualifier-tiling [siMaskQualifiers]="choosableSiMaskQualifiers" (siTypeSelected)="chooseSiMaskQualifier($event)"></rocket-qualifier-tiling>
+
+</ng-container>
+
+<ng-container *ngIf="typeSelected">
+    <rocket-ui-structure-branch [model]="model.getContentStructureBranchModel()" ></rocket-ui-structure-branch>
+</ng-container>
+
 <!--
-<rocket-ui-structure-branch [uiStructure]="model.getContentUiStructure()" rocketSiEntry [siEntry]="model.getSiEntry()"></rocket-ui-structure-branch>
+    rocketSiEntry [siEntry]="model.getSiEntry()"
 -->

@@ -22,19 +22,20 @@ import { SelectComponent } from './util/comp/select-input/select.component';
 import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 import { UrlIframeComponent } from './util/comp/url-iframe/url-iframe.component';
+import { PaginationComponent } from './util/comp/pagination/pagination.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
 		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent,
-		IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent
+		IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent, PaginationComponent
 	],
 	imports: [
-	CommonModule,
-	UtilModule,
-	RouterModule,
-	FormsModule
+		CommonModule,
+		UtilModule,
+		RouterModule,
+		FormsModule
 	],
 	exports: [
 		ContainerComponent,
@@ -52,7 +53,8 @@ import { UrlIframeComponent } from './util/comp/url-iframe/url-iframe.component'
 		IframeComponent,
 		IFrameResizerDirective,
 		SelectComponent,
-		UrlIframeComponent
+		UrlIframeComponent,
+		PaginationComponent
 	],
 	entryComponents: [ PlainContentComponent ]
 })

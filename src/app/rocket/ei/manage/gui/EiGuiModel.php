@@ -278,7 +278,7 @@ class EiGuiModel {
 			$eiType = $eiEntry->getEiMask()->getEiType();
 			if (isset($this->eiGuiFrames[$eiType->getId()])) {
 				$catEiEntries[$eiType->getId()] = $eiEntry;
-				break;
+				continue;
 			}
 			
 			while (null !== ($eiType = $eiType->getSuperEiType())) {

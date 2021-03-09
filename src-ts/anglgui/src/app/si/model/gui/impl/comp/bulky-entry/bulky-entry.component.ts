@@ -1,11 +1,25 @@
 import { Component } from '@angular/core';
+import { BulkyEntryModel } from '../bulky-entry-model';
+import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 
 @Component({
 	selector: 'rocket-bulky-entry',
 	templateUrl: './bulky-entry.component.html'
 })
 export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
-	// public model: BulkyEntryModel;
+	public model: BulkyEntryModel;
+
+	get typeSelected(): boolean {
+		return this.model.getSiEntry().typeSelected;
+	}
+
+	get choosableSiMaskQualifiers(): SiMaskQualifier[] {
+		return this.model.getSiEntry().entryQualifiers.map(eq => eq.maskQualifier);
+	}
+
+	chooseSiMaskQualifier(siMaskQualifier: SiMaskQualifier) {
+		this.model.getSiEntry().selectedTypeId = siMaskQualifier.identifier.typeId;
+	}
 
 	// constructor() { }
 

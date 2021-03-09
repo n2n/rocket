@@ -27,16 +27,22 @@ use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+use n2n\impl\persistence\orm\property\IntEntityProperty;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 
 class IntegerConfig extends PropConfigAdaption {
 	
 	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$entityProperty = $propertyAssignation->getEntityProperty(false);
-		if ($entityProperty !== null && $entityProperty->getName() === 'id') {
+		if ($entityProperty !== null && $entityProperty instanceof IntEntityProperty) {
 			return CompatibilityLevel::COMMON;
 		}
 		
-		return 0;
+		if ($entityProperty !== null && $entityProperty instanceof ScalarEntityProperty) {
+			return CompatibilityLevel::SUITABLE;
+		}
+		
+		return CompatibilityLevel::NOT_COMPATIBLE;
 	}
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {

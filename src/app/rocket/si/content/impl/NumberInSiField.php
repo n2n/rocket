@@ -84,7 +84,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
 	function setMin(?float $min) {
-		$this->min = $min ?? PHP_FLOAT_MIN;
+		$this->min = $min;
 		return $this;
 	}
 	
@@ -100,7 +100,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\NumberInSiField
 	 */
 	function setMax(?float $max) {
-		$this->max = $max ?? PHP_FLOAT_MAX;
+		$this->max = $max;
 		return $this;
 	}
 	

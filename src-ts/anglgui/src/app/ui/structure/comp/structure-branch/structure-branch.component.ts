@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { UiStructure } from '../../model/ui-structure';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { Subscription } from 'rxjs';
-import { UiStructureModel } from '../../model/ui-structure-model';
+import { StructureBranchModel } from '../structure-branch-model';
 
 @Component({
 	selector: 'rocket-ui-structure-branch',
@@ -11,7 +11,7 @@ import { UiStructureModel } from '../../model/ui-structure-model';
 })
 export class StructureBranchComponent implements OnInit, OnDestroy {
 	@Input()
-	model: UiStructureModel;
+	model: StructureBranchModel;
 	// @Input()
 	// uiContent: UiContent|null = null;
 	// @Input()

@@ -30,6 +30,10 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\web\dispatch\mag\MagCollection;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use n2n\impl\persistence\orm\property\FloatEntityProperty;
+use hangar\api\CompatibilityLevel;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 
 class FloatConfig extends PropConfigAdaption {
 	const ATTR_DECIMAL_PLACES_KEY = 'decimalPlaces';
@@ -66,38 +70,35 @@ class FloatConfig extends PropConfigAdaption {
 	    $this->prefix = $prefix;
 	}
 	
-	
-	public function getTypeName(): string {
-		return 'Decimal';
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
+		$entityProperty = $propertyAssignation->getEntityProperty(false);
+		if ($entityProperty !== null && $entityProperty instanceof FloatEntityProperty) {
+			return CompatibilityLevel::COMMON;
+		}
+		
+		if ($entityProperty !== null && $entityProperty instanceof ScalarEntityProperty) {
+			return CompatibilityLevel::SUITABLE;
+		}
+		
+		return CompatibilityLevel::NOT_COMPATIBLE;
 	}
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($this->dataSet);
+		$lar = new LenientAttributeReader($dataSet);
 		
-		$magDispatchable = parent::createMagDispatchable($n2nContext);
-		$magCollection = $magDispatchable->getMagCollection();
 		$magCollection->addMag(self::ATTR_DECIMAL_PLACES_KEY, new NumericMag(
 				'Positions after decimal point', $lar->getNumeric(self::ATTR_DECIMAL_PLACES_KEY, 0), true, 0));
 		$magCollection->addMag(self::ATTR_PREFIX_KEY, new StringMag('Prefix',
 				$lar->getString(self::ATTR_PREFIX_KEY, false)));
-		return $magDispatchable;
 	}
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-		parent::setup($eiSetupProcess);
-			
-		CastUtils::assertTrue($this->eiComponent instanceof DecimalEiProp);
-
-		$this->eiComponent->setDecimalPlaces($this->dataSet->optInt(self::ATTR_DECIMAL_PLACES_KEY, 0));
-		$this->eiComponent->setPrefix($this->dataSet->getString(self::ATTR_PREFIX_KEY, false));
+		$this->setDecimalPlaces($dataSet->optInt(self::ATTR_DECIMAL_PLACES_KEY, 0));
+		$this->setPrefix($dataSet->getString(self::ATTR_PREFIX_KEY, false));
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-	
-		$magCollection = $magDispatchable->getMagCollection();
-	
-		$this->dataSet->appendAll($magCollection->readValues(
+		$dataSet->appendAll($magCollection->readValues(
 				array(self::ATTR_DECIMAL_PLACES_KEY, self::ATTR_PREFIX_KEY), true), true);
 	}
 	

@@ -6,7 +6,6 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiCrumbGroup } from '../../meta/model/si-crumb';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
-import { Fresult } from 'src/app/util/err/fresult';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 

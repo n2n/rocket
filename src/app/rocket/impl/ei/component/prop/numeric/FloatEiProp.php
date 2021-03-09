@@ -21,93 +21,93 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\impl\persistence\orm\property\FloatEntityProperty;
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\property\AccessProxy;
-use n2n\util\type\ArgUtils;
-use n2n\util\type\TypeConstraint;
-use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\numeric\conf\FloatConfig;
-use rocket\si\content\SiField;
-use rocket\ei\util\factory\EifGuiField;
+// use n2n\impl\persistence\orm\property\FloatEntityProperty;
+// use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+// use n2n\persistence\orm\property\EntityProperty;
+// use n2n\reflection\property\AccessProxy;
+// use n2n\util\type\ArgUtils;
+// use n2n\util\type\TypeConstraint;
+// use rocket\ei\util\Eiu;
+// use rocket\impl\ei\component\prop\numeric\conf\FloatConfig;
+// use rocket\si\content\SiField;
+// use rocket\ei\util\factory\EifGuiField;
 
-class FloatEiProp extends NumericEiPropAdapter {
-    private $floatConfig;
+// class FloatEiProp extends NumericEiPropAdapter {
+//     private $floatConfig;
     
-    function __construct() {
-        parent::__construct();
+//     function __construct() {
+//         parent::__construct();
         
-        $this->floatConfig = new FloatConfig();
-    }
+//         $this->floatConfig = new FloatConfig();
+//     }
     
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createEiPropConfigurator()
-	 */
-	public function prepare() {
-	    parent::prepare();
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::createEiPropConfigurator()
+// 	 */
+// 	public function prepare() {
+// 	    parent::prepare();
 	    
-	    $this->getConfigurator()->addAdaption($this->floatConfig);
-	}
+// 	    $this->getConfigurator()->addAdaption($this->floatConfig);
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setEntityProperty()
-	 */
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty
-				|| $entityProperty instanceof FloatEntityProperty);
-		$this->entityProperty = $entityProperty;
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setEntityProperty()
+// 	 */
+// 	public function setEntityProperty(?EntityProperty $entityProperty) {
+// 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty
+// 				|| $entityProperty instanceof FloatEntityProperty);
+// 		$this->entityProperty = $entityProperty;
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setObjectPropertyAccessProxy()
-	 */
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
-	}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setObjectPropertyAccessProxy()
+// 	 */
+// 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+// 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
+// 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
+// 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+// 	}
 	
-	/**
-	 * @return int
-	 */
-	public function getDecimalPlaces() {
-		return $this->decimalPlaces;
-	}
+// 	/**
+// 	 * @return int
+// 	 */
+// 	public function getDecimalPlaces() {
+// 		return $this->decimalPlaces;
+// 	}
 	
-	/**
-	 * @param int $decimalPlaces
-	 */
-	public function setDecimalPlaces(int $decimalPlaces) {
-		$this->decimalPlaces = $decimalPlaces;
-	}
+// 	/**
+// 	 * @param int $decimalPlaces
+// 	 */
+// 	public function setDecimalPlaces(int $decimalPlaces) {
+// 		$this->decimalPlaces = $decimalPlaces;
+// 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getPrefix() {
-		return $this->prefix;
-	}
+// 	/**
+// 	 * @return string
+// 	 */
+// 	public function getPrefix() {
+// 		return $this->prefix;
+// 	}
 	
-	/**
-	 * @param string $prefix
-	 */
-	public function setPrefix(string $prefix = null) {
-		$this->prefix = $prefix;
-	}
+// 	/**
+// 	 * @param string $prefix
+// 	 */
+// 	public function setPrefix(string $prefix = null) {
+// 		$this->prefix = $prefix;
+// 	}
 
-	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
-				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
-				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));
-		$numericMag->setInputPrefix($this->prefix);
-		return $numericMag;
-	}
+// 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+// 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
+// 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
+// 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));
+// 		$numericMag->setInputPrefix($this->prefix);
+// 		return $numericMag;
+// 	}
 	
-	public function saveSiField(SiField $siField, Eiu $eiu) {
-	}
+// 	public function saveSiField(SiField $siField, Eiu $eiu) {
+// 	}
 
-}
+// }
