@@ -5349,14 +5349,6 @@ html.rocket-iframe > body {
           flex: 1;
 }
 
-.rocket-zone-content rocket-ui-url-iframe > iframe,
-.rocket-zone-content rocket-ui-iframe > iframe {
-  height: auto !important;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-}
-
 .rocket-zone-content > .rocket-zone-commands {
   padding: 10px 3rem;
   margin: 0 -3rem;
