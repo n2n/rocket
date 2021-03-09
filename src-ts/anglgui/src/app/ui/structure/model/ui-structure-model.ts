@@ -31,5 +31,6 @@ export interface UiStructureModel {
 
 export enum UiStructureModelMode {
 	NONE = 0,
-	ITEM_COLLECTION = 1
+	ITEM_COLLECTION = 1,
+	MASSIVE_TOOLBAR = 2
 }

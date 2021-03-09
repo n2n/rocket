@@ -160,12 +160,18 @@ export class UiStructure {
 
 	isItemCollection(): boolean {
 		return this.type === UiStructureType.ITEM && !!this.model
-				&& this.model.getMode() === UiStructureModelMode.ITEM_COLLECTION;
+				// tslint:disable-next-line: no-bitwise
+				&& 0 < (this.model.getMode() & UiStructureModelMode.ITEM_COLLECTION);
 
 	}
 
 	isDoubleItem(): boolean {
 		return this.type === UiStructureType.ITEM && this.parent.isItemCollection();
+	}
+
+	isToolbarMassive(): boolean {
+		// tslint:disable-next-line: no-bitwise
+		return 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
 	}
 
 	// createToolbarChild(model: UiStructureModel): UiStructure {

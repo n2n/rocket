@@ -12,6 +12,7 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 	protected asideUiContents: UiContent[] = [];
 	protected toolbarStructureModelsSubject = new BehaviorSubject<UiStructureModel[]>([]);
 	protected disabled$: Observable<boolean>;
+	protected mode = UiStructureModelMode.NONE;
 
 	bind(uiStructure: UiStructure): void {
 		IllegalStateError.assertTrue(!this.boundUiStructure, 'UiStructureModel already bound. ');
@@ -59,6 +60,6 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 	}
 
 	getMode(): UiStructureModelMode {
-		return UiStructureModelMode.NONE;
+		return this.mode;
 	}
 }

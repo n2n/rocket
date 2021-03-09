@@ -32,6 +32,7 @@ import { UiContainer } from 'src/app/ui/structure/model/ui-container';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
+import { UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInUiZoneManager: EmbeInUiZoneManager|null = null;
@@ -203,9 +204,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		});
 
 
-		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'btn btn-warning', 'fa fa-pencil-alt');
-		button.important = true;
-		button.iconImportant = true;
+		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'rocket-btn-light rocket-btn-light-success', 'fa fa-pencil-alt');
 
 		const openAllUiContent = new ButtonControlUiContent({
 			getUiZone: () => uiStructure.getZone(),
@@ -216,6 +215,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		});
 
 		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);
+		this.mode = UiStructureModelMode.MASSIVE_TOOLBAR;
 	}
 
 	unbind(): void {
