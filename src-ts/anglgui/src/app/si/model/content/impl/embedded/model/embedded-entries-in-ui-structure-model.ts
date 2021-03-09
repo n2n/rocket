@@ -167,10 +167,8 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	openAll() {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().openAll().then((changed) => {
-			console.log(changed);
 			if (!changed) {
 				this.embeStructureCollection.refresh();
-				console.log('refresh');
 			}
 		});
 	}
