@@ -93,7 +93,9 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 
 		this.structurePageManager = new StructurePageManager(uiStructure, this.comp.pageCollection);
 		// because of changes after view check;
-		this.structurePageManager.loadSingle(this.currentPageNo, 0);
+		if (this.structurePageManager.lastPageNo === null || this.structurePageManager.lastPageNo > 0) {
+			this.structurePageManager.loadSingle(this.currentPageNo, 0);
+		}
 
 		this.uiContent = new TypeUiContent(CompactExplorerComponent, (ref) => {
 			ref.instance.model = this;

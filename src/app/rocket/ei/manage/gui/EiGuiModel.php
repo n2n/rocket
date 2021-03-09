@@ -251,7 +251,7 @@ class EiGuiModel {
 		$eiEntryGui = new EiEntryGui($this->contextEiMask, $eiGui, $treeLevel);
 		
 		$eiEntries = $this->catEiEntries($eiEntries);
-		
+
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
 			$eiType = $eiGuiFrame->getEiType();
 			
@@ -260,7 +260,7 @@ class EiGuiModel {
 				continue;
 			}
 			
-			throw new \InvalidArgumentException('No EiEntry provieded for ' . $eiType);
+			throw new \InvalidArgumentException('No EiEntry provided for ' . $eiType);
 		}
 		
 		$this->finalizeEiEntryGui($eiEntryGui);
@@ -275,7 +275,23 @@ class EiGuiModel {
 	private function catEiEntries($eiEntries) {
 		$catEiEntries = [];
 		foreach ($eiEntries as $eiEntry) {
-			$catEiEntries[$eiEntry->getEiMask()->getEiType()->getId()] = $eiEntry;
+			$eiType = $eiEntry->getEiMask()->getEiType();
+			if (isset($this->eiGuiFrames[$eiType->getId()])) {
+				$catEiEntries[$eiType->getId()] = $eiEntry;
+				break;
+			}
+			
+			while (null !== ($eiType = $eiType->getSuperEiType())) {
+				if (!isset($this->eiGuiFrames[$eiType->getId()])) {
+					continue;
+				}
+				
+				if (!isset($catEiEntries[$eiType->getId()])) {
+					$catEiEntries[$eiType->getId()] = $eiEntry;
+				}
+				
+				break;
+			}
 		}
 		return $catEiEntries;
 	}
