@@ -204,7 +204,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		});
 
 
-		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'rocket-btn-light rocket-btn-light-success', 'fa fa-pencil-alt');
+		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'rocket-btn-light rocket-btn-light-warning', 'fa fa-pencil-alt');
 
 		const openAllUiContent = new ButtonControlUiContent({
 			getUiZone: () => uiStructure.getZone(),
