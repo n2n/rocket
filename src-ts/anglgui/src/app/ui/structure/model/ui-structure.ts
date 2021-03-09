@@ -50,7 +50,7 @@ export class UiStructure {
 			throw new IllegalArgumentError('ZoneModel structure not unset.');
 		}
 
-		if (zone &&  (this.zoneSubject.getValue() || this.parent)) {
+		if (zone && (this.zoneSubject.getValue() || this.parent)) {
 			throw new IllegalStateError('UiStructure has already been assigned to a zone or parent.');
 		}
 

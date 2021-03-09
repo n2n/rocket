@@ -44,10 +44,11 @@ export class UiZone {
 
 
 	private resetStructure() {
-		if (this._structure) {
-			this._structure.setZone(null);
-		}
+		const structure = this._structure;
 		this._structure = null;
+		if (structure) {
+			structure.setZone(null);
+		}
 	}
 
 	reset() {
