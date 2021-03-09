@@ -334,13 +334,13 @@ router-outlet + *,
 // iframes 
 
 html.rocket-iframe {
-    height: 100%;
-    overflow-y: hidden;
-    > body {
-        position: relative;
-        min-height: 100%;
-        top: 0px;
-    }
+    height: initial !important;
+    // overflow-y: hidden;
+    // > body {
+    //     position: relative;
+    //     min-height: 100%;
+    //     top: 0px;
+    // }
 }
 
 // rocket-ui-url-iframe > iframe,

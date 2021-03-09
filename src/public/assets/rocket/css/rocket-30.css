@@ -5221,14 +5221,7 @@ router-outlet + *,
 }
 
 html.rocket-iframe {
-  height: 100%;
-  overflow-y: hidden;
-}
-
-html.rocket-iframe > body {
-  position: relative;
-  min-height: 100%;
-  top: 0px;
+  height: initial !important;
 }
 
 @media (max-width: 991.98px) {
@@ -5344,14 +5337,6 @@ html.rocket-iframe > body {
 
 .rocket-zone-content rocket-ui-iframe,
 .rocket-zone-content rocket-ui-url-iframe {
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-}
-
-.rocket-zone-content rocket-ui-url-iframe > iframe,
-.rocket-zone-content rocket-ui-iframe > iframe {
-  height: auto !important;
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
