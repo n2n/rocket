@@ -9,8 +9,5 @@
 
 
 <ng-container *ngIf="typeSelected">
-    <rocket-ui-structure-branch [model]="model.getContentStructureBranchModel()" ></rocket-ui-structure-branch>
+    <rocket-ui-structure-branch [model]="model.getContentStructureBranchModel()" rocketSiEntry [siEntry]="model.getSiEntry()"></rocket-ui-structure-branch>
 </ng-container>
-<!--
-    rocketSiEntry [siEntry]="model.getSiEntry()"
--->

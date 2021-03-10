@@ -5,7 +5,7 @@
 		</rocket-crumb-group>
 	</div>
 
-	<input [type]="model.getType()" class="form-control" id="name" [(ngModel)]="value"
+	<input [type]="model.getType()" class="form-control" [(ngModel)]="value"
 			[maxlength]="model.getMaxlength()" [min]="model.getMin()" [max]="model.getMax()" [step]="model.getStep()"
 			#input="ngModel" />
 

@@ -48,7 +48,6 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 	}
 
 	readInput(): object {
-		console.log(this.panels.map(p => p.readInput()));
 		return {
 			panelInputs: this.panels.map(p => p.readInput())
 		};
