@@ -48,7 +48,6 @@ export class ApiCallSiControl implements SiControl {
 
 		const obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry, this.inputSent,
 				uiZone.layer);
-
 		this.loading = true;
 		obs.subscribe(() => {
 			locks.forEach((lock) => { lock.release(); });
