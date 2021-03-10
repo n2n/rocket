@@ -1,9 +1,9 @@
 
-export interface EnumInModel {
+// export interface EnumInModel {
 
-	getValue(): string;
+// 	// getValue(): string;
 
-	setValue(value: string): void;
+// 	// setValue(value: string): void;
 
-	getOptions(): Map<string, string>;
-}
+// 	// getOptions(): Map<string, string>;
+// }

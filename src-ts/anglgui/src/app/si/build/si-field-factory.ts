@@ -135,7 +135,7 @@ export class SiFieldFactory {
 					dataExtr.reqString('label'), this.injector);
 
 		case SiFieldType.ENUM_IN:
-			const enumInSiField = new EnumInSiField(dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
+			const enumInSiField = new EnumInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
 			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 
 			fieldMap$.subscribe((fieldMap) => {
@@ -229,8 +229,7 @@ export class SiFieldFactory {
 			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
 
 		case SiFieldType.DATETIME_IN:
-
-			const dateTimeInSiField = new DateTimeInSiField(null);
+			const dateTimeInSiField = new DateTimeInSiField(prop.label, null);
 			const valueStr = dataExtr.nullaString('value');
 			if (valueStr) {
 				dateTimeInSiField.value = new Date(valueStr);

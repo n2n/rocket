@@ -13,13 +13,13 @@ export class DateTimeInComponent implements OnInit {
 	private pEnabled = false;
 
 	get enabled(): boolean {
-		return this.model.mandatory || this.pEnabled;
+		return this.model.mandatory || !!this.model.getValue() || this.pEnabled;
 	}
 
 	set enabled(enabled: boolean) {
 		this.pEnabled = enabled;
 
-		if (!this.enabled) {
+		if (!enabled && !this.model.mandatory) {
 			this.model.setValue(null);
 		}
 	}

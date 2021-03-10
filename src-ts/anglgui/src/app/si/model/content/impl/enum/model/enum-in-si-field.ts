@@ -6,13 +6,13 @@ import { SiField } from '../../../si-field';
 import { SelectInFieldComponent } from '../comp/select-in-field/select-in-field.component';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
-import { EnumInModel } from '../comp/enum-in-model';
+import { Message } from 'src/app/util/i18n/message';
 
-export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel, EnumInModel {
+export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;
 	private asscoiatedFieldsMap = new Map<string, SiField[]>();
 
-	constructor(public value: string|null, public options: Map<string, string>) {
+	constructor(public label: string, public value: string|null, public options: Map<string, string>) {
 		super();
 	}
 
@@ -23,6 +23,15 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 	setValue(value: string): void {
 		this.value = value;
 		this.updateAssociates();
+		this.validate();
+	}
+
+	private validate() {
+		this.resetError();
+
+		if (this.mandatory && this.value === null) {
+			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+		}
 	}
 
 	getOptions(): Map<string, string> {
@@ -39,11 +48,11 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		};
 	}
 
-	copy(): SiField {
-		const copy = new EnumInSiField(this.value, this.options);
-		copy.mandatory = this.mandatory;
-		return copy;
-	}
+	// copy(): SiField {
+	// 	const copy = new EnumInSiField(this.label, this.value, this.options);
+	// 	copy.mandatory = this.mandatory;
+	// 	return copy;
+	// }
 
 	protected createUiContent(): UiContent {
 		return new TypeUiContent(SelectInFieldComponent, (ref) => {

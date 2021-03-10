@@ -141,6 +141,6 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = DateUtils::createDateTimeFromTimestamp((new DataSet($data))->reqString('value', true));
+		$this->value = DateUtils::timestampToDateTime((new DataSet($data))->reqString('value', true));
 	}
 }

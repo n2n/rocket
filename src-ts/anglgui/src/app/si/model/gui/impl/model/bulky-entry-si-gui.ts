@@ -10,8 +10,6 @@ import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
-import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
-import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
@@ -24,6 +22,9 @@ import { BulkyEntryModel } from '../comp/bulky-entry-model';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { StructureBranchModel } from 'src/app/ui/structure/comp/structure-branch-model';
 import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
+import { SelectInFieldComponent } from '../../../content/impl/enum/comp/select-in-field/select-in-field.component';
+import { SelectInFieldModel } from '../../../content/impl/enum/comp/select-in-field-model';
+import { Message } from 'src/app/util/i18n/message';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
@@ -151,7 +152,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private createTypeSwitchUiStructureModel(): UiStructureModel {
-		return new SimpleUiStructureModel(new TypeUiContent(EnumInComponent, (ref) => {
+		return new SimpleUiStructureModel(new TypeUiContent(SelectInFieldComponent, (ref) => {
 			ref.instance.model = new TypeSelectInModel(this.siEntry);
 		}));
 	}
@@ -329,13 +330,21 @@ class UiStructureModelCache {
 	}
 }
 
-class TypeSelectInModel implements EnumInModel {
+class TypeSelectInModel implements SelectInFieldModel {
 	private options = new Map<string, string>();
 
 	constructor(private siEntry: SiEntry) {
 		for (const mq of siEntry.maskQualifiers) {
 			this.options.set(mq.identifier.entryBuildupId, mq.name);
 		}
+	}
+
+	isMandatory(): boolean {
+		return true;
+	}
+
+	getMessages(): Message[] {
+		return [];
 	}
 
 	getValue(): string {

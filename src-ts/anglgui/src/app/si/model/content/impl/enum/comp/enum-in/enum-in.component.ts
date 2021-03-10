@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EnumInModel } from '../enum-in-model';
+// import { EnumInModel } from '../enum-in-model';
 
 @Component({
 	selector: 'rocket-enum-in',
@@ -7,23 +7,23 @@ import { EnumInModel } from '../enum-in-model';
 	styleUrls: ['./enum-in.component.css']
 })
 export class EnumInComponent implements OnInit {
-	model: EnumInModel;
+	// model: EnumInModel;
 
-	constructor() { }
+	// constructor() { }
 
 	ngOnInit() {
 	}
 
-	get value(): string {
-		return this.model.getValue();
-	}
+	// get value(): string {
+	// 	return this.model.getValue();
+	// }
 
-	set value(value: string) {
-		this.model.setValue(value);
-	}
+	// set value(value: string) {
+	// 	this.model.setValue(value);
+	// }
 
-	get options(): Map<string, string> {
-		return this.model.getOptions();
-	}
+	// get options(): Map<string, string> {
+	// 	return this.model.getOptions();
+	// }
 
 }
