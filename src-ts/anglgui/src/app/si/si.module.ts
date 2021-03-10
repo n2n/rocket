@@ -43,8 +43,6 @@ import { EmbeddedEntryComponent } from './model/content/impl/embedded/comp/embed
 import { ImageEditorComponent } from './model/content/impl/file/comp/image-editor/image-editor.component';
 import { UploadResultMessageComponent } from './model/content/impl/file/comp/inc/upload-result-message/upload-result-message.component';
 import { ImagePreviewComponent } from './model/content/impl/file/comp/image-preview/image-preview.component';
-import { CkeInFieldComponent } from './model/content/impl/alphanum/comp/cke-in-field/cke-in-field.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FieldMessagesComponent } from './model/content/impl/common/comp/field-messages/field-messages.component';
 import { CrumbOutFieldComponent } from './model/content/impl/meta/comp/crumb-out-field/crumb-out-field.component';
 import { EmbeddedEntryPanelsComponent } from './model/content/impl/embedded/comp/embedded-entry-panels/embedded-entry-panels.component';
@@ -52,6 +50,7 @@ import { SelectInFieldComponent } from './model/content/impl/enum/comp/select-in
 import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/iframe-out.component';
 import { IframeInComponent } from './model/content/impl/iframe/comp/iframe-in/iframe-in.component';
 import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in/date-time-in.component';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
 	declarations: [
@@ -62,7 +61,7 @@ import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in
 		ImageResizeComponent, EmbeddedEntryPanelsComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent,
+		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, FieldMessagesComponent,
 		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent, IframeInComponent, DateTimeInComponent
 	],
 	imports: [
@@ -72,7 +71,7 @@ import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in
 		UiModule,
 		UtilModule,
 		RouterModule,
-		CKEditorModule
+		NgbDatepickerModule
 	],
 	exports: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
@@ -88,7 +87,7 @@ import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, CkeInFieldComponent, CrumbOutFieldComponent, SelectInFieldComponent
+		ImageEditorComponent, CrumbOutFieldComponent, SelectInFieldComponent
 	]
 })
 export class SiModule { }

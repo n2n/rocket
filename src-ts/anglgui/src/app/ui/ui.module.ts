@@ -23,19 +23,22 @@ import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 import { UrlIframeComponent } from './util/comp/url-iframe/url-iframe.component';
 import { PaginationComponent } from './util/comp/pagination/pagination.component';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { DatePickerComponent } from './util/comp/date-picker/date-picker.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
 		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent,
-		IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent, PaginationComponent
+		IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent, PaginationComponent, DatePickerComponent
 	],
 	imports: [
 		CommonModule,
 		UtilModule,
 		RouterModule,
-		FormsModule
+		FormsModule,
+		NgbDatepickerModule
 	],
 	exports: [
 		ContainerComponent,

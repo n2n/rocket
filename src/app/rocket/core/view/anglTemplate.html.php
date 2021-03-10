@@ -7,11 +7,11 @@ use n2n\core\N2N;
 	$html = HtmlView::html($view);
 	
 	if (isset($_SERVER['ROCKET_DEV'])) {
-		$html->meta()->bodyEnd()->addJs('angl-dev/runtime.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/styles.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/runtime-es2015.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills-es2015.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/styles-es2015.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/vendor-es2015.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/main-es2015.js');
 	} else {
 		$html->meta()->bodyEnd()->addJs('angl/runtime-es2015.js', null, false, false, ['type' => 'module']);
 		$html->meta()->bodyEnd()->addJs('angl/runtime-es5.js', null, false, false, ['nomodule', 'defer']);
@@ -100,4 +100,5 @@ use n2n\core\N2N;
 ?>
 
 <rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->createData($view->getControllerContext()))) ?>"
-		data-rocket-assets-url="<?php $html->out($html->meta()->getAssetUrl(null, 'rocket')) ?>"></rocket-root>
+		data-rocket-assets-url="<?php $html->out($html->meta()->getAssetUrl(null, 'rocket')) ?>"
+		data-locale-id="<?php $html->out($request->getN2nLocale()->toWebId()) ?>"></rocket-root>

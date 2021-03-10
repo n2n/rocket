@@ -24,7 +24,6 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiService } from '../manage/si.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-field';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
 import { SiControlFactory } from './si-control-factory';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
@@ -34,15 +33,14 @@ import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/mod
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
 import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-si-field';
-import {IframeInSiField} from "../model/content/impl/iframe/model/iframe-in-si-field";
 import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-si-field';
+import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
 	STRING_IN = 'string-in',
 	NUMBER_IN = 'number-in',
 	BOOLEAN_IN = 'boolean-in',
-	CKE_IN = 'cke-in',
 	FILE_OUT = 'file-out',
 	FILE_IN = 'file-in',
 	LINK_OUT = 'link-out',
@@ -119,13 +117,6 @@ export class SiFieldFactory {
 						dataExtr.reqStringArray('offAssociatedPropIds'), fieldMap);
 			});
 			return booleanInSiField;
-
-		case SiFieldType.CKE_IN:
-			const ckeInSiField = new CkeInSiField(prop.label, dataExtr.nullaString('value'));
-			ckeInSiField.minlength = dataExtr.nullaNumber('minlength');
-			ckeInSiField.maxlength = dataExtr.nullaNumber('maxlength');
-			ckeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
-			return ckeInSiField;
 
 		case SiFieldType.FILE_OUT:
 			return new FileOutSiField(SiGuiFactory.buildSiFile(dataExtr.nullaObject('value')));
