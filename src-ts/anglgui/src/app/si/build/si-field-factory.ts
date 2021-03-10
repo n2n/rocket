@@ -222,8 +222,8 @@ export class SiFieldFactory {
 
 		case SiFieldType.IFRAME_IN:
 			let formData = null;
-			if (dataExtr.nullaObject('params')['formData']) {
-				formData = new Map(Object.entries(dataExtr.nullaObject('params')['formData']));
+			if ((dataExtr.nullaObject('params') as any)?.formData) {
+				formData = new Map(Object.entries(dataExtr.reqObject('params')['formData']));
 			}
 
 			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
