@@ -20,7 +20,6 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { BranchUiStructureModel } from 'src/app/ui/structure/model/impl/branch-ui-structure-model';
 import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
-import { ChoosePasteComponent } from '../../../content/impl/embedded/comp/choose-paste/choose-paste.component';
 import { BulkyEntryModel } from '../comp/bulky-entry-model';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { StructureBranchModel } from 'src/app/ui/structure/comp/structure-branch-model';
@@ -185,7 +184,14 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private rebuildStructures() {
 		this.clear();
 
-		if (!this.reqBoundUiStructure().hasZone() || !this.siEntry.typeSelected) {
+		if (!this.reqBoundUiStructure().hasZone()) {
+			return;
+		}
+
+		if (!this.siEntry.typeSelected) {
+			if (!this.isBoundStructureInsideGroup()){
+				// todo: group
+			}
 			return;
 		}
 
