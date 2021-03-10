@@ -141,6 +141,7 @@ class ZoneApiControlProcess extends IdPath {
 			$eiEntry = null;
 			if ($this->eiEntryGui !== null) {
 				$eiEntryGui = $this->eiEntryGui;
+				$eiEntryGui->handleSiEntryInput($entryInput);
 				$eiEntry = $eiEntryGui->getSelectedEiEntry();
 			} else {
 				$eiObject = null;
@@ -153,9 +154,9 @@ class ZoneApiControlProcess extends IdPath {
 				$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($eiObject);
 				$eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $this->eiGuiModel->getViewMode());
 				$eiEntryGui = $eiGuiModel->createEiEntryGui($this->eiFrame, [$eiEntry], $this->eiGui);
+				$eiEntryGui->handleSiEntryInput($entryInput);
 			}
 			
-			$eiEntryGui->handleSiEntryInput($entryInput);
 			$eiEntryGui->save();
 			
 			$this->inputEiEntries[] = $eiEntry;

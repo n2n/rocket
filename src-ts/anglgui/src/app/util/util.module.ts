@@ -8,7 +8,7 @@ import { TranslatePipe } from './i18n/translate.pipe';
 		CommonModule
 	],
 	exports: [
-			TranslatePipe
+		TranslatePipe
 	]
 })
 export class UtilModule { }

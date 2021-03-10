@@ -24,7 +24,6 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiService } from '../manage/si.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { CkeInSiField } from '../model/content/impl/alphanum/model/cke-in-si-field';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
 import { SiControlFactory } from './si-control-factory';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
@@ -34,14 +33,14 @@ import { EmbeddedEntryPanelsInSiField } from '../model/content/impl/embedded/mod
 import { SplitViewStateService } from '../model/content/impl/split/model/state/split-view-state.service';
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
 import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-si-field';
-import {IframeInSiField} from "../model/content/impl/iframe/model/iframe-in-si-field";
+import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-si-field';
+import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
 	STRING_IN = 'string-in',
 	NUMBER_IN = 'number-in',
 	BOOLEAN_IN = 'boolean-in',
-	CKE_IN = 'cke-in',
 	FILE_OUT = 'file-out',
 	FILE_IN = 'file-in',
 	LINK_OUT = 'link-out',
@@ -55,8 +54,9 @@ enum SiFieldType {
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
 	IFRAME_OUT = 'iframe-out',
-  IFRAME_IN = 'iframe-in',
-	CRUMB_OUT = 'crumb-out'
+  	IFRAME_IN = 'iframe-in',
+	CRUMB_OUT = 'crumb-out',
+	DATETIME_IN = 'datetime-in'
 }
 
 export class SiFieldFactory {
@@ -102,6 +102,7 @@ export class SiFieldFactory {
 			numberInSiField.step = dataExtr.reqNumber('step');
 			numberInSiField.arrowStep = dataExtr.nullaNumber('arrowStep');
 			numberInSiField.fixed = dataExtr.reqBoolean('fixed');
+			numberInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			numberInSiField.value = dataExtr.nullaNumber('value');
 			numberInSiField.prefixAddons = SiGuiFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
 			numberInSiField.suffixAddons = SiGuiFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
@@ -116,13 +117,6 @@ export class SiFieldFactory {
 						dataExtr.reqStringArray('offAssociatedPropIds'), fieldMap);
 			});
 			return booleanInSiField;
-
-		case SiFieldType.CKE_IN:
-			const ckeInSiField = new CkeInSiField(prop.label, dataExtr.nullaString('value'));
-			ckeInSiField.minlength = dataExtr.nullaNumber('minlength');
-			ckeInSiField.maxlength = dataExtr.nullaNumber('maxlength');
-			ckeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
-			return ckeInSiField;
 
 		case SiFieldType.FILE_OUT:
 			return new FileOutSiField(SiGuiFactory.buildSiFile(dataExtr.nullaObject('value')));
@@ -226,13 +220,26 @@ export class SiFieldFactory {
 		case SiFieldType.IFRAME_OUT:
 			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
-    case SiFieldType.IFRAME_IN:
-      let formData = null;
-      if ((dataExtr.nullaObject('params') as any)?.formData) {
-        formData = new Map(Object.entries(dataExtr.reqObject('params')['formData']));
-      }
+		case SiFieldType.IFRAME_IN:
+			let formData = null;
+			if ((dataExtr.nullaObject('params') as any)?.formData) {
+				formData = new Map(Object.entries(dataExtr.reqObject('params')['formData']));
+			}
 
-      return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
+			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
+
+		case SiFieldType.DATETIME_IN:
+
+			const dateTimeInSiField = new DateTimeInSiField(null);
+			const valueStr = dataExtr.nullaString('value');
+			if (valueStr) {
+				dateTimeInSiField.value = new Date(valueStr);
+			}
+
+			dateTimeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			dateTimeInSiField.dateChoosable = dataExtr.reqBoolean('dateChoosable');
+			dateTimeInSiField.timeChoosable = dataExtr.reqBoolean('timeChoosable');
+			return dateTimeInSiField;
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

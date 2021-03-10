@@ -146,9 +146,9 @@ class EmbeddedGuiCollection {
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
-				$eiuEntryGui->gui()->createBulkyEntrySiGui(false, false),
+				$eiuEntryGui->gui()->createBulkyEntrySiGui(/*false, */false),
 				($this->summaryRequired ?
-						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiGui($this->readOnly, false):
+						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiGui(/*$this->readOnly, */false):
 						null));
 	}
 	

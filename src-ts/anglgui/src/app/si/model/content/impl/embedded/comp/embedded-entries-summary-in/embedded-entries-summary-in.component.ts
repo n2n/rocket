@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { EmbeddedEntriesInModel } from '../embedded-entries-in-model';
-import { EmbeInCollection } from '../../model/embe/embe-collection';
 import { Embe } from '../../model/embe/embe';
 import { CopyPool } from '../../model/embe/embe-copy-pool';
 import { EmbeStructure } from '../../model/embe/embe-structure';

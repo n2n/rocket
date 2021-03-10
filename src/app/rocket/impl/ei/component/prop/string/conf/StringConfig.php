@@ -29,6 +29,10 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
+use n2n\impl\persistence\orm\property\ScalarEntityProperty;
+use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 
 class StringConfig extends PropConfigAdaption {
 	const ATTR_MULTILINE_KEY = 'multiline';
@@ -53,6 +57,19 @@ class StringConfig extends PropConfigAdaption {
 		if ($dataSet->contains(self::ATTR_MULTILINE_KEY)) {
 			$this->setMultiline($dataSet->reqBool(self::ATTR_MULTILINE_KEY));
 		}
+	}
+	
+	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
+		$entityProperty = $propertyAssignation->getEntityProperty(false);
+		if ($entityProperty !== null && $entityProperty instanceof StringEntityProperty) {
+			return CompatibilityLevel::COMMON;
+		}
+		
+		if ($entityProperty !== null && $entityProperty instanceof ScalarEntityProperty) {
+			return CompatibilityLevel::SUITABLE;
+		}
+		
+		return CompatibilityLevel::NOT_COMPATIBLE;
 	}
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');

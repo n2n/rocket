@@ -50,6 +50,7 @@ use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
+use n2n\l10n\DateTimeFormat;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 
@@ -85,11 +86,20 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
+		$siField = SiFields::dateTimeIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setDateChoosable($this->dateTimeConfig->getDateStyle() !== DateTimeFormat::STYLE_NONE)
+				->setTimeChoosable($this->dateTimeConfig->getTimeStyle() !== DateTimeFormat::STYLE_NONE);
 		
-		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
-				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
-						'class' => 'form-control rocket-date-picker'));
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$eiu->field()->setValue($siField->getValue());	
+		});
+		
+// 		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
+		
+// 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
+// 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
+// 						'class' => 'form-control rocket-date-picker'));
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {

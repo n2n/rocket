@@ -2,13 +2,13 @@ import { SiGui } from '../../si-gui';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { SiEntry, SiEntryState } from '../../../content/si-entry';
 import { SiControl } from '../../../control/si-control';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
 import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
@@ -20,6 +20,10 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { BranchUiStructureModel } from 'src/app/ui/structure/model/impl/branch-ui-structure-model';
 import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
+import { BulkyEntryModel } from '../comp/bulky-entry-model';
+import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
+import { StructureBranchModel } from 'src/app/ui/structure/comp/structure-branch-model';
+import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
@@ -65,9 +69,10 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	}
 }
 
-class BulkyUiStructureModel extends BranchUiStructureModel {
+class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntryModel, StructureBranchModel {
 	private subscription: Subscription|null = null;
 	private uiStructureModelCache = new UiStructureModelCache();
+	private uiStructureSubject = new BehaviorSubject<UiStructure[]>([]);
 
 	constructor(private siEntry: SiEntry, private siDeclaration: SiDeclaration, private controls: SiControl[],
 			private siEntryMonitor: SiEntryMonitor) {
@@ -78,8 +83,16 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 		return this.siEntry;
 	}
 
-	getSiDeclaration(): SiDeclaration {
-		return this.siDeclaration;
+	// getSiDeclaration(): SiDeclaration {
+	// 	return this.siDeclaration;
+	// }
+
+	getContentStructureBranchModel(): StructureBranchModel {
+		return this;
+	}
+
+	getStructures$(): Observable<UiStructure[]> {
+		return this.uiStructureSubject.asObservable();
 	}
 
 	bind(uiStructure: UiStructure): void {
@@ -97,8 +110,6 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 			this.subscription.add(this.siEntry.selectedTypeId$.subscribe(() => {
 				this.rebuildStructures();
 			}));
-
-			this.toolbarStructureModels = [this.createTypeSwitchUiStructureModel()];
 		}
 
 		this.subscription.add(uiStructure.getZone$().subscribe(() => {
@@ -110,6 +121,10 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 
 		this.mainControlUiContents = this.controls.map((control) => {
 			return control.createUiContent(() => uiStructure.getZone());
+		});
+
+		this.uiContent = new TypeUiContent(BulkyEntryComponent, (ref) => {
+			ref.instance.model = this;
 		});
 	}
 
@@ -149,7 +164,6 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 		}
 		this.siEntryMonitor.stop();
 		this.uiContent = null;
-		this.toolbarStructureModels = [];
 
 		this.clear();
 
@@ -160,9 +174,9 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 	}
 
 	private clear() {
-		this.uiStructures = [];
+		this.uiStructureSubject.next([]);
 		this.asideUiContents = [];
-		this.toolbarStructureModels = [];
+		this.toolbarStructureModelsSubject.next([]);
 
 		this.uiStructureModelCache.clear();
 	}
@@ -174,14 +188,24 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 			return;
 		}
 
+		if (!this.siEntry.typeSelected) {
+			if (!this.isBoundStructureInsideGroup()){
+				// todo: group
+			}
+			return;
+		}
+
+		this.toolbarStructureModelsSubject.next([]);
+		this.mode = UiStructureModelMode.MASSIVE_TOOLBAR;
+
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
 
 		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
 		const toolbarResolver = new ToolbarResolver();
 
-		this.uiStructures = this.createStructures(siMaskDeclaration.structureDeclarations, toolbarResolver,
-				!this.isBoundStructureInsideGroup());
+		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration.structureDeclarations, toolbarResolver,
+				!this.isBoundStructureInsideGroup()));
 
 		for (const prop of siMaskDeclaration.type.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
@@ -189,7 +213,11 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 			}
 		}
 
-		this.toolbarStructureModels = toolbarResolver.toolbarUiStructureModels;
+		const toolbarStrucutreModels = [...toolbarResolver.toolbarUiStructureModels];
+		if (this.siEntry.isMultiType()) {
+			toolbarStrucutreModels.push(this.createTypeSwitchUiStructureModel());
+		}
+		this.toolbarStructureModelsSubject.next(toolbarStrucutreModels);
 	}
 
 	private isBoundStructureInsideGroup(): boolean {
@@ -202,7 +230,6 @@ class BulkyUiStructureModel extends BranchUiStructureModel {
 
 		return false;
 	}
-
 
 	private createStructures(uiStructureDeclarations: SiStructureDeclaration[],
 			toolbarResolver: ToolbarResolver, groupsRequired: boolean): UiStructure[] {

@@ -94,6 +94,10 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return this.uiStructure.marked;
 	}
 
+	isToolbarMassive(): boolean {
+		return this.uiStructure.isToolbarMassive();
+	}
+
 	private clear() {
 		this._uiStructure = null;
 	}

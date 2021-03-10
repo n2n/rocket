@@ -56,7 +56,7 @@ class NumericConfig extends PropConfigAdaption {
 	}
 	
 	/**
-	 * @return int
+	 * @return float
 	 */
 	function getMaxValue() {
 	    return $this->maxValue;

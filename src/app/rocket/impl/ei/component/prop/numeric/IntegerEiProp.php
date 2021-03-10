@@ -34,17 +34,19 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
+use n2n\validation\plan\impl\Validators;
+use rocket\ei\util\factory\EifField;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
 	
+	private $integerConfig;
+	
 	function __construct() {
 		parent::__construct();
 		
-		$this->getNumericConfig()
-				->setMinValue(self::INT_SIGNED_MIN)
-				->setMaxValue(self::INT_SIGNED_MAX);
+		$this->getNumericConfig();
 	}
 	
 	/**
@@ -81,7 +83,11 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
 	
-
+	function createEifField(Eiu $eiu): EifField {
+		return parent::createEifField($eiu)
+				->val(Validators::min($this->getNumericConfig()->getMinValue() ?? self::INT_SIGNED_MIN), 
+						Validators::max($this->getNumericConfig()->getMaxValue() ?? self::INT_SIGNED_MAX));
+	}
 	
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {

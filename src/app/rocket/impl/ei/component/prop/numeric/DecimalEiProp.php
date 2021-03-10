@@ -38,6 +38,8 @@ use rocket\impl\ei\component\prop\numeric\conf\DecimalConfig;
 use rocket\si\content\SiField;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
+use n2n\validation\plan\impl\Validators;
+use rocket\ei\util\factory\EifField;
 
 class DecimalEiProp extends NumericEiPropAdapter {
     private $decimalConfig;
@@ -50,8 +52,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
     
 	function prepare() {
 		parent::prepare();
-		
-	    $this->getConfigurator()->addAdaption($this->decimalConfig);
+		$this->getConfigurator()->addAdaption($this->decimalConfig);
 	}
 	
 	/**
@@ -62,6 +63,12 @@ class DecimalEiProp extends NumericEiPropAdapter {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty
 				|| $entityProperty instanceof FloatEntityProperty);
 		$this->entityProperty = $entityProperty;
+	}
+	
+	function createEifField(Eiu $eiu): EifField {
+		return parent::createEifField($eiu)
+				->val(Validators::min($this->getNumericConfig()->getMinValue() ?? PHP_FLOAT_MIN),
+						Validators::max($this->getNumericConfig()->getMaxValue() ?? PHP_FLOAT_MAX));
 	}
 	
 	/**
@@ -77,11 +84,14 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$addonConfig = $this->getAddonConfig();
 		
+		$step = 1 / pow(10, $this->decimalConfig->getDecimalPlaces());
 		$siField = SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMin($this->getNumericConfig()->getMinValue())
 				->setMax($this->getNumericConfig()->getMaxValue())
-				->setArrowStep(0 / pow(10, $this->decimalConfig->getDecimalPlaces()))
+				->setStep($step)
+				->setArrowStep($step)
+				->setFixed(true)
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
 				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
 		

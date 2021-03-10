@@ -5220,6 +5220,10 @@ router-outlet + *,
       grid-template-columns: min-content 1fr;
 }
 
+html.rocket-iframe {
+  height: initial !important;
+}
+
 @media (max-width: 991.98px) {
   #rocket-global-nav {
     -ms-grid-row: 2;
@@ -7497,6 +7501,76 @@ rocket-add-past > button::after {
 .btn .spinner-grow-sm {
   margin-top: -0.5rem;
   margin-left: -0.5rem;
+}
+
+.rocket-btn-light {
+  display: inline-block;
+  border: none;
+  font-weight: bold;
+  color: #66615C;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-color: transparent;
+}
+
+.rocket-btn-light i {
+  color: white;
+  position: relative;
+  z-index: 0;
+  margin-left: 1.625em;
+}
+
+.rocket-btn-light i:after {
+  content: " ";
+  position: absolute;
+  background: #66615C;
+  width: 2.25em;
+  height: 2.25em;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0);
+  z-index: -1;
+}
+
+.rocket-btn-light:hover, .rocket-btn-light:focus {
+  color: #373431;
+}
+
+.rocket-btn-light-warning i:after {
+  background: #F6A723;
+}
+
+.rocket-btn-light-warning:hover, .rocket-btn-light-warning:focus {
+  color: #F6A723;
+}
+
+.rocket-btn-light-success i:after {
+  background: #2D7F00;
+}
+
+.rocket-btn-light-success:hover, .rocket-btn-light-success:focus {
+  color: #2D7F00;
+}
+
+.rocket-btn-light-danger i:after {
+  background: #b90f00;
+}
+
+.rocket-btn-light-danger:hover, .rocket-btn-light-danger:focus {
+  color: #b90f00;
+}
+
+.rocket-group > .rocket-toolbar .rocket-btn-light {
+  margin-bottom: 0.5em;
+  margin-top: -0.1em;
+  margin-right: 1rem;
 }
 
 /*

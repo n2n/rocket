@@ -84,20 +84,17 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		return new EnumMag($this->getLabelLstr(), 
-				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale()), 
-				null, $this->getEditConfig()->isMandatory());
+		$options = $this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale());
+		$value = $eiu->field()->getValue();
+		$siField = SiFields::enumIn($options, ($value !== null ? (string) $value : null))
+				->setMandatory($this->getEditConfig()->isMandatory());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) {
+					$eiu->field()->setValue(N2nLocale::build($siField->getValue()));
+				});
 	}
 	
-	public function saveMagValue(Mag $mag, Eiu $eiu) {
-		$eiu->field()->setValue(N2nLocale::build($mag->getValue()));
-	}
-	
-	public function loadMagValue(Eiu $eiu, Mag $mag) {
-		if (null !== ($n2nLocale = $eiu->field()->getValue())) {
-			$mag->setValue((string) $n2nLocale);
-		}
-	}
 	
 // 	public function optionAttributeValueToPropertyValue(DataSet $dataSet, 
 // 			EiEntry $eiEntry, Eiu $eiu) {
