@@ -22,8 +22,8 @@
 namespace rocket\si\content\impl\date;
 
 use n2n\util\type\attrs\DataSet;
-use n2n\util\type\ArgUtils;
 use rocket\si\content\impl\InSiFieldAdapter;
+use n2n\util\DateUtils;
 
 class DateTimeInSiField extends InSiFieldAdapter {
 	/**
@@ -34,6 +34,14 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $mandatory = false;
+	/**
+	 * @var bool
+	 */
+	private $dateChoosable = true;
+	/**
+	 * @var bool
+	 */
+	private $timeChoosable = true;
 	
 	/**
 	 * @param int $value
@@ -43,8 +51,8 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param int|null $value
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @param \DateTime|null $value
+	 * @return \rocket\si\content\impl\date\DateTimeInSiField
 	 */
 	function setValue(?int $value) {
 		$this->value = $value;
@@ -60,7 +68,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @return \rocket\si\content\impl\date\DateTimeInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -73,6 +81,39 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	function isMandatory() {
 		return $this->mandatory;
 	}
+	
+	/**
+	 * @param bool $dateChoosable
+	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 */
+	function setDateChoosable(bool $dateChoosable) {
+		$this->dateChoosable = $dateChoosable;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isDateChoosable() {
+		return $this->dateChoosable;
+	}
+	
+	/**
+	 * @param bool $timeChoosable
+	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 */
+	function setTimeChoosable(bool $timeChoosable) {
+		$this->timeChoosable = $timeChoosable;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isTimeChoosable() {
+		return $this->timeChoosable;
+	}
+	
 
 	/**
 	 * {@inheritDoc}
@@ -88,8 +129,10 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'value' => $this->value,
-			'mandatory' => $this->mandatory
+			'value' => DateUtils::dateTimeToIso($this->value),
+			'mandatory' => $this->mandatory,
+			'dateChoosable' => $this->dateChoosable,
+			'timeChoosable' => $this->timeChoosable
 		];
 	}
 	
@@ -98,6 +141,6 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqBool('value', true);
+		$this->value = DateUtils::isoToDateTime((new DataSet($data))->reqString('value', true));
 	}
 }

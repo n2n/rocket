@@ -4,8 +4,13 @@ import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { DateTimeInComponent } from '../comp/date-time-in/date-time-in.component';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { DateTimeInModel } from '../comp/date-time-in-model';
 
-export class DateTimeInSiField extends InSiFieldAdapter {
+export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInModel {
+
+	public mandatory = false;
+	public dateChoosable = true;
+	public timeChoosable = true;
 
 	constructor(public value: Date|null) {
 		super();
@@ -27,7 +32,7 @@ export class DateTimeInSiField extends InSiFieldAdapter {
 
 	createUiContent(): UiContent {
 		return new TypeUiContent(DateTimeInComponent, (ref) => {
-			// ref.instance.model = this;
+			ref.instance.model = this;
 		});
 	}
 

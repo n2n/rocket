@@ -229,7 +229,17 @@ export class SiFieldFactory {
 			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
 
 		case SiFieldType.DATETIME_IN:
-			return new DateTimeInSiField(null);
+
+			const dateTimeInSiField = new DateTimeInSiField(null);
+			const valueStr = dataExtr.nullaString('value');
+			if (valueStr) {
+				dateTimeInSiField.value = new Date(valueStr);
+			}
+
+			dateTimeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			dateTimeInSiField.dateChoosable = dataExtr.reqBoolean('dateChoosable');
+			dateTimeInSiField.timeChoosable = dataExtr.reqBoolean('timeChoosable');
+			return dateTimeInSiField;
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
