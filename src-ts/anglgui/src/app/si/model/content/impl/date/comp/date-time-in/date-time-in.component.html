@@ -1,4 +1,11 @@
-<input type="text" ngbDatepicker [(ngModel)]="date"/>
+<div>
+    <input type="number" [(ngModel)]="num" step="0.05" />
+    =
+    {{ num }}
+</div>
 
-<input type="text" ngbDatepicker #d="ngbDatepicker"/>
-<button (click)="d.toggle()">Toggle</button>
+<div>
+    <input type="number" [(ngModel)]="numStr" step="0.05" />
+    =
+    {{ numStr }}
+</div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { formatNumber } from '@angular/common';
 
 @Component({
 	selector: 'rocket-date-time-in',
@@ -10,7 +11,9 @@ export class DateTimeInComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit(): void {
+
 	}
 
-
+    num = 1.2;
+    numStr = '1.2';
 }
