@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, LOCALE_ID } from '@angular/core';
 import { formatNumber } from '@angular/common';
 
 @Component({
@@ -7,6 +7,8 @@ import { formatNumber } from '@angular/common';
 })
 export class DateTimeInComponent implements OnInit {
     date = new Date();
+
+    localeId = LOCALE_ID.toString();
 
 	constructor() { }
 

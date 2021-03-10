@@ -70,7 +70,6 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			this.value = null;
 			return;
 		}
-
 		let value = parseFloat(valueStr);
 		if (isNaN(value)) {
 			value = null;

@@ -52,8 +52,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
     
 	function prepare() {
 		parent::prepare();
-		
-	    $this->getConfigurator()->addAdaption($this->decimalConfig);
+		$this->getConfigurator()->addAdaption($this->decimalConfig);
 	}
 	
 	/**
