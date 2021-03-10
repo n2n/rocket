@@ -104,6 +104,7 @@ export class SiFieldFactory {
 			numberInSiField.step = dataExtr.reqNumber('step');
 			numberInSiField.arrowStep = dataExtr.nullaNumber('arrowStep');
 			numberInSiField.fixed = dataExtr.reqBoolean('fixed');
+			numberInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			numberInSiField.value = dataExtr.nullaNumber('value');
 			numberInSiField.prefixAddons = SiGuiFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
 			numberInSiField.suffixAddons = SiGuiFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
