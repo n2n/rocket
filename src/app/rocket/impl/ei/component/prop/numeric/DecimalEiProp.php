@@ -84,11 +84,13 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$addonConfig = $this->getAddonConfig();
 		
+		$step = 1 / pow(10, $this->decimalConfig->getDecimalPlaces());
 		$siField = SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMin($this->getNumericConfig()->getMinValue())
 				->setMax($this->getNumericConfig()->getMaxValue())
-				->setArrowStep(1 / pow(10, $this->decimalConfig->getDecimalPlaces()))
+				->setStep($step)
+				->setArrowStep($step)
 				->setFixed(true)
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
 				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
