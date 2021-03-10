@@ -35,6 +35,7 @@ import { SplitViewStateService } from '../model/content/impl/split/model/state/s
 import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field';
 import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-si-field';
 import {IframeInSiField} from "../model/content/impl/iframe/model/iframe-in-si-field";
+import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -55,8 +56,9 @@ enum SiFieldType {
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
 	IFRAME_OUT = 'iframe-out',
-  IFRAME_IN = 'iframe-in',
-	CRUMB_OUT = 'crumb-out'
+  	IFRAME_IN = 'iframe-in',
+	CRUMB_OUT = 'crumb-out',
+	DATETIME_IN = 'datetime-in'
 }
 
 export class SiFieldFactory {
@@ -226,13 +228,16 @@ export class SiFieldFactory {
 		case SiFieldType.IFRAME_OUT:
 			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
-    case SiFieldType.IFRAME_IN:
-      let formData = null;
-      if (dataExtr.nullaObject('params')['formData']) {
-        formData = new Map(Object.entries(dataExtr.nullaObject('params')['formData']));
-      }
+		case SiFieldType.IFRAME_IN:
+			let formData = null;
+			if (dataExtr.nullaObject('params')['formData']) {
+				formData = new Map(Object.entries(dataExtr.nullaObject('params')['formData']));
+			}
 
-      return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
+			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
+
+		case SiFieldType.DATETIME_IN:
+			return new DateTimeInSiField(null);
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

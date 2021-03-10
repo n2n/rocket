@@ -51,6 +51,7 @@ import { EmbeddedEntryPanelsComponent } from './model/content/impl/embedded/comp
 import { SelectInFieldComponent } from './model/content/impl/enum/comp/select-in-field/select-in-field.component';
 import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/iframe-out.component';
 import { IframeInComponent } from './model/content/impl/iframe/comp/iframe-in/iframe-in.component';
+import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in/date-time-in.component';
 
 @NgModule({
 	declarations: [
@@ -62,7 +63,7 @@ import { IframeInComponent } from './model/content/impl/iframe/comp/iframe-in/if
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, CkeInFieldComponent, FieldMessagesComponent,
-		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent, IframeInComponent
+		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent, IframeInComponent, DateTimeInComponent
 	],
 	imports: [
 		CommonModule,

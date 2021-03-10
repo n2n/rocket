@@ -85,11 +85,15 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
+		$siField = SiFields::dateTimeIn($eiu->field()->getValue());
 		
-		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
-				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
-						'class' => 'form-control rocket-date-picker'));
+		return $eiu->factory()->newGuiField($siField);
+		
+// 		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
+		
+// 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
+// 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
+// 						'class' => 'form-control rocket-date-picker'));
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {

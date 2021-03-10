@@ -45,6 +45,7 @@ use rocket\si\content\impl\meta\CrumbOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
 use rocket\si\content\impl\iframe\IframeData;
+use rocket\si\content\impl\date\DateTimeInSiField;
 
 class SiFields {
 	
@@ -92,6 +93,14 @@ class SiFields {
 	 */
 	static function enumIn(array $options, ?string $value) {
 		return new EnumInSiField($options, $value);
+	}
+	
+	/**
+	 * @param \DateTime $value
+	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 */
+	static function dateTimeIn(\DateTime $value) {
+		return new DateTimeInSiField($value);
 	}
 	
 	/**
