@@ -77,7 +77,9 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 			$this->removeFromMaster($entityObj, $oldTargetEntityObj);
 		}
 		
-		$this->writeToMaster($entityObj, $targetEntityObj);
+		if ($targetEntityObj !== null) {
+			$this->writeToMaster($entityObj, $targetEntityObj);
+		}
 	}
 	
 	private function writeToMany($entityObj) {
@@ -110,6 +112,10 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 		}
 	}
 	
+	/**
+	 * @param object $entityObj
+	 * @param object $targetEntityObj
+	 */
 	private function writeToMaster($entityObj, $targetEntityObj) {
 		$targetAccessProxy = $this->relationModel->getTargetPropInfo()->masterAccessProxy;
 	
