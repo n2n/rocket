@@ -45,11 +45,13 @@ export class SiEntry {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
 		}
 
-		this.selectedTypeIdSubject.next(id);
+		if (this.selectedTypeId !== id) {
+			this.selectedTypeIdSubject.next(id);
+		}
 	}
 
 	get selectedTypeId$(): Observable<string|null> {
-		return this.selectedTypeIdSubject;
+		return this.selectedTypeIdSubject.asObservable();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {

@@ -108,7 +108,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		if (!this.siEntry.isMultiType()) {
 			this.rebuildStructures();
 		} else {
-			this.subscription.add(this.siEntry.selectedTypeId$.subscribe(() => {
+			console.log('huii');
+			this.subscription.add(this.siEntry.selectedTypeId$.subscribe((value: string) => {
+				console.log('type changed: ' + value);
 				this.rebuildStructures();
 			}));
 		}
@@ -183,6 +185,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private rebuildStructures() {
+		console.log('rebuild');
 		this.clear();
 
 		if (!this.reqBoundUiStructure().hasZone()) {
