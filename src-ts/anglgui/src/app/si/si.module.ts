@@ -70,8 +70,7 @@ import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 		DragDropModule,
 		UiModule,
 		UtilModule,
-		RouterModule,
-		NgbDatepickerModule
+		RouterModule
 	],
 	exports: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
