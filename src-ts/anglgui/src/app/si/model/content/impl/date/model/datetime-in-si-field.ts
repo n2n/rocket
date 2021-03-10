@@ -26,7 +26,7 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 
 	readInput(): object {
 		return {
-			value: (this.value ? this.value.toISOString() : null)
+			value: (this.value ? this.value.getTime() / 1000 : null)
 		};
 	}
 
