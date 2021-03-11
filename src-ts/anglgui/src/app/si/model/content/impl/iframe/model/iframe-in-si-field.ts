@@ -9,7 +9,7 @@ import {GenericMissmatchError} from '../../../../generic/generic-missmatch-error
 
 export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 
-	constructor(public url: string|null, public srcDoc: string|null, private formData: Map<string, string>|null) {
+	constructor(public url: string|null, public srcDoc: string|null, private formData: Map<string, string>) {
 		super();
 	}
 
@@ -19,9 +19,7 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 		});
 	}
 
-	private formDataToObject() {
-		if (this.formData == null) { return new Map<string, string>(); }
-
+	private formDataToObject(): object {
 		const params = {};
 		for (const [key, value] of this.formData) {
 			params[key] = value;
@@ -38,11 +36,6 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isNull()) {
-			this.formData = null;
-			return Promise.resolve();
-		}
-
 		if (genericValue.isInstanceOf(Map)) {
 			this.formData = new Map<string, string>(genericValue.readInstance(Map) as Map<string, string>);
 			return Promise.resolve();

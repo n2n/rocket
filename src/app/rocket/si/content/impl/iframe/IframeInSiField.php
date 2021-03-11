@@ -53,6 +53,6 @@ class IframeInSiField extends InSiFieldAdapter {
 	 */
 	function handleInput(array $data) {
 		$ds = new DataSet($data);
-		$this->params = $ds->reqScalarArray('params');
+		$this->params = $ds->reqScalarArray('params', false, true);
 	}
 }
