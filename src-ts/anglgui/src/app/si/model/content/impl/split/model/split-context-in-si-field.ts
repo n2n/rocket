@@ -100,12 +100,4 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 	getTooltip(): string|null {
 		return this.managerStyle.tooltip;
 	}
-
-	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
-	}
 }

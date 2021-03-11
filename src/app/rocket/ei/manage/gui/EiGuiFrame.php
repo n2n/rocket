@@ -150,7 +150,7 @@ class EiGuiFrame {
 	
 	function putDisplayDefintion(DefPropPath $defPropPath, DisplayDefinition $displayDefinition) {
 		$this->ensureNotInit();
-
+		
 		$eiPropPath = $defPropPath->getFirstEiPropPath();
 		$this->eiPropPaths[(string) $eiPropPath] = $eiPropPath;
 		

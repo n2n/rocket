@@ -1,11 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, DoCheck } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, DoCheck, HostBinding } from '@angular/core';
 import { SplitViewMenuModel } from '../split-view-menu-model';
 
 @Component({
 	selector: 'rocket-split-view-menu',
-	templateUrl: './split-view-menu.component.html',
-	styleUrls: ['./split-view-menu.component.css'],
-	host: {'class': 'rocket-split-view-menu'}
+	templateUrl: './split-view-menu.component.html'
 })
 export class SplitViewMenuComponent implements OnInit {
 	model: SplitViewMenuModel;
@@ -14,7 +12,10 @@ export class SplitViewMenuComponent implements OnInit {
 	constructor(private cdRef: ChangeDetectorRef) {
 	}
 
-	ngOnInit() {
+	@HostBinding('class')
+	class = 'rocket-split-view-menu';
+
+	ngOnInit(): void {
 	}
 
 	toggleMenuVisibility() {
