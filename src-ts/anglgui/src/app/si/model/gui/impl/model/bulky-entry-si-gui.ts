@@ -181,7 +181,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private rebuildStructures() {
 		this.clear();
 
-		if (!this.siEntry.typeSelected) {
+		if (!this.siEntry.entryBuildupSelected) {
 			if (!this.isBoundStructureInsideGroup()){
 				// todo: group
 			}
@@ -194,7 +194,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
 
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedEntryBuildupId);
 		const toolbarResolver = new ToolbarResolver();
 
 		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration.structureDeclarations, toolbarResolver,
@@ -294,7 +294,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
 		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) {
 			const siField = this.siEntry.selectedEntryBuildup.getFieldById(siProp.id);
-			return this.uiStructureModelCache.obtain(this.siEntry.selectedTypeId, siProp.id, siField);
+			return this.uiStructureModelCache.obtain(this.siEntry.selectedEntryBuildupId, siProp.id, siField);
 		}
 
 		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
@@ -340,11 +340,11 @@ class TypeSelectInModel implements SelectInFieldModel {
 	}
 
 	getValue(): string {
-		return this.siEntry.selectedTypeId;
+		return this.siEntry.selectedEntryBuildupId;
 	}
 
 	setValue(value: string): void {
-		this.siEntry.selectedTypeId = value;
+		this.siEntry.selectedEntryBuildupId = value;
 	}
 
 	getOptions(): Map<string, string> {

@@ -44,7 +44,7 @@ export class Embe {
 	}
 
 	isTypeSelected(): boolean {
-		return !!this._siEmbeddedEntry.entry.selectedTypeId;
+		return !!this._siEmbeddedEntry.entry.selectedEntryBuildupId;
 	}
 
 	get siEntry(): SiEntry {

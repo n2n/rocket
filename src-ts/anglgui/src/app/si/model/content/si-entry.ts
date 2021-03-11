@@ -29,24 +29,24 @@ export class SiEntry {
 	get selectedEntryBuildup(): SiEntryBuildup {
 		this.ensureBuildupSelected();
 
-		return this._entryBuildupsMap.get(this.selectedTypeId) as SiEntryBuildup;
+		return this._entryBuildupsMap.get(this.selectedEntryBuildupId) as SiEntryBuildup;
 	}
 
-	get typeSelected(): boolean {
-		return !!this.selectedTypeId;
+	get entryBuildupSelected(): boolean {
+		return !!this.selectedEntryBuildupId;
 	}
 
-	get selectedTypeId(): string|null {
+	get selectedEntryBuildupId(): string|null {
 		return this.selectedTypeIdSubject.getValue();
 	}
 
-	set selectedTypeId(id: string|null) {
+	set selectedEntryBuildupId(id: string|null) {
 		if (id !== null && !this._entryBuildupsMap.has(id)) {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id + '; available buildup ids: '
 					+ Array.from(this._entryBuildupsMap.keys()).join(', '));
 		}
 
-		if (this.selectedTypeId !== id) {
+		if (this.selectedEntryBuildupId !== id) {
 			this.selectedTypeIdSubject.next(id);
 		}
 	}
@@ -102,7 +102,7 @@ export class SiEntry {
 	private _replacementEntry: SiEntry|null = null;
 
 	private ensureBuildupSelected() {
-		if (this.selectedTypeId !== null) {
+		if (this.selectedEntryBuildupId !== null) {
 			return;
 		}
 
@@ -152,7 +152,7 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 
-		return new SiEntryInput(this.qualifier.identifier, this.selectedTypeId, this.bulky, fieldInputMap);
+		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId, this.bulky, fieldInputMap);
 	}
 
 	handleError(error: SiEntryError) {
@@ -180,7 +180,7 @@ export class SiEntry {
 	getMessages(): Message[] {
 		const messages: Message[] = [];
 
-		if (!this.selectedTypeId) {
+		if (!this.selectedEntryBuildupId) {
 			return messages;
 		}
 
@@ -219,7 +219,7 @@ export class SiEntry {
 		this.valGenericEntry(genericEntry);
 
 		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId)) {
-			this.selectedTypeId = genericEntry.selectedTypeId;
+			this.selectedEntryBuildupId = genericEntry.selectedTypeId;
 		}
 
 		const promises = new Array<Promise<void>>();
@@ -240,7 +240,7 @@ export class SiEntry {
 	}
 
 	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntryBuildup>): SiGenericEntry {
-		const genericEntry = new SiGenericEntry(this.identifier, this.selectedTypeId, genericBuildupsMap);
+		const genericEntry = new SiGenericEntry(this.identifier, this.selectedEntryBuildupId, genericBuildupsMap);
 		genericEntry.bulky = this.bulky;
 		genericEntry.readOnly = this.readOnly;
 		return genericEntry;

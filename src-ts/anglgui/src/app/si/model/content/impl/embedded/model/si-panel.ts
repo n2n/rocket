@@ -45,7 +45,7 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	}
 
 	private getTypeSelectedValues(): SiEmbeddedEntry[] {
-		return this.values.filter(ee => ee.entry.selectedTypeId);
+		return this.values.filter(ee => ee.entry.selectedEntryBuildupId);
 	}
 
 	getMessages(): Message[] {

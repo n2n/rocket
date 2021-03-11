@@ -153,7 +153,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	private rebuild(siEntry: SiEntry|null) {
 		this.clear();
 
-		if (!siEntry || !siEntry.typeSelected) {
+		if (!siEntry || !siEntry.entryBuildupSelected) {
 			return;
 		}
 
@@ -174,7 +174,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 	private buildStructures(siEntry: SiEntry) {
 		const siEntryBuildup = siEntry.selectedEntryBuildup;
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedTypeId);
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedEntryBuildupId);
 
 		this.asideUiContents = siEntryBuildup.controls
 					.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
