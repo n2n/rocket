@@ -42,7 +42,8 @@ export class SiEntry {
 
 	set selectedTypeId(id: string|null) {
 		if (id !== null && !this._entryBuildupsMap.has(id)) {
-			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id);
+			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id + '; available buildup ids: '
+					+ Array.from(this._entryBuildupsMap.keys()).join(', '));
 		}
 
 		if (this.selectedTypeId !== id) {
