@@ -9,61 +9,61 @@ import {GenericMissmatchError} from '../../../../generic/generic-missmatch-error
 
 export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 
-  constructor(public url: string|null, public srcDoc: string|null, private formData: Map<string, string>|null) {
-    super();
-  }
+	constructor(public url: string|null, public srcDoc: string|null, private formData: Map<string, string>|null) {
+		super();
+	}
 
-  createUiContent(): UiContent|null {
-    return new TypeUiContent(IframeInComponent, (ref) => {
-      ref.instance.model = this;
-    });
-  }
+	createUiContent(): UiContent|null {
+		return new TypeUiContent(IframeInComponent, (ref) => {
+			ref.instance.model = this;
+		});
+	}
 
-  private formDataToObject() {
-    if (this.formData == null) return new Map<string, string>();
+	private formDataToObject() {
+		if (this.formData == null) { return new Map<string, string>(); }
 
-    var params = {};
-    for (var [key, value] of this.formData) {
-      params[key] = value;
-    }
-    return { params };
-  }
+		const params = {};
+		for (const [key, value] of this.formData) {
+			params[key] = value;
+		}
+		return { params };
+	}
 
-  readInput(): object {
-    return this.formDataToObject();
-  }
+	readInput(): object {
+		return this.formDataToObject();
+	}
 
-  copyValue(): SiGenericValue {
-    return new SiGenericValue(this.formDataToObject());
-  }
+	copyValue(): SiGenericValue {
+		return new SiGenericValue(new Map(this.formData));
+	}
 
-  pasteValue(genericValue: SiGenericValue): Promise<void> {
-    if (genericValue.isNull()) {
-      this.formData = null;
-      return Promise.resolve();
-    }
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
+		if (genericValue.isNull()) {
+			this.formData = null;
+			return Promise.resolve();
+		}
 
-    if (genericValue.isInstanceOf(Map)) {
-      this.formData = new Map(Object.entries(genericValue.readInstance(Map).valueOf()));
-      return Promise.resolve();
-    }
+		if (genericValue.isInstanceOf(Map)) {
+			this.formData = new Map<string, string>(genericValue.readInstance(Map) as Map<string, string>);
+			return Promise.resolve();
+		}
 
-    throw new GenericMissmatchError('Map expected.');
-  }
+		throw new GenericMissmatchError('Map expected.');
+	}
 
-  getUrl(): string|null {
-    return this.url;
-  }
+	getUrl(): string|null {
+		return this.url;
+	}
 
-  getSrcDoc(): string|null {
-    return this.srcDoc;
-  }
+	getSrcDoc(): string|null {
+		return this.srcDoc;
+	}
 
-  getFormData(): Map<string, string> | null {
-    return this.formData;
-  }
+	getFormData(): Map<string, string> | null {
+		return this.formData;
+	}
 
-  setFormData(formData: Map<string, string>): void {
-    this.formData = formData;
-  }
+	setFormData(formData: Map<string, string>): void {
+		this.formData = formData;
+	}
 }

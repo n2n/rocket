@@ -75,6 +75,10 @@ export class EmbeStructureCollection {
 		this.silentClear();
 		this.embeStructuresCol.set(embeStructures);
 		this.subscription = subscription;
+
+		if (this.reduced) {
+			this.combineZoneErrors();
+		}
 	}
 
 	get embeStructures(): EmbeStructure[] {

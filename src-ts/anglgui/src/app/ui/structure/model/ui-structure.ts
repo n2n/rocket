@@ -376,6 +376,7 @@ export class UiStructure {
 		this.clearChildren();
 
 		this.children = updatedChildren;
+		this.compileZoneErrors();
 	}
 
 	// addExtraToolbarStructureModel(...uiStructureModels: UiStructureModel[]) {
@@ -534,6 +535,7 @@ export class UiStructure {
 	}
 
 	getZoneErrors$(): Observable<UiZoneError[]> {
+		this.ensureNotDisposed();
 		return this.zoneErrorsCollection.get$();
 	}
 

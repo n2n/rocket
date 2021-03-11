@@ -153,7 +153,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	private rebuild(siEntry: SiEntry|null) {
 		this.clear();
 
-		if (!siEntry) {
+		if (!siEntry || !siEntry.typeSelected) {
 			return;
 		}
 

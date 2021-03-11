@@ -179,11 +179,13 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeInCol);
 		this.embeStructureCollection.refresh();
 		this.subscription = new Subscription();
-		this.subscription.add(this.embeInCol.source.getMessages$().subscribe((messages) => {
+		this.subscription.add(this.embeInCol.source.getMessages$()
+				.subscribe((messages) => {
 					this.errorState.messages = messages;
 					this.updateReducedStructureErrors();
 				}));
-		this.subscription.add(this.embeStructureCollection.reducedZoneErrors$.subscribe((zoneErrors) => {
+		this.subscription.add(this.embeStructureCollection.reducedZoneErrors$
+				.subscribe((zoneErrors) => {
 					this.errorState.zoneErrors = zoneErrors;
 					this.updateReducedStructureErrors();
 				}));
@@ -274,7 +276,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		for (const embeStructure of this.embeStructureCollection.embeStructures) {
 			structureErrors.push(...embeStructure.embe.uiStructure.getZoneErrors().map((ze) => ({
 				message: ze.message,
-				marked: (marked) => { embeStructure.uiStructure.marked = marked; },
+				marked: (marked: boolean) => { embeStructure.uiStructure.marked = marked; },
 				focus: () => {
 					this.getEmbeInUiStructureManager().open(embeStructure.embe);
 					ze.focus();

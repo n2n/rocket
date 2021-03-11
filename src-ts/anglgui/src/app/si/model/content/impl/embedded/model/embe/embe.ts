@@ -6,8 +6,8 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class Embe {
 	private _siEmbeddedEntry: SiEmbeddedEntry;
-	public uiStructure = new UiStructure();
-	public summaryUiStructure = new UiStructure();
+	readonly uiStructure = new UiStructure();
+	readonly summaryUiStructure = new UiStructure();
 
 	constructor(siEmbeddedEntry: SiEmbeddedEntry|null = null) {
 		if (siEmbeddedEntry) {
