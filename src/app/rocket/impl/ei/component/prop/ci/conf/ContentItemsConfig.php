@@ -119,7 +119,7 @@ class ContentItemsConfig extends PropConfigAdaption {
 		}
 		
 		if (!empty($panelDeclarationAttrs)) {
-			$this->dataSet->set(self::ATTR_PANELS_KEY, $panelDeclarationAttrs);
+			$dataSet->set(self::ATTR_PANELS_KEY, $panelDeclarationAttrs);
 		}
 	}
 	
