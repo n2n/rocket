@@ -10,8 +10,6 @@ import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
-import { EnumInComponent } from '../../../content/impl/enum/comp/enum-in/enum-in.component';
-import { EnumInModel } from '../../../content/impl/enum/comp/enum-in-model';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
@@ -24,6 +22,9 @@ import { BulkyEntryModel } from '../comp/bulky-entry-model';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { StructureBranchModel } from 'src/app/ui/structure/comp/structure-branch-model';
 import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
+import { SelectInFieldComponent } from '../../../content/impl/enum/comp/select-in-field/select-in-field.component';
+import { SelectInFieldModel } from '../../../content/impl/enum/comp/select-in-field-model';
+import { Message } from 'src/app/util/i18n/message';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _entry: SiEntry|null = null;
@@ -112,10 +113,6 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 			}));
 		}
 
-		this.subscription.add(uiStructure.getZone$().subscribe(() => {
-			this.rebuildStructures();
-		}));
-
 		this.siEntryMonitor.start();
 		this.monitorEntry();
 
@@ -151,7 +148,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private createTypeSwitchUiStructureModel(): UiStructureModel {
-		return new SimpleUiStructureModel(new TypeUiContent(EnumInComponent, (ref) => {
+		return new SimpleUiStructureModel(new TypeUiContent(SelectInFieldComponent, (ref) => {
 			ref.instance.model = new TypeSelectInModel(this.siEntry);
 		}));
 	}
@@ -184,11 +181,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private rebuildStructures() {
 		this.clear();
 
-		if (!this.reqBoundUiStructure().hasZone()) {
-			return;
-		}
-
-		if (!this.siEntry.typeSelected) {
+		if (!this.siEntry.entryBuildupSelected) {
 			if (!this.isBoundStructureInsideGroup()){
 				// todo: group
 			}
@@ -201,7 +194,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
 
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedTypeId);
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedEntryBuildupId);
 		const toolbarResolver = new ToolbarResolver();
 
 		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration.structureDeclarations, toolbarResolver,
@@ -301,7 +294,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
 		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) {
 			const siField = this.siEntry.selectedEntryBuildup.getFieldById(siProp.id);
-			return this.uiStructureModelCache.obtain(this.siEntry.selectedTypeId, siProp.id, siField);
+			return this.uiStructureModelCache.obtain(this.siEntry.selectedEntryBuildupId, siProp.id, siField);
 		}
 
 		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
@@ -329,7 +322,7 @@ class UiStructureModelCache {
 	}
 }
 
-class TypeSelectInModel implements EnumInModel {
+class TypeSelectInModel implements SelectInFieldModel {
 	private options = new Map<string, string>();
 
 	constructor(private siEntry: SiEntry) {
@@ -338,12 +331,20 @@ class TypeSelectInModel implements EnumInModel {
 		}
 	}
 
+	isMandatory(): boolean {
+		return true;
+	}
+
+	getMessages(): Message[] {
+		return [];
+	}
+
 	getValue(): string {
-		return this.siEntry.selectedTypeId;
+		return this.siEntry.selectedEntryBuildupId;
 	}
 
 	setValue(value: string): void {
-		this.siEntry.selectedTypeId = value;
+		this.siEntry.selectedEntryBuildupId = value;
 	}
 
 	getOptions(): Map<string, string> {

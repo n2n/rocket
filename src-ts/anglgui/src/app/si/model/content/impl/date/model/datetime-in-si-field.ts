@@ -4,40 +4,56 @@ import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { DateTimeInComponent } from '../comp/date-time-in/date-time-in.component';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
+import { DateTimeInModel } from '../comp/date-time-in-model';
+import { Message } from 'src/app/util/i18n/message';
 
-export class DateTimeInSiField extends InSiFieldAdapter {
+export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInModel {
 
-	constructor(public value: Date|null) {
+	public mandatory = false;
+	public dateChoosable = true;
+	public timeChoosable = true;
+
+	constructor(public label: string, public value: Date|null) {
 		super();
 	}
 
 	setValue(value: Date) {
 		this.value = value;
+		this.validate();
 	}
 
 	getValue(): Date {
 		return this.value;
 	}
 
+	private validate() {
+		this.resetError();
+
+		if (this.mandatory && this.value === null) {
+			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+		}
+	}
+
 	readInput(): object {
 		return {
-			value: (this.value ? this.value.toISOString() : null)
+			value: (this.value ? this.value.getTime() / 1000 : null)
 		};
 	}
 
 	createUiContent(): UiContent {
 		return new TypeUiContent(DateTimeInComponent, (ref) => {
-			// ref.instance.model = this;
+			ref.instance.model = this;
 		});
 	}
 
 	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.value);
+		return new SiGenericValue(this.value ? new Date(this.value) : null);
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
 		if (genericValue.isInstanceOf(Date)) {
-			this.setValue(genericValue.readInstance(Date));
+			const value = genericValue.readInstance(Date);
+			this.setValue(value ? new Date(value) : null);
 			return Promise.resolve();
 		}
 

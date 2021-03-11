@@ -50,6 +50,7 @@ use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
+use n2n\l10n\DateTimeFormat;
 
 class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
 
@@ -85,9 +86,14 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$siField = SiFields::dateTimeIn($eiu->field()->getValue());
+		$siField = SiFields::dateTimeIn($eiu->field()->getValue())
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setDateChoosable($this->dateTimeConfig->getDateStyle() !== DateTimeFormat::STYLE_NONE)
+				->setTimeChoosable($this->dateTimeConfig->getTimeStyle() !== DateTimeFormat::STYLE_NONE);
 		
-		return $eiu->factory()->newGuiField($siField);
+		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+			$eiu->field()->setValue($siField->getValue());	
+		});
 		
 // 		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
 		

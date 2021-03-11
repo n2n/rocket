@@ -2,8 +2,7 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} f
 
 @Component({
 	selector: 'button[rocketUiButton]',
-	templateUrl: './button.component.html',
-	styleUrls: ['./button.component.css']
+	templateUrl: './button.component.html'
 })
 export class ButtonComponent implements OnInit {
 	@Input()

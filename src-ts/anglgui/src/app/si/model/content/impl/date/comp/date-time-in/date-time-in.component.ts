@@ -1,21 +1,33 @@
 import { Component, OnInit, LOCALE_ID } from '@angular/core';
-import { formatNumber } from '@angular/common';
+import { DateTimeInModel } from '../date-time-in-model';
 
 @Component({
 	selector: 'rocket-date-time-in',
 	templateUrl: './date-time-in.component.html'
 })
 export class DateTimeInComponent implements OnInit {
-    date = new Date();
-
-    localeId = LOCALE_ID.toString();
-
 	constructor() { }
+
+	model: DateTimeInModel;
+
+	private pEnabled = false;
+
+	get enabled(): boolean {
+		return this.model.mandatory || !!this.model.getValue() || this.pEnabled;
+	}
+
+	set enabled(enabled: boolean) {
+		this.pEnabled = enabled;
+
+		if (!enabled && !this.model.mandatory) {
+			this.model.setValue(null);
+		}
+	}
 
 	ngOnInit(): void {
 
 	}
 
-    num = 1.2;
-    numStr = '1.2';
+
+
 }

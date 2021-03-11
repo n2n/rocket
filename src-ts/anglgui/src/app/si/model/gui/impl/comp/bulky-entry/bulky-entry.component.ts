@@ -10,7 +10,7 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 	public model: BulkyEntryModel;
 
 	get typeSelected(): boolean {
-		return this.model.getSiEntry().typeSelected;
+		return this.model.getSiEntry().entryBuildupSelected;
 	}
 
 	get choosableSiMaskQualifiers(): SiMaskQualifier[] {
@@ -18,7 +18,7 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 	}
 
 	chooseSiMaskQualifier(siMaskQualifier: SiMaskQualifier) {
-		this.model.getSiEntry().selectedTypeId = siMaskQualifier.identifier.typeId;
+		this.model.getSiEntry().selectedEntryBuildupId = siMaskQualifier.identifier.entryBuildupId;
 	}
 
 	// constructor() { }

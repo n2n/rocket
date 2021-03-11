@@ -23,22 +23,25 @@ import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 import { UrlIframeComponent } from './util/comp/url-iframe/url-iframe.component';
 import { PaginationComponent } from './util/comp/pagination/pagination.component';
-import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerModule, NgbTimepicker, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerComponent } from './util/comp/date-picker/date-picker.component';
+import { TimePickerComponent } from './util/comp/time-picker/time-picker.component';
 
 @NgModule({
 	declarations: [
 		LayerComponent, ContainerComponent, ZoneComponent, StructureComponent, StructureContentDirective,
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
-		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent, IframeComponent,
-		IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent, PaginationComponent, DatePickerComponent
+		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent,
+		IframeComponent, IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent,
+		PaginationComponent, DatePickerComponent, TimePickerComponent
 	],
 	imports: [
 		CommonModule,
 		UtilModule,
 		RouterModule,
 		FormsModule,
-		NgbDatepickerModule
+		NgbDatepickerModule,
+		NgbTimepickerModule
 	],
 	exports: [
 		ContainerComponent,
@@ -57,7 +60,9 @@ import { DatePickerComponent } from './util/comp/date-picker/date-picker.compone
 		IFrameResizerDirective,
 		SelectComponent,
 		UrlIframeComponent,
-		PaginationComponent
+		PaginationComponent,
+		DatePickerComponent,
+		TimePickerComponent
 	],
 	entryComponents: [ PlainContentComponent ]
 })

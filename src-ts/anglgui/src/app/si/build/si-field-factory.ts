@@ -135,7 +135,7 @@ export class SiFieldFactory {
 					dataExtr.reqString('label'), this.injector);
 
 		case SiFieldType.ENUM_IN:
-			const enumInSiField = new EnumInSiField(dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
+			const enumInSiField = new EnumInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
 			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 
 			fieldMap$.subscribe((fieldMap) => {
@@ -222,14 +222,23 @@ export class SiFieldFactory {
 
 		case SiFieldType.IFRAME_IN:
 			let formData = null;
-			if (dataExtr.nullaObject('params')['formData']) {
-				formData = new Map(Object.entries(dataExtr.nullaObject('params')['formData']));
+			if ((dataExtr.nullaObject('params') as any)?.formData) {
+				formData = new Map(Object.entries(dataExtr.reqObject('params')['formData']));
 			}
 
 			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
 
 		case SiFieldType.DATETIME_IN:
-			return new DateTimeInSiField(null);
+			const dateTimeInSiField = new DateTimeInSiField(prop.label, null);
+			const valueStr = dataExtr.nullaString('value');
+			if (valueStr) {
+				dateTimeInSiField.value = new Date(valueStr);
+			}
+
+			dateTimeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			dateTimeInSiField.dateChoosable = dataExtr.reqBoolean('dateChoosable');
+			dateTimeInSiField.timeChoosable = dataExtr.reqBoolean('timeChoosable');
+			return dateTimeInSiField;
 
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);

@@ -13,6 +13,7 @@ import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.servi
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 import { EmbeInSource, EmbeInCollection } from './embe/embe-collection';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
+import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -60,11 +61,21 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	}
 
 	private getTypeSelectedValues(): SiEmbeddedEntry[] {
-		return this.values.filter(ee => ee.entry.selectedTypeId);
+		return this.values.filter(ee => ee.entry.selectedEntryBuildupId);
 	}
 
 	readInput(): object {
 		return { entryInputs: this.getTypeSelectedValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
+	}
+
+	handleError(error: SiFieldError): void {
+		this.messagesCollection.set(error.messages);
+
+		this.getTypeSelectedValues().forEach((value, index) => {
+			if (error.subEntryErrors.has(index.toString())) {
+				value.entry.handleError(error.subEntryErrors.get(index.toString()));
+			}
+		});
 	}
 
 	createUiStructureModel(): UiStructureModel {

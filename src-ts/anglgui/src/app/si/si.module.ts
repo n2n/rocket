@@ -71,8 +71,7 @@ import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/
 		DragDropModule,
 		UiModule,
 		UtilModule,
-		RouterModule,
-		NgbDatepickerModule
+		RouterModule
 	],
 	exports: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,

@@ -1,13 +1,12 @@
-<div>
-    <input type="number" [(ngModel)]="num" step="0.05" />
-    =
-    {{ num }}
-</div>
+<ng-container *ngIf="!model.mandatory">
+    <rocket-ui-toggler [(enabled)]="enabled"></rocket-ui-toggler>
 
-<div>
-    <input type="number" [(ngModel)]="numStr" step="0.05" />
-    =
-    {{ numStr }}
-</div>
+</ng-container>
 
-{{ localeId }}
+<ng-container *ngIf="enabled">
+    <rocket-ui-date-picker [date]="model.getValue()" (dateChange)="model.setValue($event)"></rocket-ui-date-picker>
+
+    <rocket-ui-time-picker *ngIf="model.getValue()" [date]="model.getValue()" (dateChange)="model.setValue($event)"></rocket-ui-time-picker>
+</ng-container>
+
+<rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>

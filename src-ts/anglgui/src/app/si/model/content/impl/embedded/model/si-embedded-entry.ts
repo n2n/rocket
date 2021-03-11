@@ -57,13 +57,13 @@ export class SiEmbeddedEntry {
 	}
 
 	get selectedTypeId(): string|null {
-		return this.entry.selectedTypeId;
+		return this.entry.selectedEntryBuildupId;
 	}
 
 	set selectedTypeId(typeId: string|null) {
-		this.comp.entry.selectedTypeId = typeId;
+		this.comp.entry.selectedEntryBuildupId = typeId;
 		if (this.summaryComp.entry) {
-			this.summaryComp.entry.selectedTypeId = typeId;
+			this.summaryComp.entry.selectedEntryBuildupId = typeId;
 		}
 	}
 
