@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, HostListener, OnDestroy, ElementRef } from '@angular/core';
 import { SiEmbeddedEntry } from '../../model/si-embedded-entry';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { ChoosePasteModel } from '../choose-paste/choose-paste-model';
+import { Subscription, fromEvent, merge } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 
 export enum AddPasteType {
@@ -16,7 +18,7 @@ export enum AddPasteType {
 	templateUrl: './add-paste.component.html',
 	styleUrls: ['./add-paste.component.css']
 })
-export class AddPasteComponent implements OnInit {
+export class AddPasteComponent implements OnInit, OnDestroy {
 
 	@Input()
 	obtainer: AddPasteObtainer;
@@ -28,14 +30,18 @@ export class AddPasteComponent implements OnInit {
 
 	loading = false;
 
-	popupOpen = false;
+	popupSubscription: Subscription|null = null;
 	choosePasteModel: ChoosePasteModel;
 
 
-	constructor(private clipboardService: ClipboardService) {
+	constructor(private elemRef: ElementRef<any>, private clipboardService: ClipboardService) {
 	}
 
-	ngOnInit() {
+	ngOnInit(): void {
+	}
+
+	ngOnDestroy(): void {
+		this.closePopup();
 	}
 
 	@Input()
@@ -52,16 +58,42 @@ export class AddPasteComponent implements OnInit {
 	}
 
 	@HostListener('mouseenter')
-	prepareObtainer() {
+	prepareObtainer(): void {
 		this.obtainer.preloadNew();
 	}
 
-	closePopup() {
-		this.popupOpen = false;
+	closePopup(): void {
+		if (!this.popupOpen) {
+			return;
+		}
+
+		this.popupSubscription.unsubscribe();
+		this.popupSubscription = null;
 	}
 
-	togglePopup() {
-		this.popupOpen = !this.popupOpen;
+	get popupOpen(): boolean {
+		return !!this.popupSubscription;
+	}
+
+	openPopup(): void {
+		if (this.popupOpen) {
+			return;
+		}
+
+		const up$ = fromEvent<MouseEvent>(document, 'click').pipe(filter(e => !this.elemRef.nativeElement.contains(e.target)));
+		const esc$ = fromEvent<KeyboardEvent>(document, 'keyup')
+				.pipe(filter((event: KeyboardEvent) => event.key === 'Escape'));
+		this.popupSubscription = merge(up$, esc$).subscribe(() => {
+			this.closePopup();
+		});
+	}
+
+	togglePopup(): void {
+		if (this.popupOpen) {
+			this.closePopup();
+		} else {
+			this.openPopup();
+		}
 
 		if (!this.popupOpen || this.loading) {
 			return;
@@ -79,7 +111,7 @@ export class AddPasteComponent implements OnInit {
 		});
 	}
 
-	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry) {
+	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry): void {
 		this.choosePasteModel = new ChoosePasteModel(siEmbeddedEntry, this.clipboardService);
 
 		if (siEmbeddedEntry.selectedTypeId && this.choosePasteModel.pastables.length === 0
@@ -94,14 +126,14 @@ export class AddPasteComponent implements OnInit {
 		});
 	}
 
-	private choose(siEmbeddedEntry: SiEmbeddedEntry) {
-		this.popupOpen = false;
+	private choose(siEmbeddedEntry: SiEmbeddedEntry): void {
+		this.closePopup();
 		this.newEntry.emit(siEmbeddedEntry);
 		this.reset();
 	}
 
-	reset() {
-		this.popupOpen = false;
+	reset(): void {
+		this.closePopup();
 		this.choosePasteModel = null;
 	}
 }

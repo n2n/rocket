@@ -40,11 +40,7 @@ export class SplitContextOutSiField extends SplitContextSiField {
 		throw new IllegalSiStateError('SplitContextOutSiField can not activate any keys.');
 	}
 
-	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+	deactivateKey(key: string) {
+		throw new IllegalSiStateError('SplitContextOutSiField can not deactivate any keys.');
 	}
 }
