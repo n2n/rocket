@@ -10,7 +10,7 @@ export class InputInFieldComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit() {
+	ngOnInit(): void {
 	}
 
 	get grouped(): boolean {
@@ -18,7 +18,7 @@ export class InputInFieldComponent implements OnInit {
 				|| this.model.getSuffixAddons().length > 0;
 	}
 
-	get value() {
+	get value(): string|null {
 		return this.model.getValue();
 	}
 

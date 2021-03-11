@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "rocket": {
+    "anglgui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/rocket",
+            "outputPath": "dist/anglgui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -24,7 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/cropperjs/dist/cropper.css"
+              "src/styles.css"
             ],
             "scripts": []
           },
@@ -51,7 +51,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ]
             }
@@ -60,18 +61,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rocket:build"
+            "browserTarget": "anglgui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "rocket:build:production"
+              "browserTarget": "anglgui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "rocket:build"
+            "browserTarget": "anglgui:build"
           }
         },
         "test": {
@@ -108,16 +109,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "rocket:serve"
+            "devServerTarget": "anglgui:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "rocket:serve:production"
+              "devServerTarget": "anglgui:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "rocket"
+  "defaultProject": "anglgui"
 }
