@@ -7,11 +7,10 @@ use n2n\core\N2N;
 	$html = HtmlView::html($view);
 	
 	if (isset($_SERVER['ROCKET_DEV'])) {
-		$html->meta()->bodyEnd()->addJs('angl-dev/runtime-es2015.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills-es2015.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/styles-es2015.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/vendor-es2015.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/main-es2015.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/runtime.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
 	} else {
 		$html->meta()->bodyEnd()->addJs('angl/runtime-es2015.js', null, false, false, ['type' => 'module']);
 		$html->meta()->bodyEnd()->addJs('angl/runtime-es5.js', null, false, false, ['nomodule', 'defer']);
