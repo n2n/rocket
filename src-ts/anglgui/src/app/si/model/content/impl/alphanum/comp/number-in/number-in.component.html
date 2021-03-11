@@ -1,0 +1,26 @@
+<div [class.input-group]="grouped">
+	<div *ngIf="model.getPrefixAddons().length > 0" class="input-group-prepend">
+		<rocket-crumb-group *ngFor="let crumbGroup of model.getPrefixAddons()" 
+				[siCrumbGroup]="crumbGroup" class="input-group-text">
+		</rocket-crumb-group>
+	</div>
+
+	<input type="text" class="form-control" id="name" [(ngModel)]="value" #input="ngModel" />
+
+	<div class="input-group-append">
+		<span class="input-group-text">
+			<button type="button" (click)="nextStep()">
+				<i class="fas fa-plus"></i>
+			</button>
+			<button type="button" (click)="prevStep()">
+				<i class="fas fa-minus"></i>
+			</button>
+		</span>
+		<rocket-crumb-group *ngFor="let crumbGroup of model.getSuffixAddons()" 
+				[siCrumbGroup]="crumbGroup" class="input-group-text">
+		</rocket-crumb-group>
+	</div>
+</div>
+
+<rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>
+		

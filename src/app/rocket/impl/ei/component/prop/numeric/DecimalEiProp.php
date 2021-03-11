@@ -40,6 +40,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use n2n\validation\plan\impl\Validators;
 use rocket\ei\util\factory\EifField;
+use n2n\l10n\L10nUtils;
 
 class DecimalEiProp extends NumericEiPropAdapter {
     private $decimalConfig;

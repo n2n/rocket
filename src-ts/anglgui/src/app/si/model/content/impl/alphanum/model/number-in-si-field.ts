@@ -8,6 +8,7 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { NumberInComponent } from '../comp/number-in/number-in.component';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -59,13 +60,15 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		}
 
 		if (this.fixed) {
-			return this.value.toFixed(this.countDecimals(this.step));
+			return this.value.toFixed(this.countDecimals(this.getStep()));
 		}
 
 		return this.value.toString();
 	}
 
 	setValue(valueStr: string|null) {
+		console.log('try set: ' + valueStr);
+
 		if (valueStr === null) {
 			this.value = null;
 			return;
@@ -74,7 +77,10 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		if (isNaN(value)) {
 			value = null;
 		}
+
 		this.value = value;
+
+		console.log('set: ' + this.value);
 	}
 
 	getType(): string {
@@ -146,7 +152,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	createUiContent(): UiContent {
-		return new TypeUiContent(InputInFieldComponent, (cr) => {
+		return new TypeUiContent(NumberInComponent, (cr) => {
 			cr.instance.model = this;
 		});
 	}
