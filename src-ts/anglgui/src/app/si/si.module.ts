@@ -50,7 +50,6 @@ import { SelectInFieldComponent } from './model/content/impl/enum/comp/select-in
 import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/iframe-out.component';
 import { IframeInComponent } from './model/content/impl/iframe/comp/iframe-in/iframe-in.component';
 import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in/date-time-in.component';
-import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
 	declarations: [
