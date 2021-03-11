@@ -26,10 +26,10 @@ export class IframeOutSiField extends OutSiFieldAdapter implements IframeOutMode
 	}
 
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(null);
 	}
 
-	pasteValue(): Promise<void> {
-		throw new Error('Not yet implemented');
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
+		return Promise.resolve();
 	}
 }

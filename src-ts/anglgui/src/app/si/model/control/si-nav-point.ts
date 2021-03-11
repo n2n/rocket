@@ -32,4 +32,8 @@ export class SiNavPoint {
 			}
 		};
 	}
+
+	copy(): SiNavPoint {
+		return new SiNavPoint(this.url, this.siref);
+	}
 }

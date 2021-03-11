@@ -46,7 +46,7 @@ export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 
 	abstract readInput(): object;
 
-	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	protected abstract createUiContent(): UiContent;
 }

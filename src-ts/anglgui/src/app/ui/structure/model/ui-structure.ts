@@ -15,7 +15,7 @@ export class UiStructure {
 	private parent: UiStructure|null;
 	private parentSubscription: Subscription|null;
 
-	private _model: UiStructureModel|null;
+	private pModel: UiStructureModel|null;
 	private modelSubscription: Subscription|null = null;
 	private modelStructureErrors: UiStructureError[]|null = null;
 	private children: Array<{ structure: UiStructure, subscription: Subscription }> = [];
@@ -31,7 +31,7 @@ export class UiStructure {
 	private focusedSubject = new Subject<void>();
 
 	private disposedSubject = new BehaviorSubject<boolean>(false);
-	private _level: number|null = null;
+	private pLevel: number|null = null;
 
 	// compact = false;
 
@@ -41,7 +41,7 @@ export class UiStructure {
 		this.model = model;
 	}
 
-	setZone(zone: UiZone|null) {
+	setZone(zone: UiZone|null): void {
 		if (zone && zone.structure !== this) {
 			throw new IllegalArgumentError('ZoneModel structure does not match.');
 		}
@@ -57,7 +57,7 @@ export class UiStructure {
 		this.zoneSubject.next(zone);
 	}
 
-	protected setParent(uiStructure: UiStructure|null) {
+	protected setParent(uiStructure: UiStructure|null): void {
 		if (this.isRoot()) {
 			throw new IllegalStateError('UiStructure is at root.');
 		}
@@ -85,7 +85,7 @@ export class UiStructure {
 		});
 	}
 
-	private ensureAssigned() {
+	private ensureAssigned(): void {
 		if (!this.parent && !this.zoneSubject.getValue()) {
 			throw new IllegalStateError('UiStructure has not yet been assigned to parent or zone.');
 		}
@@ -130,19 +130,19 @@ export class UiStructure {
 	get level(): number {
 		this.ensureAssigned();
 
-		if (this._level !== null) {
-			return this._level;
+		if (this.pLevel !== null) {
+			return this.pLevel;
 		}
 
-		this._level = 0;
+		this.pLevel = 0;
 
 		let cur: UiStructure = this;
 		while (cur.parent) {
 			cur = cur.parent;
-			this._level++;
+			this.pLevel++;
 		}
 
-		return this._level;
+		return this.pLevel;
 	}
 
 	containsDescendant(uiStructure: UiStructure): boolean {
@@ -245,13 +245,13 @@ export class UiStructure {
 
 	get model(): UiStructureModel|null {
 // 		this.ensureNotDisposed();
-		return this._model;
+		return this.pModel;
 	}
 
 	set model(model: UiStructureModel|null) {
 		this.ensureNotDisposed();
 
-		if (this._model === model) {
+		if (this.pModel === model) {
 			return;
 		}
 
@@ -261,7 +261,7 @@ export class UiStructure {
 			return;
 		}
 
-		this._model = model;
+		this.pModel = model;
 		this.modelStructureErrors = [];
 		this.modelSubscription = new Subscription();
 
@@ -281,11 +281,11 @@ export class UiStructure {
 		this.clearToolbarItems();
 		// this.clearExtraToolbarItems();
 
-		if (this._model) {
+		if (this.pModel) {
 			this.modelSubscription.unsubscribe();
 			this.modelSubscription = null;
-			this._model.unbind();
-			this._model = null;
+			this.pModel.unbind();
+			this.pModel = null;
 		}
 
 		this.zoneErrorsCollection.set([]);
