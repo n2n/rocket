@@ -1,9 +1,12 @@
 
 <div class="input-group">
-    <input class="form-control" type="text" [ngModel]="date" (ngModelChange)="selectDate($event)" readonly ngbDatepicker #d="ngbDatepicker"
-            (click)="d.toggle()" />
+    <input type="text"
+            class="form-control"
+            #dp="bsDatepicker"
+            bsDatepicker
+            [ngModel]="date" (ngModelChange)="selectDate($event)">
 
     <div class="input-group-append">
-        <button class="btn btn-secondary" (click)="d.toggle()" type="button">[calendar item]</button>
+        <button class="btn btn-secondary" (click)="dp.toggle()" type="button">[calendar item]</button>
     </div>
 </div>

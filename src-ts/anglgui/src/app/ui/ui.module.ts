@@ -23,9 +23,19 @@ import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
 import { UrlIframeComponent } from './util/comp/url-iframe/url-iframe.component';
 import { PaginationComponent } from './util/comp/pagination/pagination.component';
-import { NgbDatepickerModule, NgbTimepicker, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerComponent } from './util/comp/date-picker/date-picker.component';
 import { TimePickerComponent } from './util/comp/time-picker/time-picker.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+
+import { defineLocale } from 'ngx-bootstrap/chronos';
+import { deLocale, frLocale, itLocale, enGbLocale } from 'ngx-bootstrap/locale';
+
+defineLocale('de', deLocale);
+defineLocale('fr', frLocale);
+defineLocale('it', itLocale);
+defineLocale('en', enGbLocale);
 
 @NgModule({
 	declarations: [
@@ -40,8 +50,9 @@ import { TimePickerComponent } from './util/comp/time-picker/time-picker.compone
 		UtilModule,
 		RouterModule,
 		FormsModule,
-		NgbDatepickerModule,
-		NgbTimepickerModule
+		BrowserAnimationsModule,
+		BsDatepickerModule.forRoot(),
+		TimepickerModule.forRoot()
 	],
 	exports: [
 		ContainerComponent,

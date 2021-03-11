@@ -43,7 +43,7 @@ export class SiUiService {
 	navigateByRouterUrl(url: string, layer: UiLayer|null) {
 		if (layer && !layer.main) {
 			const zone = layer.pushRoute(null, url).zone;
-			this.loadZone(zone, false);
+			this.loadZone(zone, true);
 			return;
 		}
 

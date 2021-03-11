@@ -54,10 +54,16 @@ export class LinkOutSiField extends OutSiFieldAdapter {
 	}
 
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(this.navPoint ? this.navPoint.copy() : null);
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+		if (genericValue.isNull()) {
+			this.navPoint = null;
+		} else {
+			this.navPoint = genericValue.readInstance(SiNavPoint).copy();
+		}
+
+		return Promise.resolve();
 	}
 }
