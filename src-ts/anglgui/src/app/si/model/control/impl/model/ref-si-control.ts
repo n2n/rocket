@@ -1,4 +1,3 @@
-
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
@@ -9,8 +8,8 @@ import { SiControlBoundry } from '../../si-control-bountry';
 
 export class RefSiControl implements SiControl {
 
-	constructor(public siUiService: SiUiService, public url: string, public siButton: SiButton,
-			public controlBoundry: SiControlBoundry) {
+	constructor(public siUiService: SiUiService, public url: string, public newWindow: boolean, public siButton: SiButton,
+							public controlBoundry: SiControlBoundry) {
 	}
 
 
@@ -19,7 +18,13 @@ export class RefSiControl implements SiControl {
 	}
 
 	exec(uiZone: UiZone) {
-		this.siUiService.navigateByUrl(this.url, uiZone.layer);
+		if (!this.newWindow){
+			this.siUiService.navigateByUrl(this.url, uiZone.layer);
+			return;
+		}
+
+		const popUpZone = uiZone.layer.container.createLayer().pushRoute(null, this.url).zone;
+		this.siUiService.loadZone(popUpZone, false);
 	}
 
 	createUiContent(getUiZone: () => UiZone): UiContent {

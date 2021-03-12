@@ -28,10 +28,12 @@ use rocket\si\control\SiButton;
 class RefSiControl implements SiControl {
 	private $url;
 	private $button;
-	
-	function __construct(Url $url, SiButton $button) {
+	private $newWindow;
+
+	function __construct(Url $url, SiButton $button, bool $newWindow) {
 		$this->url = $url;
 		$this->button = $button;
+		$this->newWindow = $newWindow;
 	}
 	
 	function getType(): string {
@@ -41,7 +43,8 @@ class RefSiControl implements SiControl {
 	function getData(): array {
 		return [
 			'url' => (string) $this->url,
-			'button' => $this->button
+			'button' => $this->button,
+			'newWindow' => $this->newWindow
 		];
 	}
 }
