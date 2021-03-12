@@ -35,6 +35,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\EiLifecycleListener;
 use n2n\l10n\Message;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use n2n\util\col\ArrayUtils;
 
 class RelationVetoableActionListener implements EiLifecycleListener {
 	const STRATEGY_PREVENT = 'prevent';
@@ -53,6 +54,8 @@ class RelationVetoableActionListener implements EiLifecycleListener {
 		$eiObject = $vetoableRemoveAction->getEiObject();
 		if ($eiObject->isDraft()) return;
 				
+		test((string) $this->relationModel->getLabelLstr());
+		test(get_class($eiObject->getEiEntityObj()->getEntityObj()));
 		$vetoCheck = new VetoCheck($this->relationModel, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
 				$n2nContext);
 		
@@ -100,7 +103,10 @@ class VetoCheck {
 		$entityObj = null;
 		$queue = $this->vetoableRemoveAction->getMonitor();
 		foreach ($this->findAll() as $entityObj) {
-			if (!$queue->isEntityObjRemoved($entityObj)) $num++;
+			if (!$queue->isEntityObjRemoved($entityObj)
+					&& $this->isStillAssigned($entityObj)) {
+				$num++;
+			}
 		}
 		
 		if ($num === 0) return;
@@ -177,6 +183,17 @@ class VetoCheck {
 		$entityProperty = $this->getRelationEntityProperty();
 		return $entityProperty->getType() == RelationEntityProperty::TYPE_MANY_TO_ONE 
 				|| $entityProperty->getType() == RelationEntityProperty::TYPE_ONE_TO_ONE;
+	}
+	
+	private function isStillAssigned($entityObj) {
+		$objectPropertyAccessProxy = $this->relationEiProp->getObjectPropertyAccessProxy();
+		
+		$value = $objectPropertyAccessProxy->getValue($entityObj);
+		if ($this->isToOne()) {
+			return $value === $entityObj;
+		}
+		
+		return ArrayUtils::isArrayLike($value) && ArrayUtils::isArrayLike($entityObj, $value);
 	}
 	
 	private function releaseEntityObj($entityObj) {

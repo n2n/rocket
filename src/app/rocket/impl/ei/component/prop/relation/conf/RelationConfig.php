@@ -134,7 +134,7 @@ class RelationConfig extends PropConfigAdaption {
 							RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
 							RelationVetoableActionListener::STRATEGY_SELF_REMOVE => 'Self remove'),
 					$lar->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, RelationVetoableActionListener::getStrategies(),
-							RelationVetoableActionListener::STRATEGY_PREVENT),
+							RelationVetoableActionListener::STRATEGY_UNSET),
 					false));
 		}
 	}
@@ -218,7 +218,7 @@ class RelationConfig extends PropConfigAdaption {
 		if ($this->relationModel->isMaster()) {
 			$strategy = $dataSet->optEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, 
 					RelationVetoableActionListener::getStrategies(),  
-					RelationVetoableActionListener::STRATEGY_PREVENT, false);
+					RelationVetoableActionListener::STRATEGY_UNSET, false);
 			
 			$targetEiuType->getEiType()->registerVetoableActionListener(
 					new RelationVetoableActionListener($this->relationModel, $strategy));		
