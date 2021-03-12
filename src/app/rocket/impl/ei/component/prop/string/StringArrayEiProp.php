@@ -1,22 +1,29 @@
 <?php
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\dispatch\mag\model\MagArrayMag;
-use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use n2n\web\ui\UiComponent;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;
-use rocket\si\content\SiField;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\string\conf\StringArrayConfig;
+use n2n\util\StringUtils;
 
 class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 
+	private $stringArrayConfig;
 	
-	protected function prepare() {
+	function __construct() {
+		parent::__construct();
+		
+		$this->stringArrayConfig = new StringArrayConfig();
+	}
+	
+	public function prepare() {
+		$this->getConfigurator()->addAdaption($this->stringArrayConfig);
 	}
 	
 	public function isEntityPropertyRequired(): bool {
@@ -40,14 +47,20 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+		$values = [];
 		
-		return new MagArrayMag($this->getLabelLstr(), function () {
-			return new StringMag('Huii');
-		});
-		//return new StringArrayMag($this->getDisplayLabelLstr(), $eiu->field()->getValue());
-	}
-
-	public function saveSiField(SiField $siField, Eiu $eiu) {
+		if (!empty($value = $eiu->field()->getValue())) {
+			$values = StringUtils::jsonDecode($value, true);
+		}
+		
+		$siField = SiFields::stringArrayIn($values)
+				->setMin($this->stringArrayConfig->getMin())
+				->setMax($this->stringArrayConfig->getMax());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) {
+					$eiu->field()->setValue(StringUtils::jsonEncode($siField->getValues()));
+				});
 	}
 
 }

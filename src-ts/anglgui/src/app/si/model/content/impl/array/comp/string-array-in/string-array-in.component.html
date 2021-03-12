@@ -1,0 +1,11 @@
+
+<div *ngFor="let value of values">
+	<div>
+		<input type="text" class="form-control" />
+	</div>
+</div>
+<button [disabled]="disabled" (click)="addElement()">Add element</button>
+
+
+<rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>
+		

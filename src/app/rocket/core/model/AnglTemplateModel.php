@@ -32,7 +32,6 @@ use rocket\user\model\LoginContext;
 use n2n\web\http\controller\ControllerContext;
 use rocket\si\control\SiNavPoint;
 use n2n\util\uri\Path;
-use n2n\core\N2N;
 use n2n\core\config\AppConfig;
 
 class AnglTemplateModel implements Lookupable {
