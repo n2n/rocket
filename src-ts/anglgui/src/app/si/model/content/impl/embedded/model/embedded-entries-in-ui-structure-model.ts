@@ -44,7 +44,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		zoneErrors: new Array<UiZoneError>()
 	};
 
-	constructor(private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
+	constructor(private popupTitle: string, private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
 			private embeInCol: EmbeInCollection, private config: EmbeddedEntriesInConfig,
 			private translationService: TranslationService, disabled$: Observable<boolean>|null = null) {
 		super();
@@ -164,7 +164,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		});
 	}
 
-	openAll() {
+	openAll(): void {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().openAll().then((changed) => {
 			if (!changed) {
@@ -197,7 +197,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			return;
 		}
 
-		this.embeInUiZoneManager = new EmbeInUiZoneManager(() => uiStructure.getZone().layer.container, this.embeInCol,
+		this.embeInUiZoneManager = new EmbeInUiZoneManager(this.popupTitle, () => uiStructure.getZone().layer.container, this.embeInCol,
 				this.frame, this.obtainer, this.config, this.translationService, this.disabled$);
 		this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 			ref.instance.model = this;
@@ -305,8 +305,8 @@ class EmbeInUiZoneManager {
 
 	private popupUiLayer: PopupUiLayer|null = null;
 
-	constructor(private getUiContainer: () => UiContainer, private embeCol: EmbeInCollection, private siFrame: SiFrame,
-			private obtainer: EmbeddedEntryObtainer, private config: EmbeddedEntriesInConfig,
+	constructor(private popupTitle: string, private getUiContainer: () => UiContainer, private embeCol: EmbeInCollection,
+			private siFrame: SiFrame, private obtainer: EmbeddedEntryObtainer, private config: EmbeddedEntriesInConfig,
 			private translationService: TranslationService, private disabled$: Observable<boolean>|null = null) {
 
 	}
@@ -336,7 +336,7 @@ class EmbeInUiZoneManager {
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		zone.title = 'Some Title';
+		zone.title = this.popupTitle;
 		zone.breadcrumbs = [];
 		zone.structure = embe.uiStructure;
 		zone.mainCommandContents = this.createPopupControls(() => { bakEntry = null; })
@@ -371,7 +371,8 @@ class EmbeInUiZoneManager {
 
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		const popupUiStructureModel = new EmbeddedEntriesInUiStructureModel(this.obtainer, this.siFrame, this.embeCol,
+		const popupUiStructureModel = new EmbeddedEntriesInUiStructureModel(this.popupTitle, this.obtainer,
+				this.siFrame, this.embeCol,
 				{
 					reduced: false,
 					min: this.config.min,

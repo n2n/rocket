@@ -19,7 +19,7 @@ export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOut
 	 	reduced: false,
 	};
 
-	constructor(private siService: SiService, private siModState: SiModStateService,
+	constructor(public label: string, private siService: SiService, private siModState: SiModStateService,
 			private frame: SiFrame, private translationService: TranslationService, private values: SiEmbeddedEntry[] = []) {
 		super();
 	}
@@ -36,7 +36,7 @@ export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOut
 		const embeOutCol = new EmbeOutCollection(this);
 		embeOutCol.readEmbes();
 
-		return new EmbeddedEntriesOutUiStructureModel(this.frame, embeOutCol, this.config, this.translationService,
+		return new EmbeddedEntriesOutUiStructureModel(this.label, this.frame, embeOutCol, this.config, this.translationService,
 				this.getDisabled$());
 	}
 

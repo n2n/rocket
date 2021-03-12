@@ -97,4 +97,4 @@ use n2n\core\N2N;
 
 <rocket-root data-rocket-angl-data="<?php $html->out(json_encode($anglTemplateModel->createData($view->getControllerContext()))) ?>"
 		data-rocket-assets-url="<?php $html->out($html->meta()->getAssetUrl(null, 'rocket')) ?>"
-		data-locale-id="<?php $html->out($request->getN2nLocale()->toWebId()) ?>"></rocket-root>
+		data-locale-id="<?php $html->out($request->getN2nLocale()->toWebId(true)) ?>"></rocket-root>

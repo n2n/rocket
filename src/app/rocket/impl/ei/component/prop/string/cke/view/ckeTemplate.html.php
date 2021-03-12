@@ -39,7 +39,7 @@
 	<?php $html->headStart() ?>
 		<meta charset="<?php $html->out(N2N::CHARSET) ?>" />
 	<?php $html->headEnd() ?>
-	<?php $html->bodyStart() ?>
+	<?php $html->bodyStart(array('style' => 'margin: 0')) ?>
 
         <style>
             /* fix cke collapse on focus */

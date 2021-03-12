@@ -52,7 +52,7 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 		return this.srcDoc;
 	}
 
-	getFormData(): Map<string, string> | null {
+	getFormData(): Map<string, string> {
 		return this.formData;
 	}
 

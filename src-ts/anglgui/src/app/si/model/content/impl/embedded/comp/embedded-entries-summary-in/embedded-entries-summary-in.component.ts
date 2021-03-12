@@ -11,8 +11,7 @@ import { EmbeStructure } from '../../model/embe/embe-structure';
 
 @Component({
 	selector: 'rocket-embedded-entries-summary-in',
-	templateUrl: './embedded-entries-summary-in.component.html',
-	styleUrls: ['./embedded-entries-summary-in.component.css']
+	templateUrl: './embedded-entries-summary-in.component.html'
 })
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	model: EmbeddedEntriesInModel;

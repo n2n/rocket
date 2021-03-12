@@ -114,6 +114,14 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		});
 	}
 
+	onBlur() {
+
+	}
+
+	onFocus() {
+		
+	}
+
 // 	initComponent(viewContainerRef: ViewContainerRef,
 // 			componentFactoryResolver: ComponentFactoryResolver,
 // 			commanderService: SiUiService): ComponentRef<any> {

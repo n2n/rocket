@@ -54,7 +54,7 @@ export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter  {
 
 			return {
 				panel,
-				structureModel: new EmbeddedEntriesOutUiStructureModel(this.frame, embeOutCol, panel, this.translationService)
+				structureModel: new EmbeddedEntriesOutUiStructureModel(panel.label, this.frame, embeOutCol, panel, this.translationService)
 			};
 		});
 

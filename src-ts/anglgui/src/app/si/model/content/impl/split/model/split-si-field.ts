@@ -45,10 +45,6 @@ export class SplitSiField extends SiFieldAdapter {
 		throw new IllegalSiStateError('no input');
 	}
 
-	copy(): SiField {
-		throw new Error('Method not implemented.');
-	}
-
 	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	createUiStructureModel(compactMode: boolean): UiStructureModel {
@@ -60,11 +56,11 @@ export class SplitSiField extends SiFieldAdapter {
 	}
 
 	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
+		return new SiGenericValue(null);
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
+		return Promise.resolve();
 	}
 }
 
@@ -165,6 +161,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 
 		this.subscription.unsubscribe();
 		this.subscription = null;
+		this.loadedKeys = [];
 	}
 
 	private buildStructures(zone: UiZone) {
@@ -214,8 +211,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 
 				if (siField.hasInput() && siField.isGeneric()) {
 					const decorator = model = new UiStructureModelDecorator(model);
-					decorator.setAdditionalToolbarStructureModels([new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone())))]);
+					decorator.setAdditionalToolbarStructureModels([new SimpleUiStructureModel(new ButtonControlUiContent(new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone())))]);
 				}
 
 				childUiStructure.model = model;

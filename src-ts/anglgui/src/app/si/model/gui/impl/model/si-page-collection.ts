@@ -45,10 +45,6 @@ export class SiPageCollection implements SiControlBoundry {
 		return [];
 	}
 
-	// getSelectedEntries(): SiEntry[] {
-	// 	throw new Error('Method not implemented.');
-	// }
-
 	get pages(): SiPage[] {
 		return Array.from(this.pagesMap.values()).sort((aPage, bPage) => {
 			return aPage.no - bPage.no;

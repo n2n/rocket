@@ -5,12 +5,13 @@ import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { map } from 'rxjs/operators';
-import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiEntryBuildup } from '../../../si-entry-buildup';
 import { SiControlBoundry } from 'src/app/si/model/control/si-control-bountry';
 import { SimpleSiFieldAdapter } from '../../common/model/simple-si-field-adapter';
 import { Observable } from 'rxjs';
+import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
+import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 
 export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
@@ -40,15 +41,104 @@ export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 
 	abstract activateKey(key: string): void;
 
+	abstract deactivateKey(key: string): void;
+
 	abstract get activeKeys$(): Observable<string[]>;
 
 	abstract hasInput(): boolean;
 
 	abstract readInput(): object;
 
-	abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	protected abstract createUiContent(): UiContent;
+
+	copyValue(): SiGenericValue {
+		return new SiGenericValue(SplitContextCopy.fromMap(this.splitContentMap));
+	}
+
+	pasteValue(genericValue: SiGenericValue): Promise<void> {
+		genericValue.readInstance(SplitContextCopy).applyToMap(this.splitContentMap);
+		return Promise.resolve();
+	}
+
+	createResetPoint(): SiGenericValue {
+		return new SiGenericValue(SplitContextResetPoint.create(this.splitContentMap, this));
+	}
+
+	resetToPoint(genericValue: SiGenericValue): void {
+		genericValue.readInstance(SplitContextResetPoint).apply(this.splitContentMap, this);
+	}
+}
+
+class SplitContextCopy {
+	private genericMap = new Map<string, SiGenericEntry>();
+
+	static fromMap(map: Map<string, SplitContent>): SplitContextCopy {
+		const gsc = new SplitContextCopy();
+
+		for (const [key, value] of map) {
+			const entry = value.getLoadedSiEntry();
+			if (entry) {
+				gsc.genericMap.set(key, entry.copy());
+			}
+		}
+
+		return gsc;
+	}
+
+	applyToMap(splitContentMap: Map<string, SplitContent>): void {
+		for (const [key, genericEntry] of this.genericMap) {
+			const siEntry = splitContentMap.get(key)?.getLoadedSiEntry();
+			if (siEntry) {
+				siEntry.paste(genericEntry);
+			}
+		}
+	}
+}
+
+class SplitContextResetPoint {
+	private activeKeys = new Array<string>();
+	private genericEntryMap = new Map<string, SiGenericEntry>();
+
+	static create(map: Map<string, SplitContent>, splitContext: SplitContextSiField): SplitContextResetPoint {
+		const scrp = new SplitContextResetPoint();
+
+		for (const [key, splitContent] of map) {
+			if (splitContext.isKeyActive(key)) {
+				continue;
+			}
+
+			scrp.activeKeys.push(key);
+
+			const entry = splitContent.getLoadedSiEntry();
+			if (entry) {
+				scrp.genericEntryMap.set(key, entry.createResetPoint());
+			}
+		}
+
+		return scrp;
+	}
+
+	private containsActiveKey(key: string): boolean {
+		return -1 !== this.activeKeys.indexOf(key);
+	}
+
+	apply(splitContentMap: Map<string, SplitContent>, splitContext: SplitContextSiField): void {
+		for (const [key, splitContent] of splitContentMap) {
+			if (this.containsActiveKey(key)) {
+				splitContext.activateKey(key);
+			} else {
+				splitContext.deactivateKey(key);
+			}
+
+			if (this.genericEntryMap.has(key)) {
+				splitContent.getLoadedSiEntry().resetToPoint(this.genericEntryMap.get(key));
+			} else {
+				splitContent.resetLazyLoad();
+			}
+		}
+	}
 }
 
 export class SplitContent implements SplitOption {
@@ -76,6 +166,18 @@ export class SplitContent implements SplitOption {
 		splitContent.entry$ = Promise.resolve(entry);
 		splitContent.loadedEntry = entry;
 		return splitContent;
+	}
+
+	resetLazyLoad(): void {
+
+		// todo
+		// if (this.lazyDef) {
+		// 	this.entry$ = null;
+		// 	this.loadedEntry = null;
+		// 	return;
+		// }
+
+		// throw new IllegalSiStateError('SplitContent was not lazy loaded!');
 	}
 
 	getLoadedSiEntry(): SiEntry|null {

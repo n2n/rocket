@@ -25,6 +25,8 @@ import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error'
 import { EmbeStructure, EmbeStructureCollection } from './embe/embe-structure';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { map } from 'rxjs/operators';
+import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
 
 export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesOutModel {
 	private embeOutUiStructureManager: EmbeOutUiStructureManager|null = null;
@@ -36,8 +38,9 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		structureErrors: new Array<UiStructureError>()
 	};
 
-	constructor(public frame: SiFrame, private embeOutCol: EmbeOutCollection, private config: EmbeddedEntriesOutConfig,
-			private translationService: TranslationService, disabledSubject: Observable<boolean>|null = null) {
+	constructor(public popupTitle: string, public frame: SiFrame, private embeOutCol: EmbeOutCollection,
+			private config: EmbeddedEntriesOutConfig, private translationService: TranslationService,
+			disabledSubject: Observable<boolean>|null = null) {
 		super();
 		this.disabled$ = disabledSubject;
 	}
@@ -51,7 +54,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		return this.embeOutUiStructureManager;
 	}
 
-	open(embeStructure: EmbeStructure) {
+	open(embeStructure: EmbeStructure): void {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeOutUiStructureManager().open(embeStructure.embe);
 	}
@@ -86,6 +89,18 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryOutComponent, (ref) => {
 			ref.instance.model = this;
 		});
+
+		const button = new SiButton(this.translationService.translate('show_all_txt'), 'rocket-btn-light rocket-btn-light-warning', 'fa fa-file');
+
+		const openAllUiContent = new ButtonControlUiContent({
+			getUiZone: () => uiStructure.getZone(),
+			getSiButton: () => button,
+			isLoading: () => false,
+			isDisabled: () => false,
+			exec: () => this.openAll()
+		});
+
+		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);
 	}
 
 	unbind() {
@@ -117,7 +132,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 	}
 
 	getStructures$(): Observable<UiStructure[]> {
-		throw new Error("Method not implemented.");
+		return this.embeStructureCollection.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
 	}
 
 	getStructureErrors(): UiStructureError[] {
@@ -172,7 +187,7 @@ class EmbeOutUiStructureManager {
 
 	private popupUiLayer: PopupUiLayer|null = null;
 
-	constructor(private uiStructure: UiStructure, private model: EmbeddedEntriesOutModel, private translationService: TranslationService) {
+	constructor(private uiStructure: UiStructure, private model: EmbeddedEntriesOutUiStructureModel, private translationService: TranslationService) {
 
 	}
 
@@ -199,7 +214,7 @@ class EmbeOutUiStructureManager {
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		zone.title = 'Some Title';
+		zone.title = this.model.popupTitle;
 		zone.breadcrumbs = [];
 		zone.structure = embe.uiStructure;
 		zone.mainCommandContents = this.createPopupControls()
@@ -236,7 +251,7 @@ class EmbeOutUiStructureManager {
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
 
-		zone.title = 'Some Title';
+		zone.title = this.model.popupTitle;
 		zone.breadcrumbs = [];
 		zone.structure = structure;
 		zone.mainCommandContents = this.createPopupControls()

@@ -35,6 +35,7 @@ import { EnumInSiField } from '../model/content/impl/enum/model/enum-in-si-field
 import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-si-field';
 import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-si-field';
 import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si-field';
+import { AppStateService } from 'src/app/app-state.service';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -54,7 +55,7 @@ enum SiFieldType {
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
 	IFRAME_OUT = 'iframe-out',
-  	IFRAME_IN = 'iframe-in',
+  IFRAME_IN = 'iframe-in',
 	CRUMB_OUT = 'crumb-out',
 	DATETIME_IN = 'datetime-in'
 }
@@ -96,7 +97,7 @@ export class SiFieldFactory {
 			return stringInSiField;
 
 		case SiFieldType.NUMBER_IN:
-			const numberInSiField = new NumberInSiField(prop.label);
+			const numberInSiField = new NumberInSiField(prop.label, this.injector.get(AppStateService).localeId);
 			numberInSiField.min = dataExtr.nullaNumber('min');
 			numberInSiField.max = dataExtr.nullaNumber('max');
 			numberInSiField.step = dataExtr.reqNumber('step');
@@ -154,7 +155,7 @@ export class SiFieldFactory {
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRIES_OUT:
-			const embeddedEntryOutSiField = new EmbeddedEntriesOutSiField(this.injector.get(SiService),
+			const embeddedEntryOutSiField = new EmbeddedEntriesOutSiField(prop.label, this.injector.get(SiService),
 					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
 					this.injector.get(TranslationService),
 					new SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
