@@ -82,7 +82,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		const embeInCol = new EmbeInCollection(this, this.config);
 		embeInCol.readEmbes();
 
-		return new EmbeddedEntriesInUiStructureModel(
+		return new EmbeddedEntriesInUiStructureModel(this.label,
 				new EmbeddedEntryObtainer(this.siService, this.siModState, this.frame, this.config.reduced, this.config.allowedTypeIds),
 				this.frame, embeInCol, this.config, this.translationService,
 				this.getDisabled$());
