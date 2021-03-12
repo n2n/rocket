@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 
 
 @Component({
@@ -10,6 +10,11 @@ export class DatePickerComponent implements OnInit {
 
 
 	private pDate: Date|null = null;
+	bsConfig: Partial<BsDatepickerConfig> = {
+		containerClass: 'theme-rocket',
+		customTodayClass: 'bs-datepicker-today',
+		adaptivePosition: true
+	};
 
 	constructor(private localeService: BsLocaleService) {
 		this.localeService.use('de');
