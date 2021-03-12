@@ -11,6 +11,7 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
 
 class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 
@@ -35,10 +36,11 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 	 * @return UiComponent
 	 */
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return implode(', ', $eiu->field()->getValue());
+		return $eiu->factory()->newGuiField(SiFields::stringOut(implode(', ', $eiu->field()->getValue()))) ;
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+		
 		return new MagArrayMag($this->getLabelLstr(), function () {
 			return new StringMag('Huii');
 		});
