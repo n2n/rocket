@@ -46,6 +46,7 @@ use rocket\si\content\impl\relation\EmbeddedEntriesOutSiField;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
 use rocket\si\content\impl\iframe\IframeData;
 use rocket\si\content\impl\date\DateTimeInSiField;
+use rocket\si\content\impl\string\StringArrayInSiField;
 
 class SiFields {
 	
@@ -244,5 +245,12 @@ class SiFields {
 		return new IframeInSiField($templateN2nContext === null
 				? IframeData::createFromUiComponent($uiComponent)
 				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
+	}
+	
+	/**
+	 * @return StringArrayInSiField
+	 */
+	static function stringArrayIn(array $values) {
+		return new StringArrayInSiField($values);
 	}
 }

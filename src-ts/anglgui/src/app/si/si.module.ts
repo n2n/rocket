@@ -50,6 +50,7 @@ import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/
 import { IframeInComponent } from './model/content/impl/iframe/comp/iframe-in/iframe-in.component';
 import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in/date-time-in.component';
 import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/number-in.component';
+import { StringArrayInComponent } from './model/content/impl/array/comp/string-array-in/string-array-in.component';
 
 @NgModule({
 	declarations: [
@@ -62,7 +63,7 @@ import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/
 		SplitManagerComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, FieldMessagesComponent,
 		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent, IframeInComponent, DateTimeInComponent,
-		NumberInComponent
+		NumberInComponent, StringArrayInComponent
 	],
 	imports: [
 		CommonModule,
@@ -86,7 +87,7 @@ import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, CrumbOutFieldComponent, SelectInFieldComponent, NumberInComponent
+		ImageEditorComponent, CrumbOutFieldComponent, SelectInFieldComponent, NumberInComponent, StringArrayInComponent
 	]
 })
 export class SiModule { }

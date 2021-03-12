@@ -191,7 +191,15 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	private unlocalizeValue(valueStr: string): string {
-		if (this.decimalPoint === '.' || valueStr.indexOf(this.decimalPoint) === -1) {
+		if (this.decimalPoint === '.') {
+			if (valueStr.indexOf(this.decimalPoint) === -1) {
+				return valueStr.replace(',', '.');
+			}
+
+			return valueStr;
+		}
+
+		if (valueStr.indexOf(this.decimalPoint) === -1) {
 			return valueStr;
 		}
 
