@@ -107,7 +107,7 @@ class AnglTemplateModel implements Lookupable {
 			'generated_images_txt' => $dtc->t('generated_images_txt'),
 			'image_dimensions_na_txt' => $dtc->t('image_dimensions_na_txt'),
 			'ei_impl_locale_not_active_label' => $dtc->t('ei_impl_locale_not_active_label'),
-			'no_selection_txt' => $dtc->t('no_selection_txt'),
+			'please_select_txt' => $dtc->t('please_select_txt'),
 		];
 	}
 	
