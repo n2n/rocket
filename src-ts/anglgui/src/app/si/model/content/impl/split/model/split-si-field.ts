@@ -211,8 +211,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 
 				if (siField.hasInput() && siField.isGeneric()) {
 					const decorator = model = new UiStructureModelDecorator(model);
-					decorator.setAdditionalToolbarStructureModels([new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone())))]);
+					decorator.setAdditionalToolbarStructureModels([new SimpleUiStructureModel(new ButtonControlUiContent(new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone())))]);
 				}
 
 				childUiStructure.model = model;

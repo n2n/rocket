@@ -28,6 +28,10 @@ export class RefSiControl implements SiControl {
 	}
 
 	createUiContent(getUiZone: () => UiZone): UiContent {
+	  if (!!this.newWindow && !!this.siButton.href) {
+	    this.siButton.target = "_blank";
+    }
+
 		return new ButtonControlUiContent({
 			getUiZone,
 			getSiButton: () => this.siButton,
