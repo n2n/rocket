@@ -28,17 +28,17 @@ class NumberInSiField extends InSiFieldAdapter {
 	use AddonsSiFieldTrait;
 	
 	/**
-	 * @var int|null
+	 * @var float|null
 	 */
 	private $value;
 	/**
-	 * @var int|null
+	 * @var float|null
 	 */
-	private $min = PHP_INT_MIN;
+	private $min = null;
 	/**
 	 * @var bool
 	 */
-	private $max = PHP_INT_MAX;
+	private $max = null;
 	/**
 	 * @var float
 	 */
