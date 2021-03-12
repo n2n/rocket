@@ -32,7 +32,7 @@ import { UiContainer } from 'src/app/ui/structure/model/ui-container';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
-import { UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
+import { UiStructureModelMode, UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInUiZoneManager: EmbeInUiZoneManager|null = null;
@@ -118,12 +118,14 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		this.embeInCol.changeEmbePosition(previousIndex, currentIndex);
 		this.embeInCol.writeEmbes();
 		this.getEmbeStructureCollection().refresh();
+		this.updateDeleteToolbar();
 	}
 
 	add(siEmbeddedEntry: SiEmbeddedEntry): void {
 		this.embeInCol.createEmbe(siEmbeddedEntry);
 		this.embeInCol.writeEmbes();
 		this.getEmbeStructureCollection().refresh();
+		this.updateDeleteToolbar();
 	}
 
 	addBefore(siEmbeddedEntry: SiEmbeddedEntry, embeStructure: EmbeStructure): void {
@@ -131,6 +133,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		this.embeInCol.changeEmbePosition(this.embeInCol.embes.length - 1, this.embeInCol.embes.indexOf(embeStructure.embe));
 		this.embeInCol.writeEmbes();
 		this.getEmbeStructureCollection().refresh();
+		this.updateDeleteToolbar();
 	}
 
 	// place(siEmbeddedEntry: SiEmbeddedEntry, embe: Embe) {
@@ -143,15 +146,18 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			this.embeInCol.removeEmbe(embeStructure.embe);
 			this.embeInCol.writeEmbes();
 			this.getEmbeStructureCollection().refresh();
+			this.updateDeleteToolbar();
 			return;
 		}
 
 		embeStructure.embe.siEmbeddedEntry = null;
 		this.getEmbeStructureCollection().refresh();
+		this.updateDeleteToolbar();
 
 		this.obtainer.obtainNew().then(siEmbeddedEntry => {
 			embeStructure.embe.siEmbeddedEntry = siEmbeddedEntry;
 			this.getEmbeStructureCollection().refresh();
+			this.updateDeleteToolbar();
 		});
 	}
 
@@ -160,6 +166,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		this.getEmbeInUiStructureManager().open(embeStructure.embe).then((changed) => {
 			if (!changed) {
 				this.embeStructureCollection.refresh();
+				this.updateDeleteToolbar();
 			}
 		});
 	}
@@ -169,6 +176,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		this.getEmbeInUiStructureManager().openAll().then((changed) => {
 			if (!changed) {
 				this.embeStructureCollection.refresh();
+				this.updateDeleteToolbar();
 			}
 		});
 	}
@@ -194,6 +202,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			this.uiContent = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
 				ref.instance.model = this;
 			});
+			this.updateDeleteToolbar();
 			return;
 		}
 
@@ -203,19 +212,45 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			ref.instance.model = this;
 		});
 
+		this.toolbarStructureModelsSubject.next([this.createOpenAllStructureModel()]);
+		this.mode = UiStructureModelMode.MASSIVE_TOOLBAR;
+	}
 
+	private updateDeleteToolbar(): void {
+		if (this.config.reduced || this.config.max !== 1 || !this.config.nonNewRemovable) {
+			return;
+		}
+
+		if (this.embeStructureCollection.embeStructures.length === 0) {
+			this.toolbarStructureModelsSubject.next([]);
+			return;
+		}
+
+		const button = new SiButton(this.translationService.translate('common_delete_label'), 'btn btn-danger', 'fas fa-trash-alt');
+
+		const deleteUiContent = new ButtonControlUiContent({
+			getUiZone: () => this.reqBoundUiStructure().getZone(),
+			getSiButton: () => button,
+			isLoading: () => false,
+			isDisabled: () => false,
+			exec: () => this.remove(this.embeStructureCollection.embeStructures[0])
+		});
+
+		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(deleteUiContent)]);
+	}
+
+	private createOpenAllStructureModel(): UiStructureModel {
 		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'rocket-btn-light rocket-btn-light-warning', 'fa fa-pencil-alt');
 
 		const openAllUiContent = new ButtonControlUiContent({
-			getUiZone: () => uiStructure.getZone(),
+			getUiZone: () => this.reqBoundUiStructure().getZone(),
 			getSiButton: () => button,
 			isLoading: () => false,
 			isDisabled: () => false,
 			exec: () => this.openAll()
 		});
 
-		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);
-		this.mode = UiStructureModelMode.MASSIVE_TOOLBAR;
+		return new SimpleUiStructureModel(openAllUiContent);
 	}
 
 	unbind(): void {

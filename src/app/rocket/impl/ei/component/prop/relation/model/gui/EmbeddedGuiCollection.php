@@ -59,6 +59,13 @@ class EmbeddedGuiCollection {
 	 */
 	private $allowedEiuTypes = [];
 
+	/**
+	 * @param bool $readOnly
+	 * @param bool $summaryRequired
+	 * @param int $min
+	 * @param EiuFrame $eiuFrame
+	 * @param array $allowedEiuTypes
+	 */
 	function __construct(bool $readOnly, bool $summaryRequired, int $min, ?EiuFrame $eiuFrame, ?array $allowedEiuTypes) {
 		$this->readOnly = $readOnly;
 		$this->summaryRequired = $summaryRequired;
@@ -68,6 +75,9 @@ class EmbeddedGuiCollection {
 	
 	}
 
+	/**
+	 * 
+	 */
 	function clear() {
 		$this->eiuEntryGuis = [];
 	}
@@ -146,9 +156,9 @@ class EmbeddedGuiCollection {
 	 */
 	private function createSiEmbeddeEntry($eiuEntryGui) {
 		return new SiEmbeddedEntry(
-				$eiuEntryGui->gui()->createBulkyEntrySiGui(/*false, */false),
+				$eiuEntryGui->gui()->createBulkyEntrySiGui(false, false),
 				($this->summaryRequired ?
-						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiGui(/*$this->readOnly, */false):
+						$eiuEntryGui->gui()->copy(false, true)->createCompactEntrySiGui(false):
 						null));
 	}
 	

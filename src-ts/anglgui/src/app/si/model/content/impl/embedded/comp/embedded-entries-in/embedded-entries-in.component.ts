@@ -14,14 +14,14 @@ export class EmbeddedEntriesInComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit() {
+	ngOnInit(): void {
 		this.obtainer = this.model.getAddPasteObtainer();
 	}
 
 	get maxReached(): boolean {
 		const max = this.model.getMax();
 
-		return max && max >= this.model.getEmbeStructures().length;
+		return max && max <= this.model.getEmbeStructures().length;
 	}
 
 	get toOne(): boolean {

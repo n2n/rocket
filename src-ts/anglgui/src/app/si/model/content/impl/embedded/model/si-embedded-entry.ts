@@ -14,10 +14,10 @@ export class SiEmbeddedEntry {
 		if (this.summaryComp) {
 			return this.summaryComp.entry;
 		}
-		
+
 		return null;
 	}
-	
+
 	get entry(): SiEntry {
 		return this.comp.entry;
 	}
@@ -62,7 +62,7 @@ export class SiEmbeddedEntry {
 
 	set selectedTypeId(typeId: string|null) {
 		this.comp.entry.selectedEntryBuildupId = typeId;
-		if (this.summaryComp.entry) {
+		if (this.summaryComp && this.summaryComp.entry) {
 			this.summaryComp.entry.selectedEntryBuildupId = typeId;
 		}
 	}

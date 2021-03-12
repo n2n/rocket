@@ -31,7 +31,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		super();
 	}
 
-	setValues(values: SiEmbeddedEntry[]) {
+	setValues(values: SiEmbeddedEntry[]): void {
 		this.values = values;
 		this.validate();
 	}
@@ -40,7 +40,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		return this.values;
 	}
 
-	private validate() {
+	private validate(): void {
 		this.messagesCollection.clear();
 
 		const values = this.getTypeSelectedValues();
