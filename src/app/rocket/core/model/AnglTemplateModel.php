@@ -91,6 +91,8 @@ class AnglTemplateModel implements Lookupable {
 			'maxlength_err' => ValidationMessages::maxlength('{maxlength}', '{field}')->t($n2nLocale),
 			'min_elements_err' => str_replace($nr, '{min}', ValidationMessages::minElements($nr, '{field}')->t($n2nLocale)),
 			'max_elements_err' => str_replace($nr, '{max}', ValidationMessages::maxElements($nr, '{field}')->t($n2nLocale)),
+			'min_err' => str_replace($nr, '{min}', ValidationMessages::min($nr, '{field}')->t($n2nLocale)),
+			'max_err' => str_replace($nr, '{max}', ValidationMessages::max($nr, '{field}')->t($n2nLocale)),
 			'user_title' =>  $dtc->t('user_title'),
 			'user_groups_title' =>  $dtc->t('user_groups_title'),
 			'tool_title' =>  $dtc->t('tool_title'),

@@ -24,7 +24,6 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	private pValue: number|null = null;
 
 	private valueStr: string|null = null;
-	private incorrectValueStr: string|null = null;
 	private decimalPoint: string = null;
 
 	constructor(public label: string, localeId: string) {
@@ -201,7 +200,6 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 
 	public onBlur(): void {
 		let valueStr = this.valueStr;
-		this.incorrectValueStr = null;
 		this.valueStr = null;
 
 		if (null === valueStr || valueStr.length === 0) {
@@ -212,15 +210,11 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		valueStr = this.unlocalizeValue(valueStr);
 
 		if (!this.isNumeric(valueStr)) {
-			this.incorrectValueStr = valueStr;
 			valueStr = this.clearValueStr(valueStr);
 		}
 
 		const parsedValue = parseFloat(valueStr);
 		if (isNaN(parsedValue)) {
-			if (null === this.incorrectValueStr) {
-				this.incorrectValueStr = valueStr;
-			}
 			this.value = null;
 			return;
 		}
