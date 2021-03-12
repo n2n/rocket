@@ -119,14 +119,6 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		};
 	}
 
-	copy(): SiField {
-		throw new Error('Method not implemented.');
-	}
-
-	isGeneric() {
-		return true;
-	}
-
 	copyValue(): SiGenericValue {
 		return new SiGenericValue(this.value === null ? null : new Number(this.value));
 	}

@@ -28,10 +28,6 @@ export class SplitContextOutSiField extends SplitContextSiField {
 		throw new IllegalSiStateError('No input available.');
 	}
 
-	copy(entryBuildup: SiEntryBuildup): SiField {
-		throw new Error('Method not implemented.');
-	}
-
 	isKeyActive(key: string): boolean {
 		return true;
 	}

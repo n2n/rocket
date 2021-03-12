@@ -23,10 +23,6 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 		});
 	}
 
-	// copy(): SiField {
-	// 	throw new Error('Method not implemented.');
-	// }
-
 	copyValue(): SiGenericValue {
 		return new SiGenericValue(this.value ? this.value.copy() : null);
 	}

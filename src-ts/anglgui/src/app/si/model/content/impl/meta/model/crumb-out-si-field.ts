@@ -25,14 +25,6 @@ export class CrumbOutSiField extends OutSiFieldAdapter implements CrumbFieldMode
 		});
 	}
 
-	// copy(): SiField {
-	// 	throw new Error('Method not implemented.');
-	// }
-
-	isGeneric() {
-		return true;
-	}
-
 	copyValue(): SiGenericValue {
 		return new SiGenericValue(new SiCrumbGroupCollection(this.crumbGroups));
 	}

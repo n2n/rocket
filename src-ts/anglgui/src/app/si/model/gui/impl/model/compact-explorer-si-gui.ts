@@ -34,14 +34,6 @@ export class CompactExplorerSiGui implements SiGui {
 		this.pageCollection = new SiPageCollection(pageSize, frame, siService, siModState);
 	}
 
-	// getEntries(): SiEntry[] {
-	// 	return [];// this.pageCollection.getEntries();
-	// }
-
-	// getSelectedEntries(): SiEntry[] {
-	// 	throw new Error('Method not implemented.');
-	// }
-
 	createUiStructureModel(): UiStructureModel {
 		return new CompactExplorerListModelImpl(this, this.partialContent);
 	}
