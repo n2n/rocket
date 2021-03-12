@@ -67,7 +67,7 @@ class EiuEntryGui {
 	 * @return int
 	 */
 	function getViewMode() {
-		return $this->eiEntryGui->getEiGuiFrame()->getViewMode();
+		return $this->eiEntryGui->getEiGui()->getEiGuiModel()->getViewMode();
 	}
 	
 	/**

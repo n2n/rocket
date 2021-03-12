@@ -161,9 +161,9 @@ class UrlEiProp extends AlphanumericEiProp {
 		}
 		
 		return $eiu->factory()->newGuiField(
-				SiFields::linkOut(SiNavPoint::href($value), $this->buildLabel($value, $eiu->entryGui()->isBulky())));
+				SiFields::linkOut(SiNavPoint::href(Url::create($value, true)),
+						$this->buildLabel($value, $eiu->entryGui()->isBulky())));
 	}
-
 	
 
 	private function buildLabel(Url $url, bool $isBulkyMode) {
