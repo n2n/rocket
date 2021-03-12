@@ -1,16 +1,16 @@
-<?php 
-	use n2n\impl\web\ui\view\html\HtmlView;
-	use n2n\core\N2N;
-	use n2n\web\ui\UiComponent;
+<?php
+    use n2n\impl\web\ui\view\html\HtmlView;
+    use n2n\core\N2N;
+    use n2n\web\ui\UiComponent;
 
-	$view = HtmlView::view($this);
-	$html = htmlView::html($view);
-	$request = HtmlView::request($view);
-	
-	$uiComponent = $view->getParam('uiComponent');
-	$view->assert($uiComponent instanceof UiComponent);
+    $view = HtmlView::view($this);
+    $html = htmlView::html($view);
+    $request = HtmlView::request($view);
 
-	$html->meta()->addCss('css/rocket-30.css');
+    $uiComponent = $view->getParam('uiComponent', false);
+    $view->assert($uiComponent === null || $uiComponent instanceof UiComponent);
+
+    $html->meta()->addCss('css/rocket-30.css');
 ?>
 <!DOCTYPE html>
 <html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>" class="rocket-iframe">
@@ -19,6 +19,6 @@
 	<?php $html->headEnd() ?>
 	<?php $html->bodyStart() ?>
 		<?php $view->out($uiComponent) ?>
+		<?php $view->importContentView() ?>
 	<?php $html->bodyEnd() ?>
 </html>
-<?php $view->importContentView() ?>
