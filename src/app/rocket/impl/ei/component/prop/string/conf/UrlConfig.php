@@ -108,7 +108,7 @@ class UrlConfig extends PropConfigAdaption {
 	}
 	
 	
-	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
+	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$lar = new LenientAttributeReader($dataSet);
 		$magCollection->addMag(self::ATTR_RELATIVE_ALLOWED_KEY, new BoolMag('Relative allowed',
 				$lar->getBool(self::ATTR_RELATIVE_ALLOWED_KEY, $this->isRelativeAllowed())));
