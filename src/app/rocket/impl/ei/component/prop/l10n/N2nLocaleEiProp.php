@@ -21,36 +21,34 @@
  */
 namespace rocket\impl\ei\component\prop\l10n;
 
+use n2n\core\config\WebConfig;
+use n2n\core\container\N2nContext;
+use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
 use n2n\l10n\IllegalN2nLocaleFormatException;
 use n2n\l10n\N2nLocale;
+use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\AccessProxy;
+use n2n\util\type\ArgUtils;
+use n2n\util\type\TypeConstraint;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\ei\component\prop\FilterableEiProp;
+use rocket\ei\component\prop\GenericEiProp;
+use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\component\prop\SortableEiProp;
-use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\ei\manage\generic\CommonScalarEiProperty;
-use n2n\impl\persistence\orm\property\N2nLocaleEntityProperty;
-use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
-use n2n\util\type\TypeConstraint;
-use n2n\reflection\property\AccessProxy;
-use n2n\core\container\N2nContext;
-use n2n\web\dispatch\mag\Mag;
-use rocket\ei\util\Eiu;
-use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\ei\component\prop\GenericEiProp;
-use rocket\ei\manage\generic\CommonGenericEiProperty;
-use n2n\core\config\WebConfig;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
+use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
+use rocket\ei\manage\generic\CommonGenericEiProperty;
+use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\si\content\SiField;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\component\prop\IdNameEiProp;
+use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
+use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 
 class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,

@@ -194,7 +194,10 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
+		$value = $eiu->field()->getValue();
+		$options = $this->enumConfig->getOptions();
+		
+		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$value] ?? $value));
 	}
 	
 	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {

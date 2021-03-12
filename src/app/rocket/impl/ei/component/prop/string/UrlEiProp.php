@@ -34,6 +34,7 @@ use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
+use rocket\si\control\SiNavPoint;
 
 class UrlEiProp extends AlphanumericEiProp {
 	
@@ -160,7 +161,7 @@ class UrlEiProp extends AlphanumericEiProp {
 		}
 		
 		return $eiu->factory()->newGuiField(
-				SiFields::linkOut(NavPoint::href($value), $this->buildLabel($value, $eiu->entryGui()->isBulky())));
+				SiFields::linkOut(SiNavPoint::href($value), $this->buildLabel($value, $eiu->entryGui()->isBulky())));
 	}
 
 	
