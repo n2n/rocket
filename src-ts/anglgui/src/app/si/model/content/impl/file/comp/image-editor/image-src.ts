@@ -272,7 +272,7 @@ export class ImageSrc {
 
 	get ready$(): Observable<void> {
 		if (this.readySubject) {
-			return this.readySubject;
+			return this.readySubject.asObservable();
 		}
 
 		return new Observable<void>(subscriber => {

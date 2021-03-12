@@ -17,6 +17,8 @@ use n2n\core\N2N;
 		$html->meta()->bodyEnd()->addJs('angl/main.js', null, false, false, ['defer']);
 	}
 	
+	$html->meta()->bodyEnd()->addCssUrl('https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css');
+	
 	$view->useTemplate('boilerplate.html', $view->getParams());
 	
 	$html->meta()->addCssCode('
