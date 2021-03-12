@@ -19,7 +19,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	copyPool: CopyPool;
 	obtainer: AddPasteObtainer;
 
-	embeUiStructures = new Array<{embe: Embe, uiStructure: UiStructure}>();
+	// embeUiStructures = new Array<{embe: Embe, uiStructure: UiStructure}>();
 
 	constructor(clipboard: ClipboardService) {
 		this.copyPool = new CopyPool(clipboard);
@@ -32,13 +32,13 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 	}
 
-	maxReached(): boolean {
+	get maxReached(): boolean {
 		const max = this.model.getMax();
 
-		return max && max >= this.embeUiStructures.length;
+		return max && max <= this.embeStructures.length;
 	}
 
-	toOne(): boolean {
+	get toOne(): boolean {
 		return this.model.getMax() === 1;
 	}
 

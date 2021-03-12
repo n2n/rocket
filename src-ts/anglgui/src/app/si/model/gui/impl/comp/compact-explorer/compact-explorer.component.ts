@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
 import { Subscription, Subject } from 'rxjs';
 import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { CompactExplorerModel } from '../compact-explorer-model';
 import { StructurePage, StructurePageManager } from './structure-page-manager';
@@ -48,17 +47,17 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		this._currentPageNo = 1;
+		this.pCurrentPageNo = 1;
 		this.spm.updateFilter(quickSearchStr);
 		this.quickSearchSubject.next(quickSearchStr);
 	}
 
 	get currentPageNo(): number {
-		return this._currentPageNo;
+		return this.pCurrentPageNo;
 	}
 
 	set currentPageNo(currentPageNo: number) {
-		if (currentPageNo === this._currentPageNo) {
+		if (currentPageNo === this.pCurrentPageNo) {
 			return;
 		}
 
@@ -66,7 +65,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			throw new IllegalStateError('CurrentPageNo too large or too small: ' + currentPageNo);
 		}
 
-		this._currentPageNo = currentPageNo;
+		this.pCurrentPageNo = currentPageNo;
 
 		if (this.spm.containsPageNo(currentPageNo)) {
 			this.parent.nativeElement.scrollTo({
@@ -125,7 +124,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private quickSearchSubject = new Subject<string>();
 	private quickSearching = false;
 
-	private _currentPageNo = 1;
+	private pCurrentPageNo = 1;
 
 	private sortModeEnabled = false;
 
@@ -135,7 +134,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.model.getStructurePageManager();
 	}
 
-	ngOnInit() {
+	ngOnInit(): void {
 
 		new NgSafeScrollListener(this.parent.nativeElement, this.ngZone).trottled$(500).subscribe(() => {
 			if (this.quickSearching) {
@@ -191,7 +190,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 	private updateCurrentPage() {
 		const structurePage = this.spm.getBestPageByOffsetHeight(this.parent.nativeElement.scrollTop);
 		if (structurePage) {
-			this._currentPageNo = structurePage.siPage.no;
+			this.pCurrentPageNo = structurePage.siPage.no;
 			return;
 		}
 	}
@@ -212,7 +211,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		this._currentPageNo = this.spm.loadNext(this.parent.nativeElement.scrollTop
+		this.pCurrentPageNo = this.spm.loadNext(this.parent.nativeElement.scrollTop
 				+ this.parent.nativeElement.offsetHeight).siPage.no - 1;
 	}
 
@@ -220,7 +219,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.spm.getSiProps();
 	}
 
-	toggleSelection(qualifier: SiEntryQualifier) {
+	toggleSelection(qualifier: SiEntryQualifier): void {
 		if (!this.selectable) {
 			return;
 		}
@@ -244,7 +243,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	isSelected(qualifier: SiEntryQualifier) {
+	isSelected(qualifier: SiEntryQualifier): boolean {
 		return undefined !== this.model.getSiEntryQualifierSelection().selectedQualfiers.find((selectedQualifier) => {
 			return qualifier.equals(selectedQualifier);
 		});
@@ -255,7 +254,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max;
 	}
 
-	drop(event: CdkDragDrop<string[]>) {
+	drop(event: CdkDragDrop<string[]>): void {
 		// this.embeCol.changeEmbePosition(event.previousIndex, event.currentIndex);
 		// this.embeCol.writeEmbes();
 
@@ -278,11 +277,11 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.spm.isTree();
 	}
 
-	switchToSortMode() {
+	switchToSortMode(): void {
 		this.sortModeEnabled = true;
 	}
 
-	switchToEntryControlMode() {
+	switchToEntryControlMode(): void {
 		this.sortModeEnabled = false;
 	}
 
@@ -313,7 +312,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return false;
 	}
 
-	setSiEntrySortSelected(siEntry: SiEntry, value: boolean) {
+	setSiEntrySortSelected(siEntry: SiEntry, value: boolean): void {
 		if (!value) {
 			this.sortSelectedMap.delete(siEntry.identifier.toString());
 			return;
@@ -329,17 +328,17 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.sortSelectedMap.size > 0;
 	}
 
-	moveBefore(siEntry: SiEntry) {
+	moveBefore(siEntry: SiEntry): void {
 		this.spm.moveBefore(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
 		this.sortSelectedMap.clear();
 	}
 
-	moveAfter(siEntry: SiEntry) {
+	moveAfter(siEntry: SiEntry): void {
 		this.spm.moveAfter(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
 		this.sortSelectedMap.clear();
 	}
 
-	moveToParent(siEntry: SiEntry) {
+	moveToParent(siEntry: SiEntry): void {
 		this.spm.moveToParent(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
 		this.sortSelectedMap.clear();
 	}

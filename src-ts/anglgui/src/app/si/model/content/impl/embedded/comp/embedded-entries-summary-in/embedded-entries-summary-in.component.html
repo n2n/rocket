@@ -36,7 +36,7 @@
 		</ng-container>
 
 		<ng-container *ngIf="!embeStructure.embe.isPlaceholder() && embeStructure.embe.isTypeSelected()">
-			<rocket-si-add-past [obtainer]="obtainer" (newEntry)="model.addBefore($event, embeStructure)"></rocket-si-add-past>
+			<rocket-si-add-past *ngIf="!maxReached || !toOne" [obtainer]="obtainer" (newEntry)="model.addBefore($event, embeStructure)" [disabled]="maxReached"></rocket-si-add-past>
 
 			<div rocketUiStructure class="rocket-summary" 
 						[uiStructure]="embeStructure.uiStructure" [toolbarVisible]="false">
@@ -68,7 +68,7 @@
 		</ng-container>
 	</div>
 
-	<rocket-si-add-past [obtainer]="obtainer" (newEntry)="model.add($event)"></rocket-si-add-past>
+	<rocket-si-add-past *ngIf="!maxReached || !toOne" [obtainer]="obtainer" (newEntry)="model.add($event)" [disabled]="maxReached"></rocket-si-add-past>
 </div>
 
 <rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>

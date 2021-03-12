@@ -70,12 +70,12 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		this.currentPageNoSubject.next(currentPageNo);
 	}
 
-	get currentPageNo() {
+	get currentPageNo(): number {
 		return this.currentPageNoSubject.getValue();
 	}
 
-	get pagesNum(): number {
-		return this.structurePageManager.possiablePagesNum;
+	get pagesNum(): number|null {
+		return this.structurePageManager.loadingRequired ? null : this.structurePageManager.possiablePagesNum;
 	}
 
 	bind(uiStructure: UiStructure): void {

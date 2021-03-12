@@ -15,7 +15,7 @@ export class PaginationComponent implements OnInit {
 	}
 
 	get visible(): boolean {
-		return this.model && this.model.pagesNum > 1;
+		return this.model && this.model.pagesNum && this.model.pagesNum > 1;
 	}
 
 	get pagesNum(): number {

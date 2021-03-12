@@ -62,6 +62,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this._quickSearchStr = quickSearchStr;
 		this.clear();
+		this._size = null;
 	}
 
 	clear() {
