@@ -12,12 +12,9 @@ use n2n\core\N2N;
 		$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
 		$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
 	} else {
-		$html->meta()->bodyEnd()->addJs('angl/runtime-es2015.js', null, false, false, ['type' => 'module']);
-		$html->meta()->bodyEnd()->addJs('angl/runtime-es5.js', null, false, false, ['nomodule', 'defer']);
-		$html->meta()->bodyEnd()->addJs('angl/polyfills-es5.js', null, false, false, ['nomodule', 'defer']);
-		$html->meta()->bodyEnd()->addJs('angl/polyfills-es2015.js', null, false, false, ['type' => 'module']);
-		$html->meta()->bodyEnd()->addJs('angl/main-es2015.js', null, false, false, ['type' => 'module']);
-		$html->meta()->bodyEnd()->addJs('angl/main-es5.js', null, false, false, ['nomodule', 'defer']);
+		$html->meta()->bodyEnd()->addJs('angl/runtime.js', null, false, false, ['defer']);
+		$html->meta()->bodyEnd()->addJs('angl/polyfills.js', null, false, false, ['defer']);
+		$html->meta()->bodyEnd()->addJs('angl/main.js', null, false, false, ['defer']);
 	}
 	
 	$view->useTemplate('boilerplate.html', $view->getParams());

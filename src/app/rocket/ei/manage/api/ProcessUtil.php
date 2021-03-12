@@ -129,7 +129,9 @@ class ProcessUtil {
 			
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
+			// doesn't work if forked gui fields
+// 			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
+			$defPropPaths = null;
 			
 			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getTypeId(), $defPropPaths, true);
 		} catch (SecurityException $e) {

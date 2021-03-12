@@ -672,7 +672,9 @@ class GuiDefinition {
 		$eiGuiModel->putEiGuiFrame($eiGuiFrame);
 				
 		$guiStructureDeclarations = null;
-		
+		if (is_array($defPropPaths) && empty($defPropPaths)) {
+			throw new \Exception();
+		}
 		if ($defPropPaths === null) {
 			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($n2nContext, $eiGuiFrame);
 		} else {

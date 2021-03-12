@@ -25,6 +25,7 @@ import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error'
 import { EmbeStructure, EmbeStructureCollection } from './embe/embe-structure';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { map } from 'rxjs/operators';
 
 export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesOutModel {
 	private embeOutUiStructureManager: EmbeOutUiStructureManager|null = null;
@@ -117,7 +118,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 	}
 
 	getStructures$(): Observable<UiStructure[]> {
-		throw new Error("Method not implemented.");
+		return this.embeStructureCollection.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
 	}
 
 	getStructureErrors(): UiStructureError[] {

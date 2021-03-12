@@ -1,4 +1,3 @@
-import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntry } from '../../../si-entry';
 import { SplitContextSiField, SplitStyle } from './split-context-si-field';
@@ -31,10 +30,6 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 			activeKeys: this.activeKeys,
 			entryInputs: entryInputObj
 		};
-	}
-
-	copy(): SiField {
-		throw new Error('Method not implemented.');
 	}
 
 	protected createUiContent(): UiContent {
@@ -104,13 +99,5 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 
 	getTooltip(): string|null {
 		return this.managerStyle.tooltip;
-	}
-
-	copyValue(): SiGenericValue {
-		throw new Error('Not yet implemented');
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new Error('Not yet implemented');
 	}
 }

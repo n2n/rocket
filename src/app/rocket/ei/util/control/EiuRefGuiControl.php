@@ -42,18 +42,21 @@ class EiuRefGuiControl implements GuiControl {
 	private $eiuFrame;
 	private $urlExt;
 	private $siButton;
-	
+	private $newWindow = false;
+	private $href;
+
 	function __construct(string $id, EiuFrame $eiuFrame, ?Url $urlExt, SiButton $siButton, bool $href) {
 		$this->id = $id;
 		$this->eiuFrame = $eiuFrame;
 		$this->urlExt = $urlExt;
 		$this->siButton = $siButton;
+		$this->href = $href;
 	}
 	
 	function getId(): string {
 		return $this->id;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::isInputHandled()
@@ -80,7 +83,13 @@ class EiuRefGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
 	 */
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new RefSiControl($this->createCmdUrl($siApiCallId->getGuiControlPath()->getEiCommandPath()), $this->siButton);
+		$cmdUrl = $this->createCmdUrl($siApiCallId->getGuiControlPath()->getEiCommandPath());
+
+		if ($this->href) {
+			$this->siButton->setHref($cmdUrl);
+		}
+
+		return new RefSiControl($cmdUrl, $this->siButton, $this->newWindow);
 	}
 	
 	/**
@@ -88,8 +97,8 @@ class EiuRefGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
 	 */
 	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		$eiCommandPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCommandPath();
-		return new RefSiControl($this->createCmdUrl($eiCommandPath), $this->siButton);
+		$eiCmdPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCommandPath();
+		return new RefSiControl($this->createCmdUrl($eiCmdPath), $this->siButton, $this->newWindow);
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {
@@ -102,5 +111,14 @@ class EiuRefGuiControl implements GuiControl {
 
 	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult {
 		throw new NotYetImplementedException();
+	}
+
+	/**
+	 * @param bool $newWindow
+	 * @return $this
+	 */
+	public function setNewWindow(bool $newWindow) {
+		$this->newWindow = $newWindow;
+		return $this;
 	}
 }

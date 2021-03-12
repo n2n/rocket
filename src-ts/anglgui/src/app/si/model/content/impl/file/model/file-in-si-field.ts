@@ -63,9 +63,9 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		return this.acceptedMimeTypes;
 	}
 
-	removeFile(): void {
-		throw new Error('Method not implemented.');
-	}
+	// removeFile(): void {
+	// 	throw new Error('Method not implemented.');
+	// }
 
 	// copy(): SiField {
 	// 	throw new Error('Method not implemented.');

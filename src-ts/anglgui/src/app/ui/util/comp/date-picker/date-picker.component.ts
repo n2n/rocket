@@ -1,27 +1,26 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { NgbDateParserFormatter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
-import { UiParserFormatter } from './ui-paser-formatter';
-import { UiDateAdapter } from './ui-date-adapter';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+
 
 @Component({
 	selector: 'rocket-ui-date-picker',
-	templateUrl: './date-picker.component.html',
-	providers: [
-		{ provide: NgbDateParserFormatter, useClass: UiParserFormatter },
-		{ provide: NgbDateAdapter, useClass: UiDateAdapter }
-	]
+	templateUrl: './date-picker.component.html'
 })
 export class DatePickerComponent implements OnInit {
 
 
 	private pDate: Date|null = null;
 
+	constructor(private localeService: BsLocaleService) {
+		this.localeService.use('de');
+	}
+
 	@Input()
 	set date(date: Date|null) {
 		this.pDate = date;
 	}
 
-	get date(): Date {
+	get date(): Date|null {
 		return this.pDate;
 	}
 
@@ -39,7 +38,11 @@ export class DatePickerComponent implements OnInit {
 		// };
 	}
 
-	selectDate(date: Date|null) {
+	selectDate(date: Date|null): void {
+		if (date && isNaN(date.getTime())) {
+			return;
+		}
+
 		if (!this.pDate || !date) {
 			this.pDate = date;
 			this.dateChange.emit(this.pDate);
