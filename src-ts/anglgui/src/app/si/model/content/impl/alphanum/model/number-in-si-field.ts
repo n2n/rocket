@@ -8,6 +8,8 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { NumberInComponent } from '../comp/number-in/number-in.component';
+import { Inject, LOCALE_ID } from '@angular/core';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -19,37 +21,35 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	public prefixAddons: SiCrumbGroup[] = [];
 	public suffixAddons: SiCrumbGroup[] = [];
 
-	private _value: number|null = null;
+	private pValue: number|null = null;
 
-	constructor(public label: string) {
+	private valueStr: string|null = null;
+	private incorrectValueStr: string|null = null;
+	private decimalPoint: string = null;
+
+	constructor(public label: string, localeId: string) {
 		super();
 		this.validate();
+		this.decimalPoint = new Intl.NumberFormat(localeId).format(1.1).replace(/1/g, '');
 	}
 
 	get value(): number|null {
-		return this._value;
+		return this.pValue;
 	}
 
 	set value(value: number|null) {
 		if (value === null) {
-			this._value = value;
+			this.pValue = value;
 			this.validate();
 			return;
 		}
 
-		if (this.min !== null && this.min >= value) {
-			this._value = this.min;
+		if (!this.isInStep(value)) {
+			this.pValue = this.popToStep(value);
+		} else {
+			this.pValue = value;
 		}
 
-		if (this.max !== null && this.max <= value) {
-			this._value = this.max;
-		}
-
-		if (this.step === 1) {
-			this._value = value;
-		}
-
-		this._value = Math.round(value / this.step) * this.step;
 		this.validate();
 	}
 
@@ -58,27 +58,32 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			return null;
 		}
 
-		if (this.fixed) {
-			return this.value.toFixed(this.countDecimals(this.step));
+		if (null === this.valueStr) {
+			if (this.fixed) {
+				this.valueStr = this.value.toFixed(this.countDecimals(this.step));
+			} else {
+				this.valueStr = this.value.toString();
+			}
+
+			if (this.decimalPoint !== '.') {
+				this.valueStr = this.valueStr.replace('.', this.decimalPoint);
+			}
 		}
 
-		return this.value.toString();
+		return this.valueStr;
 	}
 
-	setValue(valueStr: string|null) {
-		if (valueStr === null) {
-			this.value = null;
+	setValue(valueStr: string|null): void {
+		if (null === valueStr) {
+			this.valueStr = '';
 			return;
 		}
-		let value = parseFloat(valueStr);
-		if (isNaN(value)) {
-			value = null;
-		}
-		this.value = value;
+
+		this.valueStr = valueStr;
 	}
 
 	getType(): string {
-		return this.arrowStep != null ? 'number' : 'text';
+		return 'text';
 	}
 
 	getMaxlength(): number {
@@ -123,7 +128,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		throw new Error('Method not implemented.');
 	}
 
-	isGeneric() {
+	isGeneric(): boolean {
 		return true;
 	}
 
@@ -151,9 +156,87 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		});
 	}
 
-	private validate() {
+	public onFocus(): void {
 		this.messagesCollection.clear();
+	}
 
+	private isNumeric(valueStr: string): boolean {
+		if (valueStr.length === 0) {
+			return true;
+		}
+
+		return valueStr.match(/^-?[0-9]+(\.[0-9]*)?$/) !== null;
+	}
+
+	private clearValueStr(valueStr: string): string {
+		let onlyNumbersAndDecimalPoints = valueStr.replace(/[^0-9.]/g, '');
+
+		while (onlyNumbersAndDecimalPoints.indexOf('.') !== onlyNumbersAndDecimalPoints.lastIndexOf('.')) {
+			onlyNumbersAndDecimalPoints = onlyNumbersAndDecimalPoints.substr(0,
+				onlyNumbersAndDecimalPoints.lastIndexOf('.'));
+		}
+
+		return onlyNumbersAndDecimalPoints;
+	}
+
+	private getStepFactor(): number {
+		return Math.pow(10, this.countDecimals(this.step));
+	}
+
+	private isInStep(value: number): boolean {
+		if (this.step === null) {
+			return true;
+		}
+
+		const stepFactor = this.getStepFactor();
+		return (value * stepFactor) % (this.step * stepFactor) === 0;
+	}
+
+	private popToStep(value: number): number {
+		const stepFactor = this.getStepFactor();
+
+		return parseFloat((Math.round((value * stepFactor) / (this.step * stepFactor))
+				* this.step).toFixed(this.countDecimals(this.step)));
+	}
+
+	private unlocalizeValue(valueStr: string): string {
+		if (this.decimalPoint === '.' || valueStr.indexOf(this.decimalPoint) === -1) {
+			return valueStr;
+		}
+
+		return valueStr.replace('.', '').replace(this.decimalPoint, '.');
+	}
+
+	public onBlur(): void {
+		let valueStr = this.valueStr;
+		this.incorrectValueStr = null;
+		this.valueStr = null;
+
+		if (null === valueStr || valueStr.length === 0) {
+			this.value = null;
+			return;
+		}
+
+		valueStr = this.unlocalizeValue(valueStr);
+
+		if (!this.isNumeric(valueStr)) {
+			this.incorrectValueStr = valueStr;
+			valueStr = this.clearValueStr(valueStr);
+		}
+
+		const parsedValue = parseFloat(valueStr);
+		if (isNaN(parsedValue)) {
+			if (null === this.incorrectValueStr) {
+				this.incorrectValueStr = valueStr;
+			}
+			this.value = null;
+			return;
+		}
+
+		this.value = parsedValue;
+	}
+
+	private validate(): void {
 		if (this.mandatory && this.value === null) {
 			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}

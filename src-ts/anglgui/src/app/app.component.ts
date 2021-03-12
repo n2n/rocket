@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Injector } from '@angular/core';
+import { Component, ElementRef, OnInit, Injector, LOCALE_ID } from '@angular/core';
 import { TranslationService } from './util/i18n/translation.service';
 import { Extractor } from './util/mapping/extractor';
 import { UiMenuGroup } from './ui/structure/model/ui-menu';
@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
 		this.appState.pageName = extr.reqString('pageName');
 
 		this.appState.assetsUrl = this.elemRef.nativeElement.getAttribute('data-rocket-assets-url');
+		this.appState.localeId = this.elemRef.nativeElement.getAttribute('data-locale-id');
 	}
 
 	navRouterLink(navPoint: UiNavPoint): string {

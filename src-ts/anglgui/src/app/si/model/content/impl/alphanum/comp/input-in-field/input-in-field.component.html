@@ -7,7 +7,7 @@
 
 	<input [type]="model.getType()" class="form-control" [(ngModel)]="value"
 			[maxlength]="model.getMaxlength()" [min]="model.getMin()" [max]="model.getMax()" [step]="model.getStep()"
-			#input="ngModel" />
+			(focus)="model.onFocus()" (blur)="model.onBlur()"/>
 
 	<div *ngIf="model.getSuffixAddons().length > 0" class="input-group-append">
 		<rocket-crumb-group *ngFor="let crumbGroup of model.getSuffixAddons()" 

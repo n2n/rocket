@@ -21,4 +21,8 @@ export interface InputInFieldModel extends MessageFieldModel {
 	getPrefixAddons(): SiCrumbGroup[];
 
 	getSuffixAddons(): SiCrumbGroup[];
+
+	onFocus(): void;
+
+	onBlur(): void;
 }

@@ -50,6 +50,7 @@ import { SelectInFieldComponent } from './model/content/impl/enum/comp/select-in
 import { IframeOutComponent } from './model/content/impl/iframe/comp/iframe-out/iframe-out.component';
 import { IframeInComponent } from './model/content/impl/iframe/comp/iframe-in/iframe-in.component';
 import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in/date-time-in.component';
+import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/number-in.component';
 
 @NgModule({
 	declarations: [
@@ -61,7 +62,8 @@ import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
 		SplitManagerComponent, EnumInComponent, QualifierTilingComponent, ChoosePasteComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, UploadResultMessageComponent, ImagePreviewComponent, FieldMessagesComponent,
-		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent, IframeInComponent, DateTimeInComponent
+		CrumbOutFieldComponent, SelectInFieldComponent, IframeOutComponent, IframeInComponent, DateTimeInComponent,
+		NumberInComponent
 	],
 	imports: [
 		CommonModule,
@@ -85,7 +87,7 @@ import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EnumInComponent, EmbeddedEntryComponent,
-		ImageEditorComponent, CrumbOutFieldComponent, SelectInFieldComponent
+		ImageEditorComponent, CrumbOutFieldComponent, SelectInFieldComponent, NumberInComponent
 	]
 })
 export class SiModule { }
