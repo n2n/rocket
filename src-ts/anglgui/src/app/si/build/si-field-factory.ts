@@ -54,7 +54,7 @@ enum SiFieldType {
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
 	IFRAME_OUT = 'iframe-out',
-  	IFRAME_IN = 'iframe-in',
+  IFRAME_IN = 'iframe-in',
 	CRUMB_OUT = 'crumb-out',
 	DATETIME_IN = 'datetime-in'
 }
