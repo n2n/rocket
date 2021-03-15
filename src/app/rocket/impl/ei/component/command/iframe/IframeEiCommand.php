@@ -37,7 +37,7 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 				->setTooltip($this->iframeConfig->getButtonTooltip());
 
 		$siControl = $eiu->factory()->controls()
-				->newCmdHref(self::CONTROL_RUN_KEY, $siButton)
+				->newCmdRef(self::CONTROL_RUN_KEY, $siButton)
 				->setNewWindow(true);
 
 		return [$siControl];
@@ -52,7 +52,7 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 
 		$siControl = $eiu->factory()->controls()
 			->newCmdRef(self::CONTROL_RUN_KEY, $siButton, new Path([$eiu->entry()->getPid()]))
-			->setNewWindow(true);
+			->setNewWindow(false);
 
 		return [$siControl];
 	}
