@@ -18,8 +18,8 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 	}
 
 	createUiContent(): UiContent|null {
-		return new TypeUiContent(FileOutFieldComponent, () => {
-// 			ref.instance.model = this;
+		return new TypeUiContent(FileOutFieldComponent, (ref) => {
+ 			ref.instance.model = this;
 		});
 	}
 

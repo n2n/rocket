@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { SiFile } from '../../model/file-in-si-field';
+import { FileFieldModel } from '../file-field-model';
+import GLightbox from 'glightbox';
 
 @Component({
 	selector: 'rocket-file-out-field',
@@ -6,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 	styleUrls: ['./file-out-field.component.css'],
 	host: {class: 'rocket-file-out-field'}
 })
-export class FileOutFieldComponent implements OnInit {
+export class FileOutFieldComponent implements OnInit, AfterViewInit {
 
+	model: FileFieldModel;
+	
 	constructor() { }
+    ngAfterViewInit(): void {
+        var lightbox = GLightbox({});
+    }
+	
+	get currentSiFile(): SiFile|null {
+		return this.model.getSiFile();
+	}
 
 	ngOnInit() {
 	}
