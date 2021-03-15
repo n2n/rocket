@@ -114,6 +114,7 @@ class AnglTemplateModel implements Lookupable {
 			'show_all_txt' => $dtc->t('show_all_txt'),
 			'save_original_txt' => $dtc->t('save_original_txt'),
 			'reset_original_txt' => $dtc->t('reset_original_txt'),
+			'search_placeholder_txt' => $dtc->t('search_placeholder_txt'),
 		];
 	}
 	
