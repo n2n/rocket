@@ -111,6 +111,9 @@ class AnglTemplateModel implements Lookupable {
 			'please_select_txt' => $dtc->t('please_select_txt'),
 			'no_selection_txt' => $dtc->t('no_selection_txt'),
 			'remove_selection_txt' => $dtc->t('remove_selection_txt'),
+			'show_all_txt' => $dtc->t('show_all_txt'),
+			'save_original_txt' => $dtc->t('save_original_txt'),
+			'reset_original_txt' => $dtc->t('reset_original_txt'),
 		];
 	}
 	
