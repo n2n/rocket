@@ -6019,7 +6019,7 @@ rocket-ui-compact-explorer {
   min-height: 100%;
 }
 
-.rocket-zone > .rocket-zone-content > .rocket-content > .rocket-toolbar {
+.rocket-zone > .rocket-zone-content > .rocket-content > .rocket-toolbar:not(.rocket-massive) {
   position: absolute;
   right: 3rem;
   top: 1.5rem;
@@ -7057,8 +7057,7 @@ td > .rocket-split {
  * - .rocket-field
  */
 .rocket-item {
-  padding: 0.5rem 1rem;
-  margin: 0 -1rem;
+  padding: 0.5rem 0;
 }
 
 .rocket-item > label {
@@ -7128,13 +7127,6 @@ td > .rocket-split {
   }
   .rocket-item.rocket-double-item > label {
     width: 4rem;
-  }
-  .rocket-item.rocket-level-4 {
-    -ms-grid-columns: 4rem 1fr auto;
-        grid-template-columns: 4rem 1fr auto;
-  }
-  .rocket-item.rocket-level-4:first-child {
-    padding-top: 0;
   }
   .rocket-split > .rocket-item:first-child {
     padding-top: 0;
@@ -7953,6 +7945,10 @@ rocket-add-past > button::after {
   right: 0;
   padding: 0.5rem;
   background: #fff;
+}
+
+.rocket-main-group > .rocket-toolbar > * > .rocket-button-control > .btn .btn-label {
+  display: none;
 }
 
 .rocket-main-group-nav {

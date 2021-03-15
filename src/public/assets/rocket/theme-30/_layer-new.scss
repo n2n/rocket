@@ -210,7 +210,7 @@ rocket-ui-compact-explorer {
 }
 
 
-.rocket-zone > .rocket-zone-content > .rocket-content > .rocket-toolbar {
+.rocket-zone > .rocket-zone-content > .rocket-content > .rocket-toolbar:not(.rocket-massive) {
 	position: absolute;
 	right: $content-padding;
 	top: 1.5rem;

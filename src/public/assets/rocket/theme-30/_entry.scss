@@ -9,9 +9,10 @@
  */
 
 .rocket-item {
-    padding: 0.5rem 1rem;
-    // padding: 0 1rem;
-    margin: 0 -1rem;
+    // padding: 0.5rem 1rem;
+    // margin: 0 -1rem;
+    // negative margin adds problems with overlapping items
+      padding: 0.5rem 0;
     > label {
         margin: 0;
     }
@@ -84,14 +85,6 @@
 
         > label {
             width: $rocket-item-double-item-width;
-        }
-    }
-
-    // tomekk überprüfe nochmal, ob das nötig ist
-    .rocket-item.rocket-level-4 {
-        grid-template-columns: $rocket-item-double-item-width 1fr auto;
-        &:first-child {
-            padding-top: 0;
         }
     }
 
