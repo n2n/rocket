@@ -36,6 +36,7 @@ import { IframeOutSiField } from '../model/content/impl/iframe/model/iframe-out-
 import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-si-field';
 import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si-field';
 import { AppStateService } from 'src/app/app-state.service';
+import { StringArrayInSiField } from '../model/content/impl/array/model/string-array-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -57,7 +58,8 @@ enum SiFieldType {
 	IFRAME_OUT = 'iframe-out',
   IFRAME_IN = 'iframe-in',
 	CRUMB_OUT = 'crumb-out',
-	DATETIME_IN = 'datetime-in'
+	DATETIME_IN = 'datetime-in',
+	STRING_ARRAY_IN = 'string-array-in'
 }
 
 export class SiFieldFactory {
@@ -132,8 +134,10 @@ export class SiFieldFactory {
 			return fileInSiField;
 
 		case SiFieldType.LINK_OUT:
-			return new LinkOutSiField(SiControlFactory.createNavPoint(dataExtr.reqObject('navPoint')),
+			const linkOutSiField = new LinkOutSiField(SiControlFactory.createNavPoint(dataExtr.reqObject('navPoint')),
 					dataExtr.reqString('label'), this.injector);
+			linkOutSiField.lytebox = dataExtr.reqBoolean('lytebox');
+			return linkOutSiField;
 
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
@@ -237,7 +241,12 @@ export class SiFieldFactory {
 			dateTimeInSiField.dateChoosable = dataExtr.reqBoolean('dateChoosable');
 			dateTimeInSiField.timeChoosable = dataExtr.reqBoolean('timeChoosable');
 			return dateTimeInSiField;
-
+		case SiFieldType.STRING_ARRAY_IN:
+			const stringArrayInSiField = new StringArrayInSiField(prop.label, dataExtr.reqArray('values'));
+			stringArrayInSiField.min = dataExtr.reqNumber('min');
+			stringArrayInSiField.max = dataExtr.nullaNumber('max');
+			
+			return stringArrayInSiField;
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}

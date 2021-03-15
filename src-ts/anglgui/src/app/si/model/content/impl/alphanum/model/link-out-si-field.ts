@@ -11,6 +11,8 @@ import { SiNavPoint } from 'src/app/si/model/control/si-nav-point';
 import { Injector } from '@angular/core';
 
 export class LinkOutSiField extends OutSiFieldAdapter {
+	
+	public lytebox = false;
 
 	constructor(public navPoint: SiNavPoint, public label: string, private injector: Injector) {
 		super();
@@ -28,7 +30,8 @@ export class LinkOutSiField extends OutSiFieldAdapter {
 			getMessages: () => this.getMessages(),
 			getUiNavPoint: () => {
 				return this.navPoint.toUiNavPoint(this.injector, uiZone.layer);
-			}
+			},
+			isLytebox: () => this.lytebox
 		};
 	}
 

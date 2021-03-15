@@ -9,11 +9,10 @@ import { StringArrayInComponent } from '../comp/string-array-in/string-array-in.
 
 
 export class StringArrayInSiField extends InSiFieldAdapter implements StringArrayInModel {
-	public values = [];
 	public min = 0;
 	public max: number|null = null;
 
-	constructor(public label: string, public value: string|null, public multiline: boolean = false) {
+	constructor(public label: string, public values = []) {
 		super();
 		this.validate();
 	}
@@ -65,7 +64,7 @@ export class StringArrayInSiField extends InSiFieldAdapter implements StringArra
 	}
 
 	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.value === null ? null : new Array(this.values));
+		return new SiGenericValue(this.values === null ? null : new Array(this.values));
 	}
 
 	pasteValue(genericValue: SiGenericValue): Promise<void> {

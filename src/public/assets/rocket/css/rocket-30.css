@@ -10400,7 +10400,7 @@ timepicker > table > tbody > tr:last-child:not(only-child) .btn {
 
 @media ((min-width: 768px)) {
   .goverlay {
-    background: rgba(0, 0, 0, 0.92);
+    background: rgba(0, 0, 0, 0.75);
   }
 }
 

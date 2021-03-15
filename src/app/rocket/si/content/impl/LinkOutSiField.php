@@ -26,6 +26,7 @@ use rocket\si\control\SiNavPoint;
 class LinkOutSiField extends OutSiFieldAdapter {
 	private $navPoint;
 	private $label;
+	private $lytebox = false;
 	
 	function __construct(SiNavPoint $navPoint, string $label) {
 		$this->navPoint = $navPoint;
@@ -65,6 +66,15 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	}
 	
 	/**
+	 * @param bool|null $lytebox
+	 * @return \rocket\si\content\impl\StringOutSiField
+	 */
+	function setLytebox(bool $lytebox) {
+		$this->lytebox = $lytebox;
+		return $this;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getType()
 	 */
@@ -80,7 +90,8 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	function getData(): array {
 		return [
 			'navPoint' => $this->navPoint,
-			'label' => $this->label
+			'label' => $this->label,
+			'lytebox' => $this->lytebox
 		];
 	}
 }
