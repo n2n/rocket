@@ -436,7 +436,7 @@ $large-viewport: "(min-width: 1200px)";
     }
 
     @media ($medium-small-viewport) {
-        background: rgba(0, 0, 0, 0.92);
+        background: rgba(0, 0, 0, 0.75);
     }
 
     @media screen and (max-height: 420px) {
