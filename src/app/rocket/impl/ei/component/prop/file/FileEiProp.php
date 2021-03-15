@@ -273,9 +273,18 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 		$imageFile = new ImageFile($file);
 		
 		foreach ($siImageDimensions as $siImageDimension) {
-			$imageFile->setThumbCut(ImageDimension::createFromString($siImageDimension->getId()), 
-					$siImageDimension->getThumbCut());
+			$imageDimension = ImageDimension::createFromString($siImageDimension->getId());
+			
+			$thumbFileSource = $file->getFileSource()->getAffiliationEngine()->getThumbManager()
+					->getByDimension($imageDimension);
+			if ($thumbFileSource !== null) {
+				$thumbFileSource->delete();
+			}
+			
+			$imageFile->setThumbCut($imageDimension, $siImageDimension->getThumbCut());
 		}
+		
+		
 	}
 	
 	/**

@@ -134,8 +134,10 @@ export class SiFieldFactory {
 			return fileInSiField;
 
 		case SiFieldType.LINK_OUT:
-			return new LinkOutSiField(SiControlFactory.createNavPoint(dataExtr.reqObject('navPoint')),
+			const linkOutSiField = new LinkOutSiField(SiControlFactory.createNavPoint(dataExtr.reqObject('navPoint')),
 					dataExtr.reqString('label'), this.injector);
+			linkOutSiField.lytebox = dataExtr.reqBoolean('lytebox');
+			return linkOutSiField;
 
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));

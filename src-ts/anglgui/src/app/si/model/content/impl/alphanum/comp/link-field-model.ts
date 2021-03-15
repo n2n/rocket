@@ -6,4 +6,6 @@ export interface LinkOutModel extends MessageFieldModel {
 	getUiNavPoint(): UiNavPoint;
 
 	getLabel(): string;
+	
+	isLytebox(): boolean;
 }

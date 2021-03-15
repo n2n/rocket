@@ -22,7 +22,7 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 		return this.disabledSubject.getValue();
 	}
 
-	setDisabled(disabled: boolean) {
+	setDisabled(disabled: boolean): void {
 		this.disabledSubject.next(disabled);
 	}
 

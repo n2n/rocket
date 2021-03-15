@@ -40,6 +40,7 @@ class UrlConfig extends PropConfigAdaption {
 	const ATTR_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
 	const ATTR_RELATIVE_ALLOWED_KEY = 'relativeAllowed'; 
 	const ATTR_AUTO_SCHEME_KEY = 'autoScheme';
+	const ATTR_LYTEBOX_KEY = 'lytebox';
 	
 	private static $commonNeedles = array('url', 'link');
 	private static $commonNotNeedles = array('label', 'title', 'text');
@@ -47,6 +48,7 @@ class UrlConfig extends PropConfigAdaption {
 	private $autoScheme;
 	private $allowedSchemes = array();
 	private $relativeAllowed = false;
+	private $lytebox = false;
 	
 	
 	public function setAllowedSchemes(array $allowedSchemes) {
@@ -71,6 +73,14 @@ class UrlConfig extends PropConfigAdaption {
 	
 	public function getAutoScheme() {
 		return $this->autoScheme;
+	}
+	
+	public function isLytebox(): bool {
+		return $this->lytebox;
+	}
+	
+	public function setLytebox(bool $lytebox) {
+		$this->lytebox = $lytebox;
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
@@ -105,6 +115,11 @@ class UrlConfig extends PropConfigAdaption {
 			$this->setAutoScheme($dataSet->getString(self::ATTR_AUTO_SCHEME_KEY, 
 					false, null, true));
 		}
+		
+		if ($dataSet->contains(self::ATTR_LYTEBOX_KEY)) {
+			$this->setLytebox($dataSet->getBool(self::ATTR_LYTEBOX_KEY,
+					false, null, true));
+		}
 	}
 	
 	
@@ -120,6 +135,9 @@ class UrlConfig extends PropConfigAdaption {
 		$magCollection->addMag(self::ATTR_AUTO_SCHEME_KEY, 
 				new StringMag('Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 
 						$this->getAutoScheme())));
+		
+		$magCollection->addMag(self::ATTR_LYTEBOX_KEY, new BoolMag('open in Lytebox',
+				$lar->getBool(self::ATTR_LYTEBOX_KEY, $this->isLytebox())));
 	}
 	
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
@@ -131,5 +149,8 @@ class UrlConfig extends PropConfigAdaption {
 		
 		$dataSet->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_AUTO_SCHEME_KEY)->getValue());
+		
+		$dataSet->set(self::ATTR_LYTEBOX_KEY, $magCollection
+				->getMagByPropertyName(self::ATTR_LYTEBOX_KEY)->getValue());
 	}
 }

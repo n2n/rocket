@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { LinkOutModel } from '../link-field-model';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
+import GLightbox from 'glightbox';
 
 @Component({
 	selector: 'rocket-link-out-field',
@@ -9,13 +10,19 @@ import { SiUiService } from 'src/app/si/manage/si-ui.service';
 	styleUrls: ['./link-out-field.component.css'],
 	host: {class: 'rocket-link-out-field'}
 })
-export class LinkOutFieldComponent implements OnInit {
+export class LinkOutFieldComponent implements OnInit, AfterViewInit {
 
 	uiZone: UiZone;
 	model: LinkOutModel;
 
 	constructor(private siUiService: SiUiService) {
 	}
+
+	ngAfterViewInit(): void {
+		if (this.model.isLytebox) {
+	        GLightbox({});
+		}
+    }
 
 	ngOnInit() {
 	}
