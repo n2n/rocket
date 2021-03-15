@@ -58,6 +58,8 @@ class BooleanEiProp extends DraftablePropertyEiPropAdapter implements Filterable
 	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter::createEiPropConfigurator()
 	 */
 	protected function prepare() {
+		$this->getEditConfig()->setMandatoryChoosable(false)
+				->setMandatory(false);
 		$this->getConfigurator()->addAdaption($this->booleanConfig);
 	}
 	
