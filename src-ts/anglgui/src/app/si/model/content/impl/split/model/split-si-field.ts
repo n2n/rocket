@@ -287,7 +287,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 		return this.loading;
 	}
 
-	exec(subKey: string|null): void {
+	exec(subKey: string|null): boolean {
 		if (this.loading || !subKey) {
 			return;
 		}
@@ -301,6 +301,8 @@ class SplitButtonControlModel implements ButtonControlModel {
 					}
 				})
 				.finally(() => { this.loading = false; });
+
+		return true;
 	}
 
 	getSubTooltip(): string|null {

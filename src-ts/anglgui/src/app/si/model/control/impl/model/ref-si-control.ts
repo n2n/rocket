@@ -5,11 +5,13 @@ import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiControlBoundry } from '../../si-control-bountry';
+import {Aconfig} from '../comp/button-control-model';
 
 export class RefSiControl implements SiControl {
+  public href = false;
+  public newWindow = false;
 
-	constructor(public siUiService: SiUiService, public url: string, public newWindow: boolean, public siButton: SiButton,
-							public controlBoundry: SiControlBoundry) {
+	constructor(public siUiService: SiUiService, public url: string, public siButton: SiButton, public controlBoundry: SiControlBoundry) {
 	}
 
 
@@ -18,26 +20,36 @@ export class RefSiControl implements SiControl {
 	}
 
 	exec(uiZone: UiZone) {
-		if (!this.newWindow){
+    if (this.href) {
+      return false;
+    }
+
+    if (this.newWindow) {
+      const popUpZone = uiZone.layer.container.createLayer().pushRoute(null, this.url).zone;
+      this.siUiService.loadZone(popUpZone, false);
+      return true;
+    }
+
+		if (!uiZone.layer.main){
 			this.siUiService.navigateByUrl(this.url, uiZone.layer);
-			return;
+			return true;
 		}
 
-		const popUpZone = uiZone.layer.container.createLayer().pushRoute(null, this.url).zone;
-		this.siUiService.loadZone(popUpZone, false);
+    return false;
 	}
 
 	createUiContent(getUiZone: () => UiZone): UiContent {
-	  if (!!this.newWindow && !!this.siButton.href) {
-	    this.siButton.target = "_blank";
-    }
-
-		return new ButtonControlUiContent({
+	 	return new ButtonControlUiContent({
 			getUiZone,
 			getSiButton: () => this.siButton,
 			isDisabled: () => this.isDisabled(),
+      getAconfig: () => this.createAconfig(),
 			isLoading: () => false,
 			exec: () => this.exec(getUiZone())
-		});
+    });
 	}
+
+	private createAconfig(): Aconfig {
+    return {newWindow: this.newWindow, routerLinked: !this.href, url: this.url};
+  }
 }

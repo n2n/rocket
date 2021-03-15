@@ -97,7 +97,10 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 			getSiButton: () => button,
 			isLoading: () => false,
 			isDisabled: () => false,
-			exec: () => this.openAll()
+			exec: () => {
+			  this.openAll();
+        return true;
+      }
 		});
 
 		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);

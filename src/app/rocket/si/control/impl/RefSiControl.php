@@ -29,11 +29,13 @@ class RefSiControl implements SiControl {
 	private $url;
 	private $button;
 	private $newWindow;
+	private $href;
 
-	function __construct(Url $url, SiButton $button, bool $newWindow) {
+	function __construct(Url $url, SiButton $button, bool $newWindow, bool $href) {
 		$this->url = $url;
 		$this->button = $button;
 		$this->newWindow = $newWindow;
+		$this->href = $href;
 	}
 	
 	function getType(): string {
@@ -44,7 +46,8 @@ class RefSiControl implements SiControl {
 		return [
 			'url' => (string) $this->url,
 			'button' => $this->button,
-			'newWindow' => $this->newWindow
+			'newWindow' => $this->newWindow,
+			'href' => $this->href
 		];
 	}
 }

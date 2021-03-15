@@ -38,7 +38,6 @@ class SiButton implements \JsonSerializable {
 	private $iconImportant = false;
 	private $iconAlways = false;
 	private $labelAlways = false;
-	private $href;
 
 	private $tooltip;
 	private $confirm;
@@ -192,23 +191,6 @@ class SiButton implements \JsonSerializable {
 		return $this->confirm;
 	}
 
-	/**
-	 * @return Url|null
-	 */
-	public function getHref() {
-		return $this->href;
-	}
-
-	/**
-	 * when href set <a href> instead of <button> used.
-	 * @param Url $href
-	 * @return $this
-	 */
-	public function setHref(Url $href) {
-		$this->href = $href;
-		return $this;
-	}
-
 	public function jsonSerialize() {
 		return [
 			'name' => $this->name,
@@ -219,8 +201,7 @@ class SiButton implements \JsonSerializable {
 			'iconImportant' => $this->iconImportant,
 			'iconAlways' => $this->iconAlways,
 			'labelAlways' => $this->labelAlways,
-			'confirm' => $this->confirm,
-			'href' => (string) $this->href
+			'confirm' => $this->confirm
 		];
 	}
 	

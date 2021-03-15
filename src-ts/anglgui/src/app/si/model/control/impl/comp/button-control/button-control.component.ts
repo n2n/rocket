@@ -1,15 +1,18 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import {Component, OnInit, Input, HostBinding, Inject} from '@angular/core';
 import { ButtonControlModel } from '../button-control-model';
 import { SiButton } from '../../model/si-button';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { filter } from 'rxjs/operators';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import {PlatformService} from '../../../../../../util/nav/platform.service';
+import {IllegalStateError} from '../../../../../../util/err/illegal-state-error';
 
 @Component({
 	selector: 'rocket-button-control',
 	templateUrl: './button-control.component.html',
 	styleUrls: ['./button-control.component.css'],
-	host: {class: 'rocket-button-control'}
+	host: {class: 'rocket-button-control'},
+  providers: [PlatformService]
 })
 export class ButtonControlComponent implements OnInit {
 
@@ -18,7 +21,7 @@ export class ButtonControlComponent implements OnInit {
 
 	private _subVisible = false;
 
-	constructor() {
+	constructor(public platformService: PlatformService) {
 	}
 
 	ngOnInit() {
@@ -41,6 +44,34 @@ export class ButtonControlComponent implements OnInit {
 		return this.model.isDisabled() || this.loading;
 	}
 
+  href() {
+	  if (!this.model.getAconfig().routerLinked) {
+	    return this.model.getAconfig().url;
+    }
+	  return null;
+  }
+
+  rel() {
+    if (!this.model.getAconfig().newWindow) {
+      return 'noopener';
+    }
+    return null;
+  }
+
+  target() {
+    if (!this.model.getAconfig()?.newWindow) {
+      return '_blank';
+    }
+    return null;
+  }
+
+  routerLink() {
+    if (this.model.getAconfig().routerLinked) {
+      return this.platformService.routerUrl(this.model.getAconfig().url);
+    }
+    return null;
+  }
+
 	hasSubUiContents(): boolean {
 		return !!this.model.getSubUiContents && this.model.getSubUiContents().length > 0;
 	}
@@ -61,8 +92,8 @@ export class ButtonControlComponent implements OnInit {
 		return this._subVisible && !this.disabled && (this.hasSubSiButtons() || this.hasSubUiContents());
 	}
 
-	exec() {
-		if (this.hasSubSiButtons() || this.hasSubUiContents()) {
+  exec(event: MouseEvent) {
+    if (this.hasSubSiButtons() || this.hasSubUiContents()) {
 			this._subVisible = !this._subVisible;
 			return;
 		}
@@ -70,15 +101,15 @@ export class ButtonControlComponent implements OnInit {
 		const siConfirm = this.model.getSiButton().confirm;
 
 		if (!siConfirm) {
-			this.model.exec(null);
+      this.execHandleEventTrue(event);
 			return;
 		}
 
 		const cd = this.model.getUiZone().createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
 		cd.danger = siConfirm.danger;
 		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
-					this.model.exec(null);
-				});
+        this.execHandleEventTrue(event);
+      });
 	}
 
 	subExec(key: string) {
@@ -98,5 +129,13 @@ export class ButtonControlComponent implements OnInit {
 				});
 	}
 
-
+  /**
+   * when this.model returns true, event propagation/default omitted
+   */
+	private execHandleEventTrue(event: MouseEvent) {
+    if (this.model.exec(null)) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  }
 }

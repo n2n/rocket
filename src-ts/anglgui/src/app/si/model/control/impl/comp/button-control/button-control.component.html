@@ -24,33 +24,35 @@
 </ng-container>
 
 <ng-template #simpleButton>
-	<button [class]="siButton.btnClass"
+	<button *ngIf="model.getAconfig == undefined" [class]="siButton.btnClass"
 			[class.rocket-important]="siButton.important"
 			[class.rocket-icon-important]="siButton.iconImportant"
 			[class.rocket-icon-always]="siButton.iconAlways"
 			[class.rocket-label-always]="siButton.labelAlways"
-			[class.btn-loading]="loading" [disabled]="disabled" (click)="exec()" *ngIf="!siButton.href">
+			[class.btn-loading]="loading" [disabled]="disabled" (click)="exec($event)">
 		<span class="btn-label">{{ siButton.name }}</span>
 		<i [class]="siButton.iconClass" class="btn-icon"></i>
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
 	</button>
 
-  <a [class]="siButton.btnClass"
+  <a *ngIf="model.getAconfig != undefined" [class]="siButton.btnClass"
           [class.rocket-important]="siButton.important"
           [class.rocket-icon-important]="siButton.iconImportant"
           [class.rocket-icon-always]="siButton.iconAlways"
           [class.rocket-label-always]="siButton.labelAlways"
           [class.btn-loading]="loading"
           [class.disabled]="disabled"
-          [target]="siButton.target ? siButton.target : ''"
-          [href]="siButton.href"
-          *ngIf="!!siButton.href">
+          [target]="target()"
+          [rel]="rel()"
+          [href]="href()"
+          [routerLink]="routerLink()"
+          (click)="exec($event);">
     <span class="btn-label">{{ siButton.name }}</span>
     <i [class]="siButton.iconClass" class="btn-icon"></i>
     <span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
   </a>
 
-  <style *ngIf="disabled && !siButton.href">
+  <style *ngIf="disabled && model.getAconfig().newWindow">
     a.disabled {
       pointer-events: none;
       cursor: default;

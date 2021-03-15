@@ -28,7 +28,7 @@ export class GroupSiControl implements SiControl {
 			getSiButton: () => this.siButton,
 			isLoading: () => false,
 			isDisabled: () => this.isDisabled(),
-			exec: () => {},
+			exec: () => true,
 			getSubUiContents: () => subUiContents,
 			getUiZone
 		});

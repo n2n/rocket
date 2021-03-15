@@ -18,5 +18,20 @@ export interface ButtonControlModel {
 
 	getUiZone(): UiZone;
 
-	exec(subKey: string|null): void;
+  /**
+   * when Aconfig present <a> tag used
+   */
+	getAconfig?: () => Aconfig|null;
+
+  /**
+   * when exec returns true click event will be prevented
+   * @param subKey
+   */
+	exec(subKey: string|null): boolean;
+}
+
+export interface Aconfig {
+  url: string;
+  routerLinked: boolean;
+  newWindow?: boolean;
 }

@@ -54,6 +54,8 @@ export class ApiCallSiControl implements SiControl {
 
 			this.loading = false;
 		});
+
+		return false;
 	}
 
 	createUiContent(getUiZone: () => UiZone): UiContent {

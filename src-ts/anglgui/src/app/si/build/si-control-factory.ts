@@ -43,12 +43,16 @@ export class SiControlFactory {
 
 		switch (extr.reqString('type')) {
 			case SiControlType.REF:
-				return new RefSiControl(
+				const refSiControl = new RefSiControl(
 						this.injector.get(SiUiService),
 						dataExtr.reqString('url'),
-						dataExtr.reqBoolean('newWindow'),
 						this.createButton(dataExtr.reqObject('button')),
 						this.controlBoundry);
+
+				refSiControl.href = dataExtr.reqBoolean('href');
+				refSiControl.newWindow = dataExtr.reqBoolean('newWindow');
+
+				return refSiControl;
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						this.injector.get(SiUiService),
@@ -81,8 +85,7 @@ export class SiControlFactory {
 		btn.iconImportant = extr.reqBoolean('iconImportant');
 		btn.iconAlways = extr.reqBoolean('iconAlways');
 		btn.labelAlways = extr.reqBoolean('labelAlways');
-    btn.href = extr.nullaString('href');
-    
+
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {
 			btn.confirm = this.createConfirm(confirmData);
