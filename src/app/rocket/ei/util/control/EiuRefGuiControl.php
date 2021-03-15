@@ -85,11 +85,7 @@ class EiuRefGuiControl implements GuiControl {
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
 		$cmdUrl = $this->createCmdUrl($siApiCallId->getGuiControlPath()->getEiCommandPath());
 
-		if ($this->href) {
-			$this->siButton->setHref($cmdUrl);
-		}
-
-		return new RefSiControl($cmdUrl, $this->siButton, $this->newWindow);
+		return new RefSiControl($cmdUrl, $this->siButton, $this->newWindow, $this->href);
 	}
 	
 	/**
@@ -98,7 +94,7 @@ class EiuRefGuiControl implements GuiControl {
 	 */
 	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
 		$eiCmdPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCommandPath();
-		return new RefSiControl($this->createCmdUrl($eiCmdPath), $this->siButton, $this->newWindow);
+		return new RefSiControl($this->createCmdUrl($eiCmdPath), $this->siButton, $this->newWindow, $this->href);
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {
