@@ -51,7 +51,7 @@ class StringArrayInSiField extends InSiFieldAdapter {
 	 * @return \rocket\si\content\impl\StringInSiField
 	 */
 	function setValues(array $values) {
-		ArgUtils::valArray($values, 'string', null, 'values');
+		ArgUtils::valArray($values, 'string', false, 'values');
 		$this->values = $values;
 		return $this;
 	}

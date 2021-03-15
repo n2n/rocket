@@ -11,6 +11,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\StringArrayConfig;
 use n2n\util\StringUtils;
+use n2n\util\type\ArgUtils;
 
 class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 
@@ -47,11 +48,7 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$values = [];
-		
-		if (!empty($value = $eiu->field()->getValue())) {
-			$values = StringUtils::jsonDecode($value, true);
-		}
+		$values = ArgUtils::toArray($eiu->field()->getValue());
 		
 		$siField = SiFields::stringArrayIn($values)
 				->setMin($this->stringArrayConfig->getMin())
@@ -59,7 +56,7 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) {
-					$eiu->field()->setValue(StringUtils::jsonEncode($siField->getValues()));
+					$eiu->field()->setValue($siField->getValues());
 				});
 	}
 

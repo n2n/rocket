@@ -35,7 +35,7 @@ class IdentityStringEiProp extends DisplayableEiPropAdapter {
 	}
 
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField{
-		return SiFields::stringOut($eiu->entry()->createIdentityString());
+		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->entry()->createIdentityString()));
 	}
 
 }
