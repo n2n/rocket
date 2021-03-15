@@ -9,8 +9,8 @@
 			<img #img [src]="model.getSiFile().url" style="display: block; max-width: 100%;" />
 		</div>
 
-		<div *ngIf="originalActive" class="d-flex justify-content-between">
-			<div>
+		<div *ngIf="originalActive" class="current-image-commands">
+			<div class="current-image-commands-common">
 				<button (click)="imageSrc.toggleCropping()" class="btn btn-secondary" [class.active]="imageSrc.cropping">
 					<i class="fa fa-crop"></i>
 				</button>
@@ -22,7 +22,7 @@
 				</button>
 			</div>
 
-			<div>
+			<div class="current-image-commands-presist">
 				<button *ngIf="imageSrc.changed" (click)="saveOriginal()" class="btn btn-secondary"><i class="fa fa-check fa-fw"></i> {{ 'save_original_txt' | translate }}</button>
 				<button *ngIf="imageSrc.changed" (click)="resetOriginal()" class="btn btn-secondary"><i class="fa fa-trash fa-fw"></i> {{ 'reset_original_txt' | translate }}</button>
 			</div>

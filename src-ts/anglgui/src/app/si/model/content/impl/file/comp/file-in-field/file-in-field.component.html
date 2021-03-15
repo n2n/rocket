@@ -5,7 +5,7 @@
 </ng-container>
 
 <ng-container *ngIf="currentSiFile">
-	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url">
+	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url" class="file-in-item">
 		<ng-container *ngIf="currentSiFile.thumbUrl; else nothumb">
 			<img [class.sr-only]="!imgLoaded" [src]="currentSiFile.thumbUrl"
 					[alt]="currentSiFile.name" height="30" (load)="imgLoaded = true" />
@@ -14,7 +14,7 @@
 		<ng-template #nothumb>{{ currentSiFile.name }}</ng-template>
 	</a>
 	
-	<span *ngIf="!currentSiFile.url">{{ currentSiFile.name }}</span>
+	<span *ngIf="!currentSiFile.url" class="file-in-item">{{ currentSiFile.name }}</span>
 </ng-container>
 
 <button *ngIf="resizable" (click)="editImage()" class="btn btn-secondary">
