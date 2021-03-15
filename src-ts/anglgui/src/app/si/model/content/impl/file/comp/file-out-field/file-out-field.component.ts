@@ -15,7 +15,7 @@ export class FileOutFieldComponent implements OnInit, AfterViewInit {
 	
 	constructor() { }
     ngAfterViewInit(): void {
-        var lightbox = GLightbox({});
+        GLightbox({});
     }
 	
 	get currentSiFile(): SiFile|null {
