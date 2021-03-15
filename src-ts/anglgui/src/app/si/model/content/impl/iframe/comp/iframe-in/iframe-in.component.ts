@@ -5,17 +5,8 @@ import { IframeInModel } from '../iframe-in-model';
 selector: 'rocket-iframe-in',
 templateUrl: './iframe-in.component.html'
 })
-export class IframeInComponent implements OnInit, DoCheck {
+export class IframeInComponent {
 	model: IframeInModel;
-
-	ngOnInit(): void {
-		// console.log('new ifc');
-		// console.log(this.formData);
-	}
-
-	ngDoCheck(): void {
-		// console.log(this.formData);
-	}
 
 	get formData(): Map<string, string> {
 		return this.model.getFormData();

@@ -14,7 +14,7 @@ import {DomSanitizer} from '@angular/platform-browser';
   templateUrl: './iframe.component.html',
   styleUrls: ['./iframe.component.css']
 })
-export class IframeComponent implements AfterViewInit, OnChanges, DoCheck {
+export class IframeComponent implements OnChanges, DoCheck {
   @Input()
   public srcDoc;
 
@@ -38,8 +38,9 @@ export class IframeComponent implements AfterViewInit, OnChanges, DoCheck {
     if (!this.iframe) return;
     const script = document.createElement('script');
     script.textContent = IframeComponent.createResizerJs() + IframeComponent.createFormDataJs();
-    this.iframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
-      .insertAdjacentElement('beforeend', script);
+    this.iframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0].insertAdjacentElement('beforeend', script);
+
+    this.iframe.nativeElement.contentWindow.postMessage(this.formData);
   }
 
   /*! iFrame Resizer (iframeSizer.contentWindow.min.js ) - v4.3.1 - 2021-01-11
@@ -71,10 +72,6 @@ export class IframeComponent implements AfterViewInit, OnChanges, DoCheck {
     if (this.iframe == undefined || changes.formData.previousValue == changes.formData.currentValue) {
       return;
     }
-    this.iframe.nativeElement.contentWindow.postMessage(this.formData);
-  }
-
-  ngAfterViewInit(): void {
     this.iframe.nativeElement.contentWindow.postMessage(this.formData);
   }
 
