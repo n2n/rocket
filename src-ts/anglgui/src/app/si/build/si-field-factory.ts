@@ -37,6 +37,7 @@ import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-
 import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si-field';
 import { AppStateService } from 'src/app/app-state.service';
 import { StringArrayInSiField } from '../model/content/impl/array/model/string-array-in-si-field';
+import { PasswordInSiField } from '../model/content/impl/alphanum/model/password-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -59,7 +60,8 @@ enum SiFieldType {
   IFRAME_IN = 'iframe-in',
 	CRUMB_OUT = 'crumb-out',
 	DATETIME_IN = 'datetime-in',
-	STRING_ARRAY_IN = 'string-array-in'
+	STRING_ARRAY_IN = 'string-array-in',
+	PASSWORD_IN = 'password-in',
 }
 
 export class SiFieldFactory {
@@ -245,8 +247,14 @@ export class SiFieldFactory {
 			const stringArrayInSiField = new StringArrayInSiField(prop.label, dataExtr.reqArray('values'));
 			stringArrayInSiField.min = dataExtr.reqNumber('min');
 			stringArrayInSiField.max = dataExtr.nullaNumber('max');
-			
 			return stringArrayInSiField;
+		case SiFieldType.PASSWORD_IN:
+			const passwordInSiField = new PasswordInSiField(prop.label);
+			passwordInSiField.minlength = dataExtr.nullaNumber('minlength');
+			passwordInSiField.maxlength = dataExtr.nullaNumber('maxlength');
+			passwordInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			passwordInSiField.passwordSet = dataExtr.reqBoolean('passwordSet');
+			return passwordInSiField;
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}

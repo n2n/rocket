@@ -7,14 +7,17 @@ import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.com
 import { Message } from 'src/app/util/i18n/message';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { TextareaInFieldComponent } from '../comp/textarea-in-field/textarea-in-field.component';
+import { TextAreaInFieldModel } from '../comp/textarea-in-field-model';
 
 
-export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel {
+export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel, TextAreaInFieldModel {
 	public mandatory = false;
 	public minlength: number|null = null;
 	public maxlength: number|null = null;
 	public prefixAddons: SiCrumbGroup[] = [];
 	public suffixAddons: SiCrumbGroup[] = [];
+	private tmpValue: string|null = null;
 
 	constructor(public label: string, public value: string|null, public multiline: boolean = false) {
 		super();
@@ -42,6 +45,10 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	getValue(): string|null {
+		if (null !== this.tmpValue) {
+			return this.tmpValue;
+		}
+
 		return this.value;
 	}
 
@@ -49,9 +56,13 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return this.maxlength;
 	}
 
-	setValue(value: string|null) {
-		this.value = value;
-		this.validate();
+	setValue(value: string|null): void {
+		if (null === value) {
+			this.tmpValue = '';
+			return;
+		}
+
+		this.tmpValue = value;
 	}
 
 	getPrefixAddons(): SiCrumbGroup[] {
@@ -62,7 +73,7 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return this.suffixAddons;
 	}
 
-	private validate() {
+	private validate(): void {
 		this.resetError();
 
 		if (this.mandatory && this.value === null) {
@@ -86,7 +97,7 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	// 	return copy;
 	// }
 
-	isGeneric() {
+	isGeneric(): boolean {
 		return true;
 	}
 
@@ -109,17 +120,25 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	createUiContent(): UiContent {
-		return new TypeUiContent(InputInFieldComponent, (ref) => {
+		return new TypeUiContent(this.multiline ? TextareaInFieldComponent : InputInFieldComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}
 
-	onBlur() {
-
+	onBlur(): void {
+		if (null !== this.tmpValue) {
+			if (this.tmpValue.length === 0) {
+				this.value = null;
+			} else {
+				this.value = this.tmpValue;
+			}
+		}
+		this.tmpValue = null;
+		this.validate();
 	}
 
-	onFocus() {
-		
+	onFocus(): void {
+		this.messagesCollection.clear();
 	}
 
 // 	initComponent(viewContainerRef: ViewContainerRef,

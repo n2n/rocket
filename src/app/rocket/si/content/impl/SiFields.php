@@ -47,6 +47,7 @@ use rocket\si\content\impl\relation\EmbeddedEntryPanelsOutSiField;
 use rocket\si\content\impl\iframe\IframeData;
 use rocket\si\content\impl\date\DateTimeInSiField;
 use rocket\si\content\impl\string\StringArrayInSiField;
+use rocket\si\content\impl\string\PasswordInSiField;
 
 class SiFields {
 	
@@ -252,5 +253,12 @@ class SiFields {
 	 */
 	static function stringArrayIn(array $values) {
 		return new StringArrayInSiField($values);
+	}
+	
+	/**
+	 * @return \rocket\si\content\impl\string\PasswordInSiField
+	 */
+	static function passwordIn() {
+		return new PasswordInSiField();
 	}
 }
