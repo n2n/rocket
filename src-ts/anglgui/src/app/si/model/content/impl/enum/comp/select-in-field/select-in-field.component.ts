@@ -4,8 +4,7 @@ import { Option } from 'src/app/ui/util/comp/select-input/select.component';
 
 @Component({
 	selector: 'rocket-select-in-field',
-	templateUrl: './select-in-field.component.html',
-	styleUrls: ['./select-in-field.component.css']
+	templateUrl: './select-in-field.component.html'
 })
 export class SelectInFieldComponent implements OnInit {
 
@@ -25,6 +24,9 @@ export class SelectInFieldComponent implements OnInit {
 	}
 
 	set value(value: string|null) {
+		if (value === '') {
+			value = null;
+		}
 		this.model.setValue(value);
 	}
 

@@ -23,73 +23,84 @@ namespace rocket\si\content\impl\string;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\si\content\impl\InSiFieldAdapter;
-use n2n\util\type\ArgUtils;
 
-class StringArrayInSiField extends InSiFieldAdapter {
+class PasswordInSiField extends InSiFieldAdapter {
 	/**
-	 * @var string[]
+	 * @var string|null
 	 */
-	private $values;
-	/**
-	 * @var int
-	 */
-	private $min = 0;
-	/**
-	 * @var int|null
-	 */
-	private $max;
+	private $rawPassword;
+	private $mandatory = false;
+	private $minLength;
+	private $maxLength;
+	private $passwordSet = false;
 	
-	function __construct(array $values) {
-		$this->setValues($values);
+	/**
+	 * @return string|null
+	 */
+	function getRawPassword() {
+		return $this->rawPassword;
 	}
 	
 	/**
-	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param bool $mandatory
+	 * @return PasswordInSiField
 	 */
-	function setValues(array $values) {
-		ArgUtils::valArray($values, 'string', false, 'values');
-		$this->values = $values;
+	function setMandatory(bool $mandatory) {
+		$this->mandatory = $mandatory;
 		return $this;
 	}
 	
 	/**
-	 * @return string[]
+	 * @return bool
 	 */
-	function getValues() {
-		return $this->values;
+	function isMandatory() {
+		return $this->mandatory;
+	}
+	
+	function isPasswordSet() {
+		return $this->passwordSet;
 	}
 	
 	/**
-	 * @param int $minlength
-	 * @return StringArrayInSiField
+	 * @param bool $passwordSet
+	 * @return \rocket\si\content\impl\string\PasswordInSiField
 	 */
-	function setMin(int $min) {
-		$this->min = $min;
+	function setPasswordSet(bool $passwordSet) {
+		$this->passwordSet = $passwordSet;
+		
 		return $this;
-	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getMin() {
-		return $this->min;
 	}
 	
 	/**
 	 * @param int|null $maxlength
-	 * @return StringArrayInSiField
+	 * @return PasswordInSiField
 	 */
-	function setMax(?int $max) {
-		$this->max = $max;
+	function setMaxlength(?int $maxlength) {
+		$this->maxLength = $maxlength;
 		return $this;
 	}
 	
 	/**
 	 * @return int|null
 	 */
-	function getMax() {
-		return $this->max;
+	function getMaxlength() {
+		return $this->maxLength;
+	}
+	
+	/**
+	 * @param int|null $minlength
+	 * @return PasswordInSiField
+	 */
+	function setMinlength(?int $minlength) {
+		$this->minLength = $minlength;
+		return $this;
+	}
+	
+	/**
+	 * @return int|null
+	 */
+	function getMinlength() {
+		return $this->minLength;
 	}
 	
 	/**
@@ -97,7 +108,7 @@ class StringArrayInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'string-array-in';
+		return 'password-in';
 	}
 	
 	/**
@@ -105,10 +116,10 @@ class StringArrayInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getData()
 	 */
 	function getData(): array {
-		return [
-			'values' => $this->values,
-			'min' => $this->min,
-			'max' => $this->max,
+		return ['minlength' => $this->minLength,
+			'maxlength' => $this->maxLength,
+			'mandatory' => $this->mandatory,
+			'passwordSet' => $this->passwordSet,
 		];
 	}
 	 
@@ -117,7 +128,6 @@ class StringArrayInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$dataSet = new DataSet($data);
-		$this->setValues($dataSet->reqArray('values', 'string'));
+		$this->rawPassword = (new DataSet($data))->reqString('rawPassword', true);
 	}
 }

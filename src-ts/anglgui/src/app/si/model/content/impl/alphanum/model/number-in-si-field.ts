@@ -207,10 +207,15 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	public onBlur(): void {
+		if (null === this.valueStr) {
+			this.validate();
+			return;
+		}
+
 		let valueStr = this.valueStr;
 		this.valueStr = null;
 
-		if (null === valueStr || valueStr.length === 0) {
+		if (valueStr.length === 0) {
 			this.value = null;
 			return;
 		}
