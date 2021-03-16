@@ -20,16 +20,17 @@ export class LinkOutSiField extends OutSiFieldAdapter {
 
 	createUiContent(uiStructure: UiStructure): UiContent {
 		return new TypeUiContent(LinkOutFieldComponent, (ref) => {
-			ref.instance.model = this.createLinkOutModel(uiStructure.getZone());
+			ref.instance.model = this.createLinkOutModel(uiStructure);
 		});
 	}
 
-	private createLinkOutModel(uiZone: UiZone): LinkOutModel {
+	private createLinkOutModel(uiStructure: UiStructure): LinkOutModel {
 		return {
 			getLabel: () => this.label,
 			getMessages: () => this.getMessages(),
+			isBulky: () => !!uiStructure.type,
 			getUiNavPoint: () => {
-				return this.navPoint.toUiNavPoint(this.injector, uiZone.layer);
+				return this.navPoint.toUiNavPoint(this.injector, uiStructure.getZone().layer);
 			},
 			isLytebox: () => this.lytebox
 		};

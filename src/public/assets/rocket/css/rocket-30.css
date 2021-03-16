@@ -6743,6 +6743,7 @@ td > .rocket-split {
   -ms-grid-column: 2;
       grid-column-start: 2;
   grid-column-end: 3;
+  margin-bottom: 0;
 }
 
 .rocket-minimal > .rocket-structure-content {
@@ -6757,14 +6758,27 @@ td > .rocket-split {
   display: -ms-grid;
   display: grid;
   grid-auto-flow: column;
-  grid-gap: .5em;
-  -webkit-box-align: baseline;
-      -ms-flex-align: baseline;
-          align-items: baseline;
+  grid-gap: .5em 0;
 }
 
 .rocket-crumb-group i {
   width: auto;
+}
+
+.rocket-crumb-group i.rocket-important, .rocket-crumb-group i.rocket-unimportant,
+.rocket-crumb-group span.rocket-important,
+.rocket-crumb-group span.rocket-unimportant {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.rocket-crumb-group i.rocket-important:not(:only-child),
+.rocket-crumb-group span.rocket-important:not(:only-child) {
+  margin-right: 0;
 }
 
 .rocket-crumb-group > i:only-child {

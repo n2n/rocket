@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnInit } from '@angular/core';
 import { LinkOutModel } from '../link-field-model';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
@@ -25,5 +25,10 @@ export class LinkOutFieldComponent implements OnInit, AfterViewInit {
     }
 
 	ngOnInit() {
+	}
+	
+	@HostBinding('class.form-control-plaintext')
+	get bulky(): boolean {
+		return this.model.isBulky();
 	}
 }

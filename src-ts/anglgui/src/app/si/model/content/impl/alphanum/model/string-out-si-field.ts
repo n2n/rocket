@@ -6,17 +6,22 @@ import { StringOutFieldComponent } from '../comp/string-out-field/string-out-fie
 import { Fresult } from 'src/app/util/err/fresult';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 
-export class StringOutSiField extends OutSiFieldAdapter implements StringFieldModel {
+export class StringOutSiField extends OutSiFieldAdapter {
 
 	constructor(private value: string|null) {
 		super();
 	}
 
-	createUiContent(): UiContent|null {
+	createUiContent(uiStructure: UiStructure): UiContent|null {
 		return new TypeUiContent(StringOutFieldComponent, (ref) => {
-			ref.instance.model = this;
+			ref.instance.model = {
+				getMessages: () => this.messagesCollection.get(),
+				getValue: () => this.value,
+				isBulky: () => !!uiStructure.type
+			};
 		});
 	}
 

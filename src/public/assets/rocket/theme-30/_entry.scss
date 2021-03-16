@@ -576,7 +576,6 @@ span {
    &.rocket-unimportant {
         color: $gray-500;
         cursor: default;
-        
         &:after {
             border: 1px solid $gray-400;
         }
@@ -588,7 +587,6 @@ span {
     &.rocket-important {
         position: relative;
         color: white;
-        
         &:after {
             background: $gray-600;
         }

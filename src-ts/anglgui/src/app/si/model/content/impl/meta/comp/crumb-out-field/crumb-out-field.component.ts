@@ -1,5 +1,5 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { CrumbFieldModel } from '../../model/crumb-field-model';
+import { CrumbFieldModel } from '../crumb-field-model';
 
 @Component({
 	selector: 'rocket-crumb-out-field',
@@ -10,14 +10,14 @@ import { CrumbFieldModel } from '../../model/crumb-field-model';
 export class CrumbOutFieldComponent implements OnInit {
 	model: CrumbFieldModel;
 
-	// @HostBinding('class.rocket-content-compact')
-	// compact = false;
-
 	constructor() { }
 
 	ngOnInit() {
 	}
 
-
+	@HostBinding('class.form-control-plaintext')
+	get bulky(): boolean {
+		return this.model.isBulky();
+	}
 
 }
