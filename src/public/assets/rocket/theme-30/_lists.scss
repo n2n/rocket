@@ -290,8 +290,8 @@ td > .rocket-split {
 .rocket-crumb-group {
     display: grid;
     grid-auto-flow: column;
-    grid-gap: .5em 0;
-    // align-items: baseline;
+    grid-gap: .5em;
+    align-items: baseline;
     
     i {
         width: auto;

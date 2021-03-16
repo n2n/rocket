@@ -59,6 +59,8 @@
 	// old design:
 	//	$htmlMeta->addCss('css/rocket.css');
 	$htmlMeta->addCss('css/icons/font-awesome/icons/all.min.css');
+	// compatible with font awesome 4 classnames
+	$htmlMeta->addCss('css/icons/font-awesome/icons/v4-shims.min.css');
 // 	use this to insert custom icons
 // 	$htmlMeta->addCss('css/icons/icomoon/icomoon.css');
 	// 	$htmlMeta->addJs('js/respond.src.js', null);

@@ -9,6 +9,7 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiNavPoint } from 'src/app/si/model/control/si-nav-point';
 import { Injector } from '@angular/core';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 export class LinkOutSiField extends OutSiFieldAdapter {
 	
@@ -28,7 +29,7 @@ export class LinkOutSiField extends OutSiFieldAdapter {
 		return {
 			getLabel: () => this.label,
 			getMessages: () => this.getMessages(),
-			isBulky: () => !!uiStructure.type,
+			isBulky: () => !!uiStructure.type && uiStructure.type !== UiStructureType.MINIMAL,
 			getUiNavPoint: () => {
 				return this.navPoint.toUiNavPoint(this.injector, uiStructure.getZone().layer);
 			},

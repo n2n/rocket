@@ -6758,7 +6758,10 @@ td > .rocket-split {
   display: -ms-grid;
   display: grid;
   grid-auto-flow: column;
-  grid-gap: .5em 0;
+  grid-gap: .5em;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
 }
 
 .rocket-crumb-group i {
@@ -7843,6 +7846,9 @@ rocket-add-past > button::after {
   display: flex;
   -ms-flex-wrap: now-wrap;
       flex-wrap: now-wrap;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
 }
 
 .file-in-item {

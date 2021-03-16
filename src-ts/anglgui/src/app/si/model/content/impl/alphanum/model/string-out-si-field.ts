@@ -7,6 +7,7 @@ import { Fresult } from 'src/app/util/err/fresult';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 
 export class StringOutSiField extends OutSiFieldAdapter {
@@ -20,7 +21,7 @@ export class StringOutSiField extends OutSiFieldAdapter {
 			ref.instance.model = {
 				getMessages: () => this.messagesCollection.get(),
 				getValue: () => this.value,
-				isBulky: () => !!uiStructure.type
+				isBulky: () => !!uiStructure.type && uiStructure.type !== UiStructureType.MINIMAL
 			};
 		});
 	}

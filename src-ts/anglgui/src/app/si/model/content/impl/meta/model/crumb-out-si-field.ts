@@ -5,6 +5,7 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SiCrumbGroup } from './si-crumb';
 import { CrumbOutFieldComponent } from '../comp/crumb-out-field/crumb-out-field.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 class SiCrumbGroupCollection  {
 	constructor(public crumbGroups: SiCrumbGroup[]) {
@@ -20,7 +21,7 @@ export class CrumbOutSiField extends OutSiFieldAdapter {
 	createUiContent(uiStructure: UiStructure): UiContent|null {
 		return new TypeUiContent(CrumbOutFieldComponent, (ref) => {
 			ref.instance.model = {
-				isBulky: () => !!uiStructure.type,
+				isBulky: () => !!uiStructure.type && uiStructure.type !== UiStructureType.MINIMAL,
 				getSiCrumbGroups: () => this.crumbGroups,
 				getMessages: () => this.messagesCollection.get(),
 			}
