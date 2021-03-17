@@ -38,6 +38,7 @@ import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si
 import { AppStateService } from 'src/app/app-state.service';
 import { StringArrayInSiField } from '../model/content/impl/array/model/string-array-in-si-field';
 import { PasswordInSiField } from '../model/content/impl/alphanum/model/password-in-si-field';
+import { DateUtils } from 'src/app/util/date/date-utils';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -236,7 +237,7 @@ export class SiFieldFactory {
 			const dateTimeInSiField = new DateTimeInSiField(prop.label, null);
 			const valueStr = dataExtr.nullaString('value');
 			if (valueStr) {
-				dateTimeInSiField.value = new Date(valueStr);
+				dateTimeInSiField.value = DateUtils.sqlToDate(valueStr);
 			}
 
 			dateTimeInSiField.mandatory = dataExtr.reqBoolean('mandatory');

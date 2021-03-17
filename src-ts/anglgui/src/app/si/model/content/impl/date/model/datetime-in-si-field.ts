@@ -6,6 +6,7 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { DateTimeInModel } from '../comp/date-time-in-model';
 import { Message } from 'src/app/util/i18n/message';
+import { DateUtils } from 'src/app/util/date/date-utils';
 
 export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInModel {
 
@@ -17,7 +18,7 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 		super();
 	}
 
-	setValue(value: Date) {
+	setValue(value: Date): void {
 		this.value = value;
 		this.validate();
 	}
@@ -26,7 +27,7 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 		return this.value;
 	}
 
-	private validate() {
+	private validate(): void {
 		this.resetError();
 
 		if (this.mandatory && this.value === null) {
@@ -36,7 +37,7 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 
 	readInput(): object {
 		return {
-			value: (this.value ? this.value.getTime() / 1000 : null)
+			value: (this.value ? DateUtils.dateToSql(this.value) : null)
 		};
 	}
 

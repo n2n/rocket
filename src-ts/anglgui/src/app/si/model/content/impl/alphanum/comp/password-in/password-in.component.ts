@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { PasswordInModel } from '../password-in-model';
 
 @Component({
@@ -7,8 +7,10 @@ import { PasswordInModel } from '../password-in-model';
 })
 export class PasswordInComponent implements OnInit {
 	model: PasswordInModel;
-	type = 'password';
-	unblocked = false;
+	private pType = 'password';
+	private unblocked = false;
+	@ViewChild('pwInput', { static: true })
+	private inputElemRef: ElementRef;
 
 	public pRawPassword: string|null = null;
 
@@ -16,6 +18,14 @@ export class PasswordInComponent implements OnInit {
 
 	ngOnInit(): void {
 
+	}
+
+	get type(): string {
+		if (this.blocked) {
+			return 'password';
+		}
+
+		return this.pType;
 	}
 
 	get rawPassword(): string|null {
@@ -33,6 +43,7 @@ export class PasswordInComponent implements OnInit {
 		if (rawPassword === '') {
 			rawPassword = null;
 		}
+
 		this.pRawPassword = rawPassword;
 		this.model.setRawPassword(rawPassword);
 	}
@@ -46,16 +57,24 @@ export class PasswordInComponent implements OnInit {
 	}
 
 	changeType(): void {
-		if (this.type === 'password') {
-			this.type = 'text';
+		if (this.pType === 'password') {
+			this.pType = 'text';
 			return;
 		}
 
-		this.type = 'password';
+		this.pType = 'password';
 	}
 
 	setUnblocked(unblocked: boolean): void {
 		this.unblocked = unblocked;
+		if (!this.unblocked) {
+			this.model.setRawPassword(null);
+			return;
+		}
+
+		this.inputElemRef.nativeElement.focus();
+
+		this.model.setRawPassword(this.pRawPassword);
 	}
 
 	applyGeneratedPassword(): void {
@@ -69,7 +88,8 @@ export class PasswordInComponent implements OnInit {
 		}
 
 		this.rawPassword = this.generatePassword(passwordLength);
-		this.type = 'text';
+		this.pType = 'text';
+		this.inputElemRef.nativeElement.focus();
 	}
 
 	private generatePassword(passwordLength: number): string {

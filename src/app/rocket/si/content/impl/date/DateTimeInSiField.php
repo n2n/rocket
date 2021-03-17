@@ -129,7 +129,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'value' => DateUtils::dateTimeToIso($this->value),
+			'value' => DateUtils::dateTimeToSql($this->value),
 			'mandatory' => $this->mandatory,
 			'dateChoosable' => $this->dateChoosable,
 			'timeChoosable' => $this->timeChoosable
@@ -141,6 +141,6 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = DateUtils::timestampToDateTime((new DataSet($data))->reqString('value', true));
+		$this->value = DateUtils::sqlToDateTime((new DataSet($data))->reqString('value', true));
 	}
 }
