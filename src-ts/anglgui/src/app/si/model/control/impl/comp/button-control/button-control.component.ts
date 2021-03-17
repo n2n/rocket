@@ -44,32 +44,32 @@ export class ButtonControlComponent implements OnInit {
 		return this.model.isDisabled() || this.loading;
 	}
 
-  href() {
-	  if (!this.model.getAconfig().routerLinked) {
+  get href(): string|undefined {
+	  if (this.model.getAconfig && !this.model.getAconfig()?.routerLinked) {
 	    return this.model.getAconfig().url;
     }
-	  return null;
+	  return undefined;
   }
 
-  rel() {
-    if (!this.model.getAconfig().newWindow) {
+  get routerLink(): string|undefined {
+    if (this.model.getAconfig && this.model.getAconfig()?.routerLinked) {
+      return '/' + this.platformService.routerUrl(this.model.getAconfig().url);
+    }
+    return undefined;
+  }
+
+  get rel(): string|undefined {
+    if (this.model.getAconfig && !this.model.getAconfig()?.newWindow) {
       return 'noopener';
     }
-    return null;
+    return undefined;
   }
 
-  target() {
-    if (!this.model.getAconfig()?.newWindow) {
+  get target(): string|undefined {
+    if (this.model.getAconfig && !this.model.getAconfig()?.newWindow) {
       return '_blank';
     }
-    return null;
-  }
-
-  routerLink() {
-    if (this.model.getAconfig().routerLinked) {
-      return this.platformService.routerUrl(this.model.getAconfig().url);
-    }
-    return null;
+    return undefined;
   }
 
 	hasSubUiContents(): boolean {
@@ -101,14 +101,14 @@ export class ButtonControlComponent implements OnInit {
 		const siConfirm = this.model.getSiButton().confirm;
 
 		if (!siConfirm) {
-      this.execHandleEventTrue(event);
+      this.execStopPropagationOnTrue(event);
 			return;
 		}
 
 		const cd = this.model.getUiZone().createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
 		cd.danger = siConfirm.danger;
 		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
-        this.execHandleEventTrue(event);
+        this.execStopPropagationOnTrue(event);
       });
 	}
 
@@ -124,17 +124,16 @@ export class ButtonControlComponent implements OnInit {
 
 		const cd = this.model.getUiZone().createConfirmDialog(siConfirm.message, siConfirm.okLabel, siConfirm.cancelLabel);
 		cd.danger = siConfirm.danger;
-		cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
-					this.model.exec(key);
-				});
+    cd.confirmed$.pipe(filter(confirmed => confirmed)).subscribe(() => {
+      this.model.exec(key);
+    });
 	}
 
   /**
    * when this.model returns true, event propagation/default omitted
    */
-	private execHandleEventTrue(event: MouseEvent) {
+	private execStopPropagationOnTrue(event: MouseEvent) {
     if (this.model.exec(null)) {
-      event.stopPropagation();
       event.preventDefault();
     }
   }

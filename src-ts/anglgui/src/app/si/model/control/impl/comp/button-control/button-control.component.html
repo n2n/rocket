@@ -24,7 +24,7 @@
 </ng-container>
 
 <ng-template #simpleButton>
-	<button *ngIf="model.getAconfig == undefined" [class]="siButton.btnClass"
+	<button *ngIf="!model.getAconfig" [class]="siButton.btnClass"
 			[class.rocket-important]="siButton.important"
 			[class.rocket-icon-important]="siButton.iconImportant"
 			[class.rocket-icon-always]="siButton.iconAlways"
@@ -35,27 +35,20 @@
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
 	</button>
 
-  <a *ngIf="model.getAconfig != undefined" [class]="siButton.btnClass"
+  <a *ngIf="model.getAconfig" [class]="siButton.btnClass"
           [class.rocket-important]="siButton.important"
           [class.rocket-icon-important]="siButton.iconImportant"
           [class.rocket-icon-always]="siButton.iconAlways"
           [class.rocket-label-always]="siButton.labelAlways"
           [class.btn-loading]="loading"
           [class.disabled]="disabled"
-          [target]="target()"
-          [rel]="rel()"
-          [href]="href()"
-          [routerLink]="routerLink()"
+          [attr.target]="target"
+          [attr.rel]="rel"
+          [attr.href]="href"
+          [routerLink]="routerLink"
           (click)="exec($event);">
     <span class="btn-label">{{ siButton.name }}</span>
     <i [class]="siButton.iconClass" class="btn-icon"></i>
     <span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
   </a>
-
-  <style *ngIf="disabled && model.getAconfig().newWindow">
-    a.disabled {
-      pointer-events: none;
-      cursor: default;
-    }
-  </style>
 </ng-template>
