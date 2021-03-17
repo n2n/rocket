@@ -13,7 +13,7 @@ import { Observable, Subscription } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { EmbeddedEntryComponent } from '../comp/embedded-entry/embedded-entry.component';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 import { EmbeOutCollection } from './embe/embe-collection';
 import { EmbeddedEntriesOutModel } from '../comp/embedded-entries-out-model';
 import { EmbeddedEntriesOutComponent } from '../comp/embedded-entries-out/embedded-entries-out.component';
@@ -100,6 +100,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 			exec: () => this.openAll()
 		});
 
+		this.mode = UiStructureModelMode.MASSIVE_TOOLBAR;
 		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);
 	}
 

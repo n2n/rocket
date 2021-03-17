@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\string\conf;
 
 use n2n\persistence\meta\structure\Column;
-use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\string\PasswordEiProp;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\config\InvalidConfigurationException;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+use hangar\api\CompatibilityLevel;
+use n2n\util\StringUtils;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 class PasswordConfig extends PropConfigAdaption {
 	const ATTR_ALGORITHM_KEY = 'algorithm';
@@ -42,12 +42,11 @@ class PasswordConfig extends PropConfigAdaption {
 	
 	private $algorithm = self::ALGORITHM_BLOWFISH;
 	
-	
 	public function getAlgorithm() {
 		return $this->algorithm;
 	}
 	
-	public function setAlgorithm($algorithm) {
+	public function setAlgorithm(string $algorithm) {
 		$this->algorithm = $algorithm;
 	}
 	
@@ -55,21 +54,16 @@ class PasswordConfig extends PropConfigAdaption {
 	}
 
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-		$eiComponent = $this->eiComponent;
-		IllegalStateException::assertTrue($eiComponent instanceof PasswordEiProp);
-		if ($this->dataSet->contains(self::ATTR_ALGORITHM_KEY)) {
-			try {
-				$eiComponent->setAlgorithm($this->dataSet->get(self::ATTR_ALGORITHM_KEY));
-			} catch (\InvalidArgumentException $e) {
-				throw new InvalidConfigurationException('Invalid algorithm defined for PassworEiProp.', null, $e);
-			}
+		if ($dataSet->contains(self::ATTR_ALGORITHM_KEY)) {
+			$this->setAlgorithm($dataSet->reqEnum(self::ATTR_ALGORITHM_KEY, self::getAlgorithms()));
 		}
 	}
 
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$algorithms = PasswordEiProp::getAlgorithms();
+		$algorithms = self::getAlgorithms();
 		$magCollection->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
-				array_combine($algorithms, $algorithms), $this->getAlgorithm()));
+				array_combine($algorithms, $algorithms), 
+				$dataSet->optString(self::ATTR_ALGORITHM_KEY, $this->getAlgorithm())));
 	}
 	
 	public static function getAlgorithms() {
@@ -77,10 +71,23 @@ class PasswordConfig extends PropConfigAdaption {
 	}
 
 	public function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
+		$algorithmMag = $magCollection->getMagByPropertyName(self::ATTR_ALGORITHM_KEY);
+		
+		$dataSet->set(self::ATTR_ALGORITHM_KEY, $algorithmMag->getValue());
 	}
 
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
-		return 0;
+		$entityProperty = $propertyAssignation->getEntityProperty(false);
+		
+		if (StringUtils::endsWith('assword', $propertyAssignation->getObjectPropertyAccessProxy(true)->getPropertyName())) {
+			return CompatibilityLevel::COMMON;
+		}
+		
+		if ($entityProperty !== null && $entityProperty instanceof StringEntityProperty) {
+			return CompatibilityLevel::SUITABLE;
+		}
+		
+		return CompatibilityLevel::NOT_COMPATIBLE;
 	}
 
 }

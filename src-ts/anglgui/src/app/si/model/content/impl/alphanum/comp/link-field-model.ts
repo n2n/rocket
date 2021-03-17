@@ -8,4 +8,6 @@ export interface LinkOutModel extends MessageFieldModel {
 	getLabel(): string;
 	
 	isLytebox(): boolean;
+	
+	isBulky(): boolean;
 }

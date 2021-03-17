@@ -95,6 +95,8 @@ class AnglTemplateModel implements Lookupable {
 			'user_title' =>  $dtc->t('user_title'),
 			'user_groups_title' =>  $dtc->t('user_groups_title'),
 			'tool_title' =>  $dtc->t('tool_title'),
+			'tools_title' =>  $dtc->t('tool_title'),
+			'tool_backup_title' =>  $dtc->t('tool_backup_title'),
 			'tool_backup_create_label' => $dtc->t('tool_backup_create_label'),
 			'tool_mail_center_title' => $dtc->t('tool_mail_center_title'),
 			'mail_center_mail_message_label' => $dtc->t('tool_mail_center_mail_message_label'),

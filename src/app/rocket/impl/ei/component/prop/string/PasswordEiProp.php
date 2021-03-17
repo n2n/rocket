@@ -21,67 +21,65 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\web\dispatch\mag\model\SecretStringMag;
 use n2n\util\crypt\hash\HashUtils;
 use n2n\util\crypt\hash\algorithm\BlowfishAlgorithm;
 use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
-use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PasswordConfig;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
 
 class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 	private $passwordConfig;
+	private $alphanumericConfig;
 
 	function __construct() {
 		parent::__construct();
-		
 		$this->passwordConfig = new PasswordConfig();
+		$this->alphanumericConfig = new AlphanumericConfig();
 	}
 	
 	public function prepare() {
-		$this->getConfigurator()->addAdaption($this->passwordConfig);
+		$this->getConfigurator()->addAdaption($this->passwordConfig)
+				->addAdaption($this->alphanumericConfig);
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return null;
+		return $eiu->factory()->newGuiField(SiFields::stringOut());
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		return new SecretStringMag($this->getLabelLstr(), null,
-				$this->isMandatory($eiu), $this->getMaxlength(), 
-				array('placeholder' => $this->getLabelLstr()));
+		
+		$siField = SiFields::passwordIn()
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setPasswordSet(!empty($eiu->field()->getValue()))
+				->setMinlength($this->alphanumericConfig->getMinlength())
+				->setMaxlength($this->alphanumericConfig->getMaxlength());
+		
+		return $eiu->factory()->newGuiField($siField)
+				->setSaver(function () use ($siField, $eiu) {
+			if (!empty($siField->getRawPassword())) {
+				$eiu->field()->setValue($this->buildPasswordHash($siField->getRawPassword()));
+			}
+		});
 	}
 	
-	
-	public function loadSiField(Eiu $eiu, SiField $siField) { }
-	
-	public function saveSiField(SiField $siField, Eiu $eiu) {
-		$value = $option->getValue();
-		if (mb_strlen($value) === 0 && !$eiu->entry()->isNew()) {
-			return;
-		}
-		
-		$fieldValue = null;
+	private function buildPasswordHash(string $rawPassword) {
 		switch ($this->algorithm) {
 			case (self::ALGORITHM_BLOWFISH):
-				$fieldValue = HashUtils::buildHash($value, new BlowfishAlgorithm());
-				break;
+				return HashUtils::buildHash($rawPassword, new BlowfishAlgorithm());
 			case (self::ALGORITHM_SHA_256):
-				$fieldValue = HashUtils::buildHash($value, new Sha256Algorithm());
-				break;
+				return HashUtils::buildHash($rawPassword, new Sha256Algorithm());
 			case (self::ALGORITHM_MD5):
-				$fieldValue = md5($value);
-				break;
+				return md5($rawPassword);
 			case (self::ALGORITHM_SHA1):
-				$fieldValue = sha1($value);
+				return sha1($rawPassword);
 				break;
-			default:
-				throw new IllegalStateException('invalid algorithm given: ' . $this->algorithm);
 		}
 		
-		$eiu->field()->setValue($fieldValue);
+		throw new IllegalStateException('invalid algorithm given: ' . $this->algorithm);
 	}
 }

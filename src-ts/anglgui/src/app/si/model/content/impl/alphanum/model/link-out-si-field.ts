@@ -9,6 +9,7 @@ import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiNavPoint } from 'src/app/si/model/control/si-nav-point';
 import { Injector } from '@angular/core';
+import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 export class LinkOutSiField extends OutSiFieldAdapter {
 	
@@ -20,16 +21,17 @@ export class LinkOutSiField extends OutSiFieldAdapter {
 
 	createUiContent(uiStructure: UiStructure): UiContent {
 		return new TypeUiContent(LinkOutFieldComponent, (ref) => {
-			ref.instance.model = this.createLinkOutModel(uiStructure.getZone());
+			ref.instance.model = this.createLinkOutModel(uiStructure);
 		});
 	}
 
-	private createLinkOutModel(uiZone: UiZone): LinkOutModel {
+	private createLinkOutModel(uiStructure: UiStructure): LinkOutModel {
 		return {
 			getLabel: () => this.label,
 			getMessages: () => this.getMessages(),
+			isBulky: () => !!uiStructure.type && uiStructure.type !== UiStructureType.MINIMAL,
 			getUiNavPoint: () => {
-				return this.navPoint.toUiNavPoint(this.injector, uiZone.layer);
+				return this.navPoint.toUiNavPoint(this.injector, uiStructure.getZone().layer);
 			},
 			isLytebox: () => this.lytebox
 		};
