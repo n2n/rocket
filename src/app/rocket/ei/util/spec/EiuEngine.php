@@ -179,6 +179,13 @@ class EiuEngine {
 	}
 	
 	/**
+	 * @return \rocket\ei\manage\generic\ScalarEiProperty[]
+	 */
+	function getScalarEiProperties() {
+		return $this->eiEngine->getScalarEiDefinition()->getScalarEiProperties();
+	}
+	
+	/**
 	 * @return string[]
 	 */
 	public function getScalarEiPropertyOptions() {

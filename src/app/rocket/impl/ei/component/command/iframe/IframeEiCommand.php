@@ -44,15 +44,15 @@ class IframeEiCommand extends IndependentEiCommandAdapter {
 	}
 	
 	function createEntryGuiControls(Eiu $eiu): array {
-		if (!$this->iframeConfig->isEntryCommand()) return [];
+		if (!$this->iframeConfig->isEntryCommand() || $eiu->entry()->isNew()) return [];
 
 		$buttonLabel = $this->iframeConfig->getButtonLabel() ?? $eiu->dtc('rocket')->t('iframe_run_txt');
 		$siButton = SiButton::success($buttonLabel, $this->iframeConfig->getButtonIcon() ?? SiIconType::ICON_PLAY)
 				->setTooltip($this->iframeConfig->getButtonTooltip());
 
 		$siControl = $eiu->factory()->controls()
-			->newCmdRef(self::CONTROL_RUN_KEY, $siButton, new Path([$eiu->entry()->getPid()]))
-			->setNewWindow(true);
+				->newCmdRef(self::CONTROL_RUN_KEY, $siButton, new Path([$eiu->entry()->getPid()]))
+				->setNewWindow(true);
 
 		return [$siControl];
 	}

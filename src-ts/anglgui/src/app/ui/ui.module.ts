@@ -16,8 +16,8 @@ import { TogglerComponent } from './util/comp/toggler/toggler.component';
 import { SearchInputGroupComponent } from './util/comp/search-input-group/search-input-group.component';
 import { FormsModule } from '@angular/forms';
 import { SimpleZoneContainerComponent } from './structure/comp/simple-zone-container/simple-zone-container.component';
-import {ButtonComponent} from './util/comp/button/button.component';
-import {MessagesComponent} from './util/comp/message/messages.component';
+import { ButtonComponent } from './util/comp/button/button.component';
+import { MessagesComponent } from './util/comp/message/messages.component';
 import { SelectComponent } from './util/comp/select-input/select.component';
 import { IframeComponent } from './util/comp/iframe/iframe.component';
 import { IFrameResizerDirective } from './util/directive/iframe-resizer-directive.directive';
@@ -28,6 +28,7 @@ import { TimePickerComponent } from './util/comp/time-picker/time-picker.compone
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { deLocale, frLocale, itLocale, enGbLocale } from 'ngx-bootstrap/locale';
@@ -52,7 +53,8 @@ defineLocale('en', enGbLocale);
 		FormsModule,
 		BrowserAnimationsModule,
 		BsDatepickerModule.forRoot(),
-		TimepickerModule.forRoot()
+		TimepickerModule.forRoot(),
+		BsDropdownModule.forRoot()
 	],
 	exports: [
 		ContainerComponent,

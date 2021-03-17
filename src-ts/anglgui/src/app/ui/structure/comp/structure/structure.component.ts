@@ -94,6 +94,11 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return this.uiStructure.marked;
 	}
 
+	@HostBinding('class.rocket-massive-toolbared')
+	get massiveToolbarExists(): boolean {
+		return this.uiStructure.isToolbarMassive() && this.uiStructure.getToolbarStructures().length > 0;
+	}
+
 	isToolbarMassive(): boolean {
 		return this.uiStructure.isToolbarMassive();
 	}

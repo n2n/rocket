@@ -9,12 +9,12 @@ import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 	styleUrls: ['./select.component.css']
 })
 export class SelectComponent implements OnInit {
-
+	private static idCounter = 0;
 	private _value: string|null = null;
 	private popupSubscription: Subscription|null = null;
 
-	@ViewChild('dropdown', { static: true })
-	private dropdownElemRef: ElementRef;
+	// @ViewChild('dropdown', { static: true })
+	// private dropdownElemRef: ElementRef;
 
 	@Output()
 	valueChange = new EventEmitter<string|null>();
@@ -31,7 +31,11 @@ export class SelectComponent implements OnInit {
 	@Input()
 	resetLabel: string|null = null;
 
-	constructor(private elemRef: ElementRef) { }
+	id: string;
+
+	constructor(private elemRef: ElementRef) { 
+		this.id = 'rocket-dropdown-' + (SelectComponent.idCounter++);
+	}
 
 	ngOnInit(): void {
 	}

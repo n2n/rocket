@@ -46,7 +46,7 @@ class UrlConfig extends PropConfigAdaption {
 	private static $commonNotNeedles = array('label', 'title', 'text');
 	
 	private $autoScheme;
-	private $allowedSchemes = array();
+	private $allowedSchemes = ['https', 'http'];
 	private $relativeAllowed = false;
 	private $lytebox = false;
 	

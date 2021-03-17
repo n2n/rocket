@@ -37,6 +37,7 @@ import { DateTimeInSiField } from '../model/content/impl/date/model/datetime-in-
 import { IframeInSiField } from '../model/content/impl/iframe/model/iframe-in-si-field';
 import { AppStateService } from 'src/app/app-state.service';
 import { StringArrayInSiField } from '../model/content/impl/array/model/string-array-in-si-field';
+import { SiEntry } from '../model/content/si-entry';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
