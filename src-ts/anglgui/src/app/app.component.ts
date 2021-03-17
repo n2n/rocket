@@ -17,8 +17,8 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 	styleUrls: ['./app.component.css'],
 	animations: [
 	    trigger('openClose', [
-		  state('true', style({opacity: 1, height: '*', overflow: 'hidden'})),
-		  state('false', style({opacity: 0, height: 0, padding: 0})),
+		  state('true', style({opacity: 1, height: '*'})),
+		  state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
 		  transition('false <=> true', animate('500ms'))
 		])
 	]
