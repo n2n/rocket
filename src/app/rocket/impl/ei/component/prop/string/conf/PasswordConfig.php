@@ -63,7 +63,7 @@ class PasswordConfig extends PropConfigAdaption {
 		$algorithms = self::getAlgorithms();
 		$magCollection->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
 				array_combine($algorithms, $algorithms), 
-				$dataSet->optString(self::ATTR_ALGORITHM_KEY, $this->getAlgorithm())));
+				$dataSet->optString(self::ATTR_ALGORITHM_KEY, $this->getAlgorithm()), true));
 	}
 	
 	public static function getAlgorithms() {

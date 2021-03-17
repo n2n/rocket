@@ -48,7 +48,7 @@ class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return $eiu->factory()->newGuiField(SiFields::stringOut());
+		return $eiu->factory()->newGuiField(SiFields::stringOut(null));
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
