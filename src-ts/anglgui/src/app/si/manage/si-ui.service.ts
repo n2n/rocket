@@ -174,7 +174,7 @@ export class SiUiService {
 				throw new IllegalSiStateError('Unknown entry key ' + key);
 			}
 
-			entries[0].handleError(entryError);
+			entries[0].replacementEntry(entryError);
 		}
 	}
 

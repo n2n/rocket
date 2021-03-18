@@ -203,7 +203,7 @@ class ApiControlProcess {
 	 * @throws \InvalidArgumentException
 	 */
 	private function applyInput($siInput) {
-		$entryErrors = [];
+		$siEntries = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiEntryGui = null;
@@ -235,7 +235,7 @@ class ApiControlProcess {
 				continue;
 			}
 			
-			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
+			$siEntries[$key] = $this->eiGuiModel->createSiEntry($this->eiFrame, $eiEntryGui, false);
 		}
 		
 		if (empty($entryErrors)) {

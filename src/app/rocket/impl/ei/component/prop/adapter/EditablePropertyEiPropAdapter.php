@@ -61,6 +61,8 @@ abstract class EditablePropertyEiPropAdapter extends DisplayablePropertyEiPropAd
 	protected function createEifField(Eiu $eiu): EifField {
 		$eifField = parent::createEifField($eiu);
 		
+		$this->getLabelLstr()
+		
 		if (!$this->getEditConfig()->isReadOnly()) {
 			$eifField->setWriter(function ($value) use ($eiu) {
 				return $eiu->entry()->writeNativeValue($this, $value);
