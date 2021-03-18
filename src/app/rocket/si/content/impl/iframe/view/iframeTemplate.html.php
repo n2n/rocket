@@ -10,6 +10,7 @@
     $uiComponent = $view->getParam('uiComponent', false);
     $view->assert($uiComponent === null || $uiComponent instanceof UiComponent);
 
+    $html->meta()->setTitle('helloWorld');
     $html->meta()->addCss('css/rocket-30.css');
 ?>
 <!DOCTYPE html>

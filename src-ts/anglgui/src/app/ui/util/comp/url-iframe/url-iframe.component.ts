@@ -7,7 +7,7 @@ import {IframeComponent} from "../iframe/iframe.component";
   templateUrl: './url-iframe.component.html',
   styleUrls: ['./url-iframe.component.css']
 })
-export class UrlIframeComponent implements AfterViewInit, OnInit {
+export class UrlIframeComponent implements OnInit {
   @ViewChild('urlIframe') urlIframe: ElementRef;
 
   @Input()
@@ -15,15 +15,13 @@ export class UrlIframeComponent implements AfterViewInit, OnInit {
 
   public sanitizedUrl: SafeUrl;
 
+  public loading = true;
+
   constructor(private sanitizer: DomSanitizer) {
   }
 
   ngOnInit(): void {
     this.sanitizedUrl = this.sanitizeUrl();
-  }
-
-
-  ngAfterViewInit() {
   }
 
   private appendScriptsToIframeContent() {
@@ -40,6 +38,8 @@ export class UrlIframeComponent implements AfterViewInit, OnInit {
   iframeLoaded() {
     if (!!this.urlIframe) {
       this.appendScriptsToIframeContent();
+      this.loading = false;
+      //alert(this.urlIframe.nativeElement.contentWindow.document.title);
     }
   }
 }

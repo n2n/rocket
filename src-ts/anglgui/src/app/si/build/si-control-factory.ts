@@ -82,7 +82,7 @@ export class SiControlFactory {
 		btn.iconAlways = extr.reqBoolean('iconAlways');
 		btn.labelAlways = extr.reqBoolean('labelAlways');
     btn.href = extr.nullaString('href');
-    
+
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {
 			btn.confirm = this.createConfirm(confirmData);
