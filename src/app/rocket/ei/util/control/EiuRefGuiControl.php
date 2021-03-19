@@ -23,7 +23,7 @@ namespace rocket\ei\util\control;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
-use rocket\si\control\SiControlResult;
+use rocket\si\control\SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
@@ -101,15 +101,15 @@ class EiuRefGuiControl implements GuiControl {
 		return new RefSiControl($this->createCmdUrl($eiCmdPath), $this->siButton, $this->newWindow);
 	}
 	
-	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {
+	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiResult {
+	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 
-	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult {
+	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 

@@ -1,10 +1,11 @@
 
 import { SiDeclaration } from '../meta/si-declaration';
 import { SiControlBoundry } from '../control/si-control-bountry';
+import { SiStyle } from '../meta/si-view-mode';
 
 export class SiGetInstruction {
 
-	constructor(public bulky: boolean, public readOnly: boolean) {
+	constructor(public style: SiStyle) {
 	}
 
 	protected declaration: SiDeclaration|null = null;
@@ -17,8 +18,8 @@ export class SiGetInstruction {
 	protected propIds: string[]|null = null;
 	protected typeIds: string[]|null = null;
 
-	static partialContent(bulky: boolean, readOnly: boolean, offset: number, num: number, quickSearchStr: string|null): SiGetInstruction {
-		const instruction = new SiGetInstruction(bulky, readOnly);
+	static partialContent(style: SiStyle, offset: number, num: number, quickSearchStr: string|null): SiGetInstruction {
+		const instruction = new SiGetInstruction(style);
 		instruction.partialContentInstruction = {
 			offset,
 			num,
@@ -27,14 +28,14 @@ export class SiGetInstruction {
 		return instruction;
 	}
 
-	static entry(bulky: boolean, readOnly: boolean, entryId: string): SiGetInstruction {
-		const instruction = new SiGetInstruction(bulky, readOnly);
+	static entry(style: SiStyle, entryId: string): SiGetInstruction {
+		const instruction = new SiGetInstruction(style);
 		instruction.entryId = entryId;
 		return instruction;
 	}
 
-	static newEntry(bulky: boolean, readOnly: boolean): SiGetInstruction {
-		const instruction = new SiGetInstruction(bulky, readOnly);
+	static newEntry(style: SiStyle): SiGetInstruction {
+		const instruction = new SiGetInstruction(style);
 		instruction.newEntryRequested = true;
 		return instruction;
 	}
@@ -93,10 +94,9 @@ export class SiGetInstruction {
 		return this;
 	}
 
-	toJSON() {
+	toJSON(): object {
 		return {
-			bulky: this.bulky,
-			readOnly: this.readOnly,
+			style: this.style,
 			declarationRequested: !this.declaration,
 			generalControlsIncluded: this.generalControlsIncluded,
 			entryControlsIncluded: this.entryControlsIncluded,

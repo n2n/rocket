@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ei\util\control;
 
-use rocket\si\control\SiControlResult;
+use rocket\si\control\SiCallResponse;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\EiType;
 use n2n\l10n\Message;
@@ -12,7 +12,7 @@ use rocket\ei\manage\EiObject;
 class EiuControlResponse {
 	private $eiuAnalyst;
 	/**
-	 * @var SiResult
+	 * @var SiCallResponse
 	 */
 	private $siResult;
 	/**
@@ -30,14 +30,14 @@ class EiuControlResponse {
 	 */
 	function __construct(EiuAnalyst $eiuAnalyst) {
 		$this->eiuAnalyst = $eiuAnalyst;
-		$this->siResult = new SiControlResult();
+		$this->siResult = new SiCallResponse();
 	}
 	
 	/**
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function redirectBack() {
-		$this->siResult->setDirective(SiControlResult::DIRECTIVE_REDIRECT_BACK);
+		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
 		
@@ -53,7 +53,7 @@ class EiuControlResponse {
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function redirectBackOrRef(Url $url) {
-		$this->siResult->setDirective(SiControlResult::DIRECTIVE_REDIRECT_BACK);
+		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		$this->siResult->setRef($url);
 		return $this;
 	}
@@ -63,7 +63,7 @@ class EiuControlResponse {
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function redirectBackOrHref(Url $url) {
-		$this->siResult->setDirective(SiControlResult::DIRECTIVE_REDIRECT_BACK);
+		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		$this->siResult->setHref($url);
 		return $this;
 	}
@@ -73,7 +73,7 @@ class EiuControlResponse {
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function redirectToRef(Url $url) {
-		$this->siResult->setDirective(SiControlResult::DIRECTIVE_REDIRECT);
+		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
 		$this->siResult->setRef($url);
 		return $this;
 	}
@@ -83,7 +83,7 @@ class EiuControlResponse {
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
 	function redirectToHref(Url $url) {
-		$this->siResult->setDirective(SiControlResult::DIRECTIVE_REDIRECT_BACK);
+		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		$this->siResult->setHref($url);
 		return $this;
 	}
@@ -145,7 +145,7 @@ class EiuControlResponse {
 	 */
 	function entryAdded(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, SiControlResult::MOD_TYPE_ADDED);
+			$this->eiObjectMod($eiObjectArg, SiCallResponse::MOD_TYPE_ADDED);
 		}
 		return $this;
 	}
@@ -156,7 +156,7 @@ class EiuControlResponse {
 	 */
 	function entryChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, SiControlResult::MOD_TYPE_CHANGED);
+			$this->eiObjectMod($eiObjectArg, SiCallResponse::MOD_TYPE_CHANGED);
 		}
 		return $this;
 	}
@@ -167,7 +167,7 @@ class EiuControlResponse {
 	 */
 	function entryRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, SiControlResult::MOD_TYPE_REMOVED);
+			$this->eiObjectMod($eiObjectArg, SiCallResponse::MOD_TYPE_REMOVED);
 		}
 		return $this;
 	}
@@ -195,9 +195,9 @@ class EiuControlResponse {
 	
 	/**
 	 * @param EiLifecycleMonitor $elm
-	 * @return \rocket\si\control\SiResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
-	function toSiResult(EiLifecycleMonitor $elm) {
+	function toSiCallResponse(EiLifecycleMonitor $elm) {
 		if ($this->noAutoEvents) {
 			return $this->siResult;
 		}
@@ -215,17 +215,17 @@ class EiuControlResponse {
 		$this->pendingHighlightEiObjects = [];
 		
 		foreach ($elm->getUpdateActions() as $action) {
-			$this->eiObjectMod($action->getEiObject(), SiControlResult::EVENT_TYPE_CHANGED);
+			$this->eiObjectMod($action->getEiObject(), SiCallResponse::EVENT_TYPE_CHANGED);
 			$this->highlight($action->getEiObject());
 		}
 		
 		foreach ($elm->getPersistActions() as $action) {
-			$this->eiObjectMod($action->getEiObject(), SiControlResult::EVENT_TYPE_ADDED);
+			$this->eiObjectMod($action->getEiObject(), SiCallResponse::EVENT_TYPE_ADDED);
 			$this->highlight($action->getEiObject());
 		}
 		
 		foreach ($elm->getRemoveActions() as $action) {
-			$this->eiObjectMod($action->getEiObject(), SiControlResult::EVENT_TYPE_REMOVED);
+			$this->eiObjectMod($action->getEiObject(), SiCallResponse::EVENT_TYPE_REMOVED);
 		}
 		
 		return $this->siResult;

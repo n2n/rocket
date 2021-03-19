@@ -69,8 +69,8 @@ class ValInstructionProcess {
 		$eiGui = $this->util->determineEiGuiOfInput($entryInput);
 		$this->eiEntry = $eiGui->getEiEntryGui()->getSelectedTypeDef()->getEiEntry();
 
-		$result = new SiValResult();
-// 		$result->setEntryError($this->util->handleEntryInput($entryInput, $eiGui->getEiEntryGui()));
+		$result = new SiValResult($this->util->handleEntryInput($entryInput, $eiGui->getEiEntryGui()));
+// 		$result->setEntryError();
 		
 		foreach ($this->instruction->getGetInstructions() as $key => $getInstruction) {
 			$result->putGetResult($key, $this->handleGetInstruction($getInstruction));

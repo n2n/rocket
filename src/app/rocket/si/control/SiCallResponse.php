@@ -27,7 +27,7 @@ use n2n\l10n\N2nLocale;
 use rocket\si\content\SiEntryIdentifier;
 use rocket\si\input\SiInputError;
 
-class SiControlResult implements \JsonSerializable {
+class SiCallResponse implements \JsonSerializable {
 	const DIRECTIVE_REDIRECT_BACK = 'redirectBack';
 	const DIRECTIVE_REDIRECT = 'redirect';
 	
@@ -54,14 +54,10 @@ class SiControlResult implements \JsonSerializable {
 	 * @var array
 	 */
 	private $eventMap = [];
-	/**
-	 * @var SiInputError|null
-	 */
-	private $inputError = null;
 	
 	/**
 	 * @param string|null $directive
-	 * @return \rocket\si\control\SiControlResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
 	function setDirective(?string $directive) {
 		ArgUtils::valEnum($directive, [self::DIRECTIVE_REDIRECT_BACK, self::DIRECTIVE_REDIRECT], null, true);
@@ -71,7 +67,7 @@ class SiControlResult implements \JsonSerializable {
 	
 	/**
 	 * @param SiNavPoint|null $navPoint
-	 * @return \rocket\si\control\SiControlResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
 	function setNavPoint(?SiNavPoint $navPoint) {
 		$this->navPoint = $navPoint;
@@ -81,7 +77,7 @@ class SiControlResult implements \JsonSerializable {
 	/**
 	 * @param string $category
 	 * @param string $id
-	 * @return \rocket\si\control\SiControlResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
 	function addHighlight(string $category, string $id) {
 		if (!isset($this->highlightMap[$category])) {
@@ -96,7 +92,7 @@ class SiControlResult implements \JsonSerializable {
 	 * @param string $category
 	 * @param string $id
 	 * @param string $modType
-	 * @return \rocket\si\control\SiControlResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
 	function addEvent(SiEntryIdentifier $identifier, string $modType) {
 		ArgUtils::valEnum($modType, [self::EVENT_TYPE_ADDED, self::EVENT_TYPE_CHANGED, self::EVENT_TYPE_REMOVED]);
@@ -121,7 +117,7 @@ class SiControlResult implements \JsonSerializable {
 	/**
 	 * @param Message $message
 	 * @param N2nLocale $n2nLocale
-	 * @return \rocket\si\control\SiControlResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
 	function addMessage(Message $message, N2nLocale $n2nLocale) {
 		$severity = null;
@@ -148,15 +144,6 @@ class SiControlResult implements \JsonSerializable {
 		return $this;
 	}
 	
-	/**
-	 * @param SiInputError $inputError
-	 * @return \rocket\si\control\SiControlResult
-	 */
-	function setInputError(?SiInputError $inputError) {
-		$this->inputError = $inputError;
-		return $this;
-	}
-	
 	function jsonSerialize() {
 		return [
 			'directive' => $this->directive,
@@ -164,8 +151,7 @@ class SiControlResult implements \JsonSerializable {
 			'messages' => $this->messageArr,
 			'newButton' => $this->newButton,
 			'highlightMap' => $this->highlightMap,
-			'eventMap' => $this->eventMap,
-			'inputError' => $this->inputError
+			'eventMap' => $this->eventMap
 		];
 	}
 }

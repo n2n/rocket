@@ -4,7 +4,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { SiInput } from '../model/input/si-input';
-import { SiControlResult } from './si-control-result';
+import { SiCallResponse, SiControlResult } from './si-control-result';
 import { SiResultFactory } from '../build/si-result-factory';
 import { IllegalSiStateError } from '../util/illegal-si-state-error';
 import { SiGetRequest } from '../model/api/si-get-request';
@@ -17,6 +17,7 @@ import { SiUiFactory } from '../build/si-ui-factory';
 import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { SiFrame, SiFrameApiSection } from '../model/meta/si-frame';
+import { SiStyle } from '../model/meta/si-view-mode';
 
 @Injectable({
 	providedIn: 'root'
@@ -61,16 +62,19 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput): Observable<SiControlResult> {
+	controlCall(apiUrl: string|SiFrame, style: SiStyle, apiCallId: object, input: SiInput|null): Observable<SiControlResult> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
 		}
 
 		const formData = new FormData();
+		formData.append('style', JSON.stringify(style));
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 
-		for (const [name, param] of input.toParamMap()) {
-			formData.append(name, param);
+		if (input) {
+			for (const [name, param] of input.toParamMap()) {
+				formData.append(name, param);
+			}
 		}
 
 		const params = new HttpParams();
@@ -82,8 +86,11 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl, formData, options)
 				.pipe(map(data => {
-					const result = SiResultFactory.createControlResult(data);
-					this.handleResult(result);
+					const resultFactory = new SiResultFactory(this.injector);
+					const result = resultFactory.createControlResult(data, input?.declaration);
+					if (result.callResponse) {
+						this.handleCallresponse(result.callResponse);
+					}
 					return result;
 				}));
 	}
@@ -142,21 +149,22 @@ export class SiService {
 				}));
 	}
 
-	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiControlResult> {
+	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiCallResponse> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.SORT);
 		}
 
+		const resultFactory = new SiResultFactory(this.injector);
 		return this.httpClient
 				.post(apiUrl, sortRequest)
 				.pipe(map(data => {
-					const result = SiResultFactory.createControlResult(data);
-					this.handleResult(result);
-					return result;
+					const callResponse = resultFactory.createCallResponse(data);
+					this.handleCallresponse(callResponse);
+					return callResponse;
 				}));
 	}
 
-	private handleResult(result: SiControlResult) {
+	private handleCallresponse(result: SiCallResponse): void {
 		this.modState.pushModEvent(result.modEvent);
 		this.modState.pushMessages(result.messages);
 	}

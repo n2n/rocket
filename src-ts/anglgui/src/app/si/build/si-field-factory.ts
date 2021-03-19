@@ -231,7 +231,8 @@ export class SiFieldFactory {
 			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
 
 		case SiFieldType.IFRAME_IN:
-			const formData = new Map<string, string>(Object.entries((dataExtr.reqObject('params') as any).formData));
+			// const formData = new Map<string, string>(Object.entries((dataExtr.reqObject('params') as any).formData));
+			const formData = dataExtr.reqStringMap('params', true);
 
 			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
 
@@ -293,8 +294,7 @@ export class SiFieldFactory {
 					apiGetUrl,
 					entryId: extr.nullaString('entryId'),
 					propIds: extr.nullaStringArray('propIds'),
-					bulky: extr.reqBoolean('bulky'),
-					readOnly: extr.reqBoolean('readOnly'),
+					style: SiMetaFactory.createStyle(extr.reqObject('style')),
 					siControlBoundy: this.controlBoundry,
 					siService: this.injector.get(SiService)
 				}));
@@ -306,7 +306,7 @@ export class SiFieldFactory {
 	}
 
 	private completeSplitContextSiField(splitContextSiField: SplitContextSiField, dependantPropIds: Array<string>,
-			fieldMap$: Observable<Map<string, SiField>>) {
+			fieldMap$: Observable<Map<string, SiField>>): void {
 		fieldMap$.subscribe((fieldMap) => {
 
 			for (const dependantPropId of dependantPropIds) {
@@ -319,7 +319,7 @@ export class SiFieldFactory {
 	}
 
 	private finalizeBool(booleanInSiField: BooleanInSiField, onAssociatedPropIds: string[],
-			offAssociatedPropIds: string[], fieldMap: Map<string, SiField>) {
+			offAssociatedPropIds: string[], fieldMap: Map<string, SiField>): void {
 		let field: SiField;
 
 		for (const propId of onAssociatedPropIds) {
@@ -336,7 +336,7 @@ export class SiFieldFactory {
 	}
 
 	private finalizeEnum(enumInSiField: EnumInSiField, associatedPropIdsMap: Map<string, string[]>,
-			fieldMap: Map<string, SiField>) {
+			fieldMap: Map<string, SiField>): void {
 		for (const [value, propIds] of associatedPropIdsMap) {
 			enumInSiField.setAssociatedFields(value, propIds
 					.map(propId => fieldMap.get(propId))

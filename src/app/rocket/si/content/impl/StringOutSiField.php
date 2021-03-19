@@ -69,7 +69,6 @@ class StringOutSiField extends OutSiFieldAdapter {
 		return 'string-out';
 	}
 	
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getData()
@@ -78,7 +77,7 @@ class StringOutSiField extends OutSiFieldAdapter {
 		return [
 			'value' => $this->value,
 			'multiline' => $this->multiline,
-			'messages' => $this->getMessages()
+			'messages' => $this->getMessageStrs()
 		];
 	}
 }

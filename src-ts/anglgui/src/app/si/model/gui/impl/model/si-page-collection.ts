@@ -41,8 +41,13 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 
-	getControlledEntries(): SiEntry[] {
+	getBoundEntries(): SiEntry[] {
 		return [];
+	}
+
+	getBoundDeclaration(): SiDeclaration {
+		this.ensureDeclared();
+		return this.declaration;
 	}
 
 	get pages(): SiPage[] {
@@ -216,7 +221,7 @@ export class SiPageCollection implements SiControlBoundry {
 			siPage = this.createPage(pageNo, null);
 		}
 
-		const instruction = SiGetInstruction.partialContent(false, true,
+		const instruction = SiGetInstruction.partialContent(this.declaration.style,
 						siPage.offset, this.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration)

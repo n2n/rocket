@@ -27,28 +27,18 @@ use n2n\util\type\ArgUtils;
 
 class SiValResult implements \JsonSerializable {
 	/**
-	 * @var SiEntry|null
+	 * @var bool
 	 */
-	private $entry = null;
+	private $valid;
 	/** 
 	 * @var SiValGetResult[]
 	 */
 	private $getResults = [];
 
-	/**
-	 * @return SiEntry|null
-	 */
-	public function getEntry() {
-		return $this->entry;
+	function __construct(bool $valid) {
+		$this->valid = $valid;
 	}
-
-	/**
-	 * @param SiEntry|null $entry
-	 */
-	public function setEntry(?SiEntry $entry) {
-		$this->entry = $entry;
-	}
-
+	
 	/** 
 	 * @return SiValGetResult[]
 	 */
@@ -78,8 +68,8 @@ class SiValResult implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return [
-			'getResults' => $this->getResults,
-			'entryError' => $this->entry
+			'valid' => $this->valid,
+			'getResults' => $this->getResults
 		];
 	}
 }

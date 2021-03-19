@@ -27,10 +27,9 @@ use n2n\web\http\BadRequestException;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\si\control\SiControlResult;
+use rocket\si\control\SiCallResponse;
 use rocket\si\input\SiInputFactory;
 use n2n\util\type\attrs\AttributesException;
-use rocket\si\input\SiError;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiException;
 use rocket\ei\manage\entry\UnknownEiObjectException;
@@ -39,8 +38,9 @@ use rocket\ei\manage\security\InaccessibleEiEntryException;
 use n2n\web\http\ForbiddenException;
 use rocket\si\input\SiInput;
 use n2n\util\type\ArgUtils;
+use rocket\si\input\SiInputError;
 
-class ZoneApiControlProcess extends IdPath {
+class ZoneApiControlProcess /*extends IdPath*/ {
 	private $eiFrameUtil;
 	private $eiEntryGui;
 	private $guiControl;
@@ -96,7 +96,7 @@ class ZoneApiControlProcess extends IdPath {
 	/**
 	 * @param array $data
 	 * @throws BadRequestException
-	 * @return SiControlResult|null
+	 * @return SiCallResponse|null
 	 */
 	function handleInput(array $data) {
 		if (!$this->guiControl->isInputHandled()) {
@@ -106,11 +106,7 @@ class ZoneApiControlProcess extends IdPath {
 		$inputFactory = new SiInputFactory();
 		
 		try {
-			if (null !== ($err = $this->applyInput($inputFactory->create($data)))) {
-				return (new SiControlResult())->setInputError($err);
-			}
-			
-			return null;
+			return $this->applyInput($inputFactory->create($data));
 		} catch (AttributesException $e) {
 			throw new BadRequestException(null, null, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -128,21 +124,24 @@ class ZoneApiControlProcess extends IdPath {
 	
 	/**
 	 * @param SiInput $siInput
-	 * @return SiError|null
+	 * @return SiInputError|null
 	 * @throws UnknownEiObjectException
 	 * @throws UnknownEiTypeException
 	 * @throws InaccessibleEiEntryException
 	 * @throws \InvalidArgumentException
 	 */
 	private function applyInput($siInput) {
-		$entryErrors = [];
+		$errorEntries = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
+			$eiGuiModel = null;
+			$eiEntryGui = null;
 			$eiEntry = null;
 			if ($this->eiEntryGui !== null) {
 				$eiEntryGui = $this->eiEntryGui;
 				$eiEntryGui->handleSiEntryInput($entryInput);
 				$eiEntry = $eiEntryGui->getSelectedEiEntry();
+				$eiGuiModel = $this->eiEntryGui->getEiGui()->getEiGuiModel();
 			} else {
 				$eiObject = null;
 				if (null !== $entryInput->getIdentifier()->getId()) {
@@ -165,14 +164,14 @@ class ZoneApiControlProcess extends IdPath {
 				continue;
 			}
 			
-			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale());
+			$errorEntries[$key] = $eiGuiModel->createSiEntry($this->eiFrameUtil->getEiFrame(), $eiEntryGui, false);
 		}
 		
-		if (empty($entryErrors)) {
+		if (empty($errorEntries)) {
 			return null;
 		}
 		
-		return new SiError($entryErrors);
+		return new SiInputError($errorEntries);
 	}
 	
 	/**
@@ -183,7 +182,7 @@ class ZoneApiControlProcess extends IdPath {
 	}
 	
 	/**
-	 * @return SiControlResult
+	 * @return SiCallResponse
 	 */
 	function callGuiControl() {
 		return $this->guiControl->handle($this->eiFrameUtil->getEiFrame(), $this->getEiGuiModel(), $this->inputEiEntries);

@@ -1,8 +1,10 @@
 
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
+import { SiDeclaration } from '../meta/si-declaration';
 
 export class SiInput {
-	constructor(public entryInputs: SiEntryInput[] = []) {
+
+	constructor(public declaration: SiDeclaration, public entryInputs: SiEntryInput[] = []) {
 
 	}
 

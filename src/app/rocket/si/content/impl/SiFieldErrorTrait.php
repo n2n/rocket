@@ -24,6 +24,7 @@ namespace rocket\si\content\impl;
 use n2n\l10n\Message;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraints;
+use n2n\reflection\magic\MagicMethodInvoker;
 
 trait SiFieldErrorTrait {
 	private $messagesCallback = null;
@@ -37,16 +38,18 @@ trait SiFieldErrorTrait {
 	}
 	
 	/**
-	 * @return Message[]
+	 * @return string[]
 	 */
-	function getMessages() {
+	function getMessageStrs() {
 		if ($this->messagesCallback === null) {
 			return [];
 		}
 		
-		$messages = $this->messages();
+		
+		$callback = $this->messagesCallback;
+		$messages = $callback();
 		ArgUtils::valTypeReturn($messages, TypeConstraints::array(false, Message::class), null, $this->messagesCallback);
-		return $messages;
+		return array_map(fn ($m) => (string) $m, $messages);
 	}
 	
 }

@@ -35,10 +35,13 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 			public siModStateService: SiModStateService) {
 	}
 
-	getControlledEntries(): SiEntry[] {
+	getBoundEntries(): SiEntry[] {
 		return [this.entry];
 	}
 
+	getBoundDeclaration(): SiDeclaration {
+		return this.declaration;
+	}
 	// reload() {
 	// }
 

@@ -152,11 +152,13 @@ export class Extractor {
 		return map;
 	}
 
-	reqStringMap(propName: string): Map<string, string> {
+	reqStringMap(propName: string, fieldNullable = false): Map<string, string> {
 		const map = this.reqMap(propName);
 
 		map.forEach((value, key) => {
-			if (typeof value === 'string') { return; }
+			if (typeof value === 'string' || (fieldNullable && value === null)) {
+				return;
+			}
 
 			throw new ObjectMissmatchError('Property ' + propName + '[' + key + '] must be of type string. Given: '
 					+ typeof value);

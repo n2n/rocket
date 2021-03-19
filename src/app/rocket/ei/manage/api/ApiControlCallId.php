@@ -34,12 +34,10 @@ class ApiControlCallId implements \JsonSerializable {
 	private $pid;
 	private $newEiTypeId;
 	
-	function __construct(GuiControlPath $guiControlPath, TypePath $eiTypePath, int $viewMode, ?string $pid, 
+	function __construct(GuiControlPath $guiControlPath, TypePath $eiTypePath, ?string $pid, 
 			?string $newEiTypeId) {
 		$this->guiControlPath = $guiControlPath;
-		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->eiTypePath = $eiTypePath;
-		$this->viewMode = $viewMode;
 		$this->pid = $pid;
 		$this->newEiTypeId = $newEiTypeId;
 		
@@ -60,13 +58,6 @@ class ApiControlCallId implements \JsonSerializable {
 	 */
 	function getEiTypeId() {
 		return $this->eiTypePath->getTypeId();
-	}
-	
-	/**
-	 * @return int
-	 */
-	function getViewMode() {
-		return $this->viewMode;
 	}
 	
 	/**

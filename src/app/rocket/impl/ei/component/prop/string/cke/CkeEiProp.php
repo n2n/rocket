@@ -75,7 +75,7 @@ class CkeEiProp extends AlphanumericEiProp {
         $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
 				['composer' => $ckeComposer, 'config' => $this->ckeConfig]));
 
-		$iframeInField = SiFields::iframeIn($ckeView)->setParams(['formData' => ['content' => $eiu->field()->getValue()]]);
+		$iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()]);
 
 		return $eiu->factory()->newGuiField($iframeInField)->setSaver(function () use ($iframeInField, $eiu) {
 			$eiu->field()->setValue($iframeInField->getParams()['content'] ?? null);

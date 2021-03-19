@@ -64,7 +64,7 @@ use rocket\ei\component\prop\EiProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
-use rocket\si\control\SiControlResult;
+use rocket\si\control\SiCallResponse;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\gui\EiuEntryGui;
@@ -1195,15 +1195,15 @@ class EiuCallbackSortAbility implements SortAbility {
 		$this->insertAsChildCallback = $insertAsChildCallback;
 	}
 	
-	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiResult {
+	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiCallResponse {
 		return $this->callClosure($this->insertAfterCallback, $eiObjects, $afterEiObject);
 	}
 
-	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiResult {
+	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiCallResponse {
 		return $this->callClosure($this->insertBeforeCallback, $eiObjects, $beforeEiObject);
 	}
 	
-	function insertAsChild(array $eiObjects, EiObject $parentEiObject): SiResult {
+	function insertAsChild(array $eiObjects, EiObject $parentEiObject): SiCallResponse {
 		if ($this->insertAsChildCallback === null) {
 			throw new IllegalStateException('Tree sort ability not available.');
 		}
@@ -1225,6 +1225,6 @@ class EiuCallbackSortAbility implements SortAbility {
 			$eiuControlResponse = new EiuControlResponse($this->eiuAnalyst);
 		}
 		
-		return $eiuControlResponse->toSiResult($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
+		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
 	}
 }

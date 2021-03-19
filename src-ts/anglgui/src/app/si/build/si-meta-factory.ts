@@ -8,14 +8,14 @@ import { SiTypeEssentialsFactory as SiMaskEssentialsFactory } from './si-type-es
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiTypeContext } from '../model/meta/si-type-context';
-import { Message } from 'src/app/util/i18n/message';
+import { SiStyle } from '../model/meta/si-view-mode';
 
 
 export class SiMetaFactory {
 	static createDeclaration(data: any): SiDeclaration {
 		const extr = new Extractor(data);
 
-		const declaration = new SiDeclaration();
+		const declaration = new SiDeclaration(SiMetaFactory.createStyle(extr.reqObject('style')));
 
 		let contextTypeDeclaration: SiMaskDeclaration|null = null ;
 		for (const maskDeclarationData of extr.reqArray('maskDeclarations')) {
@@ -27,6 +27,15 @@ export class SiMetaFactory {
 			declaration.addTypeDeclaration(maskDeclaration);
 		}
 		return declaration;
+	}
+
+	static createStyle(data: any): SiStyle {
+		const extr = new Extractor(data);
+
+		return {
+			bulky: extr.reqBoolean('bulky'),
+			readOnly: extr.reqBoolean('readOnly')
+		};
 	}
 
 	private static createTypeDeclaration(data: any, contextTypeDeclaration: SiMaskDeclaration|null): SiMaskDeclaration {

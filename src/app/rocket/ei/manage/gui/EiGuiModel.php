@@ -12,6 +12,7 @@ use rocket\si\content\SiEntry;
 use rocket\ei\EiType;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\si\meta\SiStyle;
 
 class EiGuiModel {
 	/**
@@ -120,7 +121,7 @@ class EiGuiModel {
 	 */
 	function createSiDeclaration(EiFrame $eiFrame) {
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$siDeclaration = new SiDeclaration(ViewMode::createSiViewMode($this->viewMode));
+		$siDeclaration = new SiDeclaration(ViewMode::createSiStyle($this->viewMode));
 		
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
 			$siDeclaration->addTypeDeclaration($eiGuiFrame->createSiMaskDeclaration($n2nLocale));
@@ -137,7 +138,7 @@ class EiGuiModel {
 	 */
 	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded) {
 		$siEntry = new SiEntry($eiEntryGui->createSiEntryIdentifier(), 
-				ViewMode::isReadOnly($this->viewMode), ViewMode::isBulky($this->viewMode));
+				new SiStyle(ViewMode::isBulky($this->viewMode), ViewMode::isReadOnly($this->viewMode)));
 		$siEntry->setTreeLevel($eiEntryGui->getTreeLevel());
 		
 		$typeDefs = $eiEntryGui->getTypeDefs();

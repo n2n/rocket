@@ -22,6 +22,7 @@
 namespace rocket\si\api;
 
 use n2n\util\type\attrs\DataSet;
+use rocket\si\meta\SiStyle;
 
 class SiValGetInstruction {
 	private $bulky;
@@ -98,7 +99,7 @@ class SiValGetInstruction {
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
 		
-		$getInstruction = new SiValGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
+		$getInstruction = new SiValGetInstruction(SiStyle::createFromData($ds->reqArray('style')));
 		$getInstruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 		$getInstruction->setControlsIncluded($ds->reqBool('controlsIncluded'));
 		return $getInstruction;

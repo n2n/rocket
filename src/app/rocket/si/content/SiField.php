@@ -23,7 +23,6 @@ namespace rocket\si\content;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\UploadDefinition;
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use n2n\util\type\attrs\AttributesException;
 
 interface SiField {

@@ -164,7 +164,7 @@ class ReloadJob {
 			}
 
 			entry.markAsReloading();
-			getInstructions.push(SiGetInstruction.entry(entry.bulky, entry.readOnly, entry.identifier.id)
+			getInstructions.push(SiGetInstruction.entry(entry.style, entry.identifier.id)
 					.setEntryControlsIncluded(this.controlsIncluded));
 			entries.push(entry);
 		}

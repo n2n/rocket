@@ -56,7 +56,7 @@ export class SiApiFactory {
 
 		let controlsData: any = null;
 		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([]), this.injector);
+			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration), this.injector);
 			result.generalControls = compEssentialsFactory.createControls(controlsData);
 		}
 
@@ -93,12 +93,7 @@ export class SiApiFactory {
 	private createValResult(data: any, instruction: SiValInstruction): SiValResult {
 		const extr = new Extractor(data);
 
-		const result = new SiValResult();
-
-		const entryErrorData = extr.nullaObject('errorEntry');
-		if (entryErrorData) {
-			result.entryError = SiResultFactory.createEntryError(entryErrorData);
-		}
+		const result = new SiValResult(extr.reqBoolean('valid'));
 
 		const resultsData = extr.reqArray('getResults');
 		for (const key of instruction.getInstructions.keys()) {

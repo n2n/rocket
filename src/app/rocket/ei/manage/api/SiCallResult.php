@@ -19,29 +19,48 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\frame;
+namespace rocket\ei\manage\api;
 
-use rocket\ei\manage\EiObject;
-use n2n\util\ex\IllegalStateException;
+use rocket\si\input\SiInputError;
 use rocket\si\control\SiCallResponse;
 
-interface SortAbility {
-	/**
-	 * @param EiObject[] $eiObjects
-	 * @param EiObject $afterEiObject
-	 */
-	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiCallResponse;
+class SiCallResult implements \JsonSerializable {
+	private $inputError;
+	private $callResponse;
 	
 	/**
-	 * @param EiObject[] $eiObjects
-	 * @param EiObject $beforeEiObject
+	 * @param SiInputError $inputError
+	 * @param SiCallResponse $callResponse
 	 */
-	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiCallResponse;
+	private function __construct(?SiInputError $inputError, ?SiCallResponse $callResponse) {
+		$this->inputError = $inputError;
+		$this->callResponse = $callResponse;
+	}
 	
 	/**
-	 * @param EiObject[] $eiObjects
-	 * @param EiObject $asChildOfEiObject
-	 * @throws IllegalStateException if context EiType of EiFrame contains no NestedSetStrategy
+	 * @param SiInputError $inputError
+	 * @return \rocket\ei\manage\api\SiCallResult
 	 */
-	function insertAsChild(array $eiObjects, EiObject $asChildOfEiObject): SiCallResponse;
+	static function fromInputError(?SiInputError $inputError) {
+		return new SiCallResult($inputError, null);
+	}
+	
+	/**
+	 * @param SiCallResponse $callResponse
+	 * @return \rocket\ei\manage\api\SiCallResult
+	 */
+	static function fromCallResponse(?SiCallResponse $callResponse) {
+		return new SiCallResult(null, $callResponse);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
+	function jsonSerialize() {
+		return [
+			'inputError' => $this->inputError,
+			'callResponse' => $this->callResponse
+		];
+	}
 }

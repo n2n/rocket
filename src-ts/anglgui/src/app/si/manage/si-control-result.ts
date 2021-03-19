@@ -5,11 +5,19 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiNavPoint } from '../model/control/si-nav-point';
 import { SiEntry } from '../model/content/si-entry';
 
-export class SiControlResult {
+export interface SiControlResult {
+	inputError?: SiInputError;
+	callResponse?: SiCallResponse;
+}
+
+export class SiInputError {
+	public errorEntries = new Map<string, SiEntry>();
+}
+
+export class SiCallResponse {
 	public directive: SiDirective|null = null;
 	public navPoint: SiNavPoint|null = null;
 	public messages: Message[] = [];
-	public errorEntries = new Map<string, SiEntry>();
 	public newButton: SiButton|null = null;
 	public modEvent: SiModEvent|null = null;
 }

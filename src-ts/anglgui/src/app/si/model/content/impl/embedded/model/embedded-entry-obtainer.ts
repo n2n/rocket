@@ -28,18 +28,18 @@ export class EmbeddedEntryObtainer  {
 
 	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(true, false, siEntryIdentifier.id);
+			return SiGetInstruction.entry({ bulky: true, readOnly: false }, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(true, false).setTypeIds(this.typeIds);
+		return SiGetInstruction.newEntry({ bulky: true, readOnly: false }).setTypeIds(this.typeIds);
 	}
 
 	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(false, true, siEntryIdentifier.id);
+			return SiGetInstruction.entry({ bulky: false, readOnly: true }, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(false, true).setTypeIds(this.typeIds);
+		return SiGetInstruction.newEntry({ bulky: false, readOnly: true }).setTypeIds(this.typeIds);
 	}
 
 	preloadNew(): void {
@@ -112,21 +112,21 @@ export class EmbeddedEntryObtainer  {
 	}
 
 	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult): void {
-		if (siValResult.errorEntry) {
-			siEmbeddedEntry.entry.replace(siValResult.errorEntry);
-		}
+		siEmbeddedEntry.entry.replace(siValResult.getResults[0].entry);
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[0].entry;
+			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[1].entry;
 		}
 	}
 
 	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
 		const instruction = new SiValInstruction(siEmbeddedEntry.entry.readInput());
 
+		instruction.getInstructions[0] = SiValGetInstruction.create({ bulky: false, readOnly: true });
+
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry = null;
-			instruction.getInstructions[0] = SiValGetInstruction.create(false, true);
+			siEmbeddedEntry.summaryComp.entry?.createLock();
+			instruction.getInstructions[1] = SiValGetInstruction.create({ bulky: false, readOnly: true });
 		}
 
 		return instruction;

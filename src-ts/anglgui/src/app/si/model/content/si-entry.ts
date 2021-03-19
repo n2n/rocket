@@ -1,7 +1,6 @@
 
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
 import { SiEntryBuildup } from './si-entry-buildup';
@@ -12,10 +11,11 @@ import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
+import { SiStyle } from '../meta/si-view-mode';
 
 export class SiEntry {
 
-	constructor(readonly identifier: SiEntryIdentifier) {
+	constructor(readonly identifier: SiEntryIdentifier, public style: SiStyle) {
 	}
 
 	isNew(): boolean {
@@ -92,8 +92,6 @@ export class SiEntry {
 
 	public treeLevel: number|null = null;
 	private selectedTypeIdSubject = new BehaviorSubject<string|null>(null);
-	public bulky = false;
-	public readOnly = true;
 	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
 
 	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
@@ -152,7 +150,7 @@ export class SiEntry {
 			throw new IllegalSiStateError('No input available.');
 		}
 
-		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId, this.bulky, fieldInputMap);
+		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId, this.style.bulky, fieldInputMap);
 	}
 
 	// handleError(error: SiEntryError) {
@@ -241,8 +239,7 @@ export class SiEntry {
 
 	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntryBuildup>): SiGenericEntry {
 		const genericEntry = new SiGenericEntry(this.identifier, this.selectedEntryBuildupId, genericBuildupsMap);
-		genericEntry.bulky = this.bulky;
-		genericEntry.readOnly = this.readOnly;
+		genericEntry.style = this.style;
 		return genericEntry;
 	}
 
@@ -256,13 +253,13 @@ export class SiEntry {
 		}
 	}
 
-	private valGenericEntry(genericEntry: SiGenericEntry) {
+	private valGenericEntry(genericEntry: SiGenericEntry): void {
 		if (genericEntry.identifier.typeId !== this.identifier.typeId) {
 			throw new GenericMissmatchError('SiEntry missmatch: '
 					+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
 		}
 
-		if (genericEntry.bulky !== this.bulky || genericEntry.readOnly !== this.readOnly) {
+		if (genericEntry.style.bulky !== this.style.bulky || genericEntry.style.readOnly !== this.style.readOnly) {
 			throw new GenericMissmatchError('SiEntry missmatch.');
 		}
 	}
