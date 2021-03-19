@@ -59,7 +59,8 @@ class StringEiProp extends AlphanumericEiProp {
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
 				->setMultiline($this->stringConfig->isMultiline())
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
-				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
+				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups())
+				->setMessagesCallback(fn () => $eiu->field()->getMessages());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) { 

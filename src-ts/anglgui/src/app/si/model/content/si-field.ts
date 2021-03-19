@@ -14,9 +14,9 @@ export interface SiField {
 
 	readInput(): object;
 
-	handleError(error: SiFieldError): void;
+	// handleError(error: SiFieldError): void;
 
-	resetError(): void;
+	// resetError(): void;
 
 	getMessages(): Message[];
 

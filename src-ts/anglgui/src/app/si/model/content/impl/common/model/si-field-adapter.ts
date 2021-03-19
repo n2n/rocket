@@ -46,8 +46,8 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 		return this.messagesCollection.get();
 	}
 
-	handleError(error: SiFieldError): void {
-		this.messagesCollection.push(...error.getAllMessages());
+	handleError(messages: Message[]): void {
+		this.messagesCollection.push(...messages);
 	}
 
 	protected addMessage(...newMessages: Message[]) {

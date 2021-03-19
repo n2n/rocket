@@ -19,29 +19,34 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\manage\frame;
+namespace rocket\si\content\impl;
 
-use rocket\ei\manage\EiObject;
-use n2n\util\ex\IllegalStateException;
-use rocket\si\control\SiControlResult;
+use n2n\l10n\Message;
+use n2n\util\type\ArgUtils;
+use n2n\util\type\TypeConstraints;
 
-interface SortAbility {
-	/**
-	 * @param EiObject[] $eiObjects
-	 * @param EiObject $afterEiObject
-	 */
-	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiResult;
+trait SiFieldErrorTrait {
+	private $messagesCallback = null;
 	
 	/**
-	 * @param EiObject[] $eiObjects
-	 * @param EiObject $beforeEiObject
+	 * @return self
 	 */
-	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiResult;
+	function setMessagesCallback(?\Closure $messagesCallback) {
+		$this->messagesCallback = $messagesCallback;
+		return $this;
+	}
 	
 	/**
-	 * @param EiObject[] $eiObjects
-	 * @param EiObject $asChildOfEiObject
-	 * @throws IllegalStateException if context EiType of EiFrame contains no NestedSetStrategy
+	 * @return Message[]
 	 */
-	function insertAsChild(array $eiObjects, EiObject $asChildOfEiObject): SiResult;
+	function getMessages() {
+		if ($this->messagesCallback === null) {
+			return [];
+		}
+		
+		$messages = $this->messages();
+		ArgUtils::valTypeReturn($messages, TypeConstraints::array(false, Message::class), null, $this->messagesCallback);
+		return $messages;
+	}
+	
 }

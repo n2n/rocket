@@ -77,7 +77,8 @@ class StringOutSiField extends OutSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
-			'multiline' => $this->multiline
+			'multiline' => $this->multiline,
+			'messages' => $this->getMessages()
 		];
 	}
 }

@@ -23,7 +23,7 @@ namespace rocket\ei\util\control;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
-use rocket\si\control\SiResult;
+use rocket\si\control\SiControlResult;
 use rocket\si\control\SiButton;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;

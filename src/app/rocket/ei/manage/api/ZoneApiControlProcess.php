@@ -27,7 +27,7 @@ use n2n\web\http\BadRequestException;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\si\control\SiResult;
+use rocket\si\control\SiControlResult;
 use rocket\si\input\SiInputFactory;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiError;
@@ -96,7 +96,7 @@ class ZoneApiControlProcess extends IdPath {
 	/**
 	 * @param array $data
 	 * @throws BadRequestException
-	 * @return SiResult|null
+	 * @return SiControlResult|null
 	 */
 	function handleInput(array $data) {
 		if (!$this->guiControl->isInputHandled()) {
@@ -107,7 +107,7 @@ class ZoneApiControlProcess extends IdPath {
 		
 		try {
 			if (null !== ($err = $this->applyInput($inputFactory->create($data)))) {
-				return (new SiResult())->setInputError($err);
+				return (new SiControlResult())->setInputError($err);
 			}
 			
 			return null;
@@ -183,7 +183,7 @@ class ZoneApiControlProcess extends IdPath {
 	}
 	
 	/**
-	 * @return SiResult
+	 * @return SiControlResult
 	 */
 	function callGuiControl() {
 		return $this->guiControl->handle($this->eiFrameUtil->getEiFrame(), $this->getEiGuiModel(), $this->inputEiEntries);

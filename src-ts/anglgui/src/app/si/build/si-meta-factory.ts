@@ -8,6 +8,7 @@ import { SiTypeEssentialsFactory as SiMaskEssentialsFactory } from './si-type-es
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiTypeContext } from '../model/meta/si-type-context';
+import { Message } from 'src/app/util/i18n/message';
 
 
 export class SiMetaFactory {
@@ -114,6 +115,4 @@ export class SiMetaFactory {
 		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryBuildupIds'),
 				extr.reqBoolean('treeMode'));
 	}
-
-
 }

@@ -4,7 +4,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { SiInput } from '../model/input/si-input';
-import { SiResult } from './si-result';
+import { SiControlResult } from './si-control-result';
 import { SiResultFactory } from '../build/si-result-factory';
 import { IllegalSiStateError } from '../util/illegal-si-state-error';
 import { SiGetRequest } from '../model/api/si-get-request';
@@ -61,7 +61,7 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput): Observable<SiResult> {
+	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput): Observable<SiControlResult> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
 		}
@@ -82,7 +82,7 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl, formData, options)
 				.pipe(map(data => {
-					const result = SiResultFactory.createResult(data);
+					const result = SiResultFactory.createControlResult(data);
 					this.handleResult(result);
 					return result;
 				}));
@@ -142,7 +142,7 @@ export class SiService {
 				}));
 	}
 
-	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiResult> {
+	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiControlResult> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.SORT);
 		}
@@ -150,13 +150,13 @@ export class SiService {
 		return this.httpClient
 				.post(apiUrl, sortRequest)
 				.pipe(map(data => {
-					const result = SiResultFactory.createResult(data);
+					const result = SiResultFactory.createControlResult(data);
 					this.handleResult(result);
 					return result;
 				}));
 	}
 
-	private handleResult(result: SiResult) {
+	private handleResult(result: SiControlResult) {
 		this.modState.pushModEvent(result.modEvent);
 		this.modState.pushMessages(result.messages);
 	}

@@ -68,16 +68,6 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		return { entryInputs: this.getTypeSelectedValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
 	}
 
-	handleError(error: SiFieldError): void {
-		this.messagesCollection.set(error.messages);
-
-		this.getTypeSelectedValues().forEach((value, index) => {
-			if (error.subEntryErrors.has(index.toString())) {
-				value.entry.handleError(error.subEntryErrors.get(index.toString()));
-			}
-		});
-	}
-
 	createUiStructureModel(): UiStructureModel {
 		const embeInCol = new EmbeInCollection(this, this.config);
 		embeInCol.readEmbes();

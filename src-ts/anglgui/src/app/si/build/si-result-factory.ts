@@ -3,17 +3,23 @@ import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor'
 import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
 import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
-import { SiResult, SiDirective } from '../manage/si-result';
+import { SiControlResult, SiDirective } from '../manage/si-control-result';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 import { SiControlFactory } from './si-control-factory';
+import { SiEntryFactory } from './si-entry-factory';
+import { Injector } from '@angular/core';
 
 export class SiResultFactory {
 
-	static createResult(data: any): SiResult {
+	cosntructor(private injector: Injector) {
+
+	}
+
+	static createControlResult(data: any): SiControlResult {
 		const extr = new Extractor(data);
 
-		const result = new SiResult();
+		const result = new SiControlResult();
 
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
@@ -24,8 +30,9 @@ export class SiResultFactory {
 		const inputErrorData = extr.nullaObject('inputError');
 
 		if (inputErrorData) {
-			for (const [ieKey, ieData] of new Extractor(inputErrorData).reqMap('entryErrors')) {
-				result.entryErrors.set(ieKey, SiResultFactory.createEntryError(ieData));
+			new SiEntryFactory(this.injector);
+			for (const [ieKey, ieData] of new Extractor(inputErrorData).reqMap('errorEntries')) {
+				result.errorEntries.set(ieKey, SiResultFactory.createEntryError(ieData));
 			}
 		}
 

@@ -95,13 +95,13 @@ export class EmbeddedEntryObtainer  {
 		return siEmbeddedEntries;
 	}
 
-	val(siEmbeddedEntries: SiEmbeddedEntry[]) {
+	val(siEmbeddedEntries: SiEmbeddedEntry[]): void {
 		const request = new SiValRequest();
 
 		siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
 			request.instructions[i] = this.createValInstruction(siEmbeddedEntry);
 
-			siEmbeddedEntry.entry.resetError();
+			// siEmbeddedEntry.entry.resetError();
 		});
 
 		this.siService.apiVal(this.siFrame, request).subscribe((response: SiValResponse) => {
@@ -111,9 +111,9 @@ export class EmbeddedEntryObtainer  {
 		});
 	}
 
-	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult) {
-		if (siValResult.entryError) {
-			siEmbeddedEntry.entry.handleError(siValResult.entryError);
+	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult): void {
+		if (siValResult.errorEntry) {
+			siEmbeddedEntry.entry.replace(siValResult.errorEntry);
 		}
 
 		if (siEmbeddedEntry.summaryComp) {

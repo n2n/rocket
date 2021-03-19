@@ -9,7 +9,7 @@ import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiResult, SiDirective } from './si-result';
+import { SiControlResult, SiDirective } from './si-control-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 
@@ -144,9 +144,9 @@ export class SiUiService {
 		return subject;
 	}
 
-	private handleControlResult(result: SiResult, inputEntries: SiEntry[], uiLayer: UiLayer) {
+	private handleControlResult(result: SiControlResult, inputEntries: SiEntry[], uiLayer: UiLayer) {
 		if (inputEntries.length > 0) {
-			this.handleEntryErrors(result.entryErrors, inputEntries);
+			this.handleEntryErrors(result.errorEntries, inputEntries);
 		}
 
 		switch (result.directive) {
@@ -160,21 +160,21 @@ export class SiUiService {
 
 	}
 
-	private handleEntryErrors(entryErrors: Map<string, SiEntryError>, entries: SiEntry[]) {
+	private handleEntryErrors(errorEntries: Map<string, SiEntry>, entries: SiEntry[]) {
 		if (entries.length === 0) {
 			return;
 		}
 
-		for (const entry of entries) {
-			entry.resetError();
-		}
+		// for (const entry of entries) {
+		// 	entry.resetError();
+		// }
 
-		for (const [key, entryError] of entryErrors) {
+		for (const [key, errorEntry] of errorEntries) {
 			if (!entries[key]) {
 				throw new IllegalSiStateError('Unknown entry key ' + key);
 			}
 
-			entries[0].handleError(entryError);
+			entries[0].replace(errorEntry);
 		}
 	}
 

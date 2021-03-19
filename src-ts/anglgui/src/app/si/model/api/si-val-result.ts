@@ -1,7 +1,7 @@
-import { SiEntryError } from '../input/si-entry-error';
 import { SiValGetResult } from './si-val-get-result';
+import { SiEntry } from '../content/si-entry';
 
 export class SiValResult {
-	public entryError: SiEntryError|null = null;
+	public errorEntry: SiEntry|null = null;
 	readonly getResults: SiValGetResult[] = [];
 }

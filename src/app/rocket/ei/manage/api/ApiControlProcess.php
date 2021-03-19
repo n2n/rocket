@@ -29,7 +29,7 @@ use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\si\control\SiResult;
+use rocket\si\control\SiControlResult;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInput;
 use rocket\si\input\SiError;
@@ -175,7 +175,7 @@ class ApiControlProcess {
 		
 		try {
 			if (null !== ($err = $this->applyInput($inputFactory->create($data)))) {
-				return (new SiResult())->setInputError($err);
+				return (new SiControlResult())->setInputError($err);
 			}
 			
 			return null;
@@ -203,7 +203,7 @@ class ApiControlProcess {
 	 * @throws \InvalidArgumentException
 	 */
 	private function applyInput($siInput) {
-		$entryErrors = [];
+		$siEntries = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiEntryGui = null;
@@ -235,14 +235,14 @@ class ApiControlProcess {
 				continue;
 			}
 			
-			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
+			$siEntries[$key] = $this->eiGuiModel->createSiEntry($this->eiFrame, $eiEntryGui, false);
 		}
 		
-		if (empty($entryErrors)) {
+		if (empty($siEntries)) {
 			return null;
 		}
 		
-		return new SiError($entryErrors);
+		return new SiError($siEntries);
 	}
 	
 	/**

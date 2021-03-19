@@ -26,7 +26,7 @@ use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\si\control\SiResult;
+use rocket\si\control\SiControlResult;
 use rocket\ei\component\command\EiCommand;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
@@ -45,14 +45,14 @@ interface GuiControl {
 	
 	/**
 	 * @param EiGuiModel $eiGuiModel
-	 * @return SiResult
+	 * @return SiControlResult
 	 */
 	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiResult;
 	
 	/**
 	 * @param EiGuiModel $eiGuiModel
 	 * @param EiEntry $eiEntry
-	 * @return SiResult
+	 * @return SiControlResult
 	 */
 	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult;
 	

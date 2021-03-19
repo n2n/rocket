@@ -155,27 +155,27 @@ export class SiEntry {
 		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId, this.bulky, fieldInputMap);
 	}
 
-	handleError(error: SiEntryError) {
-		for (const [propId, fieldError] of error.fieldErrors) {
-			if (!this.selectedEntryBuildup.containsPropId(propId)) {
-				this.selectedEntryBuildup.messages.push(...fieldError.getAllMessages());
-				continue;
-			}
+	// handleError(error: SiEntryError) {
+	// 	for (const [propId, fieldError] of error.fieldErrors) {
+	// 		if (!this.selectedEntryBuildup.containsPropId(propId)) {
+	// 			this.selectedEntryBuildup.messages.push(...fieldError.getAllMessages());
+	// 			continue;
+	// 		}
 
-			const field = this.selectedEntryBuildup.getFieldById(propId);
-			field.handleError(fieldError);
-		}
-	}
+	// 		const field = this.selectedEntryBuildup.getFieldById(propId);
+	// 		field.handleError(fieldError);
+	// 	}
+	// }
 
-	resetError() {
-		for (const [, buildup] of this._entryBuildupsMap) {
-			buildup.messages = [];
+	// resetError() {
+	// 	for (const [, buildup] of this._entryBuildupsMap) {
+	// 		buildup.messages = [];
 
-			for (const [, field] of this.selectedEntryBuildup.getFieldMap()) {
-				field.resetError();
-			}
-		}
-	}
+	// 		for (const [, field] of this.selectedEntryBuildup.getFieldMap()) {
+	// 			field.resetError();
+	// 		}
+	// 	}
+	// }
 
 	getMessages(): Message[] {
 		const messages: Message[] = [];

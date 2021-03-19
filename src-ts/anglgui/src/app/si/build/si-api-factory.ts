@@ -95,7 +95,7 @@ export class SiApiFactory {
 
 		const result = new SiValResult();
 
-		const entryErrorData = extr.nullaObject('entryError');
+		const entryErrorData = extr.nullaObject('errorEntry');
 		if (entryErrorData) {
 			result.entryError = SiResultFactory.createEntryError(entryErrorData);
 		}

@@ -39,6 +39,7 @@ import { AppStateService } from 'src/app/app-state.service';
 import { StringArrayInSiField } from '../model/content/impl/array/model/string-array-in-si-field';
 import { PasswordInSiField } from '../model/content/impl/alphanum/model/password-in-si-field';
 import { DateUtils } from 'src/app/util/date/date-utils';
+import { Message } from 'src/app/util/i18n/message';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -99,6 +100,7 @@ export class SiFieldFactory {
 			stringInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			stringInSiField.prefixAddons = SiGuiFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
 			stringInSiField.suffixAddons = SiGuiFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
+			stringInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return stringInSiField;
 
 		case SiFieldType.NUMBER_IN:
