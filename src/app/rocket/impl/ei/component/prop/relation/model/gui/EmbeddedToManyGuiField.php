@@ -80,7 +80,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
-				->setSortable($relationModel->getMax() > 1 && $relationModel->getTargetOrderEiPropPath() !== null);
+				->setSortable(($relationModel->getMax() === null || $relationModel->getMax() > 1) 
+						&& $relationModel->getTargetOrderEiPropPath() !== null);
 				
 	}
 	

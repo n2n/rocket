@@ -146,9 +146,9 @@ export class SiEntry {
 			fieldInputMap.set(id, field.readInput());
 		}
 
-		if (fieldInputMap.size === 0) {
-			throw new IllegalSiStateError('No input available.');
-		}
+		// if (fieldInputMap.size === 0) {
+		// 	throw new IllegalSiStateError('No input available.');
+		// }
 
 		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId, this.style.bulky, fieldInputMap);
 	}
