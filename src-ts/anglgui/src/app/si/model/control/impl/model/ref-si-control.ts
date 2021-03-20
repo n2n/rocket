@@ -9,7 +9,7 @@ import { SiControlBoundry } from '../../si-control-bountry';
 export class RefSiControl implements SiControl {
 
 	constructor(public siUiService: SiUiService, public url: string, public newWindow: boolean, public siButton: SiButton,
-							public controlBoundry: SiControlBoundry) {
+			public controlBoundry: SiControlBoundry) {
 	}
 
 
@@ -17,20 +17,20 @@ export class RefSiControl implements SiControl {
 		return !!this.controlBoundry.getBoundEntries().find(siEntry => siEntry.isClaimed());
 	}
 
-	exec(uiZone: UiZone) {
+	exec(uiZone: UiZone): void {
 		if (!this.newWindow){
 			this.siUiService.navigateByUrl(this.url, uiZone.layer);
 			return;
 		}
 
 		const popUpZone = uiZone.layer.container.createLayer().pushRoute(null, this.url).zone;
-		this.siUiService.loadZone(popUpZone, false);
+		this.siUiService.loadZone(popUpZone, true);
 	}
 
 	createUiContent(getUiZone: () => UiZone): UiContent {
-	  if (!!this.newWindow && !!this.siButton.href) {
-	    this.siButton.target = "_blank";
-    }
+		if (!!this.newWindow && !!this.siButton.href) {
+			this.siButton.target = '_blank';
+		}
 
 		return new ButtonControlUiContent({
 			getUiZone,

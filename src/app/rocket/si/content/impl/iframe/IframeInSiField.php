@@ -44,6 +44,7 @@ class IframeInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		$data = $this->iframeData->toArray();
 		$data['params'] = $this->getParams();
+		$data['messages'] = $this->getMessageStrs();
 		return $data;
 	}
 

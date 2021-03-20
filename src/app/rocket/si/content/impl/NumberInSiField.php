@@ -196,7 +196,8 @@ class NumberInSiField extends InSiFieldAdapter {
 			'arrowStep' => $this->arrowStep,
 			'fixed' => $this->fixed,
 			'prefixAddons' => $this->prefixAddons,
-			'suffixAddons' => $this->suffixAddons
+			'suffixAddons' => $this->suffixAddons,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	

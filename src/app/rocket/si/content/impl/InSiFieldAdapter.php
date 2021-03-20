@@ -22,7 +22,8 @@
 namespace rocket\si\content\impl;
 
 abstract class InSiFieldAdapter extends SiFieldAdapter {
-
+	use SiFieldErrorTrait;
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::isReadOnly()

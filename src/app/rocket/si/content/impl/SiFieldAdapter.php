@@ -25,8 +25,6 @@ use n2n\util\ex\IllegalStateException;
 use rocket\si\content\SiField;
 
 abstract class SiFieldAdapter implements SiField {
-	use SiFieldErrorTrait;
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::isCallable()

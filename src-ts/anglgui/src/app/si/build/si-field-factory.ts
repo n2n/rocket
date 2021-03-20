@@ -59,7 +59,7 @@ enum SiFieldType {
 	SPLIT_CONTEXT_OUT = 'split-context-out',
 	SPLIT_PLACEHOLDER = 'split-placeholder',
 	IFRAME_OUT = 'iframe-out',
-  IFRAME_IN = 'iframe-in',
+	IFRAME_IN = 'iframe-in',
 	CRUMB_OUT = 'crumb-out',
 	DATETIME_IN = 'datetime-in',
 	STRING_ARRAY_IN = 'string-array-in',
@@ -114,11 +114,13 @@ export class SiFieldFactory {
 			numberInSiField.value = dataExtr.nullaNumber('value');
 			numberInSiField.prefixAddons = SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
 			numberInSiField.suffixAddons = SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
+			numberInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return numberInSiField;
 
 		case SiFieldType.BOOLEAN_IN:
 			const booleanInSiField = new BooleanInSiField();
 			booleanInSiField.value = dataExtr.reqBoolean('value');
+			booleanInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			fieldMap$.subscribe((fieldMap) => {
 				this.finalizeBool(booleanInSiField, dataExtr.reqStringArray('onAssociatedPropIds'),
@@ -131,11 +133,13 @@ export class SiFieldFactory {
 
 		case SiFieldType.FILE_IN:
 			const fileInSiField = new FileInSiField(dataExtr.reqString('apiFieldUrl'),
-					dataExtr.reqObject('apiCallId'), SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
+					this.controlBoundry.getBoundDeclaration().style, dataExtr.reqObject('apiCallId'),
+					SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
 			fileInSiField.acceptedMimeTypes = dataExtr.reqStringArray('acceptedMimeTypes');
 			fileInSiField.acceptedExtensions = dataExtr.reqStringArray('acceptedExtensions');
+			fileInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return fileInSiField;
 
 		case SiFieldType.LINK_OUT:
@@ -147,6 +151,7 @@ export class SiFieldFactory {
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
 			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			enumInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			fieldMap$.subscribe((fieldMap) => {
 				this.finalizeEnum(enumInSiField, dataExtr.reqMap('associatedPropIdsMap'), fieldMap);
@@ -161,6 +166,7 @@ export class SiFieldFactory {
 			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
 			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
 			qualifierSelectInSiField.pickables = SiMetaFactory.buildEntryQualifiers(dataExtr.nullaArray('pickables'));
+			qualifierSelectInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return qualifierSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRIES_OUT:
@@ -169,6 +175,7 @@ export class SiFieldFactory {
 					this.injector.get(TranslationService),
 					new SiBuildTypes.SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryOutSiField.config.reduced = dataExtr.reqBoolean('reduced');
+			embeddedEntryOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			return embeddedEntryOutSiField;
 
@@ -183,6 +190,7 @@ export class SiFieldFactory {
 			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
 			embeddedEntryInSiField.config.allowedTypeIds = dataExtr.nullaArray('allowedSiTypeIds');
+			embeddedEntryInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			return embeddedEntryInSiField;
 
@@ -192,9 +200,11 @@ export class SiFieldFactory {
 					new SiBuildTypes.SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
-			return new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
+			const embeddedEntryPanelsInSiField = new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
 					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
 					new SiBuildTypes.SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
+			embeddedEntryPanelsInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return embeddedEntryPanelsInSiField;
 
 		case SiFieldType.SPLIT_CONTEXT_IN:
 			const splitContextInSiField = new SplitContextInSiField();
@@ -207,6 +217,7 @@ export class SiFieldFactory {
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
+			splitContextInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return splitContextInSiField;
 
 		case SiFieldType.SPLIT_CONTEXT_OUT:
@@ -234,7 +245,9 @@ export class SiFieldFactory {
 			// const formData = new Map<string, string>(Object.entries((dataExtr.reqObject('params') as any).formData));
 			const formData = dataExtr.reqStringMap('params', true);
 
-			return new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
+			const iframeInSiField = new IframeInSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'), formData);
+			iframeInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return iframeInSiField;
 
 		case SiFieldType.DATETIME_IN:
 			const dateTimeInSiField = new DateTimeInSiField(prop.label, null);
@@ -246,19 +259,25 @@ export class SiFieldFactory {
 			dateTimeInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			dateTimeInSiField.dateChoosable = dataExtr.reqBoolean('dateChoosable');
 			dateTimeInSiField.timeChoosable = dataExtr.reqBoolean('timeChoosable');
+			dateTimeInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return dateTimeInSiField;
+
 		case SiFieldType.STRING_ARRAY_IN:
 			const stringArrayInSiField = new StringArrayInSiField(prop.label, dataExtr.reqArray('values'));
 			stringArrayInSiField.min = dataExtr.reqNumber('min');
 			stringArrayInSiField.max = dataExtr.nullaNumber('max');
+			stringArrayInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return stringArrayInSiField;
+
 		case SiFieldType.PASSWORD_IN:
 			const passwordInSiField = new PasswordInSiField(prop.label);
 			passwordInSiField.minlength = dataExtr.nullaNumber('minlength');
 			passwordInSiField.maxlength = dataExtr.nullaNumber('maxlength');
 			passwordInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			passwordInSiField.passwordSet = dataExtr.reqBoolean('passwordSet');
+			passwordInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return passwordInSiField;
+
 		default:
 			throw new ObjectMissmatchError('Invalid si field type: ' + data.type);
 		}

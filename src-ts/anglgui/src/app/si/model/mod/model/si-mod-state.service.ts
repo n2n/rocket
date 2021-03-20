@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { SiEntryIdentifier } from '../../content/si-entry-qualifier';
 import { SiEntry } from '../../content/si-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { Subject, Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { filter, skip } from 'rxjs/operators';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { Message } from 'src/app/util/i18n/message';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class SiModStateService {
 		this.lastModEventSubject.next(event);
 	}
 
-	pushMessages(messages: Message[]) {
+	pushMessages(messages: Message[]): void {
 		this.lastMessagesSubject.next(messages);
 	}
 
@@ -56,7 +56,7 @@ export class SiModStateService {
 		return this.lastMessagesSubject.asObservable();
 	}
 
-	registerShownEntry(entry: SiEntry, refObj: object) {
+	registerShownEntry(entry: SiEntry, refObj: object): void {
 		if (!this.shownEntriesMap.has(entry)) {
 			this.shownEntriesMap.set(entry, []);
 		}
@@ -70,7 +70,7 @@ export class SiModStateService {
 		this.shownEntrySubject.next(entry);
 	}
 
-	unregisterShownEntry(entry: SiEntry, refObj: object) {
+	unregisterShownEntry(entry: SiEntry, refObj: object): void {
 		if (!this.shownEntriesMap.has(entry)) {
 			throw new IllegalSiStateError('Entry not shown.');
 		}
@@ -95,7 +95,7 @@ export class SiModEvent {
 		this.update();
 	}
 
-	private update() {
+	private update(): void {
 		this.addedEventMap.clear();
 		for (const ei of this.added) {
 			this.reqEiMap(this.addedEventMap, ei.typeId).set(ei.id, ei);

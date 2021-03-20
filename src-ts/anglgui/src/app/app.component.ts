@@ -8,7 +8,7 @@ import { UserFactory } from './op/user/model/user-fatory';
 import { User } from './op/user/bo/user';
 import { UiNavPoint } from './ui/util/model/ui-nav-point';
 import { PlatformService } from './util/nav/platform.service';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SiBuildTypes } from './si/build/si-build-types';
 
 @Component({
@@ -17,9 +17,9 @@ import { SiBuildTypes } from './si/build/si-build-types';
 	styleUrls: ['./app.component.css'],
 	animations: [
 	    trigger('openClose', [
-		  state('true', style({opacity: 1, height: '*'})),
-		  state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
-		  transition('false <=> true', animate('500ms'))
+			state('true', style({opacity: 1, height: '*'})),
+			state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
+			transition('false <=> true', animate('500ms'))
 		])
 	]
 })

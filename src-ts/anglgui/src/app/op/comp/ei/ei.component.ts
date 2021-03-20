@@ -68,7 +68,7 @@ export class EiComponent implements OnInit, OnDestroy {
 			}
 		case 'imperative':
 			this.mainUiLayer.pushRoute(event.id, url);
-			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, false);
+			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, true);
 			break;
 		default:
 			// console.log('state ' + event.navigationTrigger);

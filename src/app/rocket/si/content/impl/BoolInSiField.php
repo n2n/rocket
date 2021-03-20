@@ -129,7 +129,8 @@ class BoolInSiField extends InSiFieldAdapter {
 			'value' => $this->value,
 			'mandatory' => $this->mandatory,
 			'onAssociatedPropIds' => $this->onAssociatedPropIds,
-			'offAssociatedPropIds' => $this->offAssociatedPropIds
+			'offAssociatedPropIds' => $this->offAssociatedPropIds,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	
