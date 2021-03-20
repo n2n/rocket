@@ -5,10 +5,10 @@ import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
-import { SiNavPoint } from '../model/control/si-nav-point';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
-import { SiUiService } from '../manage/si-ui.service';
+import { SiBuildTypes } from './si-build-types';
+import { SiNavPoint } from '../model/control/si-nav-point';
 
 enum SiControlType {
 	REF = 'ref',
@@ -22,10 +22,10 @@ export class SiControlFactory {
 	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
 	}
 
-	static createNavPoint(data: any, SiNavPointType: new(...args: any[]) => SiNavPoint): SiNavPoint {
+	static createNavPoint(data: any): SiNavPoint {
 		const extr = new Extractor(data);
 
-		return new SiNavPointType(extr.reqString('url'), extr.reqBoolean('siref'));
+		return new SiBuildTypes.SiNavPoint(extr.reqString('url'), extr.reqBoolean('siref'));
 	}
 
 	createControls(dataArr: any[]): SiControl[] {
@@ -44,14 +44,14 @@ export class SiControlFactory {
 		switch (extr.reqString('type')) {
 			case SiControlType.REF:
 				return new RefSiControl(
-						this.injector.get(SiUiService),
+						this.injector.get(SiBuildTypes.SiUiService),
 						dataExtr.reqString('url'),
 						dataExtr.reqBoolean('newWindow'),
 						this.createButton(dataExtr.reqObject('button')),
 						this.controlBoundry);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
-						this.injector.get(SiUiService),
+						this.injector.get(SiBuildTypes.SiUiService),
 						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
 						this.createButton(dataExtr.reqObject('button')),
@@ -81,7 +81,7 @@ export class SiControlFactory {
 		btn.iconImportant = extr.reqBoolean('iconImportant');
 		btn.iconAlways = extr.reqBoolean('iconAlways');
 		btn.labelAlways = extr.reqBoolean('labelAlways');
-    btn.href = extr.nullaString('href');
+		btn.href = extr.nullaString('href');
 
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {

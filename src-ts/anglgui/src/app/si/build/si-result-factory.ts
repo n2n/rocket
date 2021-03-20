@@ -48,7 +48,7 @@ export class SiResultFactory {
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
 		if (navPointData = extr.nullaObject('navPoint')) {
-			result.navPoint = SiControlFactory.createNavPoint(navPointData, SiNavPoint);
+			result.navPoint = SiControlFactory.createNavPoint(navPointData);
 		}
 
 		const eventMap = extr.reqMap('eventMap');
