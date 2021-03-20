@@ -843,6 +843,11 @@ class EiuEntry {
 		
 		return $fieldValidationResult->getMessages($recursive);
 	}
+	
+	function getMessagesAsStrs($eiPropPath = null, bool $recursive = false) {
+		return array_map(fn ($m) => $m->t($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()), 
+				$this->getMessages($eiPropPath));
+	}
 }  
 
 // class InitListener implements EiEntryGuiListener {

@@ -30,7 +30,6 @@ use rocket\spec\TypePath;
 class ApiControlCallId implements \JsonSerializable {
 	private $guiControlPath;
 	private $eiTypePath;
-	private $viewMode;
 	private $pid;
 	private $newEiTypeId;
 	
@@ -79,7 +78,6 @@ class ApiControlCallId implements \JsonSerializable {
 		return [
 			'guiControlPath' => (string) $this->guiControlPath,
 			'eiTypeId' => $this->getEiTypeId(),
-			'viewMode' => $this->viewMode,
 			'pid' => $this->pid
 		];
 	}
@@ -89,7 +87,7 @@ class ApiControlCallId implements \JsonSerializable {
 	 * @return \rocket\ei\manage\api\ApiControlCallId
 	 */
 	function guiControlPathExt(string $id) {
-		return new ApiControlCallId($this->guiControlPath->ext($id), $this->eiTypePath, $this->viewMode, $this->pid, 
+		return new ApiControlCallId($this->guiControlPath->ext($id), $this->eiTypePath, $this->pid, 
 				$this->newEiTypeId);
 	}
 	
@@ -104,8 +102,7 @@ class ApiControlCallId implements \JsonSerializable {
 		try {
 			return new ApiControlCallId(
 					GuiControlPath::create($ds->reqString('guiControlPath')),
-					new TypePath($ds->reqString('eiTypeId')),
-					$ds->reqInt('viewMode'), $ds->optString('pid'),
+					new TypePath($ds->reqString('eiTypeId')), $ds->optString('pid'),
 					$ds->optString('newEiTypeId'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);

@@ -48,7 +48,7 @@ trait SiFieldErrorTrait {
 		
 		$callback = $this->messagesCallback;
 		$messages = $callback();
-		ArgUtils::valTypeReturn($messages, TypeConstraints::array(false, Message::class), null, $this->messagesCallback);
+		ArgUtils::valTypeReturn($messages, TypeConstraints::array(false, 'string'), null, $this->messagesCallback);
 		return array_map(fn ($m) => (string) $m, $messages);
 	}
 	

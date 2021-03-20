@@ -93,7 +93,8 @@ class DecimalEiProp extends NumericEiPropAdapter {
 				->setArrowStep($step)
 				->setFixed(true)
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
-				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
+				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) {

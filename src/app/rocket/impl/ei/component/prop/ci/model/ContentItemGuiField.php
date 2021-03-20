@@ -90,7 +90,8 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		}
 		
 		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->createSiFrame(),
-				$this, $this->readValues());
+						$this, $this->readValues())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 	}
 	
 	/**

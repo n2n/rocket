@@ -25,42 +25,26 @@ use n2n\util\type\attrs\DataSet;
 use rocket\si\meta\SiStyle;
 
 class SiValGetInstruction {
-	private $bulky;
-	private $readOnly;
+	private $style;
 	private $declarationRequested = true;
 	private $controlsIncluded = true;
 
-	function __construct(bool $bulky, bool $readOnly) {
-		$this->bulky = $bulky;
-		$this->readOnly = $readOnly;
+	function __construct(SiStyle $style) {
+		$this->style = $style;
 	}
 	
 	/**
-	 * @return bool
+	 * @return SiStyle
 	 */
-	public function isBulky() {
-		return $this->bulky;
+	public function getStyle() {
+		return $this->style;
 	}
 	
 	/**
-	 * @param bool $bulky
+	 * @param SiStyle $bulky
 	 */
-	public function setBulky($bulky) {
-		$this->bulky = $bulky;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	public function isReadOnly() {
-		return $this->readOnly;
-	}
-	
-	/**
-	 * @param bool $readOnly
-	 */
-	public function setReadOnly(bool $readOnly) {
-		$this->readOnly = $readOnly;
+	public function setStyle(SiStyle $style) {
+		$this->style = $style;
 	}
 	
 	/**

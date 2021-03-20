@@ -87,7 +87,7 @@ class ValInstructionProcess {
 	 */
 	private function handleGetInstruction($getInstruction) {
 		$eiGui = $this->util->determineEiGuiOfEiEntry($this->eiEntry, $this->instruction->getEntryInput()->getTypeId(), 
-					$getInstruction->isBulky(), $getInstruction->isReadOnly());
+					$getInstruction->getStyle()->isBulky(), $getInstruction->getStyle()->isReadOnly());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$result = new SiValGetResult();

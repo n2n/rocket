@@ -240,7 +240,8 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())
 				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
-				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes());
+				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
 			$this->saveSiField($siField, $eiu);

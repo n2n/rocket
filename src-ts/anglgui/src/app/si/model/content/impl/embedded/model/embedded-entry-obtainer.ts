@@ -122,10 +122,10 @@ export class EmbeddedEntryObtainer  {
 	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
 		const instruction = new SiValInstruction(siEmbeddedEntry.entry.readInput());
 
-		instruction.getInstructions[0] = SiValGetInstruction.create({ bulky: false, readOnly: true });
+		instruction.getInstructions[0] = SiValGetInstruction.create({ bulky: true, readOnly: false });
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry?.createLock();
+			siEmbeddedEntry.summaryComp.entry = null;
 			instruction.getInstructions[1] = SiValGetInstruction.create({ bulky: false, readOnly: true });
 		}
 

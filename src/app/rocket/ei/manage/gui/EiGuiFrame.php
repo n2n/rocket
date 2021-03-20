@@ -529,8 +529,7 @@ class EiGuiFrame {
 				as $guiControlPathStr => $entryGuiControl) {
 			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toCmdSiControl(
 					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
-							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGuiModel->getViewMode(), $eiEntry->getPid(),
+							$this->guiDefinition->getEiMask()->getEiTypePath(), $eiEntry->getPid(),
 							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
 		}
 		
