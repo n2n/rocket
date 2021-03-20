@@ -7,8 +7,8 @@ import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
-import { SiBuildTypes } from './si-build-types';
 import { SiNavPoint } from '../model/control/si-nav-point';
+import { SiUiService } from '../manage/si-ui.service';
 
 enum SiControlType {
 	REF = 'ref',
@@ -20,12 +20,6 @@ enum SiControlType {
 export class SiControlFactory {
 
 	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
-	}
-
-	static createNavPoint(data: any): SiNavPoint {
-		const extr = new Extractor(data);
-
-		return new SiBuildTypes.SiNavPoint(extr.reqString('url'), extr.reqBoolean('siref'));
 	}
 
 	createControls(dataArr: any[]): SiControl[] {
@@ -44,14 +38,14 @@ export class SiControlFactory {
 		switch (extr.reqString('type')) {
 			case SiControlType.REF:
 				return new RefSiControl(
-						this.injector.get(SiBuildTypes.SiUiService),
+						this.injector.get(SiUiService),
 						dataExtr.reqString('url'),
 						dataExtr.reqBoolean('newWindow'),
 						this.createButton(dataExtr.reqObject('button')),
 						this.controlBoundry);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
-						this.injector.get(SiBuildTypes.SiUiService),
+						this.injector.get(SiUiService),
 						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
 						this.createButton(dataExtr.reqObject('button')),

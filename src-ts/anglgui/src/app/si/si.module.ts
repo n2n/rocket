@@ -53,14 +53,12 @@ import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/
 import { StringArrayInComponent } from './model/content/impl/array/comp/string-array-in/string-array-in.component';
 import { PasswordInComponent } from './model/content/impl/alphanum/comp/password-in/password-in.component';
 import { SiBuildTypes } from './build/si-build-types';
-import { SiUiService } from './manage/si-ui.service';
-import { SiService } from './manage/si.service';
-import { FileInSiField } from './model/content/impl/file/model/file-in-si-field';
-import { LinkOutSiField } from './model/content/impl/alphanum/model/link-out-si-field';
-import { SiNavPoint } from './model/control/si-nav-point';
-import { QualifierSelectInSiField } from './model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { SiGuiFactory } from './build/si-gui-factory';
 import { SiEntryFactory } from './build/si-entry-factory';
+import { SiFieldFactory } from './build/si-field-factory';
+import { SiResultFactory } from './build/si-result-factory';
+import { SiControlFactory } from './build/si-control-factory';
+import { SiUiFactory } from './build/si-ui-factory';
 
 @NgModule({
 	declarations: [
@@ -102,11 +100,15 @@ import { SiEntryFactory } from './build/si-entry-factory';
 })
 export class SiModule { }
 
-SiBuildTypes.SiUiService = SiUiService;
-SiBuildTypes.SiService = SiService;
-SiBuildTypes.FileInSiField = FileInSiField;
-SiBuildTypes.LinkOutSiField = LinkOutSiField;
-SiBuildTypes.SiNavPoint = SiNavPoint;
-SiBuildTypes.QualifierSelectInSiField = QualifierSelectInSiField;
+// SiBuildTypes.SiUiService = SiUiService;
+// SiBuildTypes.SiService = SiService;
+// SiBuildTypes.FileInSiField = FileInSiField;
+// SiBuildTypes.LinkOutSiField = LinkOutSiField;
+// SiBuildTypes.SiNavPoint = SiNavPoint;
+// SiBuildTypes.QualifierSelectInSiField = QualifierSelectInSiField;
 SiBuildTypes.SiGuiFactory = SiGuiFactory;
 SiBuildTypes.SiEntryFactory = SiEntryFactory;
+SiBuildTypes.SiFieldFactory = SiFieldFactory;
+SiBuildTypes.SiControlFactory = SiControlFactory;
+SiBuildTypes.SiResultFactory = SiResultFactory;
+SiBuildTypes.SiUiFactory = SiUiFactory;

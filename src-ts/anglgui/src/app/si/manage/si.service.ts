@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { SiInput } from '../model/input/si-input';
 import { SiCallResponse, SiControlResult } from './si-control-result';
-import { SiResultFactory } from '../build/si-result-factory';
 import { IllegalSiStateError } from '../util/illegal-si-state-error';
 import { SiGetRequest } from '../model/api/si-get-request';
 import { SiGetResponse } from '../model/api/si-get-response';
@@ -13,11 +12,11 @@ import { SiApiFactory } from '../build/si-api-factory';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiUiFactory } from '../build/si-ui-factory';
 import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { SiFrame, SiFrameApiSection } from '../model/meta/si-frame';
 import { SiStyle } from '../model/meta/si-view-mode';
+import { SiBuildTypes } from '../build/si-build-types';
 
 @Injectable({
 	providedIn: 'root'
@@ -30,7 +29,7 @@ export class SiService {
 	lookupZone(uiZone: UiZone): Promise<void> {
 		return this.httpClient.get<any>(uiZone.url)
 				.pipe(map((data: any) => {
-					new SiUiFactory(this.injector).fillZone(data, uiZone);
+					new SiBuildTypes.SiUiFactory(this.injector).fillZone(data, uiZone);
 				}))
 				.toPromise();
 	}
@@ -86,7 +85,7 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl, formData, options)
 				.pipe(map(data => {
-					const resultFactory = new SiResultFactory(this.injector);
+					const resultFactory = new SiBuildTypes.SiResultFactory(this.injector);
 					const result = resultFactory.createControlResult(data, input?.declaration);
 					if (result.callResponse) {
 						this.handleCallresponse(result.callResponse);
@@ -154,7 +153,7 @@ export class SiService {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.SORT);
 		}
 
-		const resultFactory = new SiResultFactory(this.injector);
+		const resultFactory = new SiBuildTypes.SiResultFactory(this.injector);
 		return this.httpClient
 				.post(apiUrl, sortRequest)
 				.pipe(map(data => {

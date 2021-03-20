@@ -4,11 +4,10 @@ import { Message, MessageSeverity } from 'src/app/util/i18n/message';
 import { SiCallResponse, SiDirective, SiControlResult, SiInputError } from '../manage/si-control-result';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
-import { SiControlFactory } from './si-control-factory';
-import { SiEntryFactory } from './si-entry-factory';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
-import { SiNavPoint } from '../model/control/si-nav-point';
+import { SiBuildTypes } from './si-build-types';
+import { SiEssentialsFactory } from './si-field-essentials-factory';
 
 export class SiResultFactory {
 
@@ -33,7 +32,7 @@ export class SiResultFactory {
 
 	createInputError(data: any, declaration: SiDeclaration): SiInputError {
 		const inputError = new SiInputError();
-		const entryFactory = new SiEntryFactory(declaration, this.injector);
+		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
 		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
 			inputError.errorEntries.set(eeKey, entryFactory.createEntry(eeData));
 		}
@@ -48,7 +47,7 @@ export class SiResultFactory {
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
 		if (navPointData = extr.nullaObject('navPoint')) {
-			result.navPoint = SiControlFactory.createNavPoint(navPointData);
+			result.navPoint = SiEssentialsFactory.createNavPoint(navPointData);
 		}
 
 		const eventMap = extr.reqMap('eventMap');

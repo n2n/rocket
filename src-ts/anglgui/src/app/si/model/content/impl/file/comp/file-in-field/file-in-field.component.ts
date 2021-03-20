@@ -6,7 +6,6 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { SiGuiFactory } from 'src/app/si/build/si-gui-factory';
 import { ImageEditorComponent } from '../image-editor/image-editor.component';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UploadResult, ImageEditorModel } from '../image-editor-model';
@@ -15,7 +14,7 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
-import { SiFieldEssentialsFactory } from 'src/app/si/build/si-field-essentials-factory';
+import { SiEssentialsFactory } from 'src/app/si/build/si-field-essentials-factory';
 
 
 @Component({
@@ -233,7 +232,7 @@ class CommonImageEditorModel implements ImageEditorModel {
 		if (data.error) {
 			return { uploadErrorMessage: data.error };
 		}
-		const siFile = SiFieldEssentialsFactory.buildSiFile(data.file);
+		const siFile = SiEssentialsFactory.buildSiFile(data.file);
 		this.model.setSiFile(siFile);
 		return { siFile };
 	}

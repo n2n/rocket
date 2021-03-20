@@ -5,11 +5,11 @@ import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-q
 import { SiEntryBuildup } from '../model/content/si-entry-buildup';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
-import { SiFieldFactory } from './si-field-factory';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiMetaFactory } from './si-meta-factory';
+import { SiBuildTypes } from './si-build-types';
 
 export class SiEntryFactory {
 	constructor(private declaration: SiDeclaration, private injector: Injector) {
@@ -57,7 +57,7 @@ export class SiEntryFactory {
 		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, maskDeclaration.type, this.injector)
+		entryBuildup.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundry, maskDeclaration.type, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entryBuildup.controls = new SiControlFactory(controlBoundry, this.injector)
 				.createControls(extr.reqArray('controls'));

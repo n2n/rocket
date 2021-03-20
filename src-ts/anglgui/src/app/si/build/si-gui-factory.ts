@@ -6,14 +6,14 @@ import { SiMetaFactory } from './si-meta-factory';
 import { BulkyEntrySiGui } from '../model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from '../model/gui/impl/model/compact-entry-si-gui';
 import { SiGui } from '../model/gui/si-gui';
-import { SiEntryFactory } from './si-entry-factory';
 import { SiEmbeddedEntry } from '../model/content/impl/embedded/model/si-embedded-entry';
 import { SiPanel } from '../model/content/impl/embedded/model/si-panel';
 import { Injector } from '@angular/core';
 import { SiService } from '../manage/si.service';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { IframeSiGui } from '../model/gui/impl/model/iframe-si-gui';
-import { SiFieldEssentialsFactory } from './si-field-essentials-factory';
+import { SiEssentialsFactory } from './si-field-essentials-factory';
+import { SiBuildTypes } from './si-build-types';
 
 let SiServiceType: new(...args: any[]) => SiService;
 import('../manage/si.service').then(m => {
@@ -69,7 +69,7 @@ export class SiGuiFactory {
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
-					compactExplorerSiGui.partialContent = new SiEntryFactory(declaration, this.injector)
+					compactExplorerSiGui.partialContent = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
 							.createPartialContent(partialContentData);
 				}
 
@@ -81,7 +81,7 @@ export class SiGuiFactory {
 						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
 				bulkyEntrySiGui.entryControlsIncluded = dataExtr.reqBoolean('entryControlsIncluded');
-				bulkyEntrySiGui.entry = new SiEntryFactory(declaration, this.injector)
+				bulkyEntrySiGui.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));
 
 				compEssentialsFactory = new SiControlFactory(bulkyEntrySiGui, this.injector);
@@ -96,7 +96,7 @@ export class SiGuiFactory {
 
 				compEssentialsFactory = new SiControlFactory(compactEntrySiGui, this.injector);
 				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				compactEntrySiGui.entry = new SiEntryFactory(declaration, this.injector)
+				compactEntrySiGui.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
 						.createEntry(dataExtr.reqObject('entry'));
 				return compactEntrySiGui;
 
@@ -141,7 +141,7 @@ export class SiGuiFactory {
 		panel.max = extr.nullaNumber('max');
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
-		panel.gridPos = SiFieldEssentialsFactory.buildGridPos(extr.nullaObject('gridPos'));
+		panel.gridPos = SiEssentialsFactory.buildGridPos(extr.nullaObject('gridPos'));
 		panel.allowedTypeIds = extr.nullaStringArray('allowedTypeIds');
 
 		return panel;

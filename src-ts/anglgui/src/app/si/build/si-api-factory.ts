@@ -8,13 +8,12 @@ import { SiValInstruction } from '../model/api/si-val-instruction';
 import { SiValResult } from '../model/api/si-val-result';
 import { SiValGetResult } from '../model/api/si-val-get-result';
 import { SiMetaFactory } from './si-meta-factory';
-import { SiEntryFactory } from './si-entry-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
-import { SiControlFactory } from './si-control-factory';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SimpleSiControlBoundry } from '../model//control/impl/model/simple-si-control-boundry';
+import { SiBuildTypes } from './si-build-types';
 
 export class SiApiFactory {
 
@@ -55,17 +54,17 @@ export class SiApiFactory {
 
 		let controlsData: any = null;
 		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration), this.injector);
+			const compEssentialsFactory = new SiBuildTypes.SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration), this.injector);
 			result.generalControls = compEssentialsFactory.createControls(controlsData);
 		}
 
 		let propData: any = null;
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiEntryFactory(declaration, this.injector).createEntry(propData);
+			result.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createEntry(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('partialContent'))) {
-			result.partialContent = new SiEntryFactory(declaration, this.injector)
+			result.partialContent = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
 					.createPartialContent(propData);
 		}
 
@@ -122,7 +121,7 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiEntryFactory(declaration, this.injector).createEntry(propData);
+			result.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createEntry(propData);
 		}
 
 		return result;

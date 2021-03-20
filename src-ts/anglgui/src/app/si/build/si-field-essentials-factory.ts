@@ -2,9 +2,10 @@ import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGridPos } from '../model/content/impl/embedded/model/si-panel';
 import { SiImageDimension, SiFile, SiImageCut } from '../model/content/impl/file/model/file';
+import { SiNavPoint } from '../model/control/si-nav-point';
 
-export class SiFieldEssentialsFactory {
-    static createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {
+export class SiEssentialsFactory {
+	static createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {
 		const crumbGroups: SiCrumbGroup[] = [];
 		for (const data of dataArr) {
 			crumbGroups.push(this.createCrumbGroup(data));
@@ -70,7 +71,7 @@ export class SiFieldEssentialsFactory {
 
 		const imageDimensions: SiImageDimension[] = [];
 		for (const idData of extr.reqArray('imageDimensions')) {
-			imageDimensions.push(SiFieldEssentialsFactory.createSiImageDimension(idData));
+			imageDimensions.push(SiEssentialsFactory.createSiImageDimension(idData));
 		}
 
 		const siFile = new SiFile(extr.reqObject('id'), extr.reqString('name'), extr.nullaString('url'));
@@ -98,5 +99,11 @@ export class SiFieldEssentialsFactory {
 
 		return new SiImageCut(extr.reqNumber('x'), extr.reqNumber('y'), extr.reqNumber('width'),
 				extr.reqNumber('height'), extr.reqBoolean('exists'));
+	}
+
+	static createNavPoint(data: any): SiNavPoint {
+		const extr = new Extractor(data);
+
+		return new SiNavPoint(extr.reqString('url'), extr.reqBoolean('siref'));
 	}
 }
