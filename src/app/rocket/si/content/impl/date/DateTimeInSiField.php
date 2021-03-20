@@ -132,7 +132,8 @@ class DateTimeInSiField extends InSiFieldAdapter {
 			'value' => DateUtils::dateTimeToSql($this->value),
 			'mandatory' => $this->mandatory,
 			'dateChoosable' => $this->dateChoosable,
-			'timeChoosable' => $this->timeChoosable
+			'timeChoosable' => $this->timeChoosable,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	
