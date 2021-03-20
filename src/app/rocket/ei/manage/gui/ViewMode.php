@@ -87,7 +87,7 @@ class ViewMode {
 	 * @return boolean
 	 */
 	static function isBulky(int $viewMode) {
-		return $viewMode & self::bulky();
+		return (bool) ($viewMode & self::bulky());
 	}
 	
 	/**
