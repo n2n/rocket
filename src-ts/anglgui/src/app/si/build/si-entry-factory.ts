@@ -57,7 +57,7 @@ export class SiEntryFactory {
 		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, this.declaration, maskDeclaration.type, this.injector)
+		entryBuildup.fieldMap = new SiFieldFactory(controlBoundry, maskDeclaration.type, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entryBuildup.controls = new SiControlFactory(controlBoundry, this.injector)
 				.createControls(extr.reqArray('controls'));

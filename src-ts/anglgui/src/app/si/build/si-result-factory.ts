@@ -8,6 +8,7 @@ import { SiControlFactory } from './si-control-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
+import { SiNavPoint } from '../model/control/si-nav-point';
 
 export class SiResultFactory {
 
@@ -47,7 +48,7 @@ export class SiResultFactory {
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
 		if (navPointData = extr.nullaObject('navPoint')) {
-			result.navPoint = SiControlFactory.createNavPoint(navPointData);
+			result.navPoint = SiControlFactory.createNavPoint(navPointData, SiNavPoint);
 		}
 
 		const eventMap = extr.reqMap('eventMap');

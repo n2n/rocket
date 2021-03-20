@@ -7,6 +7,7 @@ import { UiMenuItem, UiMenuGroup } from 'src/app/ui/structure/model/ui-menu';
 import { SiControlFactory } from './si-control-factory';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import {MenuGroupLocalStorage} from '../../ui/util/model/menu-group-local-storage';
+import { SiNavPoint } from '../model/control/si-nav-point';
 
 export class SiUiFactory {
 
@@ -39,7 +40,7 @@ export class SiUiFactory {
 		const extr = new Extractor(data);
 
 		const navPoint = SiControlFactory
-				.createNavPoint(extr.reqObject('navPoint'))
+				.createNavPoint(extr.reqObject('navPoint'), SiNavPoint)
 				.toUiNavPoint(this.injector, uiLayer);
 
 		return {
@@ -73,7 +74,7 @@ export class SiUiFactory {
 		const extr = new Extractor(data);
 
 		return new UiMenuItem(extr.reqString('id'), extr.reqString('label'), SiControlFactory
-				.createNavPoint(extr.reqObject('navPoint'))
+				.createNavPoint(extr.reqObject('navPoint'), SiNavPoint)
 				.toUiNavPoint(this.injector, null));
 	}
 }
