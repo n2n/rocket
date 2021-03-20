@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { SiFile } from '../../model/file-in-si-field';
+import { SiFile } from '../../model/file';
 import { FileFieldModel } from '../file-field-model';
 import GLightbox from 'glightbox';
 
@@ -12,19 +12,20 @@ import GLightbox from 'glightbox';
 export class FileOutFieldComponent implements OnInit, AfterViewInit {
 
 	model: FileFieldModel;
-	
+
 	constructor() { }
-    ngAfterViewInit(): void {
+
+	ngAfterViewInit(): void {
 		if (this.currentSiFile && this.currentSiFile.url) {
 	        GLightbox({});
 		}
-    }
-	
+	}
+
 	get currentSiFile(): SiFile|null {
 		return this.model.getSiFile();
 	}
 
-	ngOnInit() {
+	ngOnInit(): void {
 	}
 
 }

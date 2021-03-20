@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, DoCheck } from '@angular/core';
-import { SiFile, SiImageDimension } from '../../model/file-in-si-field';
+import { SiFile, SiImageDimension } from '../../model/file';
 import { ImageEditorModel, UploadResult } from '../image-editor-model';
 import { ImageSrc } from './image-src';
 import { ThumbRatio } from './thumb-ratio';

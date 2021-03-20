@@ -6,17 +6,19 @@ import { SiMetaFactory } from './si-meta-factory';
 import { BulkyEntrySiGui } from '../model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from '../model/gui/impl/model/compact-entry-si-gui';
 import { SiGui } from '../model/gui/si-gui';
-import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiEmbeddedEntry } from '../model/content/impl/embedded/model/si-embedded-entry';
-import { SiPanel, SiGridPos } from '../model/content/impl/embedded/model/si-panel';
-import { SiFile, SiImageDimension, SiImageCut } from '../model/content/impl/file/model/file-in-si-field';
-import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb';
+import { SiPanel } from '../model/content/impl/embedded/model/si-panel';
 import { Injector } from '@angular/core';
 import { SiService } from '../manage/si.service';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { IframeSiGui } from '../model/gui/impl/model/iframe-si-gui';
+import { SiFieldEssentialsFactory } from './si-field-essentials-factory';
 
+let SiServiceType: new(...args: any[]) => SiService;
+import('../manage/si.service').then(m => {
+	SiServiceType = m.SiService;
+});
 
 enum SiGuiType {
 	COMPACT_EXPLORER = 'compact-explorer',
@@ -38,126 +40,6 @@ export class SiGuiFactory {
 	// 	return contents;
 	// }
 
-	static createEntryIdentifier(data: any): SiEntryIdentifier {
-		const extr = new Extractor(data);
-
-		return new SiEntryIdentifier(extr.reqString('typeId'), extr.nullaString('id'));
-	}
-
-	static buildEntryQualifiers(dataArr: any[]|null): SiEntryQualifier[] {
-		if (dataArr === null) {
-			return null;
-		}
-
-		const entryQualifiers: SiEntryQualifier[] = [];
-		for (const data of dataArr) {
-			entryQualifiers.push(SiGuiFactory.createEntryQualifier(data));
-		}
-		return entryQualifiers;
-	}
-
-	static createEntryQualifier(data: any): SiEntryQualifier {
-		const extr = new Extractor(data);
-
-		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
-				SiGuiFactory.createEntryIdentifier(extr.reqObject('identifier')), extr.nullaString('idName'));
-	}
-
-	static createCrumbGroups(dataArr: Array<any>): SiCrumbGroup[] {
-		const crumbGroups: SiCrumbGroup[] = [];
-		for (const data of dataArr) {
-			crumbGroups.push(this.createCrumbGroup(data));
-		}
-		return crumbGroups;
-	}
-
-	static createCrumbGroup(data: any): SiCrumbGroup {
-		const extr = new Extractor(data);
-		return {
-			crumbs: this.createCrumbs(extr.reqArray('crumbs'))
-		};
-	}
-
-	static createCrumbs(dataArr: Array<any>) {
-		const crumbs: SiCrumb[] = [];
-		for (const data of dataArr) {
-			crumbs.push(this.createCrumb(data));
-		}
-		return crumbs;
-	}
-
-	static createCrumb(data: any): SiCrumb {
-		const extr = new Extractor(data);
-
-		let crumb: SiCrumb;
-		switch (extr.reqString('type')) {
-			case SiCrumb.Type.LABEL:
-				crumb = SiCrumb.createLabel(extr.reqString('label'));
-				break;
-			case SiCrumb.Type.ICON:
-				crumb = SiCrumb.createIcon(extr.reqString('iconClass'));
-				break;
-		}
-
-		crumb.severity = extr.reqString('severity') as SiCrumb.Severity;
-		crumb.title = extr.nullaString('title');
-
-		return crumb;
-	}
-
-	static buildGridPos(data: any): SiGridPos|null {
-		if (data === null) {
-			return null;
-		}
-
-		const extr = new Extractor(data);
-
-		return {
-			colStart: extr.reqNumber('colStart'),
-			colEnd: extr.reqNumber('colEnd'),
-			rowStart: extr.reqNumber('rowStart'),
-			rowEnd: extr.reqNumber('rowEnd')
-		};
-	}
-
-	static buildSiFile(data: any): SiFile|null {
-		if (data === null) {
-			return null;
-		}
-
-		const extr = new Extractor(data);
-
-		const imageDimensions: SiImageDimension[] = [];
-		for (const idData of extr.reqArray('imageDimensions')) {
-			imageDimensions.push(SiGuiFactory.createSiImageDimension(idData));
-		}
-
-		const siFile = new SiFile(extr.reqObject('id'), extr.reqString('name'), extr.nullaString('url'));
-		siFile.thumbUrl = extr.nullaString('thumbUrl');
-		siFile.mimeType = extr.nullaString('mimeType');
-		siFile.imageDimensions = imageDimensions;
-		return siFile;
-	}
-
-	static createSiImageDimension(data: any): SiImageDimension {
-		const extr = new Extractor(data);
-
-		return {
-			id: extr.reqString('id'),
-			name: extr.nullaString('name'),
-			width: extr.reqNumber('width'),
-			height: extr.reqNumber('height'),
-			imageCut: this.createSiImageCut(extr.reqObject('imageCut')),
-			ratioFixed: extr.reqBoolean('ratioFixed')
-		};
-	}
-
-	static createSiImageCut(data: any): SiImageCut {
-		const extr = new Extractor(data);
-
-		return new SiImageCut(extr.reqNumber('x'), extr.reqNumber('y'), extr.reqNumber('width'),
-				extr.reqNumber('height'), extr.reqBoolean('exists'));
-	}
 
 	buildGui(data: any, requiredType: SiGuiType|null = null): SiGui|null {
 		if (!data) {
@@ -178,7 +60,7 @@ export class SiGuiFactory {
 		switch (type) {
 			case SiGuiType.COMPACT_EXPLORER:
 				const compactExplorerSiGui = new CompactExplorerSiGui(dataExtr.reqNumber('pageSize'),
-						SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(SiService),
+						SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(SiServiceType),
 						this.injector.get(SiModStateService));
 
 				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector);
@@ -196,7 +78,7 @@ export class SiGuiFactory {
 			case SiGuiType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const bulkyEntrySiGui = new BulkyEntrySiGui(SiMetaFactory.createFrame(dataExtr.reqObject('frame')), declaration,
-						this.injector.get(SiService), this.injector.get(SiModStateService));
+						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
 				bulkyEntrySiGui.entryControlsIncluded = dataExtr.reqBoolean('entryControlsIncluded');
 				bulkyEntrySiGui.entry = new SiEntryFactory(declaration, this.injector)
@@ -210,7 +92,7 @@ export class SiGuiFactory {
 			case SiGuiType.COMPACT_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 				const compactEntrySiGui = new CompactEntrySiGui(SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
-						declaration, this.injector.get(SiService), this.injector.get(SiModStateService));
+						declaration, this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
 				compEssentialsFactory = new SiControlFactory(compactEntrySiGui, this.injector);
 				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
@@ -259,7 +141,7 @@ export class SiGuiFactory {
 		panel.max = extr.nullaNumber('max');
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
-		panel.gridPos = SiGuiFactory.buildGridPos(extr.nullaObject('gridPos'));
+		panel.gridPos = SiFieldEssentialsFactory.buildGridPos(extr.nullaObject('gridPos'));
 		panel.allowedTypeIds = extr.nullaStringArray('allowedTypeIds');
 
 		return panel;

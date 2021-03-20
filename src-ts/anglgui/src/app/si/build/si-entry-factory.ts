@@ -7,7 +7,6 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { SiFieldFactory } from './si-field-factory';
 import { Injector } from '@angular/core';
-import { SiGuiFactory } from './si-gui-factory';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiMetaFactory } from './si-meta-factory';
@@ -37,7 +36,7 @@ export class SiEntryFactory {
 	createEntry(entryData: any): SiEntry {
 		const extr = new Extractor(entryData);
 
-		const siEntry = new SiEntry(SiGuiFactory.createEntryIdentifier(extr.reqObject('identifier')),
+		const siEntry = new SiEntry(SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
 				SiMetaFactory.createStyle(extr.reqObject('style')));
 		siEntry.treeLevel = extr.nullaNumber('treeLevel');
 

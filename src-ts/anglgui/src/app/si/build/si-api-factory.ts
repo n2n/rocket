@@ -1,7 +1,6 @@
 
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
-import { SiResultFactory } from 'src/app/si/build/si-result-factory';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';

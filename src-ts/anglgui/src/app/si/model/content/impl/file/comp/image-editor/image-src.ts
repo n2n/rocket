@@ -1,5 +1,5 @@
 import { Subject, Observable } from 'rxjs';
-import { SiImageCut } from '../../model/file-in-si-field';
+import { SiImageCut } from '../../model/file';
 import { ElementRef } from '@angular/core';
 import Cropper from 'cropperjs';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FileInFieldModel } from '../file-in-field-model';
-import { SiImageDimension } from '../../model/file-in-si-field';
+import { SiImageDimension } from '../../model/file';
 
 @Component({
 	selector: 'rocket-image-resize',
@@ -15,7 +15,7 @@ export class ImageResizeComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit() {
+	ngOnInit(): void {
 		const siFile = this.model.getSiFile();
 
 		if (!siFile) {

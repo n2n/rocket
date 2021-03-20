@@ -4,11 +4,21 @@ import { ApiCallSiControl } from '../model/control/impl/model/api-call-si-contro
 import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
-import { SiUiService } from '../manage/si-ui.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SiNavPoint } from '../model/control/si-nav-point';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
+import { SiUiService } from '../manage/si-ui.service';
+
+let SiNavPointType: new(...args: any[]) => SiNavPoint;
+import('../model/control/si-nav-point').then(m => {
+	SiNavPointType = m.SiNavPoint;
+});
+
+let SiUiServiceType: new(...args: any[]) => SiUiService;
+import('../manage/si-ui.service').then(m => {
+	SiUiServiceType = m.SiUiService;
+});
 
 enum SiControlType {
 	REF = 'ref',
@@ -25,7 +35,7 @@ export class SiControlFactory {
 	static createNavPoint(data: any): SiNavPoint {
 		const extr = new Extractor(data);
 
-		return new SiNavPoint(extr.reqString('url'), extr.reqBoolean('siref'));
+		return new SiNavPointType(extr.reqString('url'), extr.reqBoolean('siref'));
 	}
 
 	createControls(dataArr: any[]): SiControl[] {
@@ -44,14 +54,14 @@ export class SiControlFactory {
 		switch (extr.reqString('type')) {
 			case SiControlType.REF:
 				return new RefSiControl(
-						this.injector.get(SiUiService),
+						this.injector.get(SiUiServiceType),
 						dataExtr.reqString('url'),
 						dataExtr.reqBoolean('newWindow'),
 						this.createButton(dataExtr.reqObject('button')),
 						this.controlBoundry);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
-						this.injector.get(SiUiService),
+						this.injector.get(SiUiServiceType),
 						dataExtr.reqString('apiUrl'),
 						dataExtr.reqObject('apiCallId'),
 						this.createButton(dataExtr.reqObject('button')),

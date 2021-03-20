@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SiService } from 'src/app/si/manage/si.service';
-import { SiFile } from '../../model/file-in-si-field';
+import { SiFile } from '../../model/file';
 import { FileInFieldModel } from '../file-in-field-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
@@ -15,6 +15,7 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { SiFieldEssentialsFactory } from 'src/app/si/build/si-field-essentials-factory';
 
 
 @Component({
@@ -232,7 +233,7 @@ class CommonImageEditorModel implements ImageEditorModel {
 		if (data.error) {
 			return { uploadErrorMessage: data.error };
 		}
-		const siFile = SiGuiFactory.buildSiFile(data.file);
+		const siFile = SiFieldEssentialsFactory.buildSiFile(data.file);
 		this.model.setSiFile(siFile);
 		return { siFile };
 	}

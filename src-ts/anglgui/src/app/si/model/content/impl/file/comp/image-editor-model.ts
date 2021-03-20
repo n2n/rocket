@@ -1,4 +1,4 @@
-import { SiFile } from '../model/file-in-si-field';
+import { SiFile } from '../model/file';
 import { MessageFieldModel } from '../../common/comp/message-field-model';
 
 export interface ImageEditorModel extends MessageFieldModel {

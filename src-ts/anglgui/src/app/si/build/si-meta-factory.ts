@@ -9,6 +9,7 @@ import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiTypeContext } from '../model/meta/si-type-context';
 import { SiStyle } from '../model/meta/si-view-mode';
+import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 
 
 export class SiMetaFactory {
@@ -123,5 +124,30 @@ export class SiMetaFactory {
 
 		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryBuildupIds'),
 				extr.reqBoolean('treeMode'));
+	}
+
+	static createEntryIdentifier(data: any): SiEntryIdentifier {
+		const extr = new Extractor(data);
+
+		return new SiEntryIdentifier(extr.reqString('typeId'), extr.nullaString('id'));
+	}
+
+	static buildEntryQualifiers(dataArr: any[]|null): SiEntryQualifier[] {
+		if (dataArr === null) {
+			return null;
+		}
+
+		const entryQualifiers: SiEntryQualifier[] = [];
+		for (const data of dataArr) {
+			entryQualifiers.push(SiMetaFactory.createEntryQualifier(data));
+		}
+		return entryQualifiers;
+	}
+
+	static createEntryQualifier(data: any): SiEntryQualifier {
+		const extr = new Extractor(data);
+
+		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
+				SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')), extr.nullaString('idName'));
 	}
 }

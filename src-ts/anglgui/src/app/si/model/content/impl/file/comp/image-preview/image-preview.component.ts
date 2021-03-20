@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, DoCheck, Input, ViewChild } from '@angular/core';
-import { SiImageCut } from '../../model/file-in-si-field';
+import { SiImageCut } from '../../model/file';
 
 @Component({
 	selector: 'rocket-image-preview',

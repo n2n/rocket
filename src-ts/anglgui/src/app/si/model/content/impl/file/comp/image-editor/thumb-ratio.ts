@@ -1,4 +1,4 @@
-import { SiImageCut, SiImageDimension } from '../../model/file-in-si-field';
+import { SiImageCut, SiImageDimension } from '../../model/file';
 import { ElementRef } from '@angular/core';
 
 export class ThumbRatio {
