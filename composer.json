@@ -25,9 +25,9 @@
 			"role" : "Developer, Frontend UI, Rocket Capability for Hangar"
 		}
 	],
-	"config": {
-        "vendor-dir": "src/vendor"
-    },
+	"config" : {
+		"vendor-dir" : "src/vendor"
+	},
 	"require" : {
 		"php" : ">=7.0",
 		"n2n/n2n-composer-module-installer" : "^7.1",
@@ -45,7 +45,7 @@
 			"rocket\\" : "src/app/rocket"
 		}
 	},
-	"require-dev": {
-		"phpunit/phpunit": "^9.5"
+	"require-dev" : {
+		"phpunit/phpunit" : "^9.5"
 	}
 }
