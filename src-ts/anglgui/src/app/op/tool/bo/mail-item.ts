@@ -1,7 +1,7 @@
 import {MailItemAttachment} from './mail-item-attachment';
 
 export class MailItem {
-  contentVisible: boolean = false;
+  contentVisible = false;
   dateTime: string;
 	to: string;
 	from: string;
@@ -12,7 +12,7 @@ export class MailItem {
 	message: string;
 	subject: string;
 
-  toggleVisibility() {
+  toggleVisibility(): void {
     this.contentVisible = !this.contentVisible;
   }
 }

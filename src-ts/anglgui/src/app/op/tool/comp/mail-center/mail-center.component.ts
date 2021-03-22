@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToolsService } from '../../model/tools.service';
 import { MailItem } from '../../bo/mail-item';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {LogFileData} from '../../bo/log-file-data';
 
 @Component({
 selector: 'rocket-mail-center',
@@ -31,30 +32,29 @@ export class MailCenterComponent implements OnInit {
 	public mailLogFileDatas: LogFileData[] = [];
 	private _currentPageNo = 1;
 
-	constructor(private _toolsService: ToolsService) { }
+	constructor(private toolsService: ToolsService) { }
 
 	ngOnInit(): void {
-		this._toolsService.getMailLogFileDatas().toPromise().then((logFileDatas) => {
+		this.toolsService.getMailLogFileDatas().toPromise().then((logFileDatas) => {
 			this.mailLogFileDatas = logFileDatas;
-
-      if (this.mailLogFileDatas[0]) {
-        this.currentLogFileData = this.mailLogFileDatas[0];
-        this.updateMailItems();
-      } else {
-        this.currentLogFileData = null;
-        this.mailItems = [];
-      }
+			if (this.mailLogFileDatas[0]) {
+			  this.currentLogFileData = this.mailLogFileDatas[0];
+			  this.updateMailItems();
+			} else {
+			  this.currentLogFileData = null;
+			  this.mailItems = [];
+			}
 		});
 	}
 
-	private updateMailItems() {
+	private updateMailItems(): void {
 		this.mailItems = null;
-		this._toolsService.getMails(this.currentLogFileData, this._currentPageNo).toPromise().then((mailItems: MailItem[]) => {
+		this.toolsService.getMails(this.currentLogFileData, this._currentPageNo).toPromise().then((mailItems: MailItem[]) => {
 			this.mailItems = mailItems;
 		});
 	}
 
-	mailLogFileChanged(logFileDate: LogFileData) {
+	mailLogFileChanged(logFileDate: LogFileData): void {
 		this.currentLogFileData = logFileDate;
 		this.updateMailItems();
 	}
@@ -76,9 +76,4 @@ export class MailCenterComponent implements OnInit {
 	prettyName = prettyName.replace('.xml', '');
 	return prettyName;
   }
-}
-
-export class LogFileData {
-	constructor(public filename: string, public numPages: number) {
-	}
 }

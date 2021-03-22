@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {MailItem} from '../bo/mail-item';
 import {MailItemFactory} from '../build/mail-item-factory';
-import {LogFileData} from "../comp/mail-center/mail-center.component";
+import {LogFileData} from '../bo/log-file-data';
 
 @Injectable({
 	providedIn: 'root'
@@ -16,7 +16,7 @@ export class ToolsService {
 	getMailLogFileDatas(): Observable<LogFileData[]> {
 		return this.httpClient.get<any>('tools/mail-center/mailslogfiledatas')
 			.pipe(map((data) => {
-				let logFileDatas= []
+				const logFileDatas = [];
 				data.forEach((mailLogItemData) => {
 					logFileDatas.push(new LogFileData(mailLogItemData.filename, mailLogItemData.numPages));
 				});
@@ -39,9 +39,7 @@ export class ToolsService {
 			}));
 	}
 
-  clearCache() {
-	  return this.httpClient.get<any>('tools/clear-cache')
-      .pipe(map((data) => {return data}));
+  clearCache(): Observable<any> {
+	  return this.httpClient.get<any>('tools/clear-cache').pipe(map((data) => data));
   }
 }
-
