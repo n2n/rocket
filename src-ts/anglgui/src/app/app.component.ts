@@ -10,6 +10,7 @@ import { UiNavPoint } from './ui/util/model/ui-nav-point';
 import { PlatformService } from './util/nav/platform.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SiBuildTypes } from './si/build/si-build-types';
+import {MenuGroupLocalStorage} from './ui/util/model/menu-group-local-storage';
 
 @Component({
 	selector: 'rocket-root',
@@ -39,7 +40,10 @@ export class AppComponent implements OnInit {
 		const extr = new Extractor(JSON.parse(this.elemRef.nativeElement.getAttribute('data-rocket-angl-data')));
 
 		this.translationService.map = extr.reqStringMap('translationMap');
+
 		this.menuGroups = new SiBuildTypes.SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
+		MenuGroupLocalStorage.toggleOpenStates(this.menuGroups);
+
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));
 		this.appState.pageName = extr.reqString('pageName');
 

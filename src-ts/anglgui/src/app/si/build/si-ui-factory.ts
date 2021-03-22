@@ -4,7 +4,6 @@ import { Injector } from '@angular/core';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { UiMenuItem, UiMenuGroup } from 'src/app/ui/structure/model/ui-menu';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { MenuGroupLocalStorage } from '../../ui/util/model/menu-group-local-storage';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiBuildTypes } from './si-build-types';
 
@@ -53,8 +52,6 @@ export class SiUiFactory {
 		for (const data of dataArr) {
 			menuGroups.push(this.createMenuGroup(data));
 		}
-
-    MenuGroupLocalStorage.toggleOpenStates(menuGroups);
 
 		return menuGroups;
 	}
