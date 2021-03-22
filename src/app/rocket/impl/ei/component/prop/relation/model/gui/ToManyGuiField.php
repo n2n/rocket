@@ -59,8 +59,9 @@ class ToManyGuiField implements GuiField {
 		$values = $this->readValues();
 		
 		$this->siField = SiFields::qualifierSelectIn($this->targetEiuFrame->createSiFrame(),
-				$values, (int) $relationModel->getMin(), $relationModel->getMax(),
-				$this->readPickableQualifiers($relationModel->getMaxPicksNum()));
+						$values, (int) $relationModel->getMin(), $relationModel->getMax(),
+						$this->readPickableQualifiers($relationModel->getMaxPicksNum()))
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 	}
 	
 	private function readPickableQualifiers(int $maxNum) {

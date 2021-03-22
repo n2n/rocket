@@ -31,6 +31,7 @@ use rocket\si\api\SiGetRequest;
 use rocket\si\api\SiGetResponse;
 use rocket\si\api\SiValRequest;
 use rocket\si\api\SiValResponse;
+use rocket\ei\manage\gui\ViewMode;
 
 class ApiController extends ControllerAdapter {
 	const API_CONTROL_SECTION = 'execcontrol';
@@ -67,6 +68,16 @@ class ApiController extends ControllerAdapter {
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
+	}
+	
+	/**
+	 * @param Param $paramQuery
+	 * @param bool $new
+	 * @return number
+	 */
+	private function parseViewMode(Param $paramQuery, bool $new) {
+		$httpData = $paramQuery->parseJsonToHttpData();
+		return ViewMode::determine($httpData->reqBool('bulky'), $httpData->reqBool('readOnly'), $new);
 	}
 	
 	/**
@@ -119,40 +130,45 @@ class ApiController extends ControllerAdapter {
 		$this->sendJson($siValResponse);
 	}
 	
-	function doExecControl(ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
+	function doExecControl(ParamPost $style, ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
 		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
-		
+		$viewMode = null;
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);
+			$viewMode = $this->parseViewMode($style, false);
 		} else if (null !== ($newEiTypeType = $siApiCallId->getNewEiTypeId())) {
 			$callProcess->determineNewEiEntry($newEiTypeType);
+			$viewMode = $this->parseViewMode($style, true);
 		}
 			
-		$callProcess->determineEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypeId());
+		$callProcess->determineEiGuiFrame($viewMode, $siApiCallId->getEiTypeId());
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		if ($entryInputMaps !== null
-				&& null !== ($siResult = $callProcess->handleInput($entryInputMaps->parseJson()))) {
-			$this->sendJson($siResult);
+				&& null !== ($siInputError = $callProcess->handleInput($entryInputMaps->parseJson()))) {
+			$this->sendJson(SiCallResult::fromInputError($siInputError));
 			return;
 		}
 		
-		$this->sendJson($callProcess->callGuiControl());
+		$this->sendJson(SiCallResult::fromCallResponse($callProcess->callGuiControl()));
 	}
 	
-	function doCallField(ParamPost $apiCallId, ParamPost $data) {
+	function doCallField(ParamPost $style, ParamPost $apiCallId, ParamPost $data) {
 		$siApiCallId = $this->parseApiFieldCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
+		$viewMode = null;
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$callProcess->determineEiEntry($pid);
+			$viewMode = $this->parseViewMode($style, false);
 		} else {
 			$callProcess->determineNewEiEntry($siApiCallId->getEiTypeId());
+			$viewMode = $this->parseViewMode($style, true);
 		}
 		
-		$callProcess->determineEiGuiFrame($siApiCallId->getViewMode(), $siApiCallId->getEiTypeId());
+		$callProcess->determineEiGuiFrame($viewMode, $siApiCallId->getEiTypeId());
 		$callProcess->determineGuiField($siApiCallId->getDefPropPath());
 		
 		$this->sendJson(['data' => $callProcess->callSiField($data->parseJson(), $this->getRequest()->getUploadDefinitions()) ]);

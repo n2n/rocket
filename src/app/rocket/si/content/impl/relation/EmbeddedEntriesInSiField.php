@@ -213,7 +213,8 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 			'reduced' => $this->reduced,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
-			'allowedSiTypeIds' => $this->allowedSiTypeIds
+			'allowedSiTypeIds' => $this->allowedSiTypeIds,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	 

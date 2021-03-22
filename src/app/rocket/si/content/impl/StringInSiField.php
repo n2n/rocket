@@ -152,7 +152,8 @@ class StringInSiField extends InSiFieldAdapter {
 			'multiline' => $this->multiline,
 			'mandatory' => $this->mandatory,
 			'prefixAddons' => $this->prefixAddons,
-			'suffixAddons' => $this->suffixAddons
+			'suffixAddons' => $this->suffixAddons,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	 

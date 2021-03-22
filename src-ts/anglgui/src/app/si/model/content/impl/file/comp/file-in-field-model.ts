@@ -1,9 +1,12 @@
 import { FileFieldModel } from './file-field-model';
-import { SiFile } from '../model/file-in-si-field';
+import { SiFile } from '../model/file';
+import { SiStyle } from 'src/app/si/model/meta/si-view-mode';
 
 export interface FileInFieldModel extends FileFieldModel {
 
 	getApiFieldUrl(): string;
+
+	getSiStyle(): SiStyle;
 
 	getApiCallId(): object;
 

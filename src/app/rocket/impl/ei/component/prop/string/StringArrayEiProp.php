@@ -52,7 +52,8 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 		
 		$siField = SiFields::stringArrayIn($values)
 				->setMin($this->stringArrayConfig->getMin())
-				->setMax($this->stringArrayConfig->getMax());
+				->setMax($this->stringArrayConfig->getMax())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) {

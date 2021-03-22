@@ -28,18 +28,18 @@ export class EmbeddedEntryObtainer  {
 
 	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(true, false, siEntryIdentifier.id);
+			return SiGetInstruction.entry({ bulky: true, readOnly: false }, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(true, false).setTypeIds(this.typeIds);
+		return SiGetInstruction.newEntry({ bulky: true, readOnly: false }).setTypeIds(this.typeIds);
 	}
 
 	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry(false, true, siEntryIdentifier.id);
+			return SiGetInstruction.entry({ bulky: false, readOnly: true }, siEntryIdentifier.id);
 		}
 
-		return SiGetInstruction.newEntry(false, true).setTypeIds(this.typeIds);
+		return SiGetInstruction.newEntry({ bulky: false, readOnly: true }).setTypeIds(this.typeIds);
 	}
 
 	preloadNew(): void {
@@ -95,13 +95,13 @@ export class EmbeddedEntryObtainer  {
 		return siEmbeddedEntries;
 	}
 
-	val(siEmbeddedEntries: SiEmbeddedEntry[]) {
+	val(siEmbeddedEntries: SiEmbeddedEntry[]): void {
 		const request = new SiValRequest();
 
 		siEmbeddedEntries.forEach((siEmbeddedEntry, i) => {
 			request.instructions[i] = this.createValInstruction(siEmbeddedEntry);
 
-			siEmbeddedEntry.entry.resetError();
+			// siEmbeddedEntry.entry.resetError();
 		});
 
 		this.siService.apiVal(this.siFrame, request).subscribe((response: SiValResponse) => {
@@ -111,22 +111,22 @@ export class EmbeddedEntryObtainer  {
 		});
 	}
 
-	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult) {
-		if (siValResult.entryError) {
-			siEmbeddedEntry.entry.handleError(siValResult.entryError);
-		}
+	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult): void {
+		siEmbeddedEntry.entry.replace(siValResult.getResults[0].entry);
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[0].entry;
+			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[1].entry;
 		}
 	}
 
 	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
 		const instruction = new SiValInstruction(siEmbeddedEntry.entry.readInput());
 
+		instruction.getInstructions[0] = SiValGetInstruction.create({ bulky: true, readOnly: false });
+
 		if (siEmbeddedEntry.summaryComp) {
 			siEmbeddedEntry.summaryComp.entry = null;
-			instruction.getInstructions[0] = SiValGetInstruction.create(false, true);
+			instruction.getInstructions[1] = SiValGetInstruction.create({ bulky: false, readOnly: true });
 		}
 
 		return instruction;

@@ -38,8 +38,12 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	// 	return this.entrySubject.asObservable();
 	// }
 
-	getControlledEntries(): SiEntry[] {
+	getBoundEntries(): SiEntry[] {
 		return [this.entry];
+	}
+
+	getBoundDeclaration(): SiDeclaration {
+		return this.declaration;
 	}
 
 	getMessages(): Message[] {

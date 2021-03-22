@@ -26,6 +26,7 @@ use rocket\si\input\CorruptedSiInputDataException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\AttributesException;
+use rocket\si\meta\SiStyle;
 
 class SiEntry implements \JsonSerializable {
 	/**
@@ -35,18 +36,16 @@ class SiEntry implements \JsonSerializable {
 	private $selectedTypeId = null;
 	private $buildups = [];
 	private $treeLevel;
-	private $readOnly;
-	private $bulky;
+	private $style;
 	
 	/**
 	 * @param string $category
 	 * @param string|null $id
 	 * @param string $name
 	 */
-	function __construct(SiEntryIdentifier $identifier, bool $readOnly, bool $bulky) {
+	function __construct(SiEntryIdentifier $identifier, SiStyle $style) {
 		$this->identifier = $identifier;
-		$this->readOnly = $readOnly;
-		$this->bulky = $bulky;
+		$this->style = $style;
 	}
 
 	/**
@@ -142,8 +141,7 @@ class SiEntry implements \JsonSerializable {
 		return [
 			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
-			'readOnly' => $this->readOnly,
-		    'bulky' => $this->bulky,
+			'style' => $this->style,
 			'buildups' => $buildups,
 			'selectedTypeId' => $this->selectedTypeId
 		];

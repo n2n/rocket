@@ -82,6 +82,10 @@ class EiuField {
 		return $this->getEiuEntry()->getMessages($this->eiPropPath, $recursive);
 	}
 	
+	public function getMessagesAsStrs(bool $recursive = false) {
+		return $this->getEiuEntry()->getMessagesAsStrs($this->eiPropPath, $recursive);
+	}
+	
 	/**
 	 * @param mixed $scalarValue
 	 * @return EiuField

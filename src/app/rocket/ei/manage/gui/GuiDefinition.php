@@ -409,7 +409,7 @@ class GuiDefinition {
 			}
 			
 			$guiControls = $this->extractEntryGuiControls($guiCommand, $id, $eiu);
-			if ($guiControls[$controlId]) {
+			if (isset($guiControls[$controlId])) {
 				return $guiControls[$controlId];
 			}
 		}

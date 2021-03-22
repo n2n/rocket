@@ -134,7 +134,8 @@ class EnumInSiField extends InSiFieldAdapter {
 			'value' => $this->value,
 			'options' => $this->options,
 			'mandatory' => $this->mandatory,
-			'associatedPropIdsMap' => $this->associatedPropIdsMap
+			'associatedPropIdsMap' => $this->associatedPropIdsMap,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	

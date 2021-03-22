@@ -32,7 +32,7 @@ class IframeInSiField extends InSiFieldAdapter {
 	 * @return IframeInSiField
 	 */
 	function setParams(array $params) {
-		ArgUtils::valArray($params, ['scalar', null]);
+		ArgUtils::valArray($params, ['scalar', 'null']);
 		$this->params = $params;
 		return $this;
 	}
@@ -44,6 +44,7 @@ class IframeInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		$data = $this->iframeData->toArray();
 		$data['params'] = $this->getParams();
+		$data['messages'] = $this->getMessageStrs();
 		return $data;
 	}
 

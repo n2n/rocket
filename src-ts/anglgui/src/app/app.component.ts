@@ -8,8 +8,8 @@ import { UserFactory } from './op/user/model/user-fatory';
 import { User } from './op/user/bo/user';
 import { UiNavPoint } from './ui/util/model/ui-nav-point';
 import { PlatformService } from './util/nav/platform.service';
-import { SiUiFactory } from './si/build/si-ui-factory';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { SiBuildTypes } from './si/build/si-build-types';
 
 @Component({
 	selector: 'rocket-root',
@@ -17,9 +17,9 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 	styleUrls: ['./app.component.css'],
 	animations: [
 	    trigger('openClose', [
-		  state('true', style({opacity: 1, height: '*'})),
-		  state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
-		  transition('false <=> true', animate('500ms'))
+			state('true', style({opacity: 1, height: '*'})),
+			state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
+			transition('false <=> true', animate('500ms'))
 		])
 	]
 })
@@ -31,13 +31,15 @@ export class AppComponent implements OnInit {
 	constructor(private elemRef: ElementRef, private translationService: TranslationService,
 			private uiSiService: SiUiService, private appState: AppStateService,
 			private platformService: PlatformService, private injector: Injector) {
+
+
 	}
 
-	ngOnInit() {
+	ngOnInit(): void {
 		const extr = new Extractor(JSON.parse(this.elemRef.nativeElement.getAttribute('data-rocket-angl-data')));
-		
+
 		this.translationService.map = extr.reqStringMap('translationMap');
-		this.menuGroups = new SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
+		this.menuGroups = new SiBuildTypes.SiUiFactory(this.injector).createMenuGroups(extr.reqArray('menuGroups'));
 		this.appState.user = UserFactory.createUser(extr.reqObject('user'));
 		this.appState.pageName = extr.reqString('pageName');
 
@@ -52,7 +54,7 @@ export class AppComponent implements OnInit {
 	get user(): User {
 		return this.appState.user;
 	}
-	
+
 	get pageName(): string {
 		return this.appState.pageName;
 	}

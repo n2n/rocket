@@ -69,7 +69,6 @@ class StringOutSiField extends OutSiFieldAdapter {
 		return 'string-out';
 	}
 	
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getData()

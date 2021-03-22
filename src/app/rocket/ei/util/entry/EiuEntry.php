@@ -822,6 +822,32 @@ class EiuEntry {
 		
 		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
 	}
+	
+	function getMessages($eiPropPath = null, bool $recursive = false) {
+		$eiPropPath = EiPropPath::build($eiPropPath);
+		
+		$eiEntry = $this->getEiEntry(false);
+		if ($eiEntry === null || !$eiEntry->hasValidationResult()) {
+			return [];
+		}
+		
+		$validationResult = $eiEntry->getValidationResult();
+		if ($eiPropPath === null) {
+			return $validationResult->getMessages($recursive);
+		}
+		
+		$fieldValidationResult = $validationResult->getEiFieldValidationResult($eiPropPath);
+		if ($fieldValidationResult === null) {
+			return [];
+		}
+		
+		return $fieldValidationResult->getMessages($recursive);
+	}
+	
+	function getMessagesAsStrs($eiPropPath = null, bool $recursive = false) {
+		return array_map(fn ($m) => $m->t($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()), 
+				$this->getMessages($eiPropPath));
+	}
 }  
 
 // class InitListener implements EiEntryGuiListener {

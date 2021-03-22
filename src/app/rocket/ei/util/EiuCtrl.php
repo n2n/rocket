@@ -54,6 +54,7 @@ use rocket\si\content\impl\iframe\IframeSiGui;
 use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiBreadcrumb;
 use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\manage\api\SiCallResult;
 
 class EiuCtrl {
 	private $eiu;
@@ -442,7 +443,7 @@ class EiuCtrl {
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param GuiControl[] $guiControls
-	 * @return null|\rocket\si\control\SiResult
+	 * @return null|\rocket\si\control\SiCallResponse
 	 */
 	private function handleSiCall(?EiEntryGui $eiEntryGui, array $generalGuiControls) {
 		if (!($this->cu->getRequest()->getMethod() === Method::POST && isset($_POST['apiCallId']))) {
@@ -454,11 +455,11 @@ class EiuCtrl {
 		$process->determineGuiControl(ZoneApiControlCallId::parse((new ParamPost($_POST['apiCallId']))->parseJson()), $generalGuiControls);
 		
 		if (isset($_POST['entryInputMaps']) 
-				&& null !== ($siResult = $process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson()))) {
-			return $siResult;
+				&& null !== ($siInputError = $process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson()))) {
+			return SiCallResult::fromInputError($siInputError);
 		}
 		
-		return $process->callGuiControl();
+		return SiCallResult::fromCallResponse($process->callGuiControl());
 	}
 	
 	function forwardUrlIframeZone(Url $url, string $title = null) {

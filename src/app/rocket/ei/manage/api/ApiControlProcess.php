@@ -29,10 +29,8 @@ use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\GuiException;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\si\control\SiResult;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInput;
-use rocket\si\input\SiError;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\ex\IllegalStateException;
@@ -46,6 +44,7 @@ use n2n\web\http\ForbiddenException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\gui\EiGui;
+use rocket\si\input\SiInputError;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -164,7 +163,7 @@ class ApiControlProcess {
 	/**
 	 * @param array $data
 	 * @throws BadRequestException
-	 * @return \rocket\si\input\SiEntryError|null
+	 * @return \rocket\si\input\SiInputError|null
 	 */
 	function handleInput(array $data) {
 		if (!$this->guiControl->isInputHandled()) {
@@ -174,11 +173,7 @@ class ApiControlProcess {
 		$inputFactory = new SiInputFactory();
 		
 		try {
-			if (null !== ($err = $this->applyInput($inputFactory->create($data)))) {
-				return (new SiResult())->setInputError($err);
-			}
-			
-			return null;
+			return $this->applyInput($inputFactory->create($data));
 		} catch (AttributesException $e) {
 			throw new BadRequestException(null, null, $e);
 		} catch (\InvalidArgumentException $e) {
@@ -196,14 +191,14 @@ class ApiControlProcess {
 	
 	/**
 	 * @param SiInput $siInput
-	 * @return SiError|null
+	 * @return SiInputError|null
 	 * @throws UnknownEiObjectException
 	 * @throws UnknownEiTypeException
 	 * @throws InaccessibleEiEntryException
 	 * @throws \InvalidArgumentException
 	 */
 	private function applyInput($siInput) {
-		$entryErrors = [];
+		$siEntries = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiEntryGui = null;
@@ -235,14 +230,14 @@ class ApiControlProcess {
 				continue;
 			}
 			
-			$entryErrors[$key] = $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
+			$siEntries[$key] = $this->eiGuiModel->createSiEntry($this->eiFrame, $eiEntryGui, false);
 		}
 		
-		if (empty($entryErrors)) {
+		if (empty($siEntries)) {
 			return null;
 		}
 		
-		return new SiError($entryErrors);
+		return new SiInputError($siEntries);
 	}
 	
 	/**
@@ -262,7 +257,7 @@ class ApiControlProcess {
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\si\control\SiResult
+	 * @return \rocket\si\control\SiCallResponse
 	 */
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {

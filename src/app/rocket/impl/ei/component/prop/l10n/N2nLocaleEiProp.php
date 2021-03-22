@@ -85,7 +85,8 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$options = $this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale());
 		$value = $eiu->field()->getValue();
 		$siField = SiFields::enumIn($options, ($value !== null ? (string) $value : null))
-				->setMandatory($this->getEditConfig()->isMandatory());
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) {

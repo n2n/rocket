@@ -4,11 +4,11 @@ import { ApiCallSiControl } from '../model/control/impl/model/api-call-si-contro
 import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
-import { SiUiService } from '../manage/si-ui.service';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
-import { SiNavPoint } from '../model/control/si-nav-point';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
+import { SiNavPoint } from '../model/control/si-nav-point';
+import { SiUiService } from '../manage/si-ui.service';
 
 enum SiControlType {
 	REF = 'ref',
@@ -20,12 +20,6 @@ enum SiControlType {
 export class SiControlFactory {
 
 	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
-	}
-
-	static createNavPoint(data: any): SiNavPoint {
-		const extr = new Extractor(data);
-
-		return new SiNavPoint(extr.reqString('url'), extr.reqBoolean('siref'));
 	}
 
 	createControls(dataArr: any[]): SiControl[] {
@@ -81,7 +75,7 @@ export class SiControlFactory {
 		btn.iconImportant = extr.reqBoolean('iconImportant');
 		btn.iconAlways = extr.reqBoolean('iconAlways');
 		btn.labelAlways = extr.reqBoolean('labelAlways');
-    btn.href = extr.nullaString('href');
+		btn.href = extr.nullaString('href');
 
 		const confirmData = extr.nullaObject('confirm');
 		if (confirmData) {

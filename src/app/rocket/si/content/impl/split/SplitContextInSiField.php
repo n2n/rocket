@@ -30,6 +30,7 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use n2n\util\type\ArgUtils;
+use rocket\si\meta\SiStyle;
 
 class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
@@ -185,7 +186,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	function putLazy(string $key, string $label, Url $apiUrl, ?string $entryId, bool $bulky, bool $readOnly, \Closure $siEntryCallback) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
 		$this->siEntryCallbacks[$key] = $siEntryCallback;
-		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky, $readOnly);
+		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, new SiStyle($bulky, $readOnly));
 	}
 	
 	/**
@@ -209,7 +210,8 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			'activeKeys' => $this->activeKeys,
 			'mandatoryKeys' => $this->mandatoryKeys,
 			'declaration' => $this->declaration,
-			'splitContents' => $this->splitContents
+			'splitContents' => $this->splitContents,
+			'messages' => $this->getMessageStrs()
 		];
 	}
 	

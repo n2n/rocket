@@ -23,33 +23,22 @@ namespace rocket\si\api;
 
 use rocket\si\meta\SiDeclaration;
 use rocket\si\content\SiEntry;
-use rocket\si\input\SiEntryError;
 use n2n\util\type\ArgUtils;
 
 class SiValResult implements \JsonSerializable {
 	/**
-	 * @var SiEntryError|null
+	 * @var bool
 	 */
-	private $entryError = null;
+	private $valid;
 	/** 
 	 * @var SiValGetResult[]
 	 */
 	private $getResults = [];
 
-	/**
-	 * @return SiEntryError|null
-	 */
-	public function getEntryError() {
-		return $this->entryError;
+	function __construct(bool $valid) {
+		$this->valid = $valid;
 	}
-
-	/**
-	 * @param SiEntryError|null $entryError
-	 */
-	public function setEntryError(?SiEntryError $entryError) {
-		$this->entryError = $entryError;
-	}
-
+	
 	/** 
 	 * @return SiValGetResult[]
 	 */
@@ -79,8 +68,8 @@ class SiValResult implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return [
-			'getResults' => $this->getResults,
-			'entryError' => $this->entryError
+			'valid' => $this->valid,
+			'getResults' => $this->getResults
 		];
 	}
 }

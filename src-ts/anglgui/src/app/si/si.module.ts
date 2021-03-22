@@ -52,6 +52,13 @@ import { DateTimeInComponent } from './model/content/impl/date/comp/date-time-in
 import { NumberInComponent } from './model/content/impl/alphanum/comp/number-in/number-in.component';
 import { StringArrayInComponent } from './model/content/impl/array/comp/string-array-in/string-array-in.component';
 import { PasswordInComponent } from './model/content/impl/alphanum/comp/password-in/password-in.component';
+import { SiBuildTypes } from './build/si-build-types';
+import { SiGuiFactory } from './build/si-gui-factory';
+import { SiEntryFactory } from './build/si-entry-factory';
+import { SiFieldFactory } from './build/si-field-factory';
+import { SiResultFactory } from './build/si-result-factory';
+import { SiControlFactory } from './build/si-control-factory';
+import { SiUiFactory } from './build/si-ui-factory';
 
 @NgModule({
 	declarations: [
@@ -92,3 +99,16 @@ import { PasswordInComponent } from './model/content/impl/alphanum/comp/password
 	]
 })
 export class SiModule { }
+
+// SiBuildTypes.SiUiService = SiUiService;
+// SiBuildTypes.SiService = SiService;
+// SiBuildTypes.FileInSiField = FileInSiField;
+// SiBuildTypes.LinkOutSiField = LinkOutSiField;
+// SiBuildTypes.SiNavPoint = SiNavPoint;
+// SiBuildTypes.QualifierSelectInSiField = QualifierSelectInSiField;
+SiBuildTypes.SiGuiFactory = SiGuiFactory;
+SiBuildTypes.SiEntryFactory = SiEntryFactory;
+SiBuildTypes.SiFieldFactory = SiFieldFactory;
+SiBuildTypes.SiControlFactory = SiControlFactory;
+SiBuildTypes.SiResultFactory = SiResultFactory;
+SiBuildTypes.SiUiFactory = SiUiFactory;

@@ -10,8 +10,6 @@ use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\util\control\EiuControlFactory;
 use rocket\ei\util\spec\EiuProp;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiMaskDeclaration;
@@ -234,7 +232,7 @@ class EiuGuiFrame {
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration() {
-		return new SiDeclaration(ViewMode::createSiViewMode($this->getViewMode()), [new SiMaskDeclaration(
+		return new SiDeclaration(ViewMode::createSiStyle($this->getViewMode()), [new SiMaskDeclaration(
 				$this->eiGuiFrame->createSiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
 				null)]);
 	}

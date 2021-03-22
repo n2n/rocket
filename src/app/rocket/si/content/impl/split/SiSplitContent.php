@@ -23,6 +23,7 @@ namespace rocket\si\content\impl\split;
 
 use n2n\util\uri\Url;
 use rocket\si\content\SiEntry;
+use rocket\si\meta\SiStyle;
 
 class SiSplitContent implements \JsonSerializable {
 	private $label;
@@ -30,8 +31,7 @@ class SiSplitContent implements \JsonSerializable {
 	
 	private $apiGetUrl;
 	private $entryId;
-	private $bulky;
-	private $readOnly;
+	private $style;
 	private $propIds = null;
 // 	/**
 // 	 * @var SiDeclaration
@@ -91,8 +91,7 @@ class SiSplitContent implements \JsonSerializable {
 			$data['apiGetUrl'] = (string) $this->apiGetUrl;
 			$data['entryId'] = $this->entryId;
 			$data['propIds'] = $this->propIds;
-			$data['bulky'] = $this->bulky;
-			$data['readOnly'] = $this->readOnly;
+			$data['style'] = $this->style;
 // 		}
 		
 // 		if ($this->entry !== null) {
@@ -116,13 +115,12 @@ class SiSplitContent implements \JsonSerializable {
 	 * @param bool $bulky
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	static function createLazy(string $label, Url $apiGetUrl, ?string $entryId, bool $bulky, bool $readOnly) {
+	static function createLazy(string $label, Url $apiGetUrl, ?string $entryId, SiStyle $style) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiGetUrl = $apiGetUrl;
 		$split->entryId = $entryId;
-		$split->bulky = $bulky;
-		$split->readOnly = $readOnly;
+		$split->style = $style;
 		return $split;
 	}
 	

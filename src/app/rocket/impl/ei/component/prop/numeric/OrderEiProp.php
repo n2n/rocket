@@ -62,7 +62,8 @@ class OrderEiProp extends IntegerEiProp {
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::numberIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory());
+				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
 			$eiu->field()->setValue($siField->getValue());

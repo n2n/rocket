@@ -86,8 +86,8 @@ class GetInstructionProcess {
 	private function handleEntryId(string $entryId) {
 		$defPropPaths = $this->parseDefPropPaths();
 		
-		$eiGui = $this->util->lookupEiGuiByPid($entryId, $this->instruction->isBulky(), 
-				$this->instruction->isReadOnly(), $defPropPaths);
+		$eiGui = $this->util->lookupEiGuiByPid($entryId, $this->instruction->getStyle()->isBulky(), 
+				$this->instruction->getStyle()->isReadOnly(), $defPropPaths);
 // 		$eiGui = $this->eiFrameUtil->createEiGuiFromEiObject($eiObject, 
 // 				, null, $defPropPaths,
 // 				$this->instruction->isDeclarationRequested());
@@ -114,7 +114,7 @@ class GetInstructionProcess {
 		$defPropPaths = $this->parseDefPropPaths();
 		
 		$eiGui = $this->eiFrameUtil->createNewEiGui(
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $defPropPaths,
+				$this->instruction->getStyle()->isBulky(), $this->instruction->getStyle()->isReadOnly(), $defPropPaths,
 				$this->instruction->getTypeIds(), $this->instruction->isDeclarationRequested());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
@@ -157,7 +157,7 @@ class GetInstructionProcess {
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count($spci->getQuickSearchStr());
 		$eiGui = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
-				$this->instruction->isBulky(), $this->instruction->isReadOnly(), $this->parseDefPropPaths(),
+				$this->instruction->getStyle()->isBulky(), $this->instruction->getStyle()->isReadOnly(), $this->parseDefPropPaths(),
 				$spci->getQuickSearchStr());
 		
 		$result = new SiGetResult();

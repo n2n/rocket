@@ -84,10 +84,10 @@ class EiEntryValidationResult {
 	/**
 	 * @return Message[]
 	 */
-	public function getMessages() {
+	public function getMessages(bool $recursive = false) {
 		$messages = array();
 		foreach ($this->eiFieldValidationResults as $eiEiFieldValidationResult) {
-			$messages = array_merge($messages, $eiEiFieldValidationResult->getMessages());
+			$messages = array_merge($messages, $eiEiFieldValidationResult->getMessages($recursive));
 		}
 		return $messages;
 	}
@@ -100,21 +100,21 @@ class EiEntryValidationResult {
 		}
 	}
 
-	/**
-	 * @return SiEntryError|null 
-	 */
-	function toSiEntryError(N2nLocale $n2nLocale) {
-		$error = new SiEntryError();
+// 	/**
+// 	 * @return SiEntryError|null 
+// 	 */
+// 	function toSiEntryError(N2nLocale $n2nLocale) {
+// 		$error = new SiEntryError();
 				
-		foreach ($this->getInvalidEiFieldValidationResults(true) as $key => $eiFieldValidationResult) {
-			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError($n2nLocale));	
-		}
+// 		foreach ($this->getInvalidEiFieldValidationResults(true) as $key => $eiFieldValidationResult) {
+// 			$error->putFieldError($key, $eiFieldValidationResult->toSiFieldError($n2nLocale));	
+// 		}
 		
-		if ($error->isEmpty()) {
-			return null;
-		}
+// 		if ($error->isEmpty()) {
+// 			return null;
+// 		}
 		
-		return $error;
-	}
+// 		return $error;
+// 	}
 
 }

@@ -25,10 +25,10 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
+use rocket\si\meta\SiStyle;
 
 class SiGetInstruction {
-	private $bulky;
-	private $readOnly;
+	private $style;
 	private $declarationRequested = false;
 	private $generalControlsIncluded = false;
 	private $entryControlsIncluded = false;
@@ -41,37 +41,22 @@ class SiGetInstruction {
 	 * @param bool $bulky
 	 * @param bool $readOnly
 	 */
-	function __construct(bool $bulky, bool $readOnly) {
-		$this->bulky = $bulky;
-		$this->readOnly = $readOnly;
+	function __construct(SiStyle $style) {
+		$this->style = $style;
 	}
 	
 	/**
-	 * @return bool
+	 * @return SiStyle
 	 */
-	function isBulky() {
-		return $this->bulky;
+	function getStyle() {
+		return $this->style;
 	}
 
 	/**
 	 * @param bool $bulky
 	 */
-	function setBulky(bool $bulky) {
-		$this->bulky = $bulky;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isReadOnly() {
-		return $this->readOnly;
-	}
-
-	/**
-	 * @param bool $readOnly
-	 */
-	function setReadOnly(bool $readOnly) {
-		$this->readOnly = $readOnly;
+	function setStyle(SiStyle $style) {
+		$this->style = $style;
 	}
 
 	function getTypeIds() {
@@ -194,7 +179,7 @@ class SiGetInstruction {
 		$ds = new DataSet($data);
 		
 		try {
-			$instruction = new SiGetInstruction($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
+			$instruction = new SiGetInstruction(SiStyle::createFromData($ds->reqArray('style')));
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 			$instruction->setGeneralControlsIncluded($ds->reqBool('generalControlsIncluded'));
 			$instruction->setEntryControlsIncluded($ds->reqBool('entryControlsIncluded'));

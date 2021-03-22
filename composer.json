@@ -9,6 +9,7 @@
 	],
 	"homepage" : "https://n2n.rocks/",
 	"license" : "LGPL-3.0-or-later",
+	"minimum-stability" : "dev",
 	"authors" : [{
 			"name" : "Andreas von Burg",
 			"email" : "a@von-burg.net",
@@ -24,22 +25,27 @@
 			"role" : "Developer, Frontend UI, Rocket Capability for Hangar"
 		}
 	],
+	"config" : {
+		"vendor-dir" : "src/vendor"
+	},
 	"require" : {
 		"php" : ">=7.0",
-		"n2n/n2n-composer-module-installer" : "master-dev",
-		"n2n/n2n" : "master-dev",
-		"n2n/n2n-batch" : "master-dev",
-		"n2n/n2n-context" : "master-dev",
-		"n2n/n2n-impl-persistence-meta" : "master-dev",
-		"n2n/n2n-impl-persistence-orm" : "master-dev",
-		"n2n/n2n-impl-web-dispatch" : "master-dev",
-		"n2n/n2n-impl-web-ui" : "master-dev",
-		"n2n/n2nutil-jquery" : "master-dev",
-		"n2n/n2n-validation" : "master-dev"
+		"n2n/n2n-composer-module-installer" : "^7.1",
+		"n2n/n2n" : "^7.2.33",
+		"n2n/n2n-batch" : "^7.2.33",
+		"n2n/n2n-context" : "^7.2.33",
+		"n2n/n2n-impl-persistence-meta" : "^7.2.33",
+		"n2n/n2n-impl-persistence-orm" : "^7.2.33",
+		"n2n/n2n-impl-web-dispatch" : "^7.2.33",
+		"n2n/n2n-impl-web-ui" : "^7.2.33",
+		"n2n/n2n-validation" : "^7.2.33"
 	},
 	"autoload" : {
 		"psr-4" : {
 			"rocket\\" : "src/app/rocket"
 		}
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "^9.5"
 	}
 }
