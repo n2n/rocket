@@ -1,5 +1,5 @@
 import { MessageFieldModel } from '../../common/comp/message-field-model';
-import { SiFile } from '../model/file-in-si-field';
+import { SiFile } from '../model/file';
 
 export interface FileFieldModel extends MessageFieldModel {
 

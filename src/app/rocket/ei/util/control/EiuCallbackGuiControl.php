@@ -23,7 +23,7 @@ namespace rocket\ei\util\control;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
-use rocket\si\control\SiResult;
+use rocket\si\control\SiCallResponse;
 use rocket\si\control\impl\ApiCallSiControl;
 use rocket\si\control\SiButton;
 use rocket\ei\manage\api\ApiControlCallId;
@@ -108,7 +108,7 @@ class EiuCallbackGuiControl implements GuiControl {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return SiResult
+	 * @return SiCallResponse
 	 */
 	private function execCall(Eiu $eiu, ?array $inputEius) {
 		$sifControlResponse = null;
@@ -131,14 +131,14 @@ class EiuCallbackGuiControl implements GuiControl {
 			$sifControlResponse = $eiu->factory()->newControlResponse();
 		}
 		
-		return $sifControlResponse->toSiResult($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
+		return $sifControlResponse->toSiCallResponse($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::handle()
 	 */
-	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiResult {
+	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
 		ArgUtils::valArray($inputEiEntries, EiEntry::class);
 		
 		$inputEius = array_map(function ($inputEiEntry) use ($eiFrame) { 
@@ -152,7 +152,7 @@ class EiuCallbackGuiControl implements GuiControl {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::handleEntry()
 	 */
-	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiResult {
+	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
 		return $this->execCall(new Eiu($eiFrame, $eiGuiModel, $eiEntry), null);
 	}
 	
@@ -160,6 +160,6 @@ class EiuCallbackGuiControl implements GuiControl {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::handleEntries()
 	 */
-	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiResult {
+	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
 	}
 }

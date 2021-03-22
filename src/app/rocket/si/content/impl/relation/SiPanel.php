@@ -22,8 +22,11 @@
 namespace rocket\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
+use rocket\si\content\impl\SiFieldErrorTrait;
 
 class SiPanel implements \JsonSerializable {
+	use SiFieldErrorTrait;
+	
 	/**
 	 * @var string
 	 */

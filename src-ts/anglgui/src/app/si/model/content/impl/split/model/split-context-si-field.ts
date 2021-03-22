@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { SiStyle } from 'src/app/si/model/meta/si-view-mode';
 
 export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
@@ -191,9 +192,9 @@ export class SplitContent implements SplitOption {
 
 		let instruction: SiGetInstruction|null = null;
 		if (this.lazyDef.entryId) {
-			instruction = SiGetInstruction.entry(this.lazyDef.bulky, this.lazyDef.readOnly, this.lazyDef.entryId);
+			instruction = SiGetInstruction.entry(this.lazyDef.style, this.lazyDef.entryId);
 		} else {
-			instruction = SiGetInstruction.newEntry(this.lazyDef.bulky, this.lazyDef.readOnly);
+			instruction = SiGetInstruction.newEntry(this.lazyDef.style);
 		}
 		instruction.setPropIds(this.lazyDef.propIds);
 
@@ -209,8 +210,7 @@ export interface LazyDef {
 	apiGetUrl: string;
 	entryId: string|null;
 	propIds: string[]|null;
-	bulky: boolean;
-	readOnly: boolean;
+	style: SiStyle;
 	siService: SiService;
 	siControlBoundy: SiControlBoundry;
 }

@@ -8,13 +8,15 @@ import { SiTypeEssentialsFactory as SiMaskEssentialsFactory } from './si-type-es
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiTypeContext } from '../model/meta/si-type-context';
+import { SiStyle } from '../model/meta/si-view-mode';
+import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 
 
 export class SiMetaFactory {
 	static createDeclaration(data: any): SiDeclaration {
 		const extr = new Extractor(data);
 
-		const declaration = new SiDeclaration();
+		const declaration = new SiDeclaration(SiMetaFactory.createStyle(extr.reqObject('style')));
 
 		let contextTypeDeclaration: SiMaskDeclaration|null = null ;
 		for (const maskDeclarationData of extr.reqArray('maskDeclarations')) {
@@ -26,6 +28,15 @@ export class SiMetaFactory {
 			declaration.addTypeDeclaration(maskDeclaration);
 		}
 		return declaration;
+	}
+
+	static createStyle(data: any): SiStyle {
+		const extr = new Extractor(data);
+
+		return {
+			bulky: extr.reqBoolean('bulky'),
+			readOnly: extr.reqBoolean('readOnly')
+		};
 	}
 
 	private static createTypeDeclaration(data: any, contextTypeDeclaration: SiMaskDeclaration|null): SiMaskDeclaration {
@@ -115,5 +126,28 @@ export class SiMetaFactory {
 				extr.reqBoolean('treeMode'));
 	}
 
+	static createEntryIdentifier(data: any): SiEntryIdentifier {
+		const extr = new Extractor(data);
 
+		return new SiEntryIdentifier(extr.reqString('typeId'), extr.nullaString('id'));
+	}
+
+	static buildEntryQualifiers(dataArr: any[]|null): SiEntryQualifier[] {
+		if (dataArr === null) {
+			return null;
+		}
+
+		const entryQualifiers: SiEntryQualifier[] = [];
+		for (const data of dataArr) {
+			entryQualifiers.push(SiMetaFactory.createEntryQualifier(data));
+		}
+		return entryQualifiers;
+	}
+
+	static createEntryQualifier(data: any): SiEntryQualifier {
+		const extr = new Extractor(data);
+
+		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
+				SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')), extr.nullaString('idName'));
+	}
 }

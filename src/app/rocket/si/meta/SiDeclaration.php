@@ -24,7 +24,10 @@ namespace rocket\si\meta;
 use n2n\util\type\ArgUtils;
 
 class SiDeclaration implements \JsonSerializable {
-	private $viewMode;
+	/**
+	 * @var SiStyle
+	 */
+	private $style;
 	/**
 	 * @var \rocket\si\meta\SiMaskDeclaration[]
 	 */
@@ -33,8 +36,8 @@ class SiDeclaration implements \JsonSerializable {
 	/**
 	 * @param SiMaskDeclaration[] $typedDeclarations
 	 */
-	function __construct(SiViewMode $viewMode, array $maskDeclarations = []) {
-		$this->viewMode = $viewMode;
+	function __construct(SiStyle $style, array $maskDeclarations = []) {
+		$this->style = $style;
 		$this->setTypeDeclarations($maskDeclarations);
 	}
 	
@@ -83,7 +86,7 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'viewMode' => $this->viewMode,
+			'style' => $this->style,
 			'maskDeclarations' => $this->maskDeclarations
 		];
 	}

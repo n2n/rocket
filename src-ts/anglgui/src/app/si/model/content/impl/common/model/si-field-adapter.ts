@@ -1,4 +1,3 @@
-import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiField } from '../../../si-field';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
@@ -46,11 +45,11 @@ export abstract class SiFieldAdapter implements SiField/*, MessageFieldModel*/ {
 		return this.messagesCollection.get();
 	}
 
-	handleError(error: SiFieldError): void {
-		this.messagesCollection.push(...error.getAllMessages());
+	handleError(messages: Message[]): void {
+		this.messagesCollection.push(...messages);
 	}
 
-	protected addMessage(...newMessages: Message[]) {
+	protected addMessage(...newMessages: Message[]): void {
 		this.messagesCollection.push(...newMessages);
 	}
 

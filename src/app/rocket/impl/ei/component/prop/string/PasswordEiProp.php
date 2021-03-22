@@ -57,7 +57,8 @@ class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setPasswordSet(!empty($eiu->field()->getValue()))
 				->setMinlength($this->alphanumericConfig->getMinlength())
-				->setMaxlength($this->alphanumericConfig->getMaxlength());
+				->setMaxlength($this->alphanumericConfig->getMaxlength())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) {

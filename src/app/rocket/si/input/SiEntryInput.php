@@ -23,6 +23,8 @@ namespace rocket\si\input;
 
 use rocket\si\content\SiEntryIdentifier;
 use n2n\util\type\attrs\DataSet;
+use rocket\si\content\SiEntry;
+use n2n\util\type\ArgUtils;
 
 class SiEntryInput {
 	/**
@@ -157,100 +159,101 @@ class SiFieldInput {
 }
 
 
-class SiError implements \JsonSerializable {
+class SiInputError implements \JsonSerializable {
 	private $entryErrors;
 	
 	/**
-	 * @param SiEntryError[] $entryErrors
+	 * @param SiEntry[] $entries
 	 */
-	function __construct(array $entryErrors) {
-		$this->entryErrors = $entryErrors;
+	function __construct(array $entries) {
+		ArgUtils::valArray($entries, SiEntry::class);
+		$this->entries = $entries;
 	}
 	
 	function jsonSerialize() {
 		return [
-				'entryErrors' => $this->entryErrors
+			'entries' => $this->entries
 		];
 	}
 }
 
-class SiEntryError implements \JsonSerializable {
-	// 	/**
-	// 	 * @var string[]
-	// 	 */
-	// 	private $messages = [];
-	/**
-	 * @var SiFieldError[]
-	 */
-	private $fieldErrors = [];
+// class SiEntryError implements \JsonSerializable {
+// 	// 	/**
+// 	// 	 * @var string[]
+// 	// 	 */
+// 	// 	private $messages = [];
+// 	/**
+// 	 * @var SiFieldError[]
+// 	 */
+// 	private $fieldErrors = [];
 	
-	// 	function __construct(array $messages = []) {
-	// 		ArgUtils::valArray($messages, 'string');
-	// 		$this->messages = $messages;
-	// 	}
+// 	// 	function __construct(array $messages = []) {
+// 	// 		ArgUtils::valArray($messages, 'string');
+// 	// 		$this->messages = $messages;
+// 	// 	}
 	
-	/**
-	 * @param string $key
-	 * @param SiFieldError $fieldError
-	 */
-	function putFieldError(string $key, SiFieldError $fieldError) {
-		$this->fieldErrors[$key] = $fieldError;
-	}
+// 	/**
+// 	 * @param string $key
+// 	 * @param SiFieldError $fieldError
+// 	 */
+// 	function putFieldError(string $key, SiFieldError $fieldError) {
+// 		$this->fieldErrors[$key] = $fieldError;
+// 	}
 	
-	function isEmpty() {
-		return empty($this->fieldErrors);
-	}
+// 	function isEmpty() {
+// 		return empty($this->fieldErrors);
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	function jsonSerialize() {
-		return [
-				'fieldErrors' => $this->fieldErrors
-		];
-	}
-}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \JsonSerializable::jsonSerialize()
+// 	 */
+// 	function jsonSerialize() {
+// 		return [
+// 				'fieldErrors' => $this->fieldErrors
+// 		];
+// 	}
+// }
 
-class SiFieldError implements \JsonSerializable {
-	/**
-	 * @var string[]
-	 */
-	private $messages = [];
-	/**
-	 * @var SiEntryError[]
-	 */
-	private $subEntryErrors = [];
+// class SiFieldError implements \JsonSerializable {
+// 	/**
+// 	 * @var string[]
+// 	 */
+// 	private $messages = [];
+// 	/**
+// 	 * @var SiEntryError[]
+// 	 */
+// 	private $subEntryErrors = [];
 	
-	/**
-	 *
-	 */
-	function __construct() {
-	}
+// 	/**
+// 	 *
+// 	 */
+// 	function __construct() {
+// 	}
 	
-	/**
-	 * @param string $message
-	 */
-	function addMessage(string $message) {
-		$this->messages[] = $message;
-	}
+// 	/**
+// 	 * @param string $message
+// 	 */
+// 	function addMessage(string $message) {
+// 		$this->messages[] = $message;
+// 	}
 	
-	/**
-	 * @param string $key
-	 * @param SiEntryError $entryError
-	 */
-	function putSubEntryError(string $key, SiEntryError $entryError) {
-		$this->subEntryErrors[$key] = $entryError;
-	}
+// 	/**
+// 	 * @param string $key
+// 	 * @param SiEntryError $entryError
+// 	 */
+// 	function putSubEntryError(string $key, SiEntryError $entryError) {
+// 		$this->subEntryErrors[$key] = $entryError;
+// 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	function jsonSerialize() {
-		return [
-				'messages' => $this->messages,
-				'subEntryErrors' => $this->subEntryErrors
-		];
-	}
-}
+// 	/**
+// 	 * {@inheritDoc}
+// 	 * @see \JsonSerializable::jsonSerialize()
+// 	 */
+// 	function jsonSerialize() {
+// 		return [
+// 				'messages' => $this->messages,
+// 				'subEntryErrors' => $this->subEntryErrors
+// 		];
+// 	}
+// }

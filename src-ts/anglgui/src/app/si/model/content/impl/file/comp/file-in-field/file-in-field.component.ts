@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SiService } from 'src/app/si/manage/si.service';
-import { SiFile } from '../../model/file-in-si-field';
+import { SiFile } from '../../model/file';
 import { FileInFieldModel } from '../file-in-field-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
-import { SiGuiFactory } from 'src/app/si/build/si-gui-factory';
 import { ImageEditorComponent } from '../image-editor/image-editor.component';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UploadResult, ImageEditorModel } from '../image-editor-model';
@@ -15,6 +14,7 @@ import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
+import { SiEssentialsFactory } from 'src/app/si/build/si-field-essentials-factory';
 
 
 @Component({
@@ -225,14 +225,14 @@ class CommonImageEditorModel implements ImageEditorModel {
 		this.uploadingFile = file;
 		this.uploadInitiated = true;
 
-		const data = await this.siService.fieldCall(this.model.getApiFieldUrl(), this.model.getApiCallId(),
+		const data = await this.siService.fieldCall(this.model.getApiFieldUrl(), this.model.getSiStyle(), this.model.getApiCallId(),
 				{ fileName }, new Map().set('upload', file)).toPromise();
 
 		this.uploadingFile = null;
 		if (data.error) {
 			return { uploadErrorMessage: data.error };
 		}
-		const siFile = SiGuiFactory.buildSiFile(data.file);
+		const siFile = SiEssentialsFactory.buildSiFile(data.file);
 		this.model.setSiFile(siFile);
 		return { siFile };
 	}

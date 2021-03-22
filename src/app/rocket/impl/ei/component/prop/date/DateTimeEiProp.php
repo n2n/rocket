@@ -89,7 +89,8 @@ class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableE
 		$siField = SiFields::dateTimeIn($eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setDateChoosable($this->dateTimeConfig->getDateStyle() !== DateTimeFormat::STYLE_NONE)
-				->setTimeChoosable($this->dateTimeConfig->getTimeStyle() !== DateTimeFormat::STYLE_NONE);
+				->setTimeChoosable($this->dateTimeConfig->getTimeStyle() !== DateTimeFormat::STYLE_NONE)
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
 			$eiu->field()->setValue($siField->getValue());	

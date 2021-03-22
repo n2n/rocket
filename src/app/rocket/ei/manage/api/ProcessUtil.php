@@ -168,7 +168,7 @@ class ProcessUtil {
 	 * @param SiEntryInput $siEntryInput
 	 * @param EiEntryGui $eiEntryGui
 	 * @throws BadRequestException
-	 * @return \rocket\si\input\SiEntryError|NULL
+	 * @return bool
 	 */
 	function handleEntryInput(SiEntryInput $siEntryInput, EiEntryGui $eiEntryGui) {
 		try {
@@ -181,11 +181,7 @@ class ProcessUtil {
 		
 		$eiEntry = $eiEntryGui->getSelectedEiEntry();
 		
-		if ($eiEntry->validate()) {
-			return null;
-		}
-		
-		return $eiEntry->getValidationResult()->toSiEntryError($this->eiFrame->getN2nContext()->getN2nLocale());
+		return $eiEntry->validate();
 	}
 	
 	/**

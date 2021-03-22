@@ -1,4 +1,3 @@
-import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message } from 'src/app/util/i18n/message';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { Observable } from 'rxjs';
@@ -14,9 +13,9 @@ export interface SiField {
 
 	readInput(): object;
 
-	handleError(error: SiFieldError): void;
+	// handleError(error: SiFieldError): void;
 
-	resetError(): void;
+	// resetError(): void;
 
 	getMessages(): Message[];
 

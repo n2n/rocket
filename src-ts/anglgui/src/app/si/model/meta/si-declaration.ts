@@ -1,18 +1,19 @@
 
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiMaskDeclaration } from './si-mask-declaration';
+import { SiStyle } from './si-view-mode';
 
 export class SiDeclaration {
 	private maskDeclarationMap = new Map<string, SiMaskDeclaration>();
 
-	constructor() {
+	constructor(public style: SiStyle) {
 	}
 
-	constainsTypeId(typeId: string) {
+	constainsTypeId(typeId: string): boolean {
 		return this.maskDeclarationMap.has(typeId);
 	}
 
-	addTypeDeclaration(maskDeclaration: SiMaskDeclaration) {
+	addTypeDeclaration(maskDeclaration: SiMaskDeclaration): void {
 		this.maskDeclarationMap.set(maskDeclaration.type.qualifier.identifier.id, maskDeclaration);
 	}
 

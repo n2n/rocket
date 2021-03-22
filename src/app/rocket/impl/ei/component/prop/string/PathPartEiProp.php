@@ -86,7 +86,8 @@ class PathPartEiProp extends AlphanumericEiProp {
 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
 				->setPrefixAddons($this->getAddonConfig()->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getAddonConfig()->getSuffixSiCrumbGroups());
+				->setSuffixAddons($this->getAddonConfig()->getSuffixSiCrumbGroups())
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($eiu, $siField) {

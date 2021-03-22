@@ -2,11 +2,11 @@ import { UiBreadcrumb, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { Injector } from '@angular/core';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiGuiFactory } from './si-gui-factory';
 import { UiMenuItem, UiMenuGroup } from 'src/app/ui/structure/model/ui-menu';
-import { SiControlFactory } from './si-control-factory';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import {MenuGroupLocalStorage} from '../../ui/util/model/menu-group-local-storage';
+import { MenuGroupLocalStorage } from '../../ui/util/model/menu-group-local-storage';
+import { SiEssentialsFactory } from './si-field-essentials-factory';
+import { SiBuildTypes } from './si-build-types';
 
 export class SiUiFactory {
 
@@ -16,7 +16,7 @@ export class SiUiFactory {
 	fillZone(data: any, uiZone: UiZone): void {
 		const extr = new Extractor(data);
 
-		const comp = new SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'));
+		const comp = new SiBuildTypes.SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'));
 
 		uiZone.title = extr.reqString('title');
 		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);
@@ -38,7 +38,7 @@ export class SiUiFactory {
 	createBreadcrumb(data: any, uiLayer: UiLayer|null): UiBreadcrumb {
 		const extr = new Extractor(data);
 
-		const navPoint = SiControlFactory
+		const navPoint = SiEssentialsFactory
 				.createNavPoint(extr.reqObject('navPoint'))
 				.toUiNavPoint(this.injector, uiLayer);
 
@@ -72,7 +72,7 @@ export class SiUiFactory {
 	createMenuItem(data: any): UiMenuItem {
 		const extr = new Extractor(data);
 
-		return new UiMenuItem(extr.reqString('id'), extr.reqString('label'), SiControlFactory
+		return new UiMenuItem(extr.reqString('id'), extr.reqString('label'), SiEssentialsFactory
 				.createNavPoint(extr.reqObject('navPoint'))
 				.toUiNavPoint(this.injector, null));
 	}

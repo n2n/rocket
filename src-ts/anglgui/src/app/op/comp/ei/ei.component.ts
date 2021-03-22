@@ -26,7 +26,7 @@ export class EiComponent implements OnInit, OnDestroy {
 // 		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
 	}
 
-	ngOnInit() {
+	ngOnInit(): void {
 		this.subscription = this.router.events
 				.pipe(filter((event) => {
 					// console.log(event);
@@ -48,7 +48,7 @@ export class EiComponent implements OnInit, OnDestroy {
 		this.siUiService.loadZone(zone, false);
 	}
 
-	ngOnDestroy() {
+	ngOnDestroy(): void {
 		this.subscription.unsubscribe();
 	}
 
@@ -56,7 +56,7 @@ export class EiComponent implements OnInit, OnDestroy {
 		return this.uiContainer.getMainLayer();
 	}
 
-	private handleNav(event: NavigationStart) {
+	private handleNav(event: NavigationStart): void {
 		const url = event.url.substr(1);
 
 		switch (event.navigationTrigger) {
@@ -68,7 +68,7 @@ export class EiComponent implements OnInit, OnDestroy {
 			}
 		case 'imperative':
 			this.mainUiLayer.pushRoute(event.id, url);
-			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, false);
+			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, true);
 			break;
 		default:
 			// console.log('state ' + event.navigationTrigger);

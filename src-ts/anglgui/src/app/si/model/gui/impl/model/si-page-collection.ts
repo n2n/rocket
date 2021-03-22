@@ -3,7 +3,7 @@ import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiEntry } from '../../../content/si-entry';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { SiModStateService } from '../../../mod/model/si-mod-state.service';
+import { SiModStateService, SiModEvent } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiControl } from '../../../control/si-control';
 import { SiGetInstruction } from '../../../api/si-get-instruction';
@@ -14,20 +14,21 @@ import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
 import { SiEntryIdentifier } from '../../../content/si-entry-qualifier';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { Subscription } from 'rxjs';
 
 export class SiPageCollection implements SiControlBoundry {
 	public declaration: SiDeclaration|null = null;
 	public controls: SiControl[]|null = null;
 
 	private pagesMap = new Map<number, SiPage>();
-	private _size: number|null = null;
-	private _quickSearchStr: string|null = null;
+	private pSize: number|null = null;
+	private pQuickSearchStr: string|null = null;
 
-	// private modSubscription: Subscription|null = null;
+	private modSubscription: Subscription|null = null;
 
 	constructor(readonly pageSize: number, private siFrame: SiFrame, private siService: SiService,
 			private siModState: SiModStateService, quickSearchstr: string|null = null) {
-		this._quickSearchStr = quickSearchstr;
+		this.pQuickSearchStr = quickSearchstr;
 	}
 
 	getEntries(): SiEntry[] {
@@ -40,9 +41,13 @@ export class SiPageCollection implements SiControlBoundry {
 		return entries;
 	}
 
-
-	getControlledEntries(): SiEntry[] {
+	getBoundEntries(): SiEntry[] {
 		return [];
+	}
+
+	getBoundDeclaration(): SiDeclaration {
+		this.ensureDeclared();
+		return this.declaration;
 	}
 
 	get pages(): SiPage[] {
@@ -52,7 +57,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	get quickSearchStr(): string|null {
-		return this._quickSearchStr;
+		return this.pQuickSearchStr;
 	}
 
 	updateFilter(quickSearchStr: string|null) {
@@ -60,9 +65,9 @@ export class SiPageCollection implements SiControlBoundry {
 			return;
 		}
 
-		this._quickSearchStr = quickSearchStr;
+		this.pQuickSearchStr = quickSearchStr;
 		this.clear();
-		this._size = null;
+		this.pSize = null;
 	}
 
 	clear() {
@@ -73,26 +78,29 @@ export class SiPageCollection implements SiControlBoundry {
 		IllegalSiStateError.assertTrue(this.pagesMap.size === 0);
 	}
 
-	// private validateSubscription() {
-	// 	if (this.size > 0) {
-	// 		if (!this.modSubscription) {
-	// 			return;
-	// 		}
+	private validateSubscription(): void {
+		if (this.pSize) {
+			if (this.modSubscription) {
+				return;
+			}
 
-	// 		this.modSubscription.unsubscribe();
-	// 		this.modSubscription = null;
-	// 		return;
-	// 	}
+			this.modSubscription = this.siModState.modEvent$.subscribe((modEvent: SiModEvent) => {
+				if (modEvent.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
+					this.clear();
+				}
+			});
 
-	// 	this.siModState.modEvent$.subscribe((modEvent: SiModEvent) => {
-	// 		if (modEvent.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
-	// 			this.clear();
-	// 		}
-	// 	});
-	// }
+			return;
+		}
+
+		if (this.modSubscription) {
+			this.modSubscription.unsubscribe();
+			this.modSubscription = null;
+		}
+	}
 
 	get declared(): boolean {
-		return this._size !== null && !!this.declaration && !!this.controls;
+		return this.pSize !== null && !!this.declaration && !!this.controls;
 	}
 
 	private ensureDeclared() {
@@ -104,12 +112,12 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	set size(size: number) {
-		this._size = size;
+		this.pSize = size;
 	}
 
 	get size(): number {
 		this.ensureDeclared();
-		return this._size;
+		return this.pSize;
 	}
 
 	get ghostSize(): number {
@@ -124,7 +132,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	get pagesNum(): number {
-		return Math.ceil((this._size + this.ghostSize) / this.pageSize);
+		return Math.ceil((this.pSize + this.ghostSize) / this.pageSize);
 	}
 
 	get loadedPagesNum(): number {
@@ -185,12 +193,15 @@ export class SiPageCollection implements SiControlBoundry {
 			IllegalSiStateError.assertTrue(this.pagesMap.get(page.no) === page,
 					'SiPage no already retaken: ' + page.no);
 			this.pagesMap.delete(no);
+			this.validateSubscription();
 		});
 
 		page.entryRemoved$.subscribe(() => {
-			this._size--;
+			this.pSize--;
 			this.recalcPagesOffset();
 		});
+
+		this.validateSubscription();
 
 		return page;
 	}
@@ -216,7 +227,7 @@ export class SiPageCollection implements SiControlBoundry {
 			siPage = this.createPage(pageNo, null);
 		}
 
-		const instruction = SiGetInstruction.partialContent(false, true,
+		const instruction = SiGetInstruction.partialContent({ bulky: false, readOnly: true },
 						siPage.offset, this.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration)
@@ -233,7 +244,7 @@ export class SiPageCollection implements SiControlBoundry {
 		return siPage;
 	}
 
-	private applyResult(result: SiGetResult, siPage: SiPage) {
+	private applyResult(result: SiGetResult, siPage: SiPage): void {
 		if (result.declaration) {
 			this.declaration = result.declaration;
 		}
@@ -242,7 +253,7 @@ export class SiPageCollection implements SiControlBoundry {
 			this.controls = result.generalControls;
 		}
 
-		this._size = result.partialContent.count;
+		this.pSize = result.partialContent.count;
 
 		if (siPage.disposed) {
 			return;
@@ -253,6 +264,8 @@ export class SiPageCollection implements SiControlBoundry {
 		if (result.partialContent.entries.length === 0) {
 			siPage.dipose();
 		}
+
+		this.validateSubscription();
 	}
 
 	private findEntryPositionByIndex(index: number): SiEntryPosition {

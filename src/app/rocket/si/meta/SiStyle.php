@@ -22,21 +22,34 @@
 namespace rocket\si\meta;
 
 use n2n\util\uri\Url;
+use n2n\util\type\attrs\DataSet;
 
-class SiViewMode implements \JsonSerializable {
+class SiStyle implements \JsonSerializable {
 	private $bulky;
 	private $readOnly;
-	private $new;
 	
 	/**
 	 * @param bool $siref
 	 * @param Url $url
 	 * @param string $label
 	 */
-	function __construct(bool $bulky, bool $readOnly, bool $new) {
+	function __construct(bool $bulky, bool $readOnly) {
 		$this->bulky = $bulky;
 		$this->readOnly = $readOnly;
-		$this->new = $new;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isBulky() {
+		return $this->bulky;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isReadOnly() {
+		return $this->readOnly;
 	}
 	
 	/**
@@ -45,9 +58,18 @@ class SiViewMode implements \JsonSerializable {
 	 */
 	function jsonSerialize() {
 		return [
-			'navPoint' => $this->bulky,
-			'readOnly' => $this->readOnly,
-			'new' => $this->new
+			'bulky' => $this->bulky,
+			'readOnly' => $this->readOnly
 		];
+	}
+	
+	/**
+	 * @param array $data
+	 * @return \rocket\si\meta\SiStyle
+	 */
+	static function createFromData(array $data) {
+		$ds = new DataSet($data);
+		
+		return new SiStyle($ds->reqBool('bulky'), $ds->reqBool('readOnly'));
 	}
 }

@@ -1,5 +1,3 @@
-
-import { SiField } from 'src/app/si/model/content/si-field';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { FileInFieldModel } from '../comp/file-in-field-model';
 import { FileInFieldComponent } from '../comp/file-in-field/file-in-field.component';
@@ -7,6 +5,8 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
+import { SiFile, SiImageCut } from './file';
+import { SiStyle } from 'src/app/si/model/meta/si-view-mode';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
@@ -15,7 +15,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	public acceptedMimeTypes: string[] = [];
 	public acceptedExtensions: string[] = [];
 
-	constructor(public apiFieldUrl: string, public apiCallId: object, public value: SiFile|null) {
+	constructor(public apiFieldUrl: string, public style: SiStyle, public apiCallId: object, public value: SiFile|null) {
 		super();
 	}
 
@@ -45,6 +45,10 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 
 	getApiCallId(): object {
 		return this.apiCallId;
+	}
+
+	getSiStyle(): SiStyle {
+		return this.style;
 	}
 
 	getSiFile(): SiFile|null {
@@ -93,54 +97,5 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		}
 
 		this.value = genericValue.readInstance(SiFile).copy();
-	}
-}
-
-export class SiFile {
-	thumbUrl: string|null;
-	mimeType: string|null;
-	imageDimensions: SiImageDimension[] = [];
-
-	constructor(public id: object, public name: string, public url: string|null) {
-	}
-
-	copy(): SiFile {
-		const siFile = new SiFile(this.id, this.name, this.url);
-		siFile.thumbUrl = this.thumbUrl;
-		siFile.mimeType = this.mimeType;
-		siFile.imageDimensions = this.imageDimensions.map(id => {
-			return {
-				id: id.id,
-				name: id.name,
-				width: id.width,
-				height: id.height,
-				imageCut: id.imageCut.copy(),
-				ratioFixed: id.ratioFixed
-			}
-		});
-		return siFile;
-	}
-}
-
-export interface SiImageDimension {
-	id: string;
-	name: string;
-	width: number;
-	height: number;
-	imageCut: SiImageCut;
-	ratioFixed: boolean;
-}
-
-export class SiImageCut {
-	constructor(public x: number, public y: number, public width: number, public height: number, public exists: boolean) {
-	}
-
-	copy(): SiImageCut {
-		return new SiImageCut(this.x, this.y, this.width, this.height, this.exists);
-	}
-
-	equals(obj: any): boolean {
-		return obj instanceof SiImageCut && obj.x === this.x && obj.y === this.y && obj.height === this.height
-				&& obj.exists === this.exists;
 	}
 }

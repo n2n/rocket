@@ -1,32 +1,53 @@
 
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
-import { SiEntryError } from 'src/app/si/model/input/si-entry-error';
-import { SiFieldError } from 'src/app/si/model/input/si-field-error';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
-import { SiResult, SiDirective } from '../manage/si-result';
+import { SiCallResponse, SiDirective, SiControlResult, SiInputError } from '../manage/si-control-result';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
-import { SiControlFactory } from './si-control-factory';
+import { Injector } from '@angular/core';
+import { SiDeclaration } from '../model/meta/si-declaration';
+import { SiBuildTypes } from './si-build-types';
+import { SiEssentialsFactory } from './si-field-essentials-factory';
 
 export class SiResultFactory {
 
-	static createResult(data: any): SiResult {
+	constructor(private injector: Injector) {
+
+	}
+
+	createControlResult(data: any, declaration?: SiDeclaration): SiControlResult {
 		const extr = new Extractor(data);
 
-		const result = new SiResult();
+		const inputErrorData = extr.nullaObject('inputError');
+		if (inputErrorData) {
+			return {
+				inputError: this.createInputError(inputErrorData, declaration)
+			};
+		}
+
+		return {
+			callResponse: this.createCallResponse(extr.reqObject('callResponse'))
+		};
+	}
+
+	createInputError(data: any, declaration: SiDeclaration): SiInputError {
+		const inputError = new SiInputError();
+		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
+			inputError.errorEntries.set(eeKey, entryFactory.createEntry(eeData));
+		}
+		return inputError;
+	}
+
+	createCallResponse(data: any): SiCallResponse {
+		const extr = new Extractor(data);
+
+		const result = new SiCallResponse();
 
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
 		if (navPointData = extr.nullaObject('navPoint')) {
-			result.navPoint = SiControlFactory.createNavPoint(navPointData);
-		}
-
-		const inputErrorData = extr.nullaObject('inputError');
-
-		if (inputErrorData) {
-			for (const [ieKey, ieData] of new Extractor(inputErrorData).reqMap('entryErrors')) {
-				result.entryErrors.set(ieKey, SiResultFactory.createEntryError(ieData));
-			}
+			result.navPoint = SiEssentialsFactory.createNavPoint(navPointData);
 		}
 
 		const eventMap = extr.reqMap('eventMap');
@@ -64,28 +85,28 @@ export class SiResultFactory {
 		return result;
 	}
 
-	static createEntryError(data: any): SiEntryError {
-		const extr = new Extractor(data);
+	// static createEntryError(data: any): SiEntryError {
+	// 	const extr = new Extractor(data);
 
-		const entryError = new SiEntryError(/*extr.reqStringArray('messages')*/);
+	// 	const entryError = new SiEntryError(/*extr.reqStringArray('messages')*/);
 
-		for (const [key, fieldData] of extr.reqMap('fieldErrors')) {
-			entryError.fieldErrors.set(key, SiResultFactory.createFieldError(fieldData));
-		}
+	// 	for (const [key, fieldData] of extr.reqMap('fieldErrors')) {
+	// 		entryError.fieldErrors.set(key, SiResultFactory.createFieldError(fieldData));
+	// 	}
 
-		return entryError;
-	}
+	// 	return entryError;
+	// }
 
-	private static createFieldError(data: any): SiFieldError {
-		const extr = new Extractor(data);
+	// private static createFieldError(data: any): SiFieldError {
+	// 	const extr = new Extractor(data);
 
-		const fieldError = new SiFieldError(Message.createTexts(extr.reqStringArray('messages')));
+	// 	const fieldError = new SiFieldError(Message.createTexts(extr.reqStringArray('messages')));
 
-		for (const [key, entryData] of extr.reqMap('subEntryErrors')) {
-			fieldError.subEntryErrors.set(key, SiResultFactory.createEntryError(entryData));
-		}
+	// 	for (const [key, entryData] of extr.reqMap('subEntryErrors')) {
+	// 		fieldError.subEntryErrors.set(key, SiResultFactory.createEntryError(entryData));
+	// 	}
 
-		return fieldError;
-	}
+	// 	return fieldError;
+	// }
 
 }

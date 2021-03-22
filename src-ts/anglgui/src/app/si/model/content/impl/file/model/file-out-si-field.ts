@@ -1,4 +1,4 @@
-import { SiFile } from './file-in-si-field';
+import { SiFile } from './file';
 import { FileOutFieldComponent } from '../comp/file-out-field/file-out-field.component';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
