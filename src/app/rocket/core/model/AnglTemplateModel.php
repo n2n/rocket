@@ -99,6 +99,7 @@ class AnglTemplateModel implements Lookupable {
 			'tool_backup_title' =>  $dtc->t('tool_backup_title'),
 			'tool_backup_create_label' => $dtc->t('tool_backup_create_label'),
 			'tool_mail_center_title' => $dtc->t('tool_mail_center_title'),
+			'tool_mail_center_no_mails_found_text' => $dtc->t('tool_mail_center_no_mails_found_text'),
 			'mail_center_mail_message_label' => $dtc->t('tool_mail_center_mail_message_label'),
 			'mail_center_mail_from_label' => $dtc->t('tool_mail_center_mail_from_label'),
 			'mail_center_mail_to_label' => $dtc->t('tool_mail_center_mail_to_label'),
