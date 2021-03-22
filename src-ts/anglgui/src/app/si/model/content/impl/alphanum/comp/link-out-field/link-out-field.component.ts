@@ -20,7 +20,9 @@ export class LinkOutFieldComponent implements OnInit, AfterViewInit {
 
 	ngAfterViewInit(): void {
 		if (this.model.isLytebox) {
-	        GLightbox({});
+	        GLightbox({
+				selector:  '.glightbox',
+			});
 		}
     }
 
