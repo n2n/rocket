@@ -171,7 +171,7 @@ export class UiStructure {
 
 	isToolbarMassive(): boolean {
 		// tslint:disable-next-line: no-bitwise
-		return 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
+		return this.model && 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
 	}
 
 	// createToolbarChild(model: UiStructureModel): UiStructure {
