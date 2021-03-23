@@ -7,6 +7,7 @@
 		<ng-template #activateButton>
 			<div rocketUiStructure [uiStructure]="item.value" [contentVisible]="false" [toolbarVisible]="false">
 				<ng-container pre-content>
+					<div></div>
 					<button class="rocket-enabler" type="button" (click)="model.activateKey(item.key)">
 						<i class="fa fa-globe-americas mr-2"></i>
 						<span>{{ model.getLabelByKey(item.key) }}</span> 
