@@ -6,9 +6,12 @@ import { SplitManagerComponent } from '../comp/split-manager/split-manager.compo
 import { SplitManagerModel } from '../comp/split-manager-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {InSiFieldAdapter} from '../../common/model/in-si-field-adapter';
+import {SplitContentCollection} from './split-content-collection';
+import {SplitContextCopy} from './split-context-copy';
 
-export class SplitContextInSiField extends SplitContextSiField implements SplitManagerModel {
-
+export class SplitContextInSiField extends InSiFieldAdapter implements SplitManagerModel {
+  readonly collection = new SplitContentCollection();
 	managerStyle: SplitStyle = { iconClass: null, tooltip: null };
 	private activeKeysSubject = new BehaviorSubject<string[]>([]);
 	mandatoryKeys = new Array<string>();
@@ -20,7 +23,7 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 
 	readInput(): object {
 		const entryInputObj = {};
-		for (const [, splitContent] of this.splitContentMap) {
+		for (const [, splitContent] of this.collection.getSplitContents()) {
 			let entry: SiEntry;
 			if (entry = splitContent.getLoadedSiEntry()) {
 				entryInputObj[splitContent.key] = entry.readInput();
@@ -31,6 +34,18 @@ export class SplitContextInSiField extends SplitContextSiField implements SplitM
 			entryInputs: entryInputObj
 		};
 	}
+
+  copyValue(): Promise<SiGenericValue> {
+    return this.collection.copy().then(c => new SiGenericValue(c));
+  }
+
+  pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+	  if (!genericValue.isInstanceOf(SplitContextCopy)) {
+	    return Promise.resolve(false);
+    }
+
+	  return this.collection.past(genericValue.readInstance(SplitContextCopy));
+  }
 
 	protected createUiContent(): UiContent {
 		return new TypeUiContent(SplitManagerComponent, (ref) => {

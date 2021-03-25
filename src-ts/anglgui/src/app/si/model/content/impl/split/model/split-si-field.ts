@@ -23,6 +23,7 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subscription } from 'rxjs';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
+import {SiInputResetPoint} from '../../../si-input-reset-point';
 
 export class SplitSiField extends SiFieldAdapter {
 
@@ -45,7 +46,11 @@ export class SplitSiField extends SiFieldAdapter {
 		throw new IllegalSiStateError('no input');
 	}
 
-	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	createInputResetPoint(): Promise<SiInputResetPoint> {
+    throw new IllegalSiStateError('no input');
+  }
+
+  // abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	createUiStructureModel(compactMode: boolean): UiStructureModel {
 		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService,
@@ -53,14 +58,6 @@ export class SplitSiField extends SiFieldAdapter {
 		uism.messagesCollection = this.messagesCollection;
 		uism.setDisabled$(this.getDisabled$());
 		return uism;
-	}
-
-	copyValue(): Promise<SiGenericValue> {
-		return new SiGenericValue(null);
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		return Promise.resolve();
 	}
 }
 

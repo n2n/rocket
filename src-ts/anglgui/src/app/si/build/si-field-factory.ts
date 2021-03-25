@@ -12,7 +12,7 @@ import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
-import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
+import { SplitSiField } from '../model/content/impl/split/model/SiGui';
 import { SplitContextSiField, SplitContent, SplitStyle } from '../model/content/impl/split/model/split-context-si-field';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
