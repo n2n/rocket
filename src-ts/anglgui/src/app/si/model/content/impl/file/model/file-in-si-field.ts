@@ -86,7 +86,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		return this.maxSize;
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(this.value ? this.value.copy() : null);
 	}
 

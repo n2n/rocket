@@ -86,7 +86,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 				this.config.reduced, this.config.allowedTypeIds);
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return this.createGenericManager().copyValue();
 	}
 

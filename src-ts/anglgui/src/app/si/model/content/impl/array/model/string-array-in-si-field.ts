@@ -63,7 +63,7 @@ export class StringArrayInSiField extends InSiFieldAdapter implements StringArra
 		return true;
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(this.values === null ? null : new Array(this.values));
 	}
 

@@ -53,7 +53,7 @@ export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOut
 				this.config.reduced, null);
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return this.createGenericManager().copyValue();
 	}
 

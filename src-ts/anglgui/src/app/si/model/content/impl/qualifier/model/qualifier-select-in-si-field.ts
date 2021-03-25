@@ -81,7 +81,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		});
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new SiEntryQualifierCollection(this.values));
 	}
 

@@ -25,7 +25,7 @@ export class IframeOutSiField extends OutSiFieldAdapter implements IframeOutMode
 		});
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(null);
 	}
 

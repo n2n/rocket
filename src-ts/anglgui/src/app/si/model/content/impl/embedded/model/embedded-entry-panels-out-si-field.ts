@@ -74,7 +74,7 @@ export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter  {
 				panel.allowedTypeIds);
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		const col = new GenericSiPanelValueCollection();
 
 		for (const panel of this.panels) {

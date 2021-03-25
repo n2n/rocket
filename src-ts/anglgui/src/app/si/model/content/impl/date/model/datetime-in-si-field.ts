@@ -47,7 +47,7 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 		});
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(this.value ? new Date(this.value) : null);
 	}
 

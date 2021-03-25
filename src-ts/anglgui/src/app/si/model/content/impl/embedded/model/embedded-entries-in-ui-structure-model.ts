@@ -366,7 +366,7 @@ class EmbeInUiZoneManager {
 			return;
 		}
 
-		let bakEntry = embe.siEmbeddedEntry.entry.createResetPoint();
+		let bakEntry = embe.siEmbeddedEntry.entry.createInputResetPoint();
 
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;

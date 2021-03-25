@@ -68,7 +68,7 @@ export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel
 		});
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new Boolean(this.value));
 	}
 

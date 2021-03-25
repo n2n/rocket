@@ -31,7 +31,7 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 		return this.formDataToObject();
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new Map(this.formData));
 	}
 

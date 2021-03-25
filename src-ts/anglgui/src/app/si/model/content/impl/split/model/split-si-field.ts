@@ -55,7 +55,7 @@ export class SplitSiField extends SiFieldAdapter {
 		return uism;
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(null);
 	}
 

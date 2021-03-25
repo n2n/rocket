@@ -1,8 +1,5 @@
-import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
-import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleSiFieldAdapter } from './simple-si-field-adapter';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export abstract class InSiFieldAdapter extends SimpleSiFieldAdapter {
 
@@ -11,6 +8,8 @@ export abstract class InSiFieldAdapter extends SimpleSiFieldAdapter {
 	}
 
 	abstract readInput(): object;
+
+	abstract createInputResetPoint(): Promise<SiInputResetPoint>;
 
 	// abstract copy(): SiField;
 

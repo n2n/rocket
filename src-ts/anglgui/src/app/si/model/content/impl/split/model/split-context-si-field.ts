@@ -54,7 +54,7 @@ export abstract class SplitContextSiField extends SimpleSiFieldAdapter {
 
 	protected abstract createUiContent(): UiContent;
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(SplitContextCopy.fromMap(this.splitContentMap));
 	}
 
@@ -114,7 +114,7 @@ class SplitContextResetPoint {
 
 			const entry = splitContent.getLoadedSiEntry();
 			if (entry) {
-				scrp.genericEntryMap.set(key, entry.createResetPoint());
+				scrp.genericEntryMap.set(key, entry.createInputResetPoint());
 			}
 		}
 

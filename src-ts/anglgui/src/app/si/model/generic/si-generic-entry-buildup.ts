@@ -12,7 +12,7 @@ export class SiGenericEntryBuildup {
 		return this.entryQualifier.maskQualifier.identifier.entryBuildupId;
 	}
 
-	containsPropId(id: string) {
+	containsPropId(id: string): boolean {
 		return this.fieldValuesMap.has(id);
 	}
 

@@ -43,8 +43,8 @@ export class SiEmbeddedEntry {
 	}
 
 	createResetPoint(): SiEmbeddedEntryResetPoint {
-		const genericEmbeddedEntry = new SiGenericEmbeddedEntry(this.comp.entry.createResetPoint(),
-					(this.summaryComp ? this.summaryComp.entry.createResetPoint() : null));
+		const genericEmbeddedEntry = new SiGenericEmbeddedEntry(this.comp.entry.createInputResetPoint(),
+					(this.summaryComp ? this.summaryComp.entry.createInputResetPoint() : null));
 
 		return {
 			origSiEmbeddedEntry: this,

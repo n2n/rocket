@@ -19,7 +19,7 @@ export class GenericEmbeddedEntryManager {
 		return this.values.find(embeddedEntry => embeddedEntry.entry.identifier.equals(entryIdentifier)) || null;
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new SiGenericEmbeddedEntryCollection(
 				this.values.map(embeddedEntry => embeddedEntry.copy())));
 	}

@@ -28,7 +28,7 @@ export class CrumbOutSiField extends OutSiFieldAdapter {
 		});
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new SiCrumbGroupCollection(this.crumbGroups));
 	}
 

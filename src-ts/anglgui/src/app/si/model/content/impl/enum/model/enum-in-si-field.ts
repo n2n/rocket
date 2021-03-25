@@ -64,7 +64,7 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		return true;
 	}
 
-	copyValue(): SiGenericValue {
+	copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(this.value === null ? null : new String(this.value));
 	}
 

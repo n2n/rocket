@@ -65,7 +65,7 @@ export class EmbeInCollection extends EmbeOutCollection {
 	createEntriesResetPoints(): SiGenericEntry[] {
 		const entries: SiGenericEntry[] = [];
 		for (const embe of this.embes) {
-			entries.push(embe.siEntry.createResetPoint());
+			entries.push(embe.siEntry.createInputResetPoint());
 		}
 		return entries;
 	}
