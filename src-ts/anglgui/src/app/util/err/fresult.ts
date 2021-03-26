@@ -3,7 +3,7 @@ export class Fresult<E extends Error = Error, T = void> {
 	protected value: T|null = null;
 	protected error: E|null = null;
 
-	static success<T>(value?: T): Fresult<any, T>  {
+	static success<T>(value?: T): Fresult<any, T>	{
 		const result = new Fresult<any, T>();
 		result.value = value;
 		return result;

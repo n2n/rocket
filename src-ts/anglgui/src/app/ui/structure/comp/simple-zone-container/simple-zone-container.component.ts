@@ -11,11 +11,11 @@ export class SimpleZoneContainerComponent implements OnInit {
 
 	@Input()
 	messages: Message[] = [];
-  @Input()
+	@Input()
 	title: string;
-  @Input()
+	@Input()
 	loading = false;
-  @Input()
+	@Input()
 	breadcrumbs: UiBreadcrumb[] = [];
 
 	constructor(elemRef: ElementRef) {

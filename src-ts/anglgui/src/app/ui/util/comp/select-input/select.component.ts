@@ -80,7 +80,7 @@ export class SelectComponent implements OnInit {
 	}
 
 	toggleOpen() {
-		if (this.popupOpen)  {
+		if (this.popupOpen)	{
 			this.closePopup();
 			return;
 		}

@@ -18,7 +18,7 @@ import { SiFrame, SiFrameApiSection } from 'src/app/si/model/meta/si-frame';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 import { SiApiFactory } from 'src/app/si/build/si-api-factory';
 
-export class EmbeddedEntryObtainer  {
+export class EmbeddedEntryObtainer	{
 
 	constructor(public siService: SiService, public siModStateService: SiModStateService, public siFrame: SiFrame,
 			public obtainSummary: boolean, public typeIds: Array<string>|null) {

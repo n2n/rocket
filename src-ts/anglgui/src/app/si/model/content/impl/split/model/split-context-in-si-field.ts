@@ -1,17 +1,19 @@
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiEntry } from '../../../si-entry';
-import { SplitContextSiField, SplitStyle } from './split-context-si-field';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitManagerComponent } from '../comp/split-manager/split-manager.component';
 import { SplitManagerModel } from '../comp/split-manager-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {InSiFieldAdapter} from '../../common/model/in-si-field-adapter';
-import {SplitContentCollection} from './split-content-collection';
+import {SplitContentCollection, SplitStyle} from './split-content-collection';
 import {SplitContextCopy} from './split-context-copy';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { SplitContext } from './split-context';
+import { SplitOption } from './split-option';
 
-export class SplitContextInSiField extends InSiFieldAdapter implements SplitManagerModel {
-  readonly collection = new SplitContentCollection();
+export class SplitContextInSiField extends InSiFieldAdapter implements SplitManagerModel, SplitContext {
+	readonly collection = new SplitContentCollection();
 	managerStyle: SplitStyle = { iconClass: null, tooltip: null };
 	private activeKeysSubject = new BehaviorSubject<string[]>([]);
 	mandatoryKeys = new Array<string>();
@@ -23,7 +25,7 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 
 	readInput(): object {
 		const entryInputObj = {};
-		for (const [, splitContent] of this.collection.getSplitContents()) {
+		for (const splitContent of this.collection.getSplitContents()) {
 			let entry: SiEntry;
 			if (entry = splitContent.getLoadedSiEntry()) {
 				entryInputObj[splitContent.key] = entry.readInput();
@@ -35,17 +37,21 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 		};
 	}
 
-  copyValue(): Promise<SiGenericValue> {
-    return this.collection.copy().then(c => new SiGenericValue(c));
-  }
+	createInputResetPoint(): Promise<SiInputResetPoint> {
+		return this.collection.createInputResetPoint(this);
+	}
 
-  pasteValue(genericValue: SiGenericValue): Promise<boolean> {
-	  if (!genericValue.isInstanceOf(SplitContextCopy)) {
-	    return Promise.resolve(false);
-    }
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(await this.collection.copy());
+	}
 
-	  return this.collection.past(genericValue.readInstance(SplitContextCopy));
-  }
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (!genericValue.isInstanceOf(SplitContextCopy)) {
+			return false;
+		}
+
+		return this.collection.paste(genericValue.readInstance(SplitContextCopy));
+	}
 
 	protected createUiContent(): UiContent {
 		return new TypeUiContent(SplitManagerComponent, (ref) => {
@@ -75,7 +81,7 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 			return true;
 		}
 
-		if (this.activeKeys.length < this.min && this.splitContentMap.has(key)) {
+		if (this.activeKeys.length < this.min && this.collection.containsKey(key)) {
 			this.activeKeys.push(key);
 			this.triggetActiveKeysSubject();
 			return true;
@@ -84,8 +90,8 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 		return false;
 	}
 
-	activateKey(key: string) {
-		if (!this.splitContentMap.has(key)) {
+	activateKey(key: string): void {
+		if (!this.collection.containsKey(key)) {
 			throw new Error('Unknown key: ' + key);
 		}
 
@@ -95,7 +101,7 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 		}
 	}
 
-	deactivateKey(key: string) {
+	deactivateKey(key: string): void {
 		const i = this.activeKeys.indexOf(key);
 
 		if (i > -1) {
@@ -104,8 +110,12 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 		}
 	}
 
-	private triggetActiveKeysSubject() {
+	private triggetActiveKeysSubject(): void {
 		this.activeKeysSubject.next([...this.activeKeys]);
+	}
+
+	getSplitOptions(): SplitOption[] {
+		return this.collection.getSplitContents();
 	}
 
 	getIconClass(): string {

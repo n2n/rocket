@@ -41,7 +41,7 @@ export class UserComponent implements OnInit {
 	}
 
 	get title(): string {
-		return this.user && this.user.username  ? this.user.username :
+		return this.user && this.user.username	? this.user.username :
 				(this.user.id ? this.translationService.translate('edit_user_txt') : this.translationService.translate('add_user_txt'));
 	}
 

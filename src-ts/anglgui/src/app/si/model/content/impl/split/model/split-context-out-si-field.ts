@@ -10,7 +10,7 @@ import {SplitContentCollection} from './split-content-collection';
 
 export class SplitContextOutSiField extends OutSiFieldAdapter {
 
-  readonly collection = new SplitContentCollection();
+	readonly collection = new SplitContentCollection();
 
 	isDisplayable(): boolean {
 		return false;
@@ -21,6 +21,6 @@ export class SplitContextOutSiField extends OutSiFieldAdapter {
 	}
 
 	copyValue(): Promise<SiGenericValue> {
-	  this.collection.copy().then(c => new SiGenericValue(c));
-  }
+		this.collection.copy().then(c => new SiGenericValue(c));
+	}
 }

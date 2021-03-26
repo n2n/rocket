@@ -6,7 +6,7 @@ export class MenuGroupLocalStorage {
 	private static async readUiMenuGroupOpenStates(): Promise<OpenState[]> {
 		const openStatesJsonString = localStorage.getItem(this.UI_MENU_GROUP_OPEN_STATE_KEY);
 		if (!openStatesJsonString) {
-		  return [];
+			return [];
 		}
 		return JSON.parse(openStatesJsonString);
 	}

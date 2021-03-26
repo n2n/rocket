@@ -28,7 +28,7 @@ class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
 }
 
-export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter  {
+export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter	{
 
 	constructor(public siService: SiService, public siModState: SiModStateService, public frame: SiFrame,
 			public translationService: TranslationService, public panels: SiPanel[]) {

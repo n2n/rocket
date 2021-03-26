@@ -383,7 +383,7 @@ export class UiStructure {
 	// 	const models = this.getExtraToolbarStructureModels();
 	// 	models.push(...uiStructureModels);
 	// 	models.filter((value, index, self) => {
-  	// 		return self.indexOf(value) === index;
+		// 		return self.indexOf(value) === index;
 	// 	});
 	// 	this.setExtraToolbarStructureModels(models);
 	// }
@@ -569,7 +569,7 @@ export class UiStructure {
 	private createZoneError(structureError: UiStructureError): UiZoneError {
 		return {
 			message: structureError.message,
-			marked: structureError.marked  || ((marked) => {
+			marked: structureError.marked	|| ((marked) => {
 				this.marked = marked;
 			}),
 			focus: (() => {

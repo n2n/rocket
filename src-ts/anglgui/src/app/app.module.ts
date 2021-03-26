@@ -27,7 +27,7 @@ registerLocaleData(localeDeCh);
 	providers: [
 		{
 			provide: LOCALE_ID,
-			deps: [ AppStateService ],      // some service handling global settings
+			deps: [ AppStateService ],		// some service handling global settings
 			useFactory: (appState: AppStateService) => appState.localeId // returns locale string
 		}
 	],

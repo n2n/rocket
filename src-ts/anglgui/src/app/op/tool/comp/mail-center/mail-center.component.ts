@@ -8,7 +8,7 @@ import {LogFileData} from '../../bo/log-file-data';
 selector: 'rocket-mail-center',
 templateUrl: './mail-center.component.html',
 styleUrls: ['./mail-center.component.css'],
-  animations: [
+	animations: [
 	trigger('slide', [
 		state('open', style({
 		display: 'block'
@@ -23,7 +23,7 @@ styleUrls: ['./mail-center.component.css'],
 		animate('2.35s')
 		]),
 	]),
-  ]
+	]
 })
 export class MailCenterComponent implements OnInit {
 
@@ -38,11 +38,11 @@ export class MailCenterComponent implements OnInit {
 		this.toolsService.getMailLogFileDatas().toPromise().then((logFileDatas) => {
 			this.mailLogFileDatas = logFileDatas;
 			if (this.mailLogFileDatas[0]) {
-			  this.currentLogFileData = this.mailLogFileDatas[0];
-			  this.updateMailItems();
+				this.currentLogFileData = this.mailLogFileDatas[0];
+				this.updateMailItems();
 			} else {
-			  this.currentLogFileData = null;
-			  this.mailItems = [];
+				this.currentLogFileData = null;
+				this.mailItems = [];
 			}
 		});
 	}
@@ -71,9 +71,9 @@ export class MailCenterComponent implements OnInit {
 		return this._currentPageNo;
 	}
 
-  prettifyFilename(filename: string): string {
+	prettifyFilename(filename: string): string {
 	let prettyName = filename.split('-').join(' ');
 	prettyName = prettyName.replace('.xml', '');
 	return prettyName;
-  }
+	}
 }

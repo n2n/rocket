@@ -64,7 +64,7 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 	get pickingAllowed(): boolean {
 		const max = this.model.getMax();
 
-		return max === null || this.toOne ||  this.model.getValues().length < max;
+		return max === null || this.toOne ||	this.model.getValues().length < max;
 	}
 
 	get toOne(): boolean {

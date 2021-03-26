@@ -222,8 +222,10 @@ export class SiEntry {
 		return this.createGenericEntry(genericBuildupsMap);
 	}
 
-	async paste(genericEntry: SiGenericEntry): Promise<void> {
-		this.valGenericEntry(genericEntry);
+	async paste(genericEntry: SiGenericEntry): Promise<boolean> {
+		if (!this.valGenericEntry(genericEntry)) {
+			return false;
+		}
 
 		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId)) {
 			this.selectedEntryBuildupId = genericEntry.selectedTypeId;
@@ -236,6 +238,8 @@ export class SiEntry {
 			}
 		}
 		await Promise.all(promises);
+
+		return true;
 	}
 
 	async createInputResetPoint(): Promise<SiInputResetPoint> {
@@ -259,15 +263,20 @@ export class SiEntry {
 		return genericEntry;
 	}
 
-	private valGenericEntry(genericEntry: SiGenericEntry): void {
+
+	private valGenericEntry(genericEntry: SiGenericEntry): boolean {
 		if (genericEntry.identifier.typeId !== this.identifier.typeId) {
-			throw new GenericMissmatchError('SiEntry missmatch: '
-					+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
+			return false;
+			// throw new GenericMissmatchError('SiEntry missmatch: '
+			// 		+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
 		}
 
 		if (genericEntry.style.bulky !== this.style.bulky || genericEntry.style.readOnly !== this.style.readOnly) {
-			throw new GenericMissmatchError('SiEntry missmatch.');
+			return false;
+			// throw new GenericMissmatchError('SiEntry missmatch.');
 		}
+
+		return true;
 	}
 
 	isClean(): boolean {

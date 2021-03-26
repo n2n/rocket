@@ -4,6 +4,6 @@
 	</div>
 	<input type="text" class="form-control" [(ngModel)]="value" [placeholder]="placeholder" maxlength="100" />
 	<div *ngIf="value" class="input-group-append">
-    	<button class="btn btn-primary" type="button" (click)="value = null">{{ 'reset_txt' | translate }}</button>
+		<button class="btn btn-primary" type="button" (click)="value = null">{{ 'reset_txt' | translate }}</button>
 	</div>
 </label>

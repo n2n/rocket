@@ -76,7 +76,7 @@ export class SiUiService {
 
 	// 	const obs = this.service.entryControlCall(apiUrl, callId, entry.qualifier.identifier.id, entryInputs);
 
-	// 	const subject =  new Subject<void>();
+	// 	const subject =	new Subject<void>();
 	// 	obs.subscribe((result) => {
 	// 		this.handleControlResult(result, entries, uiLayer);
 	// 		subject.next()
@@ -134,7 +134,7 @@ export class SiUiService {
 
 		const obs = this.service.controlCall(apiUrl, controlBoundry.getBoundDeclaration().style, callId, input);
 
-		const subject =  new Subject<void>();
+		const subject =	new Subject<void>();
 		obs.subscribe((result) => {
 			this.handleControlResult(result, entries, uiLayer);
 			subject.next();

@@ -47,10 +47,10 @@ export class SplitSiField extends SiFieldAdapter {
 	}
 
 	createInputResetPoint(): Promise<SiInputResetPoint> {
-    throw new IllegalSiStateError('no input');
-  }
+		throw new IllegalSiStateError('no input');
+	}
 
-  // abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
 
 	createUiStructureModel(compactMode: boolean): UiStructureModel {
 		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService,

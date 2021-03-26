@@ -3,11 +3,11 @@ import {MenuGroupLocalStorage} from '../../util/model/menu-group-local-storage';
 
 export class UiMenuGroup {
 
-  id;
+	id;
 	isOpen = true;
 
 	constructor(public label: string, public menuItems: UiMenuItem[]) {
-	  this.id = label + [].concat(...this.menuItems.map(mi => mi.id));
+		this.id = label + [].concat(...this.menuItems.map(mi => mi.id));
 	}
 
 	toggle() {

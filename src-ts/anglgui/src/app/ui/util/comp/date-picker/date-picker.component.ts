@@ -36,7 +36,7 @@ export class DatePickerComponent implements OnInit {
 	// constructor(@Inject(LOCALE_ID) private localeId: string) { }
 
 	ngOnInit(): void {
-		// this.dateStruct =  {
+		// this.dateStruct =	{
 		// 	year: this.date.getFullYear(),
 		// 	month: this.date.getMonth(),
 		// 	day: this.date.getDate()

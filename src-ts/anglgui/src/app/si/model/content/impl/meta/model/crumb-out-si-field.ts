@@ -7,7 +7,7 @@ import { CrumbOutFieldComponent } from '../comp/crumb-out-field/crumb-out-field.
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
-class SiCrumbGroupCollection  {
+class SiCrumbGroupCollection	{
 	constructor(public crumbGroups: SiCrumbGroup[]) {
 	}
 }
