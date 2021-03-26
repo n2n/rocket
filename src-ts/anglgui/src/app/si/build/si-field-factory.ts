@@ -12,14 +12,11 @@ import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
-import { SplitSiField } from '../model/content/impl/split/model/SiGui';
-import { SplitContextSiField, SplitContent, SplitStyle } from '../model/content/impl/split/model/split-context-si-field';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
-import { SiControlFactory } from './si-control-factory';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
@@ -40,6 +37,7 @@ import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
 import { SiService } from '../manage/si.service';
+import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',

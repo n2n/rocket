@@ -3,10 +3,10 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitViewMenuComponent } from '../../comp/split-view-menu/split-view-menu.component';
 import { SplitViewMenuModel } from '../../comp/split-view-menu-model';
 import { SplitOption } from '../split-option';
-import { SplitStyle } from '../split-context-si-field';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
+import { SplitStyle } from '../split-context';
 
 export class SplitViewStateContext implements SplitViewMenuModel {
 
@@ -27,7 +27,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		return subscription;
 	}
 
-	removeSubscription(subscription: SplitViewStateSubscription) {
+	removeSubscription(subscription: SplitViewStateSubscription): void {
 		const i = this.subscriptions.indexOf(subscription);
 		if (i === -1) {
 			throw new Error('Subscription does not exist.');

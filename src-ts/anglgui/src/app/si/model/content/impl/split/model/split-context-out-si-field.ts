@@ -1,15 +1,14 @@
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiEntryBuildup } from '../../../si-entry-buildup';
-import { SplitContextSiField } from './split-context-si-field';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiField } from '../../../si-field';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { Observable, of } from 'rxjs';
-import {OutSiFieldAdapter} from '../../common/model/out-si-field-adapter';
-import {SplitContentCollection} from './split-content-collection';
+import { OutSiFieldAdapter} from '../../common/model/out-si-field-adapter';
+import { SplitContentCollection } from './split-content-collection';
+import { SplitContext, SplitStyle } from './split-context';
+import { SplitOption } from './split-option';
+import { SiEntry } from '../../../si-entry';
 
-export class SplitContextOutSiField extends OutSiFieldAdapter {
-
+export class SplitContextOutSiField extends OutSiFieldAdapter implements SplitContext {
+	public style: SplitStyle = { iconClass: null, tooltip: null };
 	readonly collection = new SplitContentCollection();
 
 	isDisplayable(): boolean {
@@ -20,7 +19,15 @@ export class SplitContextOutSiField extends OutSiFieldAdapter {
 		throw new IllegalSiStateError('SiField not displayable');
 	}
 
-	copyValue(): Promise<SiGenericValue> {
-		this.collection.copy().then(c => new SiGenericValue(c));
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(await this.collection.copy());
+	}
+
+	getSplitOptions(): SplitOption[] {
+		return this.collection.getSplitContents();
+	}
+
+	getEntry$(key: string): Promise<SiEntry|null> {
+		return this.collection.getEntry$(key);
 	}
 }

@@ -11,7 +11,7 @@ import { SplitContextCopy } from './split-context-copy';
 import { Subject, Observable, of } from 'rxjs';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 import { SplitContextInputResetPoint } from './split-context-reset-point';
-import { SplitContext } from './split-context';
+import { ManagableSplitContext } from './split-context';
 
 export class SplitContentCollection {
 	protected splitContentMap = new Map<string, SplitContent>();
@@ -44,7 +44,7 @@ export class SplitContentCollection {
 		return splitContextCopy.applyToMap(this.splitContentMap);
 	}
 
-	createInputResetPoint(splitContext: SplitContext): Promise<SiInputResetPoint> {
+	createInputResetPoint(splitContext: ManagableSplitContext): Promise<SiInputResetPoint> {
 		return SplitContextInputResetPoint.create(this.splitContentMap, splitContext);
 	}
 }
@@ -112,16 +112,13 @@ export class SplitContent implements SplitOption {
 }
 
 export interface LazyDef {
-apiGetUrl: string;
-entryId: string|null;
-propIds: string[]|null;
-style: SiStyle;
-siService: SiService;
-siControlBoundy: SiControlBoundry;
+	apiGetUrl: string;
+	entryId: string|null;
+	propIds: string[]|null;
+	style: SiStyle;
+	siService: SiService;
+	siControlBoundy: SiControlBoundry;
 }
 
-export interface SplitStyle {
-iconClass: string|null;
-tooltip: string|null;
-}
+
 

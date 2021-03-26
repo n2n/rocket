@@ -6,14 +6,15 @@ import { SplitManagerModel } from '../comp/split-manager-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {InSiFieldAdapter} from '../../common/model/in-si-field-adapter';
-import {SplitContentCollection, SplitStyle} from './split-content-collection';
+import {SplitContentCollection} from './split-content-collection';
 import {SplitContextCopy} from './split-context-copy';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
-import { SplitContext } from './split-context';
+import { ManagableSplitContext, SplitStyle } from './split-context';
 import { SplitOption } from './split-option';
 
-export class SplitContextInSiField extends InSiFieldAdapter implements SplitManagerModel, SplitContext {
+export class SplitContextInSiField extends InSiFieldAdapter implements SplitManagerModel, ManagableSplitContext {
 	readonly collection = new SplitContentCollection();
+	style: SplitStyle = { iconClass: null, tooltip: null };
 	managerStyle: SplitStyle = { iconClass: null, tooltip: null };
 	private activeKeysSubject = new BehaviorSubject<string[]>([]);
 	mandatoryKeys = new Array<string>();
@@ -116,6 +117,10 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 
 	getSplitOptions(): SplitOption[] {
 		return this.collection.getSplitContents();
+	}
+	
+	getEntry$(key: string): Promise<SiEntry|null> {
+		return this.collection.getEntry$(key);
 	}
 
 	getIconClass(): string {
