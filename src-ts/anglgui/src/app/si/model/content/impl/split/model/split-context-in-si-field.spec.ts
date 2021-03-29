@@ -1,7 +1,7 @@
 import { SplitContextInSiField } from './split-context-in-si-field';
 
 
-describe('PrototypeEiFrameComponent', () => {
+describe('SplitContextInSiField', () => {
 	let splitContextInSiField: SplitContextInSiField;
 
 	beforeEach(() => {
