@@ -653,41 +653,62 @@ rocket-add-past {
  */
 
 .rocket-to-many {
-    > div {
+
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "picked picked"
+                "button pickables"
+                "message message";
+
+    > .rocket-picked {
         max-height: 19.7rem; // to be default with last item on parents bottom-line; was 20rem before
         overflow-y: auto;
         overflow-x: hidden;
+        grid-area: picked;
         &:not(:empty) {
             margin-bottom: 0.5rem;
             border: 1px solid $input-border-color;
         }
-
-        &.rocket-message-error {
-            border: none;
+        
+        // &.rocket-message-error {
+            //     border: none;
+            // }
         }
-    }
-    .rocket-selector {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        border-bottom: 1px solid #EDEBE9;
-        padding: 0 0 0 0.625rem;
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        &:hover {
-            background: $gray-100;
+        .rocket-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #EDEBE9;
+            padding: 0 0 0 0.625rem;
+            
+            &:last-child {
+                border-bottom: none;
+            }
+            
+            &:hover {
+                background: $gray-100;
+            }
+            
+            > .btn {
+                margin-left: .5rem;
+                &:not(:hover):not(:focus) {
+                    color: $body-color;
+                }
+            }
         }
 
         > .btn {
-            margin-left: .5rem;
-            &:not(:hover):not(:focus) {
-                color: $body-color;
-            }
+           grid-area: button;
+           align-self: start;
         }
-    }
+        .rocket-pickables {
+            grid-area: pickables;
+            border: 1px solid $input-border-color;
+        }
+
+        .rocket-message-error {
+            grid-area: message;
+        }
 }
 
 .rocket-to-one {
@@ -739,9 +760,9 @@ rocket-add-past {
 // =========================
 
 .rocket-pickables {
-    padding: 0.15em $input-btn-padding-x 0;
-    margin-top: 2px;
-    margin-bottom: 0;
+    padding: 0.13em 0.13em 0;
+    // padding: 0.13em $input-btn-padding-x 0;
+    position: relative;
     display: inline-flex;
     align-items: start;
     flex-wrap: wrap;

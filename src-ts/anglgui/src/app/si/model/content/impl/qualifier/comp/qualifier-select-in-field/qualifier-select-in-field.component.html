@@ -1,4 +1,4 @@
-<div>
+<div class="rocket-picked">
 	<div *ngFor="let siQualifier of model.getValues()" class="rocket-selector">
 		{{ siQualifier.idName }}
 		
@@ -9,7 +9,6 @@
 </div>
 
 <button class="btn btn-secondary flex-shrink-0" (click)="openOptions()"><i class="far fa-circle"></i> {{ 'common_select_label' | translate }}</button>
-
 <div *ngIf="pickables" class="rocket-pickables">
 	<button *ngFor="let pickable of pickables" [disabled]="!pickingAllowed" (click)="pick(pickable)" class="btn btn-secondary btn-sm">
 		{{ pickable.idName }}

@@ -6798,6 +6798,13 @@ td > .rocket-split {
   border-right: 1px solid #DAD7D3;
 }
 
+.rocket-compact .rocket-file-out-field > a > img,
+.rocket-compact .rocket-file-out-field > img {
+  margin-top: -4px;
+  margin-bottom: -4px;
+  display: block;
+}
+
 .rocket-tree-level-9 ~ [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector),
 .rocket-tree-level-9 ~ [class*="rocket-tree-level-"] > .rocket-entry-selector + td:not(.rocket-entry-selector),
 .rocket-tree-level-9 ~ [class*="rocket-tree-level-"] > .rocket-entry-selector + .rocket-entry-selector + td {
@@ -7752,19 +7759,27 @@ rocket-add-past > button::after {
 /**
  * Relation Selectors
  */
-.rocket-to-many > div {
+.rocket-to-many {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto 1fr;
+      grid-template-columns: auto 1fr;
+      grid-template-areas: "picked picked" "button pickables" "message message";
+}
+
+.rocket-to-many > .rocket-picked {
   max-height: 19.7rem;
   overflow-y: auto;
   overflow-x: hidden;
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-area: picked;
 }
 
-.rocket-to-many > div:not(:empty) {
+.rocket-to-many > .rocket-picked:not(:empty) {
   margin-bottom: 0.5rem;
   border: 1px solid #DAD7D3;
-}
-
-.rocket-to-many > div.rocket-message-error {
-  border: none;
 }
 
 .rocket-to-many .rocket-selector {
@@ -7797,6 +7812,29 @@ rocket-add-past > button::after {
   color: #373431;
 }
 
+.rocket-to-many > .btn {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: button;
+  -ms-flex-item-align: start;
+      -ms-grid-row-align: start;
+      align-self: start;
+}
+
+.rocket-to-many .rocket-pickables {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: pickables;
+  border: 1px solid #DAD7D3;
+}
+
+.rocket-to-many .rocket-message-error {
+  -ms-grid-row: 3;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-area: message;
+}
+
 .rocket-to-one {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
@@ -7822,9 +7860,8 @@ rocket-add-past > button::after {
 }
 
 .rocket-pickables {
-  padding: 0.15em 0.625rem 0;
-  margin-top: 2px;
-  margin-bottom: 0;
+  padding: 0.13em 0.13em 0;
+  position: relative;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -8011,19 +8048,6 @@ rocket-add-past > button::after {
 .btn-loading .btn-icon,
 .btn-loading .btn-label {
   opacity: 0.25;
-}
-
-.btn .spinner-grow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -1rem;
-  margin-left: -1rem;
-}
-
-.btn .spinner-grow-sm {
-  margin-top: -0.5rem;
-  margin-left: -0.5rem;
 }
 
 .rocket-btn-light {

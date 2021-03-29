@@ -325,6 +325,13 @@ td > .rocket-split {
     border-right: 1px solid $gray-400;
 }
 
+.rocket-compact .rocket-file-out-field > a > img,
+.rocket-compact .rocket-file-out-field > img {
+    margin-top: -4px;
+    margin-bottom: -4px;
+    display: block;
+}
+
 // end new from tomekk
 
 
