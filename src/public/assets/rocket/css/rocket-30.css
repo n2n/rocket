@@ -6798,6 +6798,13 @@ td > .rocket-split {
   border-right: 1px solid #DAD7D3;
 }
 
+.rocket-compact .rocket-file-out-field > a > img,
+.rocket-compact .rocket-file-out-field > img {
+  margin-top: -4px;
+  margin-bottom: -4px;
+  display: block;
+}
+
 .rocket-tree-level-9 ~ [class*="rocket-tree-level-"] > td:first-child:not(.rocket-entry-selector),
 .rocket-tree-level-9 ~ [class*="rocket-tree-level-"] > .rocket-entry-selector + td:not(.rocket-entry-selector),
 .rocket-tree-level-9 ~ [class*="rocket-tree-level-"] > .rocket-entry-selector + .rocket-entry-selector + td {
@@ -8011,19 +8018,6 @@ rocket-add-past > button::after {
 .btn-loading .btn-icon,
 .btn-loading .btn-label {
   opacity: 0.25;
-}
-
-.btn .spinner-grow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -1rem;
-  margin-left: -1rem;
-}
-
-.btn .spinner-grow-sm {
-  margin-top: -0.5rem;
-  margin-left: -0.5rem;
 }
 
 .rocket-btn-light {
