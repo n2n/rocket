@@ -5,8 +5,9 @@ import { SelectInFieldModel } from '../comp/select-in-field-model';
 import { SiField } from '../../../si-field';
 import { SelectInFieldComponent } from '../comp/select-in-field/select-in-field.component';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { Message } from 'src/app/util/i18n/message';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;
@@ -26,11 +27,11 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		this.validate();
 	}
 
-	private validate() {
-		this.resetError();
+	private validate(): void {
+		this.messagesCollection.clear();
 
 		if (this.mandatory && this.value === null) {
-			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}
 	}
 
@@ -60,34 +61,39 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		});
 	}
 
-	isGeneric() {
-		return true;
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(this.value);
 	}
 
-	copyValue(): Promise<SiGenericValue> {
-		return new SiGenericValue(this.value === null ? null : new String(this.value));
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
 		if (genericValue.isNull()) {
 			this.value = null;
-			return Promise.resolve();
+			return true;
 		}
 
-		if (genericValue.isInstanceOf(String)) {
-			this.value = genericValue.readInstance(String).valueOf();
-			return Promise.resolve();
+		if (genericValue.isString()) {
+			const value = genericValue.readString();
+			if (this.options.has(value)) {
+				this.value = value;
+				return true;
+			}
 		}
 
-		throw new GenericMissmatchError('String expected.');
+		return false;
 	}
 
-	setAssociatedFields(value: string, fields: SiField[]) {
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint(this.value, (value) => {
+			this.value = value;
+		});
+	}
+
+	setAssociatedFields(value: string, fields: SiField[]): void {
 		this.asscoiatedFieldsMap.set(value, fields);
 		fields.forEach(field => field.setDisabled(this.value !== value));
 	}
 
-	private updateAssociates() {
+	private updateAssociates(): void {
 		for (const [aKey, aFields] of this.asscoiatedFieldsMap) {
 			const disabled = aKey !== this.value;
 			aFields.forEach(field => field.setDisabled(disabled));

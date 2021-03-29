@@ -5,6 +5,7 @@ import { SiEmbeddedEntry } from '../si-embedded-entry';
 import {IllegalSiStateError} from '../../../../../../util/illegal-si-state-error';
 import { Message } from 'src/app/util/i18n/message';
 import { Observable } from 'rxjs';
+import { SiInputResetPoint } from '../../../../si-input-reset-point';
 
 
 export interface EmbeOutSource {
@@ -62,15 +63,15 @@ export class EmbeInCollection extends EmbeOutCollection {
 		super(inSource);
 	}
 
-	createEntriesResetPoints(): SiGenericEntry[] {
-		const entries: SiGenericEntry[] = [];
+	async createEntriesResetPoints(): Promise<SiInputResetPoint[]> {
+		const entries: Array<Promise<SiInputResetPoint>> = [];
 		for (const embe of this.embes) {
 			entries.push(embe.siEntry.createInputResetPoint());
 		}
-		return entries;
+		return await Promise.all(entries);
 	}
 
-	writeEmbes() {
+	writeEmbes(): void {
 		const values = new Array<SiEmbeddedEntry>();
 
 		for (const embe of this.embes) {

@@ -1,5 +1,5 @@
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry, SiEmbeddedEntryResetPointCollection } from './generic-embedded';
+import { SiGenericEmbeddedEntryCollection, SiGenericEmbeddedEntry } from './generic-embedded';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { SiService } from 'src/app/si/manage/si.service';
 import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
@@ -8,6 +8,8 @@ import { SiEmbeddedEntry } from '../si-embedded-entry';
 import { SiEntryIdentifier } from '../../../../si-entry-qualifier';
 import { SiField } from '../../../../si-field';
 import { EmbeddedEntryObtainer } from '../embedded-entry-obtainer';
+import { CallbackInputResetPoint } from '../../../common/model/callback-si-input-reset-point';
+import { SiInputResetPoint } from '../../../../si-input-reset-point';
 
 export class GenericEmbeddedEntryManager {
 
@@ -19,12 +21,12 @@ export class GenericEmbeddedEntryManager {
 		return this.values.find(embeddedEntry => embeddedEntry.entry.identifier.equals(entryIdentifier)) || null;
 	}
 
-	copyValue(): Promise<SiGenericValue> {
+	async copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new SiGenericEmbeddedEntryCollection(
-				this.values.map(embeddedEntry => embeddedEntry.copy())));
+				await Promise.all(this.values.map(embeddedEntry => embeddedEntry.copy()))));
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
 		const newEmbeInds = new Array<EmbeInd>();
 
 		const collection = genericValue.readInstance(SiGenericEmbeddedEntryCollection);
@@ -51,8 +53,8 @@ export class GenericEmbeddedEntryManager {
 				});
 	}
 
-	private handlePaste(embeInds: Array<EmbeInd>, newEmbeddedEntries: SiEmbeddedEntry[]): Promise<void> {
-		const pastePromises: Array<Promise<void>> = [];
+	private async handlePaste(embeInds: Array<EmbeInd>, newEmbeddedEntries: SiEmbeddedEntry[]): Promise<boolean> {
+		const pastePromises: Array<Promise<boolean>> = [];
 
 		const values = new Array<SiEmbeddedEntry>();
 		for (const inf of embeInds) {
@@ -66,29 +68,41 @@ export class GenericEmbeddedEntryManager {
 		}
 		this.values = values;
 
-		return Promise.all(pastePromises).then(() => { return; });
+		return await Promise.all(pastePromises).then(vs => -1 !== vs.indexOf(true));
 	}
 
-	createResetPoint(): SiGenericValue {
-		return new SiGenericValue(new SiEmbeddedEntryResetPointCollection(this.origSiField,
-				this.values.map(embeddedEntry => embeddedEntry.createResetPoint())));
+	async createResetPoint(): Promise<SiInputResetPoint> {
+		const valueDefs = await Promise.all(this.values
+				.map(async embeddedEntry => ({ embeddedEntry, resetPoint: await embeddedEntry.createResetPoint() })));
+
+		return new CallbackInputResetPoint(valueDefs, async (vds) => {
+			const promises = new Array<Promise<void>>();
+
+			this.values = [];
+			for (const vd of vds) {
+				this.values.push(vd.embeddedEntry);
+				promises.push(vd.resetPoint.rollbackTo());
+			}
+
+			await Promise.all(promises);
+		});
 	}
 
-	resetToPoint(genericValue: SiGenericValue): void {
-		const collection = genericValue.readInstance(SiEmbeddedEntryResetPointCollection);
-		if (collection.origSiField !== this.origSiField) {
-			throw new GenericMissmatchError('Reset point belongs to diffrent field.');
-		}
+	// resetToPoint(genericValue: SiGenericValue): void {
+	// 	const collection = genericValue.readInstance(SiEmbeddedEntryResetPointCollection);
+	// 	if (collection.origSiField !== this.origSiField) {
+	// 		throw new GenericMissmatchError('Reset point belongs to diffrent field.');
+	// 	}
 
-		const values = new Array<SiEmbeddedEntry>();
-		for (const resetPoint of collection.genercEntryResetPoints) {
-			this.valEntryIdentifier(resetPoint.origSiEmbeddedEntry.entry.identifier);
+	// 	const values = new Array<SiEmbeddedEntry>();
+	// 	for (const resetPoint of collection.genercEntryResetPoints) {
+	// 		this.valEntryIdentifier(resetPoint.origSiEmbeddedEntry.entry.identifier);
 
-			resetPoint.origSiEmbeddedEntry.resetToPoint(resetPoint.genericEmbeddedEntry);
-			values.push(resetPoint.origSiEmbeddedEntry);
-		}
-		this.values = values;
-	}
+	// 		resetPoint.origSiEmbeddedEntry.resetToPoint(resetPoint.genericEmbeddedEntry);
+	// 		values.push(resetPoint.origSiEmbeddedEntry);
+	// 	}
+	// 	this.values = values;
+	// }
 
 	private valEntryIdentifier(entryIdentifier: SiEntryIdentifier) {
 		if (!this.siFrame.typeContext.containsTypeId(entryIdentifier.typeId)) {

@@ -12,6 +12,7 @@ import { EmbeddedEntriesOutUiStructureModel } from './embedded-entries-out-ui-st
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOutSource {
 
@@ -57,16 +58,8 @@ export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOut
 		return this.createGenericManager().copyValue();
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		return this.createGenericManager().pasteValue(genericValue);
-	}
-
-	createResetPoint(): SiGenericValue {
-		return this.createGenericManager().createResetPoint();
-	}
-
-	resetToPoint(genericValue: SiGenericValue): void {
-		return this.createGenericManager().resetToPoint(genericValue);
+	createInputResetPoint(): Promise<SiInputResetPoint> {
+		throw new Error('no input');
 	}
 }
 

@@ -9,6 +9,8 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 class SiEntryQualifierCollection {
 	constructor(public siEntryQualifiers: SiEntryQualifier[]) {
@@ -16,7 +18,6 @@ class SiEntryQualifierCollection {
 }
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
-
 	public min = 0;
 	public max: number|null = null;
 	public pickables: SiEntryQualifier[]|null = null;
@@ -103,4 +104,11 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		this.values = values;
 		return Promise.resolve(true);
 	}
+
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint([...this.values], (values) => {
+			this.values = [...values];
+		});
+	}
+
 }

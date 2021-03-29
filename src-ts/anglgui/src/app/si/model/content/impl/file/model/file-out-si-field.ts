@@ -5,7 +5,6 @@ import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
 import { FileFieldModel } from '../comp/file-field-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 
 export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel {
 
@@ -23,11 +22,7 @@ export class FileOutSiField extends OutSiFieldAdapter implements FileFieldModel 
 		});
 	}
 
-	copyValue(): Promise<SiGenericValue> {
+	async copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(this.value ? this.value.copy() : null);
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		throw new IllegalSiStateError('Field does not support paste.');
 	}
 }

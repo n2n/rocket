@@ -5,7 +5,8 @@ import { TogglerInFieldComponent } from './comp/toggler-in-field/toggler-in-fiel
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { TogglerInModel } from './comp/toggler-in-model';
 import { SiGenericValue } from '../../../generic/si-generic-value';
-import { GenericMissmatchError } from '../../../generic/generic-missmatch-error';
+import { SiInputResetPoint } from '../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../common/model/callback-si-input-reset-point';
 
 export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel {
 
@@ -68,16 +69,20 @@ export class BooleanInSiField extends InSiFieldAdapter implements TogglerInModel
 		});
 	}
 
-	copyValue(): Promise<SiGenericValue> {
-		return new SiGenericValue(new Boolean(this.value));
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(this.value);
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isInstanceOf(Boolean)) {
-			this.setValue(genericValue.readInstance(Boolean).valueOf());
-			return Promise.resolve();
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (genericValue.isBoolean()) {
+			this.setValue(genericValue.readBoolean());
+			return true;
 		}
 
-		throw new GenericMissmatchError('Boolean expected.');
+		return false;
+	}
+
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint(this.value, (value) => { this.value = value; });
 	}
 }

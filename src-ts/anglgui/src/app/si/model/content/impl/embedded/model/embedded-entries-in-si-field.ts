@@ -13,6 +13,7 @@ import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.servi
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 import { EmbeInSource, EmbeInCollection } from './embe/embe-collection';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
@@ -90,16 +91,12 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		return this.createGenericManager().copyValue();
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	pasteValue(genericValue: SiGenericValue): Promise<boolean> {
 		return this.createGenericManager().pasteValue(genericValue);
 	}
 
-	createResetPoint(): SiGenericValue {
+	createInputResetPoint(): Promise<SiInputResetPoint> {
 		return this.createGenericManager().createResetPoint();
-	}
-
-	resetToPoint(genericValue: SiGenericValue): void {
-		return this.createGenericManager().resetToPoint(genericValue);
 	}
 }
 

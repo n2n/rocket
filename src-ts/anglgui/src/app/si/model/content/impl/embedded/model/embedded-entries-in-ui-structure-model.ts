@@ -33,6 +33,7 @@ import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
 import { UiStructureModelMode, UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
 	private embeInUiZoneManager: EmbeInUiZoneManager|null = null;
@@ -361,15 +362,15 @@ class EmbeInUiZoneManager {
 	// 	// return model;
 	// }
 
-	open(embe: Embe): Promise<boolean> {
+	async open(embe: Embe): Promise<boolean> {
 		if (this.popupUiLayer) {
 			return;
 		}
 
-		let bakEntry = embe.siEmbeddedEntry.entry.createInputResetPoint();
-
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
+
+		let bakEntry = await embe.siEmbeddedEntry.entry.createInputResetPoint();
 
 		zone.title = this.popupTitle;
 		zone.breadcrumbs = [];
@@ -382,7 +383,7 @@ class EmbeInUiZoneManager {
 				this.popupUiLayer = null;
 
 				if (bakEntry) {
-					embe.siEmbeddedEntry.entry.resetToPoint(bakEntry);
+					bakEntry.rollbackTo();
 					resolve(false);
 				} else {
 					this.obtainer.val([embe.siEmbeddedEntry]);
@@ -394,17 +395,18 @@ class EmbeInUiZoneManager {
 		return promise;
 	}
 
-	openAll(): Promise<boolean> {
+	async openAll(): Promise<boolean> {
 		if (this.popupUiLayer) {
 			return;
 		}
 
 		let bakEmbeddedEntries: SiEmbeddedEntry[]|null = [...this.embeCol.embes.map(embe => embe.siEmbeddedEntry)];
-		const bakEntries = this.embeCol.createEntriesResetPoints();
-
+		
 		this.popupUiLayer = this.getUiContainer().createLayer();
-
+		
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
+		
+		const bakEntries = await this.embeCol.createEntriesResetPoints();
 
 		const popupUiStructureModel = new EmbeddedEntriesInUiStructureModel(this.popupTitle, this.obtainer,
 				this.siFrame, this.embeCol,
@@ -460,15 +462,19 @@ class EmbeInUiZoneManager {
 		];
 	}
 
-	private resetEmbeCol(bakEmbeddedEntries: SiEmbeddedEntry[], bakEntries: SiGenericEntry[]) {
+	private async resetEmbeCol(bakEmbeddedEntries: SiEmbeddedEntry[], bakEntries: SiInputResetPoint[]): Promise<void> {
+		const promises = new Array<Promise<void>>();
+
 		this.embeCol.removeEmbes();
 
 		bakEmbeddedEntries.forEach((emeddedEntry, i) => {
-			emeddedEntry.entry.resetToPoint(bakEntries[i]);
+			promises.push(bakEntries[i].rollbackTo());
 
 			this.embeCol.createEmbe(emeddedEntry);
 		});
 
 		this.embeCol.writeEmbes();
+
+		await Promise.all(promises);
 	}
 }

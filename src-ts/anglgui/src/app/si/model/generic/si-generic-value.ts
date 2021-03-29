@@ -2,7 +2,7 @@ import { GenericMissmatchError } from './generic-missmatch-error';
 
 export class SiGenericValue {
 
-	constructor(public value: object|string|number|null) {
+	constructor(public value: object|string|number|boolean|null) {
 	}
 
 	isNull(): boolean {
@@ -19,6 +19,10 @@ export class SiGenericValue {
 
 	isNumber(): boolean {
 		return typeof this.value === 'number';
+	}
+
+	isBoolean(): boolean {
+		return typeof this.value === 'boolean';
 	}
 
 	isStringRepresentable(): boolean {
@@ -62,6 +66,22 @@ export class SiGenericValue {
 		}
 
 		return this.readNumber();
+	}
+
+	readBoolean(): boolean {
+		if (this.isBoolean()) {
+			return this.value as boolean;
+		}
+
+		throw new GenericMissmatchError('Value is not a boolean');
+	}
+
+	readBooleanOrNull(): boolean|null {
+		if (this.isNull()) {
+			return null;
+		}
+
+		return this.readBoolean();
 	}
 
 	readInstance<T>(type: new(...args: any[]) => T): T {

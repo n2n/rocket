@@ -4,6 +4,7 @@ import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic/generic-embedded';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export class SiEmbeddedEntry {
 
@@ -26,30 +27,35 @@ export class SiEmbeddedEntry {
 		this.comp.entry = entry;
 	}
 
-	copy(): SiGenericEmbeddedEntry {
-		return new SiGenericEmbeddedEntry(this.comp.entry.copy(),
-				(this.summaryComp ? this.summaryComp.entry.copy() : null));
+	async copy(): Promise<SiGenericEmbeddedEntry> {
+		return new SiGenericEmbeddedEntry(await this.comp.entry.copy(),
+				(this.summaryComp ? await this.summaryComp.entry.copy() : null));
 	}
 
-	paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<void> {
+	async paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<boolean> {
 		const promise = this.comp.entry.paste(genericEmbeddedEntry.genericEntry);
-
-		if (this.summaryComp && genericEmbeddedEntry.summaryGenericEntry) {
-			return Promise.all([promise, this.summaryComp.entry.paste(genericEmbeddedEntry.summaryGenericEntry)])
-					.then(() => {});
+		if (!await promise) {
+			return false;
 		}
 
-		return promise;
+		// if (this.summaryComp && genericEmbeddedEntry.summaryGenericEntry) { {
+
+		// }
+
+		// if (this.summaryComp && genericEmbeddedEntry.summaryGenericEntry) {
+		// 	return await Promise.all([promise, this.summaryComp.entry.paste(genericEmbeddedEntry.summaryGenericEntry)])
+		// 			.then((values) => { return -1 === values.indexOf(true)});
+		// }
+
+		// todo
+		// validate and refresh summaryComp 
+
+		return await promise;
 	}
 
-	createResetPoint(): SiEmbeddedEntryResetPoint {
-		const genericEmbeddedEntry = new SiGenericEmbeddedEntry(this.comp.entry.createInputResetPoint(),
-					(this.summaryComp ? this.summaryComp.entry.createInputResetPoint() : null));
-
-		return {
-			origSiEmbeddedEntry: this,
-			genericEmbeddedEntry
-		};
+	async createResetPoint(): Promise<SiInputResetPoint> {
+		// @todo replace summaryEntry
+		return this.comp.entry.createInputResetPoint();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
@@ -71,12 +77,5 @@ export class SiEmbeddedEntry {
 		return this.entry.containsTypeId(typeId);
 	}
 
-	resetToPoint(genericEmbeddedEntry: SiGenericEmbeddedEntry): void {
-		this.comp.entry.resetToPoint(genericEmbeddedEntry.genericEntry);
-
-		if (this.summaryComp && genericEmbeddedEntry.summaryGenericEntry) {
-			this.summaryComp.entry.resetToPoint(genericEmbeddedEntry.summaryGenericEntry);
-		}
-	}
 }
 

@@ -38,6 +38,8 @@ import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
 import { SiService } from '../manage/si.service';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
+import { SplitContext, SplitStyle } from '../model/content/impl/split/model/split-context';
+import { SplitContent, SplitContentCollection } from '../model/content/impl/split/model/split-content-collection';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -211,7 +213,7 @@ export class SiFieldFactory {
 			splitContextInSiField.activeKeys = dataExtr.reqStringArray('activeKeys');
 			splitContextInSiField.mandatoryKeys = dataExtr.reqStringArray('mandatoryKeys');
 			splitContextInSiField.min = dataExtr.reqNumber('min');
-			this.compileSplitContents(splitContextInSiField,
+			this.compileSplitContents(splitContextInSiField.collection,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
@@ -221,7 +223,7 @@ export class SiFieldFactory {
 		case SiFieldType.SPLIT_CONTEXT_OUT:
 			const splitContextOutSiField = new SplitContextOutSiField();
 			splitContextOutSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
-			this.compileSplitContents(splitContextOutSiField,
+			this.compileSplitContents(splitContextOutSiField.collection,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);
@@ -290,7 +292,7 @@ export class SiFieldFactory {
 		};
 	}
 
-	private compileSplitContents(splitContextSiField: SplitContextSiField, declaration: SiDeclaration, dataMap: Map<string, any>): void {
+	private compileSplitContents(splitContextSiField: SplitContentCollection, declaration: SiDeclaration, dataMap: Map<string, any>): void {
 		for (const [key, data] of dataMap) {
 			const extr = new Extractor(data);
 
@@ -322,14 +324,14 @@ export class SiFieldFactory {
 		}
 	}
 
-	private completeSplitContextSiField(splitContextSiField: SplitContextSiField, dependantPropIds: Array<string>,
+	private completeSplitContextSiField(splitContext: SplitContext, dependantPropIds: Array<string>,
 			fieldMap$: Observable<Map<string, SiField>>): void {
 		fieldMap$.subscribe((fieldMap) => {
 
 			for (const dependantPropId of dependantPropIds) {
 				const siField = fieldMap.get(dependantPropId);
 				if (siField instanceof SplitSiField) {
-					siField.splitContext = splitContextSiField;
+					siField.splitContext = splitContext;
 				}
 			}
 		});

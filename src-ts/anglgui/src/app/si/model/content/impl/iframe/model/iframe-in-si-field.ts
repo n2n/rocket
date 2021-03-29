@@ -4,7 +4,8 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import {IframeInComponent} from '../comp/iframe-in/iframe-in.component';
 import {IframeInModel} from '../comp/iframe-in-model';
-import {GenericMissmatchError} from '../../../../generic/generic-missmatch-error';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 
 export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
@@ -31,17 +32,17 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 		return this.formDataToObject();
 	}
 
-	copyValue(): Promise<SiGenericValue> {
+	async copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(new Map(this.formData));
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isInstanceOf(Map)) {
-			this.formData = new Map<string, string>(genericValue.readInstance(Map) as Map<string, string>);
-			return Promise.resolve();
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (!genericValue.isInstanceOf(FormDataCopy)) {
+			return false;
 		}
 
-		throw new GenericMissmatchError('Map expected.');
+		this.formData = new Map<string, string>(genericValue.readInstance(FormDataCopy).formData);
+		return true;
 	}
 
 	getUrl(): string|null {
@@ -58,5 +59,16 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 
 	setFormData(formData: Map<string, string>): void {
 		this.formData = formData;
+	}
+
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint(new Map(this.formData), (formData) => {
+			this.formData = new Map(formData);
+		});
+	}
+}
+
+class FormDataCopy {
+	constructor(public formData: Map<string, string>) {
 	}
 }
