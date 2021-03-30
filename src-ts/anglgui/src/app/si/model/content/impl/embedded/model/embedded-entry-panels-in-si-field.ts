@@ -23,12 +23,14 @@ import { EmbeInCollection } from './embe/embe-collection';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { map } from 'rxjs/operators';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 class GenericSiPanelValueCollection {
 	public map = new Map<string, SiGenericValue>();
 }
 
-export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
+export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter	{
 
 	constructor(public siService: SiService, public siModState: SiModStateService, public frame: SiFrame,
 			public translationService: TranslationService, public panels: SiPanel[]) {
@@ -84,19 +86,23 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 				panel.allowedTypeIds);
 	}
 
-	copyValue(): SiGenericValue {
+	async copyValue(): Promise<SiGenericValue> {
 		const col = new GenericSiPanelValueCollection();
 
+		const promises = new Array<Promise<void>>();
 		for (const panel of this.panels) {
-			col.map.set(panel.name, this.createGenericManager(panel).copyValue());
+			promises.push(this.createGenericManager(panel).copyValue().then(genericValue => {
+				col.map.set(panel.name, genericValue);
+			}));
 		}
+		await Promise.all(promises);
 
 		return new SiGenericValue(col);
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	pasteValue(genericValue: SiGenericValue): Promise<boolean> {
 		const col = genericValue.readInstance(GenericSiPanelValueCollection);
-		const promises = new Array<Promise<void>>();
+		const promises = new Array<Promise<boolean>>();
 
 		for (const panel of this.panels) {
 			if (!col.map.has(panel.name)) {
@@ -106,30 +112,19 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter  {
 			promises.push(this.createGenericManager(panel).pasteValue(col.map.get(panel.name)));
 		}
 
-		return Promise.all(promises).then(() => { return; });
-
+		return Promise.all(promises).then(results => -1 !== results.indexOf(true));
 	}
 
-	createResetPoint(): SiGenericValue {
-		const col = new GenericSiPanelValueCollection();
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		const panelResetPoints = await Promise.all(this.panels.map(panel => this.createGenericManager(panel).createResetPoint()));
 
-		for (const panel of this.panels) {
-			col.map.set(panel.name, this.createGenericManager(panel).createResetPoint());
-		}
-
-		return new SiGenericValue(col);
-	}
-
-	resetToPoint(genericValue: SiGenericValue): void {
-		const col = genericValue.readInstance(GenericSiPanelValueCollection);
-
-		for (const panel of this.panels) {
-			if (!col.map.has(panel.name)) {
-				throw new GenericMissmatchError('ResetPoint contains no data for panel: ' + panel.name);
+		return new CallbackInputResetPoint(panelResetPoints, async (prps) => {
+			const promises = new Array<Promise<void>>();
+			for (const prp of prps) {
+				promises.push(prp.rollbackTo());
 			}
-
-			this.createGenericManager(panel).resetToPoint(col.map.get(panel.name));
-		}
+			await Promise.all(promises);
+		});
 	}
 }
 

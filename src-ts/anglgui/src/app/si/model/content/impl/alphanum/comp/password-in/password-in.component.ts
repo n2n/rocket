@@ -2,8 +2,8 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { PasswordInModel } from '../password-in-model';
 
 @Component({
-  selector: 'rocket-password-in',
-  templateUrl: './password-in.component.html'
+	selector: 'rocket-password-in',
+	templateUrl: './password-in.component.html'
 })
 export class PasswordInComponent implements OnInit {
 	model: PasswordInModel;

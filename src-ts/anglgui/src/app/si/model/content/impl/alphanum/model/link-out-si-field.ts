@@ -3,16 +3,13 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { OutSiFieldAdapter } from '../../common/model/out-si-field-adapter';
 import { LinkOutModel } from '../comp/link-field-model';
 import { LinkOutFieldComponent } from '../comp/link-out-field/link-out-field.component';
-import { SiField } from '../../../si-field';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiNavPoint } from 'src/app/si/model/control/si-nav-point';
 import { Injector } from '@angular/core';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 
 export class LinkOutSiField extends OutSiFieldAdapter {
-	
 	public lytebox = false;
 
 	constructor(public navPoint: SiNavPoint, public label: string, private injector: Injector) {
@@ -54,21 +51,21 @@ export class LinkOutSiField extends OutSiFieldAdapter {
 		return this.label;
 	}
 
-	copy(): SiField {
-		return new LinkOutSiField(this.navPoint, this.label, this.injector);
+	copyValue(): Promise<SiGenericValue> {
+		return Promise.resolve(new SiGenericValue(this.navPoint?.copy() || null));
 	}
 
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.navPoint ? this.navPoint.copy() : null);
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	pasteValue(genericValue: SiGenericValue): Promise<boolean> {
 		if (genericValue.isNull()) {
 			this.navPoint = null;
-		} else {
-			this.navPoint = genericValue.readInstance(SiNavPoint).copy();
+			return Promise.resolve(true);
 		}
 
-		return Promise.resolve();
+		if (genericValue.isInstanceOf(SiNavPoint)) {
+			this.navPoint = genericValue.readInstance(SiNavPoint).copy();
+			return Promise.resolve(true);
+		}
+
+		return Promise.resolve(false);
 	}
 }

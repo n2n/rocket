@@ -8,6 +8,8 @@ import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
 import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { SiGenericValue } from '../generic/si-generic-value';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
+import { SiInputResetPoint } from './si-input-reset-point';
+import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
 
 export class SiEntryBuildup {
 	public messages: Message[] = [];
@@ -66,53 +68,51 @@ export class SiEntryBuildup {
 	// 	return copy;
 	// }
 
-	copy(): SiGenericEntryBuildup {
+	async copy(): Promise<SiGenericEntryBuildup> {
 		const fieldValuesMap = new Map<string, SiGenericValue>();
+
+		const promises: Promise<void>[] = [];
 		for (const [fieldId, field] of this.fieldMap$.getValue()) {
-			fieldValuesMap.set(fieldId, field.copyValue());
+			if (!field.copyValue) {
+				continue;
+			}
+
+			promises.push(field.copyValue().then((genericValue) => {
+				fieldValuesMap.set(fieldId, genericValue);
+			}));
 		}
 
+		await Promise.all(promises);
 		return new SiGenericEntryBuildup(this.entryQualifier, fieldValuesMap);
 	}
 
-	paste(genericEntryBuildup: SiGenericEntryBuildup): Promise<void> {
+	paste(genericEntryBuildup: SiGenericEntryBuildup): Promise<boolean> {
 		this.valGenericEntryBuildup(genericEntryBuildup);
 
-		const promises = new Array<Promise<void>>();
+		const promises = new Array<Promise<boolean>>();
 		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
-			if (this.containsPropId(fieldId)) {
-				try {
-					promises.push(this.getFieldById(fieldId).pasteValue(genericValue));
-				} catch (e) {
-					if ((e instanceof GenericMissmatchError)) {
-						throw e;
-					}
-				}
+			if (!this.containsPropId(fieldId)) {
+				continue;
 			}
-		}
-		return Promise.all(promises).then(() => {});
-	}
 
-	createResetPoint(): SiGenericEntryBuildup {
-		const fieldValuesMap = new Map<string, SiGenericValue>();
-		for (const [fieldId, field] of this.fieldMap$.getValue()) {
-			fieldValuesMap.set(fieldId, field.createResetPoint());
+			promises.push(this.getFieldById(fieldId).pasteValue(genericValue));
 		}
 
-		return new SiGenericEntryBuildup(this.entryQualifier, fieldValuesMap);
+		return Promise.all(promises).then((results) => !!results.indexOf(true));
 	}
 
-	resetToPoint(genericEntryBuildup: SiGenericEntryBuildup): void {
-		this.valGenericEntryBuildup(genericEntryBuildup);
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		const rps = await Promise.all(Array
+				.from(this.fieldMap$.getValue().values())
+				.filter(field => field.hasInput())
+				.map(field => field.createInputResetPoint()));
 
-		for (const [fieldId, genericValue] of genericEntryBuildup.fieldValuesMap) {
-			if (this.containsPropId(fieldId)) {
-				this.getFieldById(fieldId).resetToPoint(genericValue);
-			}
-		}
+		return new CallbackInputResetPoint(rps, (resetPoints) => {
+			resetPoints.forEach(rp => rp.rollbackTo());
+		});
 	}
 
-	private valGenericEntryBuildup(genericEntryBuildup: SiGenericEntryBuildup) {
+	private valGenericEntryBuildup(genericEntryBuildup: SiGenericEntryBuildup): void {
 		if (!genericEntryBuildup.entryQualifier.equals(this.entryQualifier)) {
 			throw new GenericMissmatchError('SiEntryBuildup missmatch: '
 					+ genericEntryBuildup.entryQualifier.toString() + ' != ' + this.entryQualifier.toString());

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { SplitViewStateContext } from './split-view-state-context';
 import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { SplitOption } from '../split-option';
-import { SplitStyle } from '../split-context-si-field';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
+import { SplitStyle } from '../split-context';
 
 @Injectable({
 	providedIn: 'root'
@@ -39,7 +39,7 @@ export class SplitViewStateService {
 		return context;
 	}
 
-	private removeContext(context: SplitViewStateContext) {
+	private removeContext(context: SplitViewStateContext): void {
 		const i = this.contexts.indexOf(context);
 		if (i === -1) {
 			throw new Error('Unknown SplitViewStateContext.');

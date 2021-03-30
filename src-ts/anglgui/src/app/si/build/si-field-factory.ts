@@ -12,14 +12,11 @@ import { SiProp } from '../model/meta/si-prop';
 import { Subject, Observable } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
-import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
-import { SplitContextSiField, SplitContent, SplitStyle } from '../model/content/impl/split/model/split-context-si-field';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
-import { SiControlFactory } from './si-control-factory';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { EmbeddedEntriesOutSiField } from '../model/content/impl/embedded/model/embedded-entries-out-si-field';
 import { EmbeddedEntryPanelsOutSiField } from '../model/content/impl/embedded/model/embedded-entry-panels-out-si-field';
@@ -40,6 +37,9 @@ import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
 import { SiService } from '../manage/si.service';
+import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
+import { SplitContext, SplitStyle } from '../model/content/impl/split/model/split-context';
+import { SplitContent, SplitContentCollection } from '../model/content/impl/split/model/split-content-collection';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -213,7 +213,7 @@ export class SiFieldFactory {
 			splitContextInSiField.activeKeys = dataExtr.reqStringArray('activeKeys');
 			splitContextInSiField.mandatoryKeys = dataExtr.reqStringArray('mandatoryKeys');
 			splitContextInSiField.min = dataExtr.reqNumber('min');
-			this.compileSplitContents(splitContextInSiField,
+			this.compileSplitContents(splitContextInSiField.collection,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
@@ -223,7 +223,7 @@ export class SiFieldFactory {
 		case SiFieldType.SPLIT_CONTEXT_OUT:
 			const splitContextOutSiField = new SplitContextOutSiField();
 			splitContextOutSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
-			this.compileSplitContents(splitContextOutSiField,
+			this.compileSplitContents(splitContextOutSiField.collection,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);
@@ -292,7 +292,7 @@ export class SiFieldFactory {
 		};
 	}
 
-	private compileSplitContents(splitContextSiField: SplitContextSiField, declaration: SiDeclaration, dataMap: Map<string, any>): void {
+	private compileSplitContents(splitContextSiField: SplitContentCollection, declaration: SiDeclaration, dataMap: Map<string, any>): void {
 		for (const [key, data] of dataMap) {
 			const extr = new Extractor(data);
 
@@ -324,14 +324,14 @@ export class SiFieldFactory {
 		}
 	}
 
-	private completeSplitContextSiField(splitContextSiField: SplitContextSiField, dependantPropIds: Array<string>,
+	private completeSplitContextSiField(splitContext: SplitContext, dependantPropIds: Array<string>,
 			fieldMap$: Observable<Map<string, SiField>>): void {
 		fieldMap$.subscribe((fieldMap) => {
 
 			for (const dependantPropId of dependantPropIds) {
 				const siField = fieldMap.get(dependantPropId);
 				if (siField instanceof SplitSiField) {
-					siField.splitContext = splitContextSiField;
+					siField.splitContext = splitContext;
 				}
 			}
 		});

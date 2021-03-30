@@ -8,8 +8,9 @@ import { QualifierSelectInFieldComponent } from '../comp/qualifier-select-in-fie
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 class SiEntryQualifierCollection {
 	constructor(public siEntryQualifiers: SiEntryQualifier[]) {
@@ -17,7 +18,6 @@ class SiEntryQualifierCollection {
 }
 
 export class QualifierSelectInSiField extends InSiFieldAdapter implements QualifierSelectInModel {
-
 	public min = 0;
 	public max: number|null = null;
 	public pickables: SiEntryQualifier[]|null = null;
@@ -39,7 +39,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return this.values;
 	}
 
-	setValues(values: SiEntryQualifier[]) {
+	setValues(values: SiEntryQualifier[]): void {
 		this.values = values;
 		this.validate();
 	}
@@ -56,20 +56,20 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		return this.pickables;
 	}
 
-	private validate() {
-		this.resetError();
+	private validate(): void {
+		this.messagesCollection.clear();
 
 		if (this.values.length < this.min) {
 			if (this.max === 1 || this.min === 1) {
-				this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+				this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 			} else {
-				this.addMessage(Message.createCode('min_elements_err',
+				this.messagesCollection.push(Message.createCode('min_elements_err',
 						new Map([['{min}', this.min.toString()], ['{field}', this.label]])));
 			}
 		}
 
 		if (this.max !== null && this.values.length > this.max) {
-			this.addMessage(Message.createCode('max_elements_err',
+			this.messagesCollection.push(Message.createCode('max_elements_err',
 						new Map([['{max}', this.max.toString()], ['{field}', this.label]])));
 		}
 	}
@@ -81,24 +81,34 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 		});
 	}
 
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(new SiEntryQualifierCollection(this.values));
+	copyValue(): Promise<SiGenericValue> {
+		return Promise.resolve(new SiGenericValue(new SiEntryQualifierCollection(this.values)));
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	pasteValue(genericValue: SiGenericValue): Promise<boolean> {
 		const siEntryQualifiers = genericValue.readInstance(SiEntryQualifierCollection).siEntryQualifiers;
 
-		this.values = [];
+		const values = [];
 		for (const siEntryQualifier of siEntryQualifiers) {
 			if (this.max !== null && this.values.length >= this.max) {
 				break;
 			}
 
-			GenericMissmatchError.assertTrue(this.frame.typeContext.containsTypeId(siEntryQualifier.identifier.typeId),
-					'TypeCategory does not match.');
-			this.values.push(siEntryQualifier);
+			if (!this.frame.typeContext.containsTypeId(siEntryQualifier.identifier.typeId)) {
+				return Promise.resolve(false);
+			}
+
+			values.push(siEntryQualifier);
 		}
 
-		return Promise.resolve();
+		this.values = values;
+		return Promise.resolve(true);
 	}
+
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint([...this.values], (values) => {
+			this.values = [...values];
+		});
+	}
+
 }

@@ -17,7 +17,7 @@ import {MenuGroupLocalStorage} from './ui/util/model/menu-group-local-storage';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	animations: [
-	    trigger('openClose', [
+		trigger('openClose', [
 			state('true', style({opacity: 1, height: '*'})),
 			state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
 			transition('false <=> true', animate('500ms'))

@@ -2,8 +2,8 @@ import { Component, OnInit, Inject, LOCALE_ID, ChangeDetectorRef } from '@angula
 import { InputInFieldModel } from '../input-in-field-model';
 
 @Component({
-  selector: 'rocket-number-in',
-  templateUrl: './number-in.component.html'
+	selector: 'rocket-number-in',
+	templateUrl: './number-in.component.html'
 })
 export class NumberInComponent implements OnInit {
 	model: InputInFieldModel;

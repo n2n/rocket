@@ -2,10 +2,10 @@ import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
-import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { PasswordInModel } from '../comp/password-in-model';
 import { PasswordInComponent } from '../comp/password-in/password-in.component';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 export class PasswordInSiField extends InSiFieldAdapter implements PasswordInModel {
 	public mandatory = false;
@@ -21,41 +21,21 @@ export class PasswordInSiField extends InSiFieldAdapter implements PasswordInMod
 	}
 
 	private validate(): void {
-		this.resetError();
+		this.messagesCollection.clear();
 
 		if (this.mandatory && !this.passwordSet && this.rawPassword === null) {
-			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}
 
 		if (this.minlength && this.rawPassword && this.rawPassword.length < this.minlength) {
-			this.addMessage(Message.createCode('minlength_err', new Map([['{field}', this.label], ['{minlength}', this.minlength.toString()]])));
+			this.messagesCollection.push(Message.createCode('minlength_err',
+					new Map([['{field}', this.label], ['{minlength}', this.minlength.toString()]])));
 		}
 
 		if (this.maxlength && this.rawPassword && this.rawPassword.length > this.maxlength) {
-			this.addMessage(Message.createCode('maxlength_err', new Map([['{field}', this.label], ['{maxlength}', this.maxlength.toString()]])));
+			this.messagesCollection.push(Message.createCode('maxlength_err',
+					new Map([['{field}', this.label], ['{maxlength}', this.maxlength.toString()]])));
 		}
-	}
-
-	isGeneric(): boolean {
-		return true;
-	}
-
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.rawPassword === null ? null : new String(this.rawPassword));
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isNull()) {
-			this.rawPassword = null;
-			return Promise.resolve();
-		}
-
-		if (genericValue.isInstanceOf(String)) {
-			this.rawPassword = genericValue.readInstance(String).valueOf();
-			return Promise.resolve();
-		}
-
-		throw new GenericMissmatchError('String expected.');
 	}
 
 	getMaxlength(): number|null {
@@ -93,16 +73,9 @@ export class PasswordInSiField extends InSiFieldAdapter implements PasswordInMod
 		return { rawPassword: this.rawPassword };
 	}
 
-// 	initComponent(viewContainerRef: ViewContainerRef,
-// 			componentFactoryResolver: ComponentFactoryResolver,
-// 			commanderService: SiUiService): ComponentRef<any> {
-// 		const componentFactory = componentFactoryResolver.resolveComponentFactory(InputInFieldComponent);
-//
-// 		const componentRef = viewContainerRef.createComponent(componentFactory);
-//
-// 		const component = componentRef.instance;
-// 		component.model = this;
-//
-// 		return componentRef;
-// 	}
+	createInputResetPoint(): Promise<SiInputResetPoint> {
+		return Promise.resolve(new CallbackInputResetPoint(this.rawPassword, (rawPassword) => {
+			this.rawPassword = rawPassword;
+		}));
+	}
 }

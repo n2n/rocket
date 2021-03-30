@@ -5,7 +5,8 @@
     "ng": "ng",
     "dev": "npx ng build --watch --output-hashing none --output-path=../../src/public/assets/rocket/angl-dev",
     "build": "npx ng build --prod --configuration=production --output-hashing none --output-path=../../src/public/assets/rocket/angl",
-    "test": "ng test",
+    "test": "npx ng test",
+    "test-ci": "npx ng test --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

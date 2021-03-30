@@ -35,25 +35,25 @@
 		<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
 	</button>
 
-  <a [class]="siButton.btnClass"
-          [class.rocket-important]="siButton.important"
-          [class.rocket-icon-important]="siButton.iconImportant"
-          [class.rocket-icon-always]="siButton.iconAlways"
-          [class.rocket-label-always]="siButton.labelAlways"
-          [class.btn-loading]="loading"
-          [class.disabled]="disabled"
-          [target]="siButton.target ? siButton.target : ''"
-          [href]="siButton.href"
-          *ngIf="!!siButton.href">
-    <span class="btn-label">{{ siButton.name }}</span>
-    <i [class]="siButton.iconClass" class="btn-icon"></i>
-    <span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-  </a>
+	<a [class]="siButton.btnClass"
+			[class.rocket-important]="siButton.important"
+			[class.rocket-icon-important]="siButton.iconImportant"
+			[class.rocket-icon-always]="siButton.iconAlways"
+			[class.rocket-label-always]="siButton.labelAlways"
+			[class.btn-loading]="loading"
+			[class.disabled]="disabled"
+			[target]="siButton.target ? siButton.target : ''"
+			[href]="siButton.href"
+			*ngIf="!!siButton.href">
+	<span class="btn-label">{{ siButton.name }}</span>
+	<i [class]="siButton.iconClass" class="btn-icon"></i>
+	<span *ngIf="loading" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+	</a>
 
-  <style *ngIf="disabled && !siButton.href">
-    a.disabled {
-      pointer-events: none;
-      cursor: default;
-    }
-  </style>
+	<style *ngIf="disabled && !siButton.href">
+	a.disabled {
+		pointer-events: none;
+		cursor: default;
+	}
+	</style>
 </ng-template>

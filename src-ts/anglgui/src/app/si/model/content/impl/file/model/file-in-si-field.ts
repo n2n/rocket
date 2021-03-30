@@ -7,6 +7,8 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SiFile, SiImageCut } from './file';
 import { SiStyle } from 'src/app/si/model/meta/si-view-mode';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
@@ -86,16 +88,26 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		return this.maxSize;
 	}
 
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.value ? this.value.copy() : null);
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(this.value?.copy());
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (!genericValue.isInstanceOf(SiFile) && !genericValue.isNull()) {
+			return false;
+		}
+
 		if (genericValue.isNull()) {
 			this.value = null;
 			return;
 		}
 
 		this.value = genericValue.readInstance(SiFile).copy();
+	}
+
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint(this.value?.copy(), (value) => {
+			this.value = value?.copy();
+		});
 	}
 }

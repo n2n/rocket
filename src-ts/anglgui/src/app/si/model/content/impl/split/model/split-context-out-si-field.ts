@@ -1,12 +1,15 @@
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiEntryBuildup } from '../../../si-entry-buildup';
-import { SplitContextSiField } from './split-context-si-field';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiField } from '../../../si-field';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { Observable, of } from 'rxjs';
+import { OutSiFieldAdapter} from '../../common/model/out-si-field-adapter';
+import { SplitContentCollection } from './split-content-collection';
+import { SplitContext, SplitStyle } from './split-context';
+import { SplitOption } from './split-option';
+import { SiEntry } from '../../../si-entry';
 
-export class SplitContextOutSiField extends SplitContextSiField {
+export class SplitContextOutSiField extends OutSiFieldAdapter implements SplitContext {
+	public style: SplitStyle = { iconClass: null, tooltip: null };
+	readonly collection = new SplitContentCollection();
 
 	isDisplayable(): boolean {
 		return false;
@@ -16,27 +19,15 @@ export class SplitContextOutSiField extends SplitContextSiField {
 		throw new IllegalSiStateError('SiField not displayable');
 	}
 
-	get activeKeys$(): Observable<string[]> {
-		return of(this.getSplitOptions().map(so => so.key));
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(await this.collection.copy());
 	}
 
-	hasInput(): boolean {
-		return false;
+	getSplitOptions(): SplitOption[] {
+		return this.collection.getSplitContents();
 	}
 
-	readInput(): object {
-		throw new IllegalSiStateError('No input available.');
-	}
-
-	isKeyActive(key: string): boolean {
-		return true;
-	}
-
-	activateKey(key: string) {
-		throw new IllegalSiStateError('SplitContextOutSiField can not activate any keys.');
-	}
-
-	deactivateKey(key: string) {
-		throw new IllegalSiStateError('SplitContextOutSiField can not deactivate any keys.');
+	getEntry$(key: string): Promise<SiEntry|null> {
+		return this.collection.getEntry$(key);
 	}
 }

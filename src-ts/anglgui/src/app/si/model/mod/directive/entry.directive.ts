@@ -3,7 +3,7 @@ import { SiEntry, SiEntryState } from '../../content/si-entry';
 import { SiModStateService } from '../model/si-mod-state.service';
 
 @Directive({
-  selector: '[rocketSiEntry]'
+	selector: '[rocketSiEntry]'
 })
 export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 

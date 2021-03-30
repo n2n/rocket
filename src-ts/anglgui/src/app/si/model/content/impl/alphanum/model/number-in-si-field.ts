@@ -1,15 +1,13 @@
 import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
 import { InputInFieldModel } from '../comp/input-in-field-model';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
-import { SiField } from '../../../si-field';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { SiCrumbGroup } from '../../meta/model/si-crumb';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { NumberInComponent } from '../comp/number-in/number-in.component';
-import { Inject, LOCALE_ID } from '@angular/core';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 export class NumberInSiField extends InSiFieldAdapter implements InputInFieldModel {
 	public min: number|null = null;
@@ -123,22 +121,23 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		};
 	}
 
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.value === null ? null : new Number(this.value));
+	copyValue(): Promise<SiGenericValue> {
+		return Promise.resolve(new SiGenericValue(this.value));
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isNull()) {
-			this.value = null;
-			return Promise.resolve();
+	pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (!genericValue.isNull() && !genericValue.isNumber()) {
+			return Promise.resolve(false);
 		}
 
-		if (genericValue.isInstanceOf(Number)) {
-			this.value = genericValue.readInstance(Number).valueOf();
-			return Promise.resolve();
-		}
+		this.value = genericValue.readNumberOrNull();
+		return Promise.resolve(true);
+	}
 
-		throw new GenericMissmatchError('Number expected.');
+	createInputResetPoint(): Promise<SiInputResetPoint> {
+		return Promise.resolve(new CallbackInputResetPoint(this.pValue, (value) => {
+			this.pValue = value;
+		}));
 	}
 
 	createUiContent(): UiContent {
@@ -236,6 +235,8 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	private validate(): void {
+		this.messagesCollection.clear();
+
 		if (this.mandatory && this.value === null) {
 			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}

@@ -3,43 +3,43 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {IframeComponent} from "../iframe/iframe.component";
 
 @Component({
-  selector: 'rocket-ui-url-iframe',
-  templateUrl: './url-iframe.component.html',
-  styleUrls: ['./url-iframe.component.css']
+	selector: 'rocket-ui-url-iframe',
+	templateUrl: './url-iframe.component.html',
+	styleUrls: ['./url-iframe.component.css']
 })
 export class UrlIframeComponent implements OnInit {
-  @ViewChild('urlIframe') urlIframe: ElementRef;
+	@ViewChild('urlIframe') urlIframe: ElementRef;
 
-  @Input()
-  public srcUrl;
+	@Input()
+	public srcUrl;
 
-  public sanitizedUrl: SafeUrl;
+	public sanitizedUrl: SafeUrl;
 
-  public loading = true;
+	public loading = true;
 
-  constructor(private sanitizer: DomSanitizer) {
-  }
+	constructor(private sanitizer: DomSanitizer) {
+	}
 
-  ngOnInit(): void {
-    this.sanitizedUrl = this.sanitizeUrl();
-  }
+	ngOnInit(): void {
+	this.sanitizedUrl = this.sanitizeUrl();
+	}
 
-  private appendScriptsToIframeContent() {
-    const script = document.createElement('script');
-    script.textContent = IframeComponent.createResizerJs();
-    this.urlIframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
-        .insertAdjacentElement('beforeend', script);
-  }
+	private appendScriptsToIframeContent() {
+	const script = document.createElement('script');
+	script.textContent = IframeComponent.createResizerJs();
+	this.urlIframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
+		.insertAdjacentElement('beforeend', script);
+	}
 
-  sanitizeUrl() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.srcUrl);
-  }
+	sanitizeUrl() {
+	return this.sanitizer.bypassSecurityTrustResourceUrl(this.srcUrl);
+	}
 
-  iframeLoaded() {
-    if (!!this.urlIframe) {
-      this.appendScriptsToIframeContent();
-      this.loading = false;
-      //alert(this.urlIframe.nativeElement.contentWindow.document.title);
-    }
-  }
+	iframeLoaded() {
+	if (!!this.urlIframe) {
+		this.appendScriptsToIframeContent();
+		this.loading = false;
+		//alert(this.urlIframe.nativeElement.contentWindow.document.title);
+	}
+	}
 }

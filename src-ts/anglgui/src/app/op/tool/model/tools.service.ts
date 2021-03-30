@@ -39,7 +39,7 @@ export class ToolsService {
 			}));
 	}
 
-  clearCache(): Observable<any> {
-	  return this.httpClient.get<any>('tools/clear-cache').pipe(map((data) => data));
-  }
+	clearCache(): Observable<any> {
+		return this.httpClient.get<any>('tools/clear-cache').pipe(map((data) => data));
+	}
 }

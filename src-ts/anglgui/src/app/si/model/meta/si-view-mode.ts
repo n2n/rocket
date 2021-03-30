@@ -1,4 +1,4 @@
 export interface SiStyle {
-    bulky: boolean;
+	bulky: boolean;
 	readOnly: boolean;
 }

@@ -3,10 +3,11 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { DateTimeInComponent } from '../comp/date-time-in/date-time-in.component';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { DateTimeInModel } from '../comp/date-time-in-model';
 import { Message } from 'src/app/util/i18n/message';
 import { DateUtils } from 'src/app/util/date/date-utils';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInModel {
 
@@ -28,10 +29,10 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 	}
 
 	private validate(): void {
-		this.resetError();
+		this.messagesCollection.clear();
 
 		if (this.mandatory && this.value === null) {
-			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}
 	}
 
@@ -47,17 +48,27 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 		});
 	}
 
-	copyValue(): SiGenericValue {
+	async copyValue(): Promise<SiGenericValue> {
 		return new SiGenericValue(this.value ? new Date(this.value) : null);
 	}
 
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isInstanceOf(Date)) {
-			const value = genericValue.readInstance(Date);
-			this.setValue(value ? new Date(value) : null);
-			return Promise.resolve();
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (genericValue.isNull()) {
+			this.setValue(null);
+			return true;
 		}
 
-		throw new GenericMissmatchError('Date expected.');
+		if (genericValue.isInstanceOf(Date)) {
+			this.setValue(new Date(genericValue.readInstance(Date)));
+			return true;
+		}
+
+		return false;
+	}
+
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint(this.value ? new Date(this.value) : null, (value) => {
+			this.value = value ? new Date(value) : null;
+		});
 	}
 }

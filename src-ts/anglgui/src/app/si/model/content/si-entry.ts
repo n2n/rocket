@@ -12,6 +12,8 @@ import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
 import { SiStyle } from '../meta/si-view-mode';
+import { SiInputResetPoint } from './si-input-reset-point';
+import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
 
 export class SiEntry {
 
@@ -205,36 +207,54 @@ export class SiEntry {
 	// 	return entry;
 	// }
 
-	copy(): SiGenericEntry {
+	async copy(): Promise<SiGenericEntry> {
+		const promises: Promise<void>[] = [];
+
 		const genericBuildupsMap = new Map<string, SiGenericEntryBuildup>();
 		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
-			genericBuildupsMap.set(typeId, entryBuildup.copy());
+			entryBuildup.copy().then(genericBuildup => {
+				genericBuildupsMap.set(typeId, genericBuildup);
+			});
 		}
+
+		await Promise.all(promises);
+
 		return this.createGenericEntry(genericBuildupsMap);
 	}
 
-	paste(genericEntry: SiGenericEntry): Promise<void> {
-		this.valGenericEntry(genericEntry);
+	async paste(genericEntry: SiGenericEntry): Promise<boolean> {
+		if (!this.valGenericEntry(genericEntry)) {
+			return false;
+		}
 
 		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId)) {
 			this.selectedEntryBuildupId = genericEntry.selectedTypeId;
 		}
 
-		const promises = new Array<Promise<void>>();
+		const promises = new Array<Promise<boolean>>();
 		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
 			if (this._entryBuildupsMap.has(typeId)) {
 				promises.push(this._entryBuildupsMap.get(typeId).paste(genericEntryBuildup));
 			}
 		}
-		return Promise.all(promises).then(() => {});
+		await Promise.all(promises);
+
+		return true;
 	}
 
-	createResetPoint(): SiGenericEntry {
-		const genericBuildupsMap = new Map<string, SiGenericEntryBuildup>();
-		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
-			genericBuildupsMap.set(typeId, entryBuildup.createResetPoint());
-		}
-		return this.createGenericEntry(genericBuildupsMap);
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		const promise = Promise.all(Array
+				.from(this._entryBuildupsMap.values())
+				.map(entryBuildup => entryBuildup.createInputResetPoint()));
+
+		const entryBuildupResetPoints = await promise;
+
+		return new CallbackInputResetPoint(
+				{ selectedEntryBuildupId: this.selectedEntryBuildupId, entryBuildupResetPoints},
+				(data) => {
+					this.selectedEntryBuildupId = data.selectedEntryBuildupId;
+					data.entryBuildupResetPoints.forEach(rp => { rp.rollbackTo(); });
+				});
 	}
 
 	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntryBuildup>): SiGenericEntry {
@@ -243,25 +263,20 @@ export class SiEntry {
 		return genericEntry;
 	}
 
-	resetToPoint(genericEntry: SiGenericEntry): void {
-		this.valGenericEntry(genericEntry);
 
-		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
-			if (this._entryBuildupsMap.has(typeId)) {
-				this._entryBuildupsMap.get(typeId).resetToPoint(genericEntryBuildup);
-			}
-		}
-	}
-
-	private valGenericEntry(genericEntry: SiGenericEntry): void {
+	private valGenericEntry(genericEntry: SiGenericEntry): boolean {
 		if (genericEntry.identifier.typeId !== this.identifier.typeId) {
-			throw new GenericMissmatchError('SiEntry missmatch: '
-					+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
+			return false;
+			// throw new GenericMissmatchError('SiEntry missmatch: '
+			// 		+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
 		}
 
 		if (genericEntry.style.bulky !== this.style.bulky || genericEntry.style.readOnly !== this.style.readOnly) {
-			throw new GenericMissmatchError('SiEntry missmatch.');
+			return false;
+			// throw new GenericMissmatchError('SiEntry missmatch.');
 		}
+
+		return true;
 	}
 
 	isClean(): boolean {
@@ -289,18 +304,18 @@ export class SiEntry {
 	// }
 
 
-	markAsOutdated() {
+	markAsOutdated(): void {
 		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN || this.state === SiEntryState.LOCKED,
 				'SiEntry not clean or locked: ' + this.state);
 		this.stateSubject.next(SiEntryState.OUTDATED);
 	}
 
-	markAsReloading() {
+	markAsReloading(): void {
 		IllegalSiStateError.assertTrue(this.isAlive());
 		this.stateSubject.next(SiEntryState.RELOADING);
 	}
 
-	markAsRemoved() {
+	markAsRemoved(): void {
 		IllegalSiStateError.assertTrue(this.isAlive());
 		this.stateSubject.next(SiEntryState.REMOVED);
 		this.stateSubject.complete();
@@ -332,7 +347,7 @@ export class SiEntry {
 		return this.lock;
 	}
 
-	replace(replacementEntry: SiEntry) {
+	replace(replacementEntry: SiEntry): void {
 		IllegalSiStateError.assertTrue(this.isAlive());
 
 		this._replacementEntry = replacementEntry;

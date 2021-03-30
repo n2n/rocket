@@ -686,15 +686,15 @@ class Resizer implements SizeSelectorListener {
 			_obj.originalImageWidth = $(this).width();
 			_obj.originalImageHeight = $(this).height();
 
-			//          if(_obj.elemImg.width() > _obj.elem.width()
-			//                  || _obj.elemImg.height() > _obj.elem.height()) {
+			//			if(_obj.elemImg.width() > _obj.elem.width()
+			//					|| _obj.elemImg.height() > _obj.elem.height()) {
 			//
 			_obj.applyZoomFactor();
 
 			_obj.elemImg.width(_obj.originalImageWidth * _obj.zoomFactor);
 			_obj.elemImg.height(_obj.originalImageHeight * _obj.zoomFactor);
 
-			//          }
+			//			}
 			_obj.initializeUIChildContainers();
 			_obj.elem.on('containerWidthChange', function() {
 				// we need to remember the width and height, it changes after the first width or height change
@@ -919,7 +919,7 @@ export class RocketResizer {
 			elemWindow = $(window),
 			elemDimensionContainer = elem.find('.rocket-image-dimensions:first');
 
-		this.resizer =  new Resizer(elemResizer, elemDimensionContainer, null, function() {
+		this.resizer =	new Resizer(elemResizer, elemDimensionContainer, null, function() {
 			var height = elemWindow.height() - 50;
 			if (elemRocketheader.length > 0) {
 				height -= elemRocketheader.outerHeight();

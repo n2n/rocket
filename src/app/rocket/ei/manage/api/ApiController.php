@@ -136,14 +136,17 @@ class ApiController extends ControllerAdapter {
 		$callProcess = new ApiControlProcess($this->eiFrame);
 		$viewMode = null;
 		if (null !== ($pid = $siApiCallId->getPid())) {
-			$callProcess->determineEiEntry($pid);
+			$eiEntry = $callProcess->determineEiEntry($pid);
 			$viewMode = $this->parseViewMode($style, false);
+			$callProcess->determineEiGuiFrame($viewMode, $eiEntry->getEiType()->getId());
 		} else if (null !== ($newEiTypeType = $siApiCallId->getNewEiTypeId())) {
 			$callProcess->determineNewEiEntry($newEiTypeType);
 			$viewMode = $this->parseViewMode($style, true);
+			$callProcess->determineEiGuiFrame($viewMode, $newEiTypeType);
+		} else {
+			$callProcess->determineEiGuiFrame($viewMode, $siApiCallId->getEiTypeId());
 		}
-			
-		$callProcess->determineEiGuiFrame($viewMode, $siApiCallId->getEiTypeId());
+		
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
 		
 		if ($entryInputMaps !== null

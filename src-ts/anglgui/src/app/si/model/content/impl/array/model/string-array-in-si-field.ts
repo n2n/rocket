@@ -6,6 +6,8 @@ import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatc
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { StringArrayInModel } from '../comp/string-array-in-model';
 import { StringArrayInComponent } from '../comp/string-array-in/string-array-in.component';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 
 export class StringArrayInSiField extends InSiFieldAdapter implements StringArrayInModel {
@@ -40,45 +42,32 @@ export class StringArrayInSiField extends InSiFieldAdapter implements StringArra
 	}
 
 	private validate(): void {
-		this.resetError();
+		this.messagesCollection.clear();
 
 		if (this.min && this.values.length < this.min) {
-			this.addMessage(Message.createCode('min_err', new Map([['{field}', this.label], ['{min}', this.min.toString()]])));
+			this.messagesCollection.push(Message.createCode('min_err', new Map([['{field}', this.label], ['{min}', this.min.toString()]])));
 		}
 
 		if (this.max && this.values.length > this.max) {
-			this.addMessage(Message.createCode('max_err', new Map([['{field}', this.label], ['{max}', this.max.toString()]])));
+			this.messagesCollection.push(Message.createCode('max_err', new Map([['{field}', this.label], ['{max}', this.max.toString()]])));
 		}
 	}
 
-	// copy(): SiField {
-	// 	const copy = new StringInSiField(this.label, this.value, this.multiline);
-	// 	copy.mandatory = this.mandatory;
-	// 	copy.minlength = this.minlength;
-	// 	copy.maxlength = this.maxlength;
-	// 	return copy;
-	// }
-
-	isGeneric(): boolean {
-		return true;
+	async copyValue(): Promise<SiGenericValue> {
+		return new SiGenericValue(new Array(this.values));
 	}
 
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.values === null ? null : new Array(this.values));
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isNull()) {
-			this.values = [];
-			return Promise.resolve();
+	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (genericValue.isInstanceOf(StringArrayCopy)) {
+			this.values = new Array(genericValue.readInstance(StringArrayCopy).values);
+			return true;
 		}
 
-		// if (genericValue.isInstanceOf(Array<string>)) {
-		// 	this.values = genericValue.readInstance(Array<string>).valueOf();
-		// 	return Promise.resolve();
-		// }
+		return false;
+	}
 
-		throw new GenericMissmatchError('Array expected.');
+	async createInputResetPoint(): Promise<SiInputResetPoint> {
+		return new CallbackInputResetPoint(new Array(this.values), (values) => { this.values = values; });
 	}
 
 	createUiContent(): UiContent {
@@ -99,4 +88,10 @@ export class StringArrayInSiField extends InSiFieldAdapter implements StringArra
 //
 // 		return componentRef;
 // 	}
+}
+
+
+class StringArrayCopy {
+	constructor(public values: string[]) {
+	}
 }

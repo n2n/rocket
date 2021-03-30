@@ -171,7 +171,7 @@ export class UiStructure {
 
 	isToolbarMassive(): boolean {
 		// tslint:disable-next-line: no-bitwise
-		return 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
+		return this.model && 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
 	}
 
 	// createToolbarChild(model: UiStructureModel): UiStructure {
@@ -383,7 +383,7 @@ export class UiStructure {
 	// 	const models = this.getExtraToolbarStructureModels();
 	// 	models.push(...uiStructureModels);
 	// 	models.filter((value, index, self) => {
-  	// 		return self.indexOf(value) === index;
+		// 		return self.indexOf(value) === index;
 	// 	});
 	// 	this.setExtraToolbarStructureModels(models);
 	// }
@@ -569,7 +569,7 @@ export class UiStructure {
 	private createZoneError(structureError: UiStructureError): UiZoneError {
 		return {
 			message: structureError.message,
-			marked: structureError.marked  || ((marked) => {
+			marked: structureError.marked	|| ((marked) => {
 				this.marked = marked;
 			}),
 			focus: (() => {

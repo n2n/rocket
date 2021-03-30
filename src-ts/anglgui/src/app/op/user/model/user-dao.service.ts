@@ -23,7 +23,7 @@ export class UserDaoService {
 				}));
 	}
 
-	getUserById(userId: number): Observable<User>  {
+	getUserById(userId: number): Observable<User>	{
 		return this.httpClient.get<any>('users/user/' + userId)
 				.pipe(map((data) => {
 					return UserFactory.createUser(data);

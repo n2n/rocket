@@ -3,8 +3,8 @@ import { StringArrayInModel } from '../string-array-in-model';
 import { StringArrayInElement } from './string-array-in-element';
 
 @Component({
-  selector: 'rocket-string-array-in',
-  templateUrl: './string-array-in.component.html'
+	selector: 'rocket-string-array-in',
+	templateUrl: './string-array-in.component.html'
 })
 export class StringArrayInComponent implements OnInit {
 

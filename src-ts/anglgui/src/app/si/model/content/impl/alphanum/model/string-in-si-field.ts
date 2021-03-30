@@ -5,10 +5,11 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { InputInFieldComponent } from '../comp/input-in-field/input-in-field.component';
 import { Message } from 'src/app/util/i18n/message';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { TextareaInFieldComponent } from '../comp/textarea-in-field/textarea-in-field.component';
 import { TextAreaInFieldModel } from '../comp/textarea-in-field-model';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
+import { CallbackInputResetPoint as CallbackSiInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
 
 export class StringInSiField extends InSiFieldAdapter implements InputInFieldModel, TextAreaInFieldModel {
@@ -44,6 +45,10 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return { value: this.value };
 	}
 
+	createInputResetPoint(): Promise<SiInputResetPoint> {
+		return Promise.resolve(new CallbackSiInputResetPoint(this.value, (value) => { this.value = value; }));
+	}
+
 	getValue(): string|null {
 		if (null !== this.tmpValue) {
 			return this.tmpValue;
@@ -74,49 +79,34 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 	}
 
 	private validate(): void {
-		this.resetError();
+		this.messagesCollection.clear();
 
 		if (this.mandatory && this.value === null) {
-			this.addMessage(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
+			this.messagesCollection.push(Message.createCode('mandatory_err', new Map([['{field}', this.label]])));
 		}
 
 		if (this.minlength && this.value && this.value.length < this.minlength) {
-			this.addMessage(Message.createCode('minlength_err', new Map([['{field}', this.label], ['{minlength}', this.minlength.toString()]])));
+			this.messagesCollection.push(Message.createCode('minlength_err',
+					new Map([['{field}', this.label], ['{minlength}', this.minlength.toString()]])));
 		}
 
 		if (this.maxlength && this.value && this.value.length > this.maxlength) {
-			this.addMessage(Message.createCode('maxlength_err', new Map([['{field}', this.label], ['{maxlength}', this.maxlength.toString()]])));
+			this.messagesCollection.push(Message.createCode('maxlength_err',
+					new Map([['{field}', this.label], ['{maxlength}', this.maxlength.toString()]])));
 		}
 	}
 
-	// copy(): SiField {
-	// 	const copy = new StringInSiField(this.label, this.value, this.multiline);
-	// 	copy.mandatory = this.mandatory;
-	// 	copy.minlength = this.minlength;
-	// 	copy.maxlength = this.maxlength;
-	// 	return copy;
-	// }
-
-	isGeneric(): boolean {
-		return true;
+	copyValue(): Promise<SiGenericValue> {
+		return Promise.resolve(new SiGenericValue(this.value));
 	}
 
-	copyValue(): SiGenericValue {
-		return new SiGenericValue(this.value === null ? null : new String(this.value));
-	}
-
-	pasteValue(genericValue: SiGenericValue): Promise<void> {
-		if (genericValue.isNull()) {
-			this.value = null;
-			return Promise.resolve();
+	pasteValue(genericValue: SiGenericValue): Promise<boolean> {
+		if (!genericValue.isNull() && !genericValue.isStringRepresentable()) {
+			return Promise.resolve(false);
 		}
 
-		if (genericValue.isInstanceOf(String)) {
-			this.value = genericValue.readInstance(String).valueOf();
-			return Promise.resolve();
-		}
-
-		throw new GenericMissmatchError('String expected.');
+		this.value = genericValue.readStringOrNull();
+		return Promise.resolve(true);
 	}
 
 	createUiContent(): UiContent {
