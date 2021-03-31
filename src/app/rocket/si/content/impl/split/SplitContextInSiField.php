@@ -236,11 +236,13 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 				throw new CorruptedSiInputDataException('Unknown or active key: ' . $key);
 			}
 			
+			$lazy = false;
 			$siEntry = $this->splitContents[$key]->getEntry(); 
 			if ($siEntry === null && isset($this->siEntryCallbacks[$key])) {
 				$siEntry = $this->siEntryCallbacks[$key]();
 				ArgUtils::valTypeReturn($siEntry, SiEntry::class, null, $this->siEntryCallbacks[$key]);
 				unset($this->siEntryCallbacks[$key]);
+				$lazy = true;
 			}
 			
 			if ($siEntry === null) {
@@ -248,6 +250,12 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			}
 			
 			$siEntry->handleInput(SiEntryInput::parse($entryInputData));
+			
+			if ($lazy) {
+				$preSplitContent = $this->splitContents[$key];
+				$this->splitContents[$key] = SiSplitContent::createEntry($preSplitContent->getLabel(), $siEntry)
+						->setShortLabel($preSplitContent->getShortLabel());
+			}
 		}
 	}
 }
