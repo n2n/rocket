@@ -1,10 +1,9 @@
 import {
-	AfterViewInit,
 	Component, DoCheck,
 	ElementRef,
-	EventEmitter, HostListener, Inject,
+	EventEmitter, HostListener,
 	Input, OnChanges,
-	Output, Renderer2,
+	Output,
 	ViewChild,
 } from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -60,15 +59,15 @@ export class IframeComponent implements OnChanges, DoCheck {
 	 * Update and insert formData to iframe
 	 */
 	private static createFormDataJs() {
-		return 'for(var createFormDataMap=function(e){for(var t=new Map,n=0;n<e.length;n++){var o=e[n];if("radio"==o.type){if(!o.checked)continue;t.set(o.attributes.name.value,o.value)}if("checkbox"==o.type){if(!o.checked){t.set(o.attributes.name.value,"");continue}t.set(o.attributes.name.value,o.value)}t.set(o.attributes.name.value,e[n].value)}return t},sendFormDataToParent=function(e){window.parent.window.postMessage(createFormDataMap(e),window.parent.location)},formElementsHtmlCollection=document.querySelectorAll("input,textarea"),formElements=[],i=0;i<formElementsHtmlCollection.length;i++)null!=formElementsHtmlCollection[i].attributes.name&&(formElements.push(formElementsHtmlCollection[i]),formElementsHtmlCollection[i].onkeyup=function(){sendFormDataToParent(formElements)},formElementsHtmlCollection[i].onchange=function(){sendFormDataToParent(formElements)});var forms=document.getElementsByTagName("form");for(i=0;i<forms.length;i++)forms[i].onsubmit=function(){return sendFormDataToParent(formElements),!1};window.addEventListener("message",function(e){e.data instanceof Map&&e.data.forEach((e,t)=>{for(var n=document.getElementsByName(t),o=0;o<n.length;o++)n[o].value=e})});';
+		return 'for(var createFormDataMap=function(e){for(var t=new Map,n=0;n<e.length;n++){var o=e[n];if("radio"==o.type){if(!o.checked)continue;t.set(o.attributes.name.value,o.value)}if("checkbox"==o.type){if(!o.checked){t.set(o.attributes.name.value,"");continue}t.set(o.attributes.name.value,o.value)}t.set(o.attributes.name.value,e[n].value)}return{windowId:window.frameElement.id,formData:t}},sendFormDataToParent=function(e){window.parent.window.postMessage(createFormDataMap(e),window.parent.location)},formElementsHtmlCollection=document.querySelectorAll("input,textarea"),formElements=[],i=0;i<formElementsHtmlCollection.length;i++)null!=formElementsHtmlCollection[i].attributes.name&&(formElements.push(formElementsHtmlCollection[i]),formElementsHtmlCollection[i].onkeyup=function(){sendFormDataToParent(formElements)},formElementsHtmlCollection[i].onchange=function(){sendFormDataToParent(formElements)});var forms=document.getElementsByTagName("form");for(i=0;i<forms.length;i++)forms[i].onsubmit=function(){return sendFormDataToParent(formElements),!1};window.addEventListener("message",function(e){e.data instanceof Map&&e.data.forEach((e,t)=>{for(var n=document.getElementsByName(t),o=0;o<n.length;o++)n[o].value=e})});';
 	}
 
 	@HostListener('window:message', ['$event'])
 	onMessage(event) {
-	if (event.data instanceof Map) {
-		this.formData = event.data;
-		this.formDataChange.emit(event.data);
-	}
+    if (event.data.windowId === this.iframe.nativeElement.id) {
+      this.formData = event.data.formData;
+      this.formDataChange.emit(event.data.formData);
+    }
 	}
 
 	ngOnChanges(changes) {
@@ -95,63 +94,63 @@ export class IframeComponent implements OnChanges, DoCheck {
 // form data js
 // ------------
 // var createFormDataMap = function(formElements) {
-//	 var formData = new Map();
-//	 for (var i = 0; i < formElements.length; i++) {
-//	 var currentElem = formElements[i];
-//	 if (currentElem.type == "radio") {
-//		 if (!currentElem.checked) {
-//		 continue;
-//		 }
-//		 formData.set(currentElem.attributes["name"].value, currentElem.value);
-//	 }
-//	 if (currentElem.type == "checkbox") {
-//		 if (!currentElem.checked) {
-//		 formData.set(currentElem.attributes["name"].value, "");
-//		 continue;
-//		 }
-//		 formData.set(currentElem.attributes["name"].value, currentElem.value);
-//	 }
+//   var formData = new Map();
+// 	 for (var i = 0; i < formElements.length; i++) {
+//      var currentElem = formElements[i];
+//      if (currentElem.type == "radio") {
+//        if (!currentElem.checked) {
+//        continue;
+//        }
+//        formData.set(currentElem.attributes["name"].value, currentElem.value);
+//      }
+//      if (currentElem.type == "checkbox") {
+//        if (!currentElem.checked) {
+//        formData.set(currentElem.attributes["name"].value, "");
+//        continue;
+//        }
+//        formData.set(currentElem.attributes["name"].value, currentElem.value);
+//      }
 //
-//	 formData.set(currentElem.attributes["name"].value, formElements[i].value);
-//	 }
+//      formData.set(currentElem.attributes["name"].value, formElements[i].value);
+// 	 }
 //
-//	 return formData;
+// 	 return {windowId: window.frameElement.id, formData};
 // }
 //
 // var sendFormDataToParent = function(formElements) {
-//	 window.parent.window.postMessage(createFormDataMap(formElements), window.parent.location)
+// 	 window.parent.window.postMessage(createFormDataMap(formElements), window.parent.location)
 // }
 //
 // var formElementsHtmlCollection = document.querySelectorAll("input,textarea"); //Array.from(document.getElementsByTagName("input"));
 // var formElements = []
 // for (var i = 0; i < formElementsHtmlCollection.length; i++) {
-//	 if (formElementsHtmlCollection[i].attributes["name"] == undefined) continue;
-//	 formElements.push(formElementsHtmlCollection[i]);
-//	 formElementsHtmlCollection[i].onkeyup = function() {
-//	 sendFormDataToParent(formElements);
-//	 }
-//	 formElementsHtmlCollection[i].onchange = function() {
-//	 sendFormDataToParent(formElements);
-//	 }
+// 	 if (formElementsHtmlCollection[i].attributes["name"] == undefined) continue;
+// 	 formElements.push(formElementsHtmlCollection[i]);
+// 	 formElementsHtmlCollection[i].onkeyup = function() {
+// 	 sendFormDataToParent(formElements);
+// 	 }
+// 	 formElementsHtmlCollection[i].onchange = function() {
+// 	 sendFormDataToParent(formElements);
+// 	 }
 // }
 //
 //
 // var forms = document.getElementsByTagName("form");
 // for (var i = 0; i < forms.length; i++) {
-//	 forms[i].onsubmit = function() {
-//	 sendFormDataToParent(formElements);
-//	 return false;
-//	 }
+// 	 forms[i].onsubmit = function() {
+// 	 sendFormDataToParent(formElements);
+// 	 return false;
+// 	 }
 // }
 //
 // window.addEventListener("message", function(e) {
-//	 if (e.data instanceof Map) {
-//	 var formData = e.data;
-//	 formData.forEach((value, key) => {
-//		 var elemsByKey = document.getElementsByName(key);
-//		 for (var i = 0; i < elemsByKey.length; i++) {
-//		 elemsByKey[i].value = value;
-//		 }
-//	 });
-//	 }
+//   if (e.data instanceof Map) {
+// 	 var formData = e.data;
+// 	 formData.forEach((value, key) => {
+// 		 var elemsByKey = document.getElementsByName(key);
+// 		 for (var i = 0; i < elemsByKey.length; i++) {
+// 		 elemsByKey[i].value = value;
+// 		 }
+// 	 });
+// 	 }
 // });
