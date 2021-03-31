@@ -48,6 +48,13 @@ class SiSplitContent implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
+	function getLabel() {
+		return $this->label;
+	}
+	
+	/**
+	 * @return string|null
+	 */
 	function getShortLabel() {
 		return $this->shortLabel;
 	}
