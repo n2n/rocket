@@ -45,6 +45,7 @@ use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\gui\EiGui;
 use rocket\si\input\SiInputError;
+use rocket\ei\manage\entry\EiEntry;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -114,10 +115,11 @@ class ApiControlProcess {
 	/**
 	 * @param string $pid
 	 * @throws UnknownEiObjectException
+	 * @return EiEntry
 	 */
 	function determineEiEntry(string $pid) {
 		$eiObject = $this->eiFrameUtil->lookupEiObject($pid);
-		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
+		return $this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
 	
 	/**
