@@ -25,7 +25,8 @@
 						class="rocket-tree-level-{{ structureEntry.siEntry.treeLevel }} rocket-draggable">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
 						<ng-container *ngIf="singleSelect">
-							<input type="radio" [value]="true" [ngModel]="isSelected(structureEntry.siEntry.qualifier)" />
+							<input type="radio" [value]="structureEntry.siEntry.qualifier.identifier.toString()" 
+									[ngModel]="isSelected(structureEntry.siEntry.qualifier) ? structureEntry.siEntry.qualifier.identifier.toString() : null" />
 						</ng-container>
 						<ng-container *ngIf="!singleSelect">
 							<input type="checkbox" 
