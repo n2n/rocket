@@ -88,6 +88,12 @@ class SplitGuiFieldFactory {
 			
 			$pid = null;
 			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
+				if ($activeTargetEiuEntry->isNew()) {
+					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuEntryGui($n2nLocaleId)->gui()->createSiEntry())
+							->setShortLabel($n2nLocale->toPrettyId());
+					continue;
+				}
+				
 				$pid = $activeTargetEiuEntry->getPid();
 			}
 			
