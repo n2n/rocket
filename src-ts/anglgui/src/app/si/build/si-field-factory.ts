@@ -175,7 +175,7 @@ export class SiFieldFactory {
 					this.injector.get(TranslationService),
 					new SiBuildTypes.SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryOutSiField.config.reduced = dataExtr.reqBoolean('reduced');
-			embeddedEntryOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			// embeddedEntryOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			return embeddedEntryOutSiField;
 
