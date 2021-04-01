@@ -23,6 +23,7 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
 import {SiInputResetPoint} from '../../../si-input-reset-point';
 import { SplitContext, SplitStyle } from './split-context';
+import { skip } from 'rxjs/operators';
 
 export class SplitSiField extends SiFieldAdapter {
 
@@ -158,17 +159,19 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		this.splitViewStateSubscription.cancel();
 		this.splitViewStateSubscription = null;
 
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
+
 		for (const childUiStructure of this.childUiStructureMap.values()) {
 			childUiStructure.dispose();
 		}
 		this.childUiStructureMap.clear();
-
-		this.subscription.unsubscribe();
-		this.subscription = null;
 		this.loadedKeys = [];
 	}
 
-	private buildStructures(zone: UiZone) {
+	private buildStructures(zone: UiZone): void {
 		this.destroyStructures();
 
 		this.splitViewStateSubscription = this.viewStateService.subscribe(zone, this.getSplitOptions(), this.getSplitStyle());
@@ -178,7 +181,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 					splitOption.shortLabel);
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
-			child.visible$.subscribe(() => {
+			child.visible$.pipe(skip(1)).subscribe(() => {
 				this.splitViewStateSubscription.requestKeyVisibilityChange(splitOption.key, child.visible);
 			});
 		}

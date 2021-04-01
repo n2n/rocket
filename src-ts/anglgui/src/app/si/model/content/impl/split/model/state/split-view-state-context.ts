@@ -12,12 +12,12 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 
 	private subscriptions: Array<SplitViewStateSubscription> = [];
 	private optionMap = new Map<string, SplitOption>();
-	private visibleKeys: string[] = [];
-	private visibleKeysSubject = new BehaviorSubject<string[]>([]);
+	private visibleKeys: string[];
 
 	private viewMenuUc: UiContent|null = null;
 
-	constructor(readonly uiZone: UiZone, public splitStyle: SplitStyle) {
+	constructor(readonly uiZone: UiZone, public splitStyle: SplitStyle, private visibleKeysSubject: BehaviorSubject<string[]>) {
+		this.visibleKeys = visibleKeysSubject.getValue();
 	}
 
 	createSubscription(options: SplitOption[]): SplitViewStateSubscription {
