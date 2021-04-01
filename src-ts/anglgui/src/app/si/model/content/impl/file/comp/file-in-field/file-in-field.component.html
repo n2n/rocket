@@ -5,7 +5,7 @@
 </ng-container>
 
 <ng-container *ngIf="currentSiFile">
-	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url" class="file-in-item">
+	<a *ngIf="currentSiFile.url" [href]="currentSiFile.url" class="file-in-item" rocketUiGlightBox [glightboxEnabled]="!!currentSiFile.thumbUrl">
 		<ng-container *ngIf="currentSiFile.thumbUrl; else nothumb">
 			<img [class.sr-only]="!imgLoaded" [src]="currentSiFile.thumbUrl"
 					[alt]="currentSiFile.name" height="30" (load)="imgLoaded = true" />
