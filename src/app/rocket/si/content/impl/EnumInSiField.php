@@ -42,6 +42,10 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @var string[][]
 	 */
 	private $associatedPropIdsMap = [];
+	/**
+	 * @param string|null
+	 */
+	private $emptyLabel = null;
 	
 	/**
 	 * @param int $value
@@ -126,6 +130,22 @@ class EnumInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
+	 * @param string|null $emptyLabel
+	 * @return \rocket\si\content\impl\EnumInSiField
+	 */
+	function setEmptyLabel(?string $emptyLabel) {
+		$this->emptyLabel = $emptyLabel;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getEmptyLabel() {
+		return $this->emptyLabel;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::getData()
 	 */
@@ -135,6 +155,7 @@ class EnumInSiField extends InSiFieldAdapter {
 			'options' => $this->options,
 			'mandatory' => $this->mandatory,
 			'associatedPropIdsMap' => $this->associatedPropIdsMap,
+			'emptyLabel' => $this->emptyLabel,
 			'messages' => $this->getMessageStrs()
 		];
 	}

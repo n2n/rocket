@@ -353,6 +353,10 @@ class TypeSelectInModel implements SelectInFieldModel {
 	getOptions(): Map<string, string> {
 		return this.options;
 	}
+
+	getEmptyLabel(): string|null {
+		return null;
+	}
 }
 
 class ToolbarResolver {

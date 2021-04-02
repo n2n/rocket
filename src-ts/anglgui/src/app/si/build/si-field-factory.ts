@@ -151,6 +151,7 @@ export class SiFieldFactory {
 		case SiFieldType.ENUM_IN:
 			const enumInSiField = new EnumInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqStringMap('options'));
 			enumInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			enumInSiField.emptyLabel = dataExtr.nullaString('emptyLabel');
 			enumInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			fieldMap$.subscribe((fieldMap) => {

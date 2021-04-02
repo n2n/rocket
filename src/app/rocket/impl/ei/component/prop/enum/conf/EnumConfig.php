@@ -41,11 +41,12 @@ use n2n\util\type\TypeConstraints;
 
 class EnumConfig extends PropConfigAdaption {
 	const ATTR_OPTIONS_KEY = 'options';
+	const ATTR_EMPTY_LABEL_KEY = 'emptyLabel';
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiProps';
 	
 	private $options = array();
 	private $associatedDefPropPathMap = array();
-	
+	private $emptyLabel = null;
 	
 	
 	public function setOptions(array $options) {
@@ -72,6 +73,20 @@ class EnumConfig extends PropConfigAdaption {
 		return $this->associatedDefPropPathMap;
 	}
 	
+	/**
+	 * @param string|null $emptyLabel
+	 */
+	function setEmptyLabel(?string $emptyLabel) {
+		$this->emptyLabel = $emptyLabel;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getEmptyLabel() {
+		return $this->emptyLabel;
+	}
+	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
 		$lar = new LenientAttributeReader($dataSet);
 		
@@ -96,6 +111,7 @@ class EnumConfig extends PropConfigAdaption {
 			$valueLabelMap[$value] = array('value' => $value, 'label' => $label, 'bindGuiPropsToValue' => false);
 		}
 		
+		
 		foreach ($lar->getArray(self::ASSOCIATED_GUI_FIELD_KEY,  
 				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple('scalar'))) 
 						as $value => $assoicatedDefPropPaths) {
@@ -108,6 +124,8 @@ class EnumConfig extends PropConfigAdaption {
 		$optionsMag->setValue($valueLabelMap);
 		
 		$magCollection->addMag(self::ATTR_OPTIONS_KEY, $optionsMag);
+		
+		$magCollection->addMag(self::ATTR_EMPTY_LABEL_KEY, new StringMag('Empty Label', $lar->getString('emptyLabel')));
 		
 		return new MagForm($magCollection);
 	}
@@ -125,6 +143,7 @@ class EnumConfig extends PropConfigAdaption {
 		}
 		$dataSet->set(self::ATTR_OPTIONS_KEY, $options);
 		$dataSet->set(self::ASSOCIATED_GUI_FIELD_KEY, $eiPropPathMap);
+		$dataSet->set(self::ATTR_EMPTY_LABEL_KEY, $magCollection->getMagByPropertyName(self::ATTR_EMPTY_LABEL_KEY)->getValue());
 	}
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
@@ -147,5 +166,7 @@ class EnumConfig extends PropConfigAdaption {
 			
 			$this->associatedDefPropPathMap = $eiPropPathMap;
 		}
+		
+		$this->emptyLabel = $dataSet->optString(self::ATTR_EMPTY_LABEL_KEY);
 	}
 }
