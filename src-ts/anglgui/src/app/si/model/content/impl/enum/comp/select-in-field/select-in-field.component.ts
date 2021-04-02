@@ -12,10 +12,10 @@ export class SelectInFieldComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit() {
+	ngOnInit(): void {
 	}
 
-	get optional() {
+	get optional(): boolean {
 		return !this.model.isMandatory();
 	}
 
@@ -24,9 +24,9 @@ export class SelectInFieldComponent implements OnInit {
 	}
 
 	set value(value: string|null) {
-		if (value === '') {
-			value = null;
-		}
+		// if (value === '') {
+		// 	value = null;
+		// }
 		this.model.setValue(value);
 	}
 

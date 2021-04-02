@@ -8,5 +8,7 @@ export interface SelectInFieldModel extends MessageFieldModel {
 
 	getOptions(): Map<string, string>;
 
+	getEmptyLabel(): string|null;
+
 	isMandatory(): boolean;
 }

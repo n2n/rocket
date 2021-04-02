@@ -154,7 +154,8 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
 				->setMandatory($this->getEditConfig()->isMandatory())
 				->setAssociatedPropIdsMap(array_map($mapCb, $this->enumConfig->getAssociatedDefPropPathMap()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs())
+				->setEmptyLabel($this->enumConfig->getEmptyLabel());
 		
 // 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
 // 		if (empty($defPropPathMap)) {

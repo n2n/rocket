@@ -8,7 +8,7 @@
 		</span>
 	</button>
 	<div class="dropdown-menu" *dropdownMenu [attr.aria-labelledby]="id" role="menu">
-		<button *ngIf="value && optional" class="dropdown-item font-italic" (click)="selectValue(null)">
+		<button *ngIf="value !== null && optional" class="dropdown-item font-italic" (click)="selectValue(null)">
 			{{ resetLabel }} <ng-container *ngIf="!resetLabel">&nbsp;</ng-container>
 		</button>
 		

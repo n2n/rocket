@@ -12,6 +12,7 @@ import { CallbackInputResetPoint } from '../../common/model/callback-si-input-re
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;
 	private asscoiatedFieldsMap = new Map<string, SiField[]>();
+	public emptyLabel: string|null = null;
 
 	constructor(public label: string, public value: string|null, public options: Map<string, string>) {
 		super();
@@ -37,6 +38,10 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 
 	getOptions(): Map<string, string> {
 		return this.options;
+	}
+
+	getEmptyLabel(): string|null {
+		return this.emptyLabel;
 	}
 
 	isMandatory(): boolean {
