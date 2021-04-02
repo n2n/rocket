@@ -4,12 +4,14 @@ import { SplitViewStateSubscription } from './split-view-state-subscription';
 import { SplitOption } from '../split-option';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SplitStyle } from '../split-context';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class SplitViewStateService {
 	private contexts = new Array<SplitViewStateContext>();
+	private visibleKeysSubject = new BehaviorSubject<string[]>([]);
 
 	constructor() {
 	}
@@ -29,7 +31,7 @@ export class SplitViewStateService {
 			return context;
 		}
 
-		context = new SplitViewStateContext(uiZone, splitStyle);
+		context = new SplitViewStateContext(uiZone, splitStyle, this.visibleKeysSubject);
 		this.contexts.push(context);
 
 		uiZone.onDispose(() => {
