@@ -172,9 +172,9 @@ class FileConfig extends PropConfigAdaption {
 		$magCollection->addMag(self::ATTR_ALLOWED_EXTENSIONS_KEY, new StringArrayMag('Allowed Extensions', 
 				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileVerificator->getAllowedExtensions()), 
 				false));
-				
+		
 		$magCollection->addMag(self::ATTR_ALLOWED_MIME_TYPES_KEY, new StringArrayMag('Allowed Mime Types',
-				$lar->getScalarArray(self::ATTR_ALLOWED_EXTENSIONS_KEY, $this->fileVerificator->getAllowedMimeTypes()),
+				$lar->getScalarArray(self::ATTR_ALLOWED_MIME_TYPES_KEY, $this->fileVerificator->getAllowedMimeTypes()),
 				false));
 		
 		$magCollection->addMag(self::ATTR_DIMENSION_IMPORT_MODE_KEY, new EnumMag('Dimensions import mode', 
