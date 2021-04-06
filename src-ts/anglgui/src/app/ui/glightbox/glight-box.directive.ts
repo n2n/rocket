@@ -1,8 +1,9 @@
 import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
+import { GlightBoxElement } from './glight-box-element';
 import { GlightBoxService } from './glight-box.service';
 
 @Directive({
-  selector: '[rocketUiGlightBox]'
+  selector: 'a[rocketUiGlightBox]'
 })
 export class GlightBoxDirective implements AfterViewInit, OnDestroy {
 
@@ -12,28 +13,33 @@ export class GlightBoxDirective implements AfterViewInit, OnDestroy {
 	@Input()
 	glightboxEnabled = true;
 	
+	private glightBoxElement: GlightBoxElement|null = null;
+	
 	
 	constructor(elemRef: ElementRef, glightBoxService: GlightBoxService) {
 		this.elemRef = elemRef;
 		this.glightBoxService = glightBoxService;
 	}
 
-
 	ngAfterViewInit() {
+		this.glightBoxElement = {
+			href: this.elemRef.nativeElement.href,
+			type: 'image'
+		};
 		if (this.glightboxEnabled) {
-			this.glightBoxService.registerElement(this.elemRef.nativeElement);
+			this.glightBoxService.registerElement(this.glightBoxElement);
 		}
 	}
 
 	ngOnDestroy(): void {
-		this.glightBoxService.unregisterElement(this.elemRef.nativeElement);
+		this.glightBoxService.unregisterElement(this.glightBoxElement);
 	}
 	
 	@HostListener('click', ['$event'])
-	onClick(btn) {
+	onClick(e: MouseEvent) {
 		if (this.glightboxEnabled) {
-			btn.preventDefault();
-			this.glightBoxService.open(this.elemRef.nativeElement);
+			e.preventDefault();
+			this.glightBoxService.open(this.glightBoxElement);
 		}
 	}
 }
