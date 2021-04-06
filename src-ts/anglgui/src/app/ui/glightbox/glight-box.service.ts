@@ -1,26 +1,27 @@
 import { Injectable } from '@angular/core';
 import GLightbox from 'glightbox';
+import { GlightBoxElement } from './glight-box-element';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GlightBoxService {
 
-	public htmlElements: Array <HTMLElement> = [];
+	public glightBoxElements: Array <GlightBoxElement> = [];
 	public glightbox: GLightbox;
 	
  	constructor() { }
 
-	registerElement(htmlElement: HTMLElement) {
-		this.htmlElements.push(htmlElement);
+	registerElement(htmlElement: GlightBoxElement) {
+		this.glightBoxElements.push(htmlElement);
 		this.renewGLightBox();
 	}
 	
-	unregisterElement(htmlElement: HTMLElement) {
-		const i = this.htmlElements.indexOf(htmlElement);
+	unregisterElement(htmlElement: GlightBoxElement) {
+		const i = this.glightBoxElements.indexOf(htmlElement);
 		
 		if (i > -1) {
-			this.htmlElements.splice(i, 1);
+			this.glightBoxElements.splice(i, 1);
 		}
 		
 		this.renewGLightBox();
@@ -32,15 +33,13 @@ export class GlightBoxService {
 		}
 		
 		this.glightbox = GLightbox({
-	    	elements: this.htmlElements.map(e => ({ 
-			'href': (e as any).href,
-            'type': 'image'}))
+	    	elements: this.glightBoxElements
 		});
 		
 	}
 	
-	open(htmlElement: HTMLElement) {
-		const i = this.htmlElements.indexOf(htmlElement);
+	open(htmlElement: GlightBoxElement) {
+		const i = this.glightBoxElements.indexOf(htmlElement);
 		
 		if (i === -1) {
 			throw new Error('glightbox: unregistered Element');
