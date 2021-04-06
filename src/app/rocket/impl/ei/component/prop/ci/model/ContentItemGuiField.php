@@ -125,15 +125,16 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		
 		$this->currentPool->handleInput($siPanelInputs);
 		$this->currentPool->fillUp();
+		$this->eiu->field()->setValue($this->currentPool->save());
 		return $this->currentPool->createSiPanels();
 	}
 	
 	function save() {
-		IllegalStateException::assertTrue(!$this->readOnly);
+// 		IllegalStateException::assertTrue(!$this->readOnly);
 		
-		$values = $this->currentPool->save();
+// 		$values = $this->currentPool->save();
 		
-		$this->eiu->field()->setValue($values);
+// 		$this->eiu->field()->setValue($values);
 	}
 	
 	function getSiField(): SiField {

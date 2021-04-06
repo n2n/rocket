@@ -52,11 +52,10 @@ export class EmbeStructureCollection {
 		return this.embeStructuresCol.splice(i, 1)[0];
 	}
 
-	refresh() {
+	refresh(): void {
 		const embeStructures = new Array<EmbeStructure>();
-
 		const subscription = new Subscription();
-		console.log(this.embeCol.embes);
+
 		for (const embe of this.embeCol.embes) {
 			let embeStructure = this.splieEmbeStrucutre(embe);
 			if (!embeStructure) {
