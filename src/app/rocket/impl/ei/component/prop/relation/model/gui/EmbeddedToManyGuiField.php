@@ -134,17 +134,22 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		
 		$this->embeddedGuiCollection->handleSiEntryInputs($siEntryInputs);
 		$this->embeddedGuiCollection->fillUp();
+		
+		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
+		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
+		$this->eiu->field()->setValue($eiuEntries);
+		
 		return $this->embeddedGuiCollection->createSiEmbeddedEntries();
 	}
 	
 	function save() {
-		IllegalStateException::assertTrue(!$this->readOnly);
+// 		IllegalStateException::assertTrue(!$this->readOnly);
 		
-		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
+// 		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
 		
-		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
+// 		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
 		
-		$this->eiu->field()->setValue($eiuEntries);
+// 		$this->eiu->field()->setValue($eiuEntries);
 	}
 	
 	function getSiField(): SiField {
