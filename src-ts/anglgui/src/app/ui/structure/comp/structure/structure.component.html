@@ -6,10 +6,15 @@
 	<label>{{ getLabel() }}</label>
 </ng-container>
 
-<div *ngIf="toolbarVisible && (toolbarUiStructures.length > 0 || (asideVisible && asideUiContents.length > 0))" 
+<div *ngIf="hasCustomToolbar() || (toolbarVisible && toolbarUiStructures.length > 0) || (asideVisible && asideUiContents.length > 0)" 
 		class="rocket-toolbar" [class.rocket-massive]="isToolbarMassive()">
-	<ng-container *ngFor="let toolbarUiStructure of toolbarUiStructures">
-		<div rocketUiStructure [uiStructure]="toolbarUiStructure"></div>		
+
+	<ng-content select="[rocketUiStructureToolbar]"></ng-content>
+
+	<ng-container *ngIf="toolbarVisible">
+		<ng-container *ngFor="let toolbarUiStructure of toolbarUiStructures">
+			<div rocketUiStructure [uiStructure]="toolbarUiStructure"></div>		
+		</ng-container>
 	</ng-container>
 
 	<ng-container *ngIf="asideVisible">

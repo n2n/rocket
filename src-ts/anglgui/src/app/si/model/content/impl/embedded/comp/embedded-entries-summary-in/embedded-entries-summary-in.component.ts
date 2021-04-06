@@ -42,7 +42,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 		return this.model.getMax() === 1;
 	}
 
-	drop(event: CdkDragDrop<string[]>) {
+	drop(event: CdkDragDrop<string[]>): void {
 		this.model.switch(event.previousIndex, event.currentIndex);
 	}
 

@@ -3,7 +3,17 @@
 		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer"
 				(newEntry)="model.addBefore(embeStructure, $event)"></rocket-si-add-past>	
 
-		<rocket-embedded-entry [embeStructure]="embeStructure"></rocket-embedded-entry>
+		<rocket-embedded-entry [embeStructure]="embeStructure">
+			<button rocketUiStructureToolbar class="btn btn-danger" (click)="model.remove(embeStructure)">
+				<span>{{ 'common_delete_label' | translate }}</span>
+				<i class="fa fa-trash-alt"></i>
+			</button>
+			<button rocketUiStructureToolbar class="btn btn-success" [class.active]="copyPool.isCopied(embeStructure.embe)" 
+					(click)="copyPool.toggle(embeStructure.embe)">	
+				<span>{{ 'common_copy_label' | translate }}</span>
+				<i class="fa fa-copy"></i>
+			</button>
+		</rocket-embedded-entry>
 	</div>
 	
 	<rocket-si-add-past *ngIf="!toOne || !maxReached" [disabled]="maxReached" [obtainer]="obtainer"

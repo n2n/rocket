@@ -33,6 +33,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { deLocale, frLocale, itLocale, enGbLocale } from 'ngx-bootstrap/locale';
 import { GlightBoxDirective } from './glightbox/glight-box.directive';
+import { StructureToolbarDirective } from './structure/comp/structure/structure-toolbar.directive';
 
 defineLocale('de', deLocale);
 defineLocale('fr', frLocale);
@@ -45,7 +46,7 @@ defineLocale('en', enGbLocale);
 		StructureBranchComponent, PlainContentComponent, MessageComponent, BreadcrumbsComponent, NavPointDirective,
 		TogglerComponent, SearchInputGroupComponent, SimpleZoneContainerComponent, ButtonComponent, MessagesComponent,
 		IframeComponent, IFrameResizerDirective, IFrameResizerDirective, SelectComponent, UrlIframeComponent,
-		PaginationComponent, DatePickerComponent, TimePickerComponent, GlightBoxDirective
+		PaginationComponent, DatePickerComponent, TimePickerComponent, GlightBoxDirective, StructureToolbarDirective
 	],
 	imports: [
 		CommonModule,
@@ -60,6 +61,7 @@ defineLocale('en', enGbLocale);
 	exports: [
 		ContainerComponent,
 		StructureComponent,
+		StructureToolbarDirective,
 		StructureContentDirective,
 		StructureBranchComponent,
 		PlainContentComponent,

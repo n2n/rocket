@@ -1,17 +1,21 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
 import { Embe } from '../../model/embe/embe';
 import { EmbeStructure } from '../../model/embe/embe-structure';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { StructureToolbarDirective } from 'src/app/ui/structure/comp/structure/structure-toolbar.directive';
 
 @Component({
 	selector: 'rocket-embedded-entry',
 	templateUrl: './embedded-entry.component.html',
 	styleUrls: ['./embedded-entry.component.css']
 })
-export class EmbeddedEntryComponent /*implements OnInit */{
+export class EmbeddedEntryComponent {
 
 	@Input()
 	embeStructure: EmbeStructure;
+
+	@ContentChildren(StructureToolbarDirective)
+	private toolbarChildren: QueryList<any>;
 
 	get embe(): Embe {
 		return this.embeStructure.embe;
@@ -21,43 +25,7 @@ export class EmbeddedEntryComponent /*implements OnInit */{
 		return this.embeStructure.uiStructure;
 	}
 
-	// @Input()
-	// copyPool: CopyPool;
-
-	// private typeSelected: boolean|null = null;
-	// uiStructure: UiStructure;
-
-	// copy = new EventEmitter<void>();
-	// delete = new EventEmitter<void>();
-
-	// constructor(private translationService: TranslationService) { }
-
-	// ngOnInit() {
-	// 	this.copyControl = new SimpleSiControl(
-	// 				new SiButton(this.translationService.translate('common_copy_label'), 'btn btn-success rocket-important', 'fas fa-copy'),
-	// 				() => {
-	// 					this.copy.emit();
-	// 				});
-	// 	this.delteControl = new SimpleSiControl(
-	// 			new SiButton(this.translationService.translate('common_delete_label'), 'btn btn-danger', 'fas fa-trash'),
-	// 			() => {
-	// 				this.delete.emit();
-	// 			})
-	// }
-
-	// ngDoCheck() {
-	// 	if (this.typeSelected === this.embe.isTypeSelected()) {
-	// 		return;
-	// 	}
-
-	// 	if (!this.embe.isTypeSelected()) {
-	// 		this.embe.uiStructure.createToolbarChild()
-	// 	}
-	// }
-
-	// private createSiControls(comp: Embe) {
-	// 	return [
-	// 	];
-	// }
-
+	hasToolbar(): boolean {
+		return this.toolbarChildren && this.toolbarChildren.length > 0;
+	}
 }
