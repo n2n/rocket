@@ -35,6 +35,7 @@ use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\ei\manage\gui\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\content\impl\relation\SiEmbeddedEntry;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
@@ -128,6 +129,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
 	 * @param SiEntryInput $siEntryInputs
 	 * @throws CorruptedSiInputDataException
+	 * @return SiEmbeddedEntry[]
 	 */
 	function handleInput(array $siEntryInputs): array {
 		IllegalStateException::assertTrue(!$this->readOnly);
@@ -136,8 +138,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		$this->embeddedGuiCollection->fillUp();
 		
 		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
-		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
-		$this->eiu->field()->setValue($eiuEntries);
+		$targetEiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
+		$this->eiu->field()->setValue($targetEiuEntries);
 		
 		return $this->embeddedGuiCollection->createSiEmbeddedEntries();
 	}

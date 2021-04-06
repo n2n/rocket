@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { EmbeddedEntriesInModel } from '../embedded-entries-in-model';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { EmbeStructure } from '../../model/embe/embe-structure';
+import { CopyPool } from '../../model/embe/embe-copy-pool';
+import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 
 @Component({
 	selector: 'rocket-embedded-entries-in',
@@ -10,9 +12,12 @@ import { EmbeStructure } from '../../model/embe/embe-structure';
 })
 export class EmbeddedEntriesInComponent implements OnInit {
 	model: EmbeddedEntriesInModel;
+	copyPool: CopyPool;
 	obtainer: AddPasteObtainer;
 
-	constructor() { }
+	constructor(clipboard: ClipboardService) {
+		this.copyPool = new CopyPool(clipboard);
+	}
 
 	ngOnInit(): void {
 		this.obtainer = this.model.getAddPasteObtainer();

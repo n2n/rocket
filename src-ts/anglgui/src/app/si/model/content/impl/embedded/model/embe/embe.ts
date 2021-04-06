@@ -33,7 +33,7 @@ export class Embe {
 		}
 	}
 
-	clear() {
+	clear(): void {
 		this._siEmbeddedEntry = null;
 		this.uiStructure.model = null;
 		this.summaryUiStructure.model = null;

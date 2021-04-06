@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy, DoCheck, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, OnDestroy, DoCheck, HostBinding, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
 import { StructureContentDirective } from 'src/app/ui/structure/comp/structure/structure-content.directive';
 import { UiStructure } from '../../model/ui-structure';
 import { UiContent } from '../../model/ui-content';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { Subscription } from 'rxjs';
+import { StructureToolbarDirective } from './structure-toolbar.directive';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs';
 	templateUrl: './structure.component.html',
 	styleUrls: ['./structure.component.css']
 })
-export class StructureComponent implements OnInit, OnDestroy {
+export class StructureComponent implements OnInit, OnDestroy, AfterContentInit {
 	@Input()
 	labelVisible = true;
 	@Input()
@@ -27,13 +28,16 @@ export class StructureComponent implements OnInit, OnDestroy {
 	private _uiStructure: UiStructure;
 	private focusedSubscription: Subscription|null = null;
 
-	@ViewChild(StructureContentDirective, { static: true })
-	structureContentDirective: StructureContentDirective;
+	// @ViewChild(StructureContentDirective, { static: true })
+	// structureContentDirective: StructureContentDirective;
+
+	@ContentChildren(StructureToolbarDirective)
+	structureToolbarDirectives: QueryList<StructureToolbarDirective>;
 
 	constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
 	}
 
-	ngOnInit() {
+	ngOnInit(): void {
 // 		const componentFactory = this.componentFactoryResolver.resolveComponentFactory(CompactExplorerComponent);
 
 // 		const componentRef = this.zoneContentDirective.viewContainerRef.createComponent(componentFactory);
@@ -44,7 +48,10 @@ export class StructureComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	ngOnDestroy() {
+	ngAfterContentInit(): void {
+	}
+
+	ngOnDestroy(): void {
 		this.focusedSubscription.unsubscribe();
 		this.focusedSubscription = null;
 
@@ -103,7 +110,11 @@ export class StructureComponent implements OnInit, OnDestroy {
 		return this.uiStructure.isToolbarMassive();
 	}
 
-	private clear() {
+	hasCustomToolbar(): boolean {
+		return this.structureToolbarDirectives.length > 0;
+	}
+
+	private clear(): void {
 		this._uiStructure = null;
 	}
 
