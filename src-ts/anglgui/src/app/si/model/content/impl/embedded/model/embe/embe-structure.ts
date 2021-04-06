@@ -56,7 +56,7 @@ export class EmbeStructureCollection {
 		const embeStructures = new Array<EmbeStructure>();
 
 		const subscription = new Subscription();
-
+		console.log(this.embeCol.embes);
 		for (const embe of this.embeCol.embes) {
 			let embeStructure = this.splieEmbeStrucutre(embe);
 			if (!embeStructure) {

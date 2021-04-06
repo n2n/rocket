@@ -175,7 +175,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	openAll(): void {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().openAll().then((changed) => {
-			if (!changed) {
+			if (changed) {
 				this.embeStructureCollection.refresh();
 				this.updateDeleteToolbar();
 			}
