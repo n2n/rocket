@@ -164,21 +164,17 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 
 	open(embeStructure: EmbeStructure): void {
 		IllegalStateError.assertTrue(this.config.reduced);
-		this.getEmbeInUiStructureManager().open(embeStructure.embe).then((changed) => {
-			if (!changed) {
-				this.embeStructureCollection.refresh();
-				this.updateDeleteToolbar();
-			}
+		this.getEmbeInUiStructureManager().open(embeStructure.embe).then((/*changed*/) => {
+			this.embeStructureCollection.refresh();
+			this.updateDeleteToolbar();
 		});
 	}
 
 	openAll(): void {
 		IllegalStateError.assertTrue(this.config.reduced);
-		this.getEmbeInUiStructureManager().openAll().then((changed) => {
-			if (changed) {
-				this.embeStructureCollection.refresh();
-				this.updateDeleteToolbar();
-			}
+		this.getEmbeInUiStructureManager().openAll().then((/*changed*/) => {
+			this.embeStructureCollection.refresh();
+			this.updateDeleteToolbar();
 		});
 	}
 
@@ -427,8 +423,9 @@ class EmbeInUiZoneManager {
 				structure.dispose();
 
 				if (bakEmbeddedEntries) {
-					this.resetEmbeCol(bakEmbeddedEntries, bakEntries);
-					resolve(false);
+					this.resetEmbeCol(bakEmbeddedEntries, bakEntries).then(() => {
+						resolve(false);
+					});
 					return;
 				}
 
