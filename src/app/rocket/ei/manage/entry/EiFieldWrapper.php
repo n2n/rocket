@@ -85,6 +85,13 @@ class EiFieldWrapper implements EiFieldAbstraction {
 		$this->eiField->setValue($this->orgValue);
 	}
 	
+	/**
+	 * @return boolean
+	 */
+	function hasChanges() {
+		return $this->eiField->hasChanges();
+	}
+	
 	private function ensureOrgLoaded() {
 		if ($this->orgValueLoaded) {
 			return;

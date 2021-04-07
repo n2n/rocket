@@ -714,6 +714,13 @@ class EiuEntry {
 	/**
 	 * @return boolean
 	 */
+	function isUnsaved() {
+		return $this->eiEntry !== null && $this->eiEntry->hasChanges();
+	}
+	
+	/**
+	 * @return boolean
+	 */
 	function save(bool $insertIfNew = false) {
 		if (!$this->eiEntry->save()) {
 			return false;

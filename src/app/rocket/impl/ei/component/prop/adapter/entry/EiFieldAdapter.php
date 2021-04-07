@@ -31,6 +31,7 @@ abstract class EiFieldAdapter implements EiField {
 // 	protected $typeConstraint;
 	protected $valueLoaded = false;
 	protected $value;
+	private $changed = false;
 
 	public function __construct(/*TypeConstraint $typeConstraint = null*/) {
 // 		$this->typeConstraint = $typeConstraint;
@@ -91,6 +92,11 @@ abstract class EiFieldAdapter implements EiField {
 
 		$this->value = $value;
 		$this->valueLoaded = true;
+		$this->changed = true;
+	}
+	
+	final function hasChanges(): bool {
+		return $this->changed; 
 	}
 
 // 	/**
@@ -145,6 +151,7 @@ abstract class EiFieldAdapter implements EiField {
 		IllegalStateException::assertTrue($this->isWritable());
 		
 		$this->writeValue($this->value);
+		$this->changed = false;
 	}
 
 	protected abstract function writeValue($value);
