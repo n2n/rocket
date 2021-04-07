@@ -176,9 +176,11 @@ class EmbeddedGuiCollection {
 		return null;
 	}
 	
+	/**
+	 * @param SiEntryInput $siEntryInputs
+	 */
 	function handleSiEntryInputs(array $siEntryInputs) {
 		$newEiuEntryGuis = [];
-		
 		foreach ($siEntryInputs as $siEntryInput) {
 			CastUtils::assertTrue($siEntryInput instanceof SiEntryInput);
 			

@@ -152,11 +152,13 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		}
 
 		embeStructure.embe.siEmbeddedEntry = null;
+		this.embeInCol.writeEmbes();
 		this.getEmbeStructureCollection().refresh();
 		this.updateDeleteToolbar();
 
 		this.obtainer.obtainNew().then(siEmbeddedEntry => {
 			embeStructure.embe.siEmbeddedEntry = siEmbeddedEntry;
+			this.embeInCol.writeEmbes();
 			this.getEmbeStructureCollection().refresh();
 			this.updateDeleteToolbar();
 		});
