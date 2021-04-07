@@ -34,6 +34,7 @@ use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
+use n2n\util\type\ArgUtils;
 
 class UrlConfig extends PropConfigAdaption {
 	const ATTR_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
@@ -44,17 +45,21 @@ class UrlConfig extends PropConfigAdaption {
 	private static $commonNeedles = array('url', 'link');
 	private static $commonNotNeedles = array('label', 'title', 'text');
 	
-	private $autoScheme;
-	private $allowedSchemes = ['https', 'http'];
+	private $autoScheme = null;
+	private $allowedSchemes = null;
 	private $relativeAllowed = false;
 	private $lytebox = false;
 	
 	
-	public function setAllowedSchemes(array $allowedSchemes) {
+	public function setAllowedSchemes(?array $allowedSchemes) {
+		ArgUtils::valArray($allowedSchemes, 'string', true);
 		$this->allowedSchemes = $allowedSchemes;
 	}
 	
-	public function getAllowedSchemes(): array {
+	/**
+	 * @return string[]|null
+	 */
+	public function getAllowedSchemes() {
 		return $this->allowedSchemes;
 	}
 	
@@ -106,8 +111,10 @@ class UrlConfig extends PropConfigAdaption {
 		}
 		
 		if ($dataSet->contains(self::ATTR_ALLOWED_PROTOCOLS_KEY)) {
-			$this->setAllowedSchemes($dataSet->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY,
-					true, array(), TypeConstraint::createSimple('string')));
+			$this->allowedSchemes = $dataSet->optArray(self::ATTR_ALLOWED_PROTOCOLS_KEY, 'string', null, true);
+			if (empty($this->allowedSchemes)) {
+				$this->allowedSchemes = null;
+			}
 		}
 		
 		if ($dataSet->contains(self::ATTR_AUTO_SCHEME_KEY)) {
@@ -129,7 +136,7 @@ class UrlConfig extends PropConfigAdaption {
 	
 		$magCollection->addMag(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
 				new StringArrayMag('Allowed protocols', $lar->getArray(self::ATTR_ALLOWED_PROTOCOLS_KEY, 
-						TypeConstraint::createSimple('string'), $this->getAllowedSchemes())));
+						TypeConstraint::createSimple('string'), (array) $this->getAllowedSchemes())));
 	
 		$magCollection->addMag(self::ATTR_AUTO_SCHEME_KEY, 
 				new StringMag('Auto scheme', $lar->getString(self::ATTR_AUTO_SCHEME_KEY, 
@@ -143,8 +150,8 @@ class UrlConfig extends PropConfigAdaption {
 		$dataSet->set(self::ATTR_RELATIVE_ALLOWED_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_RELATIVE_ALLOWED_KEY)->getValue());
 
-		$dataSet->set(self::ATTR_ALLOWED_PROTOCOLS_KEY, $magCollection
-				->getMagByPropertyName(self::ATTR_ALLOWED_PROTOCOLS_KEY)->getValue());
+		$allowedProtocols = $magCollection->getMagByPropertyName(self::ATTR_ALLOWED_PROTOCOLS_KEY)->getValue();
+		$dataSet->set(self::ATTR_ALLOWED_PROTOCOLS_KEY, empty($allowedProtocols) ? null : $allowedProtocols);
 		
 		$dataSet->set(self::ATTR_AUTO_SCHEME_KEY, $magCollection
 				->getMagByPropertyName(self::ATTR_AUTO_SCHEME_KEY)->getValue());
