@@ -3,14 +3,15 @@
 		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer" 
 					(newEntry)="model.addBefore(embeStructure, $event)"></rocket-si-add-past>
 
-		<div *ngIf="embeStructure.embe.isPlaceholder()">
+		<div *ngIf="embeStructure.embe.isPlaceholder()" class="rocket-summary rocket-summary-ghost">
 			<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 				<i class="fa fa-bars"></i>
 			</div>
+			<div class="rocket-si-qualifier">
+				<div class="rocket-loader"></div>
+			</div>
 
-			<div class="rocket-loader"></div>
-
-			<div>
+			<div class="rocket-simple-commands">
 				<button class="btn btn-danger">
 					<span>{{ 'common_delete_label' | translate }}</span>
 					<i class="fa fa-trash-alt"></i>
