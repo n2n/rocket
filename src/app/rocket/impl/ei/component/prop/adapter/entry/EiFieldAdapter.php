@@ -78,11 +78,16 @@ abstract class EiFieldAdapter implements EiField {
 			return $this->value;
 		}
 		
-		$this->value = $this->readValue();
-		$this->valueLoaded = true;
+		$this->read();
 
 		return $this->value;
 	}
+	
+	public final function read() {
+		$this->value = $this->readValue();
+		$this->valueLoaded = true;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\entry\EiField::setValue()

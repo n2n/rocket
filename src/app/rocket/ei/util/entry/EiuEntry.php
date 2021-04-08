@@ -721,7 +721,7 @@ class EiuEntry {
 	/**
 	 * @return boolean
 	 */
-	function save(bool $insertIfNew = false) {
+	function save(/*bool $insertIfNew = false*/) {
 		if (!$this->eiEntry->save()) {
 			return false;
 		}

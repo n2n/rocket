@@ -56,10 +56,18 @@ class EiuField {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\entry\EiField
+	 * @return \rocket\ei\manage\entry\EiFieldWrapper
 	 */
-	public function getEiField() {
-		return $this->eiuEntry->getEiEntry()->getEiField($this->eiPropPath);
+	private function getEiFieldWrapper() {
+		return $this->eiuEntry->getEiEntry()->getEiFieldWrapper($this->eiPropPath);
+	}
+	
+	function isDirty() {
+		return $this->getEiFieldWrapper()->hasChanges();
+	}
+	
+	function read() {
+		return $this->getEiFieldWrapper()->read();
 	}
 	
 	public function getEiuEntry() {

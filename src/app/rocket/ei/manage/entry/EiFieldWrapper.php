@@ -88,8 +88,12 @@ class EiFieldWrapper implements EiFieldAbstraction {
 	/**
 	 * @return boolean
 	 */
-	function hasChanges() {
+	final function hasChanges() {
 		return $this->eiField->hasChanges();
+	}
+	
+	final function read() {
+		$this->eiField->read();
 	}
 	
 	private function ensureOrgLoaded() {

@@ -56,11 +56,14 @@ interface EiField {
 	 */
 	public function validate(EiFieldValidationResult $eiEiFieldValidationResult);
 	
+	function read();
+	
 	/**
 	 * Security can be ignored
 	 * @return boolean
 	 */
 	public function isWritable(): bool;
+	
 	
 	/**
 	 * 
