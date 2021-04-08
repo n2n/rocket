@@ -2,6 +2,7 @@
 	use n2n\impl\web\ui\view\html\HtmlView;
 	use rocket\core\model\AnglTemplateModel;
 use n2n\core\N2N;
+use rocket\core\model\Rocket;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
@@ -12,9 +13,9 @@ use n2n\core\N2N;
 		$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
 		$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
 	} else {
-		$html->meta()->bodyEnd()->addJs('angl/runtime.js', null, false, false, ['defer']);
-		$html->meta()->bodyEnd()->addJs('angl/polyfills.js', null, false, false, ['defer']);
-		$html->meta()->bodyEnd()->addJs('angl/main.js', null, false, false, ['defer']);
+		$html->meta()->bodyEnd()->addJs('angl/runtime.js?v=' . Rocket::VERSION, null, false, false, ['defer']);
+		$html->meta()->bodyEnd()->addJs('angl/polyfills.js?v=' . Rocket::VERSION, null, false, false, ['defer']);
+		$html->meta()->bodyEnd()->addJs('angl/main.js?v=' . Rocket::VERSION, null, false, false, ['defer']);
 	}
 	
 // 	$html->meta()->bodyEnd()->addCssUrl('https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css');
