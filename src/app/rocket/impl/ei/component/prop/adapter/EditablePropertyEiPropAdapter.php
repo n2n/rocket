@@ -73,8 +73,8 @@ abstract class EditablePropertyEiPropAdapter extends DisplayablePropertyEiPropAd
 				
 		if ($this->getEditConfig()->isMandatory()) {
 			$eifField->val(Validators::mandatory());
-// 			ValidationMessages::mandatory($eiu->prop()->getLabel())
 		}
+		
 		return $eifField;
 	}
 	

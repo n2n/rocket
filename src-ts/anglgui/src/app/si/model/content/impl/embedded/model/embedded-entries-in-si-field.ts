@@ -43,14 +43,14 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	private validate(): void {
 		this.messagesCollection.clear();
 
-		const values = this.getTypeSelectedValues();
+//		const values = this.getTypeSelectedValues();
 
-		if (values.length < this.config.min) {
-			this.messagesCollection.push(Message.createCode('min_elements_err',
-					new Map([['{field}', this.label], ['{min}', this.config.min.toString()]])));
-		}
+//		if (this.values.length < this.config.min) {
+//			this.messagesCollection.push(Message.createCode('min_elements_err',
+//					new Map([['{field}', this.label], ['{min}', this.config.min.toString()]])));
+//		}
 
-		if (this.config.max !== null && values.length > this.config.max) {
+		if (this.config.max !== null && this.values.length > this.config.max) {
 			this.messagesCollection.push(Message.createCode('max_elements_err',
 					new Map([['{field}', this.label], ['{max}', this.config.max.toString()]])));
 		}

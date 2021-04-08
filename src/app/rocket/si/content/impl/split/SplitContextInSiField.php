@@ -250,7 +250,6 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			}
 			
 			$siEntry->handleInput(SiEntryInput::parse($entryInputData));
-			
 			if ($lazy) {
 				$preSplitContent = $this->splitContents[$key];
 				$this->splitContents[$key] = SiSplitContent::createEntry($preSplitContent->getLabel(), $siEntry)

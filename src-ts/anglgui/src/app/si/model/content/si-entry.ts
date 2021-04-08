@@ -47,7 +47,6 @@ export class SiEntry {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id + '; available buildup ids: '
 					+ Array.from(this._entryBuildupsMap.keys()).join(', '));
 		}
-
 		if (this.selectedEntryBuildupId !== id) {
 			this.selectedTypeIdSubject.next(id);
 		}
@@ -138,6 +137,10 @@ export class SiEntry {
 // 	}
 
 	readInput(): SiEntryInput {
+		if (this.replacementEntry) {
+			throw new IllegalSiStateError('SiEntry already replaced!');
+		}
+		
 		const fieldInputMap = new Map<string, object>();
 
 		for (const [id, field] of this.selectedEntryBuildup.getFieldMap()) {

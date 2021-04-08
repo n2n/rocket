@@ -288,6 +288,19 @@ class EiEntry {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	function hasChanges() {
+		foreach ($this->eiFieldMap->getWrappers() as $wrapper) {
+			if ($wrapper->hasChanges()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param mixed $value
 	 * @return boolean

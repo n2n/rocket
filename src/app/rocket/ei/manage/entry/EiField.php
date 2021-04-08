@@ -38,6 +38,8 @@ interface EiField {
 	 */
 	public function setValue($value);
 	
+	function hasChanges(): bool;
+	
 	/**
 	 * @param mixed $value
 	 * @return bool

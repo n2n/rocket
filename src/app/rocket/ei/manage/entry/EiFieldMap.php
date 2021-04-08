@@ -87,6 +87,9 @@ class EiFieldMap {
 		throw new UnknownEiFieldExcpetion('No EiField defined for id \'' . $id . '\'.');
 	}
 	
+	/**
+	 * @return EiFieldWrapper[]
+	 */
 	function getWrappers() {
 		return $this->eiFieldWrappers;
 	}

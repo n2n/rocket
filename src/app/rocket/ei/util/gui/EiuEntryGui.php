@@ -37,6 +37,8 @@ use n2n\l10n\N2nLocale;
 use rocket\si\input\SiEntryInput;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ei\util\spec\EiuType;
+use n2n\util\ex\IllegalStateException;
 
 class EiuEntryGui {
 	private $eiEntryGui;
@@ -101,6 +103,18 @@ class EiuEntryGui {
 	 */
 	function isTypeSelected() {
 		return $this->eiEntryGui->isTypeDefSelected();
+	}
+	
+	/**
+	 * @return \rocket\ei\util\spec\EiuType
+	 * @throws IllegalStateException if $required true and not type is selected.
+	 */
+	function selectedType(bool $required = true) {
+		if (!$this->isTypeSelected()) {
+			if (!$required) return null;			
+		}
+		
+		return new EiuType($this->eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType(), $this->eiuAnalyst);
 	}
 	
 	/**

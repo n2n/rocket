@@ -54,8 +54,6 @@ class RelationVetoableActionListener implements EiLifecycleListener {
 		$eiObject = $vetoableRemoveAction->getEiObject();
 		if ($eiObject->isDraft()) return;
 				
-		test((string) $this->relationModel->getLabelLstr());
-		test(get_class($eiObject->getEiEntityObj()->getEntityObj()));
 		$vetoCheck = new VetoCheck($this->relationModel, $eiObject->getEiEntityObj(), $vetoableRemoveAction, 
 				$n2nContext);
 		
@@ -211,7 +209,7 @@ class VetoCheck {
 		
 		IllegalStateException::assertTrue($currentTargetEntityObjs instanceof \ArrayObject);
 		
-		$targetEntityObj = $this->targetEiEntityObj->getLiveObject();
+		$targetEntityObj = $this->targetEiEntityObj->getEntityObj();
 		foreach ($currentTargetEntityObjs as $key => $currentTargetEntityObj) {
 			if ($currentTargetEntityObj === $targetEntityObj) {
 				$currentTargetEntityObjs->offsetUnset($key);
