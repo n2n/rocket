@@ -155,17 +155,16 @@ class ThumbResolver {
 			$tfm = $eiu->lookup(TmpFileManager::class);
 			CastUtils::assertTrue($tfm instanceof TmpFileManager);
 			
-			return $tfm->getSessionFile($fileId->getQualifiedName(), 
+			$file = $tfm->getSessionFile($fileId->getQualifiedName(), 
 					$eiu->getN2nContext()->getHttpContext()->getSession());
+			if ($file !== null) {
+				return $file;
+			}
 		}
 		
 		$file = $eiu->field()->getValue();
-		CastUtils::assertTrue($file instanceof File);
-		if ($file !== null && $fileId->matches($file)) {
-			return $file;
-		}
-		
-		return null;
+		CastUtils::assertTrue($file instanceof File || $file === null);
+		return $file;
 	}
 		
 	/**

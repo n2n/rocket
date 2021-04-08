@@ -32,7 +32,6 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuCtrl;
-use rocket\impl\ei\component\command\common\controller\PathUtils;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
 use n2n\io\managed\File;
 use gallery\core\model\Breadcrumb;

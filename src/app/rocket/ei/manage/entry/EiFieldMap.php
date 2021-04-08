@@ -7,6 +7,9 @@ class EiFieldMap {
 	private $eiEntry;
 	private $forkEiPropPath;
 	private $object;
+	/**
+	 * @var EiFieldWrapper[]
+	 */
 	private $eiFieldWrappers = array();
 	
 	/**
@@ -121,6 +124,12 @@ class EiFieldMap {
 		}
 	}
 	
+	function read() {
+		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+			$eiFieldWrapper->read();
+		}
+	}
+	
 	function write() {
 		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored() || !$eiFieldWrapper->isWritable(true)) {
@@ -130,6 +139,5 @@ class EiFieldMap {
 			$eiFieldWrapper->write();
 		}
 	}
-	
 	
 }

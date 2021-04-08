@@ -284,8 +284,6 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 			
 			$imageFile->setThumbCut($imageDimension, $siImageDimension->getThumbCut());
 		}
-		
-		
 	}
 	
 	/**
@@ -299,8 +297,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter implements IdNameEiProp 
 		}
 		
 		CastUtils::assertTrue($file instanceof File);
-		return $this->thumbResolver->createSiFile($file, $eiu, 
-				$this->fileVerificator->isImageRecognized());
+		return $this->thumbResolver->createSiFile($file, $eiu, $this->fileVerificator->isImageRecognized());
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
@@ -366,7 +363,7 @@ class SiFileHanlderImpl implements SiFileHandler {
 					->t($this->eiu->getN2nLocale()));
 		}
 
-		if (null !== ($message = $this->fileVerificator->validate($file))){
+		if (null !== ($message = $this->fileVerificator->validate($file))) {
 			return SiUploadResult::createError($message->t($this->eiu->getN2nLocale()));
 		}
 		
