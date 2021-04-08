@@ -157,6 +157,8 @@ class ThumbResolver {
 			
 			$file = $tfm->getSessionFile($fileId->getQualifiedName(), 
 					$eiu->getN2nContext()->getHttpContext()->getSession());
+			// Could be a FileId of unupdated but already save frontend entry. In this case there will be no matching 
+			// session file and the current field value should be returned.
 			if ($file !== null) {
 				return $file;
 			}
