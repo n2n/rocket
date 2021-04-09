@@ -45,7 +45,7 @@ class SiCallResult implements \JsonSerializable {
 	 * @return \rocket\ei\manage\api\SiCallResult
 	 */
 	static function fromInputError(SiInputError $inputError) {
-		return new SiCallResult($inputError, null);
+		return new SiCallResult($inputError, null, null);
 	}
 	
 	/**
