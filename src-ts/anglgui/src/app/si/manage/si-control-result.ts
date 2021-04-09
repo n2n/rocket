@@ -8,10 +8,15 @@ import { SiEntry } from '../model/content/si-entry';
 export interface SiControlResult {
 	inputError?: SiInputError;
 	callResponse?: SiCallResponse;
+	inputResult?: SiInputResult;
 }
 
 export class SiInputError {
 	public errorEntries = new Map<string, SiEntry>();
+}
+
+export class SiInputResult {
+	public entries = new Map<string, SiEntry>();
 }
 
 export class SiCallResponse {

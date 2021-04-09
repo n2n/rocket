@@ -146,7 +146,11 @@ export class SiUiService {
 
 	private handleControlResult(result: SiControlResult, inputEntries: SiEntry[], uiLayer: UiLayer): void {
 		if (result.inputError) {
-			this.handleEntryErrors(result.inputError.errorEntries, inputEntries);
+			this.replaceEntries(result.inputError.errorEntries, inputEntries);
+		}
+
+		if (result.inputResult) {
+			this.replaceEntries(result.inputResult.entries, inputEntries);
 		}
 
 		switch (result.callResponse?.directive) {
@@ -160,14 +164,10 @@ export class SiUiService {
 
 	}
 
-	private handleEntryErrors(errorEntries: Map<string, SiEntry>, entries: SiEntry[]): void {
+	private replaceEntries(errorEntries: Map<string, SiEntry>, entries: SiEntry[]): void {
 		if (entries.length === 0) {
 			return;
 		}
-
-		// for (const entry of entries) {
-		// 	entry.resetError();
-		// }
 
 		for (const [key, errorEntry] of errorEntries) {
 			if (!entries[key]) {

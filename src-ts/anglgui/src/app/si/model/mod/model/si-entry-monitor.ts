@@ -177,7 +177,9 @@ class ReloadJob {
 
 	private handleResults(results: SiGetResult[], entries: SiEntry[]): void {
 		for (const i of results.keys()) {
-			entries[i].replace(results[i].entry);
+			if (entries[i].isAlive()) {
+				entries[i].replace(results[i].entry);
+			}
 		}
 	}
 }

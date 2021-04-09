@@ -459,7 +459,7 @@ class EiuCtrl {
 			return SiCallResult::fromInputError($siInputError);
 		}
 		
-		return SiCallResult::fromCallResponse($process->callGuiControl());
+		return SiCallResult::fromCallResponse($process->callGuiControl(), isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null);
 	}
 	
 	function forwardUrlIframeZone(Url $url, string $title = null) {

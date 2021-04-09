@@ -155,7 +155,8 @@ class ApiController extends ControllerAdapter {
 			return;
 		}
 		
-		$this->sendJson(SiCallResult::fromCallResponse($callProcess->callGuiControl()));
+		$this->sendJson(SiCallResult::fromCallResponse($callProcess->callGuiControl(),
+				($entryInputMaps !== null ? $callProcess->createSiInputResult() : null)));
 	}
 	
 	function doCallField(ParamPost $style, ParamPost $apiCallId, ParamPost $data) {

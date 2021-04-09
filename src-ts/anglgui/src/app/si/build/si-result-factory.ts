@@ -1,7 +1,7 @@
 
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
-import { SiCallResponse, SiDirective, SiControlResult, SiInputError } from '../manage/si-control-result';
+import { SiCallResponse, SiDirective, SiControlResult, SiInputError, SiInputResult } from '../manage/si-control-result';
 import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 import { Injector } from '@angular/core';
@@ -26,7 +26,8 @@ export class SiResultFactory {
 		}
 
 		return {
-			callResponse: this.createCallResponse(extr.reqObject('callResponse'))
+			callResponse: this.createCallResponse(extr.reqObject('callResponse')),
+			inputResult: this.buildInputResult(extr.nullaObject('inputResult'), declaration)
 		};
 	}
 
@@ -37,6 +38,19 @@ export class SiResultFactory {
 			inputError.errorEntries.set(eeKey, entryFactory.createEntry(eeData));
 		}
 		return inputError;
+	}
+
+	buildInputResult(data: any, declaration: SiDeclaration): SiInputResult|null {
+		if (!data) {
+			return null;
+		}
+
+		const inputResult = new SiInputResult();
+		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
+			inputResult.entries.set(eeKey, entryFactory.createEntry(eeData));
+		}
+		return inputResult;
 	}
 
 	createCallResponse(data: any): SiCallResponse {
