@@ -88,7 +88,7 @@ export class SiService {
 					const resultFactory = new SiBuildTypes.SiResultFactory(this.injector);
 					const result = resultFactory.createControlResult(data, input?.declaration);
 					if (result.callResponse) {
-						this.handleCallresponse(result.callResponse);
+						this.handleCallResponse(result.callResponse);
 					}
 					return result;
 				}));
@@ -159,12 +159,12 @@ export class SiService {
 				.post(apiUrl, sortRequest)
 				.pipe(map(data => {
 					const callResponse = resultFactory.createCallResponse(data);
-					this.handleCallresponse(callResponse);
+					this.handleCallResponse(callResponse);
 					return callResponse;
 				}));
 	}
 
-	private handleCallresponse(result: SiCallResponse): void {
+	private handleCallResponse(result: SiCallResponse): void {
 		this.modState.pushModEvent(result.modEvent);
 		this.modState.pushMessages(result.messages);
 	}

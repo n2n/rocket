@@ -177,6 +177,24 @@ class SiInputError implements \JsonSerializable {
 	}
 }
 
+class SiInputResult implements \JsonSerializable {
+	private $entries;
+	
+	/**
+	 * @param SiEntry[] $entries
+	 */
+	function __construct(array $entries) {
+		ArgUtils::valArray($entries, SiEntry::class);
+		$this->entries = $entries;
+	}
+	
+	function jsonSerialize() {
+		return [
+			'entries' => $this->entries
+		];
+	}
+}
+
 // class SiEntryError implements \JsonSerializable {
 // 	// 	/**
 // 	// 	 * @var string[]

@@ -46,6 +46,8 @@ use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\gui\EiGui;
 use rocket\si\input\SiInputError;
 use rocket\ei\manage\entry\EiEntry;
+use n2n\util\ex\NotYetImplementedException;
+use rocket\si\input\SiInputResult;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -210,6 +212,7 @@ class ApiControlProcess {
 							. ' Entry Input Id: ' . $entryInput->getIdentifier()->getId());
 				}
 				
+				$this->inputEiEntries[$key] = $this->eiEntry;
 				$eiEntryGui = $this->eiGuiModel->createEiEntryGuiVariation($this->eiFrame, $this->eiEntry);
 				$this->eiGui->addEiEntryGui($eiEntryGui);
 			} else {
@@ -220,11 +223,11 @@ class ApiControlProcess {
 					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getTypeId());
 				}
 				
-				$this->inputEiEntries[] = $eiEntry = $this->eiFrame->createEiEntry($eiObject);
-				$eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $this->eiGuiModel->getViewMode());
-				
+				$this->inputEiEntries[$key] = $eiEntry = $this->eiFrame->createEiEntry($eiObject);
 				$eiEntryGui = $eiGuiModel->createEiEntryGui($this->eiFrame, [$eiEntry], $this->eiGui);
 			}
+			
+			$this->inputEiEntryGui[$key] = $eiEntryGui;
 			
 			$this->applyEntryInput($entryInput, $eiEntryGui);
 			
@@ -240,6 +243,21 @@ class ApiControlProcess {
 		}
 		
 		return new SiInputError($siEntries);
+	}
+	
+	/**
+	 * @return \rocket\si\input\SiInputResult
+	 */
+	function createSiInputResult() {
+		$siEntries = [];
+		foreach ($this->inputEiEntryGuis as $key => $inputEiEntryGui) {
+			$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($this->inputEiEntries[$key]->getEiObject());
+			$eiGuiModel = $inputEiEntryGui->getEiGui()->getEiGuiModel();
+			$eiGui = new EiGui($eiGuiModel);
+			$eiGui->appendEiEntryGui($this->eiFrameUtil->getEiFrame(), [$eiEntry]);
+			$siEntries[$key] = $eiGui->createSiEntry($this->eiFrameUtil->getEiFrame());
+		}
+		return new SiInputResult($siEntries);
 	}
 	
 	/**

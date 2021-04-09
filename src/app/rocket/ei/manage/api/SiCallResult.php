@@ -23,25 +23,28 @@ namespace rocket\ei\manage\api;
 
 use rocket\si\input\SiInputError;
 use rocket\si\control\SiCallResponse;
+use rocket\si\input\SiInputResult;
 
 class SiCallResult implements \JsonSerializable {
 	private $inputError;
 	private $callResponse;
+	private $inputResult;
 	
 	/**
 	 * @param SiInputError $inputError
 	 * @param SiCallResponse $callResponse
 	 */
-	private function __construct(?SiInputError $inputError, ?SiCallResponse $callResponse) {
+	private function __construct(?SiInputError $inputError, ?SiCallResponse $callResponse, ?SiInputResult $inputResult) {
 		$this->inputError = $inputError;
 		$this->callResponse = $callResponse;
+		$this->inputResult = $inputResult;
 	}
 	
 	/**
 	 * @param SiInputError $inputError
 	 * @return \rocket\ei\manage\api\SiCallResult
 	 */
-	static function fromInputError(?SiInputError $inputError) {
+	static function fromInputError(SiInputError $inputError) {
 		return new SiCallResult($inputError, null);
 	}
 	
@@ -49,8 +52,8 @@ class SiCallResult implements \JsonSerializable {
 	 * @param SiCallResponse $callResponse
 	 * @return \rocket\ei\manage\api\SiCallResult
 	 */
-	static function fromCallResponse(?SiCallResponse $callResponse) {
-		return new SiCallResult(null, $callResponse);
+	static function fromCallResponse(SiCallResponse $callResponse, ?SiInputResult $inputResult) {
+		return new SiCallResult(null, $callResponse, $inputResult);
 	}
 	
 	/**
@@ -60,7 +63,8 @@ class SiCallResult implements \JsonSerializable {
 	function jsonSerialize() {
 		return [
 			'inputError' => $this->inputError,
-			'callResponse' => $this->callResponse
+			'callResponse' => $this->callResponse,
+			'inputResult' => $this->inputResult
 		];
 	}
 }

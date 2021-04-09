@@ -39,6 +39,11 @@ use n2n\web\http\ForbiddenException;
 use rocket\si\input\SiInput;
 use n2n\util\type\ArgUtils;
 use rocket\si\input\SiInputError;
+use n2n\util\ex\NotYetImplementedException;
+use rocket\si\input\SiInputResult;
+use rocket\ei\manage\gui\EiGui;
+use rocket\ei\manage\gui\EiGuiModel;
+use rocket\ei\manage\entry\EiEntry;
 
 class ZoneApiControlProcess /*extends IdPath*/ {
 	private $eiFrameUtil;
@@ -120,7 +125,14 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 		}
 	}
 	
+	/**
+	 * @var EiEntry
+	 */
 	private $inputEiEntries = [];
+	/**
+	 * @var EiEntryGui[]
+	 */
+	private $inputEiEntryGuis = [];
 	
 	/**
 	 * @param SiInput $siInput
@@ -158,7 +170,8 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 			
 			$eiEntryGui->save();
 			
-			$this->inputEiEntries[] = $eiEntry;
+			$this->inputEiEntries[$key] = $eiEntry;
+			$this->inputEiEntryGuis[$key] = $eiEntryGui;
 			
 			if ($eiEntry->validate()) {
 				continue;
@@ -172,6 +185,21 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 		}
 		
 		return new SiInputError($errorEntries);
+	}
+	
+	/**
+	 * @return \rocket\si\input\SiInputResult
+	 */
+	function createSiInputResult() {
+		$siEntries = [];
+		foreach ($this->inputEiEntryGuis as $key => $inputEiEntryGui) {
+			$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($this->inputEiEntries[$key]->getEiObject());
+			$eiGuiModel = $inputEiEntryGui->getEiGui()->getEiGuiModel();
+			$eiGui = new EiGui($eiGuiModel);
+			$eiGui->appendEiEntryGui($this->eiFrameUtil->getEiFrame(), [$eiEntry]);
+			$siEntries[$key] = $eiGui->createSiEntry($this->eiFrameUtil->getEiFrame());
+		}
+		return new SiInputResult($siEntries);
 	}
 	
 	/**
