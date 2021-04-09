@@ -308,8 +308,8 @@ export class SiEntry {
 
 
 	markAsOutdated(): void {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN || this.state === SiEntryState.LOCKED,
-				'SiEntry not clean or locked: ' + this.state);
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN || this.state === SiEntryState.LOCKED
+				|| this.state === SiEntryState.OUTDATED, 'SiEntry not outdated, clean or locked: ' + this.state);
 		this.stateSubject.next(SiEntryState.OUTDATED);
 	}
 
