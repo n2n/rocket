@@ -21,6 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\file\command\controller;
 
+use n2n\io\managed\File;
 use n2n\io\managed\img\ImageDimension;
 use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\impl\TmpFileManager;
@@ -30,17 +31,17 @@ use n2n\web\http\BadRequestException;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuCtrl;
+use rocket\impl\ei\component\prop\file\FileEiProp;
+use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
-use n2n\io\managed\File;
-use gallery\core\model\Breadcrumb;
 
 class ThumbController extends ControllerAdapter {	
-	/**
-	 * @var ThumbResolver
-	 */
-	private $thumbResolver;
+// 	/**
+// 	 * @var ThumbResolver
+// 	 */
+// 	private $thumbResolver;
+	private $fileEiProp;
 	private $eiuCtrl;
 	private $dtc;
 	
@@ -49,9 +50,13 @@ class ThumbController extends ControllerAdapter {
 		$this->dtc = $dtc;
 	}
 	
-	public function setThumbResolver(ThumbResolver $thumbResolver) {
-		$this->thumbResolver = $thumbResolver;
+	function setEiPropPath(EiPropPath $fileEiProp) {
+		$this->fileEiProp = $fileEiProp;
 	}
+	
+// 	public function setThumbResolver(ThumbResolver $thumbResolver) {
+// 		$this->thumbResolver = $thumbResolver;
+// 	}
 	
 // 	public function index($pid, ParamQuery $refPath, ParamQuery $selected = null) {
 // 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
@@ -122,40 +127,6 @@ class ThumbController extends ControllerAdapter {
 		
 // 		return $imageDimensions;
 // 	}
-	
-	
-	private function applyBreadcrumbs(EiObject $eiObject) {
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		
-		if (!$eiFrame->isOverviewDisabled()) {
-			$this->eiuCtrl->applyBreadcrumbs($eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
-		}
-		
-		if (!$eiFrame->isDetailDisabled()) {
-			$this->eiuCtrl->applyBreadcrumbs($eiFrame->createDetailBreadcrumb($this->getHttpContext(), $eiObject));
-		}
-		
-// 		if ($eiObject->isDraft()) {			
-// 			$breadcrumbPath = $request->getControllerContextPath($eiFrame->getControllerContext(),
-// 					$this->eiType->getEntryDetailPathExt($eiObject->toEntryNavPoint(
-// 							$eiFrame->getPreviewType())->copy(false, true)));
-// 			$breadcrumbLabel = $eiObject->getDraft()->getName();
-// 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
-// 		}
-		
-// 		if ($eiObject->hasTranslation()) {
-// 			$breadcrumbPath = $request->getControllerContextPath($eiFrame->getControllerContext(),
-// 					$this->eiType->getEntryDetailPathExt($eiObject->toEntryNavPoint(
-// 							$eiFrame->getPreviewType())->copy(true, true)));
-// 			$breadcrumbLabel = $this->dtc->translate('ei_impl_translation_detail_bradcrumb' ,
-// 			$this->rocketState->addBreadcrumb(new Breadcrumb($breadcrumbPath, $breadcrumbLabel));
-// 		}
-		
-		$breadcrumbPath = $this->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())
-				->ext(PathUtils::createPathExtFromEntryNavPoint($this->fileEiProp->getThumbEiCommand(), 
-						$eiObject->toEntryNavPoint()));
-			$this->eiuCtrl->applyBreadcrumbs(new Breadcrumb($breadcrumbPath, $this->fileEiProp->getLabelLstr()));
-	}
 	
 	function doFile($pid) {
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);

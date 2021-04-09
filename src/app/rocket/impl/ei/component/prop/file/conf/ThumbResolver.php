@@ -121,7 +121,7 @@ class ThumbResolver {
 		} else {
 			$siFile->setUrl($this->createFileUrl($eiu, $eiu->entry()->getPid()));
 		}
-		
+
 		if (!$imageSupported) {
 			return $siFile;
 		}

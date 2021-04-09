@@ -730,17 +730,21 @@ class EiuEntry {
 			return true;
 		}
 		
-		$entityObj = $this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj();
+		$eiEntityObj = $this->eiEntry->getEiObject()->getEiEntityObj();
 		$nestedSetStrategy = $this->eiEntry->getEiType()->getNestedSetStrategy();
 		$em = $this->eiuAnalyst->getEiFrame(true)->getManageState()->getEntityManager();
 		if ($nestedSetStrategy === null) {
-			$em->persist($entityObj);
+			$em->persist($eiEntityObj->getEntityObj());
 			$em->flush();
+			$eiEntityObj->refreshId();
+			$eiEntityObj->setPersistent(true);
 			return true;
 		}
 		
 		$nsu = $this->createNestedSetUtils($nestedSetStrategy);
-		$nsu->insert($entityObj);
+		$nsu->insert($eiEntityObj->getEntityObj());
+		$eiEntityObj->refreshId();
+		$eiEntityObj->setPersistent(true);
 		return true;
 	}
 	

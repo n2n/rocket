@@ -26,11 +26,18 @@ use rocket\impl\ei\component\prop\file\command\controller\ThumbController;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
+use rocket\ei\EiPropPath;
 
 class ThumbEiCommand extends EiCommandAdapter {
 	const ID_BASE = 'thumb';
 	
-	private $thumbResolver;
+	private $eiPropPath;
+// 	private $thumbResolver;
+	
+	function __construct(EiPropPath $eiPropPath/*, ThumbResolver $thumbResolver*/) {
+		$this->eiPropPath = $eiPropPath;
+// 		$this->thumbResolver = $thumbResolver;
+	}
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -46,7 +53,8 @@ class ThumbEiCommand extends EiCommandAdapter {
 		
 	public function lookupController(Eiu $eiu): Controller {
 		$thumbController = $eiu->lookup(ThumbController::class);
-// 		$thumbController->setThubResolver($this->thumbResolver);
+		$thumbController->setEiPropPath($this->eiPropPath);
+// 		$thumbController->setThumbResolve($this->thumbResolver);
 		return $thumbController;
 	}
 }

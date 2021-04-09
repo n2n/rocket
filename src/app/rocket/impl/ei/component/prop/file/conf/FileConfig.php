@@ -108,7 +108,7 @@ class FileConfig extends PropConfigAdaption {
 			$this->setupExtraImageDimensions($dataSet);
 		}
 		
-		$thumbEiCommand = new ThumbEiCommand();
+		$thumbEiCommand = new ThumbEiCommand($this->fileModel->getEiPropPath());
 		$eiu->mask()->supremeMask()->addEiCommand($thumbEiCommand);
 		$this->thumbResolver->setThumbEiCommand($thumbEiCommand);
 		
