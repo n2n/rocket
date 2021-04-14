@@ -4,7 +4,7 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { OpModule } from 'src/app/op/op.module';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UtilModule } from './util/util.module';
 import { AppStateService } from './app-state.service';
 
@@ -17,9 +17,8 @@ registerLocaleData(localeDeCh);
 	AppComponent
 	],
 	imports: [
-		BrowserAnimationsModule,
-		NoopAnimationsModule,
 		BrowserModule,
+		BrowserAnimationsModule,
 		AppRoutingModule,
 		OpModule,
 		UtilModule

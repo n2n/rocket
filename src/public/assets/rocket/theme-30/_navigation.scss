@@ -1,11 +1,14 @@
 .rocket-nav-group {
     border-top: 1px solid $gray-700;
-    > .nav {
+    
+    .nav-item:last-child {
         padding-bottom: 1rem;
     }
+
     .nav-item {
         width: 100%;
     }
+    
     .nav-link {
         color: $gray-500;
         font-size: $font-size-sm;

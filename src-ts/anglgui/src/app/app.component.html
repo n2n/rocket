@@ -55,7 +55,7 @@
 				<a>{{ menuGroup.label }}</a>
 				<i class="fas {{menuGroup.isOpen ? 'fa-minus':'fa-plus'}}"><!-- fa-plus --></i>
 			</h3>
-			<ul class="nav flex-column flex-nowrap" [@openClose]="menuGroup.isOpen ? true : false">
+			<ul class="nav flex-column flex-nowrap" [@openClose]="menuGroup.isOpen ? 'open' : 'closed'">
 				<li *ngFor="let menuItem of menuGroup.menuItems" class="nav-item">
 					<a [routerLink]="navRouterLink(menuItem.navPoint)" class="nav-link">{{ menuItem.label }}</a>
 					<!-- <a rocketUiNavPoint [uiNavPoint]="menuItem.navPoint">

@@ -17,11 +17,22 @@ import {MenuGroupLocalStorage} from './ui/util/model/menu-group-local-storage';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	animations: [
-		trigger('openClose', [
-			state('true', style({opacity: 1, height: '*'})),
-			state('false', style({opacity: 0, height: 0, padding: 0, overflow: 'hidden'})),
-			transition('false <=> true', animate('500ms'))
-		])
+			    trigger('openClose', [
+			state('open', style({opacity: 1, height: '*'})),
+			state('closed', style({opacity: 0, height: 0})),
+			transition('closed <=> open', animate('100ms'))
+		]),
+//		 trigger('openClose', [
+//      // ...
+//      state('open', style({opacity: 1, height: '100px', padding: '0px'})),
+//      state('closed', style({opacity: 0, height: '0px', padding: '0px'})),
+//      transition('open => closed', [
+//        animate('1s')
+//      ]),
+//      transition('closed => open', [
+//        animate('0.5s')
+//      ]),
+//    ]),
 	]
 })
 export class AppComponent implements OnInit {
