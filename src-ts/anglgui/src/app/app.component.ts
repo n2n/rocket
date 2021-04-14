@@ -19,9 +19,9 @@ import {MenuGroupLocalStorage} from './ui/util/model/menu-group-local-storage';
 	animations: [
 			    trigger('openClose', [
 			state('open', style({opacity: 1, height: '*', 'padding-top': '*', 'padding-bottom': '*'})),
-			state('closed', style({opacity: 0, height: 0, 'padding-top': '0', 'padding-bottom': '0', 'overflow': 'hidden'})),
+			state('closed', style({opacity: 0, height: 0, 'padding-top': 0, 'padding-bottom': 0, 'overflow': 'hidden'})),
 			transition('closed <=> open', animate('100ms'))
-		]),
+		])
 	]
 })
 export class AppComponent implements OnInit {
