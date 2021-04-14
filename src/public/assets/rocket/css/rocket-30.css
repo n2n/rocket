@@ -6109,7 +6109,7 @@ td .rocket-impl-translation > .rocket-structure-content:not(:empty) {
 .rocket-nav-group {
   border-top: 1px solid #66615C;
 }
-.rocket-nav-group .nav-item:last-child {
+.rocket-nav-group > .nav {
   padding-bottom: 1rem;
 }
 .rocket-nav-group .nav-item {
