@@ -9217,6 +9217,22 @@ bs-daterangepicker-container {
   z-index: 1080;
 }
 
+rocket-date-time-in {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+rocket-date-time-in rocket-ui-date-picker + rocket-ui-time-picker {
+  margin-left: 30px;
+}
+
+timepicker {
+  margin-top: -3px;
+  margin-bottom: -3px;
+  display: block;
+}
+
 timepicker > table > tbody > tr:first-child:not(:only-child),
 timepicker > table > tbody > tr:last-child:not(:only-child) {
   position: relative;
@@ -9244,7 +9260,7 @@ timepicker > table > tbody > tr:last-child:not(:only-child) .btn .bs-chevron {
 
 timepicker > table > tbody > tr:first-child:not(:only-child) .btn,
 timepicker > table > tbody > tr:last-child:not(:only-child) .btn {
-  right: 5px;
+  right: 3px;
 }
 
 timepicker > table > tbody > tr:first-child:not(:only-child) .btn {
