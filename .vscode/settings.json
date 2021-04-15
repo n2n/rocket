@@ -12,6 +12,8 @@
         "**/theme-20**": true,
       },
 
+    "liveSassCompile.settings.watchOnLaunch": true,
+	"liveSassCompile.settings.showOutputWindowOn": "Information",
     "liveSassCompile.settings.formats":[
         {
             "format": "expanded",

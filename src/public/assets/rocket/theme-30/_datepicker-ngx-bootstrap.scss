@@ -516,35 +516,42 @@ bs-daterangepicker-container {
 
 // rocket
 
-timepicker .bs-timepicker-field {
-	padding-right: 24px;
-	width: 66px;
-}
-
-timepicker > table > tbody > tr:first-child:not(only-child),
-timepicker > table > tbody > tr:last-child:not(only-child) {
-	position: relative;
-	left: 17px;
-	.btn {
-		padding-left: 2px;
-		padding-right: 2px;
-		color: $primary;
-		.bs-chevron {
-			width: 7px;
-			height: 7px;
-			border-width: 2px 0 0 2px;;
-		}
-	}
-}
-
-timepicker > table > tbody > tr:first-child:not(only-child) .btn {
-	top: 25px;
+timepicker > table > tbody > tr:first-child:not(:only-child),	
+timepicker > table > tbody > tr:last-child:not(:only-child) {	
+	position: relative;	
+	font-size: 0;	
+	> td {	
+		position: relative;	
+	}	
+	.btn {	
+		position: absolute;	
+		padding-top: 5px;	
+		padding-bottom: 5px;	
+		padding-left: 2px;	
+		padding-right: 2px;	
+		color: $primary;	
+		.bs-chevron {	
+			width: 7px;	
+			height: 7px;	
+			border-width: 2px 0 0 2px;;	
+		}	
+	}	
+}	
 	
+timepicker > table > tbody > tr:first-child:not(:only-child) .btn,	
+timepicker > table > tbody > tr:last-child:not(:only-child) .btn {	
+	right: 5px;	
+}	
+	
+timepicker > table > tbody > tr:first-child:not(:only-child) .btn {	
+	top: 5px;	
+	
+}	
+	
+timepicker > table > tbody > tr:last-child:not(:only-child) .btn {	
+	bottom: 5px;	
 }
 
-timepicker > table > tbody > tr:last-child:not(only-child) .btn {
-	bottom: 25px;
-}
 
 
 /* screen size < 1024px */
