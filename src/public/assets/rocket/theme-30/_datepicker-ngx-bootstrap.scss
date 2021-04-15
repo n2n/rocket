@@ -516,6 +516,24 @@ bs-daterangepicker-container {
 
 // rocket
 
+rocket-date-time-in {
+	display: flex;
+}
+
+// rocket-date-time-in rocket-ui-date-picker {
+// 	flex-grow: 1;
+// }
+
+rocket-date-time-in rocket-ui-date-picker + rocket-ui-time-picker {
+	margin-left: $grid-gutter-width;
+}
+
+timepicker {
+	margin-top: -3px;
+	margin-bottom: -3px;
+	display: block;
+}
+
 timepicker > table > tbody > tr:first-child:not(:only-child),	
 timepicker > table > tbody > tr:last-child:not(:only-child) {	
 	position: relative;	
@@ -540,7 +558,7 @@ timepicker > table > tbody > tr:last-child:not(:only-child) {
 	
 timepicker > table > tbody > tr:first-child:not(:only-child) .btn,	
 timepicker > table > tbody > tr:last-child:not(:only-child) .btn {	
-	right: 5px;	
+	right: 3px;	
 }	
 	
 timepicker > table > tbody > tr:first-child:not(:only-child) .btn {	
