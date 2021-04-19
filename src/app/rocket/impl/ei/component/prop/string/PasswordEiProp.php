@@ -31,6 +31,7 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
+use n2n\config\InvalidConfigurationException;
 
 class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 	private $passwordConfig;
@@ -69,7 +70,7 @@ class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	private function buildPasswordHash(string $rawPassword) {
-		switch ($this->algorithm) {
+		switch ($this->passwordConfig->getAlgorithm()) {
 			case (self::ALGORITHM_BLOWFISH):
 				return HashUtils::buildHash($rawPassword, new BlowfishAlgorithm());
 			case (self::ALGORITHM_SHA_256):
@@ -81,6 +82,6 @@ class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 				break;
 		}
 		
-		throw new IllegalStateException('invalid algorithm given: ' . $this->algorithm);
+		throw new InvalidConfigurationException('invalid algorithm given: ' . $this->passwordConfig->getAlgorithm());
 	}
 }
