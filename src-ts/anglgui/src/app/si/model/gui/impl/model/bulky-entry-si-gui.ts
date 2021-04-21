@@ -116,6 +116,10 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 			}));
 		}
 
+		this.subscription.add(uiStructure.getZone$().subscribe(() => {
+			this.rebuildStructures();
+		}));
+
 		this.siEntryMonitor.start();
 		this.monitorEntry();
 
@@ -184,7 +188,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private rebuildStructures() {
 		this.clear();
 
-		if (!this.siEntry.entryBuildupSelected) {
+		if (!this.siEntry.entryBuildupSelected || !this.boundUiStructure.hasZone()) {
 			if (!this.isBoundStructureInsideGroup()){
 				// todo: group
 			}
