@@ -308,14 +308,16 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		structureErrors.push(...this.errorState.messages.map(message => ({ message })));
 
 		for (const embeStructure of this.embeStructureCollection.embeStructures) {
-			structureErrors.push(...embeStructure.embe.uiStructure.getZoneErrors().map((ze) => ({
-				message: ze.message,
-				marked: (marked: boolean) => { embeStructure.uiStructure.marked = marked; },
+			if (embeStructure.embe.siEntry.getMessages().length === 0) {
+				continue;
+			}
+
+			structureErrors.push({
+				message: Message.createText('Error in ' + embeStructure.embe.siEntry.selectedEntryBuildup.entryQualifier.getBestName()),
 				focus: () => {
 					this.getEmbeInUiStructureManager().open(embeStructure.embe);
-					ze.focus();
 				}
-			})));
+			});
 		}
 
 		this.structureErrorCollection.set(structureErrors);
