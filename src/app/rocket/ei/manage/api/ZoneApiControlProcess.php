@@ -130,9 +130,9 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 	 */
 	private $inputEiEntries = [];
 	/**
-	 * @var EiEntryGui[]
+	 * @var EiGuiModel[]
 	 */
-	private $inputEiEntryGuis = [];
+	private $inputEiGuiModels = [];
 	
 	/**
 	 * @param SiInput $siInput
@@ -148,12 +148,14 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
 			$eiGuiModel = null;
 			$eiEntryGui = null;
+			$inputEiGuiModel = null;
 			$eiEntry = null;
 			if ($this->eiEntryGui !== null) {
 				$eiEntryGui = $this->eiEntryGui;
 				$eiEntryGui->handleSiEntryInput($entryInput);
 				$eiEntry = $eiEntryGui->getSelectedEiEntry();
 				$eiGuiModel = $this->eiEntryGui->getEiGui()->getEiGuiModel();
+				$inputEiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $eiGuiModel->getViewMode());
 			} else {
 				$eiObject = null;
 				if (null !== $entryInput->getIdentifier()->getId()) {
@@ -163,7 +165,7 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 				}
 				
 				$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($eiObject);
-				$eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $this->eiGuiModel->getViewMode());
+				$inputEiGuiModel = $eiGuiModel = $this->createEiGuiModel($eiEntry->getEiMask(), $this->eiGuiModel->getViewMode());
 				$eiEntryGui = $eiGuiModel->createEiEntryGui($this->eiFrame, [$eiEntry], $this->eiGui);
 				$eiEntryGui->handleSiEntryInput($entryInput);
 			}
@@ -171,7 +173,7 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 			$eiEntryGui->save();
 			
 			$this->inputEiEntries[$key] = $eiEntry;
-			$this->inputEiEntryGuis[$key] = $eiEntryGui;
+			$this->inputEiGuiModels[$key] = $inputEiGuiModel;
 			
 			if ($eiEntry->validate()) {
 				continue;
@@ -192,10 +194,9 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 	 */
 	function createSiInputResult() {
 		$siEntries = [];
-		foreach ($this->inputEiEntryGuis as $key => $inputEiEntryGui) {
+		foreach ($this->inputEiGuiModels as $key => $inputEiGuiModel) {
 			$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($this->inputEiEntries[$key]->getEiObject());
-			$eiGuiModel = $inputEiEntryGui->getEiGui()->getEiGuiModel();
-			$eiGui = new EiGui($eiGuiModel);
+			$eiGui = new EiGui($inputEiGuiModel);
 			$eiGui->appendEiEntryGui($this->eiFrameUtil->getEiFrame(), [$eiEntry]);
 			$siEntries[$key] = $eiGui->createSiEntry($this->eiFrameUtil->getEiFrame());
 		}
