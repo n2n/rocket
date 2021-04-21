@@ -243,9 +243,8 @@ th > span,
 td .rocket-crumb-group > span:not(.rocket-unimportant):not(.rocket-important),
 td .rocket-ui-string-out-field {
     // Tomekk: unsupported property, be carefull. Works in Firefox, Chrome, Safari on Mac
-    /* autoprefixer: off */
+    /* autoprefixer: ignore next */
     -webkit-box-orient: vertical;
-    /* autoprefixer: on */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
