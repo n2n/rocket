@@ -46,6 +46,11 @@
 			"rocket\\" : "src/app/rocket"
 		}
 	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"rocket\\" : "src/test/rocket"
+		}
+	},
 	"require-dev" : {
 		"phpunit/phpunit" : "^9.5"
 	}
