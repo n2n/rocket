@@ -13,7 +13,7 @@ export class IFrameResizerDirective implements AfterViewInit, OnDestroy {
 	ngAfterViewInit() {
 		const components = iframeResizer({
 			checkOrigin: false,
-			heightCalculationMethod: 'grow',
+			heightCalculationMethod: 'lowestElement',
 			log: false
 		}, this.element.nativeElement);
 
