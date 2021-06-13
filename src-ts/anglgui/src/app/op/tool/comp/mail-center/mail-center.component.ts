@@ -17,10 +17,10 @@ styleUrls: ['./mail-center.component.css'],
 		display: 'none'
 		})),
 		transition('open => closed', [
-		animate('2.35s')
+		animate('0s')
 		]),
 		transition('closed => open', [
-		animate('2.35s')
+		animate('0s')
 		]),
 	]),
 	]
@@ -30,7 +30,7 @@ export class MailCenterComponent implements OnInit {
 	public mailItems: MailItem[]|null = null;
 	public currentLogFileData: LogFileData = new LogFileData(null, 0);
 	public mailLogFileDatas: LogFileData[] = [];
-	private _currentPageNo = 1;
+	private pCurrentPageNo = 1;
 
 	constructor(private toolsService: ToolsService) { }
 
@@ -49,7 +49,7 @@ export class MailCenterComponent implements OnInit {
 
 	private updateMailItems(): void {
 		this.mailItems = null;
-		this.toolsService.getMails(this.currentLogFileData, this._currentPageNo).toPromise().then((mailItems: MailItem[]) => {
+		this.toolsService.getMails(this.currentLogFileData, this.pCurrentPageNo).toPromise().then((mailItems: MailItem[]) => {
 			this.mailItems = mailItems;
 		});
 	}
@@ -60,15 +60,15 @@ export class MailCenterComponent implements OnInit {
 	}
 
 	set currentPageNo(pageNo: number) {
-		if (this._currentPageNo === pageNo || this._currentPageNo > this.currentLogFileData.numPages) {
+		if (this.pCurrentPageNo === pageNo || this.pCurrentPageNo > this.currentLogFileData.numPages) {
 			return;
 		}
-		this._currentPageNo = pageNo;
+		this.currentPageNo = pageNo;
 		this.updateMailItems();
 	}
 
 	get currentPageNo(): number {
-		return this._currentPageNo;
+		return this.pCurrentPageNo;
 	}
 
 	prettifyFilename(filename: string): string {
