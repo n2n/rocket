@@ -30,14 +30,11 @@ use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\context\Lookupable;
 
 class MailArchiveBatchController implements Lookupable {
-		const FILE_NAME_PREFIX = 'mail';
+	const FILE_NAME_PREFIX = 'mail';
 	const FILE_NAME_PARTS_SEPERATOR = '-';
 	const FILE_EXTENSION = 'xml';
-	
-	public function index() {
-		$this->createMailArchive();
-	}
-	
+	const MAIL_LOG_FILE_TO_ARCHIVE = 'mail.xml';
+
 	public function _onNewMonth() {
 		$this->createMailArchive();
 	}
@@ -71,7 +68,7 @@ class MailArchiveBatchController implements Lookupable {
 	
 	private function createMailArchive() {
 		$date = new \DateTime();
-		$date->setDate($date->format('Y'), $date->format('m'), $date->format('d') - 1);
+		$date->setDate($date->format('Y'), $date->format('m'), $date->format('d'));
 		$fileName = self::dateToFileName($date);
 		for ($i = 1; ; $i++) {
 			try {
@@ -81,10 +78,10 @@ class MailArchiveBatchController implements Lookupable {
 				break;
 			}
 		}
-		$archiveFilePath = N2N::getVarStore()->requestFilePath(VarStore::CATEGORY_LOG, N2N::NS,
+		$archiveFilePath = N2N::getVarStore()->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, $fileName, true, true);
-		$currentMailPath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
-		$currentMailPath->copyFile($archiveFilePath, N2N::getAppConfig()->io()->getPrivateFilePermission());
+		$currentMailPath = MailCenter::requestMailLogFile(self::MAIL_LOG_FILE_TO_ARCHIVE);
+		$currentMailPath->copyFile($archiveFilePath, N2N::getAppConfig()->io()->getPrivateFilePermission(), true);
 		$currentMailPath->delete();
 	}
 }
