@@ -29,7 +29,6 @@ use rocket\tool\xml\SaxParser;
 use n2n\core\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
-use rocket\tool\mail\controller\MailArchiveBatchController;
 use n2n\io\managed\impl\CommonFile;
 use n2n\io\managed\impl\FsFileSource;
 
@@ -94,15 +93,6 @@ class MailCenter {
 		$attachments = $items[$itemIndex]->getAttachments();
 		$fsPath = new FsPath($attachments[$attachmentIndex]->getPath());
 		return new CommonFile(new FsFileSource($fsPath), $fsPath->getFileName());
-	}
-	
-	public static function getMailFileNames() {
-		$mailFileNames = array();
-		foreach((array) self::requestMailLogDir()->getChildren('*.xml') as $mailXml) {
-			$mailFileNames[MailArchiveBatchController::removeFileExtension($mailXml->getName())] = $mailXml->getName();
-		}
-		ksort($mailFileNames);
-		return $mailFileNames;
 	}
 	
 	public static function requestMailLogFile($fileName) {
