@@ -49,8 +49,8 @@ class MailCenterController extends ControllerAdapter {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
 		
-		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter,
-			'currentFileName' => $fileName));
+		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter,
+				'currentFileName' => $fileName));
 	}
 
 	/**
@@ -110,6 +110,7 @@ class MailCenterController extends ControllerAdapter {
 	}
 
 	private function createMailCenter(int $currentPageNum = null, string $filename = null) {
+
 		if (!AdminMailCenter::logFileExists($filename)) {
 			throw new PageNotFoundException();
 		}
