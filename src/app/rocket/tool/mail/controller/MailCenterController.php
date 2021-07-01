@@ -33,21 +33,23 @@ use n2n\l10n\DynamicTextCollection;
 class MailCenterController extends ControllerAdapter {
 	const ACTION_ARCHIVE = 'archive';
 	const ACTION_ATTACHMENT = 'attachment';
-	
+
+	const MAIL_XML = 'mail.xml';
+
 	public function index($currentPageNum = null) {
 		$mailXmlFilePath = null;
 		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
+			$mailXmlFilePath = MailCenter::requestMailLogFile(self::MAIL_XML);
 		} catch (InvalidPathException $e) { }
-		
+
 		$mailCenter = new MailCenter($mailXmlFilePath);
 		if (null !== $currentPageNum) {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
-		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter, 
-				'currentFileName' => AdminMailCenter::DEFAULT_MAIL_FILE_NAME));
+		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter,
+			'currentFileName' => self::MAIL_XML));
 	}
-	
+
 	public function doArchive($fileName, $currentPageNum = null) {
 		try {
 			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
@@ -55,17 +57,17 @@ class MailCenterController extends ControllerAdapter {
 			throw new PageNotFoundException();
 		}
 		if ($mailXmlFilePath->getExtension() !== 'xml') {
-			throw new PageNotFoundException();			
+			throw new PageNotFoundException();
 		}
-		
+
 		$mailCenter = new MailCenter($mailXmlFilePath);
 		if (null !== $currentPageNum) {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
-		
+
 		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
 	}
-	
+
 	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName, N2nContext $n2nContext) {
 		try {
 			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
@@ -84,9 +86,9 @@ class MailCenterController extends ControllerAdapter {
 			N2N::getMessageContainer()->addInfo($dtc->translate('tool_mail_center_notification_attachment_deleted'));
 			$this->redirectToReferer();
 			return;
-		} 
-		
+		}
+
 		$this->sendFile($attachment);
 	}
-	
+
 }
