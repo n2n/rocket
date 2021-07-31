@@ -33,37 +33,37 @@ use n2n\util\StringUtils;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 class PasswordConfig extends PropConfigAdaption {
-	const ATTR_ALGORITHM_KEY = 'algorithm';
+// 	const ATTR_ALGORITHM_KEY = 'algorithm';
 	
-	const ALGORITHM_SHA1 = 'sha1';
-	const ALGORITHM_MD5 = 'md5';
-	const ALGORITHM_BLOWFISH = 'blowfish';
-	const ALGORITHM_SHA_256 = 'sha-256';
+// 	const ALGORITHM_SHA1 = 'sha1';
+// 	const ALGORITHM_MD5 = 'md5';
+// 	const ALGORITHM_BLOWFISH = 'blowfish';
+// 	const ALGORITHM_SHA_256 = 'sha-256';
 	
-	private $algorithm = self::ALGORITHM_BLOWFISH;
+// 	private $algorithm = self::ALGORITHM_BLOWFISH;
 	
-	public function getAlgorithm() {
-		return $this->algorithm;
-	}
+// 	public function getAlgorithm() {
+// 		return $this->algorithm;
+// 	}
 	
-	public function setAlgorithm(string $algorithm) {
-		$this->algorithm = $algorithm;
-	}
+// 	public function setAlgorithm(string $algorithm) {
+// 		$this->algorithm = $algorithm;
+// 	}
 	
 	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
 	}
 
 	public function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($dataSet->contains(self::ATTR_ALGORITHM_KEY)) {
-			$this->setAlgorithm($dataSet->reqEnum(self::ATTR_ALGORITHM_KEY, self::getAlgorithms()));
-		}
+// 		if ($dataSet->contains(self::ATTR_ALGORITHM_KEY)) {
+// 			$this->setAlgorithm($dataSet->reqEnum(self::ATTR_ALGORITHM_KEY, self::getAlgorithms()));
+// 		}
 	}
 
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$algorithms = self::getAlgorithms();
-		$magCollection->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
-				array_combine($algorithms, $algorithms), 
-				$dataSet->optString(self::ATTR_ALGORITHM_KEY, $this->getAlgorithm()), true));
+// 		$algorithms = self::getAlgorithms();
+// 		$magCollection->addMag(self::ATTR_ALGORITHM_KEY, new EnumMag('Algortithm', 
+// 				array_combine($algorithms, $algorithms), 
+// 				$dataSet->optString(self::ATTR_ALGORITHM_KEY, $this->getAlgorithm()), true));
 	}
 	
 	public static function getAlgorithms() {
