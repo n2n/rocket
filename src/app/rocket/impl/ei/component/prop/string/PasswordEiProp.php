@@ -70,18 +70,6 @@ class PasswordEiProp extends DraftablePropertyEiPropAdapter {
 	}
 	
 	private function buildPasswordHash(string $rawPassword) {
-		switch ($this->passwordConfig->getAlgorithm()) {
-			case (self::ALGORITHM_BLOWFISH):
-				return HashUtils::buildHash($rawPassword, new BlowfishAlgorithm());
-			case (self::ALGORITHM_SHA_256):
-				return HashUtils::buildHash($rawPassword, new Sha256Algorithm());
-			case (self::ALGORITHM_MD5):
-				return md5($rawPassword);
-			case (self::ALGORITHM_SHA1):
-				return sha1($rawPassword);
-				break;
-		}
-		
-		throw new InvalidConfigurationException('invalid algorithm given: ' . $this->passwordConfig->getAlgorithm());
+		return password_hash($rawPassword, PASSWORD_DEFAULT);
 	}
 }
