@@ -65,7 +65,7 @@ class MailCenterController extends ControllerAdapter {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
 
-		$this->forward('tool\mail\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
+		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
 	}
 
 	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName, N2nContext $n2nContext) {
