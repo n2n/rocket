@@ -21,7 +21,7 @@
  */
 namespace rocket\tool\backup;
 
-use n2n\io\fs\FileResourceStream;
+use n2n\util\io\stream\impl\FileResourceStream;
 use n2n\core\VarStore;
 use n2n\core\N2N;
 use n2n\io\managed\impl\FileFactory;
@@ -51,7 +51,7 @@ class BackupManager {
 				VarStore::CATEGORY_BAK, self::MODULE_DIR, null, $fileName), $fileName);
 	}
 	/**
-	 * @return \n2n\io\fs\FsPath
+	 * @return \n2n\util\io\fs\FsPath
 	 */
 	public static function getBackupDir() {
 		return N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_BAK, self::MODULE_DIR, null, true);

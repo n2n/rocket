@@ -24,7 +24,7 @@ namespace rocket\si\content\impl;
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
 use n2n\util\type\attrs\DataSet;
-use n2n\io\IoUtils;
+use n2n\util\io\IoUtils;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\img\ThumbCut;
 use n2n\util\type\attrs\DataMap;

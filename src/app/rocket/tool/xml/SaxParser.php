@@ -21,14 +21,14 @@
  */
 namespace rocket\tool\xml;
 
-use n2n\io\IoUtils;
-use n2n\io\fs\FsPath;
+use n2n\util\io\IoUtils;
+use n2n\util\io\fs\FsPath;
 
 class SaxParser {
 	private $saxHandler;
 	/**
 	 * 
-	 * @param \n2n\io\fs\FsPath $xmlPath
+	 * @param \n2n\util\io\fs\FsPath $xmlPath
 	 * @param \rocket\tool\xml\SaxHandler $saxHandler
 	 * @throws \rocket\tool\xml\SaxParsingException
 	 */

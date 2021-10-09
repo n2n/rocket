@@ -2,7 +2,7 @@
 namespace rocket\spec;
 
 use n2n\util\type\ArgUtils;
-use n2n\io\IoUtils;
+use n2n\util\io\IoUtils;
 
 class TypePath {
 	const SEPARATOR = '&';
