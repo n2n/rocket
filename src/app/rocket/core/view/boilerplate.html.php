@@ -76,7 +76,7 @@
 	$htmlMeta->addLink(array('rel' => 'apple-touch-icon', 'href' => $httpContext->getAssetsUrl('rocket')->ext(array('img', 'apple-touch-icon.png'))));
 ?>
 <!DOCTYPE html>
-<html lang="<?php $html->out($request->getN2nLocale()->getLanguage()->getShort()) ?>">
+<html lang="<?php $html->out($view->getN2nLocale()->getLanguage()->getShort()) ?>">
 	<?php $html->headStart() ?>
 		<meta charset="<?php $html->out(N2n::CHARSET) ?>" />
 		<base href="<?php $html->out($view->buildUrl(Murl::controller(RocketController::class))->getPath()->chEndingDelimiter(true)) ?>" />
