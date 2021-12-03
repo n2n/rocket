@@ -25,7 +25,7 @@ use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\util\col\ArrayUtils;
-use n2n\io\IoUtils;
+use n2n\util\io\IoUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use rocket\ei\util\Eiu;

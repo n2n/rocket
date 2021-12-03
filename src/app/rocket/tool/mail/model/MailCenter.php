@@ -24,7 +24,7 @@ namespace rocket\tool\mail\model;
 use rocket\tool\xml\ItemCountSaxHandler;
 use rocket\tool\xml\MailItemSaxHandler;
 use n2n\util\type\ArgUtils;
-use n2n\io\fs\FsPath;
+use n2n\util\io\fs\FsPath;
 use rocket\tool\xml\SaxParser;
 use n2n\core\N2N;
 use n2n\core\VarStore;
@@ -101,7 +101,7 @@ class MailCenter {
 	}
 
 	/**
-	 * @return \n2n\io\fs\FsPath
+	 * @return \n2n\util\io\fs\FsPath
 	 */
 	public static function requestMailLogDir() {
 		return N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_LOG, N2N::NS,

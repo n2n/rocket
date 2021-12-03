@@ -43,6 +43,7 @@ use n2n\l10n\MessageContainer;
 use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\core\N2N;
 use n2n\web\http\NoHttpRefererGivenException;
+use n2n\web\http\HttpContext;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
@@ -53,9 +54,9 @@ class RocketController extends ControllerAdapter {
 		$this->loginContext = $loginContext;
 	}
 	
-	public function prepare(Request $request, N2nLocaleConfig $localeConfig, ScrRegistry $scrRegistry, 
+	public function prepare(N2nLocaleConfig $localeConfig, ScrRegistry $scrRegistry,
 			Rocket $rocket) {
-		$request->setN2nLocale($localeConfig->getAdminN2nLocale());
+		$this->getN2nContext()->setN2nLocale($localeConfig->getAdminN2nLocale());
 		$this->getControllerContext()->setName(self::NAME);
 		$scrRegistry->setBaseUrl($this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 				->ext('scr')->toUrl());
@@ -90,7 +91,6 @@ class RocketController extends ControllerAdapter {
 		}
 		
 		$this->commit();
-		
 		$this->forward('~\user\view\login.html', array('loginContext' => $this->loginContext));
 		return false;
 	}

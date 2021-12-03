@@ -22,7 +22,7 @@
 namespace rocket\ei\manage\draft\stmt;
 
 use rocket\ei\EiPropPath;
-use n2n\io\IoUtils;
+use n2n\util\io\IoUtils;
 use rocket\ei\EiEngine;
 
 class DraftMetaInfo {
