@@ -170,7 +170,7 @@ class EiuFrame {
 	 */
 	public function getCmdUrl($eiCommandPath = null) {
 		if ($eiCommandPath === null) {
-			$eiCommandPath = $this->eiFrame->getEiExecution()->getEiCommandPath();
+			$eiCommandPath = EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand());
 		} else {
 			$eiCommandPath = EiCommandPath::create($eiCommandPath);
 		}
@@ -1214,7 +1214,7 @@ class EiuCallbackSortAbility implements SortAbility {
 	private function callClosure(\Closure $closure, array $eiObjects, EiObject $targetEiObject) {
 		$mmi = new MagicMethodInvoker($this->eiuAnalyst->getN2nContext(true));
 		$mmi->setMethod(new \ReflectionFunction($closure));
-		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
+		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(EiuControlResponse::class, true));
 		
 		$eiuObjects = array_map(function ($eiObject) { return new EiuObject($eiObject, $this->eiuAnalyst); }, $eiObjects);
 		$targetEiuObject = new EiuObject($targetEiObject, $this->eiuAnalyst);
