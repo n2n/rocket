@@ -183,7 +183,7 @@ class SiGetInstruction {
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 			$instruction->setGeneralControlsIncluded($ds->reqBool('generalControlsIncluded'));
 			$instruction->setEntryControlsIncluded($ds->reqBool('entryControlsIncluded'));
-			$instruction->setEntryId($ds->optInt('entryId'));
+			$instruction->setEntryId($ds->optString('entryId'));
 			$instruction->setTypeIds($ds->optArray('typeIds', 'string', null, true));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null, true);
