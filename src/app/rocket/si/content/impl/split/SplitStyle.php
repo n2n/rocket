@@ -30,7 +30,7 @@ class SplitStyle implements \JsonSerializable {
 		$this->tooltip = $tooltip;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'iconClass' => $this->iconClass,
 			'tooltip' => $this->tooltip

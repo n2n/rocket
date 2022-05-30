@@ -57,7 +57,7 @@ class SiMaskQualifier implements \JsonSerializable {
 		return $this->identifier;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'identifier' => $this->identifier,
 			'name' => $this->name,

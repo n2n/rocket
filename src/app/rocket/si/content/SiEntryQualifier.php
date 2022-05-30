@@ -42,7 +42,7 @@ class SiEntryQualifier implements \JsonSerializable {
 		return $this->identifier;
 	}
 
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'maskQualifier' => $this->maskQualifier,
 			'identifier' => $this->identifier,

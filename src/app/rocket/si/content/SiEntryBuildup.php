@@ -152,7 +152,7 @@ class SiEntryBuildup implements \JsonSerializable {
 		return $this;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
 		
 		return [

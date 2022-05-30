@@ -37,7 +37,7 @@ class SiMenuGroup implements \JsonSerializable {
 		$this->menuItems = $menuItems;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'label' => $this->label,
 			'menuItems' => $this->menuItems

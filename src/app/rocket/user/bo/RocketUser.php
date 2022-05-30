@@ -191,7 +191,7 @@ class RocketUser extends ObjectAdapter implements Dispatchable, \JsonSerializabl
 		$bc->val('email', new ValEmail());
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
 			'username' => $this->nick,

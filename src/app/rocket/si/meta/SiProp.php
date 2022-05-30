@@ -104,7 +104,7 @@ class SiProp implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
 			'label' => $this->label,

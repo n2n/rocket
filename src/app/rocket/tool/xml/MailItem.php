@@ -131,7 +131,7 @@ class MailItem implements JsonSerializable {
 		return (count($this->attachments) > 0);
 	}
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'dateTime' => trim(L10nUtils::formatDateTime($this->dateTime, N2nLocale::getAdmin())),
 			'to' => trim($this->to),

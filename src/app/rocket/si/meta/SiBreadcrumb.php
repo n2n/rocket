@@ -42,7 +42,7 @@ class SiBreadcrumb implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'navPoint' => $this->navPoint,
 			'name' => $this->name

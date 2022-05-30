@@ -62,7 +62,7 @@ class FileId implements \JsonSerializable {
 				&& $this->qualifiedName === $fileSource->getQualifiedName();
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'fileManagerName' => $this->fileManagerName,
 			'qualifiedName' => $this->qualifiedName

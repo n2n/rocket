@@ -84,7 +84,7 @@ class SiDeclaration implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'style' => $this->style,
 			'maskDeclarations' => $this->maskDeclarations

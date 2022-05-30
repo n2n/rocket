@@ -114,7 +114,7 @@ class SiFile implements \JsonSerializable {
 		return $this;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
@@ -174,7 +174,7 @@ class SiImageDimension implements \JsonSerializable {
 		return $this->thumbCut;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		$imageCutData = $this->thumbCut->jsonSerialize();
 		$imageCutData['exists'] = $this->exists; 
 		

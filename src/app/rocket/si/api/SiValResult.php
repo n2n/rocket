@@ -66,7 +66,7 @@ class SiValResult implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'valid' => $this->valid,
 			'getResults' => $this->getResults
@@ -119,7 +119,7 @@ class SiValGetResult implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'declaration' => $this->declaration,
 			'entry' => $this->entry

@@ -72,7 +72,7 @@ class SiEmbeddedEntry implements \JsonSerializable {
 		$this->summaryContent = $summaryContent;
 	}
 
-	function jsonSerialize() {		
+	function jsonSerialize(): mixed {		
 		return [
 			'content' => SiPayloadFactory::buildDataFromComp($this->content),
 			'summaryContent' => SiPayloadFactory::buildDataFromComp($this->summaryContent)

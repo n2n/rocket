@@ -40,7 +40,7 @@ class SiGridPos implements \JsonSerializable {
 		$this->rowEnd = $rowEnd;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'colStart' => $this->colStart,
 			'colEnd' => $this->colEnd,

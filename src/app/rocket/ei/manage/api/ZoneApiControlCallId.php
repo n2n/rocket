@@ -40,7 +40,7 @@ class ZoneApiControlCallId extends IdPath implements  \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'controlIdPath' => (string) $this
 		];

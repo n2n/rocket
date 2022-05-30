@@ -170,7 +170,7 @@ class SiInputError implements \JsonSerializable {
 		$this->entries = $entries;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'entries' => $this->entries
 		];
@@ -188,7 +188,7 @@ class SiInputResult implements \JsonSerializable {
 		$this->entries = $entries;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'entries' => $this->entries
 		];
@@ -226,7 +226,7 @@ class SiInputResult implements \JsonSerializable {
 // 	 * {@inheritDoc}
 // 	 * @see \JsonSerializable::jsonSerialize()
 // 	 */
-// 	function jsonSerialize() {
+// 	function jsonSerialize(): mixed {
 // 		return [
 // 				'fieldErrors' => $this->fieldErrors
 // 		];
@@ -268,7 +268,7 @@ class SiInputResult implements \JsonSerializable {
 // 	 * {@inheritDoc}
 // 	 * @see \JsonSerializable::jsonSerialize()
 // 	 */
-// 	function jsonSerialize() {
+// 	function jsonSerialize(): mixed {
 // 		return [
 // 				'messages' => $this->messages,
 // 				'subEntryErrors' => $this->subEntryErrors

@@ -72,7 +72,7 @@ class SiGetResult implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'declaration' => $this->declaration,
 			'entry' => $this->entry
