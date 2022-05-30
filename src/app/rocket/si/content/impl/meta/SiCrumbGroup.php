@@ -69,7 +69,7 @@ class SiCrumbGroup implements \JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'crumbs' => $this->crumbs
 		];

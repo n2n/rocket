@@ -34,7 +34,7 @@ class SiMenuItem implements \JsonSerializable {
 		$this->navPoint = $navPoint;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
 			'label' => $this->label,

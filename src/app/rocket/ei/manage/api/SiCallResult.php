@@ -60,7 +60,7 @@ class SiCallResult implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'inputError' => $this->inputError,
 			'callResponse' => $this->callResponse,

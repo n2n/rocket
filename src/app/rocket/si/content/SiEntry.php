@@ -132,7 +132,7 @@ class SiEntry implements \JsonSerializable {
 		return $this->selectedTypeId;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		$buildups = array();
 		foreach ($this->buildups as $id => $buildup) {
 			$buildups[$id] = $buildup;

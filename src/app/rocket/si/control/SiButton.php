@@ -209,7 +209,7 @@ class SiButton implements \JsonSerializable {
 		return $this;
 	}
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'name' => $this->name,
 			'tooltip' => $this->tooltip,

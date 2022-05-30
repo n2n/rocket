@@ -66,7 +66,7 @@ class SiTypeContext implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'typeId' => $this->typeId,
 			'entryBuildupIds' => $this->entryBuildupIds,

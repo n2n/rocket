@@ -67,7 +67,7 @@ class SiFrame implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'apiUrlMap' => array_map(fn ($url) => (string) $url, $this->apiUrlMap),
 			'typeContext' => $this->typeContext,

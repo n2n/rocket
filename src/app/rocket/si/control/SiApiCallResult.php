@@ -58,7 +58,7 @@ class SiApiCallResult implements \JsonSerializable {
 		$this->entryEvents[] = $entryEvent;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'inputError' => $this->inputError,
 			'entryEvents' => $this->entryEvents

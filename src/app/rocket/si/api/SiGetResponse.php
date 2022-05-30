@@ -39,7 +39,7 @@ class SiGetResponse implements \JsonSerializable {
 		$this->results[$key] = $result;
 	}
 	
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return ['results' => $this->results];
 	}	
 }

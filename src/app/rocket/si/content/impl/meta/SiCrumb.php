@@ -93,7 +93,7 @@ class SiCrumb implements \JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'type' => $this->type,
 			'label' => $this->label,

@@ -144,7 +144,7 @@ class SiCallResponse implements \JsonSerializable {
 		return $this;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'directive' => $this->directive,
 			'navPoint' => $this->navPoint,

@@ -90,7 +90,7 @@ class SiPartialContent implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'entries' => $this->entries,
 			'count' => $this->count,

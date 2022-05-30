@@ -64,7 +64,7 @@ class SiNavPoint implements \JsonSerializable {
 		throw new IncompleteNavPointException('Incomplete url: ' . $this->url);
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'siref' => $this->siref,
 			'url' => (string) $this->getUrl()

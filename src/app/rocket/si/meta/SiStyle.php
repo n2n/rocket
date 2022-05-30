@@ -56,7 +56,7 @@ class SiStyle implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'bulky' => $this->bulky,
 			'readOnly' => $this->readOnly

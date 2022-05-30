@@ -70,7 +70,7 @@ class ApiFieldCallId implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'defPropPath' => (string) $this->defPropPath,
 			'eiTypeId' => (string) $this->eiTypeId,

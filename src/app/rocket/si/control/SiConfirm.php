@@ -70,7 +70,7 @@ class SiConfirm implements \JsonSerializable {
 		return $this->danger;
 	}
 	
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'message' => $this->message,
 			'okLabel' => $this->okLabel,

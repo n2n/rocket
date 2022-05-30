@@ -49,7 +49,7 @@ class MailAttachmentItem implements \JsonSerializable {
 		$this->name = $name;
 	}
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'name' => $this->name,
 			'path' => $this->path

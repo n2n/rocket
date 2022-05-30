@@ -56,7 +56,7 @@ class CkeStyle implements \JsonSerializable {
 		$this->class = $class;
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'name' => $this->name,
 			'tag' => $this->tag,

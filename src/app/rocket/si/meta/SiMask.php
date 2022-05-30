@@ -95,7 +95,7 @@ class SiMask implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'props' => $this->props,
 			'qualifier' => $this->qualifier

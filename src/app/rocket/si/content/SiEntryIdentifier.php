@@ -91,7 +91,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 		return new SiEntryQualifier($maskQualifier, $this->id, $idName);
 	}
 	
-	function jsonSerialize() {
+	function jsonSerialize(): mixed {
 		return [
 			'typeId' => $this->typeId,
 			'entryBuildup' => $this->entryBuildupId,
