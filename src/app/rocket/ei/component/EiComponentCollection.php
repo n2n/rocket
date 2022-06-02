@@ -225,7 +225,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	/* (non-PHPdoc)
 	 * @see IteratorAggregate::getIterator()
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 		return new \ArrayIterator($this->toArray());
 	}
 
@@ -249,7 +249,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		return $elements;
 	}
 	
-	function count() {
+	function count(): int {
 		$num = count($this->elements);
 		if ($this->inheritedCollection !== null) {
 			$num += $this->inheritedCollection->count();
