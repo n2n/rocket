@@ -28,7 +28,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\util\factory\EifField;
-use n2n\validation\plan\impl\Validators;
+use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 
@@ -63,7 +63,7 @@ abstract class EditablePropertyEiPropAdapter extends DisplayablePropertyEiPropAd
 		
 		if (!$this->getEditConfig()->isReadOnly()) {
 			$eifField->setWriter(function ($value) use ($eiu) {
-				return $eiu->entry()->writeNativeValue($this, $value);
+				$eiu->entry()->writeNativeValue($this, $value);
 			});
 		}
 		

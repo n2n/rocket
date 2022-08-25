@@ -33,7 +33,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\user\bo\RocketUser;
 use n2n\web\http\controller\ParamBody;
 use n2n\validation\build\impl\Validate;
-use n2n\validation\plan\impl\Validators;
+use n2n\validation\validator\impl\Validators;
 use n2n\l10n\Message;
 use n2n\util\crypt\hash\HashUtils;
 use n2n\web\http\controller\impl\HttpData;
@@ -41,15 +41,11 @@ use n2n\web\http\controller\impl\HttpData;
 class RocketUserController extends ControllerAdapter {
 	private $rocketUserDao;
 	private $loginContext;
-	private $rocketState;
-	private $dtc;
 	
 	private function _init(RocketUserDao $rocketUserDao, LoginContext $loginContext, RocketState $rocketState,
 			DynamicTextCollection $dtc) {
 		$this->rocketUserDao = $rocketUserDao;
 		$this->loginContext = $loginContext;
-		$this->rocketState = $rocketState;
-		$this->dtc = $dtc;
 	}
 	
 	private function verifyAdmin() {
@@ -112,7 +108,7 @@ class RocketUserController extends ControllerAdapter {
 				->props(['password', 'passwordConfirmation'], Validators::mandatory(),
 						Validators::closure(function ($password, $passwordConfirmation) {
 							if ($password === $passwordConfirmation) {
-								return;
+								return null;
 							}
 							
 							return [
@@ -255,7 +251,7 @@ class RocketUserController extends ControllerAdapter {
 				->props(['username'], Validators::mandatory(), Validators::minlength(3),
 						Validators::closure(function($nick, RocketUserDao $userDao) use ($user) {
 							if ($user->getNick() === $nick || !$userDao->containsNick($nick)) {
-								return;
+								return null;
 							}
 							
 							return Message::createCode('user_nick_already_taken_err', null, 'rocket');
