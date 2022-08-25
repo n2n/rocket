@@ -4,7 +4,7 @@ namespace rocket\ei\util\factory;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
-use n2n\validation\plan\Validator;
+use n2n\validation\validator\Validator;
 use n2n\util\type\TypeConstraint;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\validation\build\impl\Validate;

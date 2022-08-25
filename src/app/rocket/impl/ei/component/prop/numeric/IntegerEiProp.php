@@ -34,7 +34,7 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
-use n2n\validation\plan\impl\Validators;
+use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifField;
 
 class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
@@ -45,8 +45,6 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	
 	function __construct() {
 		parent::__construct();
-		
-		$this->getNumericConfig();
 	}
 	
 	/**

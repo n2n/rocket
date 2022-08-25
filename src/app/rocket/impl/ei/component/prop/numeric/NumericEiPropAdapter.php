@@ -48,7 +48,7 @@ use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\ei\util\factory\EifField;
-use n2n\validation\plan\impl\Validators;
+use n2n\validation\validator\impl\Validators;
 
 abstract class NumericEiPropAdapter extends DraftablePropertyEiPropAdapter 
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
