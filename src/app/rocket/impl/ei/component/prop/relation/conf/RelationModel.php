@@ -310,7 +310,7 @@ class RelationModel {
 	 * @return int
 	 */
 	function getMin() {
-		if ($this->min < 1 && $this->editConfig !== null && $this->editConfig->isMandatory()) {
+		if ($this->min < 1 && !$this->isTargetMany() && $this->editConfig !== null && $this->editConfig->isMandatory()) {
 			return 1;
 		}
 		
