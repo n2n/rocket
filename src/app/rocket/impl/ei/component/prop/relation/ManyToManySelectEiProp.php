@@ -43,7 +43,8 @@ class ManyToManySelectEiProp extends RelationEiPropAdapter implements FieldEiPro
 		parent::__construct();
 		
 		$this->setup(new DisplayConfig(ViewMode::all()),
-				new RelationModel($this, true, true, RelationModel::MODE_SELECT, new EditConfig()));
+				new RelationModel($this, true, true, RelationModel::MODE_SELECT,
+						(new EditConfig())->setMandatoryChoosable(false)));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
