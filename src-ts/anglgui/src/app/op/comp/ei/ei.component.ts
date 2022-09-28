@@ -26,10 +26,13 @@ export class EiComponent implements OnInit, OnDestroy {
 // 		alert(platformLocation.getBaseHrefFromDOM() + ' ' + route.snapshot.url.join('/'));
 	}
 
+	private readonly fallbackId = -1;
+
 	ngOnInit(): void {
 		this.subscription = this.router.events
 				.pipe(filter((event) => {
 					// console.log(event);
+
 					return (event instanceof NavigationStart);
 				}))
 				.subscribe((event: NavigationStart) => {
@@ -38,13 +41,13 @@ export class EiComponent implements OnInit, OnDestroy {
 
 		// @todo find out if this works
 
-		let id = 1;
+		let id = this.fallbackId;
 		const curNav = this.router.getCurrentNavigation();
 		if (curNav) {
 			id = curNav.id;
 		}
 
-		const zone = this.mainUiLayer.pushRoute(1, this.route.snapshot.url.join('/')).zone;
+		const zone = this.mainUiLayer.pushRoute(id, this.route.snapshot.url.join('/')).zone;
 		this.siUiService.loadZone(zone, false);
 	}
 
@@ -61,11 +64,21 @@ export class EiComponent implements OnInit, OnDestroy {
 
 		switch (event.navigationTrigger) {
 		case 'popstate':
-			if (event.restoredState &&
-					this.mainUiLayer.switchRouteById(event.restoredState.navigationId, url)) {
-				this.mainUiLayer.changeCurrentRouteId(event.id);
+			if (!event.restoredState) {
 				break;
 			}
+
+			const id = event.restoredState.navigationId;
+			if (this.mainUiLayer.containsRouteId(id)) {
+				this.mainUiLayer.switchRouteById(id, url);
+				break;
+			} else if (this.mainUiLayer.containsRouteId(this.fallbackId, url)) {
+				this.mainUiLayer.switchRouteById(this.fallbackId, url);
+				break;
+			} else if (url.length === 0) {
+				break;
+			}
+
 		case 'imperative':
 			this.mainUiLayer.pushRoute(event.id, url);
 			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, true);

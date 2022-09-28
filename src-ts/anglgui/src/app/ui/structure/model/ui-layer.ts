@@ -15,6 +15,8 @@ export interface UiLayer {
 
 	pushRoute(id: number|null, zoneUrl: string|null): UiRoute;
 
+	containsRouteId(id: number): boolean;
+
 	switchRouteById(id: number): void;
 
 	dispose(): void;
@@ -25,12 +27,18 @@ abstract class UiLayerAdapter implements UiLayer {
 	private currentRouteIndex: number|null = null;
 	private disposeSubject = new Subject<void>();
 
-	constructor(readonly container: UiContainer) {
+	protected constructor(readonly container: UiContainer) {
 	}
 
 	readonly abstract main: boolean;
 
 	abstract pushRoute(id: number|null, zoneUrl: string|null): UiRoute;
+
+	containsRouteId(id: number, verifyUrl: string = null): boolean {
+		const route = this.getRouteById(id);
+
+		return !!route && (verifyUrl === null || route.zone.url === verifyUrl);
+	}
 
 	switchRouteById(id: number, verifyUrl: string = null): boolean {
 		const index = this.getRouteIndexById(id);
@@ -171,13 +179,13 @@ abstract class UiLayerAdapter implements UiLayer {
 		return this.disposeSubject.subscribe(callback);
 	}
 
-	changeCurrentRouteId(newId: number) {
-		if (this.getRouteById(newId)) {
-			throw new IllegalSiStateError('Route with id ' + newId + ' already exists.');
-		}
-
-		this.currentRoute.id = newId;
-	}
+	// changeCurrentRouteId(newId: number) {
+	// 	if (this.getRouteById(newId)) {
+	// 		throw new IllegalSiStateError('Route with id ' + newId + ' already exists.');
+	// 	}
+	//
+	// 	this.currentRoute.id = newId;
+	// }
 }
 
 
