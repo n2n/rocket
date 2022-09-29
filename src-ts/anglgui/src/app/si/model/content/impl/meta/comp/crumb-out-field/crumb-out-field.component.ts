@@ -8,7 +8,7 @@ import { CrumbFieldModel } from '../crumb-field-model';
 	host: {class: 'rocket-crumb-out-field'}
 })
 export class CrumbOutFieldComponent implements OnInit {
-	model: CrumbFieldModel;
+	model!: CrumbFieldModel;
 
 	constructor() { }
 

@@ -36,7 +36,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	getBoundEntries(): SiEntry[] {
-		return [this.entry];
+		return [this.entry!];
 	}
 
 	getBoundDeclaration(): SiDeclaration {
@@ -50,8 +50,8 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	// }
 
 	get entry(): SiEntry|null {
-		while (this._entry.replacementEntry) {
-			this._entry = this._entry.replacementEntry;
+		while (this._entry!.replacementEntry) {
+			this._entry = this._entry!.replacementEntry;
 		}
 		return this._entry;
 	}
@@ -61,7 +61,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		return new BulkyUiStructureModel(this.entry, this.declaration, this.getControls(),
+		return new BulkyUiStructureModel(this.entry!, this.declaration, this.getControls(),
 				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService,
 						this.siModStateService, this.entryControlsIncluded));
 	}
@@ -99,7 +99,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		return this.uiStructureSubject.asObservable();
 	}
 
-	bind(uiStructure: UiStructure): void {
+	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		while (this.siEntry.replacementEntry) {
@@ -124,7 +124,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.monitorEntry();
 
 		this.mainControlUiContents = this.controls.map((control) => {
-			return control.createUiContent(() => uiStructure.getZone());
+			return control.createUiContent(() => uiStructure.getZone()!);
 		});
 
 		this.uiContent = new TypeUiContent(BulkyEntryComponent, (ref) => {
@@ -143,15 +143,15 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 					if (!this.siEntry.isNew()) {
 						this.siEntryMonitor.unregisterEntry(this.siEntry);
 					}
-					this.siEntry = this.siEntry.replacementEntry;
-					this.subscription.remove(sub);
+					this.siEntry = this.siEntry.replacementEntry!;
+					this.subscription!.remove(sub);
 					this.monitorEntry();
 					this.rebuildStructures();
 					break;
 			}
 		});
 
-		this.subscription.add(sub);
+		this.subscription!.add(sub);
 	}
 
 	private createTypeSwitchUiStructureModel(): UiStructureModel {
@@ -160,7 +160,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		}));
 	}
 
-	unbind(): void {
+	override unbind(): void {
 		super.unbind();
 
 		if (!this.siEntry.isNew()) {
@@ -188,7 +188,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private rebuildStructures() {
 		this.clear();
 
-		if (!this.siEntry.entryBuildupSelected || !this.boundUiStructure.hasZone()) {
+		if (!this.siEntry.entryBuildupSelected || !this.boundUiStructure!.hasZone()) {
 			if (!this.isBoundStructureInsideGroup()){
 				// todo: group
 			}
@@ -199,12 +199,12 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.mode = UiStructureModelMode.MASSIVE_TOOLBAR;
 
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
-				.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
+				.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
 
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry.selectedEntryBuildupId);
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry!.selectedEntryBuildupId!);
 		const toolbarResolver = new ToolbarResolver();
 
-		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration.structureDeclarations, toolbarResolver,
+		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration!.structureDeclarations!, toolbarResolver,
 				!this.isBoundStructureInsideGroup()));
 
 		for (const prop of siMaskDeclaration.type.getProps()) {
@@ -223,10 +223,10 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private isBoundStructureInsideGroup(): boolean {
 		let uiStructure = this.boundUiStructure;
 		do {
-			if (UiStructureTypeUtils.isGroup(uiStructure.type)) {
+			if (UiStructureTypeUtils.isGroup(uiStructure!.type!)) {
 				return true;
 			}
-		} while (uiStructure.isBound() && (uiStructure = uiStructure.getParent()));
+		} while (uiStructure!.isBound() && (uiStructure = uiStructure!.getParent()));
 
 		return false;
 	}
@@ -237,7 +237,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		let curUnbUiStructureModel: BranchUiStructureModel|null = null;
 
 		for (const usd of uiStructureDeclarations) {
-			if (!groupsRequired || UiStructureTypeUtils.isGroup(usd.type)
+			if (!groupsRequired || UiStructureTypeUtils.isGroup(usd.type!)
 					|| (usd.type === UiStructureType.PANEL && !this.containsNonGrouped(usd))) {
 				structures.push(this.createStructure(usd, toolbarResolver));
 				curUnbUiStructureModel = null;
@@ -261,7 +261,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		}
 
 		for (const child of siStructureDeclaration.children) {
-			if (UiStructureTypeUtils.isGroup(child.type)) {
+			if (UiStructureTypeUtils.isGroup(child.type!)) {
 				continue;
 			}
 
@@ -301,7 +301,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
 		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) {
 			const siField = this.siEntry.selectedEntryBuildup.getFieldById(siProp.id);
-			return this.uiStructureModelCache.obtain(this.siEntry.selectedEntryBuildupId, siProp.id, siField);
+			return this.uiStructureModelCache.obtain(this.siEntry.selectedEntryBuildupId!, siProp.id, siField);
 		}
 
 		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
@@ -316,12 +316,12 @@ class UiStructureModelCache {
 			this.map.set(siTypeId, new Map());
 		}
 
-		const map = this.map.get(siTypeId);
+		const map = this.map.get(siTypeId)!;
 		if (!map.has(siFieldId)) {
 			map.set(siFieldId, siField.createUiStructureModel(false));
 		}
 
-		return map.get(siFieldId);
+		return map.get(siFieldId)!;
 	}
 
 	clear(): void {
@@ -347,7 +347,7 @@ class TypeSelectInModel implements SelectInFieldModel {
 	}
 
 	getValue(): string {
-		return this.siEntry.selectedEntryBuildupId;
+		return this.siEntry.selectedEntryBuildupId!;
 	}
 
 	setValue(value: string): void {
@@ -399,7 +399,7 @@ class ToolbarResolver {
 
 		const uiStructureModel = contextSiField.createUiStructureModel(false);
 
-		let decorator: UiStructureModelDecorator;
+		let decorator: UiStructureModelDecorator|null;
 		if (contextUiStructure && (decorator = this.findDecorator(contextUiStructure))) {
 			decorator.setAdditionalToolbarStructureModels([uiStructureModel]);
 		} else {
@@ -407,7 +407,7 @@ class ToolbarResolver {
 		}
 	}
 
-	private findDecorator(uiStructure: UiStructure): UiStructureModelDecorator {
+	private findDecorator(uiStructure: UiStructure): UiStructureModelDecorator|null {
 		const di = this.decoratorItems.find(d => d.uiStructure === uiStructure);
 
 		if (di) {
@@ -430,7 +430,7 @@ class ToolbarResolver {
 			return uiStructure2;
 		}
 
-		return this.deterOuter(uiStructure1.getParent(), uiStructure2.getParent());
+		return this.deterOuter(uiStructure1.getParent()!, uiStructure2.getParent()!);
 	}
 
 }

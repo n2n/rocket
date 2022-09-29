@@ -11,15 +11,15 @@ import { ThumbRatio } from './thumb-ratio';
 })
 export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 
-	model: ImageEditorModel;
+	model!: ImageEditorModel;
 
 	@ViewChild('img', { static: true })
-	canvasRef: ElementRef;
+	canvasRef!: ElementRef;
 
 	@ViewChild('originalPreview', { static: true })
-	originalPreviewRef: ElementRef;
+	originalPreviewRef!: ElementRef;
 
-	imageSrc: ImageSrc;
+	imageSrc!: ImageSrc;
 
 	private ratioMap = new Map<string, ThumbRatio>();
 
@@ -27,7 +27,7 @@ export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 	currentImageDimension: SiImageDimension|null = null;
 	private currentImageDimensionThumbRatio: ThumbRatio|null = null;
 
-	uploadResult: UploadResult;
+	uploadResult: UploadResult|null = null;
 	private saving = false;
 
 	constructor(elemRef: ElementRef) {
@@ -35,7 +35,7 @@ export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 	}
 
 	ngOnInit() {
-		this.imageSrc = new ImageSrc(this.canvasRef, this.model.getSiFile().mimeType);
+		this.imageSrc = new ImageSrc(this.canvasRef, this.model.getSiFile().mimeType!);
 
 		this.imageSrc.ready$.subscribe(() => {
 			this.imageSrc.cut(null, null);
@@ -125,7 +125,7 @@ export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 
 		const siFile = uploadResult.siFile;
 		this.model.setSiFile(siFile);
-		this.imageSrc.replace(siFile.url);
+		this.imageSrc.replace(siFile.url!);
 		this.initSiFile(siFile);
 
 		this.imageSrc.ready$.subscribe(() => {
@@ -179,7 +179,7 @@ export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 
 	isThumbRatioActive(thumbRatio: ThumbRatio): boolean {
 		return this.currentThumbRatio === thumbRatio
-				|| (this.currentImageDimension && thumbRatio.containImageDimension(this.currentImageDimension))
+				|| (!!this.currentImageDimension && thumbRatio.containImageDimension(this.currentImageDimension))
 	}
 
 	private updateCut() {
@@ -214,7 +214,7 @@ export class ImageEditorComponent implements OnInit, DoCheck, AfterViewInit {
 				continue;
 			}
 
-			this.ratioMap.get(ratio).addImageDimension(imageDimension);
+			this.ratioMap.get(ratio)!.addImageDimension(imageDimension);
 		}
 	}
 

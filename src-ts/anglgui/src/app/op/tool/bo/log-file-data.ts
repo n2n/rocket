@@ -1,4 +1,4 @@
 export class LogFileData {
-	constructor(public filename: string, public numPages: number) {
+	constructor(public filename: string|null, public numPages: number) {
 	}
 }

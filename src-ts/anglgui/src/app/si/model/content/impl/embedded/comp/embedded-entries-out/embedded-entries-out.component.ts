@@ -4,11 +4,10 @@ import { EmbeStructure } from '../../model/embe/embe-structure';
 
 @Component({
 	selector: 'rocket-embedded-entries-out',
-	templateUrl: './embedded-entries-out.component.html',
-	styleUrls: ['./embedded-entries-out.component.css']
+	templateUrl: './embedded-entries-out.component.html'
 })
 export class EmbeddedEntriesOutComponent implements OnInit {
-	model: EmbeddedEntriesOutModel;
+	model!: EmbeddedEntriesOutModel;
 
 	constructor() { }
 

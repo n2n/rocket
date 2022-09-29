@@ -16,8 +16,8 @@ export class ToolsService {
 	getMailLogFileDatas(): Observable<LogFileData[]> {
 		return this.httpClient.get<any>('tools/mail-center/mailslogfiledatas')
 			.pipe(map((data) => {
-				const logFileDatas = [];
-				data.forEach((mailLogItemData) => {
+				const logFileDatas: any[] = [];
+				data.forEach((mailLogItemData: { filename: string; numPages: number; }) => {
 					logFileDatas.push(new LogFileData(mailLogItemData.filename, mailLogItemData.numPages));
 				});
 				return logFileDatas;

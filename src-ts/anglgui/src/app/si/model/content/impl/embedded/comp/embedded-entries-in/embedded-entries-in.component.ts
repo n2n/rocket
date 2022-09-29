@@ -11,9 +11,9 @@ import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 	styleUrls: ['./embedded-entries-in.component.css']
 })
 export class EmbeddedEntriesInComponent implements OnInit {
-	model: EmbeddedEntriesInModel;
+	model!: EmbeddedEntriesInModel;
 	copyPool: CopyPool;
-	obtainer: AddPasteObtainer;
+	obtainer!: AddPasteObtainer;
 
 	constructor(clipboard: ClipboardService) {
 		this.copyPool = new CopyPool(clipboard);
@@ -26,7 +26,7 @@ export class EmbeddedEntriesInComponent implements OnInit {
 	get maxReached(): boolean {
 		const max = this.model.getMax();
 
-		return max && max <= this.model.getEmbeStructures().length;
+		return max !== null && max <= this.model.getEmbeStructures().length;
 	}
 
 	get toOne(): boolean {

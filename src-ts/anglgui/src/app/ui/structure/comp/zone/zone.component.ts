@@ -10,7 +10,7 @@ import { UiContent } from '../../model/ui-content';
 })
 export class ZoneComponent implements OnInit, OnDestroy {
 
-	@Input() uiZone: UiZone;
+	@Input() uiZone!: UiZone;
 
 	// uiZoneErrors: UiZoneError[] = [];
 

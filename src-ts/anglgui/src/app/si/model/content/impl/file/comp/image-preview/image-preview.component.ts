@@ -12,13 +12,13 @@ export class ImagePreviewComponent implements OnInit, DoCheck {
 	imageCut: SiImageCut|null = null;
 
 	@Input()
-	src: string;
+	src!: string;
 
 	@Input()
 	size = 50;
 
 	@ViewChild('img', { static: true } )
-	imgElemRef: ElementRef;
+	imgElemRef!: ElementRef;
 
 	private style: CSSStyleDeclaration;
 

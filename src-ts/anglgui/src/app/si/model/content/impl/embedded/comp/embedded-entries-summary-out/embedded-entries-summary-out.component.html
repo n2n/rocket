@@ -25,7 +25,7 @@
 		<ng-container *ngIf="!embeStructure.embe.isPlaceholder() && embeStructure.embe.isTypeSelected()">
 			<div rocketUiStructure class="rocket-summary" 
 						[uiStructure]="embeStructure.uiStructure" [toolbarVisible]="false"
-						rocketSiEntry [siEntry]="embeStructure.embe.siEmbeddedEntry.summaryEntry">
+						rocketSiEntry [siEntry]="embeStructure.embe.siEmbeddedEntry!.summaryEntry!">
 				<ng-container pre-content>
 					<div class="invisible"></div>
 					<div rocketSiQualifier [siMaskQualifier]="embeStructure.embe.siEntry.qualifier.maskQualifier" [iconImportant]="true" class="rocket-qualifier-btn"></div>
@@ -33,10 +33,10 @@
 
 				<ng-container post-content>
 					<div class="rocket-simple-commands">
-						<ng-template *ngFor="let uiContent of embeStructure.uiStructure.model.getMainControlContents()" 
+						<ng-template *ngFor="let uiContent of embeStructure.uiStructure.model!.getMainControlContents()"
 								rocketUiContent [uiContent]="uiContent"></ng-template>
 								
-						<ng-template *ngFor="let uiContent of embeStructure.uiStructure.model.getAsideContents()" 
+						<ng-template *ngFor="let uiContent of embeStructure.uiStructure.model!.getAsideContents()"
 								rocketUiContent [uiContent]="uiContent"></ng-template>
 					
 						<button class="btn btn-warning" (click)="model.open(embeStructure)">

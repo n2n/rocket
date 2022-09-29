@@ -10,7 +10,7 @@ import { SiCrumbGroup, SiCrumb } from '../../model/si-crumb';
 export class CrumbGroupComponent implements OnInit {
 
 	@Input()
-	siCrumbGroup: SiCrumbGroup;
+	siCrumbGroup!: SiCrumbGroup;
 
 	constructor() { }
 

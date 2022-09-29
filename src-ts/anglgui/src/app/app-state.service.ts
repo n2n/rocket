@@ -7,9 +7,9 @@ import { User } from './op/user/bo/user';
 export class AppStateService {
 
 	localeId = 'de-CH';
-	user: User;
-	pageName: string;
-	assetsUrl: string;
+	user!: User;
+	pageName!: string;
+	assetsUrl!: string;
 
 	constructor() { }
 }

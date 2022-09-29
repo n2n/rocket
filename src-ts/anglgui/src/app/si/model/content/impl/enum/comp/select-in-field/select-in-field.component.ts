@@ -8,7 +8,7 @@ import { Option } from 'src/app/ui/util/comp/select-input/select.component';
 })
 export class SelectInFieldComponent implements OnInit {
 
-	model: SelectInFieldModel;
+	model!: SelectInFieldModel;
 
 	constructor() { }
 

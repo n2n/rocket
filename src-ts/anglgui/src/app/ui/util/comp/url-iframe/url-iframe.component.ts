@@ -8,12 +8,12 @@ import {IframeComponent} from "../iframe/iframe.component";
 	styleUrls: ['./url-iframe.component.css']
 })
 export class UrlIframeComponent implements OnInit {
-	@ViewChild('urlIframe') urlIframe: ElementRef;
+	@ViewChild('urlIframe') urlIframe?: ElementRef;
 
 	@Input()
-	public srcUrl;
+	public srcUrl!: string;
 
-	public sanitizedUrl: SafeUrl;
+	public sanitizedUrl!: SafeUrl;
 
 	public loading = true;
 
@@ -21,25 +21,25 @@ export class UrlIframeComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-	this.sanitizedUrl = this.sanitizeUrl();
+		this.sanitizedUrl = this.sanitizeUrl();
 	}
 
 	private appendScriptsToIframeContent() {
-	const script = document.createElement('script');
-	script.textContent = IframeComponent.createResizerJs();
-	this.urlIframe.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
-		.insertAdjacentElement('beforeend', script);
+		const script = document.createElement('script');
+		script.textContent = IframeComponent.createResizerJs();
+		this.urlIframe!.nativeElement.contentWindow.document.getElementsByTagName("body")[0]
+				.insertAdjacentElement('beforeend', script);
 	}
 
 	sanitizeUrl() {
-	return this.sanitizer.bypassSecurityTrustResourceUrl(this.srcUrl);
+		return this.sanitizer.bypassSecurityTrustResourceUrl(this.srcUrl);
 	}
 
 	iframeLoaded() {
-	if (!!this.urlIframe) {
-		this.appendScriptsToIframeContent();
-		this.loading = false;
-		//alert(this.urlIframe.nativeElement.contentWindow.document.title);
-	}
+		if (!!this.urlIframe) {
+			this.appendScriptsToIframeContent();
+			this.loading = false;
+			//alert(this.urlIframe.nativeElement.contentWindow.document.title);
+		}
 	}
 }

@@ -6,7 +6,7 @@ import { InputInFieldModel } from '../input-in-field-model';
 	templateUrl: './input-in-field.component.html'
 })
 export class InputInFieldComponent implements OnInit {
-	model: InputInFieldModel;
+	model!: InputInFieldModel;
 
 	constructor() { }
 

@@ -9,5 +9,5 @@ export interface DateTimeInModel extends MessageFieldModel {
 
 	getValue(): Date|null;
 
-	setValue(date: Date|null);
+	setValue(date: Date|null): void;
 }

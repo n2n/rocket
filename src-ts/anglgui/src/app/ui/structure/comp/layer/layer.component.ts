@@ -4,12 +4,11 @@ import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'rocket-ui-layer',
-	templateUrl: './layer.component.html',
-	styleUrls: ['./layer.component.css']
+	templateUrl: './layer.component.html'
 })
 export class LayerComponent implements OnInit {
 	@Input()
-	uiLayer: UiLayer;
+	uiLayer!: UiLayer;
 
 	constructor(private elemRef: ElementRef) {
 	}

@@ -1,8 +1,8 @@
 
 export class User {
-	firstname: string = null;
-	lastname: string = null;
-	email: string = null;
+	firstname: string|null = null;
+	lastname: string|null = null;
+	email: string|null = null;
 
 	constructor(public id: number|null, public username: string, public power: UserPower) {
 

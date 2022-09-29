@@ -40,7 +40,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 
 	constructor(public popupTitle: string, public frame: SiFrame, private embeOutCol: EmbeOutCollection,
 			private config: EmbeddedEntriesOutConfig, private translationService: TranslationService,
-			disabledSubject: Observable<boolean>|null = null) {
+			disabledSubject?: Observable<boolean>) {
 		super();
 		this.disabled$ = disabledSubject;
 	}
@@ -51,7 +51,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 
 	private getEmbeOutUiStructureManager(): EmbeOutUiStructureManager {
 		IllegalStateError.assertTrue(!!this.embeOutUiStructureManager);
-		return this.embeOutUiStructureManager;
+		return this.embeOutUiStructureManager!;
 	}
 
 	open(embeStructure: EmbeStructure): void {
@@ -63,7 +63,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		this.getEmbeOutUiStructureManager().openAll();
 	}
 
-	bind(uiStructure: UiStructure): void {
+	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeOutCol);
@@ -93,7 +93,7 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		const button = new SiButton(this.translationService.translate('show_all_txt'), 'rocket-btn-light rocket-btn-light-warning', 'fa fa-file');
 
 		const openAllUiContent = new ButtonControlUiContent({
-			getUiZone: () => uiStructure.getZone(),
+			getUiZone: () => uiStructure.getZone()!,
 			getSiButton: () => button,
 			isLoading: () => false,
 			isDisabled: () => false,
@@ -104,19 +104,19 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(openAllUiContent)]);
 	}
 
-	unbind() {
+	override unbind() {
 		this.errorState.messages = [];
 		this.errorState.structureErrors = [];
-		this.embeStructureCollection.clear();
+		this.embeStructureCollection!.clear();
 		this.embeStructureCollection = null;
 	}
 
-	getAsideContents(): UiContent[] {
+	override getAsideContents(): UiContent[] {
 		return [];
 	}
 
 	getEmbeStructures(): EmbeStructure[] {
-		return this.embeStructureCollection.embeStructures;
+		return this.embeStructureCollection!.embeStructures;
 	}
 
 	private updateReducedStructureErrors() {
@@ -133,14 +133,14 @@ export class EmbeddedEntriesOutUiStructureModel extends UiStructureModelAdapter 
 	}
 
 	getStructures$(): Observable<UiStructure[]> {
-		return this.embeStructureCollection.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
+		return this.embeStructureCollection!.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
 	}
 
 	getStructureErrors(): UiStructureError[] {
 		return this.structureErrorCollection.get();
 	}
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
+	override getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.structureErrorCollection.get$();
 	}
 
@@ -210,10 +210,10 @@ class EmbeOutUiStructureManager {
 			return;
 		}
 
-		const uiZone = this.uiStructure.getZone();
+		const uiZone = this.uiStructure.getZone()!;
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
-		const zone = this.popupUiLayer.pushRoute(null, null).zone;
+		const zone = this.popupUiLayer!.pushRoute(null, null).zone;
 
 		zone.title = this.model.popupTitle;
 		zone.breadcrumbs = [];
@@ -241,7 +241,7 @@ class EmbeOutUiStructureManager {
 
 		const structure = new UiStructure(UiStructureType.SIMPLE_GROUP, null, popupUiStructureModel);
 
-		const uiZone = this.uiStructure.getZone();
+		const uiZone = this.uiStructure.getZone()!;
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		this.popupUiLayer.onDispose(() => {
@@ -264,7 +264,7 @@ class EmbeOutUiStructureManager {
 			new SimpleSiControl(
 					new SiButton(this.translationService.translate('common_close_label'), 'btn btn-secondary', 'fas fa-trash'),
 					() => {
-						this.popupUiLayer.dispose();
+						this.popupUiLayer!.dispose();
 					})
 		];
 	}

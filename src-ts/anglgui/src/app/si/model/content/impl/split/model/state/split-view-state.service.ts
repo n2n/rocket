@@ -35,7 +35,7 @@ export class SplitViewStateService {
 		this.contexts.push(context);
 
 		uiZone.onDispose(() => {
-			this.removeContext(context);
+			this.removeContext(context!);
 		});
 
 		return context;

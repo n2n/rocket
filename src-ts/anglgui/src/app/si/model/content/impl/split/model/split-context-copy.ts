@@ -14,7 +14,7 @@ export class SplitContextCopy {
 				continue;
 			}
 
-			promises.push(entry.copy().then((genericEntry) => {
+			promises.push(entry!.copy().then((genericEntry) => {
 				gsc.genericMap.set(key, genericEntry);
 			}));
 		}

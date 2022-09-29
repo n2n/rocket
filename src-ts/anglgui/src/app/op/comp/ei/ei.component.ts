@@ -16,7 +16,7 @@ import { Message } from 'src/app/util/i18n/message';
 export class EiComponent implements OnInit, OnDestroy {
 
 	uiContainer: UiContainer;
-	private subscription: Subscription;
+	private subscription?: Subscription;
 
 	constructor(private route: ActivatedRoute, private siUiService: SiUiService,
 			private router: Router/*, platformLocation: PlatformLocation*/,
@@ -35,7 +35,7 @@ export class EiComponent implements OnInit, OnDestroy {
 
 					return (event instanceof NavigationStart);
 				}))
-				.subscribe((event: NavigationStart) => {
+				.subscribe((event: any) => {
 					this.handleNav(event);
 				});
 
@@ -52,7 +52,8 @@ export class EiComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.subscription.unsubscribe();
+		this.subscription!.unsubscribe();
+		this.subscription = undefined;
 	}
 
 	get mainUiLayer(): MainUiLayer {
@@ -63,6 +64,7 @@ export class EiComponent implements OnInit, OnDestroy {
 		const url = event.url.substr(1);
 
 		switch (event.navigationTrigger) {
+		// @ts-ignore
 		case 'popstate':
 			if (!event.restoredState) {
 				break;
@@ -81,7 +83,7 @@ export class EiComponent implements OnInit, OnDestroy {
 
 		case 'imperative':
 			this.mainUiLayer.pushRoute(event.id, url);
-			this.siUiService.loadZone(this.mainUiLayer.currentRoute.zone, true);
+			this.siUiService.loadZone(this.mainUiLayer.currentRoute!.zone, true);
 			break;
 		default:
 			// console.log('state ' + event.navigationTrigger);

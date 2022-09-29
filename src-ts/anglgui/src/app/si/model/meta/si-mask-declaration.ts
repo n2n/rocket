@@ -10,6 +10,6 @@ export class SiMaskDeclaration {
 
 	getSiProps(): SiProp[] {
 		// return this.type.getProps();
-		return this.structureDeclarations.filter(sd => !!sd.prop).map(sd => sd.prop);
+		return this.structureDeclarations!.filter(sd => !!sd.prop).map(sd => sd.prop!);
 	}
 }

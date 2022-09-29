@@ -7,10 +7,10 @@ import { SiModStateService } from '../model/si-mod-state.service';
 })
 export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 
-	private _siEntry: SiEntry;
+	private _siEntry?: SiEntry;
 
 	private currentlyHighlighted = false;
-	private currentState: SiEntryState;
+	private currentState?: SiEntryState;
 
 	constructor(private elementRef: ElementRef, private modState: SiModStateService) { }
 
@@ -32,11 +32,11 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 	}
 
 	get siEntry(): SiEntry {
-		return this._siEntry;
+		return this._siEntry!;
 	}
 
 	ngDoCheck() {
-		this.chHighlightedClass(this.modState.lastModEvent
+		this.chHighlightedClass(this.modState.lastModEvent !== null
 				&& this.modState.lastModEvent.containsModEntryIdentifier(this.siEntry.identifier));
 		this.chStateClass(this.siEntry.state);
 	}

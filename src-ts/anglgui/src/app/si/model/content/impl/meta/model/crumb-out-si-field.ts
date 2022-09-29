@@ -12,7 +12,7 @@ export class CrumbOutSiField extends OutSiFieldAdapter {
 		super();
 	}
 
-	createUiContent(uiStructure: UiStructure): UiContent|null {
+	createUiContent(uiStructure: UiStructure): UiContent {
 		return new TypeUiContent(CrumbOutFieldComponent, (ref) => {
 			ref.instance.model = {
 				isBulky: () => !!uiStructure.type && uiStructure.type !== UiStructureType.MINIMAL,

@@ -27,18 +27,18 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return true;
 		}
 
-		return this.spm.lastPage && !this.spm.lastPage.loaded;
+		return !!this.spm.lastPage && !this.spm.lastPage.loaded;
 	}
 
 	get sortable(): boolean {
 		return this.spm.sortable;
 	}
 
-	get quickSearchStr(): string {
+	get quickSearchStr(): string|null {
 		return this.spm.quickSearchStr;
 	}
 
-	set quickSearchStr(quickSearchStr: string) {
+	set quickSearchStr(quickSearchStr: string|null) {
 		if (quickSearchStr === '') {
 			quickSearchStr = null;
 		}
@@ -69,7 +69,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 		if (this.spm.containsPageNo(currentPageNo)) {
 			this.parent.nativeElement.scrollTo({
-				top: this.spm.getPageByNo(currentPageNo).offsetHeight,
+				top: this.spm.getPageByNo(currentPageNo).offsetHeight!,
 				behavior: 'smooth'
 			});
 			return;
@@ -117,11 +117,11 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.model.getSiEntryQualifierSelection().max === 1;
 	}
 
-	model: CompactExplorerModel;
+	model!: CompactExplorerModel;
 
 	private subscription = new Subscription();
 
-	private quickSearchSubject = new Subject<string>();
+	private quickSearchSubject = new Subject<string|null>();
 	private quickSearching = false;
 
 	private pCurrentPageNo = 1;
@@ -162,7 +162,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 					this.quickSearching = true;
 				}))
 				.pipe(debounceTime(300))
-				.subscribe((str: string) => {
+				.subscribe((str: string|null) => {
 					if (this.spm.quickSearchStr === str) {
 						this.quickSearching = false;
 						this.ensureLoaded();
@@ -251,7 +251,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 	areMoreSelectable(): boolean {
 		return this.model.getSiEntryQualifierSelection().max === null
-				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max;
+				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max!;
 	}
 
 	drop(event: CdkDragDrop<string[]>): void {

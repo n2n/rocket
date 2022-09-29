@@ -38,7 +38,7 @@ export class SiGenericValue {
 
 	readString(): string {
 		if (this.isStringRepresentable()) {
-			return this.value.toString();
+			return this.value!.toString();
 		}
 
 		throw new GenericMissmatchError('Value is not stringlike');

@@ -99,7 +99,7 @@ export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter	{
 				continue;
 			}
 
-			promises.push(this.createGenericManager(panel).pasteValue(col.map.get(panel.name)));
+			promises.push(this.createGenericManager(panel).pasteValue(col.map.get(panel.name)!));
 		}
 
 		return Promise.all(promises).then(results => -1 !== results.indexOf(true));
@@ -119,7 +119,7 @@ class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
 		super();
 	}
 
-	bind(uiStructure: UiStructure) {
+	override bind(uiStructure: UiStructure) {
 		super.bind(uiStructure);
 
 		this.panelDefs = new Array<PanelDef>();
@@ -133,7 +133,7 @@ class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
 
 		this.uiContent = new TypeUiContent(EmbeddedEntryPanelsComponent, (ref) => {
 			ref.instance.model = {
-				getPanelDefs: () => this.panelDefs
+				getPanelDefs: () => this.panelDefs!
 			};
 		});
 	}
@@ -144,14 +144,14 @@ class EmbeddedEntryPanelsOutUiStructureModel extends UiStructureModelAdapter {
 
 	getStructures$(): Observable<UiStructure[]> {
 		IllegalStateError.assertTrue(!!this.panelDefs, 'EmbeddedEntryPanelsInUiStructureModel not bound.');
-		return from([this.panelDefs.map(pa => pa.uiStructure)]);
+		return from([this.panelDefs!.map(pa => pa.uiStructure)]);
 	}
 
 	// getStructureErrors(): UiStructureError[] {
 	// 	return this.messagesCollection.get().map((message) => ({message}));
 	// }
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
+	override getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.messagesCollection.get$().pipe(map((messages) => messages.map((message) => ({ message }))));
 	}
 

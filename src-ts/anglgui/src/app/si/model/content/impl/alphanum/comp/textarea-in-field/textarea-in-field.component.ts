@@ -7,7 +7,7 @@ import { TextAreaInFieldModel } from '../textarea-in-field-model';
 })
 export class TextareaInFieldComponent implements OnInit {
 
-	model: TextAreaInFieldModel;
+	model!: TextAreaInFieldModel;
 
 	constructor() { }
 

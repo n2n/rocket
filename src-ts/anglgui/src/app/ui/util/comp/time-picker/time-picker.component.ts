@@ -8,7 +8,7 @@ export class TimePickerComponent implements OnInit {
 	private pDate: Date|null = null;
 
 	@Output()
-	private dateChange = new EventEmitter<Date>();
+	private dateChange = new EventEmitter<Date|null>();
 
 	ngOnInit(): void {
 		this.date = this.pDate;

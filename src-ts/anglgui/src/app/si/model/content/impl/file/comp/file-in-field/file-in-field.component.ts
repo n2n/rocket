@@ -24,13 +24,13 @@ import { SiEssentialsFactory } from 'src/app/si/build/si-field-essentials-factor
 	host: {class: 'rocket-file-in-field'}
 })
 export class FileInFieldComponent implements OnInit {
-	private uploader: CommonImageEditorModel;
+	private uploader!: CommonImageEditorModel;
 
 	constructor(private siService: SiService, private translationService: TranslationService) {
 	}
 
-	get loading() {
-		return !!this.uploader.uploadingFile || (this.currentSiFile && this.currentSiFile.thumbUrl && !this.imgLoaded);
+	get loading(): boolean {
+		return !!this.uploader.uploadingFile || (!!this.currentSiFile && !!this.currentSiFile.thumbUrl && !this.imgLoaded);
 	}
 
 	get inputAvailable(): boolean {
@@ -58,18 +58,18 @@ export class FileInFieldComponent implements OnInit {
 	}
 
 	get resizable(): boolean {
-		return !this.loading && this.currentSiFile && this.currentSiFile.mimeType
+		return !this.loading && !!this.currentSiFile && !!this.currentSiFile.mimeType
 				&& this.currentSiFile.imageDimensions.length > 0;
 	}
 
-	model: FileInFieldModel;
-	uiStructure: UiStructure;
+	model!: FileInFieldModel;
+	uiStructure!: UiStructure;
 	imgLoaded = false;
 
 	uploadResult: UploadResult|null = null;
 
 	@ViewChild('fileInput')
-	fileInputRef: ElementRef;
+	fileInputRef!: ElementRef;
 
 	private popupUiLayer: PopupUiLayer|null = null;
 
@@ -118,8 +118,8 @@ export class FileInFieldComponent implements OnInit {
 			return;
 		}
 
-		let bakSiFile = this.model.getSiFile().copy();
-		const uiZone = this.uiStructure.getZone();
+		let bakSiFile: SiFile|null = this.model.getSiFile()!.copy();
+		const uiZone = this.uiStructure.getZone()!;
 
 		this.popupUiLayer = uiZone.layer.container.createLayer();
 		this.popupUiLayer.onDispose(() => {
@@ -150,12 +150,12 @@ export class FileInFieldComponent implements OnInit {
 					new SiButton(this.translationService.translate('common_apply_label'), 'btn btn-success', 'fas fa-save'),
 					() => {
 						applyCallback();
-						this.popupUiLayer.dispose();
+						this.popupUiLayer!.dispose();
 					}),
 			new SimpleSiControl(
 					new SiButton(this.translationService.translate('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
 					() => {
-						this.popupUiLayer.dispose();
+						this.popupUiLayer!.dispose();
 					})
 		];
 	}
@@ -210,7 +210,7 @@ class CommonImageEditorModel implements ImageEditorModel {
 	}
 
 	getSiFile(): SiFile {
-		return this.model.getSiFile();
+		return this.model.getSiFile()!;
 	}
 
 	setSiFile(siFile: SiFile) {
@@ -234,7 +234,7 @@ class CommonImageEditorModel implements ImageEditorModel {
 		}
 		const siFile = SiEssentialsFactory.buildSiFile(data.file);
 		this.model.setSiFile(siFile);
-		return { siFile };
+		return { siFile: siFile || undefined };
 	}
 
 	reset() {

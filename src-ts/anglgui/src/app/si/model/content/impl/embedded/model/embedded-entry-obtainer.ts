@@ -28,7 +28,7 @@ export class EmbeddedEntryObtainer	{
 
 	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry({ bulky: true, readOnly: false }, siEntryIdentifier.id);
+			return SiGetInstruction.entry({ bulky: true, readOnly: false }, siEntryIdentifier.id!);
 		}
 
 		return SiGetInstruction.newEntry({ bulky: true, readOnly: false }).setTypeIds(this.typeIds);
@@ -36,7 +36,7 @@ export class EmbeddedEntryObtainer	{
 
 	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
 		if (siEntryIdentifier) {
-			return SiGetInstruction.entry({ bulky: false, readOnly: true }, siEntryIdentifier.id);
+			return SiGetInstruction.entry({ bulky: false, readOnly: true }, siEntryIdentifier.id!);
 		}
 
 		return SiGetInstruction.newEntry({ bulky: false, readOnly: true }).setTypeIds(this.typeIds);
@@ -47,12 +47,13 @@ export class EmbeddedEntryObtainer	{
 			return;
 		}
 
-		this.preloadedNew$ = this.obtain([null]).pipe(map(siEmbeddedEntries => siEmbeddedEntries[0])).toPromise();
+		this.preloadedNew$ = this.obtain([null])
+				.pipe(map(siEmbeddedEntries => siEmbeddedEntries[0] as any)).toPromise();
 	}
 
 	obtainNew(): Promise<SiEmbeddedEntry> {
 		this.preloadNew();
-		const siEmbeddedEntry$ = this.preloadedNew$;
+		const siEmbeddedEntry$ = this.preloadedNew$!;
 		this.preloadedNew$ = null;
 		this.preloadNew();
 		return siEmbeddedEntry$;
@@ -77,15 +78,15 @@ export class EmbeddedEntryObtainer	{
 	private handleResponse(response: SiGetResponse): SiEmbeddedEntry[] {
 		const siEmbeddedEntries = new Array<SiEmbeddedEntry>();
 
-		let result: SiGetResult;
+		let result: SiGetResult|undefined;
 		while (result = response.results.shift()) {
-			const siComp = new BulkyEntrySiGui(this.siFrame, result.declaration, this.siService, this.siModStateService);
+			const siComp = new BulkyEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
 			siComp.entry = result.entry;
 
 			let summarySiGui: CompactEntrySiGui|null = null;
 			if (this.obtainSummary) {
-				result = response.results.shift();
-				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration, this.siService, this.siModStateService);
+				result = response.results.shift()!;
+				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
 				summarySiGui.entry = result.entry;
 			}
 
@@ -112,7 +113,7 @@ export class EmbeddedEntryObtainer	{
 	}
 
 	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult): void {
-		siEmbeddedEntry.entry.replace(siValResult.getResults[0].entry);
+		siEmbeddedEntry.entry.replace(siValResult.getResults[0].entry!);
 
 		if (siEmbeddedEntry.summaryComp) {
 			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[1].entry;

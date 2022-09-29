@@ -7,7 +7,7 @@ export class UiMenuGroup {
 	isOpen = true;
 
 	constructor(public label: string, public menuItems: UiMenuItem[]) {
-		this.id = label + [].concat(...this.menuItems.map(mi => mi.id));
+		this.id = label + this.menuItems.map(mi => mi.id).join(',');
 	}
 
 	toggle() {

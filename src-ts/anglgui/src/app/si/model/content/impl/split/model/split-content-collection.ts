@@ -28,9 +28,9 @@ export class SplitContentCollection {
 		return this.splitContentMap.has(key);
 	}
 
-	getEntry$(key: string): Promise<SiEntry> {
+	getEntry$(key: string): Promise<SiEntry|null> {
 		if (this.splitContentMap.has(key)) {
-			return this.splitContentMap.get(key).getSiEntry$();
+			return this.splitContentMap.get(key)!.getSiEntry$();
 		}
 
 		throw new Error('Unknown key.');
@@ -50,7 +50,7 @@ export class SplitContentCollection {
 }
 
 export class SplitContent implements SplitOption {
-	private entry$: Promise<SiEntry>|null = null;
+	private entry$: Promise<SiEntry|null>|null = null;
 	private lazyDef: LazyDef|null = null;
 	private loadedEntry: SiEntry|null = null;
 	private loadedEntrySubject: Subject<SiEntry>|null = null;
@@ -92,20 +92,21 @@ export class SplitContent implements SplitOption {
 
 	getSiEntry$(): Promise<SiEntry|null> {
 		if (this.entry$) {
-		return this.entry$;
+			return this.entry$;
 		}
 
 		let instruction: SiGetInstruction|null = null;
-		if (this.lazyDef.entryId) {
-			instruction = SiGetInstruction.entry(this.lazyDef.style, this.lazyDef.entryId);
+		if (this.lazyDef!.entryId) {
+			instruction = SiGetInstruction.entry(this.lazyDef!.style, this.lazyDef!.entryId);
 		} else {
-			instruction = SiGetInstruction.newEntry(this.lazyDef.style);
+			instruction = SiGetInstruction.newEntry(this.lazyDef!.style);
 		}
-		instruction.setPropIds(this.lazyDef.propIds);
+		instruction.setPropIds(this.lazyDef!.propIds);
 
-		return this.entry$ = this.lazyDef.siService.apiGet(this.lazyDef.apiGetUrl, new SiGetRequest(instruction))
+		return this.entry$ = this.lazyDef!.siService
+				.apiGet(this.lazyDef!.apiGetUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
-					return this.loadedEntry = response.results[0].entry;
+					return this.loadedEntry = response.results[0].entry as any;
 				}))
 				.toPromise();
 	}

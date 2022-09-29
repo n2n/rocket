@@ -18,7 +18,7 @@ export class SiGenericEntryBuildup {
 
 	getFieldValueById(id: string): SiGenericValue {
 		if (this.containsPropId(id)) {
-			return this.fieldValuesMap.get(id);
+			return this.fieldValuesMap.get(id)!;
 		}
 
 		throw new IllegalSiStateError('Unkown field id ' + id);

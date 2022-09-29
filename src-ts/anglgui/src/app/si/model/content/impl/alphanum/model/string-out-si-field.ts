@@ -13,7 +13,7 @@ export class StringOutSiField extends OutSiFieldAdapter {
 		super();
 	}
 
-	createUiContent(uiStructure: UiStructure): UiContent|null {
+	createUiContent(uiStructure: UiStructure): UiContent {
 		return new TypeUiContent(StringOutFieldComponent, (ref) => {
 			ref.instance.model = {
 				getMessages: () => this.messagesCollection.get(),

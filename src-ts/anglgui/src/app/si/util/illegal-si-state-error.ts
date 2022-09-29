@@ -1,12 +1,12 @@
 export class IllegalSiStateError extends Error {
-	constructor(m: string) {
+	constructor(m?: string) {
 		super(m);
 
 		// Set the prototype explicitly.
 		Object.setPrototypeOf(this, IllegalSiStateError.prototype);
 	}
 
-	static assertTrue(cond: boolean, msg: string|null = null) {
+	static assertTrue(cond: boolean, msg?: string) {
 		if (cond === true) {
 			return;
 		}

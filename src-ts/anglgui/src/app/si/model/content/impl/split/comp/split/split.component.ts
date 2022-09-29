@@ -9,7 +9,7 @@ import { SplitModel } from '../split-model';
 })
 export class SplitComponent implements OnInit {
 
-	model: SplitModel;
+	model!: SplitModel;
 
 	constructor() {
 	}

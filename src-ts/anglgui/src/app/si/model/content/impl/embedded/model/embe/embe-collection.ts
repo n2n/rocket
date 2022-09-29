@@ -36,7 +36,7 @@ export class EmbeOutCollection {
 	// }
 
 	removeEmbes() {
-		let embe: Embe;
+		let embe: Embe|undefined;
 		// tslint:disable-next-line: no-conditional-assignment
 		while (undefined !== (embe = this.embes.pop())) {
 			embe.clear();
@@ -79,7 +79,7 @@ export class EmbeInCollection extends EmbeOutCollection {
 				continue;
 			}
 
-			values.push(embe.siEmbeddedEntry);
+			values.push(embe.siEmbeddedEntry!);
 		}
 
 		this.inSource.setValues(values);

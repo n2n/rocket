@@ -31,7 +31,7 @@ export class SiEntry {
 	get selectedEntryBuildup(): SiEntryBuildup {
 		this.ensureBuildupSelected();
 
-		return this._entryBuildupsMap.get(this.selectedEntryBuildupId) as SiEntryBuildup;
+		return this._entryBuildupsMap.get(this.selectedEntryBuildupId!) as SiEntryBuildup;
 	}
 
 	get entryBuildupSelected(): boolean {
@@ -126,7 +126,7 @@ export class SiEntry {
 
 	getEntryBuildupById(id: string): SiEntryBuildup {
 		if (this.containsEntryBuildupId(id)) {
-			return this._entryBuildupsMap.get(id);
+			return this._entryBuildupsMap.get(id)!;
 		}
 
 		throw new UnknownSiElementError('Unkown SiEntryBuildup id ' + id);
@@ -155,7 +155,7 @@ export class SiEntry {
 		// 	throw new IllegalSiStateError('No input available.');
 		// }
 
-		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId, this.style.bulky, fieldInputMap);
+		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId!, this.style.bulky, fieldInputMap);
 	}
 
 	// handleError(error: SiEntryError) {
@@ -230,14 +230,14 @@ export class SiEntry {
 			return false;
 		}
 
-		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId)) {
+		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId!)) {
 			this.selectedEntryBuildupId = genericEntry.selectedTypeId;
 		}
 
 		const promises = new Array<Promise<boolean>>();
 		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
 			if (this._entryBuildupsMap.has(typeId)) {
-				promises.push(this._entryBuildupsMap.get(typeId).paste(genericEntryBuildup));
+				promises.push(this._entryBuildupsMap.get(typeId)!.paste(genericEntryBuildup));
 			}
 		}
 		await Promise.all(promises);

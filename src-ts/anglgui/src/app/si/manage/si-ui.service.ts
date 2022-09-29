@@ -155,10 +155,10 @@ export class SiUiService {
 
 		switch (result.callResponse?.directive) {
 			case SiDirective.REDIRECT:
-				this.navigateByUrl(result.callResponse.navPoint.url, uiLayer);
+				this.navigateByUrl(result.callResponse.navPoint!.url, uiLayer);
 				break;
 			case SiDirective.REDIRECT_BACK:
-				this.navigateBack(uiLayer, result.callResponse.navPoint.url);
+				this.navigateBack(uiLayer, result.callResponse.navPoint!.url);
 				break;
 		}
 
@@ -170,7 +170,7 @@ export class SiUiService {
 		}
 
 		for (const [key, errorEntry] of errorEntries) {
-			if (!entries[key]) {
+			if (!entries[Number(key)]) {
 				throw new IllegalSiStateError('Unknown entry key ' + key);
 			}
 

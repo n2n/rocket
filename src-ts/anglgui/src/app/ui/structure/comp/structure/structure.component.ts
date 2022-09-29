@@ -25,14 +25,14 @@ export class StructureComponent implements OnInit, OnDestroy, AfterContentInit {
 	@Input()
 	compact = false;
 
-	private _uiStructure: UiStructure;
+	private _uiStructure: UiStructure|null = null;
 	private focusedSubscription: Subscription|null = null;
 
 	// @ViewChild(StructureContentDirective, { static: true })
 	// structureContentDirective: StructureContentDirective;
 
 	@ContentChildren(StructureToolbarDirective)
-	structureToolbarDirectives: QueryList<StructureToolbarDirective>;
+	structureToolbarDirectives!: QueryList<StructureToolbarDirective>;
 
 	constructor(private elRef: ElementRef, private cdRef: ChangeDetectorRef) {
 	}
@@ -52,7 +52,7 @@ export class StructureComponent implements OnInit, OnDestroy, AfterContentInit {
 	}
 
 	ngOnDestroy(): void {
-		this.focusedSubscription.unsubscribe();
+		this.focusedSubscription!.unsubscribe();
 		this.focusedSubscription = null;
 
 		this.clear();
@@ -144,7 +144,7 @@ export class StructureComponent implements OnInit, OnDestroy, AfterContentInit {
 	}
 
 	get uiStructure(): UiStructure {
-		return this._uiStructure;
+		return this._uiStructure!;
 	}
 
 	// get contentStructuresAvailable(): boolean {
@@ -152,24 +152,24 @@ export class StructureComponent implements OnInit, OnDestroy, AfterContentInit {
 	// }
 
 	get uiContent(): UiContent|null {
-		if (this._uiStructure.model) {
-			return this._uiStructure.model.getContent();
+		if (this.uiStructure.model) {
+			return this.uiStructure.model.getContent();
 		}
 
 		return null;
 	}
 
 	get toolbarUiStructures(): UiStructure[] {
-		if (this._uiStructure.model) {
-			return this._uiStructure.getToolbarStructures();
+		if (this.uiStructure.model) {
+			return this.uiStructure.getToolbarStructures();
 		}
 
 		return [];
 	}
 
 	get asideUiContents(): UiContent[] {
-		if (this._uiStructure.model) {
-			return this._uiStructure.model.getAsideContents();
+		if (this.uiStructure.model) {
+			return this.uiStructure.model.getAsideContents();
 		}
 
 		return [];

@@ -1,4 +1,4 @@
 export class MailItemAttachment {
-	name: string;
-	path: string;
+	name: string|null = null;
+	path: string|null = null;
 }

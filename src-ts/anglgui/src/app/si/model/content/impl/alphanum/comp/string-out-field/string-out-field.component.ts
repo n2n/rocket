@@ -8,7 +8,7 @@ import { StringFieldModel } from '../string-field-model';
 })
 export class StringOutFieldComponent implements OnInit {
 
-	model: StringFieldModel;
+	model!: StringFieldModel;
 
 	constructor(elRef: ElementRef) {
 	}

@@ -30,7 +30,7 @@ export class QualifierComponent implements OnInit {
 			return null;
 		}
 
-		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier.maskQualifier;
+		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier!.maskQualifier;
 
 		if (siMaskQualifier) {
 			return siMaskQualifier.iconClass + (this.iconImportant ? ' rocket-important' : '');
@@ -48,7 +48,7 @@ export class QualifierComponent implements OnInit {
 			return this.siEntryQualifier.idName;
 		}
 
-		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier.maskQualifier;
+		const siMaskQualifier = this.siMaskQualifier || this.siEntryQualifier!.maskQualifier;
 
 		if (siMaskQualifier) {
 			return siMaskQualifier.name;

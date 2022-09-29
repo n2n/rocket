@@ -5,15 +5,14 @@ import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 
 @Component({
 	selector: 'rocket-choose-paste',
-	templateUrl: './choose-paste.component.html',
-	styleUrls: ['./choose-paste.component.css']
+	templateUrl: './choose-paste.component.html'
 })
 export class ChoosePasteComponent implements OnInit {
 
 	@Input()
-	model: ChoosePasteModel;
+	model?: ChoosePasteModel;
 	@Input()
-	siEmbeddedEntry: SiEmbeddedEntry;
+	siEmbeddedEntry!: SiEmbeddedEntry;
 
 	constructor(private clipboard: ClipboardService) {
 	}

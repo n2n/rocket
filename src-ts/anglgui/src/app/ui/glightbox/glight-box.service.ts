@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+// @ts-ignore
 import GLightbox from 'glightbox';
 import { GlightBoxElement } from './glight-box-element';
 

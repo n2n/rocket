@@ -12,7 +12,7 @@ import { CallbackInputResetPoint } from '../../common/model/callback-si-input-re
 
 export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel {
 
-	public maxSize: number;
+	public maxSize!: number;
 	public mandatory = false;
 	public acceptedMimeTypes: string[] = [];
 	public acceptedExtensions: string[] = [];
@@ -21,12 +21,12 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 		super();
 	}
 
-	hasInput(): boolean {
+	override hasInput(): boolean {
 		return true;
 	}
 
 	readInput(): object {
-		let imageCuts: { [id: string]: SiImageCut };
+		let imageCuts: { [id: string]: SiImageCut }|undefined = undefined;
 
 		if (this.value && this.value.imageDimensions.length > 0) {
 			imageCuts = {};
@@ -37,7 +37,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 
 		return {
 			valueId: (this.value ? this.value.id : null),
-			imageCuts
+			imageCuts: imageCuts
 		};
 	}
 
@@ -89,7 +89,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	}
 
 	async copyValue(): Promise<SiGenericValue> {
-		return new SiGenericValue(this.value?.copy());
+		return new SiGenericValue(this.value?.copy() || null);
 	}
 
 	async pasteValue(genericValue: SiGenericValue): Promise<boolean> {
@@ -99,15 +99,16 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 
 		if (genericValue.isNull()) {
 			this.value = null;
-			return;
+			return true;
 		}
 
 		this.value = genericValue.readInstance(SiFile).copy();
+		return true;
 	}
 
 	async createInputResetPoint(): Promise<SiInputResetPoint> {
 		return new CallbackInputResetPoint(this.value?.copy(), (value) => {
-			this.value = value?.copy();
+			this.value = value?.copy() || null;
 		});
 	}
 }

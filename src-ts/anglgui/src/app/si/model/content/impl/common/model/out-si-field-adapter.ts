@@ -4,11 +4,11 @@ import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export abstract class OutSiFieldAdapter extends SimpleSiFieldAdapter {
 
-	hasInput(): boolean {
+	override hasInput(): boolean {
 		return false;
 	}
 
-	readInput(): object {
+	override readInput(): object {
 		throw new IllegalSiStateError('no input');
 	}
 

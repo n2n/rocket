@@ -20,7 +20,7 @@ export class UploadResultMessageComponent implements OnInit {
 	}
 
 	get uploadTooLarge(): boolean {
-		return this.uploadResult && !!this.uploadResult.uploadTooLarge;
+		return !!this.uploadResult && !!this.uploadResult.uploadTooLarge;
 	}
 
 	get uploadErrorMessage(): string|null {

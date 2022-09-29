@@ -12,7 +12,7 @@ export class SimpleZoneContainerComponent implements OnInit {
 	@Input()
 	messages: Message[] = [];
 	@Input()
-	title: string;
+	title!: string;
 	@Input()
 	loading = false;
 	@Input()

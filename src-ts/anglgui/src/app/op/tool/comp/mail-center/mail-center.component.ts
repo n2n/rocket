@@ -28,7 +28,7 @@ styleUrls: ['./mail-center.component.css'],
 export class MailCenterComponent implements OnInit {
 
 	public mailItems: MailItem[]|null = null;
-	public currentLogFileData: LogFileData = new LogFileData(null, 0);
+	public currentLogFileData: LogFileData|null = new LogFileData(null, 0);
 	public mailLogFileDatas: LogFileData[] = [];
 	private pCurrentPageNo = 1;
 
@@ -36,7 +36,7 @@ export class MailCenterComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.toolsService.getMailLogFileDatas().toPromise().then((logFileDatas) => {
-			this.mailLogFileDatas = logFileDatas;
+			this.mailLogFileDatas = logFileDatas || [];
 			if (this.mailLogFileDatas[0]) {
 				this.currentLogFileData = this.mailLogFileDatas[0];
 				this.updateMailItems();
@@ -49,9 +49,10 @@ export class MailCenterComponent implements OnInit {
 
 	private updateMailItems(): void {
 		this.mailItems = null;
-		this.toolsService.getMails(this.currentLogFileData, this.pCurrentPageNo).toPromise().then((mailItems: MailItem[]) => {
-			this.mailItems = mailItems;
-		});
+		this.toolsService.getMails(this.currentLogFileData!, this.pCurrentPageNo).toPromise()
+				.then((mailItems: any) => {
+					this.mailItems = mailItems;
+				});
 	}
 
 	mailLogFileChanged(logFileDate: LogFileData): void {
@@ -60,7 +61,7 @@ export class MailCenterComponent implements OnInit {
 	}
 
 	set currentPageNo(pageNo: number) {
-		if (this.pCurrentPageNo === pageNo || this.pCurrentPageNo > this.currentLogFileData.numPages) {
+		if (this.pCurrentPageNo === pageNo || this.pCurrentPageNo > this.currentLogFileData!.numPages) {
 			return;
 		}
 		this.currentPageNo = pageNo;

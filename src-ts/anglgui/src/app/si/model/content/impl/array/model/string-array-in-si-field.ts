@@ -2,7 +2,6 @@ import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { Message } from 'src/app/util/i18n/message';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { StringArrayInModel } from '../comp/string-array-in-model';
 import { StringArrayInComponent } from '../comp/string-array-in/string-array-in.component';
@@ -14,7 +13,7 @@ export class StringArrayInSiField extends InSiFieldAdapter implements StringArra
 	public min = 0;
 	public max: number|null = null;
 
-	constructor(public label: string, public values = []) {
+	constructor(public label: string, public values: any[] = []) {
 		super();
 		this.validate();
 	}

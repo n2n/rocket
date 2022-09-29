@@ -21,13 +21,13 @@ export class SiResultFactory {
 		const inputErrorData = extr.nullaObject('inputError');
 		if (inputErrorData) {
 			return {
-				inputError: this.createInputError(inputErrorData, declaration)
+				inputError: this.createInputError(inputErrorData, declaration!)
 			};
 		}
 
 		return {
 			callResponse: this.createCallResponse(extr.reqObject('callResponse')),
-			inputResult: this.buildInputResult(extr.nullaObject('inputResult'), declaration)
+			inputResult: this.buildInputResult(extr.nullaObject('inputResult'), declaration!)!
 		};
 	}
 

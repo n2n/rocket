@@ -15,7 +15,7 @@ export class SiUiFactory {
 	fillZone(data: any, uiZone: UiZone): void {
 		const extr = new Extractor(data);
 
-		const comp = new SiBuildTypes.SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'));
+		const comp = new SiBuildTypes.SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'))!;
 
 		uiZone.title = extr.reqString('title');
 		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);

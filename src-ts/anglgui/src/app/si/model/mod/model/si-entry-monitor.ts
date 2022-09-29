@@ -31,7 +31,7 @@ export class SiEntryMonitor {
 			this.entriesMap.set(id, []);
 		}
 
-		const entries = this.entriesMap.get(id);
+		const entries = this.entriesMap.get(id)!;
 
 		if (-1 < entries.indexOf(entry)) {
 			throw new IllegalArgumentError('Entry already registered.');
@@ -41,12 +41,12 @@ export class SiEntryMonitor {
 	}
 
 	unregisterEntry(entry: SiEntry): void {
-		const id = entry.identifier.id;
+		const id = entry.identifier.id!;
 		if (!this.entriesMap.has(id)) {
 			throw new IllegalStateError('Entry not registed.');
 		}
 
-		const entries = this.entriesMap.get(id);
+		const entries = this.entriesMap.get(id)!;
 		const i = entries.indexOf(entry);
 		entries.splice(i, 1);
 
@@ -72,7 +72,7 @@ export class SiEntryMonitor {
 		}
 
 		this.subscription = this.modStateService.modEvent$.subscribe((modEvent) => {
-			if (this.handleEvent(modEvent).shownEntryUpdated) {
+			if (modEvent && this.handleEvent(modEvent).shownEntryUpdated) {
 				this.executeNextReloadJob();
 			}
 		});
@@ -94,12 +94,13 @@ export class SiEntryMonitor {
 
 	private handleEvent(modEvent: SiModEvent): { shownEntryUpdated: boolean } {
 		for (const siEntryIdentifier of modEvent.removed || []) {
-			const id = siEntryIdentifier.id;
+			IllegalSiStateError.assertTrue(siEntryIdentifier.id !== null);
+			const id = siEntryIdentifier.id!;
 			if (!this.entriesMap.has(id)) {
 				continue;
 			}
 
-			for (const siEntry of this.entriesMap.get(id).filter(e => e.identifier.equals(siEntryIdentifier))) {
+			for (const siEntry of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
 				siEntry.markAsRemoved();
 			}
 		}
@@ -107,12 +108,13 @@ export class SiEntryMonitor {
 		let shownEntryUpdated = false;
 
 		for (const siEntryIdentifier of modEvent.updated || []) {
-			const id = siEntryIdentifier.id;
+			IllegalSiStateError.assertTrue(siEntryIdentifier.id !== null);
+			const id = siEntryIdentifier.id!;
 			if (!this.entriesMap.has(id)) {
 				continue;
 			}
 
-			for (const siEntry of this.entriesMap.get(id).filter(e => e.identifier.equals(siEntryIdentifier))) {
+			for (const siEntry of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
 				siEntry.markAsOutdated();
 				this.nextReloadJob.addSiEntry(siEntry);
 				if (!shownEntryUpdated && this.modStateService.isEntryShown(siEntry)) {
@@ -164,7 +166,8 @@ class ReloadJob {
 			}
 
 			entry.markAsReloading();
-			getInstructions.push(SiGetInstruction.entry(entry.style, entry.identifier.id)
+			IllegalSiStateError.assertTrue(entry.identifier.id !== null);
+			getInstructions.push(SiGetInstruction.entry(entry.style, entry.identifier.id!)
 					.setEntryControlsIncluded(this.controlsIncluded));
 			entries.push(entry);
 		}
@@ -178,7 +181,7 @@ class ReloadJob {
 	private handleResults(results: SiGetResult[], entries: SiEntry[]): void {
 		for (const i of results.keys()) {
 			if (entries[i].isAlive()) {
-				entries[i].replace(results[i].entry);
+				entries[i].replace(results[i].entry!);
 			}
 		}
 	}

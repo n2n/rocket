@@ -5,7 +5,7 @@ import {IFrameComponent, iframeResizer} from 'iframe-resizer';
 	selector: '[resizableIframe]'
 })
 export class IFrameResizerDirective implements AfterViewInit, OnDestroy {
-	component: IFrameComponent;
+	component: IFrameComponent|null = null;
 
 	constructor(public element: ElementRef) {
 	}

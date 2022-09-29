@@ -7,7 +7,7 @@ import { EmbeStructure } from '../../model/embe/embe-structure';
 	templateUrl: './embedded-entries-summary-out.component.html'
 })
 export class EmbeddedEntriesSummaryOutComponent {
-	model: EmbeddedEntriesOutModel;
+	model!: EmbeddedEntriesOutModel;
 
 	constructor() { }
 

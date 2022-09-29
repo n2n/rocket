@@ -48,7 +48,7 @@ export class GenericEmbeddedEntryManager {
 		const obtainer = new EmbeddedEntryObtainer(this.siService, this.siModState, this.siFrame, this.reduced,
 				this.allowedTypeIds);
 		return obtainer.obtain(newEntryIdentifiers).toPromise()
-				.then((embeddedEntries) => {
+				.then((embeddedEntries: any ) => {
 					return this.handlePaste(newEmbeInds, embeddedEntries);
 				});
 	}
@@ -60,7 +60,7 @@ export class GenericEmbeddedEntryManager {
 		for (const inf of embeInds) {
 			let embeddedEntry = inf.embeddedEntry;
 			if (!embeddedEntry) {
-				embeddedEntry = newEmbeddedEntries.shift();
+				embeddedEntry = newEmbeddedEntries.shift()!;
 			}
 
 			pastePromises.push(embeddedEntry.paste(inf.genericEmbeddedEntry));

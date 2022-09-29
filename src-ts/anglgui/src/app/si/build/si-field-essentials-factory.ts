@@ -41,10 +41,10 @@ export class SiEssentialsFactory {
 				break;
 		}
 
-		crumb.severity = extr.reqString('severity') as SiCrumb.Severity;
-		crumb.title = extr.nullaString('title');
+		crumb!.severity = extr.reqString('severity') as SiCrumb.Severity;
+		crumb!.title = extr.nullaString('title');
 
-		return crumb;
+		return crumb!;
 	}
 
 	static buildGridPos(data: any): SiGridPos|null {

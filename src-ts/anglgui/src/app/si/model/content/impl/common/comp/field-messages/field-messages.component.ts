@@ -8,7 +8,7 @@ import { MessageFieldModel } from '../message-field-model';
 })
 export class FieldMessagesComponent implements OnInit {
 	@Input()
-	model: MessageFieldModel;
+	model!: MessageFieldModel;
 
 	constructor(private elemRef: ElementRef) {
 		elemRef.nativeElement.classList.add('rocket-message-error');

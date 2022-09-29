@@ -5,7 +5,7 @@ import { SiEmbeddedEntry } from '../si-embedded-entry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 
 export class Embe {
-	private _siEmbeddedEntry: SiEmbeddedEntry;
+	private _siEmbeddedEntry: SiEmbeddedEntry|null = null;
 	readonly uiStructure = new UiStructure();
 	readonly summaryUiStructure = new UiStructure();
 
@@ -44,12 +44,12 @@ export class Embe {
 	}
 
 	isTypeSelected(): boolean {
-		return !!this._siEmbeddedEntry.entry.selectedEntryBuildupId;
+		return !!this._siEmbeddedEntry?.entry.selectedEntryBuildupId;
 	}
 
 	get siEntry(): SiEntry {
 		IllegalSiStateError.assertTrue(!!this._siEmbeddedEntry);
-		return this._siEmbeddedEntry.entry;
+		return this._siEmbeddedEntry!.entry;
 	}
 
 	// get uiStructure(): UiStructure {

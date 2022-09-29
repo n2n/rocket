@@ -40,8 +40,8 @@ export class CompactExplorerSiGui implements SiGui {
 }
 
 class CompactExplorerListModelImpl extends UiStructureModelAdapter implements CompactExplorerModel, PaginationModel {
-	private structurePageManager: StructurePageManager;
-	private currentPageNoSubject: BehaviorSubject<number>;
+	private structurePageManager!: StructurePageManager;
+	private currentPageNoSubject?: BehaviorSubject<number>;
 
 	constructor(private comp: CompactExplorerSiGui, partialContent: SiPartialContent|null) {
 		super();
@@ -59,26 +59,26 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 	}
 
 	getSiEntryQualifierSelection(): SiEntryQualifierSelection {
-		return this.comp.qualifierSelection;
+		return this.comp.qualifierSelection!;
 	}
 
 	getCurrentPageNo$(): Observable<number> {
-		return this.currentPageNoSubject.asObservable();
+		return this.currentPageNoSubject!.asObservable();
 	}
 
 	set currentPageNo(currentPageNo: number) {
-		this.currentPageNoSubject.next(currentPageNo);
+		this.currentPageNoSubject!.next(currentPageNo);
 	}
 
 	get currentPageNo(): number {
-		return this.currentPageNoSubject.getValue();
+		return this.currentPageNoSubject!.getValue();
 	}
 
 	get pagesNum(): number|null {
 		return this.structurePageManager.loadingRequired ? null : this.structurePageManager.possiablePagesNum;
 	}
 
-	bind(uiStructure: UiStructure): void {
+	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		this.currentPageNoSubject = new BehaviorSubject<number>(1);
@@ -98,21 +98,21 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		})];
 	}
 
-	unbind() {
+	override unbind() {
 		super.unbind();
 		this.comp.pageCollection.clear();
-		this.currentPageNoSubject.unsubscribe();
-		this.currentPageNoSubject = null;
+		this.currentPageNoSubject!.unsubscribe();
+		this.currentPageNoSubject = undefined;
 	}
 
-	getMainControlContents(): UiContent[] {
+	override getMainControlContents(): UiContent[] {
 		if (!this.comp.pageCollection.controls ||
 				this.comp.pageCollection.controls.length === this.mainControlUiContents.length ) {
 			return this.mainControlUiContents;
 		}
 
 		return this.mainControlUiContents = this.comp.pageCollection.controls.map((control) => {
-			return control.createUiContent(() => this.boundUiStructure.getZone());
+			return control.createUiContent(() => this.boundUiStructure!.getZone()!);
 		});
 	}
 
@@ -124,7 +124,7 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 		return [];
 	}
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
+	override getStructureErrors$(): Observable<UiStructureError[]> {
 		return from([]);
 	}
 

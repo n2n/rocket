@@ -6,7 +6,7 @@
 
 	<div class="flex-fill">
 		<div style="height: 75vh">
-			<img #img [src]="model.getSiFile().url" style="display: block; max-width: 100%;" />
+			<img #img [src]="model.getSiFile().url!" style="display: block; max-width: 100%;" />
 		</div>
 
 		<div *ngIf="originalActive" class="current-image-commands">
@@ -39,7 +39,7 @@
 				<div class="rocket-image-resizer-thumb-image">
 					<div [class.sr-only]="!originalActive || !imageSrc.changed" #originalPreview class="rocket-image-preview"></div>
 			
-					<rocket-image-preview *ngIf="!originalActive || !imageSrc.changed" [src]="model.getSiFile().url"></rocket-image-preview>
+					<rocket-image-preview *ngIf="!originalActive || !imageSrc.changed" [src]="model.getSiFile().url!"></rocket-image-preview>
 				</div>
 				<div class="rocket-image-resizer-btn-label" style="height: 50px">
 					<div class="rocket-image-resizer-btn-label-size">{{ 'original_image_txt' | translate }} <span *ngIf="originalChanged">*</span></div>
@@ -57,7 +57,7 @@
 								[class.active]="currentThumbRatio === thumbRatio" 
 								[disabled]="!thumbRatio.hasGroupedImageCuts() || originalChanged">
 							<div *ngIf="thumbRatio.hasGroupedImageCuts()" class="rocket-image-resizer-thumb-image mr-2">
-								<rocket-image-preview [src]="model.getSiFile().url" 
+								<rocket-image-preview [src]="model.getSiFile().url!"
 										[imageCut]="thumbRatio.getGroupedPreviewImageCut(null)"></rocket-image-preview>
 							</div>
 							<div class="rocket-image-resizer-btn-label" >
@@ -83,7 +83,7 @@
 											class="btn btn-secondary flex-fill d-flex" [class.active]="currentImageDimension === imageDimension"
 											[disabled]="originalChanged">
 										<div class="rocket-image-resizer-thumb-image mr-2">
-											<rocket-image-preview [src]="model.getSiFile().url" [imageCut]="imageDimension.imageCut">
+											<rocket-image-preview [src]="model.getSiFile().url!" [imageCut]="imageDimension.imageCut">
 											</rocket-image-preview>
 										</div>
 										<div class="rocket-image-resizer-btn-label" >

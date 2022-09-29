@@ -20,7 +20,7 @@ export class UiZone {
 	}
 
 	get active(): boolean {
-		return this.layer.currentRoute.zone === this;
+		return this.layer.currentRoute?.zone === this;
 	}
 
 	set structure(structure: UiStructure|null) {

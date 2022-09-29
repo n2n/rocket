@@ -79,7 +79,7 @@ export class SiMetaFactory {
 			return type;
 		}
 
-		for (const siProp of siProps) {
+		for (const siProp of siProps!) {
 			type.addProp(siProp);
 		}
 
@@ -107,7 +107,7 @@ export class SiMetaFactory {
 	static createProp(probData: any): SiProp {
 		const extr = new Extractor(probData);
 
-		return new SiProp(extr.nullaString('id'), extr.nullaString('label'), extr.nullaString('helpText'),
+		return new SiProp(extr.reqString('id'), extr.reqString('label'), extr.nullaString('helpText'),
 				extr.reqStringArray('descendantPropIds'));
 	}
 
@@ -134,7 +134,7 @@ export class SiMetaFactory {
 
 	static buildEntryQualifiers(dataArr: any[]|null): SiEntryQualifier[] {
 		if (dataArr === null) {
-			return null;
+			return [];
 		}
 
 		const entryQualifiers: SiEntryQualifier[] = [];

@@ -41,8 +41,8 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 		return Array.from(this.optionMap.values());
 	}
 
-	getIconClass(): string|null {
-		return this.splitStyle.iconClass;
+	getIconClass(): string {
+		return this.splitStyle.iconClass!;
 	}
 
 	getTooltip(): string|null {
@@ -126,7 +126,7 @@ export class SplitViewStateContext implements SplitViewMenuModel {
 			return;
 		}
 
-		const i = this.uiZone.contextMenuContents.indexOf(this.viewMenuUc);
+		const i = this.uiZone.contextMenuContents.indexOf(this.viewMenuUc!);
 		if (i > -1) {
 			this.uiZone.contextMenuContents.splice(i, 1);
 		}

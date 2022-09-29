@@ -25,9 +25,9 @@ export class CopyPool {
 		if (this.copyEvents.length === 0) {
 			this.clipboard.clear();
 		}
-		const genericValue = new SiGenericValue(embe.siEmbeddedEntry.copy());
+		const genericValue = new SiGenericValue(embe.siEmbeddedEntry!.copy());
 
-		this.copyEvents.push({ siEmbeddedEntry: embe.siEmbeddedEntry, genericValue });
+		this.copyEvents.push({ siEmbeddedEntry: embe.siEmbeddedEntry!, genericValue });
 		this.clipboard.add(genericValue);
 	}
 
@@ -38,7 +38,7 @@ export class CopyPool {
 	}
 
 	clear() {
-		let copyEvent: CopyEvent;
+		let copyEvent: CopyEvent|undefined;
 		while (copyEvent = this.copyEvents.pop()) {
 			this.clipboard.remove(copyEvent.genericValue);
 		}

@@ -20,9 +20,9 @@ import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration'
 })
 export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 
-	model: QualifierSelectInModel;
-	uiStructure: UiStructure;
-	pickables: Array<SiEntryQualifier>|null;
+	model!: QualifierSelectInModel;
+	uiStructure!: UiStructure;
+	pickables: Array<SiEntryQualifier>|null = null;
 
 	private optionsUiLayer: PopupUiLayer|null = null;
 
@@ -86,7 +86,7 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 			return;
 		}
 
-		const uiZone = this.uiStructure.getZone();
+		const uiZone = this.uiStructure.getZone()!;
 
 		this.optionsUiLayer = uiZone.layer.container.createLayer();
 		this.optionsUiLayer.onDispose(() => {
@@ -115,13 +115,13 @@ export class QualifierSelectInFieldComponent implements OnInit, DoCheck {
 			new SimpleSiControl(
 					new SiButton(this.translationService.translate('common_select_label'), 'btn btn-primary rocket-important', 'far fa-circle'),
 					() => {
-						this.model.setValues(comp.qualifierSelection.selectedQualfiers);
-						this.optionsUiLayer.dispose();
+						this.model.setValues(comp.qualifierSelection!.selectedQualfiers);
+						this.optionsUiLayer?.dispose();
 					}),
 			new SimpleSiControl(
 					new SiButton(this.translationService.translate('common_cancel_label'), 'btn btn-secondary', 'far fa-circle'),
 					() => {
-						this.optionsUiLayer.dispose();
+						this.optionsUiLayer?.dispose();
 					})
 		];
 	}

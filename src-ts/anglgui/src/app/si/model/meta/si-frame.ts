@@ -7,9 +7,9 @@ export class SiFrame {
 	constructor(public apiUrlMap: Map<string, string>, public typeContext: SiTypeContext) {
 	}
 
-	getApiUrl(apiSection: SiFrameApiSection) {
+	getApiUrl(apiSection: SiFrameApiSection): string {
 		if (this.apiUrlMap.has(apiSection)) {
-			return this.apiUrlMap.get(apiSection);
+			return this.apiUrlMap.get(apiSection)!;
 		}
 
 		throw new IllegalSiStateError('No api url given for section: ' + apiSection)

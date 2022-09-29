@@ -10,9 +10,9 @@
 	</button>
 </div>
 
-<ng-container *ngIf="!uiLayer.currentRoute.zone; else uiZoneContent">
+<ng-container *ngIf="!uiLayer.currentRoute?.zone; else uiZoneContent">
 	<div class="rocket-loader"></div>
 </ng-container>
 <ng-template #uiZoneContent>
-	<rocket-ui-zone [uiZone]="uiLayer.currentRoute.zone" class="rocket-zone"></rocket-ui-zone>
+	<rocket-ui-zone [uiZone]="uiLayer.currentRoute!.zone!" class="rocket-zone"></rocket-ui-zone>
 </ng-template>

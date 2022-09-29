@@ -7,7 +7,7 @@ import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 	templateUrl: './bulky-entry.component.html'
 })
 export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
-	public model: BulkyEntryModel;
+	public model!: BulkyEntryModel;
 
 	get typeSelected(): boolean {
 		return this.model.getSiEntry().entryBuildupSelected;

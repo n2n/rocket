@@ -6,11 +6,11 @@ import { PasswordInModel } from '../password-in-model';
 	templateUrl: './password-in.component.html'
 })
 export class PasswordInComponent implements OnInit {
-	model: PasswordInModel;
+	model!: PasswordInModel;
 	private pType = 'password';
 	private unblocked = false;
 	@ViewChild('pwInput', { static: true })
-	private inputElemRef: ElementRef;
+	private inputElemRef!: ElementRef;
 
 	public pRawPassword: string|null = null;
 
@@ -78,13 +78,16 @@ export class PasswordInComponent implements OnInit {
 	}
 
 	applyGeneratedPassword(): void {
+		const minlength = this.model.getMinlength();
+		const maxlength = this.model.getMaxlength()
+
 		let passwordLength = 12;
-		if (passwordLength < this.model.getMinlength()) {
-			passwordLength = this.model.getMinlength();
+		if (minlength !== null && passwordLength < minlength) {
+			passwordLength = minlength;
 		}
 
-		if (passwordLength > this.model.getMaxlength()) {
-			passwordLength = this.model.getMaxlength();
+		if (maxlength !== null && passwordLength > maxlength) {
+			passwordLength = maxlength;
 		}
 
 		this.rawPassword = this.generatePassword(passwordLength);

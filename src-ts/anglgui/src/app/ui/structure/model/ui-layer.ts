@@ -34,16 +34,16 @@ abstract class UiLayerAdapter implements UiLayer {
 
 	abstract pushRoute(id: number|null, zoneUrl: string|null): UiRoute;
 
-	containsRouteId(id: number, verifyUrl: string = null): boolean {
+	containsRouteId(id: number, verifyUrl: string|null = null): boolean {
 		const route = this.getRouteById(id);
 
 		return !!route && (verifyUrl === null || route.zone.url === verifyUrl);
 	}
 
-	switchRouteById(id: number, verifyUrl: string = null): boolean {
+	switchRouteById(id: number, verifyUrl: string|null = null): boolean {
 		const index = this.getRouteIndexById(id);
 
-		if (!this.routes[index]) {
+		if (index === null || !this.routes[index]) {
 			throw new IllegalSiStateError('Zone with id ' + id + ' does not exists. Verify url: ' + verifyUrl);
 		}
 
@@ -120,7 +120,7 @@ abstract class UiLayerAdapter implements UiLayer {
 		return route;
 	}
 
-	private findZoneByUrl(zoneUrl: string): UiZone|null {
+	private findZoneByUrl(zoneUrl: string|null): UiZone|null {
 		for (const route of this.routes.reverse()) {
 			if (route.zone.url === zoneUrl) {
 				return route.zone;
@@ -204,11 +204,11 @@ export class MainUiLayer extends UiLayerAdapter {
 		return this.createRoute(id, url);
 	}
 
-	dispose(): void {
+	override dispose(): void {
 		throw new UnsupportedMethodError('Main layer does not support such action.');
 	}
 
-	onDispose(callback: () => any): Subscription {
+	override onDispose(callback: () => any): Subscription {
 		throw new UnsupportedMethodError('Main layer does not support such action.');
 	}
 }

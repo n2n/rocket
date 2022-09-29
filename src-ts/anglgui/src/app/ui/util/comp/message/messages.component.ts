@@ -13,21 +13,21 @@ export class MessagesComponent implements OnInit {
 	private iterableDiffer: IterableDiffer<Message>;
 
 	constructor(private iterableDiffers: IterableDiffers) {
-	this.iterableDiffer = iterableDiffers.find([]).create(null);
+		this.iterableDiffer = iterableDiffers.find([]).create();
 	}
 
 	ngOnInit(): void {}
 
 	private addMessageRemovalTimeout(message: Message) {
-	if (message.durationMs !== null) {
-		setTimeout(() => this.messages.splice(this.messages.indexOf(message), 1), message.durationMs);
-	}
+		if (message.durationMs !== null) {
+			setTimeout(() => this.messages.splice(this.messages.indexOf(message), 1), message.durationMs);
+		}
 	}
 
 	ngDoCheck() {
-	let changes = this.iterableDiffer.diff(this.messages);
-	if (changes) {
-		changes.forEachAddedItem((change) => this.addMessageRemovalTimeout(change.item))
-	}
+		let changes = this.iterableDiffer.diff(this.messages);
+		if (changes) {
+			changes.forEachAddedItem((change) => this.addMessageRemovalTimeout(change.item))
+		}
 	}
 }

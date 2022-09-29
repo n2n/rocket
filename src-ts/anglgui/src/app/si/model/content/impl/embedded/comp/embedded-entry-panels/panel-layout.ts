@@ -30,7 +30,7 @@ export class PanelLayout {
 		return this.numGridRows > 0 || this.numGridCols > 0;
 	}
 
-	style(): SafeStyle {
+	style(): SafeStyle|null {
 		if (!this.hasGrid()) {
 			return null;
 		}
@@ -39,7 +39,7 @@ export class PanelLayout {
 				+ (this.numGridCols - 1) + ', 1fr');
 	}
 
-	styleOf(panel: SiPanel): SafeStyle {
+	styleOf(panel: SiPanel): SafeStyle|null {
 		if (!panel.gridPos) {
 			return null;
 		}

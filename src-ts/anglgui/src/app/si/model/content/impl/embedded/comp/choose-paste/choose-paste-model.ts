@@ -13,7 +13,7 @@ export class ChoosePasteModel {
 	readonly done$ = new Subject<SiEmbeddedEntry>();
 
 	private siGenericEmbeddedEntries: SiGenericEmbeddedEntry[]|null = null;
-	private sub: Subscription;
+	private sub?: Subscription;
 
 	constructor(public siEmbeddedEntry: SiEmbeddedEntry, private clipboardService: ClipboardService) {
 		this.update();
@@ -26,7 +26,7 @@ export class ChoosePasteModel {
 	destroy() {
 		if (this.sub) {
 			this.sub.unsubscribe();
-			this.sub = null;
+			this.sub = undefined;
 		}
 	}
 

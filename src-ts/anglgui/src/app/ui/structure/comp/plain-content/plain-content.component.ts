@@ -10,7 +10,7 @@ import { UiContent } from '../../model/ui-content';
 export class PlainContentComponent implements OnInit {
 
 	@Input()
-	uiStructure: UiStructure;
+	uiStructure!: UiStructure;
 	@Input()
 	uiContent: UiContent|null = null;
 

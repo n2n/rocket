@@ -10,7 +10,7 @@ import { FileFieldModel } from '../file-field-model';
 })
 export class FileOutFieldComponent implements OnInit {
 
-	model: FileFieldModel;
+	model!: FileFieldModel;
 
 	constructor() { }
 

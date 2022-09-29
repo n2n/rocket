@@ -8,7 +8,7 @@ import { SplitManagerModel } from '../split-manager-model';
 })
 export class SplitManagerComponent implements OnInit {
 
-	model: SplitManagerModel;
+	model!: SplitManagerModel;
 	menuVisible = false;
 
 	constructor() { }

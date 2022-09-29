@@ -11,12 +11,12 @@ export class IframeSiGui implements SiGui, IframeOutModel {
 	constructor(public url: string|null, public srcDoc: string|null) {
 	}
 
-	getUrl(): string {
+	getUrl(): string|null {
 		return this.url;
 	}
 
 	getSrcDoc(): string {
-		return this.srcDoc;
+		return this.srcDoc!;
 	}
 
 	getMessages(): Message[] {

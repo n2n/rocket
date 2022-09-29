@@ -18,11 +18,11 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 		super();
 	}
 
-	getValue(): string {
+	getValue(): string|null {
 		return this.value;
 	}
 
-	setValue(value: string): void {
+	setValue(value: string|null): void {
 		this.value = value;
 		this.updateAssociates();
 		this.validate();

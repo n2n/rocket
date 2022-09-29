@@ -6,7 +6,7 @@ import { InputInFieldModel } from '../input-in-field-model';
 	templateUrl: './number-in.component.html'
 })
 export class NumberInComponent implements OnInit {
-	model: InputInFieldModel;
+	model!: InputInFieldModel;
 	decimalPoint: string;
 
 	constructor(@Inject(LOCALE_ID) localeId: string) {
@@ -18,7 +18,7 @@ export class NumberInComponent implements OnInit {
 		return true;
 	}
 
-	set parsedValue(parsedValue: string|null) {
+	set parsedValue(parsedValue: string) {
 		this.value = this.parseValue(parsedValue);
 	}
 
@@ -31,16 +31,17 @@ export class NumberInComponent implements OnInit {
 	}
 
 	private get value(): string {
-		return this.model.getValue();
+		return this.model.getValue() || '';
 	}
 
-	private set value(value: string|null) {
+	private set value(value: string) {
 		if (!this.isValueValid(value)) {
 			throw 'Invalid value set';
 		}
 
 		if (value === '') {
-			value = null;
+			this.model.setValue(null);
+			return;
 		}
 		this.model.setValue(value);
 	}
@@ -53,16 +54,24 @@ export class NumberInComponent implements OnInit {
 		return value.match(/^-?[0-9]+(\.[0-9]*)?$/) !== null;
 	}
 
-	get step(): number {
+	get step(): number|null {
 		return this.model.getStep();
 	}
 
-	get factor(): number {
+	get factor(): number|null {
+		if (this.step === null) {
+			return null;
+		}
+
 		return Math.pow(10, this.step.toString().length - (this.step.toString().lastIndexOf('.') + 1));
 	}
 
-	get flooredStep(): number {
-		return Math.round(parseFloat(this.value) * this.factor / (this.step * this.factor)) * this.step;
+	get flooredStep(): number|null {
+		if (this.factor === null) {
+			return null;
+		}
+
+		return Math.round(parseFloat(this.value) * this.factor / (this.step! * this.factor)) * this.step!;
 	}
 
 	nextStep(): void {
@@ -70,20 +79,17 @@ export class NumberInComponent implements OnInit {
 			return;
 		}
 
-		this.value = (this.flooredStep + this.step).toString();
+		this.value = (this.flooredStep! + this.step).toString();
 	}
 
 	prevStep(): void {
 		if (null === this.model.getStep()) {
 			return;
 		}
-		this.value = (this.flooredStep - this.step).toString();
+		this.value = (this.flooredStep! - this.step!).toString();
 	}
 
-	private parseValue(value: string|null) {
-		if (value === null) {
-			return null;
-		}
+	private parseValue(value: string) {
 		if (this.decimalPoint === '.') {
 			return value;
 		}

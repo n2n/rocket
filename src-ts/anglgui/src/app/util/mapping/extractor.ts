@@ -24,11 +24,11 @@ export class Extractor {
 	}
 
 	contains(propName: string): boolean {
-		return this.obj[propName] !== undefined;
+		return this.obj[propName as keyof object] !== undefined;
 	}
 
 	nullaString(propName: string): string|null {
-		if (this.obj[propName] === null) {
+		if (this.obj[propName as keyof object] === null) {
 			return null;
 		}
 
@@ -36,16 +36,16 @@ export class Extractor {
 	}
 
 	reqString(propName: string): string {
-		if (typeof this.obj[propName] === 'string') {
-			return this.obj[propName];
+		if (typeof this.obj[propName as keyof object] === 'string') {
+			return this.obj[propName as keyof object];
 		}
 
 		throw new ObjectMissmatchError('Property ' + propName + ' must be of type string. Given: '
-				+ typeof this.obj[propName]);
+				+ typeof this.obj[propName as keyof object]);
 	}
 
 	nullaBoolean(propName: string): boolean|null {
-		if (this.obj[propName] === null) {
+		if (this.obj[propName as keyof object] === null) {
 			return null;
 		}
 
@@ -53,16 +53,16 @@ export class Extractor {
 	}
 
 	reqBoolean(propName: string): boolean {
-		if (typeof this.obj[propName] === 'boolean') {
-			return this.obj[propName];
+		if (typeof this.obj[propName as keyof object] === 'boolean') {
+			return this.obj[propName as keyof object];
 		}
 
 		throw new ObjectMissmatchError('Property ' + propName + ' must be of type boolean. Given: '
-				+ typeof this.obj[propName]);
+				+ typeof this.obj[propName as keyof object]);
 	}
 
 	nullaNumber(propName: string): number|null {
-		if (this.obj[propName] === null) {
+		if (this.obj[propName as keyof object] === null) {
 			return null;
 		}
 
@@ -70,16 +70,16 @@ export class Extractor {
 	}
 
 	reqNumber(propName: string): number {
-		if (typeof this.obj[propName] === 'number') {
-			return this.obj[propName];
+		if (typeof this.obj[propName as keyof object] === 'number') {
+			return this.obj[propName as keyof object];
 		}
 
 		throw new ObjectMissmatchError('Property ' + propName + ' must be of type number. Given: '
-				+ typeof this.obj[propName]);
+				+ typeof this.obj[propName as keyof object]);
 	}
 
 	nullaArray(propName: string): Array<any>|null {
-		if (this.obj[propName] === null) {
+		if (this.obj[propName as keyof object] === null) {
 			return null;
 		}
 
@@ -87,16 +87,16 @@ export class Extractor {
 	}
 
 	reqArray(propName: string): Array<any> {
-		if (Array.isArray(this.obj[propName])) {
-			return this.obj[propName];
+		if (Array.isArray(this.obj[propName as keyof object])) {
+			return this.obj[propName as keyof object];
 		}
 
 		throw new ObjectMissmatchError('Property ' + propName + ' must be of type Array. Given: '
-				+ typeof this.obj[propName]);
+				+ typeof this.obj[propName as keyof object]);
 	}
 
-	nullaStringArray(propName: string): Array<string> {
-		if (this.obj[propName] === null) {
+	nullaStringArray(propName: string): Array<string>|null {
+		if (this.obj[propName as keyof object] === null) {
 			return null;
 		}
 
@@ -116,7 +116,7 @@ export class Extractor {
 	}
 
 	nullaObject(propName: string): object|null {
-		if (this.obj[propName] === null) {
+		if (this.obj[propName as keyof object] === null) {
 			return null;
 		}
 
@@ -124,18 +124,18 @@ export class Extractor {
 	}
 
 	reqObject(propName: string): object {
-		if (typeof this.obj[propName] === 'object' && this.obj[propName] !== null) {
-			return this.obj[propName];
+		if (typeof this.obj[propName as keyof object] === 'object' && this.obj[propName as keyof object] !== null) {
+			return this.obj[propName as keyof object];
 		}
 
 		throw new ObjectMissmatchError('Property ' + propName + ' must be of type object. Given: '
-				+ typeof this.obj[propName]);
+				+ typeof this.obj[propName as keyof object]);
 	}
 
 	reqMap(propName: string): Map<string, any> {
 		const obj = this.reqObject(propName);
 
-		const entries = Object.keys(obj).map(k => [k, obj[k]]);
+		const entries = Object.keys(obj).map(k => [k, obj[k as keyof object]]);
 		return new Map(entries as any);
 	}
 

@@ -8,7 +8,7 @@ import { DateTimeInModel } from '../date-time-in-model';
 export class DateTimeInComponent implements OnInit {
 	constructor() { }
 
-	model: DateTimeInModel;
+	model!: DateTimeInModel;
 
 	private pEnabled = false;
 

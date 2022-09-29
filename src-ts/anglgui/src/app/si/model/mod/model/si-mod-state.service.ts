@@ -11,7 +11,7 @@ import { Message } from 'src/app/util/i18n/message';
 })
 export class SiModStateService {
 
-	private lastModEventSubject = new BehaviorSubject<SiModEvent>(null);
+	private lastModEventSubject = new BehaviorSubject<SiModEvent|null>(null);
 	private lastMessagesSubject = new BehaviorSubject<Message[]>([]);
 
 	private shownEntriesMap = new Map<SiEntry, object[]>();
@@ -28,7 +28,7 @@ export class SiModStateService {
 		this.lastMessagesSubject.next(messages);
 	}
 
-	get modEvent$(): Observable<SiModEvent> {
+	get modEvent$(): Observable<SiModEvent|null> {
 		return this.lastModEventSubject.pipe(skip(1));
 	}
 
@@ -61,7 +61,7 @@ export class SiModStateService {
 			this.shownEntriesMap.set(entry, []);
 		}
 
-		const objects = this.shownEntriesMap.get(entry);
+		const objects = this.shownEntriesMap.get(entry)!;
 		if (-1 < objects.indexOf(refObj)) {
 			throw new IllegalSiStateError('Entry already shown.');
 		}
@@ -75,7 +75,7 @@ export class SiModStateService {
 			throw new IllegalSiStateError('Entry not shown.');
 		}
 
-		const objects = this.shownEntriesMap.get(entry);
+		const objects = this.shownEntriesMap.get(entry)!;
 		const i = objects.indexOf(refObj);
 		if (-1 === i) {
 			throw new IllegalSiStateError('Entry not shown.');
@@ -98,17 +98,20 @@ export class SiModEvent {
 	private update(): void {
 		this.addedEventMap.clear();
 		for (const ei of this.added) {
-			this.reqEiMap(this.addedEventMap, ei.typeId).set(ei.id, ei);
+			IllegalSiStateError.assertTrue(ei.id !== null);
+			this.reqEiMap(this.addedEventMap, ei.typeId).set(ei.id!, ei);
 		}
 
 		this.updatedEventMap.clear();
 		for (const ei of this.updated) {
-			this.reqEiMap(this.updatedEventMap, ei.typeId).set(ei.id, ei);
+			IllegalSiStateError.assertTrue(ei.id !== null);
+			this.reqEiMap(this.updatedEventMap, ei.typeId).set(ei.id!, ei);
 		}
 
 		this.removedEventMap.clear();
 		for (const ei of this.removed) {
-			this.reqEiMap(this.removedEventMap, ei.typeId).set(ei.id, ei);
+			IllegalSiStateError.assertTrue(ei.id !== null);
+			this.reqEiMap(this.removedEventMap, ei.typeId).set(ei.id!, ei);
 		}
 	}
 
@@ -117,13 +120,17 @@ export class SiModEvent {
 			map.set(typeId, new Map());
 		}
 
-		return map.get(typeId);
+		return map.get(typeId)!;
 	}
 
 	containsModEntryIdentifier(ei: SiEntryIdentifier): boolean {
-		return (this.addedEventMap.has(ei.typeId) && this.addedEventMap.get(ei.typeId).has(ei.id))
-				|| (this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId).has(ei.id))
-				|| (this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId).has(ei.id));
+		if (ei.id === null) {
+			return false;
+		}
+
+		return (this.addedEventMap.has(ei.typeId) && this.addedEventMap.get(ei.typeId)!.has(ei.id))
+				|| (this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId)!.has(ei.id))
+				|| (this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId)!.has(ei.id));
 	}
 
 	containsAddedTypeId(typeId: string): boolean {

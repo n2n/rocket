@@ -8,8 +8,8 @@ import { StringArrayInElement } from './string-array-in-element';
 })
 export class StringArrayInComponent implements OnInit {
 
-	model: StringArrayInModel;
-	stringArrayInElements: Array<StringArrayInElement> = null;
+	model!: StringArrayInModel;
+	stringArrayInElements: Array<StringArrayInElement>|null = null;
 
 	constructor() { }
 
@@ -20,11 +20,11 @@ export class StringArrayInComponent implements OnInit {
 		if (null === this.stringArrayInElements) {
 			this.stringArrayInElements = [];
 			this.model.getValues().forEach((value: string) => {
-				this.stringArrayInElements.push(new StringArrayInElement(value));
+				this.stringArrayInElements!.push(new StringArrayInElement(value));
 			});
 
-			for (let i = this.stringArrayInElements.length; i < this.model.getMin(); i++) {
-				this.stringArrayInElements.push(new StringArrayInElement(''));
+			for (let i = this.stringArrayInElements!.length; i < this.model.getMin(); i++) {
+				this.stringArrayInElements!.push(new StringArrayInElement(''));
 			}
 		}
 
@@ -32,19 +32,19 @@ export class StringArrayInComponent implements OnInit {
 	}
 
 	removeStringArrayInElement(stringArrayInElement: StringArrayInElement): void {
-		const i = this.stringArrayInElements.indexOf(stringArrayInElement);
+		const i = this.stringArrayInElements!.indexOf(stringArrayInElement);
 		if (i === -1) {
 			return;
 		}
 
-		this.stringArrayInElements.splice(i, 1);
+		this.stringArrayInElements!.splice(i, 1);
 
 		this.applyValues();
 	}
 
 	applyValues(): void {
-		const values = [];
-		this.stringArrayInElements.forEach((stringArrayInElement: StringArrayInElement) => {
+		const values: string[] = [];
+		this.stringArrayInElements!.forEach((stringArrayInElement: StringArrayInElement) => {
 			values.push(stringArrayInElement.value);
 		});
 
@@ -52,15 +52,15 @@ export class StringArrayInComponent implements OnInit {
 	}
 
 	get addDisabled(): boolean {
-		return this.model.getMax() !== null && this.model.getMax() > 0 && this.stringArrayInElements.length >= this.model.getMax();
+		return this.model.getMax() !== null && this.model.getMax()! > 0 && this.stringArrayInElements!.length >= this.model.getMax()!;
 	}
 
 	get removeDisabled(): boolean {
-		return this.stringArrayInElements.length <= this.model.getMin();
+		return this.stringArrayInElements!.length <= this.model.getMin();
 	}
 
 	addElement(): void {
-		this.stringArrayInElements.push(new StringArrayInElement(''));
+		this.stringArrayInElements!.push(new StringArrayInElement(''));
 		this.applyValues();
 	}
 }

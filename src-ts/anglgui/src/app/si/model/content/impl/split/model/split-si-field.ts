@@ -27,7 +27,7 @@ import { skip } from 'rxjs/operators';
 
 export class SplitSiField extends SiFieldAdapter {
 
-	splitContext: SplitContext|null;
+	splitContext: SplitContext|null = null;
 	copyStyle: SplitStyle = { iconClass: null, tooltip: null };
 
 	constructor(public refPropId: string, private viewStateService: SplitViewStateService, private translationService: TranslationService) {
@@ -63,10 +63,10 @@ export class SplitSiField extends SiFieldAdapter {
 
 
 class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel {
-	private splitViewStateSubscription: SplitViewStateSubscription;
+	private splitViewStateSubscription?: SplitViewStateSubscription;
 	readonly childUiStructureMap = new Map<string, UiStructure>();
 	private loadedKeys = new Array<string>();
-	private subscription: Subscription;
+	private subscription?: Subscription;
 
 	private zoneSubscription: Subscription|null = null;
 
@@ -93,27 +93,27 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 	}
 
 	getLabelByKey(key: string): string {
-		return this.getSplitOptions().find(splitOption => splitOption.key === key).label;
+		return this.getSplitOptions().find(splitOption => splitOption.key === key)!.label;
 	}
 
-	getMode(): UiStructureModelMode {
+	override getMode(): UiStructureModelMode {
 		return UiStructureModelMode.ITEM_COLLECTION;
 	}
 
 	isKeyActive(key: string): boolean {
-		if (!this.splitContext.isKeyActive) {
+		if (!this.splitContext!.isKeyActive) {
 			return true;
 		}
 
-		return this.splitContext.isKeyActive(key);
+		return this.splitContext!.isKeyActive(key);
 	}
 
 	activateKey(key: string): void {
-		if (!this.splitContext.activateKey) {
+		if (!this.splitContext!.activateKey) {
 			throw new IllegalSiStateError('Can not activate any keys.');
 		}
 
-		this.splitContext.activateKey(key);
+		this.splitContext!.activateKey(key);
 	}
 
 	getChildUiStructureMap(): Map<string, UiStructure> {
@@ -134,7 +134,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		});
 	}
 
-	bind(uiStructure: UiStructure) {
+	override bind(uiStructure: UiStructure) {
 		super.bind(uiStructure);
 
 		this.content = new TypeUiContent(SplitComponent, (ref) => {
@@ -157,11 +157,11 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		}
 
 		this.splitViewStateSubscription.cancel();
-		this.splitViewStateSubscription = null;
+		this.splitViewStateSubscription = undefined;
 
 		if (this.subscription) {
 			this.subscription.unsubscribe();
-			this.subscription = null;
+			this.subscription = undefined;
 		}
 
 		for (const childUiStructure of this.childUiStructureMap.values()) {
@@ -182,7 +182,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 			this.childUiStructureMap.set(splitOption.key, child);
 			child.visible = false;
 			child.visible$.pipe(skip(1)).subscribe(() => {
-				this.splitViewStateSubscription.requestKeyVisibilityChange(splitOption.key, child.visible);
+				this.splitViewStateSubscription!.requestKeyVisibilityChange(splitOption.key, child.visible);
 			});
 		}
 
@@ -191,8 +191,8 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 			this.checkChildUiStructureMap();
 		});
 
-		if (this.splitContext.activeKeys$) {
-			this.subscription = this.splitContext.activeKeys$.subscribe(() => {
+		if (this.splitContext!.activeKeys$) {
+			this.subscription = this.splitContext!.activeKeys$.subscribe(() => {
 				this.checkChildUiStructureMap();
 			});
 		}
@@ -200,7 +200,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 
 	checkChildUiStructureMap() {
 		for (const [key, childUiStructure] of this.childUiStructureMap) {
-			childUiStructure.visible = this.splitViewStateSubscription.isKeyVisible(key);
+			childUiStructure.visible = this.splitViewStateSubscription!.isKeyVisible(key);
 
 			if (!childUiStructure.visible || -1 < this.loadedKeys.indexOf(key) || !this.isKeyActive(key)) {
 				continue;
@@ -222,7 +222,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 				if (siField.hasInput() && siField.pasteValue && siField.copyValue) {
 					const decorator = model = new UiStructureModelDecorator(model);
 					decorator.setAdditionalToolbarStructureModels([new SimpleUiStructureModel(new ButtonControlUiContent(
-							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone())))]);
+							new SplitButtonControlModel(key, siField, this, () => childUiStructure.getZone()!)))]);
 				}
 
 				childUiStructure.model = model;
@@ -244,7 +244,7 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 		}));
 	}
 
-	unbind(): void {
+	override unbind(): void {
 		super.unbind();
 
 		if (this.zoneSubscription) {
@@ -266,7 +266,7 @@ class SplitButtonControlModel implements ButtonControlModel {
 
 	constructor(private key: string, private siField: SiField, private model: SplitUiStructureModel,
 			public getUiZone: () => UiZone) {
-		this.siButton = new SiButton(null, 'btn btn-secondary', 'fas fa-reply-all');
+		this.siButton = new SiButton(key, 'btn btn-secondary', 'fas fa-reply-all');
 		this.siButton.tooltip = this.model.getCopyTooltip();
 
 		this.update();
@@ -307,8 +307,8 @@ class SplitButtonControlModel implements ButtonControlModel {
 
 		this.model.getSiField$(subKey)
 				.then(async (subSiField) => {
-					if (this.siField.pasteValue && subSiField.copyValue) {
-						this.siField.pasteValue(await subSiField.copyValue());
+					if (this.siField.pasteValue && subSiField!.copyValue) {
+						await this.siField.pasteValue(await subSiField!.copyValue());
 					}
 
 					this.loading = false;

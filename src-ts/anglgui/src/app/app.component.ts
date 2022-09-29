@@ -27,7 +27,7 @@ import {MenuGroupLocalStorage} from './ui/util/model/menu-group-local-storage';
 export class AppComponent implements OnInit {
 	title = 'rocket';
 
-	menuGroups: UiMenuGroup[];
+	menuGroups!: UiMenuGroup[];
 
 	constructor(private elemRef: ElementRef, private translationService: TranslationService,
 			private uiSiService: SiUiService, private appState: AppStateService,
@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
 	}
 
 	navRouterLink(navPoint: UiNavPoint): string {
-		return navPoint.routerLink || this.platformService.routerUrl(navPoint.href);
+		return navPoint.routerLink || this.platformService.routerUrl(navPoint.href!);
 	}
 
 	get user(): User {

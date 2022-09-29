@@ -39,11 +39,17 @@ export class MenuGroupLocalStorage {
 
 	private static async removeOpenState(openState: OpenState): Promise<void> {
 		const openStates = await this.readUiMenuGroupOpenStates();
-		openStates.splice(openStates.indexOf(openStates.find(os => os.id === openState.id), 1));
+		const index = openStates.findIndex(os => os.id === openState.id);
+		if (index === -1) {
+			return;
+		}
+
+		openStates.splice(index, 1);
 		localStorage.setItem(this.UI_MENU_GROUP_OPEN_STATE_KEY, JSON.stringify(openStates));
 	}
 }
 
 export interface OpenState {
-	id; isOpen;
+	id: string;
+	isOpen: boolean;
 }

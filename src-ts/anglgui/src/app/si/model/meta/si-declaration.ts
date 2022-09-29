@@ -36,7 +36,7 @@ export class SiDeclaration {
 
 	getTypeDeclarationByTypeId(typeId: string): SiMaskDeclaration {
 		if (this.maskDeclarationMap.has(typeId)) {
-			return this.maskDeclarationMap.get(typeId);
+			return this.maskDeclarationMap.get(typeId)!;
 		}
 
 		throw new IllegalSiStateError('Unkown typeId: ' + typeId);

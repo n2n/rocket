@@ -21,7 +21,7 @@ export class EmbeStructure {
 
 export class EmbeStructureCollection {
 	private embeStructuresCol = new BehaviorCollection<EmbeStructure>();
-	private subscription = new Subscription();
+	private subscription? = new Subscription();
 	private reducedZoneErrorsSubject = new BehaviorSubject<UiZoneError[]>([]);
 
 	constructor(readonly reduced: boolean, readonly embeCol: EmbeOutCollection) {
@@ -35,7 +35,7 @@ export class EmbeStructureCollection {
 	private silentClear() {
 		if (this.subscription) {
 			this.subscription.unsubscribe();
-			this.subscription = null;
+			this.subscription = undefined;
 		}
 
 		for (const embeStructure of this.embeStructuresCol.get()) {

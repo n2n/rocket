@@ -19,12 +19,12 @@ export class DateTimeInSiField extends InSiFieldAdapter implements DateTimeInMod
 		super();
 	}
 
-	setValue(value: Date): void {
+	setValue(value: Date|null): void {
 		this.value = value;
 		this.validate();
 	}
 
-	getValue(): Date {
+	getValue(): Date|null {
 		return this.value;
 	}
 

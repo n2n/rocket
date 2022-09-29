@@ -27,19 +27,19 @@ export class GlightBoxDirective implements AfterViewInit, OnDestroy {
 			type: 'image'
 		};
 		if (this.glightboxEnabled) {
-			this.glightBoxService.registerElement(this.glightBoxElement);
+			this.glightBoxService.registerElement(this.glightBoxElement!);
 		}
 	}
 
 	ngOnDestroy(): void {
-		this.glightBoxService.unregisterElement(this.glightBoxElement);
+		this.glightBoxService.unregisterElement(this.glightBoxElement!);
 	}
 	
 	@HostListener('click', ['$event'])
 	onClick(e: MouseEvent) {
 		if (this.glightboxEnabled) {
 			e.preventDefault();
-			this.glightBoxService.open(this.glightBoxElement);
+			this.glightBoxService.open(this.glightBoxElement!);
 		}
 	}
 }

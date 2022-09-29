@@ -6,7 +6,6 @@ import { TypeUiContent } from './type-si-content';
 import { StructureBranchComponent } from '../../comp/structure-branch/structure-branch.component';
 
 export class BranchUiStructureModel extends SimpleUiStructureModel implements BranchUiStructureModel {
-	public mode = UiStructureModelMode.NONE;
 	private uiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
 
 	constructor(uiStructures: UiStructure[] = []) {
@@ -29,7 +28,7 @@ export class BranchUiStructureModel extends SimpleUiStructureModel implements Br
 		this.uiStructuresSubject.next([...this.uiStructures, uiStructure]);
 	}
 
-	getStructures$(): Observable<UiStructure[]> {
+	override getStructures$(): Observable<UiStructure[]> {
 		return this.uiStructuresSubject.asObservable();
 	}
 }

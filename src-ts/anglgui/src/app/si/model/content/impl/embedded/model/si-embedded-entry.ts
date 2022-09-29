@@ -3,7 +3,7 @@ import { SiEntry } from 'src/app/si/model/content/si-entry';
 import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
-import { SiGenericEmbeddedEntry, SiEmbeddedEntryResetPoint } from './generic/generic-embedded';
+import { SiGenericEmbeddedEntry } from './generic/generic-embedded';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export class SiEmbeddedEntry {
@@ -20,7 +20,7 @@ export class SiEmbeddedEntry {
 	}
 
 	get entry(): SiEntry {
-		return this.comp.entry;
+		return this.comp.entry!;
 	}
 
 	set entry(entry: SiEntry) {
@@ -28,12 +28,12 @@ export class SiEmbeddedEntry {
 	}
 
 	async copy(): Promise<SiGenericEmbeddedEntry> {
-		return new SiGenericEmbeddedEntry(await this.comp.entry.copy(),
-				(this.summaryComp ? await this.summaryComp.entry.copy() : null));
+		return new SiGenericEmbeddedEntry(await this.comp.entry!.copy(),
+				(this.summaryComp ? await this.summaryComp.entry!.copy() : null));
 	}
 
 	async paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<boolean> {
-		const promise = this.comp.entry.paste(genericEmbeddedEntry.genericEntry);
+		const promise = this.comp.entry!.paste(genericEmbeddedEntry.genericEntry);
 		if (!await promise) {
 			return false;
 		}
@@ -54,8 +54,7 @@ export class SiEmbeddedEntry {
 	}
 
 	async createResetPoint(): Promise<SiInputResetPoint> {
-		// @todo replace summaryEntry
-		return this.comp.entry.createInputResetPoint();
+		return this.comp.entry!.createInputResetPoint();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
@@ -67,7 +66,7 @@ export class SiEmbeddedEntry {
 	}
 
 	set selectedTypeId(typeId: string|null) {
-		this.comp.entry.selectedEntryBuildupId = typeId;
+		this.comp.entry!.selectedEntryBuildupId = typeId;
 		if (this.summaryComp && this.summaryComp.entry) {
 			this.summaryComp.entry.selectedEntryBuildupId = typeId;
 		}

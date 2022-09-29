@@ -14,7 +14,7 @@ import { UiContent } from 'src/app/ui/structure/model/ui-content';
 export class ButtonControlComponent implements OnInit {
 
 	@Input()
-	model: ButtonControlModel;
+	model!: ButtonControlModel;
 
 	private _subVisible = false;
 
@@ -45,7 +45,7 @@ export class ButtonControlComponent implements OnInit {
 		return !!this.model.getSubUiContents && this.model.getSubUiContents().length > 0;
 	}
 
-	hasSubSiButtons() {
+	hasSubSiButtons(): boolean {
 		return !!this.model.getSubSiButtonMap && this.model.getSubSiButtonMap().size > 0;
 	}
 
@@ -53,8 +53,8 @@ export class ButtonControlComponent implements OnInit {
 		return this.model.getSubUiContents ? this.model.getSubUiContents() : [];
 	}
 
-	get subSiButtonMap() {
-		return this.model.getSubSiButtonMap ? this.model.getSubSiButtonMap() : [];
+	get subSiButtonMap(): Map<string, SiButton> {
+		return this.model.getSubSiButtonMap ? this.model.getSubSiButtonMap() : new Map<string, SiButton>();
 	}
 
 	get subVisible(): boolean {
@@ -84,7 +84,7 @@ export class ButtonControlComponent implements OnInit {
 	subExec(key: string) {
 		this._subVisible = false;
 
-		const siConfirm = this.model.getSubSiButtonMap().get(key).confirm;
+		const siConfirm = this.model.getSubSiButtonMap!().get(key)!.confirm;
 
 		if (!siConfirm) {
 			this.model.exec(key);

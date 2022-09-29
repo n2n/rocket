@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AddPasteObtainer } from '../add-paste-obtainer';
 import { ClipboardService } from 'src/app/si/model/generic/clipboard.service';
 import { EmbeddedEntriesInModel } from '../embedded-entries-in-model';
-import { Embe } from '../../model/embe/embe';
 import { CopyPool } from '../../model/embe/embe-copy-pool';
 import { EmbeStructure } from '../../model/embe/embe-structure';
 
@@ -14,10 +12,10 @@ import { EmbeStructure } from '../../model/embe/embe-structure';
 	templateUrl: './embedded-entries-summary-in.component.html'
 })
 export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
-	model: EmbeddedEntriesInModel;
+	model!: EmbeddedEntriesInModel;
 
 	copyPool: CopyPool;
-	obtainer: AddPasteObtainer;
+	obtainer!: AddPasteObtainer;
 
 	// embeUiStructures = new Array<{embe: Embe, uiStructure: UiStructure}>();
 
@@ -35,7 +33,7 @@ export class EmbeddedEntriesSummaryInComponent implements OnInit, OnDestroy {
 	get maxReached(): boolean {
 		const max = this.model.getMax();
 
-		return max && max <= this.embeStructures.length;
+		return !!max && max <= this.embeStructures.length;
 	}
 
 	get toOne(): boolean {

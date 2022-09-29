@@ -12,10 +12,10 @@ import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
 
 export class UiStructure {
 	private zoneSubject = new BehaviorSubject<UiZone|null>(null);
-	private parent: UiStructure|null;
-	private parentSubscription: Subscription|null;
+	private parent: UiStructure|null = null;
+	private parentSubscription: Subscription|null = null;
 
-	private pModel: UiStructureModel|null;
+	private pModel: UiStructureModel|null = null;
 	private modelSubscription: Subscription|null = null;
 	private modelStructureErrors: UiStructureError[]|null = null;
 	private children: Array<{ structure: UiStructure, subscription: Subscription }> = [];
@@ -46,7 +46,7 @@ export class UiStructure {
 			throw new IllegalArgumentError('ZoneModel structure does not match.');
 		}
 
-		if (!zone && this.zoneSubject.getValue() && this.zoneSubject.getValue().structure) {
+		if (!zone && this.zoneSubject.getValue() && this.zoneSubject.getValue()!.structure) {
 			throw new IllegalArgumentError('ZoneModel structure not unset.');
 		}
 
@@ -68,7 +68,7 @@ export class UiStructure {
 
 		if (this.parent) {
 			this.parent = null;
-			this.parentSubscription.unsubscribe();
+			this.parentSubscription!.unsubscribe();
 			this.parentSubscription = null;
 			this.zoneSubject.next(null);
 		}
@@ -166,12 +166,12 @@ export class UiStructure {
 	}
 
 	isDoubleItem(): boolean {
-		return this.type === UiStructureType.ITEM && this.parent.isItemCollection();
+		return this.type === UiStructureType.ITEM && this.parent!.isItemCollection();
 	}
 
 	isToolbarMassive(): boolean {
 		// tslint:disable-next-line: no-bitwise
-		return this.model && 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
+		return !!this.model && 0 < (this.model.getMode() & UiStructureModelMode.MASSIVE_TOOLBAR);
 	}
 
 	// createToolbarChild(model: UiStructureModel): UiStructure {
@@ -282,7 +282,7 @@ export class UiStructure {
 		// this.clearExtraToolbarItems();
 
 		if (this.pModel) {
-			this.modelSubscription.unsubscribe();
+			this.modelSubscription!.unsubscribe();
 			this.modelSubscription = null;
 			this.pModel.unbind();
 			this.pModel = null;
@@ -292,7 +292,7 @@ export class UiStructure {
 	}
 
 	private clearToolbarItems() {
-		let toolbarItem: { structure: UiStructure, subscription: Subscription };
+		let toolbarItem: { structure: UiStructure, subscription: Subscription }|undefined;
 		while (toolbarItem = this.toolbarItems.pop()) {
 			toolbarItem.subscription.unsubscribe();
 			toolbarItem.structure.dispose();
@@ -300,7 +300,7 @@ export class UiStructure {
 	}
 
 	private clearChildren() {
-		let child: { structure: UiStructure, subscription: Subscription };
+		let child: { structure: UiStructure, subscription: Subscription }|undefined;
 		while (child = this.children.pop()) {
 			child.subscription.unsubscribe();
 			child.structure.setParent(null);
@@ -556,7 +556,7 @@ export class UiStructure {
 		// }
 
 		if (this.model) {
-			errors.push(...this.modelStructureErrors.map(se => this.createZoneError(se)));
+			errors.push(...this.modelStructureErrors!.map(se => this.createZoneError(se)));
 		}
 
 		for (const child of this.children) {

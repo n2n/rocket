@@ -27,7 +27,7 @@ export class SiService {
 	}
 
 	lookupZone(uiZone: UiZone): Promise<void> {
-		return this.httpClient.get<any>(uiZone.url)
+		return this.httpClient.get<any>(uiZone.url!)
 				.pipe(map((data: any) => {
 					new SiBuildTypes.SiUiFactory(this.injector).fillZone(data, uiZone);
 				}))
@@ -165,7 +165,7 @@ export class SiService {
 	}
 
 	private handleCallResponse(result: SiCallResponse): void {
-		this.modState.pushModEvent(result.modEvent);
+		this.modState.pushModEvent(result.modEvent!);
 		this.modState.pushMessages(result.messages);
 	}
 }

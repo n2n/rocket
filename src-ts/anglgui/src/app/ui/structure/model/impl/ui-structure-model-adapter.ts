@@ -11,8 +11,8 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 	protected mainControlUiContents: UiContent[] = [];
 	protected asideUiContents: UiContent[] = [];
 	protected toolbarStructureModelsSubject = new BehaviorSubject<UiStructureModel[]>([]);
-	protected disabled$: Observable<boolean>;
-	protected mode = UiStructureModelMode.NONE;
+	protected disabled$?: Observable<boolean>;
+	public mode = UiStructureModelMode.NONE;
 
 	bind(uiStructure: UiStructure): void {
 		IllegalStateError.assertTrue(!this.boundUiStructure, 'UiStructureModel already bound. ');
@@ -26,7 +26,7 @@ export abstract class UiStructureModelAdapter implements UiStructureModel {
 
 	protected reqBoundUiStructure(): UiStructure {
 		IllegalStateError.assertTrue(!!this.boundUiStructure, 'UiStructureModel not bound.');
-		return this.boundUiStructure;
+		return this.boundUiStructure!;
 	}
 
 	getContent(): UiContent|null {

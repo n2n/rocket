@@ -13,21 +13,21 @@ import { Message } from 'src/app/util/i18n/message';
 export class ChPwComponent implements OnInit {
 	user: User|null = null;
 	saving = false;
-	errorMap: ErrorMap|null;
+	errorMap: ErrorMap|null = null;
 
-	password: string|null;
-	passwordConfirmation: string|null;
+	password: string|null = null;
+	passwordConfirmation: string|null = null;
 
 	constructor(private route: ActivatedRoute, private router: Router, private userDao: UserDaoService) { }
 
 	ngOnInit() {
 		this.route.params.subscribe((params) => {
-			if (!params.userId) {
+			if (!params['userId']) {
 				this.user = new User(null, '', UserPower.NONE);
 				return;
 			}
 
-			this.userDao.getUserById(params.userId)
+			this.userDao.getUserById(params['userId'])
 					.subscribe((user: User) => {
 						this.user = user;
 					}, () => {
@@ -46,9 +46,9 @@ export class ChPwComponent implements OnInit {
 
 		this.userDao
 				.changePassword({
-					password: this.password,
-					passwordConfirmation: this.passwordConfirmation,
-					userId: this.user.id
+					password: this.password!,
+					passwordConfirmation: this.passwordConfirmation!,
+					userId: this.user!.id!
 				})
 				.subscribe(() => {
 					this.router.navigate(['users']);
@@ -68,9 +68,9 @@ export class ChPwComponent implements OnInit {
 
 	getErrorMessages(propertyName: string): Message[] {
 		if (!this.errorMap || !this.errorMap.properties || !this.errorMap.properties.has(propertyName)) {
-			return null;
+			return [];
 		}
 
-		return Message.createTexts(this.errorMap.properties.get(propertyName).messages);
+		return Message.createTexts(this.errorMap.properties.get(propertyName)!.messages);
 	}
 }

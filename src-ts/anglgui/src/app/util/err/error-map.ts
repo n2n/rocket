@@ -11,8 +11,8 @@ export class ErrorMapFactory {
 		const extr = new Extractor(data);
 
 		return {
-			properties: extr.contains('properties') ? ErrorMapFactory.createErrorMapsMap(extr.reqMap('properties')) : undefined,
-			messages: extr.contains('messages') ? extr.reqStringArray('messages') : undefined
+			properties: extr.contains('properties') ? ErrorMapFactory.createErrorMapsMap(extr.reqMap('properties')) : new Map(),
+			messages: extr.contains('messages') ? extr.reqStringArray('messages') : []
 		};
 	}
 

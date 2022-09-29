@@ -47,7 +47,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 	getBoundDeclaration(): SiDeclaration {
 		this.ensureDeclared();
-		return this.declaration;
+		return this.declaration!;
 	}
 
 	get pages(): SiPage[] {
@@ -84,8 +84,8 @@ export class SiPageCollection implements SiControlBoundry {
 				return;
 			}
 
-			this.modSubscription = this.siModState.modEvent$.subscribe((modEvent: SiModEvent) => {
-				if (modEvent.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
+			this.modSubscription = this.siModState.modEvent$.subscribe((modEvent: SiModEvent|null) => {
+				if (modEvent!.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
 					this.clear();
 				}
 			});
@@ -117,7 +117,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 	get size(): number {
 		this.ensureDeclared();
-		return this.pSize;
+		return this.pSize!;
 	}
 
 	get ghostSize(): number {
@@ -132,7 +132,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	get pagesNum(): number {
-		return Math.ceil((this.pSize + this.ghostSize) / this.pageSize);
+		return Math.ceil((this.pSize! + this.ghostSize) / this.pageSize);
 	}
 
 	get loadedPagesNum(): number {
@@ -140,7 +140,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	private recalcPagesOffset() {
-		let lastPage: SiPage = null;
+		let lastPage: SiPage|null = null;
 		for (const page of this.pages) {
 			if (lastPage) {
 				page.offset = lastPage.offset + lastPage.size;
@@ -173,16 +173,16 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		let offset = (no - 1) * this.pageSize;
-		if (!this.pagesMap.has(no - 1) || !this.pagesMap.get(no - 1).loaded) {
+		if (!this.pagesMap.has(no - 1) || !this.pagesMap.get(no - 1)!.loaded) {
 			this.clear();
 		} else {
 			const prevPage = this.pagesMap.get(no - 1);
-			offset = prevPage.offset + prevPage.size;
+			offset = prevPage!.offset + prevPage!.size;
 		}
 
 		let num = this.pageSize;
 		if (this.pagesMap.has(no + 1)) {
-			num = this.pagesMap.get(no + 1).offset - offset;
+			num = this.pagesMap.get(no + 1)!.offset - offset;
 		}
 
 		const entryMonitory = new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, this.siModState, true);
@@ -197,7 +197,7 @@ export class SiPageCollection implements SiControlBoundry {
 		});
 
 		page.entryRemoved$.subscribe(() => {
-			this.pSize--;
+			this.pSize!--;
 			this.recalcPagesOffset();
 		});
 
@@ -230,7 +230,7 @@ export class SiPageCollection implements SiControlBoundry {
 		const instruction = SiGetInstruction.partialContent({ bulky: false, readOnly: true },
 						siPage.offset, this.pageSize,
 						this.quickSearchStr)
-				.setDeclaration(this.declaration)
+				.setDeclaration(this.declaration!)
 				.setGeneralControlsIncluded(!this.controls)
 				.setGeneralControlsBoundry(this)
 				.setEntryControlsIncluded(true);
@@ -253,22 +253,22 @@ export class SiPageCollection implements SiControlBoundry {
 			this.controls = result.generalControls;
 		}
 
-		this.pSize = result.partialContent.count;
+		this.pSize = result.partialContent!.count;
 
 		if (siPage.disposed) {
 			return;
 		}
 
-		siPage.entries = result.partialContent.entries;
+		siPage.entries = result.partialContent!.entries;
 
-		if (result.partialContent.entries.length === 0) {
+		if (result.partialContent!.entries.length === 0) {
 			siPage.dipose();
 		}
 
 		this.validateSubscription();
 	}
 
-	private findEntryPositionByIndex(index: number): SiEntryPosition {
+	private findEntryPositionByIndex(index: number): SiEntryPosition|null {
 		const globalIndex = index;
 		for (const page of this.pages) {
 			if (!page.loaded) {
@@ -281,12 +281,12 @@ export class SiPageCollection implements SiControlBoundry {
 				continue;
 			}
 
-			const entry = page.entries[index];
+			const entry = page.entries![index];
 
 			return {
 				entry, page,
 				pageRelativIndex: index,
-				childEntryPositions: this.findChildEntryPositions(globalIndex, entry.treeLevel)
+				childEntryPositions: this.findChildEntryPositions(globalIndex, entry.treeLevel!)
 			};
 		}
 
@@ -295,7 +295,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 	getEntryByIdentifier(identifier: SiEntryIdentifier): SiEntry|null {
 		for (const page of this.pages) {
-			const entry = page.entries.find(e => e.identifier.equals(identifier));
+			const entry = page.entries!.find(e => e.identifier.equals(identifier));
 			if (entry) {
 				return entry;
 			}
@@ -324,9 +324,10 @@ export class SiPageCollection implements SiControlBoundry {
 			return false;
 		}
 
-		this.moveByPositions([previousResult], nextResult, after, nextResult.entry.treeLevel);
+		this.moveByPositions([previousResult], nextResult, after, nextResult.entry.treeLevel!);
 
 		this.recalcPagesOffset();
+		return true;
 	}
 
 	moveAfter(entries: SiEntry[], afterEntry: SiEntry) {
@@ -334,7 +335,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.apiSortAfter(entries, afterEntry);
 
-		this.moveByEntries(entries, afterEntry, true, afterEntry.treeLevel);
+		this.moveByEntries(entries, afterEntry, true, afterEntry.treeLevel!);
 
 		this.recalcPagesOffset();
 	}
@@ -344,7 +345,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.apiSortBefore(entries, beforeEntry);
 
-		this.moveByEntries(entries, beforeEntry, false, beforeEntry.treeLevel);
+		this.moveByEntries(entries, beforeEntry, false, beforeEntry.treeLevel!);
 
 		this.recalcPagesOffset();
 	}
@@ -354,24 +355,26 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.apiSortParent(entries, parentEntry);
 
-		this.moveByEntries(entries, parentEntry, true, parentEntry.treeLevel + 1);
+		this.moveByEntries(entries, parentEntry, true, parentEntry.treeLevel! + 1);
 
 		this.recalcPagesOffset();
 	}
 
-	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult: SiEntryPosition, after: boolean): boolean {
-		if (nextResult.entry.isAlive()) {
-			if (!nextResult.entry.isClean()) {
+	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult_: SiEntryPosition, after: boolean): boolean {
+		if (nextResult_.entry.isAlive()) {
+			if (!nextResult_.entry.isClean()) {
 				return false;
 			}
 
 			if (after) {
-				this.apiSortAfter(entries, nextResult.entry);
+				this.apiSortAfter(entries, nextResult_.entry);
 			} else {
-				this.apiSortBefore(entries, nextResult.entry);
+				this.apiSortBefore(entries, nextResult_.entry);
 			}
 			return true;
 		}
+
+		let nextResult: SiEntryPosition|null = nextResult_;
 
 		for (let i = nextIndex + 1; true; i++) {
 			nextResult = this.findEntryPositionByIndex(i);
@@ -408,10 +411,10 @@ export class SiPageCollection implements SiControlBoundry {
 			}
 
 			this.apiSortAfter(entries, nextResult.entry);
-			return false;
+			return true;
 		}
 
-		return null;
+		return false;
 	}
 
 	private apiSortAfter(entries: SiEntry[], afterEntry: SiEntry) {
@@ -420,8 +423,8 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiSort(this.siFrame.getApiUrl(SiFrameApiSection.SORT),
 				{
-					ids: entries.map(entry => entry.identifier.id),
-					afterId: afterEntry.identifier.id
+					ids: entries.map(entry => entry.identifier.id!),
+					afterId: afterEntry.identifier.id!
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
 					this.updateOrder();
@@ -434,8 +437,8 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiSort(this.siFrame.getApiUrl(SiFrameApiSection.SORT),
 				{
-					ids: entries.map(entry => entry.identifier.id),
-					beforeId: beforeEntry.identifier.id
+					ids: entries.map(entry => entry.identifier.id!),
+					beforeId: beforeEntry.identifier.id || undefined
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
 					this.updateOrder();
@@ -448,8 +451,8 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiSort(this.siFrame.getApiUrl(SiFrameApiSection.SORT),
 				{
-					ids: entries.map(entry => entry.identifier.id),
-					parentId: parentEntry.identifier.id
+					ids: entries.map(entry => entry.identifier.id!),
+					parentId: parentEntry.identifier.id || undefined
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
 					this.updateOrder();
@@ -467,7 +470,7 @@ export class SiPageCollection implements SiControlBoundry {
 				continue;
 			}
 
-			const i = page.entries.indexOf(entry);
+			const i = page.entries!.indexOf(entry);
 			if (0 > i) {
 				globalIndex += page.size + page.ghostSize;
 				continue;
@@ -478,7 +481,7 @@ export class SiPageCollection implements SiControlBoundry {
 			return {
 				entry, page,
 				pageRelativIndex: i,
-				childEntryPositions: this.findChildEntryPositions(globalIndex, entry.treeLevel)
+				childEntryPositions: this.findChildEntryPositions(globalIndex, entry.treeLevel!)
 			};
 		}
 
@@ -489,7 +492,7 @@ export class SiPageCollection implements SiControlBoundry {
 		const childEntryPositions = new Array<SiEntryPosition>();
 		for (let i = parentIndex + 1; ; i++) {
 			const childEntryPosition = this.findEntryPositionByIndex(i);
-			if (!childEntryPosition || childEntryPosition.entry.treeLevel <= parentTreeLevel) {
+			if (!childEntryPosition || childEntryPosition.entry.treeLevel! <= parentTreeLevel) {
 				break;
 			}
 
@@ -525,7 +528,7 @@ export class SiPageCollection implements SiControlBoundry {
 		for (const position of positions) {
 			position.page.removeEntry(position.entry);
 
-			const targetIndex = targetPosition.page.entries.indexOf(targetPosition.entry) + (after ? 1 : 0);
+			const targetIndex = targetPosition.page.entries!.indexOf(targetPosition.entry) + (after ? 1 : 0);
 
 			targetPosition.page.insertEntry(targetIndex, position.entry);
 

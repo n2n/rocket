@@ -21,7 +21,7 @@ export enum AddPasteType {
 export class AddPasteComponent implements OnInit, OnDestroy {
 
 	@Input()
-	obtainer: AddPasteObtainer;
+	obtainer!: AddPasteObtainer;
 
 	private _disabled = false;
 
@@ -31,7 +31,7 @@ export class AddPasteComponent implements OnInit, OnDestroy {
 	loading = false;
 
 	popupSubscription: Subscription|null = null;
-	choosePasteModel: ChoosePasteModel;
+	choosePasteModel?: ChoosePasteModel;
 
 
 	constructor(private elemRef: ElementRef<any>, private clipboardService: ClipboardService) {
@@ -67,7 +67,7 @@ export class AddPasteComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		this.popupSubscription.unsubscribe();
+		this.popupSubscription!.unsubscribe();
 		this.popupSubscription = null;
 	}
 
@@ -80,7 +80,8 @@ export class AddPasteComponent implements OnInit, OnDestroy {
 			return;
 		}
 
-		const up$ = fromEvent<MouseEvent>(document, 'click').pipe(filter(e => !this.elemRef.nativeElement.contains(e.target)));
+		const up$ = fromEvent<MouseEvent>(document, 'click')
+				.pipe(filter(e => !this.elemRef.nativeElement.contains(e.target)));
 		const esc$ = fromEvent<KeyboardEvent>(document, 'keyup')
 				.pipe(filter((event: KeyboardEvent) => event.key === 'Escape'));
 		this.popupSubscription = merge(up$, esc$).subscribe(() => {
@@ -134,7 +135,7 @@ export class AddPasteComponent implements OnInit, OnDestroy {
 
 	reset(): void {
 		this.closePopup();
-		this.choosePasteModel = null;
+		this.choosePasteModel = undefined;
 	}
 }
 

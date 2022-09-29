@@ -18,7 +18,7 @@ export class SiInput {
 		const entryInputMaps: Array<any> = [];
 
 		for (const entryInput of this.entryInputs) {
-			const fieldInputObj = {};
+			const fieldInputObj: any = {};
 
 			for (const [propId, inputObj] of entryInput.fieldInputMap) {
 				fieldInputObj[propId] = inputObj;

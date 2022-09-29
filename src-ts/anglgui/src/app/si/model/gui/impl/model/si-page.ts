@@ -76,7 +76,7 @@ export class SiPage {
 		return this._ghostSize;
 	}
 
-	private recalcSize(): number {
+	private recalcSize(): void {
 		if (!this._entrySubPairs) {
 			this._size = null;
 			this._ghostSize = null;
@@ -94,7 +94,7 @@ export class SiPage {
 		}
 	}
 
-	get entries$(): Observable<SiEntry[]> {
+	get entries$(): Observable<SiEntry[]|null> {
 		this.ensureNotDisposed();
 
 		return this.entriesSubject.asObservable();
@@ -137,7 +137,7 @@ export class SiPage {
 	removeEntry(siEntry: SiEntry) {
 		this.ensureLoaded();
 
-		const i = this.entries.indexOf(siEntry);
+		const i = this.entries!.indexOf(siEntry);
 
 		if (i < 0) {
 			throw new IllegalSiStateError('SiEntry does not exist: ' + siEntry.identifier.toString());
@@ -149,13 +149,13 @@ export class SiPage {
 	removeEntryByIndex(i: number) {
 		this.ensureLoaded();
 
-		if (!this._entrySubPairs[i]) {
+		if (!this._entrySubPairs![i]) {
 			throw new IllegalSiStateError('SiEntry index does not exist: ' + i);
 		}
 
-		this.releaseEntrySubPair(this._entrySubPairs[i]);
+		this.releaseEntrySubPair(this._entrySubPairs![i]);
 
-		this._entrySubPairs.splice(i, 1);
+		this._entrySubPairs!.splice(i, 1);
 		this.triggerEntriesSubject();
 	}
 
@@ -165,23 +165,23 @@ export class SiPage {
 	}
 
 	insertEntry(i: number, newEntry: SiEntry) {
-		this._entrySubPairs.splice(i, 0, null);
+		this._entrySubPairs!.splice(i, 0, null as any);
 
 		this.placeEntry(i, newEntry);
 		this.triggerEntriesSubject();
 	}
 
 	private placeEntry(i: number, newEntry: SiEntry) {
-		if (this._entrySubPairs[i]) {
-			this.releaseEntrySubPair(this._entrySubPairs[i]);
+		if (this._entrySubPairs![i]) {
+			this.releaseEntrySubPair(this._entrySubPairs![i]);
 		}
 
 		const subscription = newEntry.state$.subscribe((state) => {
-			const curI = this.entries.indexOf(newEntry);
+			const curI = this.entries!.indexOf(newEntry);
 
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.placeEntry(curI, newEntry.replacementEntry);
+					this.placeEntry(curI, newEntry.replacementEntry!);
 					break;
 				case SiEntryState.REMOVED:
 					this.recalcSize();
@@ -190,7 +190,7 @@ export class SiPage {
 			}
 		});
 
-		this._entrySubPairs[i] = {
+		this._entrySubPairs![i] = {
 			entry: newEntry,
 			subscription
 		};

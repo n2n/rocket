@@ -6,7 +6,7 @@ selector: 'rocket-iframe-in',
 templateUrl: './iframe-in.component.html'
 })
 export class IframeInComponent {
-	model: IframeInModel;
+	model!: IframeInModel;
 
 	get formData(): Map<string, string> {
 		return this.model.getFormData();

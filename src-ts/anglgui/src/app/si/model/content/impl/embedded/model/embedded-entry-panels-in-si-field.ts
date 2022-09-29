@@ -11,7 +11,6 @@ import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-stru
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
 import { EmbeddedEntryPanelsComponent } from '../comp/embedded-entry-panels/embedded-entry-panels.component';
@@ -109,7 +108,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter	{
 				continue;
 			}
 
-			promises.push(this.createGenericManager(panel).pasteValue(col.map.get(panel.name)));
+			promises.push(this.createGenericManager(panel).pasteValue(col.map.get(panel.name)!));
 		}
 
 		return Promise.all(promises).then(results => -1 !== results.indexOf(true));
@@ -136,7 +135,7 @@ class EmbeddedEntryPanelsInUiStructureModel extends UiStructureModelAdapter {
 		super();
 	}
 
-	bind(uiStructure: UiStructure) {
+	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		this.panelDefs = new Array<PanelDef>();
@@ -150,25 +149,25 @@ class EmbeddedEntryPanelsInUiStructureModel extends UiStructureModelAdapter {
 
 		this.uiContent = new TypeUiContent(EmbeddedEntryPanelsComponent, (ref) => {
 			ref.instance.model = {
-				getPanelDefs: () => this.panelDefs
+				getPanelDefs: () => this.panelDefs!
 			};
 		});
 	}
 
-	unbind() {
+	override unbind() {
 		this.panelDefs = null;
 	}
 
 	getStructures$(): Observable<UiStructure[]> {
 		IllegalStateError.assertTrue(!!this.panelDefs, 'EmbeddedEntryPanelsInUiStructureModel not bound.');
-		return from([this.panelDefs.map(pa => pa.uiStructure)]);
+		return from([this.panelDefs!.map(pa => pa.uiStructure)]);
 	}
 
 	getStructureErrors(): UiStructureError[] {
 		return this.messagesCollection.get().map((message) => ({message}));
 	}
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
+	override getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.messagesCollection.get$().pipe(map((messages) => messages.map((message) => ({ message }))));
 	}
 

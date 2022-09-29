@@ -8,7 +8,7 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 	styleUrls: ['./message.component.css']
 })
 export class MessageComponent implements OnInit {
-	text: string;
+	text!: string;
 
 	constructor(public translationService: TranslationService) { }
 

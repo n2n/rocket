@@ -7,12 +7,12 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angul
 })
 export class PaginationComponent implements OnInit {
 
-	@Input() totalPagesNo: number;
+	@Input() totalPagesNo!: number;
 	@Input() currentPageNo = 1;
 	@Output() currentPageNoChange = new EventEmitter<number>();
 
 	constructor(elemRef: ElementRef) {
-	elemRef.nativeElement.classList.add('rocket-pagination');
+		elemRef.nativeElement.classList.add('rocket-pagination');
 	}
 
 

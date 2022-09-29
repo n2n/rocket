@@ -9,7 +9,7 @@ import { PlatformService } from 'src/app/util/nav/platform.service';
 })
 export class NavPointDirective {
 
-	private _uiNavPoint: UiNavPoint;
+	private _uiNavPoint!: UiNavPoint;
 	constructor(private router: Router, private elemRef: ElementRef,
 			private platformService: PlatformService) {
 	}
@@ -18,7 +18,7 @@ export class NavPointDirective {
 	set uiNavPoint(uiNavPoint: UiNavPoint) {
 		this._uiNavPoint = uiNavPoint;
 
-		const url = uiNavPoint.href || this.platformService.hrefUrl(uiNavPoint.routerLink);
+		const url = uiNavPoint.href || this.platformService.hrefUrl(uiNavPoint.routerLink!);
 
 		this.elemRef.nativeElement.setAttribute('href', url);
 	}
@@ -39,7 +39,7 @@ export class NavPointDirective {
 		}
 
 		$event.preventDefault();
-		this.router.navigateByUrl(this.uiNavPoint.routerLink);
+		void this.router.navigateByUrl(this.uiNavPoint.routerLink!);
 	}
 
 }

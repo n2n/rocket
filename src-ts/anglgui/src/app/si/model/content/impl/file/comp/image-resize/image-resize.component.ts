@@ -9,7 +9,7 @@ import { SiImageDimension } from '../../model/file';
 })
 export class ImageResizeComponent implements OnInit {
 
-	model: FileInFieldModel;
+	model!: FileInFieldModel;
 
 	private ratioMap = new Map<number, ThumbRatio>();
 
@@ -35,7 +35,7 @@ export class ImageResizeComponent implements OnInit {
 				return;
 			}
 
-			this.ratioMap.get(ratio).addImageDimension(imageDimension);
+			this.ratioMap.get(ratio)!.addImageDimension(imageDimension);
 		}
 	}
 
@@ -49,7 +49,7 @@ export class ImageResizeComponent implements OnInit {
 
 class ThumbRatio {
 	public imageDimensions = new Array<SiImageDimension>();
-	private largestImageDimension: SiImageDimension;
+	private largestImageDimension?: SiImageDimension;
 
 	constructor(readonly width: number, readonly height: number, readonly ratioFixed = false) {
 	}

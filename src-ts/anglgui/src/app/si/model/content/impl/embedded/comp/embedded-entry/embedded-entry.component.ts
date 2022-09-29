@@ -12,10 +12,10 @@ import { StructureToolbarDirective } from 'src/app/ui/structure/comp/structure/s
 export class EmbeddedEntryComponent {
 
 	@Input()
-	embeStructure: EmbeStructure;
+	embeStructure!: EmbeStructure;
 
 	@ContentChildren(StructureToolbarDirective)
-	private toolbarChildren: QueryList<any>;
+	private toolbarChildren?: QueryList<any>;
 
 	get embe(): Embe {
 		return this.embeStructure.embe;
@@ -26,6 +26,6 @@ export class EmbeddedEntryComponent {
 	}
 
 	hasToolbar(): boolean {
-		return this.toolbarChildren && this.toolbarChildren.length > 0;
+		return !!this.toolbarChildren && this.toolbarChildren.length > 0;
 	}
 }

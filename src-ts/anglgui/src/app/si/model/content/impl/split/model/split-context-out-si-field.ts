@@ -11,7 +11,7 @@ export class SplitContextOutSiField extends OutSiFieldAdapter implements SplitCo
 	public style: SplitStyle = { iconClass: null, tooltip: null };
 	readonly collection = new SplitContentCollection();
 
-	isDisplayable(): boolean {
+	override isDisplayable(): boolean {
 		return false;
 	}
 

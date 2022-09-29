@@ -6,7 +6,7 @@ export class StructureUiZoneError implements UiZoneError {
 	constructor(public message: Message, public uiStructure: UiStructure) {
 	}
 
-	marked(marked) {
+	marked(marked: boolean) {
 		this.uiStructure.marked = marked;
 	}
 

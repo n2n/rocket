@@ -9,8 +9,8 @@ import { CompactEntryModel } from '../compact-entry-model';
 	host: {'class': 'rocket-compact-entry'}
 })
 export class CompactEntryComponent implements OnInit {
-	uiStructure: UiStructure;
-	model: CompactEntryModel;
+	uiStructure!: UiStructure;
+	model!: CompactEntryModel;
 
 	constructor() { }
 

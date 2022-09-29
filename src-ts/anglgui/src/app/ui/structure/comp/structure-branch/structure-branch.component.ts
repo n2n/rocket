@@ -11,13 +11,13 @@ import { StructureBranchModel } from '../structure-branch-model';
 })
 export class StructureBranchComponent implements OnInit, OnDestroy {
 	@Input()
-	model: StructureBranchModel;
+	model!: StructureBranchModel;
 	// @Input()
 	// uiContent: UiContent|null = null;
 	// @Input()
 	// childUiStructures: UiStructure[] = [];
 
-	private subscription: Subscription;
+	private subscription?: Subscription;
 	childNodes = new Array<{ uiStructure?: UiStructure, tabContainer?: TabContainer }>();
 
 	constructor() { }
@@ -58,7 +58,7 @@ export class StructureBranchComponent implements OnInit, OnDestroy {
 		}
 
 		this.subscription.unsubscribe();
-		this.subscription = null;
+		this.subscription = undefined;
 	}
 }
 
@@ -72,7 +72,7 @@ class TabContainer {
 		return this._availableTabs;
 	}
 
-	get activeTab(): UiStructure {
+	get activeTab(): UiStructure|null {
 		return this._activeTab;
 	}
 

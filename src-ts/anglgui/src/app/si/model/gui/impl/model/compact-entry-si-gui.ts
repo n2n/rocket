@@ -39,7 +39,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	// }
 
 	getBoundEntries(): SiEntry[] {
-		return [this.entry];
+		return [this.entry!];
 	}
 
 	getBoundDeclaration(): SiDeclaration {
@@ -80,7 +80,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	private subscription: Subscription|null = null;
 	private currentSiEntry: SiEntry|null = null;
 
-	constructor(private siEntry$: Observable<SiEntry>, private siDeclaration: SiDeclaration, private controls: SiControl[],
+	constructor(private siEntry$: Observable<SiEntry|null>, private siDeclaration: SiDeclaration, private controls: SiControl[],
 			private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
@@ -133,7 +133,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	// 	return zoneErrors;
 	// }
 
-	bind(uiStructure: UiStructure): void {
+	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		this.siEntryMonitor.start();
@@ -149,7 +149,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		});
 
 		this.mainControlUiContents = this.controls.map((control) => {
-			return control.createUiContent(() => uiStructure.getZone());
+			return control.createUiContent(() => uiStructure!.getZone()!);
 		});
 	}
 
@@ -178,10 +178,10 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 	private buildStructures(siEntry: SiEntry) {
 		const siEntryBuildup = siEntry.selectedEntryBuildup;
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedEntryBuildupId);
+		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedEntryBuildupId!);
 
 		this.asideUiContents = siEntryBuildup.controls
-					.map(control => control.createUiContent(() => this.boundUiStructure.getZone()));
+					.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
 
 		const fieldUiStructures = new Array<UiStructure>();
 		for (const siProp of siMaskDeclaration.getSiProps()) {
@@ -204,16 +204,16 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 					if (!siEntry.isNew()) {
 						this.siEntryMonitor.unregisterEntry(siEntry);
 					}
-					this.subscription.remove(sub);
+					this.subscription!.remove(sub);
 					this.rebuild(siEntry.replacementEntry);
 					break;
 			}
 		});
 
-		this.subscription.add(sub);
+		this.subscription!.add(sub);
 	}
 
-	unbind(): void {
+	override unbind(): void {
 		super.unbind();
 
 		this.clear();

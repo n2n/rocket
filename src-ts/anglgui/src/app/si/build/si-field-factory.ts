@@ -122,7 +122,7 @@ export class SiFieldFactory {
 			booleanInSiField.value = dataExtr.reqBoolean('value');
 			booleanInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
-			fieldMap$.subscribe((fieldMap) => {
+			fieldMap$.subscribe((fieldMap: Map<string, SiField>) => {
 				this.finalizeBool(booleanInSiField, dataExtr.reqStringArray('onAssociatedPropIds'),
 						dataExtr.reqStringArray('offAssociatedPropIds'), fieldMap);
 			});
@@ -154,7 +154,7 @@ export class SiFieldFactory {
 			enumInSiField.emptyLabel = dataExtr.nullaString('emptyLabel');
 			enumInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
-			fieldMap$.subscribe((fieldMap) => {
+			fieldMap$.subscribe((fieldMap: Map<string, SiField>) => {
 				this.finalizeEnum(enumInSiField, dataExtr.reqMap('associatedPropIdsMap'), fieldMap);
 			});
 
@@ -327,7 +327,7 @@ export class SiFieldFactory {
 
 	private completeSplitContextSiField(splitContext: SplitContext, dependantPropIds: Array<string>,
 			fieldMap$: Observable<Map<string, SiField>>): void {
-		fieldMap$.subscribe((fieldMap) => {
+		fieldMap$.subscribe((fieldMap: { get: (arg0: string) => any; }) => {
 
 			for (const dependantPropId of dependantPropIds) {
 				const siField = fieldMap.get(dependantPropId);
@@ -340,7 +340,7 @@ export class SiFieldFactory {
 
 	private finalizeBool(booleanInSiField: BooleanInSiField, onAssociatedPropIds: string[],
 			offAssociatedPropIds: string[], fieldMap: Map<string, SiField>): void {
-		let field: SiField;
+		let field: SiField|undefined;
 
 		for (const propId of onAssociatedPropIds) {
 			if (field = fieldMap.get(propId)) {
@@ -359,7 +359,7 @@ export class SiFieldFactory {
 			fieldMap: Map<string, SiField>): void {
 		for (const [value, propIds] of associatedPropIdsMap) {
 			enumInSiField.setAssociatedFields(value, propIds
-					.map(propId => fieldMap.get(propId))
+					.map(propId => fieldMap.get(propId)!)
 					.filter(field => !!field));
 		}
 	}

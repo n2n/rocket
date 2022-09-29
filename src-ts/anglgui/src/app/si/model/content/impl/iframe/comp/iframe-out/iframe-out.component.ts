@@ -7,7 +7,7 @@ import { IframeOutModel } from '../iframe-out-model';
 })
 export class IframeOutComponent implements OnInit {
 
-	model: IframeOutModel;
+	model!: IframeOutModel;
 
 	constructor() { }
 

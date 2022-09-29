@@ -6,7 +6,7 @@ export class ThumbRatio {
 	public imageDimensions = new Array<SiImageDimension>();
 	// private _largestImageDimension: SiImageDimension;
 
-	private groupedImageCuts: SiImageCut[];
+	private groupedImageCuts: SiImageCut[]|null = null;
 	private imgCutDimMap = new Map<string, SiImageDimension[]>();
 
 	private groupedPreviewElementRef: ElementRef|null = null;
@@ -101,7 +101,7 @@ export class ThumbRatio {
 			this.imgCutDimMap.set(key, []);
 		}
 
-		this.imgCutDimMap.get(key).push(imageDimension);
+		this.imgCutDimMap.get(key)!.push(imageDimension);
 	}
 
 	private determineGroupedImageCut() {
@@ -137,7 +137,7 @@ export class ThumbRatio {
 	}
 
 	resetIndividutalImageCut(imageDimension: SiImageDimension) {
-		let baseImageCut: SiImageCut;
+		let baseImageCut: SiImageCut|undefined;
 		if (this.groupedImageCuts) {
 			baseImageCut = this.groupedImageCuts[0];
 		}
@@ -145,10 +145,10 @@ export class ThumbRatio {
 			baseImageCut = this.imageDimensions[0] !== imageDimension ? this.imageDimensions[0].imageCut : this.imageDimensions[1].imageCut;
 		}
 
-		imageDimension.imageCut.x = baseImageCut.x;
-		imageDimension.imageCut.y = baseImageCut.y;
-		imageDimension.imageCut.width = baseImageCut.width;
-		imageDimension.imageCut.height = baseImageCut.height;
+		imageDimension.imageCut.x = baseImageCut!.x;
+		imageDimension.imageCut.y = baseImageCut!.y;
+		imageDimension.imageCut.width = baseImageCut!.width;
+		imageDimension.imageCut.height = baseImageCut!.height;
 
 		this.updateGroups();
 	}

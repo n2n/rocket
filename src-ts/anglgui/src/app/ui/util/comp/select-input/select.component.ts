@@ -40,7 +40,7 @@ export class SelectComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	get selectedLabel(): string {
+	get selectedLabel(): string|null {
 		const option = this.findSelectedOption();
 		if (option) {
 			return option.label;
@@ -49,19 +49,19 @@ export class SelectComponent implements OnInit {
 		return this.placeholderLabel;
 	}
 
-	get selectedIconClass(): string {
+	get selectedIconClass(): string|null {
 		const option = this.findSelectedOption();
 		if (option) {
-			return option.iconClass;
+			return option.iconClass || null;
 		}
 
 		return null;
 	}
 
-	get selectedLabelAddition(): string {
+	get selectedLabelAddition(): string|null {
 		const option = this.findSelectedOption();
 		if (option) {
-			return option.labelAddition;
+			return option.labelAddition || null;
 		}
 
 		return null;

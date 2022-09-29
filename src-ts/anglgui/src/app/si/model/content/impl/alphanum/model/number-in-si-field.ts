@@ -22,7 +22,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 	private pValue: number|null = null;
 
 	private valueStr: string|null = null;
-	private decimalPoint: string = null;
+	private decimalPoint: string|null = null;
 
 	constructor(public label: string, localeId: string) {
 		super();
@@ -50,7 +50,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		this.validate();
 	}
 
-	getValue(): string {
+	getValue(): string|null {
 		if (this.value == null) {
 			return null;
 		}
@@ -63,7 +63,7 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			}
 
 			if (this.decimalPoint !== '.') {
-				this.valueStr = this.valueStr.replace('.', this.decimalPoint);
+				this.valueStr = this.valueStr.replace('.', this.decimalPoint!);
 			}
 		}
 
@@ -83,19 +83,19 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return 'text';
 	}
 
-	getMaxlength(): number {
+	getMaxlength(): number|null {
 		return null;
 	}
 
-	getMin(): number {
+	getMin(): number|null {
 		return this.min;
 	}
 
-	getMax(): number {
+	getMax(): number|null {
 		return this.max;
 	}
 
-	getStep(): number {
+	getStep(): number|null {
 		return this.arrowStep;
 	}
 
@@ -198,11 +198,11 @@ export class NumberInSiField extends InSiFieldAdapter implements InputInFieldMod
 			return valueStr;
 		}
 
-		if (valueStr.indexOf(this.decimalPoint) === -1) {
+		if (valueStr.indexOf(this.decimalPoint!) === -1) {
 			return valueStr;
 		}
 
-		return valueStr.replace('.', '').replace(this.decimalPoint, '.');
+		return valueStr.replace('.', '').replace(this.decimalPoint!, '.');
 	}
 
 	public onBlur(): void {

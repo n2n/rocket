@@ -7,7 +7,7 @@ import { PaginationModel } from '../pagination-model';
 	styleUrls: ['./pagination.component.css']
 })
 export class PaginationComponent implements OnInit {
-	public model: PaginationModel;
+	public model!: PaginationModel;
 
 	constructor() { }
 
@@ -15,11 +15,11 @@ export class PaginationComponent implements OnInit {
 	}
 
 	get visible(): boolean {
-		return this.model && this.model.pagesNum && this.model.pagesNum > 1;
+		return !!this.model && this.model.pagesNum !== null && this.model.pagesNum > 1;
 	}
 
 	get pagesNum(): number {
-		return this.model.pagesNum;
+		return this.model.pagesNum!;
 	}
 
 	get currentPageNo(): number {

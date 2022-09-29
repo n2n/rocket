@@ -11,10 +11,10 @@ import { EmbeddedEntryPanelsModel, PanelDef } from '../embedded-entry-panels-mod
 })
 export class EmbeddedEntryPanelsComponent implements OnInit {
 
-	model: EmbeddedEntryPanelsModel;
+	model!: EmbeddedEntryPanelsModel;
 
 	panelLayout: PanelLayout;
-	panelDefs: Array<PanelDef>;
+	panelDefs!: Array<PanelDef>;
 
 	constructor(san: DomSanitizer) {
 		this.panelLayout = new PanelLayout(san);

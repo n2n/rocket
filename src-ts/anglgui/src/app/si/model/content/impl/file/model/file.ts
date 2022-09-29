@@ -1,7 +1,7 @@
 
 export class SiFile {
-	thumbUrl: string|null;
-	mimeType: string|null;
+	thumbUrl: string|null = null;
+	mimeType: string|null = null;
 	imageDimensions: SiImageDimension[] = [];
 
 	constructor(public id: object, public name: string, public url: string|null) {
@@ -27,7 +27,7 @@ export class SiFile {
 
 export interface SiImageDimension {
 	id: string;
-	name: string;
+	name: string|null;
 	width: number;
 	height: number;
 	imageCut: SiImageCut;

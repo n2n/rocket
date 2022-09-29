@@ -24,7 +24,7 @@ export class StructurePage {
 	}
 
 	clear() {
-		let structureEntry: StructureEntry;
+		let structureEntry: StructureEntry|undefined;
 		while (structureEntry = this._structureEntries.pop()) {
 			structureEntry.clear();
 		}
@@ -76,7 +76,7 @@ export class StructurePage {
 }
 
 export class StructureEntry {
-	private subscription: Subscription;
+	private subscription?: Subscription;
 
 	constructor(readonly siEntry: SiEntry, public fieldUiStructures: Array<UiStructure>,
 			public controlUiContents: Array<UiContent>,
@@ -85,7 +85,7 @@ export class StructureEntry {
 		this.subscription = siEntry.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.replacementCallback(siEntry.replacementEntry);
+					this.replacementCallback(siEntry.replacementEntry!);
 					this.clear();
 					break;
 				case SiEntryState.REMOVED:
@@ -118,7 +118,7 @@ export class StructureEntry {
 		}
 
 		this.subscription.unsubscribe();
-		this.subscription = null;
+		this.subscription = undefined;
 	}
 }
 
@@ -143,7 +143,7 @@ export class StructurePageManager {
 	getSiProps(): SiProp[] {
 		this.ensureDeclared();
 
-		return this.siPageCollection.declaration.getBasicTypeDeclaration().getSiProps();
+		return this.siPageCollection.declaration!.getBasicTypeDeclaration().getSiProps();
 	}
 
 	get declarationRequired(): boolean {
@@ -173,7 +173,7 @@ export class StructurePageManager {
 			return null;
 		}
 
-		return this.pagesMap.get(pageNo).structurePage;
+		return this.pagesMap.get(pageNo)!.structurePage;
 	}
 
 	private obtainSiPage(pageNo: number): SiPage {
@@ -190,7 +190,7 @@ export class StructurePageManager {
 
 	getPageByNo(pageNo: number): StructurePage {
 		if (this.pagesMap.has(pageNo)) {
-			return this.pagesMap.get(pageNo).structurePage;
+			return this.pagesMap.get(pageNo)!.structurePage;
 		}
 
 		throw new IllegalStateError('Unknown page no: ' + pageNo);
@@ -230,14 +230,14 @@ export class StructurePageManager {
 		let prevPage: StructurePage|null = null;
 
 		for (const page of this.pages) {
-			if (prevPage === null || (page.offsetHeight < offsetHeight
-					&& prevPage.offsetHeight <= page.offsetHeight)) {
+			if (prevPage === null || (page.offsetHeight! < offsetHeight
+					&& prevPage.offsetHeight! <= page.offsetHeight!)) {
 				prevPage = page;
 				continue;
 			}
 
-			const bestPageDelta = offsetHeight - prevPage.offsetHeight;
-			const pageDelta = page.offsetHeight - offsetHeight;
+			const bestPageDelta = offsetHeight - prevPage.offsetHeight!;
+			const pageDelta = page.offsetHeight! - offsetHeight;
 
 			if (bestPageDelta < pageDelta) {
 				return prevPage;
@@ -336,7 +336,7 @@ export class StructurePageManager {
 			insertIndex: number|null) {
 		const fieldUiStructures = this.createFieldUiStructures(siEntry);
 		const controlUiContents = siEntry.selectedEntryBuildup.controls
-				.map(siControl => siControl.createUiContent(() => this.uiStructure.getZone()));
+				.map(siControl => siControl.createUiContent(() => this.uiStructure.getZone()!));
 
 		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents,
 				(replacementEntry) => {
@@ -396,7 +396,7 @@ export class StructurePageManager {
 	}
 
 	moveAfter(identifiers: SiEntryIdentifier[], afterEntryIdentifier: SiEntryIdentifier) {
-		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i)!);
 		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(afterEntryIdentifier);
 		if (siEntries.length > 0 && targetSiEntry) {
 			this.siPageCollection.moveAfter(siEntries, targetSiEntry);
@@ -404,7 +404,7 @@ export class StructurePageManager {
 	}
 
 	moveBefore(identifiers: SiEntryIdentifier[], beforeEntryIdentifier: SiEntryIdentifier) {
-		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i)!);
 		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(beforeEntryIdentifier);
 		if (siEntries.length > 0 && targetSiEntry) {
 			this.siPageCollection.moveBefore(siEntries, targetSiEntry);
@@ -412,7 +412,7 @@ export class StructurePageManager {
 	}
 
 	moveToParent(identifiers: SiEntryIdentifier[], parentEntryIdentifier: SiEntryIdentifier) {
-		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i));
+		const siEntries = identifiers.map(i => this.siPageCollection.getEntryByIdentifier(i)!);
 		const targetSiEntry = this.siPageCollection.getEntryByIdentifier(parentEntryIdentifier);
 		if (siEntries.length > 0 && targetSiEntry) {
 			this.siPageCollection.moveToParent(siEntries, targetSiEntry);

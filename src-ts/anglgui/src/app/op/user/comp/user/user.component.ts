@@ -15,10 +15,10 @@ import { Message } from 'src/app/util/i18n/message';
 export class UserComponent implements OnInit {
 	user: User|null = null;
 	saving = false;
-	errorMap: ErrorMap|null;
+	errorMap: ErrorMap|null = null;
 
-	password: string|null;
-	passwordConfirmation: string|null;
+	password: string|null = null;
+	passwordConfirmation: string|null = null;
 
 	constructor(private userDao: UserDaoService, private route: ActivatedRoute, private translationService: TranslationService,
 			private router: Router, private appState: AppStateService) {
@@ -26,12 +26,12 @@ export class UserComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.params.subscribe((params) => {
-			if (!params.userId) {
+			if (!params['userId']) {
 				this.user = new User(null, '', UserPower.NONE);
 				return;
 			}
 
-			this.userDao.getUserById(params.userId)
+			this.userDao.getUserById(params['userId'])
 					.subscribe((user: User) => {
 						this.user = user;
 					}, () => {
@@ -42,7 +42,7 @@ export class UserComponent implements OnInit {
 
 	get title(): string {
 		return this.user && this.user.username	? this.user.username :
-				(this.user.id ? this.translationService.translate('edit_user_txt') : this.translationService.translate('add_user_txt'));
+				(this.user!.id ? this.translationService.translate('edit_user_txt') : this.translationService.translate('add_user_txt'));
 	}
 
 	save() {
@@ -53,12 +53,12 @@ export class UserComponent implements OnInit {
 		this.saving = true;
 		this.errorMap = null;
 
-		if (this.user.isNew()) {
+		if (this.user!.isNew()) {
 			this.userDao
 					.createUser({
-						password: this.password,
-						passwordConfirmation: this.passwordConfirmation,
-						user: this.user
+						password: this.password!,
+						passwordConfirmation: this.passwordConfirmation!,
+						user: this.user!
 					})
 					.subscribe(() => {
 						this.router.navigate(['users']);
@@ -69,7 +69,7 @@ export class UserComponent implements OnInit {
 			return;
 		}
 
-		this.userDao.saveUser(this.user)
+		this.userDao.saveUser(this.user!)
 				.subscribe(() => {
 					this.router.navigate(['users']);
 				}, (errorMap: ErrorMap) => {
@@ -88,17 +88,19 @@ export class UserComponent implements OnInit {
 
 	getErrorMessages(propertyName: string): Message[] {
 		if (!this.errorMap || !this.errorMap.properties || !this.errorMap.properties.has(propertyName)) {
-			return null;
+			return [];
 		}
 
-		return Message.createTexts(this.errorMap.properties.get(propertyName).messages);
+		return Message.createTexts(this.errorMap.properties.get(propertyName)!.messages);
 	}
 
 	get availablePowers(): UserPower[] {
 		const userPowers: UserPower[] = [];
 		switch (this.appState.user.power) {
+			// @ts-ignore
 			case UserPower.SUPER_ADMIN:
 				userPowers.push(UserPower.SUPER_ADMIN);
+			// @ts-ignore
 			case UserPower.ADMIN:
 				userPowers.push(UserPower.ADMIN);
 			case UserPower.NONE:

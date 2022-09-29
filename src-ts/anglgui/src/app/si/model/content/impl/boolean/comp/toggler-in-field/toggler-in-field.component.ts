@@ -8,7 +8,7 @@ import { TogglerInModel } from '../toggler-in-model';
 	host: {class: 'rocket-toggler-in-field'}
 })
 export class TogglerInFieldComponent implements OnInit {
-	model: TogglerInModel;
+	model!: TogglerInModel;
 
 	constructor() { }
 

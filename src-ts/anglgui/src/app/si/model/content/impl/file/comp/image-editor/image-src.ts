@@ -12,8 +12,8 @@ export class ImageSrc {
 
 	private cropper: Cropper|null = null;
 
-	origWidth: number;
-	origHeight: number;
+	origWidth!: number;
+	origHeight!: number;
 
 	changed = false;
 	cropping = false;
@@ -21,7 +21,7 @@ export class ImageSrc {
 	private imageCuts: SiImageCut[]|null = null;
 
 	private readySubject: Subject<void>|null = new Subject<void>();
-	private ratioOpt: RatioOpt|null;
+	private ratioOpt: RatioOpt|null = null;
 	private _fixedRatio = false;
 
 	constructor(private elemRef: ElementRef, private mimeType: string) {
@@ -39,14 +39,14 @@ export class ImageSrc {
 			movable: false,
 			center: true,
 			crop: (event) => {
-				if (!this.cropper.getCropBoxData().left) {
+				if (!this.cropper!.getCropBoxData().left) {
 					return;
 				}
 
 				this.changed = true;
 				this.cropping = true;
 
-				const data = this.cropper.getData();
+				const data = this.cropper!.getData();
 
 				if (!this.imageCuts) {
 					this.origWidth = Math.round(data.width)
@@ -79,16 +79,16 @@ export class ImageSrc {
 				this.readySubject = null;
 				readySubject.next();
 				readySubject.complete();
-				// console.log(this.cropper.getCanvasData());
-				// console.log(this.cropper.getContainerData());
+				// console.log(this.cropper!.getCanvasData());
+				// console.log(this.cropper!.getContainerData());
 
 				// if (imageCut) {
-				// 	this.cropper.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
+				// 	this.cropper!.setCropBoxData({ left: imageCut.x, top: imageCut.y, width: imageCut.width,
 				// 			height: imageCut.height });
 				// // 		rotate: 0, scaleX: 1, scaleY: 1 });
 				// } else {
-				// 	// this.cropper.setCropBoxData(this.cropper.getCanvasData());
-				// 	this.cropper.clear();
+				// 	// this.cropper!.setCropBoxData(this.cropper!.getCanvasData());
+				// 	this.cropper!.clear();
 				// }
 
 				this.updateBoundries();
@@ -98,19 +98,19 @@ export class ImageSrc {
 
 	replace(url: string) {
 		this.readySubject = new Subject<void>();
-		this.cropper.replace(url);
+		this.cropper!.replace(url);
 	}
 
 	reset() {
 		this.cancelCropping();
 		this.updateBoundries();
-		this.cropper.reset();
+		this.cropper!.reset();
 		this.changed = false;
 		this.updateBoundries();
 	}
 
 	private calcRatio(): number {
-		const imageData = this.cropper.getImageData();
+		const imageData = this.cropper!.getImageData();
 
 		return imageData.width / imageData.naturalWidth;
 	}
@@ -119,7 +119,7 @@ export class ImageSrc {
 		this.imageCuts = null;
 
 		if (!imageCuts) {
-			this.cropper.clear();
+			this.cropper!.clear();
 			this.cropping = false;
 			this.updateRatioOpt(ratioOpt, null);
 			this.imageCuts = imageCuts;
@@ -137,10 +137,10 @@ export class ImageSrc {
 			x: imageCut.x, y: imageCut.y, width: imageCut.width, height: imageCut.height
 		};
 
-		this.cropper.crop();
+		this.cropper!.crop();
 		this.cropping = true;
 		this.updateRatioOpt(ratioOpt, imageCut);
-		this.cropper.setData(cropData);
+		this.cropper!.setData(cropData);
 		this.imageCuts = imageCuts;
 		this.changed = false;
 	}
@@ -154,7 +154,7 @@ export class ImageSrc {
 		}
 
 		if (!this.ratioOpt.freeRatioAllowed
-				|| imageCut.width / imageCut.height === this.ratioOpt.ratio) {
+				|| imageCut!.width / imageCut!.height === this.ratioOpt.ratio) {
 			this.fixedRatio = true;
 			return;
 		}
@@ -182,13 +182,13 @@ export class ImageSrc {
 
 		this._fixedRatio = fixedRatio;
 		if (fixedRatio) {
-			this.cropper.setAspectRatio(this.ratioOpt.ratio);
+			this.cropper!.setAspectRatio(this.ratioOpt!.ratio);
 		} else {
-			this.cropper.setAspectRatio(null);
+			this.cropper!.setAspectRatio(null as any);
 		}
 
 		if (cropData) {
-			this.cropper.setData(cropData);
+			this.cropper!.setData(cropData);
 		}
 	}
 
@@ -199,7 +199,7 @@ export class ImageSrc {
 
 		this.changed = false;
 
-		this.cropper.destroy();
+		this.cropper!.destroy();
 		this.cropper = null;
 
 		if (this.readySubject) {
@@ -218,30 +218,30 @@ export class ImageSrc {
 	rotateCw() {
 		this.cancelCropping();
 		this.changed = true;
-		this.cropper.rotate(90);
+		this.cropper!.rotate(90);
 		this.updateBoundries();
 	}
 
 	rotateCcw() {
 		this.cancelCropping();
 		this.changed = true;
-		this.cropper.rotate(-90);
+		this.cropper!.rotate(-90);
 		this.updateBoundries();
 	}
 
 	private updateBoundries(){
-		const containerData = this.cropper.getContainerData();
-		const canvasData = this.cropper.getCanvasData();
+		const containerData = this.cropper!.getContainerData();
+		const canvasData = this.cropper!.getCanvasData();
 
 		const widthZoomFactor = Math.min(containerData.width / canvasData.naturalHeight, 1);
 		const heightZoomFactor = Math.min(containerData.height / canvasData.naturalHeight, 1);
 		const zoomFactor = Math.min(widthZoomFactor, heightZoomFactor);
 
-		this.cropper.zoomTo(zoomFactor);
+		this.cropper!.zoomTo(zoomFactor);
 
 		if (!this.imageCuts) {
-			this.origWidth = this.cropper.getCanvasData().naturalWidth;
-			this.origHeight = this.cropper.getCanvasData().naturalHeight;
+			this.origWidth = this.cropper!.getCanvasData().naturalWidth;
+			this.origHeight = this.cropper!.getCanvasData().naturalHeight;
 		}
 
 	}
@@ -251,17 +251,17 @@ export class ImageSrc {
 
 		if (this.cropping) {
 			this.changed = true;
-			this.cropper.crop();
+			this.cropper!.crop();
 		} else {
-			this.cropper.clear();
+			this.cropper!.clear();
 			this.updateBoundries();
 		}
 	}
 
 	createBlob(): Promise<Blob> {
 		return new Promise((resolve) => {
-			this.cropper.getCroppedCanvas().toBlob((blob) => {
-				resolve(blob);
+			this.cropper!.getCroppedCanvas().toBlob((blob) => {
+				resolve(blob!);
 			}, this.mimeType);
 		});
 	}
@@ -287,17 +287,17 @@ export class ImageSrc {
 	// 	}
 
 	// 	if (this.cropping) {
-	// 		this.cropBoxData = this.cropper.getCropBoxData();
+	// 		this.cropBoxData = this.cropper!.getCropBoxData();
 	// 	}
 
 	// 	this.cut(new SiImageCut(100, 100, 50, 50, false));
-	// 	const dataUrl = this.cropper.getCroppedCanvas().toDataURL();
+	// 	const dataUrl = this.cropper!.getCroppedCanvas().toDataURL();
 
 	// 	if (this.cropBoxData) {
-	// 		this.cropper.setCropBoxData(this.cropBoxData);
+	// 		this.cropper!.setCropBoxData(this.cropBoxData);
 	// 		this.cropBoxData = null;
 	// 	} else {
-	// 		this.cropper.clear();
+	// 		this.cropper!.clear();
 	// 	}
 
 	// 	return dataUrl;

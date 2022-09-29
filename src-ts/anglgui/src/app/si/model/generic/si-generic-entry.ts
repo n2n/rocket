@@ -15,7 +15,7 @@ export class SiGenericEntry {
 	}
 
 	get entryQualifier(): SiEntryQualifier {
-		IllegalSiStateError.assertTrue(this.entryBuildupsMap.has(this.selectedTypeId));
-		return this.entryBuildupsMap.get(this.selectedTypeId).entryQualifier;
+		IllegalSiStateError.assertTrue(this.entryBuildupsMap.has(this.selectedTypeId!));
+		return this.entryBuildupsMap.get(this.selectedTypeId!)!.entryQualifier;
 	}
 }

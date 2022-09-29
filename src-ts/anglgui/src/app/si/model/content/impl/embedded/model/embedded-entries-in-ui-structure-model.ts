@@ -47,7 +47,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 
 	constructor(private popupTitle: string, private obtainer: EmbeddedEntryObtainer, public frame: SiFrame,
 			private embeInCol: EmbeInCollection, private config: EmbeddedEntriesInConfig,
-			private translationService: TranslationService, disabled$: Observable<boolean>|null = null) {
+			private translationService: TranslationService, disabled$?: Observable<boolean>) {
 		super();
 		this.disabled$ = disabled$;
 	}
@@ -99,20 +99,20 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 
 	private getEmbeInUiStructureManager(): EmbeInUiZoneManager {
 		IllegalStateError.assertTrue(!!this.embeInUiZoneManager);
-		return this.embeInUiZoneManager;
+		return this.embeInUiZoneManager!;
 	}
 
 	private getEmbeStructureCollection(): EmbeStructureCollection {
 		IllegalStateError.assertTrue(!!this.embeStructureCollection);
-		return this.embeStructureCollection;
+		return this.embeStructureCollection!;
 	}
 
 	getEmbeStructures(): EmbeStructure[] {
-		return this.embeStructureCollection.embeStructures;
+		return this.embeStructureCollection!.embeStructures;
 	}
 
 	getStructures$(): Observable<UiStructure[]> {
-		return this.embeStructureCollection.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
+		return this.embeStructureCollection!.embeStructures$.pipe(map(es => es.map(e => e.uiStructure)));
 	}
 
 	switch(previousIndex: number, currentIndex: number): void {
@@ -167,7 +167,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	open(embeStructure: EmbeStructure): void {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().open(embeStructure.embe).then((/*changed*/) => {
-			this.embeStructureCollection.refresh();
+			this.embeStructureCollection!.refresh();
 			this.updateDeleteToolbar();
 		});
 	}
@@ -175,12 +175,12 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	openAll(): void {
 		IllegalStateError.assertTrue(this.config.reduced);
 		this.getEmbeInUiStructureManager().openAll().then((/*changed*/) => {
-			this.embeStructureCollection.refresh();
+			this.embeStructureCollection!.refresh();
 			this.updateDeleteToolbar();
 		});
 	}
 
-	bind(uiStructure: UiStructure): void {
+	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
 		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeInCol);
@@ -205,7 +205,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			return;
 		}
 
-		this.embeInUiZoneManager = new EmbeInUiZoneManager(this.popupTitle, () => uiStructure.getZone().layer.container, this.embeInCol,
+		this.embeInUiZoneManager = new EmbeInUiZoneManager(this.popupTitle, () => uiStructure.getZone()!.layer.container, this.embeInCol,
 				this.frame, this.obtainer, this.config, this.translationService, this.disabled$);
 		this.uiContent = new TypeUiContent(EmbeddedEntriesSummaryInComponent, (ref) => {
 			ref.instance.model = this;
@@ -220,7 +220,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			return;
 		}
 
-		if (this.embeStructureCollection.embeStructures.length === 0) {
+		if (this.embeStructureCollection!.embeStructures.length === 0) {
 			this.toolbarStructureModelsSubject.next([]);
 			return;
 		}
@@ -228,11 +228,11 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		const button = new SiButton(this.translationService.translate('common_delete_label'), 'btn btn-danger', 'fas fa-trash-alt');
 
 		const deleteUiContent = new ButtonControlUiContent({
-			getUiZone: () => this.reqBoundUiStructure().getZone(),
+			getUiZone: () => this.reqBoundUiStructure().getZone()!,
 			getSiButton: () => button,
 			isLoading: () => false,
 			isDisabled: () => false,
-			exec: () => this.remove(this.embeStructureCollection.embeStructures[0])
+			exec: () => this.remove(this.embeStructureCollection!.embeStructures[0])
 		});
 
 		this.toolbarStructureModelsSubject.next([new SimpleUiStructureModel(deleteUiContent)]);
@@ -242,7 +242,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		const button = new SiButton(this.translationService.translate('common_edit_all_label'), 'rocket-btn-light rocket-btn-light-warning', 'fa fa-pencil-alt');
 
 		const openAllUiContent = new ButtonControlUiContent({
-			getUiZone: () => this.reqBoundUiStructure().getZone(),
+			getUiZone: () => this.reqBoundUiStructure().getZone()!,
 			getSiButton: () => button,
 			isLoading: () => false,
 			isDisabled: () => false,
@@ -252,18 +252,18 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		return new SimpleUiStructureModel(openAllUiContent);
 	}
 
-	unbind(): void {
+	override unbind(): void {
 		super.unbind();
 
 		this.embeInUiZoneManager = null;
-		this.subscription.unsubscribe();
+		this.subscription!.unsubscribe();
 		this.subscription = null;
-		this.embeStructureCollection.clear();
+		this.embeStructureCollection!.clear();
 		this.embeStructureCollection = null;
 		this.toolbarStructureModelsSubject.next([]);
 	}
 
-	getAsideContents(): UiContent[] {
+	override getAsideContents(): UiContent[] {
 		return [];
 	}
 
@@ -307,7 +307,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 
 		structureErrors.push(...this.errorState.messages.map(message => ({ message })));
 
-		for (const embeStructure of this.embeStructureCollection.embeStructures) {
+		for (const embeStructure of this.embeStructureCollection!.embeStructures) {
 			if (embeStructure.embe.siEntry.getMessages().length === 0) {
 				continue;
 			}
@@ -315,7 +315,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			structureErrors.push({
 				message: Message.createText('Error in ' + embeStructure.embe.siEntry.selectedEntryBuildup.entryQualifier.getBestName()),
 				focus: () => {
-					this.getEmbeInUiStructureManager().open(embeStructure.embe);
+					void this.getEmbeInUiStructureManager().open(embeStructure.embe);
 				}
 			});
 		}
@@ -331,7 +331,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 		return this.structureErrorCollection.get();
 	}
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
+	override getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.structureErrorCollection.get$();
 	}
 
@@ -364,13 +364,13 @@ class EmbeInUiZoneManager {
 
 	async open(embe: Embe): Promise<boolean> {
 		if (this.popupUiLayer) {
-			return;
+			return Promise.resolve(false);
 		}
 
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		let bakEntry = await embe.siEmbeddedEntry.entry.createInputResetPoint();
+		let bakEntry: SiInputResetPoint|null = await embe.siEmbeddedEntry!.entry.createInputResetPoint();
 
 		zone.title = this.popupTitle;
 		zone.breadcrumbs = [];
@@ -379,14 +379,14 @@ class EmbeInUiZoneManager {
 					.map(siControl => siControl.createUiContent(() => zone));
 
 		const promise = new Promise<boolean>((resolve) => {
-			this.popupUiLayer.onDispose(() => {
+			this.popupUiLayer!.onDispose(() => {
 				this.popupUiLayer = null;
 
 				if (bakEntry) {
 					bakEntry.rollbackTo();
 					resolve(false);
 				} else {
-					this.obtainer.val([embe.siEmbeddedEntry]);
+					this.obtainer.val([embe.siEmbeddedEntry!]);
 					resolve(true);
 				}
 			});
@@ -397,10 +397,10 @@ class EmbeInUiZoneManager {
 
 	async openAll(): Promise<boolean> {
 		if (this.popupUiLayer) {
-			return;
+			return Promise.resolve(false);
 		}
 
-		let bakEmbeddedEntries: SiEmbeddedEntry[]|null = [...this.embeCol.embes.map(embe => embe.siEmbeddedEntry)];
+		let bakEmbeddedEntries: SiEmbeddedEntry[]|null = [...this.embeCol.embes.map(embe => embe.siEmbeddedEntry!)];
 		
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		
@@ -417,12 +417,12 @@ class EmbeInUiZoneManager {
 					nonNewRemovable: this.config.nonNewRemovable,
 					sortable: this.config.sortable,
 					allowedTypeIds: this.config.allowedTypeIds
-				}, this.translationService, this.disabled$);
+				}, this.translationService, this.disabled$!);
 
 		const structure = new UiStructure(UiStructureType.SIMPLE_GROUP, null, popupUiStructureModel);
 
 		const promise = new Promise<boolean>((resolve) => {
-			this.popupUiLayer.onDispose(() => {
+			this.popupUiLayer!.onDispose(() => {
 				this.popupUiLayer = null;
 				structure.dispose();
 
@@ -433,7 +433,7 @@ class EmbeInUiZoneManager {
 					return;
 				}
 
-				this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry));
+				this.obtainer.val(this.embeCol.embes.map(embe => embe.siEmbeddedEntry!));
 				resolve(true);
 			});
 		});
@@ -453,12 +453,12 @@ class EmbeInUiZoneManager {
 					new SiButton(this.translationService.translate('common_apply_label'), 'btn btn-success', 'fas fa-save'),
 					() => {
 						applyCallback();
-						this.popupUiLayer.dispose();
+						this.popupUiLayer!.dispose();
 					}),
 			new SimpleSiControl(
 					new SiButton(this.translationService.translate('common_discard_label'), 'btn btn-secondary', 'fas fa-trash'),
 					() => {
-						this.popupUiLayer.dispose();
+						this.popupUiLayer!.dispose();
 					})
 		];
 	}

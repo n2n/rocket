@@ -10,7 +10,6 @@ import { map } from 'rxjs/operators';
 
 export class SimpleUiStructureModel extends UiStructureModelAdapter {
 
-	public mode = UiStructureModelMode.NONE;
 	public messagesCollection = new BehaviorCollection<Message>();
 	public structuresCollection = new BehaviorCollection<UiStructure>();
 	public initCallback: (uiStructure: UiStructure) => void = () => {};
@@ -44,12 +43,12 @@ export class SimpleUiStructureModel extends UiStructureModelAdapter {
 		return this.toolbarStructureModelsSubject.getValue();
 	}
 
-	bind(uiStructure: UiStructure) {
+	override bind(uiStructure: UiStructure) {
 		super.bind(uiStructure);
 		this.initCallback(uiStructure);
 	}
 
-	unbind() {
+	override unbind() {
 		super.unbind();
 		this.destroyCallback();
 	}
@@ -58,7 +57,7 @@ export class SimpleUiStructureModel extends UiStructureModelAdapter {
 		this.disabled$ = disabled$;
 	}
 
-	getContent(): UiContent|null {
+	override getContent(): UiContent|null {
 		return this.content;
 	}
 
@@ -70,11 +69,11 @@ export class SimpleUiStructureModel extends UiStructureModelAdapter {
 		return this.structuresCollection.get$();
 	}
 
-	getStructureErrors$(): Observable<UiStructureError[]> {
+	override getStructureErrors$(): Observable<UiStructureError[]> {
 		return this.messagesCollection.get$().pipe(map((ms) => ms.map((m) => ({ message: m }))));
 	}
 
-	getMode(): UiStructureModelMode {
+	override getMode(): UiStructureModelMode {
 		return this.mode;
 	}
 }

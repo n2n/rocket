@@ -3,12 +3,11 @@ import { UiContainer } from '../../model/ui-container';
 
 @Component({
 	selector: 'rocket-ui-container',
-	templateUrl: './container.component.html',
-	styleUrls: ['./container.component.css']
+	templateUrl: './container.component.html'
 })
 export class ContainerComponent implements OnInit {
 	@Input()
-	uiContainer: UiContainer;
+	uiContainer!: UiContainer;
 
 	constructor() { }
 

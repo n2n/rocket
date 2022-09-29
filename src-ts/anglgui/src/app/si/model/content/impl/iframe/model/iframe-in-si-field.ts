@@ -14,14 +14,14 @@ export class IframeInSiField extends InSiFieldAdapter implements IframeInModel {
 		super();
 	}
 
-	createUiContent(): UiContent|null {
+	createUiContent(): UiContent {
 		return new TypeUiContent(IframeInComponent, (ref) => {
 			ref.instance.model = this;
 		});
 	}
 
 	private formDataToObject(): object {
-		const params = {};
+		const params: {[ key: string ]: string } = {};
 		for (const [key, value] of this.formData) {
 			params[key] = value;
 		}

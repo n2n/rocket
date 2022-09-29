@@ -19,7 +19,7 @@ export class SiMask {
 
 	getPropById(propId: string): SiProp {
 		if (this.containsPropId(propId)) {
-			return this.propMap.get(propId);
+			return this.propMap.get(propId)!;
 		}
 
 		throw new IllegalSiStateError('Unknown prop id: ' + propId);

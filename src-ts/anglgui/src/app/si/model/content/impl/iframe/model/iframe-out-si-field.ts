@@ -18,7 +18,7 @@ export class IframeOutSiField extends OutSiFieldAdapter implements IframeOutMode
 		return this.srcDoc;
 	}
 
-	createUiContent(): UiContent|null {
+	createUiContent(): UiContent {
 		return new TypeUiContent(IframeOutComponent, (ref) => {
 			ref.instance.model = this;
 		});

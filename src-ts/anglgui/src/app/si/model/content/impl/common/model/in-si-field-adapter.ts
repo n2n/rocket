@@ -3,13 +3,13 @@ import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export abstract class InSiFieldAdapter extends SimpleSiFieldAdapter {
 
-	hasInput(): boolean {
+	override hasInput(): boolean {
 		return true;
 	}
 
-	abstract readInput(): object;
+	abstract override readInput(): object;
 
-	abstract createInputResetPoint(): Promise<SiInputResetPoint>;
+	abstract override createInputResetPoint(): Promise<SiInputResetPoint>;
 
 	// abstract copy(): SiField;
 

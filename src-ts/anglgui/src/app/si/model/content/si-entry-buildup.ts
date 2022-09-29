@@ -34,7 +34,7 @@ export class SiEntryBuildup {
 
 	getFieldById(id: string): SiField {
 		if (this.containsPropId(id)) {
-			return this.fieldMap$.getValue().get(id);
+			return this.fieldMap$.getValue().get(id)!;
 		}
 
 		throw new UnknownSiElementError('Unkown SiField id ' + id);
@@ -95,7 +95,7 @@ export class SiEntryBuildup {
 				continue;
 			}
 
-			promises.push(this.getFieldById(fieldId).pasteValue(genericValue));
+			promises.push(this.getFieldById(fieldId).pasteValue!(genericValue));
 		}
 
 		return Promise.all(promises).then((results) => !!results.indexOf(true));

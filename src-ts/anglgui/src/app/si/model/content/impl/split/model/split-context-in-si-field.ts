@@ -11,6 +11,7 @@ import {SplitContextCopy} from './split-context-copy';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 import { ManagableSplitContext, SplitStyle } from './split-context';
 import { SplitOption } from './split-option';
+import { SiEntryInput } from '../../../../input/si-entry-input';
 
 export class SplitContextInSiField extends InSiFieldAdapter implements SplitManagerModel, ManagableSplitContext {
 	readonly collection = new SplitContentCollection();
@@ -18,16 +19,16 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 	managerStyle: SplitStyle = { iconClass: null, tooltip: null };
 	private activeKeysSubject = new BehaviorSubject<string[]>([]);
 	mandatoryKeys = new Array<string>();
-	min: number;
+	min: number = 0;
 
-	hasInput(): boolean {
+	override hasInput(): boolean {
 		return true;
 	}
 
 	readInput(): object {
-		const entryInputObj = {};
+		const entryInputObj: { [key: string]: SiEntryInput } = {};
 		for (const splitContent of this.collection.getSplitContents()) {
-			let entry: SiEntry;
+			let entry: SiEntry|null;
 			if (entry = splitContent.getLoadedSiEntry()) {
 				entryInputObj[splitContent.key] = entry.readInput();
 			}

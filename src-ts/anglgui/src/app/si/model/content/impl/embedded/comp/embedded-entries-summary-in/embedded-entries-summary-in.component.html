@@ -1,7 +1,7 @@
 <div cdkDropList (cdkDropListDropped)="drop($event)" class="rocket-draggable-list">
 	<div *ngFor="let embeStructure of embeStructures" cdkDrag class="rocket-draggable">
 		<rocket-si-add-past *ngIf="!toOne" [disabled]="maxReached" [obtainer]="obtainer" 
-					(newEntry)="model.addBefore(embeStructure, $event)"></rocket-si-add-past>
+					(newEntry)="model.addBefore($event, embeStructure)"></rocket-si-add-past>
 
 		<div *ngIf="embeStructure.embe.isPlaceholder()" class="rocket-summary rocket-summary-ghost">
 			<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">

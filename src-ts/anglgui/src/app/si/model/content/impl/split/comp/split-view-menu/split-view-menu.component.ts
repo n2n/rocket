@@ -6,7 +6,7 @@ import { SplitViewMenuModel } from '../split-view-menu-model';
 	templateUrl: './split-view-menu.component.html'
 })
 export class SplitViewMenuComponent implements OnInit {
-	model: SplitViewMenuModel;
+	model!: SplitViewMenuModel;
 	menuVisible = false;
 
 	constructor(private cdRef: ChangeDetectorRef) {
