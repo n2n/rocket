@@ -43,20 +43,20 @@ use rocket\spec\TypePath;
 use rocket\si\meta\SiTypeContext;
 
 class EiType extends Type {
-	private $entityModel;
-	private $superEiType;
-	protected $subEiTypes = array();
+	private EntityModel $entityModel;
+	private ?EiType $superEiType = null;
+	protected array $subEiTypes = array();
 	
-	private $eiMask;
+	private EiMask $eiMask;
 	private $eiTypeExtensionCollection;
 	
-	private $dataSourceName = null;
-	private $nestedSetStrategy;
+	private ?string $dataSourceName = null;
+	private ?NestedSetStrategy $nestedSetStrategy;
 	
 	/**
 	 * @var EiLifecycleListener[]
 	 */
-	private $eiLifecycleListeners = array();
+	private array $eiLifecycleListeners = array();
 	
 	/**
 	 * @param string $id
@@ -75,7 +75,7 @@ class EiType extends Type {
 // 	}
 
 	public function setEntityModel(EntityModel $entityModel) {
-		IllegalStateException::assertTrue($this->entityModel === null);
+//		IllegalStateException::assertTrue($this->entityModel === null);
 		$this->entityModel = $entityModel;
 	}
 	

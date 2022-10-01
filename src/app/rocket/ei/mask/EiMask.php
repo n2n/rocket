@@ -61,27 +61,19 @@ use rocket\ei\util\Eiu;
  *
  */
 class EiMask {
-	private $eiMaskDef;
-	private $eiType;
-	private $subEiMaskIds;
-	
-	private $eiPropCollection;
-	private $eiCommandCollection;
-	private $eiModificatorCollection;
+	private EiMaskDef $eiMaskDef;
+	private EiType $eiType;
+
+	private EiPropCollection $eiPropCollection;
+	private EiCommandCollection $eiCommandCollection;
+	private EiModificatorCollection $eiModificatorCollection;
 	
 	private $displayScheme;
 	private $eiTypeExtension;
 	
 	private $eiEngine;
 	private $eiEngineCallbacks = [];
-	private $mappingFactory;
-	private $guiFactory;
-	private $draftDefinitionFactory;
-	private $critmodFactory;
-	
-	private $guiDefinition;
-	private $draftDefinition;
-	
+
 	/**
 	 * @param EiType $eiType
 	 */

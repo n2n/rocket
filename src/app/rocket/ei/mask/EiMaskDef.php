@@ -31,11 +31,11 @@ class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_REPLACE = 'replace';
 // 	const TYPE_CHANGE_MODE_CHANGE = 'change';
 	
-	private $label;
-	private $pluralLabel;
+	private ?string $label;
+	private ?string $pluralLabel;
 	private $iconType;
-	private $draftingAllowed;
-	private $draftHistorySize;
+//	private $draftingAllowed;
+//	private $draftHistorySize;
 	private $identityStringPattern;
 	private $previewControllerLookupId;
 	private $filterSettingGroup;
@@ -94,33 +94,33 @@ class EiMaskDef {
 		$this->identityStringPattern = $identityStringPattern;
 	}
 	
-	/**
-	 * @return boolean or null
-	 */
-	public function isDraftingAllowed() {
-		return $this->draftingAllowed;
-	}
-	
-	/**
-	 * @param bool $draftingAllowed
-	 */
-	public function setDraftingAllowed(bool $draftingAllowed = null) {
-		$this->draftingAllowed = $draftingAllowed;
-	}
-	
-	/**
-	 * @return int 
-	 */
-	public function getDraftHistorySize() {
-		return $this->draftHistorySize;
-	} 
-	
-	/**
-	 * @param int $draftHistorySize
-	 */
-	public function setDraftHistorySize($draftHistorySize) {
-		$this->draftHistorySize = $draftHistorySize;
-	}
+//	/**
+//	 * @return boolean or null
+//	 */
+//	public function isDraftingAllowed() {
+//		return $this->draftingAllowed;
+//	}
+//
+//	/**
+//	 * @param bool $draftingAllowed
+//	 */
+//	public function setDraftingAllowed(bool $draftingAllowed = null) {
+//		$this->draftingAllowed = $draftingAllowed;
+//	}
+//
+//	/**
+//	 * @return int
+//	 */
+//	public function getDraftHistorySize() {
+//		return $this->draftHistorySize;
+//	}
+//
+//	/**
+//	 * @param int $draftHistorySize
+//	 */
+//	public function setDraftHistorySize($draftHistorySize) {
+//		$this->draftHistorySize = $draftHistorySize;
+//	}
 		
 	/**
 	 * @return \ReflectionClass
