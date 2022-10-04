@@ -51,4 +51,36 @@ enum EiPresetMode {
 	 * Adds for every property a suitable EiProp (if found)  which is editable.
 	 */
 	case EDIT_FIELDS;
+	/**
+	 *
+	 */
+	case READ_FIELDS_EDIT_COMMANDS;
+
+	function hasReadFields(): bool {
+		return match ($this) {
+			self::READ, self::READ_FIELDS, self::READ_FIELDS_EDIT_COMMANDS => true,
+			default => false,
+		};
+	}
+
+	function hasEditFields(): bool {
+		return match ($this) {
+			self::EDIT, self::EDIT_FIELDS => true,
+			default => false,
+		};
+	}
+
+	function hasReadCommands(): bool {
+		return match ($this) {
+			self::READ, self::READ_COMMANDS => true,
+			default => false,
+		};
+	}
+
+	function hasEditCommands(): bool {
+		return match ($this) {
+			self::EDIT, self::EDIT_COMMANDS => true,
+			default => false,
+		};
+	}
 }

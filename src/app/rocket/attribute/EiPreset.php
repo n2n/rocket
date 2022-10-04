@@ -30,9 +30,17 @@ use n2n\util\type\ArgUtils;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class EiPreset {
 
-	function __construct(public readonly ?EiPresetMode $mode = null, public readonly array $readableProps = [],
-			public readonly array $editableProps = []) {
-		ArgUtils::valArray($this->readableProps, 'string');
-		ArgUtils::valArray($this->editableProps, 'string');
+	function __construct(public readonly ?EiPresetMode $mode = null, public readonly array $readProps = [],
+			public readonly array $editProps = []) {
+		ArgUtils::valArray($this->readProps, 'string');
+		ArgUtils::valArray($this->editProps, 'string');
+	}
+
+	function containsReadProp(string $prop): bool {
+		return in_array($prop, $this->readProps);
+	}
+
+	function containsEditProp(string $prop): bool {
+		return in_array($prop, $this->readProps);
 	}
 }

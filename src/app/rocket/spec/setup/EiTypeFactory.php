@@ -59,6 +59,15 @@ use n2n\persistence\orm\OrmException;
 use rocket\ei\UnknownEiTypeException;
 use n2n\reflection\attribute\AttributeSet;
 use n2n\reflection\ReflectionContext;
+use n2n\reflection\property\PropertiesAnalyzer;
+use rocket\attribute\EiPreset;
+use n2n\web\dispatch\target\build\Prop;
+use n2n\reflection\ReflectionException;
+use n2n\util\ex\err\ConfigurationError;
+use n2n\util\type\TypeUtils;
+use n2n\reflection\attribute\Attribute;
+use n2n\persistence\orm\model\EntityModel;
+use n2n\reflection\property\AccessProxy;
 
 class EiTypeFactory {
 	
@@ -84,13 +93,116 @@ class EiTypeFactory {
 	}
 
 	function init(EiType $eiType) {
+		$entityModel = $eiType->getEntityModel();
+		$class = $entityModel->getClass();
+		$attributeSet = ReflectionContext::getAttributeSet($class);
+		/**
+		 * @var EiPreset|null $eiPreset
+		 */
+		$eiPreset = $attributeSet->getClassAttribute(EiPreset::class);
+		if ($eiPreset === null) {
+			return;
+		}
 
-		$eiType = new EiTypeSetup($eiType);
+		$eiTypeSetup = new EiTypeSetup($eiType, $this->createEiPresetProps($entityModel, $eiPreset));
+		foreach (EiSetupPhase::cases() as $eiSetupPhase) {
+			foreach ($this->specConfigLoader->getEiComponentNatureProviders() as $eiComponentNatureProvider) {
+				$eiComponentNatureProvider->provide($eiSetupPhase, $eiSetupPhase);
+			}
+		}
+	}
 
-		$attributeSet = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass());
+	private function createEiPresetProps(EntityModel $entityModel, EiPreset $eiPreset) {
+		$propertiesAnalyzer = new PropertiesAnalyzer($entityModel->getClass());
 
-		$attributeSet->getClassAttribute(Ei)
+		$eiPresetProps = [];
 
+		if ($eiPreset->mode->hasReadFields()) {
+			foreach ($propertiesAnalyzer->analyzeProperties() as $accessProxy) {
+				$propertyName = $accessProxy->getPropertyName();
+				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy, $entityModel,
+						$eiPreset->containsEditProp($propertyName));
+			}
+		} elseif ($eiPreset->mode->hasEditFields()) {
+			foreach ($propertiesAnalyzer->analyzeProperties() as $accessProxy) {
+				$propertyName = $accessProxy->getPropertyName();
+				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy, $entityModel,
+						!$eiPreset->containsReadProp($propertyName));
+			}
+		}
+
+		foreach ($eiPreset->readProps as $propertyName) {
+			if (isset($eiPresetProps[$propertyName])) {
+				continue;
+			}
+
+			try {
+				$propertiesAnalyzer->analyzeProperty($propertyName, false);
+			} catch (ReflectionException $e) {
+				throw $this->createEiPresetAttributeError($eiPreset, $propertyName, $e);
+			}
+		}
+
+		foreach ($eiPreset->editProps as $propertyName) {
+			if ($eiPreset->containsReadProp($propertyName)) {
+				throw $this->createEiPresetAttributeError($eiPreset, $propertyName,
+						message: 'Already defined in readProps.');
+			}
+
+			if (isset($eiPresetProps[$propertyName])) {
+				continue;
+			}
+
+			try {
+				$propertiesAnalyzer->analyzeProperty($propertyName);
+			} catch (ReflectionException $e) {
+				throw $this->createEiPresetAttributeError($eiPreset, $propertyName, $e);
+			}
+		}
+	}
+
+	/**
+	 * @param AccessProxy $accessProxy
+	 * @param EntityModel $entityModel
+	 * @param bool $editable
+	 * @return EiPresetProp
+	 */
+	private function createEiPresetProp(AccessProxy $accessProxy, EntityModel $entityModel, bool $editable) {
+		$propertyName = $accessProxy->getPropertyName();
+		$entityProperty = null;
+		if ($entityModel->containsEntityPropertyName($propertyName)) {
+			$entityProperty = $entityModel->getLevelEntityPropertyByName($propertyName);
+		}
+
+		return new EiPresetProp($propertyName, $accessProxy, $entityProperty, $editable);
+	}
+
+
+	/**
+	 * @param EiPreset $eiPreset
+	 * @param string $propertyName
+	 * @param \Throwable|null $previous
+	 * @param string|null $message
+	 * @return ConfigurationError
+	 */
+	private function createEiPresetAttributeError(EiPreset $eiPreset, string $propertyName, \Throwable $previous = null,
+			string $message = null) {
+		$attrPropName = $eiPreset->containsEditProp($propertyName) ? 'editProps' : 'readProps';
+
+		return $this->createAttributeError($eiPreset, 'Could not use property \'' . $propertyName
+				. '\' annotated in '
+				. TypeUtils::prettyPropName(EiPreset::class, $attrPropName).
+				. ($message === null ? '' : ' Reason: ' . $message), $e);
+	}
+
+	/**
+	 * @param Attribute $attribute
+	 * @param string|null $message
+	 * @param \Throwable|null $previous
+	 * @return ConfigurationError
+	 */
+	private function createAttributeError(Attribute $attribute, ?string $message, \Throwable $previous = null) {
+		return new ConfigurationError($message, $attribute->getFile(), $attribute->getLine(), previous: $previous);
 	}
 	
 	/**
@@ -368,4 +480,11 @@ class EiTypeFactory {
 	private function createEiMaskException($eiMaskId, \Exception $previous) {
 		return new InvalidSpecConfigurationException('Could not create EiMask (id: ' . $eiMaskId . ').', 0, $previous);
 	}	
+}
+
+
+class EiPresetPropFactory {
+	function __construct(private EiPreset $eiPreset, private EntityModel $entityModel) {
+
+	}
 }
