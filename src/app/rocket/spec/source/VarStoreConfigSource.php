@@ -28,8 +28,7 @@ use n2n\config\source\WritableConfigSource;
 class VarStoreConfigSource implements ModularConfigSource {
 	const ROCKET_CONFIG_FOLDER = 'rocket';
 	const LAYOUT_CONFIG_FILE = 'manage.json';
-	const SCRIPT_CONFIG_FILE = 'specs.json';
-	const COMPONENT_STORAGE_FILE = 'elements.json';
+	const SCRIPT_CONFIG_FILE = 'spec.json';
 	
 	private $varStore;
 	private $folderName;

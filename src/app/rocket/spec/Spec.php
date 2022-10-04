@@ -54,19 +54,16 @@ use rocket\ei\UnknownEiTypeException;
 use rocket\spec\extr\InitCascade;
 use rocket\ei\EiLaunchPad;
 use rocket\custom\CustomLaunchPad;
+use n2n\reflection\ReflectionContext;
+use n2n\persistence\orm\OrmException;
 
-class Spec {	
-	private $specExtractionManager;
-	private $entityModelManager;
+class Spec {
 	private $eiSetupQueue;
 	/**
 	 * @var EiTypeFactory
 	 */
-	private $eiTypeFactory;
-	private $eiErrorResult;
-	
-	const MODE_NO_SETUP = 1;
-	const MODE_ERR_RESULT = 2;
+	private EiTypeFactory $eiTypeFactory;
+
 	
 	private $eager = false;
 	private $launchPads = array();
@@ -78,32 +75,8 @@ class Spec {
 	 * @param SpecExtractionManager $specExtractionManager
 	 * @param EntityModelManager $entityModelManager
 	 */
-	public function __construct(SpecExtractionManager $specExtractionManager, EntityModelManager $entityModelManager,
-			N2nContext $n2nContext, int $mode) {
-		$this->specExtractionManager = $specExtractionManager;
-		$this->entityModelManager = $entityModelManager;
-		
-		if ($mode & self::MODE_ERR_RESULT) {
-			$this->eiErrorResult = new EiErrorResult();
-		}
-		
-		if (!($mode & self::MODE_NO_SETUP)) {
-			$this->eiSetupQueue = new EiSetupQueue($this->eiErrorResult, $n2nContext);
-		}
-		
-		$this->eiTypeFactory = new EiTypeFactory($this->entityModelManager, $this->getEiSetupQueue(), $this->eiErrorResult);
-		
-		if (!$this->specExtractionManager->isInitialized()) {
-			$this->specExtractionManager->load();
-			$this->specExtractionManager->extract();
-		}
-	}
-	
-	/**
-	 * @return string[]
-	 */
-	static function getModes() {
-		return [self::MODE_NO_SETUP, self::MODE_ERR_RESULT];
+	public function __construct(SpecConfigLoader $specConfigLoader, EntityModelManager $entityModelManager) {
+		$this->eiTypeFactory = new EiTypeFactory($this->specConfigLoader, $entityModelManager, $this->getEiSetupQueue(), $this->eiErrorResult);
 	}
 	
 	/**
@@ -113,10 +86,13 @@ class Spec {
 	 * @return EiErrorResult|null
 	 */
 	public function eagerInit() {
-		foreach ($this->specExtractionManager->getCustomTypeExtractions() as $customTypeExtraction) {
-			$this->initCustomTypeFromExtr($customTypeExtraction);
+		foreach ($this->entityModelManager->getEntityClasses() as $entityClass) {
+			$attributeSet = ReflectionContext::getAttributeSet($entityClass);
+			if ($attributeSet->hasClassAttribute(\rocket\attribute\EiType::class)) {
+				$this->initEiTypeFromClass($entityClass);
+			}
 		}
-		
+
 		foreach ($this->specExtractionManager->getEiTypeExtractions() as $eiTypeExtraction) {
 			$this->initEiTypeFromExtr($eiTypeExtraction);
 		}
@@ -202,95 +178,73 @@ class Spec {
 		$this->eiTypeCis = array();
 		$this->launchPads = array();
 	}
-	
-	
-	/**
-	 * @param string $class
-	 * @return EiType
-	 */
-	private function initEiTypeFromClassName($className) {
-		return $this->initEiTypeFromExtr($this->specExtractionManager->getEiTypeExtractionByClassName($className));
+
+	private function isEiTypeAnnotated(\ReflectionClass $class) {
+		return ReflectionContext::getAttributeSet($class)->hasClassAttribute(\rocket\attribute\EiType::class)
 	}
 	
 	/**
-	 * @param EiTypeExtraction $eiTypeExtraction
+	 * @param \ReflectionClass $class
 	 * @throws InvalidConfigurationException
+	 * @throws UnknownEiTypeException
 	 * @return EiType
 	 */
-	private function initEiTypeFromExtr($eiTypeExtraction) {
-		$id = $eiTypeExtraction->getId();
-		
-		if (isset($this->eiTypes[$id])) {
-			return $this->eiTypes[$id];
+	private function initEiTypeFromClass(\ReflectionClass $class) {
+		$className = $class->getName();
+
+		if (isset($this->eiTypes[$className])) {
+			return $this->eiTypes[$className];
 		}
-		
-		$typePath = new TypePath($id);
-		$eiModificationExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypePath($typePath);
-		$eiType = $this->eiTypeFactory->create($eiTypeExtraction, $eiModificationExtractions);
-		
-		$this->eiTypes[$id] = $eiType;
-		$this->eiTypeCis[$eiTypeExtraction->getEntityClassName()] = $eiType;
+
+		if (!$this->isEiTypeAnnotated($class)) {
+			throw new UnknownEiTypeException($className . ' is not annotated with attribute '
+					. \rocket\attribute\EiType::class);
+		}
+
+		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($class);
 		
 		if ($eiType->getEntityModel()->hasSuperEntityModel()) {
-			$superClassName = $eiType->getEntityModel()->getSuperEntityModel()->getClass()->getName();
+			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
 			
 			try {
-				$eiType->setSuperEiType($this->initEiTypeFromClassName($superClassName));
+				$eiType->setSuperEiType($this->initEiTypeFromClass($superClass));
 			} catch (UnknownEiTypeException $e) {
 				throw new InvalidConfigurationException('EiType for ' . $eiTypeExtraction->getEntityClassName() 
 						. ' requires super EiType for ' . $superClassName);
 			}
 		}
 		
-		$this->eiSetupQueue->addEiMask($eiType->getEiMask());
-		$this->assembleEiTypeExtensions($eiType->getEiMask(), $typePath);
+//		$this->eiSetupQueue->addEiMask($eiType->getEiMask());
+//		$this->assembleEiTypeExtensions($eiType->getEiMask(), $typePath);
 		
 		foreach ($eiType->getEntityModel()->getSubEntityModels() as $subEntityModel) {
-			$className = $subEntityModel->getClass()->getName();
+			$class = $subEntityModel->getClass();
 			
-			if ($this->containsEiTypeClassName($className)) {
-				$this->initEiTypeFromClassName($className);
+			if ($this->containsEiTypeClass($class)) {
+				$this->initEiTypeFromClass($class);
 			}
 		}
-		
-		foreach ($this->specExtractionManager->getCascadedEiTypeExtraction($eiTypeExtraction->getEntityClassName(), 
-				InitCascade::TYPE_ALWAYS) as $eiTypeExtraction) {
-			$this->initEiTypeFromExtr($eiTypeExtraction);	
-		}
+
+		$this->eiTypeFactory->init($eiType);
 		
 		return $eiType;
 	}
 	
-	private function assembleEiTypeExtensions(EiMask $extendedEiMask, TypePath $extenedTypePath) {
-		$eiType = $extendedEiMask->getEiType();
-		
-		foreach ($this->specExtractionManager->getEiTypeExtensionExtractionsByExtendedEiTypePath($extenedTypePath)
-				as $eiTypeExtensionExtraction) {
-			$typePath = new TypePath($eiType->getId(), $eiTypeExtensionExtraction->getId());
-			$eiModificatorExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypePath($typePath);
-			$eiTypeExtension = $this->eiTypeFactory->createEiTypeExtension($extendedEiMask, $eiTypeExtensionExtraction, $eiModificatorExtractions);
-			$eiType->getEiTypeExtensionCollection()->add($eiTypeExtension);
-			
-			$this->eiSetupQueue->addEiMask($eiTypeExtension->getEiMask());
-			$this->assembleEiTypeExtensions($eiTypeExtension->getEiMask(), $typePath);
-		}
-	}
-	
-	private function initCustomTypeFromExtr(CustomTypeExtraction $customTypeExtraction) {
-		$id = $customTypeExtraction->getId();
-		
-		if (isset($this->customTypes[$id])) {
-			return $this->customTypes[$id];
-		}
-		
-		return $this->customTypes[$customTypeExtraction->getId()] = CustomTypeFactory::create($customTypeExtraction);
-// 		$typePath = new TypePath($customTypeExtraction->getId());
-		
-// 		if ($this->specExtractionManager->containsLaunchPadExtractionTypePath($typePath)) {
-// 			$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
-// 			$this->createCustomLaunchPad($typePath, $customType, $launchPadExtraction->getLabel());
-// 		}
-	}
+//	private function assembleEiTypeExtensions(EiMask $extendedEiMask, TypePath $extenedTypePath) {
+//		$eiType = $extendedEiMask->getEiType();
+//
+//		foreach ($this->specExtractionManager->getEiTypeExtensionExtractionsByExtendedEiTypePath($extenedTypePath)
+//				as $eiTypeExtensionExtraction) {
+//			$typePath = new TypePath($eiType->getId(), $eiTypeExtensionExtraction->getId());
+//			$eiModificatorExtractions = $this->specExtractionManager->getEiModificatorExtractionsByEiTypePath($typePath);
+//			$eiTypeExtension = $this->eiTypeFactory->createEiTypeExtension($extendedEiMask, $eiTypeExtensionExtraction, $eiModificatorExtractions);
+//			$eiType->getEiTypeExtensionCollection()->add($eiTypeExtension);
+//
+//			$this->eiSetupQueue->addEiMask($eiTypeExtension->getEiMask());
+//			$this->assembleEiTypeExtensions($eiTypeExtension->getEiMask(), $typePath);
+//		}
+//	}
+
 	
 	private function initLaunchPadFromTypePath(TypePath $typePath) {
 		$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);

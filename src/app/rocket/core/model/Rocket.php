@@ -35,6 +35,7 @@ use rocket\core\model\launch\Layout;
 use n2n\l10n\Lstr;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerContext;
+use rocket\spec\SpecConfigLoader;
 
 class Rocket implements RequestScoped {
 	const VERSION = '3.1.0';
@@ -98,8 +99,8 @@ class Rocket implements RequestScoped {
 		
 		$rocketConfigSource = $this->getRocketConfigSource();
 		
-		$sem = new SpecExtractionManager($rocketConfigSource->getSpecsConfigSource(), 
-				$rocketConfigSource->getModuleNamespaces());
+		$sem = new SpecConfigLoader($rocketConfigSource->getSpecsConfigSource(),
+				$rocketConfigSource->getModuleNamespaces(), $this->n2nContext);
 
 		$this->spec = new Spec($sem, $this->dbhPool->getEntityModelManager(), $this->n2nContext, 0);
 // 		$this->spec->eagerInit();

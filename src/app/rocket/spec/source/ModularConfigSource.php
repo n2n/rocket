@@ -30,13 +30,13 @@ interface ModularConfigSource {
 	 * @param string $moduleNamespace
 	 * @return ConfigSource
 	 */
-	public function getOrCreateConfigSourceByModuleNamespace($moduleNamespace): WritableConfigSource;
+	public function getOrCreateConfigSourceByModuleNamespace(string $moduleNamespace): WritableConfigSource;
 
 	/**
 	 * @param string $module
 	 * @return boolean
 	 */
-	public function containsModuleNamespace($moduleNamespace): bool;
+	public function containsModuleNamespace(string $moduleNamespace): bool;
 	
 	/**
 	 * @return string

@@ -43,7 +43,6 @@ use rocket\spec\TypePath;
 use rocket\si\meta\SiTypeContext;
 
 class EiType extends Type {
-	private EntityModel $entityModel;
 	private ?EiType $superEiType = null;
 	protected array $subEiTypes = array();
 	
@@ -63,24 +62,15 @@ class EiType extends Type {
 	 * @param Module $moduleNamespace
 	 * @param EntityModel $entityModel
 	 */
-	public function __construct($id, $moduleNamespace) {
+	public function __construct(string $id, $moduleNamespace, private EntityModel $entityModel) {
 		parent::__construct($id, $moduleNamespace);
-		
+
 		$this->eiMask = new EiMask($this, new DisplayScheme());
 		$this->eiTypeExtensionCollection = new EiTypeExtensionCollection($this);
 	}
-
-// 	public function getEiThingPath(): EiThingPath {
-// 		return new EiThingPath(array($this->getId()));
-// 	}
-
-	public function setEntityModel(EntityModel $entityModel) {
-//		IllegalStateException::assertTrue($this->entityModel === null);
-		$this->entityModel = $entityModel;
-	}
 	
 	/**
-	 * @return \n2n\persistence\orm\model\EntityModel
+	 * @return EntityModel
 	 */
 	public function getEntityModel(): EntityModel {
 		IllegalStateException::assertTrue($this->entityModel !== null);
