@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file\conf;
 
 use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\file\FileEiProp;
+use rocket\impl\ei\component\prop\file\FileEiPropNature;
 
 class FileModel {
 	/**
@@ -38,7 +38,7 @@ class FileModel {
 	/**
 	 * @param EiPropPath $eiPropPath
 	 */
-	function __construct(FileEiProp $fileEiProp) {
+	function __construct(FileEiPropNature $fileEiProp) {
 		$this->fileEiProp = $fileEiProp;
 	}
 	

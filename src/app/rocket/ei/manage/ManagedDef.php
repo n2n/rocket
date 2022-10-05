@@ -75,8 +75,8 @@ class ManagedDef implements EiComponentCollectionListener{
 	 */
 	private function registerListeners($eiMask) {
 		$eiMask->getEiPropCollection()->registerListener($this);
-		$eiMask->getEiCommandCollection()->registerListener($this);
-		$eiMask->getEiModificatorCollection()->registerListener($this);
+		$eiMask->getEiCmdCollection()->registerListener($this);
+		$eiMask->getEiModCollection()->registerListener($this);
 	}
 	
 	/**
@@ -84,8 +84,8 @@ class ManagedDef implements EiComponentCollectionListener{
 	 */
 	private function unregisterListeners($eiMask) {
 		$eiMask->getEiPropCollection()->unregisterListener($this);
-		$eiMask->getEiCommandCollection()->unregisterListener($this);
-		$eiMask->getEiModificatorCollection()->unregisterListener($this);
+		$eiMask->getEiCmdCollection()->unregisterListener($this);
+		$eiMask->getEiModCollection()->unregisterListener($this);
 	}
 	
 	function eiComponentCollectionChanged(EiComponentCollection $collection) {

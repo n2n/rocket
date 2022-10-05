@@ -40,7 +40,7 @@ use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\entry\EiuEntry;
 
-class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiProp {
+class EmbeddedOneToManyEiProp extends RelationEiPropNatureAdapter implements FieldEiProp {
 
 	/**
 	 * 
@@ -57,7 +57,7 @@ class EmbeddedOneToManyEiProp extends RelationEiPropAdapter implements FieldEiPr
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty

@@ -34,10 +34,10 @@ use n2n\persistence\meta\structure\Column;
 use rocket\ei\util\Eiu;
 use n2n\util\col\ArrayUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommand;
+use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
 use rocket\ei\EiCommandPath;
 use n2n\l10n\Lstr;
-use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommand;
+use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommandNature;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
@@ -159,12 +159,12 @@ class RelationConfig extends PropConfigAdaption {
 			$targetEiuMask = $targetEiuType->mask();
 		}
 			
-		$targetReadEiCommand = new TargetReadEiCommand(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
+		$targetReadEiCommand = new TargetReadEiCommandNature(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
 				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetReadEiCommand);
 		$this->relationModel->setTargetReadEiCommandPath(EiCommandPath::from($targetReadEiCommand));
 		
-		$targetEditEiCommand = new TargetEditEiCommand(Lstr::create('Change this name'), (string) $eiu->mask()->getEiTypePath(), 
+		$targetEditEiCommand = new TargetEditEiCommandNature(Lstr::create('Change this name'), (string) $eiu->mask()->getEiTypePath(),
 				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetEditEiCommand);
 		$this->relationModel->setTargetEditEiCommandPath(EiCommandPath::from($targetEditEiCommand));

@@ -25,7 +25,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\frame\EiForkLink;
 
-interface ForkEiProp extends EiProp {
+interface ForkEiProp extends EiPropNature {
 	/**
 	 * @return EiFrame
 	 */

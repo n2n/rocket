@@ -28,7 +28,7 @@ use n2n\core\container\N2nContext;
 use rocket\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\ei\component\EiComponent;
+use rocket\ei\component\EiComponentNature;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeUtils;
 
@@ -37,7 +37,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	protected $dataSet;
 	protected $reseted = false;
 	
-	public function __construct(EiComponent $eiComponent) {
+	public function __construct(EiComponentNature $eiComponent) {
 		$this->eiComponent = $eiComponent;
 		$this->dataSet = new DataSet();
 	}
@@ -49,7 +49,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 // 		return new \ReflectionClass($this->eiComponent);
 // 	}
 	
-	public function getEiComponent(): EiComponent {
+	public function getEiComponent(): EiComponentNature {
 		return $this->eiComponent;
 	}
 	
@@ -72,11 +72,11 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 	
 	/**
-	 * @param EiComponent $eiComponent
+	 * @param EiComponentNature $eiComponent
 	 * @param array $suffixes
 	 * @return string
 	 */
-	public static function createAutoTypeName(EiComponent $eiComponent, array $suffixes) { 
+	public static function createAutoTypeName(EiComponentNature $eiComponent, array $suffixes) {
 		return self::shortenTypeName(TypeUtils::prettyName((new \ReflectionClass($eiComponent))->getShortName()),
 				$suffixes);
 	}

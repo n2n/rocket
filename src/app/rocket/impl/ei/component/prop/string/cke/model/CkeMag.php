@@ -28,7 +28,7 @@ use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
 use rocket\impl\ei\component\prop\string\cke\ui\Cke;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\impl\ei\component\prop\string\cke\CkeEiProp;
+use rocket\impl\ei\component\prop\string\cke\CkeEiPropNature;
 use n2n\util\type\ArgUtils;
 
 class CkeMag extends StringMag {
@@ -39,7 +39,7 @@ class CkeMag extends StringMag {
 	private $ckeCssConfig;
 
 	public function __construct($label, $value = null, bool $mandatory = false, 
-			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiProp::MODE_NORMAL, bool $bbcode = false, 
+			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiPropNature::MODE_NORMAL, bool $bbcode = false,
 			bool $tableEditing = false, array $ckeLinkProviders, CkeCssConfig $ckeCssConfig = null) {
 		ArgUtils::valArray($ckeLinkProviders, CkeLinkProvider::class);
 		

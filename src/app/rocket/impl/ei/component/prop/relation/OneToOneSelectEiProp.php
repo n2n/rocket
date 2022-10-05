@@ -41,7 +41,7 @@ use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 
-class OneToOneSelectEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp {
+class OneToOneSelectEiProp extends RelationEiPropNatureAdapter implements FieldEiProp, QuickSearchableEiProp {
 	private $quickSearchableConfig;
 	
 	public function __construct() {

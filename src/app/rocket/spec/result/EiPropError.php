@@ -1,7 +1,7 @@
 <?php
 namespace rocket\spec\result;
 
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\EiPropPath;
 use rocket\spec\TypePath;
 use rocket\impl\ei\component\prop\adapter\EiPropAdapter;
@@ -12,7 +12,7 @@ class EiPropError {
 	private $eiProp;
 	private $t;
 	
-	public function __construct(TypePath $eiTypePath, EiPropPath $eiPropPath, \Throwable $t, EiProp $eiProp = null) {
+	public function __construct(TypePath $eiTypePath, EiPropPath $eiPropPath, \Throwable $t, EiPropNature $eiProp = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiPropPath = $eiPropPath;
 		$this->eiProp = $eiProp;

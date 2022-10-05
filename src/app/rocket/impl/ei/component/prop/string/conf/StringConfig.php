@@ -37,22 +37,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 class StringConfig extends PropConfigAdaption {
 	const ATTR_MULTILINE_KEY = 'multiline';
 	
-	private $multiline = false;
-	
-	/**
-	 * @return bool
-	 */
-	function isMultiline() {
-		return $this->multiline;
-	}
-	
-	/**
-	 * @param bool $multiline
-	 */
-	function setMultiline(bool $multiline) {
-		$this->multiline = $multiline;
-	}
-	
+
 	function setup(Eiu $eiu, DataSet $dataSet) {
 		if ($dataSet->contains(self::ATTR_MULTILINE_KEY)) {
 			$this->setMultiline($dataSet->reqBool(self::ATTR_MULTILINE_KEY));

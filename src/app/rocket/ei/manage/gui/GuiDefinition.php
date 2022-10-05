@@ -712,7 +712,7 @@ class GuiDefinition {
 	 * @param EiGuiFrame $eiGuiFrame
 	 */
 	private function initEiGuiFrame($eiGuiFrame) {
-		$this->eiMask->getEiModificatorCollection()->setupEiGuiFrame($eiGuiFrame);
+		$this->eiMask->getEiModCollection()->setupEiGuiFrame($eiGuiFrame);
 		
 		$eiGuiFrame->markInitialized();
 	}

@@ -24,7 +24,7 @@ namespace rocket\ei\manage;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use n2n\util\col\Hashable;
 use n2n\util\type\TypeUtils;
 
@@ -189,7 +189,7 @@ class DefPropPath implements Hashable {
 		$parts = null;
 		if (is_array($expression)) {
 			$parts = $expression;
-		} else if ($expression instanceof EiProp) {
+		} else if ($expression instanceof EiPropNature) {
 			return new DefPropPath([EiPropPath::from($expression)]);
 		} else if ($expression instanceof EiPropPath) {
 			return new DefPropPath([$expression]);

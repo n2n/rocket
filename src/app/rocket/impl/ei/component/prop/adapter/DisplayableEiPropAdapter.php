@@ -43,7 +43,7 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	 */
 	protected function getDisplayConfig() {
 		if ($this->displayConfig === null) {
-			$this->displayConfig = new DisplayConfig ( ViewMode::all () );
+			$this->displayConfig = new DisplayConfig(ViewMode::all());
 		}
 
 		return $this->displayConfig;
@@ -52,20 +52,12 @@ abstract class DisplayableEiPropAdapter extends IndependentEiPropAdapter impleme
 	/**
 	 *
 	 * {@inheritdoc}
-	 * @see \rocket\ei\component\prop\EiProp::isPrivileged()
+	 * @see \rocket\ei\component\prop\EiPropNature::isPrivileged()
 	 */
 	public function isPrivileged(): bool {
 		return false;
 	}
 
-	/**
-	 *
-	 * {@inheritdoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\IndependentEiPropAdapter::createEiPropConfigurator()
-	 */
-	protected function createConfigurator(): AdaptableEiPropConfigurator {
-		return parent::createConfigurator ()->addAdaption ( $this->getDisplayConfig () );
-	}
 	
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $eiu->factory ()->newGuiProp (function (Eiu $eiu) {

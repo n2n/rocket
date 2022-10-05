@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 
-interface RelationEiProp extends EiProp {
+interface RelationEiProp extends EiPropNature {
 	
 	/**
 	 * @return RelationEntityProperty

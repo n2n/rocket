@@ -23,8 +23,8 @@ namespace rocket\ei\manage\security\privilege;
 
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\command\EiCmdNature;
+use rocket\ei\component\prop\EiPropNature;
 
 class PrivilegeDefinition {
 	private $privilegedEiCommands = [];
@@ -40,7 +40,7 @@ class PrivilegeDefinition {
 // 	/**
 // 	 * @param EiCommandPath $eiCommandPath
 // 	 * @return boolean
-// 	 * @todo add non privileged command paths
+// 	 * @todo add non privileged cmd paths
 // 	 */
 // 	function isEiCommandPathUnprivileged(EiCommandPath $eiCommandPath) {
 // 		return !$this->checkEiCommandPathForPrivileges($eiCommandPath);
@@ -60,10 +60,10 @@ class PrivilegeDefinition {
 // 	}
 
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @return bool
 	 */
-	function containsEiCommand(EiCommand $eiCommand) {
+	function containsEiCommand(EiCmdNature $eiCommand) {
 		return $this->containsEiCommandPath(EiCommandPath::from($eiCommand));
 	}
 		
@@ -76,58 +76,58 @@ class PrivilegeDefinition {
 	}
 	
 	/**
-	 * @param EiCommand $privilegeEiCommand
+	 * @param EiCmdNature $privilegeEiCommand
 	 */
-	function addPrivilegedEiCommand(EiCommand $privilegeEiCommand) {
+	function addPrivilegedEiCommand(EiCmdNature $privilegeEiCommand) {
 		$this->privilegedEiCommands[(string) EiCommandPath::from($privilegeEiCommand)] = $privilegeEiCommand;
 	}
 	
 	/**
-	 * @return EiCommand[]
+	 * @return EiCmdNature[]
 	 */
 	function getPrivilegedEiCommands() {
 		return $this->privilegedEiCommands;
 	}
 	
 	/**
-	 * @return EiCommand[]
+	 * @return EiCmdNature[]
 	 */
 	function getUnprivilegedEiCommands() {
 		return $this->unprivilegedEiCommands;
 	}
 	
 	/**
-	 * @param EiCommand $unprivilegedEiCommand
+	 * @param EiCmdNature $unprivilegedEiCommand
 	 */
-	function addUnprivilegedEiCommand(EiCommand $unprivilegedEiCommand) {
+	function addUnprivilegedEiCommand(EiCmdNature $unprivilegedEiCommand) {
 		$this->unprivilegedEiCommands[(string) EiCommandPath::from($unprivilegedEiCommand)] = $unprivilegedEiCommand;
 	}
 
 	/**
-	 * @return EiProp[]
+	 * @return EiPropNature[]
 	 */
 	function getPrivilegedEiProps() {
 		return $this->privilegedEiProps;
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 */
-	function addPrivilegedEiProp(EiProp $eiProp) {
+	function addPrivilegedEiProp(EiPropNature $eiProp) {
 		$this->privilegedEiProps[(string) EiPropPath::from($eiProp)] = $eiProp;
 	}
 	
 	/**
-	 * @return EiProp[]
+	 * @return EiPropNature[]
 	 */
 	function getUnprivilegedEiProps() {
 		return $this->unprivilegedEiProps;
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 */
-	function addUnprivilegedEiProp(EiProp $eiProp) {
+	function addUnprivilegedEiProp(EiPropNature $eiProp) {
 		$this->unprivilegedEiProps[(string) EiPropPath::from($eiProp)] = $eiProp;
 	}
 }

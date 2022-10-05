@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\bool;
 
 use rocket\impl\ei\component\prop\bool\conf\OnlineConfig;
 
-class OnlineEiProp extends BooleanEiProp {
+class OnlineEiProp extends BooleanEiPropNature {
 	
 	function __construct() {
 		parent::__construct();

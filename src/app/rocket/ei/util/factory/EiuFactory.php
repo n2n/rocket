@@ -8,7 +8,7 @@ use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiFieldAssembler;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\util\control\EiuControlFactory;
 
 class EiuFactory {

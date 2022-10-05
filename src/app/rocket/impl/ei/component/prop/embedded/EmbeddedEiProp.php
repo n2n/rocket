@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\embedded;
 
 use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\util\type\ArgUtils;
@@ -45,7 +45,7 @@ use rocket\ei\manage\gui\GuiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\meta\SiStructureType;
 
-class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEiProp {
+class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiProp, FieldEiProp {
 	private $sed;
 	
 	/**
@@ -61,7 +61,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setEntityProperty()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);
@@ -71,7 +71,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setObjectPropertyAccessProxy()
 	 */
 	public function setObjectPropertyAccessProxy(?AccessProxy $accessProxy) {
 		ArgUtils::assertTrue($accessProxy !== null);
@@ -140,7 +140,7 @@ class EmbeddedEiProp extends PropertyEiPropAdapter implements GuiEiProp, FieldEi
 class EmbeddedGuiProp implements GuiProp {
 	private $eiProp;
 	
-	public function __construct(EmbeddedEiProp $eiProp) {
+	public function __construct(EmbeddedEiPropNature $eiProp) {
 		$this->eiProp = $eiProp;
 	}
 	
@@ -178,7 +178,7 @@ class EmbeddedGuiField implements GuiField {
 	private $embeddedEiProp;
 	private $mag;
 	
-	public function __construct(Eiu $eiu, EmbeddedEiProp $embeddedEiProp) {
+	public function __construct(Eiu $eiu, EmbeddedEiPropNature $embeddedEiProp) {
 		$this->eiu = $eiu;
 		$this->embeddedEiProp = $embeddedEiProp;
 	}

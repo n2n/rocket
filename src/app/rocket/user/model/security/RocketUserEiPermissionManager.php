@@ -22,7 +22,7 @@
 namespace rocket\user\model\security;
 
 use rocket\user\bo\RocketUser;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\security\EiPermissionManager;
@@ -98,7 +98,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\EiPermissionManager::isEiCommandAccessible()
 	 */
-	function isEiCommandAccessible(EiMask $contextEiMask, EiCommand $eiCommand): bool {
+	function isEiCommandAccessible(EiMask $contextEiMask, EiCmdNature $eiCommand): bool {
 		if ($this->rocketUser->isAdmin()) return true;
 		
 		$eiMask = $eiCommand->getWrapper()->getEiCommandCollection()->getEiMask();
@@ -110,7 +110,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 				|| $eiGrant->containsEiCommandPath(EiCommandPath::from($eiCommand)));
 	}
 	
-	function createEiExecution(EiMask $contextEiMask, EiCommand $eiCommand): EiExecution {
+	function createEiExecution(EiMask $contextEiMask, EiCmdNature $eiCommand): EiExecution {
 		if ($this->rocketUser->isAdmin()) {
 			return new FullyGrantedEiExecution($eiCommand);
 		}
@@ -153,7 +153,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	
 	/**
 	 * @param EiMask $contextEiMask
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @return RestrictedEiExecution
 	 */
 	private function createRestrictedEiExecution($contextEiMask, $eiCommand) {

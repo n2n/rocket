@@ -1,20 +1,20 @@
 <?php
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use n2n\l10n\Lstr;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\EiComponentAdapter;
-use rocket\ei\component\prop\EiPropWrapper;
+use rocket\impl\ei\component\EiComponentNatureAdapter;
+use rocket\ei\component\prop\EiProp;
 use n2n\util\StringUtils;
 use n2n\reflection\property\AccessProxy;
 
-abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
+abstract class EiPropAdapter extends EiComponentNatureAdapter implements EiPropNature {
 	private $wrapper;
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::isPrivileged()
+	 * @see \rocket\ei\component\prop\EiPropNature::isPrivileged()
 	 */
 	public function isPrivileged(): bool {
 		return true;
@@ -22,17 +22,17 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::setWrapper()
+	 * @see \rocket\ei\component\prop\EiPropNature::setWrapper()
 	 */
-	public function setWrapper(EiPropWrapper $wrapper) {
+	public function setWrapper(EiProp $wrapper) {
 		$this->wrapper = $wrapper;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::getWrapper()
+	 * @see \rocket\ei\component\prop\EiPropNature::getWrapper()
 	 */
-	public function getWrapper(): EiPropWrapper {
+	public function getWrapper(): EiProp {
 		if ($this->wrapper !== null) {
 			return $this->wrapper;
 		}
@@ -49,7 +49,7 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\EiComponentAdapter::getIdBase()
+	 * @see \rocket\impl\ei\component\EiComponentNatureAdapter::getIdBase()
 	 */
 	public function getIdBase(): ?string {
 		return null;
@@ -57,16 +57,16 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponent::equals()
+	 * @see \rocket\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {
-		return $obj instanceof EiProp && $this->getWrapper()->getEiPropPath()->equals(
+		return $obj instanceof EiPropNature && $this->getWrapper()->getEiPropPath()->equals(
 				$obj->getWrapper()->getEiPropPath());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponent::__toString()
+	 * @see \rocket\ei\component\EiComponentNature::__toString()
 	 */
 	public function __toString(): string {
 		return (new \ReflectionClass($this))->getShortName()
@@ -75,7 +75,7 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::getLabelLstr()
+	 * @see \rocket\ei\component\prop\EiPropNature::getLabelLstr()
 	 */
 	public function getLabelLstr(): Lstr {
 		return Lstr::create(StringUtils::pretty($this->getWrapper()->getEiPropPath()->getLastId()));
@@ -83,7 +83,7 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::getHelpTextLstr()
+	 * @see \rocket\ei\component\prop\EiPropNature::getHelpTextLstr()
 	 */
 	public function getHelpTextLstr(): ?Lstr {
 		return null;
@@ -91,7 +91,7 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::isPropFork()
+	 * @see \rocket\ei\component\prop\EiPropNature::isPropFork()
 	 */
 	public function isPropFork(): bool {
 		return false;
@@ -99,7 +99,7 @@ abstract class EiPropAdapter extends EiComponentAdapter implements EiProp {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiProp::getPropForkObject()
+	 * @see \rocket\ei\component\prop\EiPropNature::getPropForkObject()
 	 */
 	public function getPropForkObject(object $object): object {
 		throw new IllegalStateException($this . ' is not a PropFork.');

@@ -33,210 +33,53 @@ class EditConfig extends PropConfigAdaption {
 	protected $constant = false;
 	protected $readOnly = false;
 	protected $mandatory = false;
-	
-	protected $constantChoosable = true;
-	protected $readOnlyChoosable = true;
-	protected $mandatoryChoosable = true;
-	protected $autoMandatoryCheck = true;
-	
+
 	/**
 	 * @return bool
 	 */
 	function isConstant() {
 		return $this->constant;
 	}
-	
+
 	/**
 	 * @param bool $constant
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 * @return $this
 	 */
-	function setConstant(bool $constant) {
+	function setConstant(bool $constant): static {
 		$this->constant = $constant;
 		return $this;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
 	function isReadOnly(): bool {
 		return $this->readOnly;
 	}
-	
+
 	/**
 	 * @param bool $readOnly
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 * @return $this
 	 */
-	function setReadOnly(bool $readOnly) {
+	function setReadOnly(bool $readOnly): static {
 		$this->readOnly = (bool) $readOnly;
 		return $this;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
 	function isMandatory(): bool {
 		return $this->mandatory;
 	}
-	
+
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 * @return $this
 	 */
-	function setMandatory(bool $mandatory) {
+	function setMandatory(bool $mandatory): static {
 		$this->mandatory = $mandatory;
 		return $this;
 	}
-	
-	/**
-	 * @return bool
-	 */
-	function isConstantChoosable() {
-		return $this->constantChoosable;
-	}
 
-	/**
-	 * @param bool $constantChoosable
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function setConstantChoosable(bool $constantChoosable) {
-		$this->constantChoosable = $constantChoosable;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isReadOnlyChoosable() {
-		return $this->readOnlyChoosable;
-	}
-
-	/**
-	 * @param bool $readOnlyChoosable
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function setReadOnlyChoosable(bool $readOnlyChoosable) {
-		$this->readOnlyChoosable = $readOnlyChoosable;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isMandatoryChoosable() {
-		return $this->mandatoryChoosable;
-	}
-
-	/**
-	 * @param bool $mandatoryChoosable
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function setMandatoryChoosable(bool $mandatoryChoosable) {
-		$this->mandatoryChoosable = $mandatoryChoosable;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isAutoMandatoryCheck() {
-		return $this->autoMandatoryCheck;
-	}
-
-	/**
-	 * @param bool $autoMandatoryCheck
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function setAutoMandatoryCheck(bool $autoMandatoryCheck) {
-		$this->autoMandatoryCheck = $autoMandatoryCheck;
-		return $this;
-	}
-	
-	const ATTR_CONSTANT_KEY = 'constant';
-	const ATTR_READ_ONLY_KEY = 'readOnly';
-	const ATTR_MANDATORY_KEY = 'mandatory';
-	
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		if ($this->mandatoryChoosable && $this->autoMandatoryCheck /*&& $this->mandatoryRequired()*/) {
-			$dataSet->set(self::ATTR_MANDATORY_KEY, true);
-		}
-	}
-	
-	/**
-	 * @param DataSet $dataSet
-	 * @throws InvalidAttributeException
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function setup(Eiu $eiu, DataSet $dataSet) {
-		if ($this->constantChoosable && $dataSet->contains(self::ATTR_CONSTANT_KEY)) {
-			$this->setConstant($dataSet->reqBool(self::ATTR_CONSTANT_KEY));
-		}
-		
-		if ($this->readOnlyChoosable && $dataSet->contains(self::ATTR_READ_ONLY_KEY)) {
-			$this->setReadOnly($dataSet->reqBool(self::ATTR_READ_ONLY_KEY));
-		}
-		
-		if ($this->mandatoryChoosable) {
-			if ($dataSet->contains(self::ATTR_MANDATORY_KEY)) {
-				$this->setMandatory($dataSet->reqBool(self::ATTR_MANDATORY_KEY));
-			}
-			
-// 			if (!$this->isMandatory() && $this->mandatoryChoosable && $this->autoMandatoryCheck
-// 					&& $this->mandatoryRequired()) {
-// 				throw new InvalidAttributeException(self::ATTR_MANDATORY_KEY . ' must be true because '
-// 						. $this->getPropertyAssignation()->getObjectPropertyAccessProxy(true)
-// 						. ' does not allow null value.');
-// 			}
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * @param DataSet $dataSet
-	 * @param MagCollection $magCollection
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($dataSet);
-		
-		if ($this->constantChoosable) {
-			$magCollection->addMag(self::ATTR_CONSTANT_KEY, new BoolMag('Constant',
-					$lar->getBool(self::ATTR_CONSTANT_KEY, $this->isConstant())));
-		}
-		
-		if ($this->readOnlyChoosable) {
-			$magCollection->addMag(self::ATTR_READ_ONLY_KEY, new BoolMag('Read only',
-					$lar->getBool(self::ATTR_READ_ONLY_KEY, $this->isReadOnly())));
-		}
-		
-		if ($this->mandatoryChoosable) {
-			$magCollection->addMag(self::ATTR_MANDATORY_KEY, new BoolMag('Mandatory',
-					$lar->getBool(self::ATTR_MANDATORY_KEY, $this->isMandatory())));
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * @param MagCollection $magCollection
-	 * @param DataSet $dataSet
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
-	 */
-	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		$dataSet->remove(self::ATTR_CONSTANT_KEY, self::ATTR_READ_ONLY_KEY, self::ATTR_MANDATORY_KEY);
-		
-		if ($this->constantChoosable) {
-			$dataSet->set(self::ATTR_CONSTANT_KEY, $magCollection->readValue(self::ATTR_CONSTANT_KEY));
-		}
-		
-		if ($this->readOnlyChoosable) {
-			$dataSet->set(self::ATTR_READ_ONLY_KEY, $magCollection->readValue(self::ATTR_READ_ONLY_KEY));
-		}
-		
-		if ($this->mandatoryChoosable) {
-			$dataSet->set(self::ATTR_MANDATORY_KEY, $magCollection->readValue(self::ATTR_MANDATORY_KEY));
-		}
-		
-		return $this;
-	}
 }

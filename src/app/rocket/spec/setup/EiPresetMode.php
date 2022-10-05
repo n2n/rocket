@@ -38,48 +38,48 @@ enum EiPresetMode {
 	/**
 	 * Adds suitable EiCommands (if found) which provide read only functionality.
 	 */
-	case READ_COMMANDS;
+	case READ_CMDS;
 	/**
 	 * Adds suitable EiCommands (if found) which provide read or edit functionality .
 	 */
-	case EDIT_COMMANDS;
+	case READ_EDIT_CMDS;
 	/**
 	 * Adds for every property a suitable EiProp (if found) which is read only.
 	 */
-	case READ_FIELDS;
+	case READ_PROPS;
 	/**
 	 * Adds for every property a suitable EiProp (if found)  which is editable.
 	 */
-	case EDIT_FIELDS;
+	case EDIT_PROPS;
 	/**
 	 *
 	 */
-	case READ_FIELDS_EDIT_COMMANDS;
+	case READ_PROPS_READ_EDIT_COMMANDS;
 
-	function hasReadFields(): bool {
+	function hasReadProps(): bool {
 		return match ($this) {
-			self::READ, self::READ_FIELDS, self::READ_FIELDS_EDIT_COMMANDS => true,
+			self::READ, self::READ_PROPS, self::READ_PROPS_READ_EDIT_COMMANDS => true,
 			default => false,
 		};
 	}
 
-	function hasEditFields(): bool {
+	function hasEditProps(): bool {
 		return match ($this) {
-			self::EDIT, self::EDIT_FIELDS => true,
+			self::EDIT, self::EDIT_PROPS => true,
 			default => false,
 		};
 	}
 
-	function hasReadCommands(): bool {
+	function hasReadCmds(): bool {
 		return match ($this) {
-			self::READ, self::READ_COMMANDS => true,
-			default => false,
+			self::READ, self::READ_CMDS => true, self::READ_EDIT_CMDS
+			default => false
 		};
 	}
 
-	function hasEditCommands(): bool {
+	function hasEditCmds(): bool {
 		return match ($this) {
-			self::EDIT, self::EDIT_COMMANDS => true,
+			self::EDIT, self::READ_EDIT_CMDS => true,
 			default => false,
 		};
 	}

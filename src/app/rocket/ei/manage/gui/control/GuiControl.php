@@ -27,7 +27,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiCallResponse;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
 use rocket\ei\EiCommandPath;

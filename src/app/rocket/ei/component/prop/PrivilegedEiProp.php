@@ -24,6 +24,6 @@ namespace rocket\ei\component\prop;
 use rocket\ei\manage\security\privilege\EiPropPrivilege;
 use rocket\ei\util\Eiu;
 
-interface PrivilegedEiProp extends EiProp {
+interface PrivilegedEiProp extends EiPropNature {
 	
 }

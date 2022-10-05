@@ -24,7 +24,7 @@ namespace rocket\ei\component\prop;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\idname\IdNamePropFork;
 
-interface IdNameEiPropFork extends EiProp {
+interface IdNameEiPropFork extends EiPropNature {
 	/**
 	 * @return \rocket\ei\manage\idname\IdNamePropFork|null
 	 */

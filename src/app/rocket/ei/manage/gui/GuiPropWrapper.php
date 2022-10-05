@@ -23,7 +23,7 @@ namespace rocket\ei\manage\gui;
 
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 
@@ -121,7 +121,7 @@ class GuiPropWrapper {
 	}
 	
 	/**
-	 * @return EiProp
+	 * @return EiPropNature
 	 */
 	function getEiProp() {
 		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);

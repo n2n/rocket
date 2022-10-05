@@ -23,7 +23,7 @@ namespace rocket\ei\component;
 
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\EiPropCollection;
-use rocket\ei\component\modificator\EiModificatorCollection;
+use rocket\ei\component\modificator\EiModCollection;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\component\prop\FilterableEiProp;
@@ -43,7 +43,7 @@ class CritmodFactory {
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $eiPropCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiPropCollection $eiPropCollection, EiModCollection $eiModificatorCollection) {
 		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}

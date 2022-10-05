@@ -26,7 +26,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuAnalyst;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\si\content\SiEntryQualifier;
 
 class EiuObject {
@@ -85,30 +85,30 @@ class EiuObject {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @return boolean
 	 */
-	public function isDraftProp(EiProp $eiProp) {
+	public function isDraftProp(EiPropNature $eiProp) {
 		return $this->eiObject->isDraft()
 				&& $eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getDraftDefinition()
 						->containsEiPropPath(EiPropPath::from($eiProp));
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @return object
 	 */
-	public function getForkObject(EiProp $eiProp) {
+	public function getForkObject(EiPropNature $eiProp) {
 		$eiPropPath = EiPropPath::from($eiProp);
 		return $eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getForkObject($eiPropPath->poped(), $this->eiObject);
 	}
 	
 	/**
-	 * @param EiProp $eiProp
-	 * @throws EiFieldOperationFailedException
+	 * @param EiPropNature $eiProp
 	 * @return NULL|mixed
+	 *@throws EiFieldOperationFailedException
 	 */
-	public function readNativValue(EiProp $eiProp) {
+	public function readNativValue(EiPropNature $eiProp) {
 		if ($this->isDraftProp($eiProp)) {
 			return $this->eiObject->getDraft()->getDraftValueMap()->getValue($eiPropPath);
 		}
@@ -122,10 +122,10 @@ class EiuObject {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @return boolean
 	 */
-	public function isNativeWritable(EiProp $eiProp) {
+	public function isNativeWritable(EiPropNature $eiProp) {
 		if ($this->isDraftProp($eiProp)) {
 			return true;
 		}
@@ -134,11 +134,11 @@ class EiuObject {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
-	 * @throws EiFieldOperationFailedException
+	 * @param EiPropNature $eiProp
 	 * @return \n2n\reflection\property\AccessProxy
+	 *@throws EiFieldOperationFailedException
 	 */
-	private function getObjectPropertyAccessProxy(EiProp $eiProp) {
+	private function getObjectPropertyAccessProxy(EiPropNature $eiProp) {
 		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
 		if ($objectPropertyAccessProxy !== null) {
 			return $objectPropertyAccessProxy;
@@ -148,11 +148,11 @@ class EiuObject {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @param mixed $value
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function writeNativeValue(EiProp $eiProp, $value) {
+	public function writeNativeValue(EiPropNature $eiProp, $value) {
 		if ($this->isDraftProp($eiProp)) {
 			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
 			return;

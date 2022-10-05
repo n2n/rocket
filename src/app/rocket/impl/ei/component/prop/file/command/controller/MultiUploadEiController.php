@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\file\command\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
 use rocket\core\model\Breadcrumb;
-use rocket\impl\ei\component\prop\file\FileEiProp;
+use rocket\impl\ei\component\prop\file\FileEiPropNature;
 use rocket\ei\util\EiuCtrl;
 use n2n\io\managed\impl\FileFactory;
 use n2n\web\http\BadRequestException;
@@ -39,9 +39,9 @@ class MultiUploadEiController extends ControllerAdapter {
 	private $order;
 
 	/**
-	 * @param FileEiProp $fileEiProp
+	 * @param FileEiPropNature $fileEiProp
 	 */
-	public function setFileEiProp(FileEiProp $fileEiProp) {
+	public function setFileEiProp(FileEiPropNature $fileEiProp) {
 		$this->fileModel = $fileEiProp;
 	}
 	

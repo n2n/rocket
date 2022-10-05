@@ -53,7 +53,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\EiObject;
 
-class IntegratedOneToOneEiProp extends RelationEiPropAdapter /*implements GuiPropFork*/ {
+class IntegratedOneToOneEiProp extends RelationEiPropNatureAdapter /*implements GuiPropFork*/ {
 	
 	public function __construct() {
 		parent::__construct();

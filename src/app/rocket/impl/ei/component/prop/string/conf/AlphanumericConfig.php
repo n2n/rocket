@@ -34,42 +34,7 @@ class AlphanumericConfig extends PropConfigAdaption {
 	const ATTR_MINLENGTH_KEY = 'minlength';
 	const ATTR_MAXLENGTH_KEY = 'maxlength';
 	
-	/**
-	 * @var int|null
-	 */
-	private $minlength;
-	/**
-	 * @var int|null
-	 */
-	private $maxlength;
-	
-	/**
-	 * @return int|null
-	 */
-	function getMinlength() {
-		return $this->minlength;
-	}
-	
-	/**
-	 * @param int|null $minlength
-	 */
-	function setMinlength(?int $minlength) {
-		$this->minlength = $minlength;
-	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getMaxlength() {
-		return $this->maxlength;
-	}
-	
-	/**
-	 * @param int|null $maxlength
-	 */
-	function setMaxlength(?int $maxlength) {
-		$this->maxlength = $maxlength;
-	}
+
 	
 	/**
 	 * @param Eiu $eiu

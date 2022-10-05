@@ -21,7 +21,7 @@
  */
 namespace rocket\ei\component\prop;
 
-interface DraftableEiProp extends EiProp {
+interface DraftableEiProp extends EiPropNature {
 			
 	/**
 	 * @return \rocket\ei\manage\draft\DraftProperty|null

@@ -44,9 +44,9 @@ interface EiConfigurator {
 	public function getTypeName(): string;
 	
 	/**
-	 * @return EiComponent 
+	 * @return EiComponentNature
 	 */
-	public function getEiComponent(): EiComponent;
+	public function getEiComponent(): EiComponentNature;
 	
 	/**
 	 * No Exception should be thrown if DataSet are invalid. Use of {@link \n2n\util\type\attrs\LenientAttributeReader}

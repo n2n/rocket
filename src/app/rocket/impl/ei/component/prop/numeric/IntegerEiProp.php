@@ -37,7 +37,7 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifField;
 
-class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
+class IntegerEiProp extends NumericEiPropNatureAdapter implements ScalarEiProp {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
 	
@@ -49,7 +49,7 @@ class IntegerEiProp extends NumericEiPropAdapter implements ScalarEiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::adaptConfigurator()
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::adaptConfigurator()
 	 */
 	function prepare() {
 		parent::prepare();

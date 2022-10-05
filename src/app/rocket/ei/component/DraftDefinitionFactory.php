@@ -22,7 +22,7 @@
 namespace rocket\ei\component;
 
 use rocket\ei\component\prop\EiPropCollection;
-use rocket\ei\component\modificator\EiModificatorCollection;
+use rocket\ei\component\modificator\EiModCollection;
 use n2n\util\type\ArgUtils;
 use rocket\ei\component\prop\DraftableEiProp;
 use rocket\ei\manage\draft\DraftDefinition;
@@ -34,7 +34,7 @@ class DraftDefinitionFactory {
 	private $eiPropCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EntityModel $entityModel, EiPropCollection $eiPropCollection, EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EntityModel $entityModel, EiPropCollection $eiPropCollection, EiModCollection $eiModificatorCollection) {
 		$this->entityModel = $entityModel;
 		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;

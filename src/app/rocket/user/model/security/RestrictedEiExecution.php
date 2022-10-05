@@ -23,7 +23,7 @@ namespace rocket\user\model\security;
 
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\manage\security\EiExecution;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\EiCommandPath;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
@@ -39,13 +39,13 @@ class RestrictedEiExecution implements EiExecution {
 	private $restrictedEiEntryAccessFactory;
 
 	/**
-	 * @param EiCommand|null $eiCommand
+	 * @param EiCmdNature|null $eiCommand
 	 * @param EiCommandPath $eiCommandPath
 	 * @param array $eiGrantPrivileges
 	 * @param PrivilegeDefinition $privilegeDefinition
 	 * @param SecurityFilterDefinition $securityFilterDefinition
 	 */
-	function __construct(EiCommand $eiCommand, ?ComparatorConstraint $comparatorConstraint, ?EiEntryConstraint $eiEntryConstraint,
+	function __construct(EiCmdNature $eiCommand, ?ComparatorConstraint $comparatorConstraint, ?EiEntryConstraint $eiEntryConstraint,
 			RestrictedEiEntryAccessFactory $restrictedEiEntryAccessFactory) {
 		$this->eiCommand = $eiCommand;
 		$this->comparatorConstraint = $comparatorConstraint;
@@ -57,7 +57,7 @@ class RestrictedEiExecution implements EiExecution {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\EiExecution::getEiCommand()
 	 */
-	function getEiCommand(): EiCommand {
+	function getEiCommand(): EiCmdNature {
 		return $this->eiCommand;
 	}
 	

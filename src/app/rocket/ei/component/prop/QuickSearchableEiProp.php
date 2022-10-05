@@ -25,7 +25,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 
-interface QuickSearchableEiProp extends EiProp {
+interface QuickSearchableEiProp extends EiPropNature {
 	
 	/**
 	 * @param EiFrame $eiFrame

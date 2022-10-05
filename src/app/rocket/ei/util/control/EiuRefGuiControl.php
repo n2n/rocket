@@ -32,7 +32,7 @@ use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\ei\EiCommandPath;
@@ -70,7 +70,7 @@ class EiuRefGuiControl implements GuiControl {
 	}
 	
 	/**
-	 * @param EiCommand $eiCommandPath
+	 * @param EiCmdNature $eiCommandPath
 	 * @param mixed $urlExt
 	 * @return \n2n\util\uri\Url
 	 */

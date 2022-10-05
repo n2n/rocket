@@ -28,19 +28,19 @@ use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\manage\security\EiExecution;
 use rocket\ei\EiCommandPath;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 
 class FullyGrantedEiExecution implements EiExecution {
 // 	private $commandPath;
 	private $eiCommand;
 	private $eiEntryAccessFactory;
 	
-	public function __construct(EiCommand $eiCommand) {
+	public function __construct(EiCmdNature $eiCommand) {
 // 		$this->commandPath = $commandPath;
 		$this->eiCommand = $eiCommand;
 	}
 	
-	public function getEiCommand(): EiCommand {
+	public function getEiCommand(): EiCmdNature {
 		return $this->eiCommand;
 	}
 	

@@ -24,7 +24,7 @@ namespace rocket\ei\component\prop;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\idname\IdNameProp;
 
-interface IdNameEiProp extends EiProp {
+interface IdNameEiProp extends EiPropNature {
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp;
 }

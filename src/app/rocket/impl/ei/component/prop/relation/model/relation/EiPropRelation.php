@@ -165,13 +165,13 @@ abstract class EiPropRelation {
 		
 		$this->initTargetMasterEiProp();
 		
-		// supreme EiEngine to make command available in EiFrames with super context EiTypes.
+		// supreme EiEngine to make cmd available in EiFrames with super context EiTypes.
 		$superemeEiuMask = $eiu->mask()->supremeMask();
 		$this->relationEiCommand = new RelationEiCommand($this);
 		$superemeEiuMask->addEiCommand($this->relationEiCommand);
 		
 		$this->relationAjahEiCommand = new RelationAjahEiCommand($this);
-		$targetEiMask->getEiCommandCollection()->add($this->relationAjahEiCommand);
+		$targetEiMask->getEiCmdCollection()->add($this->relationAjahEiCommand);
 		
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$entityProperty = $this->getRelationEntityProperty();
@@ -362,7 +362,7 @@ abstract class EiPropRelation {
 		$targetEiProp = $this->findTargetEiProp();
 		
 		if (null !== $targetEiProp) {
-			$targetEiModificatorCollection = $targetEiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiModificatorCollection();
+			$targetEiModificatorCollection = $targetEiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiModCollection();
 			
 			$targetEiFrame->setEiRelation($targetEiProp->getWrapper()->getEiPropPath(), new EiRelation($eiFrame, $eiObject,
 					$this->relationEiProp));

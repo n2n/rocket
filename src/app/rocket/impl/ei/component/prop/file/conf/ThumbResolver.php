@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\file\conf;
 
 use n2n\io\managed\File;
-use rocket\impl\ei\component\prop\file\command\ThumbEiCommand;
+use rocket\impl\ei\component\prop\file\command\ThumbNatureEiCommand;
 use n2n\io\managed\img\ImageDimension;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\util\Eiu;
@@ -48,7 +48,7 @@ class ThumbResolver {
 	private $targetFileManager;
 	private $targetFileLocator = null;
 	
-	public function setThumbEiCommand(ThumbEiCommand $thumbEiCommand) {
+	public function setThumbEiCommand(ThumbNatureEiCommand $thumbEiCommand) {
 // 		$thumbEiCommand->setFileEiProp($this);
 		$this->thumbEiCommand = $thumbEiCommand;
 	}

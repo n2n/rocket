@@ -25,11 +25,11 @@ use n2n\reflection\ReflectionUtils;
 use n2n\core\TypeNotFoundException;
 use rocket\spec\source\ModularConfigSource;
 use rocket\ei\component\prop\indepenent\IndependentEiProp;
-use rocket\ei\component\prop\EiProp;
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\component\command\IndependentEiCommand;
-use rocket\ei\component\modificator\EiModificator;
-use rocket\ei\component\modificator\IndependentEiModificator;
+use rocket\ei\component\prop\EiPropNature;
+use rocket\ei\component\command\EiCmdNature;
+use rocket\ei\component\command\IndependentEiCmd;
+use rocket\ei\component\modificator\EiModNature;
+use rocket\ei\component\modificator\IndependentEiModNature;
 
 class EiComponentStore {
 	const EI_FIELD_CLASSES_KEY = 'eiPropClasses';
@@ -73,7 +73,7 @@ class EiComponentStore {
 				as $key => $eiPropClassName) {
 			try {
 				$fieldClass = ReflectionUtils::createReflectionClass($eiPropClassName);
-				if (!$fieldClass->implementsInterface(EiProp::class)
+				if (!$fieldClass->implementsInterface(EiPropNature::class)
 						|| !$fieldClass->implementsInterface(IndependentEiProp::class)) continue;
 				
 				$this->eiPropClasses[$eiPropClassName] = $fieldClass;
@@ -87,8 +87,8 @@ class EiComponentStore {
 				as $key => $eiCommandClassName) {
 			try {
 				$eiCommandClass =  ReflectionUtils::createReflectionClass($eiCommandClassName);
-				if (!$eiCommandClass->implementsInterface(EiCommand::class)
-						|| !$eiCommandClass->implementsInterface(IndependentEiCommand::class)) continue;
+				if (!$eiCommandClass->implementsInterface(EiCmdNature::class)
+						|| !$eiCommandClass->implementsInterface(IndependentEiCmd::class)) continue;
 				
 				$this->eiCommandClasses[$eiCommandClassName] = $eiCommandClass;
 				$this->eiCommandClassesByModule[$moduleNamespace][$eiCommandClassName] = $eiCommandClass;
@@ -119,8 +119,8 @@ class EiComponentStore {
 				as $key => $eiModificatorClassName) {
 			try {
 				$constraintClass =  ReflectionUtils::createReflectionClass($eiModificatorClassName);
-				if (!$constraintClass->implementsInterface(EiModificator::class)
-						|| !$constraintClass->implementsInterface(IndependentEiModificator::class)) continue;
+				if (!$constraintClass->implementsInterface(EiModNature::class)
+						|| !$constraintClass->implementsInterface(IndependentEiModNature::class)) continue;
 		
 				$this->eiModificatorClasses[$eiModificatorClassName] = $constraintClass;
 				$this->eiModificatorClassesByModule[$moduleNamespace][$eiModificatorClassName] = $constraintClass;

@@ -41,7 +41,7 @@ use rocket\si\content\impl\SiFields;
 use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifField;
 
-class DecimalEiProp extends NumericEiPropAdapter {
+class DecimalEiProp extends NumericEiPropNatureAdapter {
     private $decimalConfig;
 
     function __construct() {
@@ -57,7 +57,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setEntityProperty()
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::setEntityProperty()
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty
@@ -73,7 +73,7 @@ class DecimalEiProp extends NumericEiPropAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::setObjectPropertyAccessProxy()
 	 */
 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',

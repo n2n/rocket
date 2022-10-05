@@ -43,7 +43,7 @@ class OnlineController extends ControllerAdapter {
 		$this->onlineEiProp = $onlineEiProp;
 	}
 	
-	public function setOnlineEiCommand(OnlineEiCommand $onlineEiCommand) {
+	public function setOnlineEiCommand(OnlineNatureEiCommand $onlineEiCommand) {
 		$this->onlineEiCommand = $onlineEiCommand;
 	}
 	

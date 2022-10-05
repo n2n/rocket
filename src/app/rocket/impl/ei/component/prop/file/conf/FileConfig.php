@@ -21,10 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\file\conf;
 
-use rocket\impl\ei\component\prop\file\FileEiProp;
+use rocket\impl\ei\component\prop\file\FileEiPropNature;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\impl\ei\component\prop\file\command\ThumbEiCommand;
+use rocket\impl\ei\component\prop\file\command\ThumbNatureEiCommand;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
@@ -33,7 +33,7 @@ use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
-use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommand;
+use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommandNature;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 use n2n\io\img\impl\ImageSourceFactory;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
@@ -108,7 +108,7 @@ class FileConfig extends PropConfigAdaption {
 			$this->setupExtraImageDimensions($dataSet);
 		}
 		
-		$thumbEiCommand = new ThumbEiCommand($this->fileModel->getEiPropPath());
+		$thumbEiCommand = new ThumbNatureEiCommand($this->fileModel->getEiPropPath());
 		$eiu->mask()->supremeMask()->addEiCommand($thumbEiCommand);
 		$this->thumbResolver->setThumbEiCommand($thumbEiCommand);
 		
@@ -139,7 +139,7 @@ class FileConfig extends PropConfigAdaption {
 	private function setupMulti(Eiu $eiu, DataSet $dataSet) {
 		$eiuMask = $eiu->mask();
 		
-		$multiUploadEiCommand = new MultiUploadEiCommand($this->fileModel, null,
+		$multiUploadEiCommand = new MultiUploadEiCommandNature($this->fileModel, null,
 				$dataSet->getString(self::ATTR_MULTI_UPLOAD_ORDER_KEY, false, MultiUploadEiController::ORDER_NONE, true));
 		$eiuMask->addEiCommand($multiUploadEiCommand);
 		

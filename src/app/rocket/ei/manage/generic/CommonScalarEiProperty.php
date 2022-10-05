@@ -23,7 +23,7 @@
 namespace rocket\ei\manage\generic;
 
 use n2n\l10n\Lstr;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 
@@ -32,7 +32,7 @@ class CommonScalarEiProperty implements ScalarEiProperty {
 	private $scalarValueBuilder;
 	private $eiFieldValueBuilder;
 
-	public function __construct(EiProp $eiProp, \Closure $scalarValueBuilder = null, 
+	public function __construct(EiPropNature $eiProp, \Closure $scalarValueBuilder = null,
 			\Closure $eiFieldValueBuilder = null) {
 		$this->eiProp = $eiProp;
 		$this->scalarValueBuilder = $scalarValueBuilder;

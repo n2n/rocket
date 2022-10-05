@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\string\conf;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\impl\ei\component\prop\string\PathPartEiProp;
+use rocket\impl\ei\component\prop\string\PathPartEiPropNature;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModificator;
 use n2n\impl\web\dispatch\mag\model\StringMag;
@@ -57,7 +57,7 @@ class PathPartConfig extends PropConfigAdaption {
 	const URL_COUNT_SEPERATOR = '-';
 	
 	/**
-	 * @var PathPartEiProp
+	 * @var PathPartEiPropNature
 	 */
 	private $eiProp;
 	private $nullAllowed = false;
@@ -66,7 +66,7 @@ class PathPartConfig extends PropConfigAdaption {
 	private $critical = false;
 	private $criticalMessage;
 	
-	public function __construct(PathPartEiProp $eiProp) {
+	public function __construct(PathPartEiPropNature $eiProp) {
 		$this->eiProp = $eiProp;
 	}
 	

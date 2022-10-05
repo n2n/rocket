@@ -19,9 +19,9 @@
 //  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
 //  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 //  */
-// namespace rocket\impl\ei\component\modificator\l10n;
+// namespace rocket\impl\ei\component\mod\l10n;
 
-// use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
+// use rocket\impl\ei\component\mod\adapter\EiModificatorAdapter;
 // use rocket\ei\manage\frame\EiFrame;
 // use rocket\ei\manage\entry\EiEntry;
 // use rocket\ei\manage\entry\OnWriteMappingListener;

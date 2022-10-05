@@ -25,6 +25,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\IdPath;
 use rocket\ei\mask\EiMask;
 use n2n\util\type\TypeUtils;
+use n2n\util\magic\MagicContext;
+use rocket\ei\util\Eiu;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
@@ -32,12 +34,16 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	
 	protected $eiMask;
 	private $idPaths = array();
-	private $elements = array();
+	private $eiComponents = array();
 	private $rootElements = array();
 	private $forkedElements = array();
-	private $independentElements = array();
-	private $inheritedCollection;
+	private ?EiComponentCollection $inheritedCollection = null;
 	private $disabledInheritIds = array();
+
+	/**
+	 * @var EiComponent[]
+	 */
+	private $uninitializedEiComponents = [];
 	
 	public function __construct($elementName, $genericType) {
 		$this->elementName = $elementName;
@@ -85,11 +91,11 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	
 	/**
 	 * @param string $id
-	 * @param EiComponent $eiComponent
-	 * @throws InvalidEiComponentConfigurationException
+	 * @param EiComponentNature $eiComponent
 	 * @return string
+	 *@throws InvalidEiComponentConfigurationException
 	 */
-	protected function makeId(?string $id, EiComponent $eiComponent) {
+	protected function makeId(?string $id, EiComponentNature $eiComponent) {
 		if (0 == mb_strlen($id)) {
 			$id = $this->createUniqueId($eiComponent->getIdBase() 
 					?? TypeUtils::buildTypeAcronym(get_class($eiComponent)));
@@ -100,23 +106,30 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		
 		return $id;
 	}
-	
-	/**
-	 * @param string $idPath
-	 * @param EiComponent $eiComponent
-	 */
-	protected function addElement(IdPath $idPath, EiComponent $element, bool $prepend = false) {
+
+//	private ?MagicContext $initMagicContext = null;
+
+	function init(MagicContext $magicContext) {
+//		IllegalStateException::assertTrue($this->initMagicContext === null, 'Already initialized.');
+//		$this->initMagicContext = $magicContext;
+
+		while (false !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
+			$eiComponent->getNature()->init(new Eiu($eiComponent, $magicContext));
+		}
+	}
+
+	protected function addEiComponent(IdPath $idPath, EiComponent $eiComponent, bool $prepend = false): void {
 		$idPathStr = (string) $idPath;
 		
 		$this->idPaths[$idPathStr] = $idPath; 
 		if (!$prepend) {
-			$this->elements[$idPathStr] = $element;
+			$this->eiComponents[$idPathStr] = $eiComponent;
 		} else {
-			$this->elements = array($idPathStr => $element) + $this->elements;
+			$this->eiComponents = array($idPathStr => $eiComponent) + $this->eiComponents;
 		}
 		
 		if (!$idPath->hasMultipleIds()) {
-			$this->rootElements[$idPathStr] = $element;
+			$this->rootElements[$idPathStr] = $eiComponent;
 		}
 		
 		$ids = $idPath->toArray();
@@ -127,13 +140,17 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 			$this->forkedElements[$forkIdPathStr] = array();
 		}
 		
-		$this->forkedElements[$forkIdPathStr][$lastId] = $element;
-		
+		$this->forkedElements[$forkIdPathStr][$lastId] = $eiComponent;
+
+		$this->uninitializedEiComponents[] = $eiComponent;
+
 		$this->triggerChanged();
 	}
-	
-	protected function addIndependentElement(IdPath $idPath, EiComponent $independentElement) {
-		$this->independentElements[(string) $idPath] = $independentElement;
+
+	function init(MagicContext $magicContext): void {
+		while (null !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
+			$eiComponent->init(new Eiu($eiComponent, $magicContext));
+		}
 	}
 	
 	/**
@@ -144,8 +161,8 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	protected function getElementByIdPath(IdPath $idPath) {
 		$idPathStr = (string) $idPath;
 		
-		if (isset($this->elements[$idPathStr])) {
-			return $this->elements[$idPathStr];
+		if (isset($this->eiComponents[$idPathStr])) {
+			return $this->eiComponents[$idPathStr];
 		}
 		
 		if ($this->inheritedCollection !== null) {
@@ -182,10 +199,10 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 */
 	public function isEmpty(bool $checkInherited = true): bool {
 		if (!$checkInherited) {
-			return empty($this->elements);
+			return empty($this->eiComponents);
 		}
 		
-		return empty($this->elements) && ($this->inheritedCollection === null 
+		return empty($this->eiComponents) && ($this->inheritedCollection === null
 				|| $this->inheritedCollection->isEmpty());
 	}
 	
@@ -212,7 +229,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @return boolean
 	 */
 	public function containsId($id, $checkInherited = true): bool {
-		if (isset($this->elements[$id])) return true;
+		if (isset($this->eiComponents[$id])) return true;
 		
 		if ($this->inheritedCollection !== null && $checkInherited && 
 				$this->inheritedCollection->containsId($id, true, false)) {
@@ -231,14 +248,14 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 
 	/**
 	 * @param string $independentOnly
-	 * @return \rocket\ei\component\EiComponent[]
+	 * @return \rocket\ei\component\EiComponentNature[]
 	 */
 	public function toArray(bool $includeInherited = true): array {
-		if ($this->inheritedCollection === null || !$includeInherited) return $this->elements;
+		if ($this->inheritedCollection === null || !$includeInherited) return $this->eiComponents;
 
 		$superElements = $this->filterEnableds($this->inheritedCollection->toArray(true));
 
-		return $superElements + $this->elements;
+		return $superElements + $this->eiComponents;
 	}
 	
 	/**
@@ -250,7 +267,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	}
 	
 	function count(): int {
-		$num = count($this->elements);
+		$num = count($this->eiComponents);
 		if ($this->inheritedCollection !== null) {
 			$num += $this->inheritedCollection->count();
 		}

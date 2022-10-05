@@ -160,7 +160,7 @@ class EiEngine {
 	private function getCritmodFactory() {
 		if ($this->critmodFactory === null) {
 			$this->critmodFactory = new CritmodFactory($this->eiMask->getEiPropCollection(), 
-					$this->eiMask->getEiModificatorCollection());
+					$this->eiMask->getEiModCollection());
 		}
 		
 		return $this->critmodFactory;
@@ -195,7 +195,7 @@ class EiEngine {
 	private function getSecurityFactory() {
 		if ($this->securityFactory === null) {
 			$this->securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(),
-					$this->eiMask->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
+					$this->eiMask->getEiCmdCollection(), $this->eiMask->getEiModCollection());
 		}
 		
 		return $this->securityFactory;
@@ -207,7 +207,7 @@ class EiEngine {
 	
 	function createPrivilegeDefinition(N2nContext $n2nContext) {
 		$securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(), 
-				$this->eiMask->getEiCommandCollection(), $this->eiMask->getEiModificatorCollection());
+				$this->eiMask->getEiCmdCollection(), $this->eiMask->getEiModCollection());
 		return $securityFactory->createPrivilegedDefinition($n2nContext);
 	}
 	
@@ -219,7 +219,7 @@ class EiEngine {
 	 */
 	function createFramedEiEntry(EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $copyFrom, array $eiEntryConstraints) {
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
-				$this->eiMask->getEiModificatorCollection());
+				$this->eiMask->getEiModCollection());
 		return $mappingFactory->createEiEntry($eiFrame, $eiObject, $copyFrom, $eiEntryConstraints);
 	}
 	
@@ -234,7 +234,7 @@ class EiEngine {
 	function createFramedEiFieldMap(EiFrame $eiFrame, EiEntry $eiEntry, EiPropPath $forkEiPropPath, object $object, 
 			?EiEntry $copyFrom) {
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(),
-				$this->eiMask->getEiModificatorCollection());
+				$this->eiMask->getEiModCollection());
 		
 		return $mappingFactory->createEiFieldMap($eiFrame, $eiEntry, $forkEiPropPath, $object, $copyFrom);
 	}
@@ -248,7 +248,7 @@ class EiEngine {
 	function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
-				$this->eiMask->getEiModificatorCollection());
+				$this->eiMask->getEiModCollection());
 		$mappingFactory->copyValues($eiFrame, $from, $to, $eiPropPaths);
 	}
 	

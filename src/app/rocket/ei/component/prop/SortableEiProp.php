@@ -24,7 +24,7 @@ namespace rocket\ei\component\prop;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\util\Eiu;
 
-interface SortableEiProp extends EiProp {
+interface SortableEiProp extends EiPropNature {
 	
 	/**
 	 * @param Eiu $eiu EiFrame {@see Eiu::frame()} is not available if the FilteProp is created for a filter to restrict

@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\l10n\Lstr;
 use rocket\core\model\Rocket;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\component\prop\indepenent\IndependentEiProp;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
@@ -76,6 +76,6 @@ abstract class IndependentEiPropAdapter extends EiPropAdapter implements Indepen
 	}
 	
 	public function equals($obj) {
-		return $obj instanceof EiProp && parent::equals($obj);
+		return $obj instanceof EiPropNature && parent::equals($obj);
 	}
 }

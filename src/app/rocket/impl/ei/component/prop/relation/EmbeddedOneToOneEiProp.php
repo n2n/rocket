@@ -41,7 +41,7 @@ use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\entry\EiuEntry;
 
-class EmbeddedOneToOneEiProp extends RelationEiPropAdapter implements FieldEiProp {
+class EmbeddedOneToOneEiProp extends RelationEiPropNatureAdapter implements FieldEiProp {
 	
 	/**
 	 * 

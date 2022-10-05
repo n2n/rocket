@@ -41,9 +41,9 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @param EmbeddedEiProp $eiProp
+	 * @param EmbeddedEiPropNature $eiProp
 	 */
-	public function __construct(Eiu $eiu, EmbeddedEiProp $eiProp) {
+	public function __construct(Eiu $eiu, EmbeddedEiPropNature $eiProp) {
 		$this->eiu = $eiu;
 		$this->eiProp = $eiProp;
 	}

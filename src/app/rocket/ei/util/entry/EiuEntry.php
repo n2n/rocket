@@ -38,9 +38,9 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\spec\EiuMask;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\entry\UnknownEiFieldExcpetion;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\ei\component\prop\EiPropWrapper;
+use rocket\ei\component\prop\EiProp;
 use rocket\ei\util\gui\EiuGui;
 use rocket\ei\manage\gui\EiGui;
 use rocket\core\model\launch\TransactionApproveAttempt;
@@ -413,7 +413,7 @@ class EiuEntry {
 	
 	
 	/**
-	 * @param string|EiPropPath|EiPropWrapper|EiProp $eiPropArg
+	 * @param string|EiPropPath|EiProp|EiPropNature $eiPropArg
 	 * @return boolean
 	 */
 	public function isFieldWritable($eiPropArg) {
@@ -636,7 +636,7 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @return boolean
 	 */
 	public function isDraftProp($eiPropPath) {
@@ -648,7 +648,7 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @return object
 	 */
 	public function getForkObject($eiPropPath) {
@@ -662,9 +662,9 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
-	 * @throws EiFieldOperationFailedException
+	 * @param EiPropNature $eiProp
 	 * @return NULL|mixed
+	 *@throws EiFieldOperationFailedException
 	 */
 	public function readNativValue($eiPropPath) {
 		$eiPropPath = EiPropPath::from($eiPropPath);
@@ -683,11 +683,11 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @param mixed $value
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function writeNativeValue(EiProp $eiProp, $value) {
+	public function writeNativeValue(EiPropNature $eiProp, $value) {
 		$eiPropPath = EiPropPath::from($eiProp);
 		
 		if ($this->isDraftProp($eiProp)) {

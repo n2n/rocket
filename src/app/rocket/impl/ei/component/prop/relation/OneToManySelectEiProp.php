@@ -37,7 +37,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\FieldEiProp;
 
-class OneToManySelectEiProp extends RelationEiPropAdapter implements FieldEiProp {
+class OneToManySelectEiProp extends RelationEiPropNatureAdapter implements FieldEiProp {
 	
 	public function __construct() {
 		parent::__construct();

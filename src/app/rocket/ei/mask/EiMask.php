@@ -31,8 +31,8 @@ use n2n\config\InvalidConfigurationException;
 use rocket\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\component\prop\EiPropCollection;
-use rocket\ei\component\command\EiCommandCollection;
-use rocket\ei\component\modificator\EiModificatorCollection;
+use rocket\ei\component\command\EiCmdCollection;
+use rocket\ei\component\modificator\EiModCollection;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\control\SiIconType;
 use rocket\ei\EiTypeExtension;
@@ -65,8 +65,8 @@ class EiMask {
 	private EiType $eiType;
 
 	private EiPropCollection $eiPropCollection;
-	private EiCommandCollection $eiCommandCollection;
-	private EiModificatorCollection $eiModificatorCollection;
+	private EiCmdCollection $eiCmdCollection;
+	private EiModCollection $eiModCollection;
 	
 	private $displayScheme;
 	private $eiTypeExtension;
@@ -83,8 +83,8 @@ class EiMask {
 		$this->eiMaskDef = new EiMaskDef();
 
 		$this->eiPropCollection = new EiPropCollection($this);
-		$this->eiCommandCollection = new EiCommandCollection($this);
-		$this->eiModificatorCollection = new EiModificatorCollection($this);
+		$this->eiCmdCollection = new EiCmdCollection($this);
+		$this->eiModCollection = new EiModCollection($this);
 	}
 	
 	/**
@@ -97,8 +97,8 @@ class EiMask {
 		$inheritEiMask = $eiTypeExtension->getExtendedEiMask();
 		
 		$this->eiPropCollection->setInheritedCollection($inheritEiMask->getEiPropCollection());
-		$this->eiCommandCollection->setInheritedCollection($inheritEiMask->getEiCommandCollection());
-		$this->eiModificatorCollection->setInheritedCollection($inheritEiMask->getEiModificatorCollection());
+		$this->eiCmdCollection->setInheritedCollection($inheritEiMask->getEiCmdCollection());
+		$this->eiModCollection->setInheritedCollection($inheritEiMask->getEiModCollection());
 	}
 	
 	/**
@@ -256,24 +256,24 @@ class EiMask {
 	}
 	
 	/**
-	 * @return \rocket\ei\component\prop\EiPropCollection
+	 * @return EiPropCollection
 	 */
 	public function getEiPropCollection() {
 		return $this->eiPropCollection;
 	}
 	
 	/**
-	 * @return \rocket\ei\component\command\EiCommandCollection
+	 * @return EiCmdCollection
 	 */
-	public function getEiCommandCollection() {
-		return $this->eiCommandCollection;
+	public function getEiCmdCollection() {
+		return $this->eiCmdCollection;
 	}
 	
 	/**
-	 * @return \rocket\ei\component\modificator\EiModificatorCollection
+	 * @return EiModCollection
 	 */
-	public function getEiModificatorCollection() {
-		return $this->eiModificatorCollection;
+	public function getEiModCollection() {
+		return $this->eiModCollection;
 	}
 	
 	/**

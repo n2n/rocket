@@ -2,7 +2,7 @@
 
 namespace rocket\spec\result;
 
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\EiCommandPath;
 use rocket\spec\TypePath;
 
@@ -13,7 +13,7 @@ class EiCommandError {
 	private $t;
 	
 	public function __construct(TypePath $eiTypePath, EiCommandPath $eiCommandPath, \Throwable $t, 
-			EiCommand $eiCommand = null) {
+			EiCmdNature $eiCommand = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiCommandPath = $eiCommandPath;
 		$this->eiCommand = $eiCommand;
@@ -39,7 +39,7 @@ class EiCommandError {
 		return $this->t;
 	}
 	
-	public static function fromEiCommand(EiCommand $eiCommand, \Throwable $t) {
+	public static function fromEiCommand(EiCmdNature $eiCommand, \Throwable $t) {
 		$wrapper = $eiCommand->getWrapper();
 		return new EiCommandError($wrapper->getEiCommandCollection()->getEiMask()->getEiTypePath(),
 				$wrapper->getEiCommandPath(), $t, $eiCommand);

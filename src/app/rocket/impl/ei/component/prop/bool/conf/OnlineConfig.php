@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\bool\conf;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiProp;
-use rocket\impl\ei\component\prop\bool\command\OnlineEiCommand;
+use rocket\impl\ei\component\prop\bool\command\OnlineNatureEiCommand;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
@@ -60,7 +60,7 @@ class OnlineConfig extends PropConfigAdaption {
 	}
 	
 	function setup(Eiu $eiu, DataSet $dataSet) {
-		$onlineEiCommand = new OnlineEiCommand();
+		$onlineEiCommand = new OnlineNatureEiCommand();
 		$onlineEiCommand->setOnlineEiProp($this->onlineEiProp);
 		
 		$eiu->mask()->addEiCommand($onlineEiCommand, true);

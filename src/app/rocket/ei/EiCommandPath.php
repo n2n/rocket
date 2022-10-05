@@ -21,7 +21,7 @@
  */
 namespace rocket\ei;
 
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use n2n\util\type\ArgUtils;
 
 class EiCommandPath extends IdPath {
@@ -30,7 +30,7 @@ class EiCommandPath extends IdPath {
 		parent::__construct([$id]);
 	}
 
-	public static function from(EiCommand $eiCommand): EiCommandPath {
+	public static function from(EiCmdNature $eiCommand): EiCommandPath {
 		return $eiCommand->getWrapper()->getEiCommandPath();
 	}
 	
@@ -39,7 +39,7 @@ class EiCommandPath extends IdPath {
 			return $expression;
 		}
 	
-		if ($expression instanceof EiCommand) {
+		if ($expression instanceof EiCmdNature) {
 			return self::from($expression);
 		}
 	
@@ -47,6 +47,6 @@ class EiCommandPath extends IdPath {
 			return new EiCommandPath($expression);
 		}
 	
-		ArgUtils::valType($expression, ['string', EiCommand::class, EiCommandPath::class], false, 'expression');
+		ArgUtils::valType($expression, ['string', EiCmdNature::class, EiCommandPath::class], false, 'expression');
 	}
 }

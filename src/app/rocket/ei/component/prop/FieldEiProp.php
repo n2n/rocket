@@ -25,7 +25,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\generic\ScalarEiProperty;
 
-interface FieldEiProp extends EiProp {
+interface FieldEiProp extends EiPropNature {
 			
 	/**
 	 * @param Eiu $eiu {Eiu::frame()} is available.

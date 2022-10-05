@@ -21,8 +21,8 @@
  */
 namespace rocket\ei;
 
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\component\modificator\EiModificator;
+use rocket\ei\component\command\EiCmdNature;
+use rocket\ei\component\modificator\EiModNature;
 use n2n\util\type\ArgUtils;
 
 class EiModificatorPath extends IdPath {
@@ -32,10 +32,10 @@ class EiModificatorPath extends IdPath {
 	}
 	
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @return EiModificatorPath
 	 */
-	public static function from(EiModificator $eiModificator) {
+	public static function from(EiModNature $eiModificator) {
 		return $eiModificator->getWrapper()->getEiModificatorPath();
 	}
 	
@@ -48,7 +48,7 @@ class EiModificatorPath extends IdPath {
 			return $expression;
 		}
 	
-		if ($expression instanceof EiModificator) {
+		if ($expression instanceof EiModNature) {
 			return self::from($expression);
 		}
 	
@@ -56,7 +56,7 @@ class EiModificatorPath extends IdPath {
 			return new EiModificatorPath($expression);
 		}
 		
-		ArgUtils::valType($expression, ['string', EiModificator::class, EiModificatorPath::class], false, 
+		ArgUtils::valType($expression, ['string', EiModNature::class, EiModificatorPath::class], false,
 				'expression');
 	}
 }

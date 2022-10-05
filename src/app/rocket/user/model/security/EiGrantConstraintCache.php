@@ -30,7 +30,7 @@ use rocket\user\bo\EiGrant;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\EiCommandPath;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
@@ -73,10 +73,10 @@ class EiGrantConstraintCache {
 	}
 	
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @return NULL|\rocket\user\model\security\EiCommandAccessResult
 	 */
-	function testEiCommand(EiCommand $eiCommand) {
+	function testEiCommand(EiCmdNature $eiCommand) {
 		if (!$this->isEiCommandTestable($eiCommand)) {
 			return null;
 		}
@@ -113,11 +113,11 @@ class EiGrantConstraintCache {
 	}
 	
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @param EiEntry $eiEntry
 	 * @return NULL|\rocket\user\model\security\EiEntryAccessResult
 	 */
-	function testEiEntry(EiCommand $eiCommand, EiEntry $eiEntry) {
+	function testEiEntry(EiCmdNature $eiCommand, EiEntry $eiEntry) {
 		if (!$this->isEiCommandTestable($eiCommand)) {
 			return null;
 		}
@@ -125,7 +125,7 @@ class EiGrantConstraintCache {
 		if ($this->eiGrant->isFull()) {
 			return new EiEntryAccessResult(
 					$this->eiMask->getEiPropCollection()->getPrivilegedEiPropPaths(),
-					$this->eiMask->getEiCommandCollection()->getPrivilegedEiCommandPaths());
+					$this->eiMask->getEiCmdCollection()->getPrivilegedEiCommandPaths());
 		}
 		
 		$accessibleEiPropPaths = [];
@@ -153,7 +153,7 @@ class EiGrantConstraintCache {
 	}
 	
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 */
 	private function isEiCommandTestable($eiCommand) {
 		$eiCommandMask = $eiCommand->getWrapper()->getEiCommandCollection()->getEiMask();

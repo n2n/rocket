@@ -49,11 +49,11 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 					CKEDITOR.dialog.add( 'myDialog', href );
 				}
 
-				// Register the command used to open the dialog.
+				// Register the cmd used to open the dialog.
 				editor.addCommand( 'myDialogCmd', new CKEDITOR.dialogCommand( 'myDialog' ) );
 
 				// Add the a custom toolbar buttons, which fires the above
-				// command..
+				// cmd..
 				editor.ui.add( 'MyButton', CKEDITOR.UI_BUTTON, {
 					label: 'My Dialog',
 					command: 'myDialogCmd'

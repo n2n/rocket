@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\numeric\component;
 
-use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
+use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
 use rocket\ei\manage\entry\OnWriteMappingListener;
 use rocket\impl\ei\component\prop\numeric\OrderEiProp;
 use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
@@ -32,7 +32,7 @@ use rocket\ei\manage\frame\Boundry;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuObject;
 
-class OrderEiModificator extends EiModificatorAdapter {
+class OrderEiModificator extends EiModNatureAdapter {
 	private $eiProp;
 	
 	/**
@@ -44,7 +44,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter::setupEiFrame()
+	 * @see \rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter::setupEiFrame()
 	 */
 	public function setupEiFrame(Eiu $eiu) {
 		$eiu->frame()->getEiFrame()->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
@@ -100,7 +100,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter::setupEiEntry()
+	 * @see \rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter::setupEiEntry()
 	 */
 	public function setupEiEntry(Eiu $eiu) {
 		$ssm = $eiu->entry()->getEiEntry();

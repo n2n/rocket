@@ -24,7 +24,7 @@ namespace rocket\ei\component\prop;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
 
-interface GuiEiProp extends EiProp {
+interface GuiEiProp extends EiPropNature {
 	/**
 	 * @return \rocket\ei\manage\gui\GuiProp|null null if not displayable
 	 */

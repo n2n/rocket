@@ -33,7 +33,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\preview\model\PreviewModel;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiCommandPath;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\DraftEiObject;
 use n2n\reflection\ReflectionUtils;
@@ -60,7 +60,7 @@ use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\frame\EiRelation;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
@@ -680,7 +680,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param string|EiCommand|EiCommandPath $eiCommandPath
+	 * @param string|EiCmdNature|EiCommandPath $eiCommandPath
 	 * @return boolean
 	 */
 	public function isExecutableBy($eiCommandPath) {
@@ -705,7 +705,7 @@ class EiuFrame {
 	/**
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getUrlToCommand(EiCommand $eiCommand) {
+	public function getUrlToCommand(EiCmdNature $eiCommand) {
 		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())
 				->ext((string) EiCommandPath::from($eiCommand))->toUrl();
 	}
@@ -1073,7 +1073,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param EiPropPath|EiProp|string $eiPropPath
+	 * @param EiPropPath|EiPropNature|string $eiPropPath
 	 * @param mixed $targetEiFrameArg
 	 * @param mixed $targetEiObjectArg
 	 * @return bool
@@ -1087,7 +1087,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @param EiPropPath|EiProp|string $eiPropPath
+	 * @param EiPropPath|EiPropNature|string $eiPropPath
 	 * @return bool
 	 */
 	public function hasRelation($eiPropPath) {
@@ -1135,7 +1135,7 @@ class EiuFrame {
 	 */
 	function exec($eiCommandPath) {
 		$eiCommandPath = EiCommandPath::create($eiCommandPath);
-		$eiCommand = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+		$eiCommand = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 				->getByPath($eiCommandPath);
 		
 		$this->eiFrame->exec($eiCommand);

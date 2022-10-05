@@ -36,7 +36,7 @@ use rocket\ei\manage\ManageState;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\component\command\GenericResult;
 use rocket\si\control\SiNavPoint;
@@ -163,7 +163,7 @@ class EiFrame {
 	/**
 	 * @param EiExecution $eiExecution
 	 */
-	public function exec(EiCommand $eiCommand) {
+	public function exec(EiCmdNature $eiCommand) {
 		if ($this->eiExecution !== null) {
 			throw new IllegalStateException('EiFrame already executed.');
 		}
@@ -387,7 +387,7 @@ class EiFrame {
 	 * @return boolean
 	 */
 	public function isOverviewAvailable() {
-		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericOverview();
+		return $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()->hasGenericOverview();
 	}
 	
 	/**
@@ -395,7 +395,7 @@ class EiFrame {
 	 * @return SiNavPoint|null
 	 */
 	public function getOverviewNavPoint(bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 				->determineGenericOverview($required);
 				
 		return $this->compleNavPoint($result);
@@ -406,7 +406,7 @@ class EiFrame {
 	 * @return boolean
 	 */
 	public function isDetailAvailable(EiObject $eiObject) {
-		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericDetail($eiObject);
+		return $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()->hasGenericDetail($eiObject);
 	}
 	
 	/**
@@ -415,7 +415,7 @@ class EiFrame {
 	 * @return SiNavPoint|null
 	 */
 	public function getDetailNavPoint(EiObject $eiObject, bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 				->determineGenericDetail($eiObject, $required);
 		
 		return $this->compleNavPoint($result);
@@ -426,7 +426,7 @@ class EiFrame {
 	 * @return boolean
 	 */
 	public function isEditAvailable(EiObject $eiObject) {
-		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericEdit($eiObject);
+		return $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()->hasGenericEdit($eiObject);
 	}
 	
 	/**
@@ -435,7 +435,7 @@ class EiFrame {
 	 * @return SiNavPoint|null
 	 */
 	public function getEditNavPoint(EiObject $eiObject, bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 				->determineGenericEdit($eiObject, $required);
 		
 		return $this->compleNavPoint($result);
@@ -446,7 +446,7 @@ class EiFrame {
 	 * @return boolean
 	 */
 	public function isAddAvailable(EiObject $eiObject) {
-		return $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()->hasGenericAdd();
+		return $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()->hasGenericAdd();
 	}
 	
 	/**
@@ -454,7 +454,7 @@ class EiFrame {
 	 * @return SiNavPoint|null
 	 */
 	public function getAddNavPoint(bool $required = true) {
-		$result = $this->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+		$result = $this->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 				->determineGenericAdd($required);
 				
 		return $this->compleNavPoint($result);

@@ -166,7 +166,7 @@ var Rocket;
                 elementsJq.find(".rocket-privilege-form").each(function () {
                     (new Rocket.Core.PrivilegeForm($(this))).setup();
                 });
-                elementsJq.find(".rocket-command-privileges").each(function () {
+                elementsJq.find(".rocket-cmd-privileges").each(function () {
                     (new Rocket.Core.CommandPrivilegeList($(this))).listen();
                 });
             });

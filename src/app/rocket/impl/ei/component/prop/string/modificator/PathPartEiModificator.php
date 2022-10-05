@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\modificator;
 
-use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
+use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\util\col\ArrayUtils;
@@ -31,10 +31,10 @@ use n2n\persistence\orm\property\BasicEntityProperty;
 use rocket\ei\util\Eiu;
 use rocket\ei\EiPropPath;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
-use rocket\impl\ei\component\prop\string\PathPartEiProp;
+use rocket\impl\ei\component\prop\string\PathPartEiPropNature;
 use rocket\ei\util\spec\EiuMask;
 
-class PathPartEiModificator extends EiModificatorAdapter {
+class PathPartEiModificator extends EiModNatureAdapter {
 	private $pathPartConfig;
 	private $eiPropPath;
 	private $eiuMask;

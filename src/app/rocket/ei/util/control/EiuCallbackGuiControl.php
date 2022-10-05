@@ -35,7 +35,7 @@ use rocket\ei\manage\frame\EiFrame;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\ei\manage\api\ApiController;

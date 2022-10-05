@@ -33,7 +33,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
-use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
+use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
@@ -44,7 +44,7 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\SiCrumbGroup;
 
-class ContentItemsEiProp extends RelationEiPropAdapter implements FieldEiProp {
+class ContentItemsEiProp extends RelationEiPropNatureAdapter implements FieldEiProp {
 	
 	private $contentItemsConfig;
 	

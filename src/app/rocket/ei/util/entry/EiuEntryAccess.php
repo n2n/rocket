@@ -4,7 +4,7 @@ namespace rocket\ei\util\entry;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 
 class EiuEntryAccess {
 	private $eiEntryAccess;
@@ -16,7 +16,7 @@ class EiuEntryAccess {
 	}
 	
 	/**
-	 * @param string|EiCommandPath|EiCommand $eiCommandPath
+	 * @param string|EiCommandPath|EiCmdNature $eiCommandPath
 	 * @return boolean
 	 */
 	function isExecutableBy($eiCommandPath) {

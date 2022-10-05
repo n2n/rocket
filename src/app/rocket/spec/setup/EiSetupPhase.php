@@ -4,7 +4,7 @@ namespace rocket\spec;
 
 /**
  * Used to indicate which EiComponents (EiProp, EiCommand, EiModificator) should be provided in
- * {@link EiComponentNatureProvider::provide()}.
+ * {@link RocketEiComponentNatureProvider::provide()}.
  */
 enum EiSetupPhase {
 	/**

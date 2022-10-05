@@ -21,17 +21,17 @@
  */
 namespace rocket\ei\manage\security;
 
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\EiCommandPath;
 use rocket\ei\mask\EiMask;
 
 interface EiPermissionManager {
 
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @return bool
 	 */
-	public function isEiCommandAccessible(EiMask $contextEiMask, EiCommand $eiCommand): bool;
+	public function isEiCommandAccessible(EiMask $contextEiMask, EiCmdNature $eiCommand): bool;
 	
 // 	/**
 // 	 * @param EiCommand $eiCommand
@@ -46,5 +46,5 @@ interface EiPermissionManager {
 	 * @throws InaccessibleEiCommandPathException
 	 * @return \rocket\ei\manage\security\EiExecution
 	 */
-	public function createEiExecution(EiMask $contextEiMask, EiCommand $eiCommand): EiExecution;
+	public function createEiExecution(EiMask $contextEiMask, EiCmdNature $eiCommand): EiExecution;
 }

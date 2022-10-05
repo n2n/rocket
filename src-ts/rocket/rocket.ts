@@ -205,7 +205,7 @@ namespace Rocket {
                     (new Core.PrivilegeForm($(this))).setup();
                 });
                 
-                elementsJq.find(".rocket-command-privileges").each(function () {
+                elementsJq.find(".rocket-cmd-privileges").each(function () {
                     (new Core.CommandPrivilegeList($(this))).listen();
                 })
                 

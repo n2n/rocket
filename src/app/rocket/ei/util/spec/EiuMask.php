@@ -23,9 +23,9 @@ namespace rocket\ei\util\spec;
 
 use rocket\ei\mask\EiMask;
 use rocket\core\model\Rocket;
-use rocket\ei\component\prop\EiProp;
-use rocket\ei\component\command\EiCommand;
-use rocket\ei\component\modificator\EiModificator;
+use rocket\ei\component\prop\EiPropNature;
+use rocket\ei\component\command\EiCmdNature;
+use rocket\ei\component\modificator\EiModNature;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\util\Eiu;
@@ -143,32 +143,32 @@ class EiuMask  {
 // 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @param bool $prepend
 	 * @return \rocket\ei\util\spec\EiuEngine
 	 */
-	public function addEiProp(EiProp $eiProp, bool $prepend = false) {
+	public function addEiProp(EiPropNature $eiProp, bool $prepend = false) {
 		$this->eiMask->getEiPropCollection()->add($eiProp, $prepend);
 		return $this;
 	}
 	
 	/**
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @param bool $prepend
 	 * @return \rocket\ei\util\spec\EiuEngine
 	 */
-	public function addEiCommand(EiCommand $eiCommand, bool $prepend = false) {
-		$this->eiMask->getEiCommandCollection()->add($eiCommand, $prepend);
+	public function addEiCommand(EiCmdNature $eiCommand, bool $prepend = false) {
+		$this->eiMask->getEiCmdCollection()->add($eiCommand, $prepend);
 		return $this;
 	}
 	
 	/**
-	 * @param EiModificator $eiModificator
+	 * @param EiModNature $eiModificator
 	 * @param bool $prepend
 	 * @return \rocket\ei\util\spec\EiuEngine
 	 */
-	public function addEiModificator(EiModificator $eiModificator, bool $prepend = false) {
-		$this->eiMask->getEiModificatorCollection()->add($eiModificator, $prepend);
+	public function addEiModificator(EiModNature $eiModificator, bool $prepend = false) {
+		$this->eiMask->getEiModCollection()->add($eiModificator, $prepend);
 		return $this;
 	}
 	
@@ -215,10 +215,10 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @param string|EiPropPath|\rocket\ei\component\prop\EiProp $eiPropArg
+	 * @param string|EiPropPath|\rocket\ei\component\prop\EiPropNature $eiPropArg
 	 * @param bool $required
-	 * @throws UnknownEiComponentException
 	 * @return \rocket\ei\util\spec\EiuProp|null
+	 *@throws UnknownEiComponentException
 	 */
 	public function prop($eiPropArg, bool $required = true) {
 		$eiPropPath = EiPropPath::create($eiPropArg);

@@ -3,7 +3,7 @@ namespace rocket\ei\util\spec;
 
 use rocket\ei\EiPropPath;
 use rocket\ei\EiCommandPath;
-use rocket\ei\component\command\IndependentEiCommand;
+use rocket\ei\component\command\IndependentEiCmd;
 use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\factory\EiuFactory;
@@ -29,10 +29,10 @@ class EiuCommand {
 	}
 	
 	/**
-	 * @return \rocket\ei\component\command\EiCommand
+	 * @return \rocket\ei\component\command\EiCmdNature
 	 */
 	function getEiCommand() {
-		return $this->eiuEngine->getEiEngine()->getEiMask()->getEiCommandCollection()
+		return $this->eiuEngine->getEiEngine()->getEiMask()->getEiCmdCollection()
 				->getById((string) $this->eiCommandPath);
 	}
 	
@@ -41,7 +41,7 @@ class EiuCommand {
 	 */
 	function getTypeName() {
 		$eiCommand = $this->getEiCommand();
-		if ($eiCommand instanceof IndependentEiCommand) {
+		if ($eiCommand instanceof IndependentEiCmd) {
 			return $eiCommand->createEiConfigurator()->getTypeName();
 		}
 		

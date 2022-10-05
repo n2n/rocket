@@ -44,7 +44,7 @@ use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\relation\RelationEiPropAdapter;
+use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
@@ -54,7 +54,7 @@ use rocket\ei\component\prop\IdNameEiPropFork;
 use rocket\ei\manage\idname\IdNamePropFork;
 use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 
-class TranslationEiProp extends RelationEiPropAdapter implements FieldEiProp, QuickSearchableEiProp, IdNameEiPropFork {
+class TranslationEiProp extends RelationEiPropNatureAdapter implements FieldEiProp, QuickSearchableEiProp, IdNameEiPropFork {
 	/**
 	 * @var TranslationConfig
 	 */

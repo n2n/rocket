@@ -30,7 +30,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
 use n2n\web\http\BadRequestException;
 use rocket\ei\EiCommandPath;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\LiveEiObject;
 use rocket\ei\manage\entry\UnknownEiObjectException;
@@ -98,12 +98,12 @@ class EiFrameController extends ControllerAdapter {
 	
 	/**
 	 * @param EiCommandPath $eiCommandPath
-	 * @throws PageNotFoundException
-	 * @return \rocket\ei\component\command\EiCommand
+	 * @return \rocket\ei\component\command\EiCmdNature
+	 *@throws PageNotFoundException
 	 */
 	private function lookupEiCommand($eiCommandPath) {
 		try {
-			return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCommandCollection()
+			return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 					->getByPath($eiCommandPath);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
@@ -143,7 +143,7 @@ class EiFrameController extends ControllerAdapter {
 	
 	/**
 	 * @param EiCommandPath $eiCommandPath
-	 * @param EiCommand $eiCommand
+	 * @param EiCmdNature $eiCommand
 	 * @return EiFrame
 	 */
 	private function pushEiFrame($eiCommand) {

@@ -28,7 +28,7 @@ use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
@@ -52,7 +52,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use n2n\l10n\DateTimeFormat;
 
-class DateTimeEiProp extends DraftablePropertyEiPropAdapter implements SortableEiProp {
+class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implements SortableEiProp {
 
 	/**
 	 * @var DateTimeConfig

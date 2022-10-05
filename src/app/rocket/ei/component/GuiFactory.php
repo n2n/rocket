@@ -32,7 +32,7 @@ use rocket\ei\manage\DefPropPath;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\command\GuiEiCommand;
+use rocket\ei\component\command\GuiEiCmd;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\GuiException;
@@ -68,10 +68,10 @@ class GuiFactory {
 			}
 		}
 		
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCommand) {
+		foreach ($this->eiMask->getEiCmdCollection() as $eiCommand) {
 			$eiCommandPath = $eiCommand->getWrapper()->getEiCommandPath();
 			
-			if ($eiCommand instanceof GuiEiCommand 
+			if ($eiCommand instanceof GuiEiCmd
 					&& null !== ($guiCommand = $eiCommand->buildGuiCommand(new Eiu($n2nContext, $this->eiMask, $eiCommandPath)))) {
 				$guiDefinition->putGuiCommand($eiCommandPath, $guiCommand);
 			}

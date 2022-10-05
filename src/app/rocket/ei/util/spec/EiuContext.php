@@ -6,7 +6,7 @@ use n2n\core\container\N2nContext;
 use rocket\spec\UnknownTypeException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiType;
-use rocket\ei\component\EiComponent;
+use rocket\ei\component\EiComponentNature;
 use rocket\spec\TypePath;
 use rocket\ei\EiTypeExtension;
 use rocket\ei\mask\EiMask;
@@ -67,14 +67,14 @@ class EiuContext {
 	}
 	
 	/**
-	 * @param string|\ReflectionClass|EiType|EiComponent $eiTypeArg id, entity class name of the affiliated EiType or the EiType itself.
+	 * @param string|\ReflectionClass|EiType|EiComponentNature $eiTypeArg id, entity class name of the affiliated EiType or the EiType itself.
 	 * @param bool $required
 	 * @return EiuMask
 	 * @throws UnknownTypeException required is false and the EiEngine was not be found.
 	 * @throws \InvalidArgumentException
 	 */
 	function mask($eiTypeArg, bool $required = true) {
-		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponent::class]);
+		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponentNature::class]);
 		
 		if ($eiTypeArg instanceof EiMask) {
 			return new EiuMask($eiTypeArg, null, $this->eiuAnalyst);
@@ -84,7 +84,7 @@ class EiuContext {
 			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
-		if ($eiTypeArg instanceof EiComponent) {
+		if ($eiTypeArg instanceof EiComponentNature) {
 			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
 		}
 		
@@ -136,7 +136,7 @@ class EiuContext {
 	}
 	
 	/**
-	 * @param string|\ReflectionClass|EiType|EiComponent $eiTypeArg id, entity class name of the affiliated EiType or the EiType itself.
+	 * @param string|\ReflectionClass|EiType|EiComponentNature $eiTypeArg id, entity class name of the affiliated EiType or the EiType itself.
 	 * @param bool $required
 	 * @return EiuEngine
 	 * @throws UnknownTypeException required is false and the EiEngine was not be found.

@@ -29,7 +29,7 @@ class EiuProp {
 	}
 	
 	/**
-	 * @return \rocket\ei\component\prop\EiProp
+	 * @return \rocket\ei\component\prop\EiPropNature
 	 */
 	public function getEiProp() {
 		return $this->eiuMask->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);

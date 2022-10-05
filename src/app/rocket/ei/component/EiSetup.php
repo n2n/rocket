@@ -29,7 +29,7 @@ class EiSetup {
 	private $eiComponent;
 	private $eiu;
 	
-	public function __construct(N2nContext $n2nContext, EiComponent $eiComponent) {
+	public function __construct(N2nContext $n2nContext, EiComponentNature $eiComponent) {
 		$this->n2nContext = $n2nContext;
 		$this->eiComponent = $eiComponent;
 	}

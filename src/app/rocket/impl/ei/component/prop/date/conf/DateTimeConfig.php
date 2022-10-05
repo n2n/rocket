@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\date\conf;
 
 use n2n\l10n\DateTimeFormat;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\impl\ei\component\prop\date\DateTimeEiProp;
+use rocket\impl\ei\component\prop\date\DateTimeEiPropNature;
 use n2n\util\type\CastUtils;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;

@@ -22,10 +22,10 @@
 namespace rocket\ei\component;
 
 use rocket\ei\component\prop\EiPropCollection;
-use rocket\ei\component\modificator\EiModificatorCollection;
+use rocket\ei\component\modificator\EiModCollection;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\command\EiCommandCollection;
+use rocket\ei\component\command\EiCmdCollection;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\component\command\PrivilegedEiCommand;
@@ -41,8 +41,8 @@ class SecurityFactory {
 	private $eiCommandCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $eiPropCollection, EiCommandCollection $eiCommandCollection,
-			EiModificatorCollection $eiModificatorCollection) {
+	public function __construct(EiPropCollection $eiPropCollection, EiCmdCollection $eiCommandCollection,
+			EiModCollection $eiModificatorCollection) {
 		$this->eiPropCollection = $eiPropCollection;
 		$this->eiCommandCollection = $eiCommandCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;

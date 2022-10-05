@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\impl\ei\component\modificator\adapter\EiModificatorAdapter;
+use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\entry\EiEntryListenerAdapter;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
-class TargetMasterRelationEiModificator extends EiModificatorAdapter {
+class TargetMasterRelationEiModificator extends EiModNatureAdapter {
 	private $relationModel;
 
 	public function __construct(RelationModel $relationModel) {

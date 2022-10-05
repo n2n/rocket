@@ -33,7 +33,7 @@ use rocket\si\control\impl\GroupSiControl;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\gui\control\GuiControlPath;
 
 class EiuGroupGuiControl implements GuiControl {

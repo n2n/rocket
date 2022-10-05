@@ -42,9 +42,9 @@ use rocket\ei\mask\EiMask;
 use rocket\custom\CustomType;
 use rocket\ei\component\EiSetup;
 use n2n\util\type\ArgUtils;
-use rocket\ei\component\prop\EiProp;
-use rocket\ei\component\modificator\EiModificator;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\prop\EiPropNature;
+use rocket\ei\component\modificator\EiModNature;
+use rocket\ei\component\command\EiCmdNature;
 use rocket\spec\result\EiErrorResult;
 use rocket\spec\result\EiPropError;
 use rocket\spec\result\EiModificatorError;
@@ -225,7 +225,7 @@ class Spec {
 			}
 		}
 
-		$this->eiTypeFactory->init($eiType);
+		$this->eiTypeFactory->assemble($eiType);
 		
 		return $eiType;
 	}
@@ -442,15 +442,15 @@ class EiSetupQueue {
 		return $this->eiMasks;
 	}
 	
-	public function addEiPropConfigurator(EiProp $eiProp, EiConfigurator $eiConfigurator) {
+	public function addEiPropConfigurator(EiPropNature $eiProp, EiConfigurator $eiConfigurator) {
 		$this->eiPropSetupTasks[] = new EiPropSetupTask($eiProp, $eiConfigurator);
 	}
 	
-	public function addEiModificatorConfigurator(EiModificator $eiModificator, EiConfigurator $eiConfigurator) {
+	public function addEiModificatorConfigurator(EiModNature $eiModificator, EiConfigurator $eiConfigurator) {
 		$this->eiModificatorSetupTasks[] = new EiModificatorSetupTask($eiModificator, $eiConfigurator);
 	}
 	
-	public function addEiCommandConfigurator(EiCommand $eiCommand, EiConfigurator $eiConfigurator) {
+	public function addEiCommandConfigurator(EiCmdNature $eiCommand, EiConfigurator $eiConfigurator) {
 		$this->eiCommandSetupTasks[] = new EiCommandSetupTask($eiCommand, $eiConfigurator);
 	}
 	
@@ -607,7 +607,7 @@ class EiMaskCallbackProcess {
 		$this->spec = $spec;
 	}
 	
-	function check(EiProp $eiProp = null, EiModificator $eiModificator = null, EiCommand $eiCommand = null) {
+	function check(EiPropNature $eiProp = null, EiModNature $eiModificator = null, EiCmdNature $eiCommand = null) {
 		foreach ($this->spec->getEiMasks() as $eiMask) {
 			$this->checkCallbacks($eiMask, $eiProp, $eiModificator, $eiCommand);
 		}
@@ -641,8 +641,8 @@ class EiMaskCallbackProcess {
 		}
 	}
 	
-	private function checkCallbacks(EiMask $eiMask, EiProp $eiProp = null, 
-			EiModificator $eiModificator = null, EiCommand $eiCommand = null) {
+	private function checkCallbacks(EiMask $eiMask, EiPropNature $eiProp = null,
+			EiModNature $eiModificator = null, EiCmdNature $eiCommand = null) {
 		//$newCallbacks = [];
 		foreach ($eiMask->getEiEngineSetupCallbacks() as $objHash => $callback) {
 			if (isset($this->callbackConfigurations[$objHash])) {
@@ -745,13 +745,13 @@ class EiCommandSetupTask {
 	private $eiCommand;
 	private $eiConfigurator;
 	
-	public function __construct(EiCommand $eiCommand, EiConfigurator $eiConfigurator) {
+	public function __construct(EiCmdNature $eiCommand, EiConfigurator $eiConfigurator) {
 		$this->eiCommand = $eiCommand;
 		$this->eiConfigurator = $eiConfigurator;
 	}
 	
 	/**
-	 * @return \rocket\ei\component\command\EiCommand
+	 * @return \rocket\ei\component\command\EiCmdNature
 	 */
 	public function getEiCommand() {
 		return $this->eiCommand;
@@ -769,13 +769,13 @@ class EiModificatorSetupTask {
 	private $eiModificator;
 	private $eiConfigurator;
 	
-	public function __construct(EiModificator $eiModificator, EiConfigurator $eiConfigurator) {
+	public function __construct(EiModNature $eiModificator, EiConfigurator $eiConfigurator) {
 		$this->eiModificator = $eiModificator;
 		$this->eiConfigurator = $eiConfigurator;
 	}
 	
 	/**
-	 * @return \rocket\ei\component\modificator\EiModificator
+	 * @return \rocket\ei\component\modificator\EiModNature
 	 */
 	public function getEiModificator() {
 		return $this->eiModificator;
@@ -793,13 +793,13 @@ class EiPropSetupTask {
 	private $eiProp;
 	private $eiConfigurator;
 	
-	public function __construct(EiProp $eiProp, EiConfigurator $eiConfigurator) {
+	public function __construct(EiPropNature $eiProp, EiConfigurator $eiConfigurator) {
 		$this->eiProp = $eiProp;
 		$this->eiConfigurator = $eiConfigurator;
 	}
 	
 	/**
-	 * @return \rocket\ei\component\prop\EiProp
+	 * @return \rocket\ei\component\prop\EiPropNature
 	 */
 	public function getEiProp() {
 		return $this->eiProp;

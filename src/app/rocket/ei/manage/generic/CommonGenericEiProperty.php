@@ -26,7 +26,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\item\CriteriaItem;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\EiPropPath;
 
 class CommonGenericEiProperty implements GenericEiProperty {
@@ -35,7 +35,7 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	private $entityValueBuilder;
 	private $eiFieldValueBuilder;
 	
-	public function __construct(EiProp $eiProp, CriteriaProperty $criteriaProperty, 
+	public function __construct(EiPropNature $eiProp, CriteriaProperty $criteriaProperty,
 			\Closure $entityValueBuilder = null, \Closure $eiFieldValueBuilder = null) {
 		$this->eiProp = $eiProp;
 		$this->criteriaProperty = $criteriaProperty;

@@ -21,7 +21,7 @@
  */
 namespace rocket\ei;
 
-use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\prop\EiPropNature;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\util\spec\EiuProp;
@@ -48,10 +48,10 @@ class EiPropPath extends IdPath {
 	}
 	
 	/**
-	 * @param EiProp $eiProp
+	 * @param EiPropNature $eiProp
 	 * @return \rocket\ei\EiPropPath
 	 */
-	public static function from(EiProp $eiProp) {
+	public static function from(EiPropNature $eiProp) {
 		return $eiProp->getWrapper()->getEiPropPath();
 	}
 	
@@ -64,7 +64,7 @@ class EiPropPath extends IdPath {
 			return $expression;
 		}
 		
-		if ($expression instanceof EiProp) {
+		if ($expression instanceof EiPropNature) {
 			return self::from($expression);
 		}
 		
@@ -80,7 +80,7 @@ class EiPropPath extends IdPath {
 			return new EiPropPath(explode(self::ID_SEPARATOR, $expression));
 		}
 		
-		ArgUtils::valType($expression, ['string', EiPropPath::class, EiProp::class, EiuProp::class]);
+		ArgUtils::valType($expression, ['string', EiPropPath::class, EiPropNature::class, EiuProp::class]);
 		throw new IllegalStateException();
 	}
 	

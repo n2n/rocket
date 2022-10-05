@@ -1,7 +1,7 @@
 <?php
 namespace rocket\spec\result;
 
-use rocket\ei\component\modificator\EiModificator;
+use rocket\ei\component\modificator\EiModNature;
 use rocket\ei\EiModificatorPath;
 use rocket\spec\TypePath;
 
@@ -12,7 +12,7 @@ class EiModificatorError {
 	private $t;
 	
 	public function __construct(TypePath $eiTypePath, EiModificatorPath $eiModificatorPath, \Throwable $t, 
-			EiModificator $eiModificator = null) {
+			EiModNature $eiModificator = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiModificatorPath = $eiModificatorPath;
 		$this->t = $t;
@@ -38,7 +38,7 @@ class EiModificatorError {
 		return $this->t;
 	}
 	
-	public static function fromEiModificator(EiModificator $eiModificator, \Throwable $t) {
+	public static function fromEiModificator(EiModNature $eiModificator, \Throwable $t) {
 		$wrapper = $eiModificator->getWrapper();
 		return new EiModificatorError($wrapper->getEiModificatorCollection()->getEiMask()->getEiTypePath(),
 				$wrapper->getEiModificatorPath(), $t, $eiModificator);

@@ -21,21 +21,21 @@
 //  */
 // namespace rocket\ei\manage\entry;
 
-// use rocket\ei\component\command\EiCommand;
+// use rocket\ei\component\cmd\EiCommand;
 // use rocket\ei\manage\security\EiCommandAccessRestrictor;
 
 // class BlacklistEiCommandAccessRestrictor implements EiCommandAccessRestrictor {
 // 	private $blacklist = array();
 		
-// 	public function addToBlacklist(EiCommand $command, $privilegeExt = null) {
-// 		$this->blacklist[] = array('command' => $command, 'privilegeExt' => $privilegeExt);
+// 	public function addToBlacklist(EiCommand $cmd, $privilegeExt = null) {
+// 		$this->blacklist[] = array('cmd' => $cmd, 'privilegeExt' => $privilegeExt);
 // 	}
 // 	/* (non-PHPdoc)
 // 	 * @see \rocket\ei\manage\entry\EiCommandAccessRestrictor::isaccessibleBy()
 // 	 */
-// 	public function isaccessibleBy(EiCommand $command, $privilegeExt = null) {
+// 	public function isaccessibleBy(EiCommand $cmd, $privilegeExt = null) {
 // 		foreach ($this->blacklist as $blacklist) {
-// 			if ($command->equals($blacklist['command']) 
+// 			if ($cmd->equals($blacklist['cmd'])
 // 					&& (!isset($blacklist['privilegeExt']) || $blacklist['privilegeExt'] == $privilegeExt)) {
 // 				return false;
 // 			}

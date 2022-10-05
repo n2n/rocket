@@ -25,7 +25,7 @@ use rocket\ei\component\prop\EiPropCollection;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\component\modificator\EiModificatorCollection;
+use rocket\ei\component\modificator\EiModCollection;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\prop\FieldEiProp;
@@ -41,7 +41,7 @@ class EiEntryFactory {
 	private $eiModificatorCollection;
 	
 	public function __construct(EiMask $eiMask, EiPropCollection $eiPropCollection, 
-			EiModificatorCollection $eiModificatorCollection) {
+			EiModCollection $eiModificatorCollection) {
 		$this->eiMask = $eiMask;
 		$this->eiPropCollection = $eiPropCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
@@ -62,8 +62,8 @@ class EiEntryFactory {
 // 			$mappingDefinition->putEiField($field->getId(), $eiField);
 // 		}
 	
-// 		foreach ($this->modificatorCollection as $modificator) {
-// 			$modificator->setupMappingDefinition($mappingDefinition);
+// 		foreach ($this->modificatorCollection as $mod) {
+// 			$mod->setupMappingDefinition($mappingDefinition);
 // 		}
 	
 // 		return $mappingDefinition;
