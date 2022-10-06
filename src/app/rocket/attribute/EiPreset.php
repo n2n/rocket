@@ -21,7 +21,7 @@
  */
 namespace rocket\attribute;
 
-use rocket\spec\EiPresetMode;
+use rocket\spec\setup\EiPresetMode;
 use n2n\util\type\ArgUtils;
 
 /**

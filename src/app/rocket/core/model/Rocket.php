@@ -35,7 +35,7 @@ use rocket\core\model\launch\Layout;
 use n2n\l10n\Lstr;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerContext;
-use rocket\spec\SpecConfigLoader;
+use rocket\spec\setup\SpecConfigLoader;
 
 class Rocket implements RequestScoped {
 	const VERSION = '3.1.0';
@@ -74,20 +74,20 @@ class Rocket implements RequestScoped {
 	public function isActive() {
 		return $this->controllerContext !== null;
 	}
-	
-	/**
-	 * @return Layout
-	 */
-	public function getLayout() {
-		if ($this->layoutManager === null) {
-			$rocketConfigSource = $this->getRocketConfigSource();
-			$lcsd = new LayoutExtractionManager($rocketConfigSource->getLayoutConfigSource());
-			$lcsd->load();
-			$this->layoutManager = new Layout($lcsd, $this->getSpec());
-		}
-		
-		return $this->layoutManager;
-	}
+//
+//	/**
+//	 * @return Layout
+//	 */
+//	public function getLayout() {
+//		if ($this->layoutManager === null) {
+//			$rocketConfigSource = $this->getRocketConfigSource();
+//			$lcsd = new LayoutExtractionManager($rocketConfigSource->getLayoutConfigSource());
+//			$lcsd->load();
+//			$this->layoutManager = new Layout($lcsd, $this->getSpec());
+//		}
+//
+//		return $this->layoutManager;
+//	}
 	
 	/**
 	 * @return \rocket\spec\Spec
@@ -103,7 +103,7 @@ class Rocket implements RequestScoped {
 				$rocketConfigSource->getModuleNamespaces(), $this->n2nContext);
 
 		$this->spec = new Spec($sem, $this->dbhPool->getEntityModelManager(), $this->n2nContext, 0);
-// 		$this->spec->eagerInit();
+		$this->spec->reload();
 		return $this->spec;
 	}
 	

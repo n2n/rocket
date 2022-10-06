@@ -25,21 +25,15 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
-use rocket\spec\extr\SpecExtractionManager;
 use rocket\core\model\launch\LaunchPad;
 use rocket\core\model\launch\UnknownLaunchPadException;
-use rocket\spec\extr\CustomTypeExtraction;
 use n2n\util\type\attrs\AttributesException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
 use rocket\ei\component\InvalidEiComponentConfigurationException;
 use n2n\persistence\orm\model\UnknownEntityPropertyException;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\config\InvalidConfigurationException;
-use rocket\spec\extr\EiTypeExtraction;
 use rocket\ei\mask\EiMask;
-use rocket\custom\CustomType;
 use rocket\ei\component\EiSetup;
 use n2n\util\type\ArgUtils;
 use rocket\ei\component\prop\EiPropNature;
@@ -51,81 +45,40 @@ use rocket\spec\result\EiModificatorError;
 use rocket\spec\result\EiCommandError;
 use rocket\ei\EiType;
 use rocket\ei\UnknownEiTypeException;
-use rocket\spec\extr\InitCascade;
 use rocket\ei\EiLaunchPad;
-use rocket\custom\CustomLaunchPad;
 use n2n\reflection\ReflectionContext;
-use n2n\persistence\orm\OrmException;
+use rocket\attribute\MenuItem;
+use rocket\core\model\launch\MenuGroup;
+use n2n\util\StringUtils;
+use rocket\spec\setup\EiTypeFactory;
+use rocket\spec\setup\SpecConfigLoader;
+use n2n\reflection\ReflectionUtils;
 
 class Spec {
-	private $eiSetupQueue;
 	/**
 	 * @var EiTypeFactory
 	 */
 	private EiTypeFactory $eiTypeFactory;
 
-	
-	private $eager = false;
-	private $launchPads = array();
-	private $customTypes = array();
-	private $eiTypes = array();
-	private $eiTypeCis = array();
-	
+	private array $eiTypes = array();
+	private array $menuGroups = [];
+
 	/**
-	 * @param SpecExtractionManager $specExtractionManager
+	 * @param SpecConfigLoader $specConfigLoader
 	 * @param EntityModelManager $entityModelManager
 	 */
 	public function __construct(SpecConfigLoader $specConfigLoader, EntityModelManager $entityModelManager) {
-		$this->eiTypeFactory = new EiTypeFactory($this->specConfigLoader, $entityModelManager, $this->getEiSetupQueue(), $this->eiErrorResult);
+		$this->eiTypeFactory = new EiTypeFactory($specConfigLoader, $entityModelManager);
 	}
-	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @param int $mode
-	 * @throws InvalidConfigurationException
-	 * @return EiErrorResult|null
-	 */
-	public function eagerInit() {
-		foreach ($this->entityModelManager->getEntityClasses() as $entityClass) {
-			$attributeSet = ReflectionContext::getAttributeSet($entityClass);
-			if ($attributeSet->hasClassAttribute(\rocket\attribute\EiType::class)) {
-				$this->initEiTypeFromClass($entityClass);
-			}
-		}
 
-		foreach ($this->specExtractionManager->getEiTypeExtractions() as $eiTypeExtraction) {
-			$this->initEiTypeFromExtr($eiTypeExtraction);
+	public function reload(): void {
+		$this->eiTypes = [];
+
+		foreach ($this->eiTypeFactory->getEntityModelManager()->getEntityClasses() as $entityClass) {
+			$this->initEiTypeFromClass($entityClass, false);
 		}
-		
-		$this->triggerEiSetup();
-		
-		return $this->eiErrorResult;
 	}
-	
-	/**
-	 * @return EiErrorResult|null
-	 */
-	function getEiErrorResult() {
-		return $this->eiSetupQueue->getEiErrorResult();
-	}
-	
-	/**
-	 * @return \n2n\persistence\orm\model\EntityModelManager
-	 */
-	public function getEntityModelManager() {
-		return $this->entityModelManager;
-	}
-	
-	/**
-	 * @return \rocket\spec\extr\SpecExtractionManager
-	 */
-	public function getSpecExtractionManager() {
-// 		if (!$this->specExtractionManager->isInitialized()) {
-// 			$this->specExtractionManager->extract();
-// 		}
-		
-		return $this->specExtractionManager;
-	}
+
 
 	/**
 	 * @param string $id
@@ -146,6 +99,13 @@ class Spec {
 		}
 
 		return $this->initLaunchPadFromTypePath(TypePath::create($id));
+	}
+
+	/**
+	 * @return MenuGroup[]
+	 */
+	function getMenuGroups() {
+		return $this->menuGroups;
 	}
 	
 // 	/**
@@ -171,25 +131,22 @@ class Spec {
 	/**
 	 * 
 	 */
-	public function clear() {
-		$this->eager = false;
-		$this->customTypes = array();
+	public function clear(): void {
 		$this->eiTypes = array();
-		$this->eiTypeCis = array();
-		$this->launchPads = array();
+		$this->menuGroups = array();
 	}
 
 	private function isEiTypeAnnotated(\ReflectionClass $class) {
-		return ReflectionContext::getAttributeSet($class)->hasClassAttribute(\rocket\attribute\EiType::class)
+		return ReflectionContext::getAttributeSet($class)->hasClassAttribute(\rocket\attribute\EiType::class);
 	}
-	
+
 	/**
 	 * @param \ReflectionClass $class
-	 * @throws InvalidConfigurationException
+	 * @param bool $required
+	 * @return EiType|null
 	 * @throws UnknownEiTypeException
-	 * @return EiType
 	 */
-	private function initEiTypeFromClass(\ReflectionClass $class) {
+	private function initEiTypeFromClass(\ReflectionClass $class, bool $required) {
 		$className = $class->getName();
 
 		if (isset($this->eiTypes[$className])) {
@@ -197,6 +154,10 @@ class Spec {
 		}
 
 		if (!$this->isEiTypeAnnotated($class)) {
+			if (!$required) {
+				return null;
+			}
+
 			throw new UnknownEiTypeException($className . ' is not annotated with attribute '
 					. \rocket\attribute\EiType::class);
 		}
@@ -207,10 +168,10 @@ class Spec {
 			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
 			
 			try {
-				$eiType->setSuperEiType($this->initEiTypeFromClass($superClass));
+				$eiType->setSuperEiType($this->initEiTypeFromClass($superClass, true));
 			} catch (UnknownEiTypeException $e) {
-				throw new InvalidConfigurationException('EiType for ' . $eiTypeExtraction->getEntityClassName() 
-						. ' requires super EiType for ' . $superClassName);
+				throw new InvalidConfigurationException('EiType for ' . $class->getName()
+						. ' requires super EiType for ' . $superClass->getName());
 			}
 		}
 		
@@ -221,14 +182,54 @@ class Spec {
 			$class = $subEntityModel->getClass();
 			
 			if ($this->containsEiTypeClass($class)) {
-				$this->initEiTypeFromClass($class);
+				$this->initEiTypeFromClass($class, false);
 			}
 		}
 
 		$this->eiTypeFactory->assemble($eiType);
+
+		$this->checkForMenuItem($eiType);
 		
 		return $eiType;
 	}
+
+	private function checkForMenuItem(EiType $eiType) {
+		$menuItemAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
+				->getClassAttribute(MenuItem::class);
+
+		if ($menuItemAttribute === null) {
+			return;
+		}
+
+		/**
+		 * @var MenuItem $menuItem
+		 */
+		$menuItem = $menuItemAttribute->getInstance();
+		$launchPad = new EiLaunchPad($eiType->getId(), $eiType->getEiMask(), $menuItem->name);
+
+		$groupKey = $menuItem->groupKey;
+		$groupName = $menuItem->groupName;
+
+		if ($groupKey !== null) {
+			$menuGroup = $this->menuGroups[$groupKey]
+					?? $this->menuGroups[$groupKey] = new MenuGroup($groupName ?? StringUtils::pretty($groupKey));
+
+			if ($groupName !== null) {
+				$menuGroup->setLabel($groupName);
+			}
+
+			$menuGroup->addLaunchPad($launchPad);
+			return;
+		}
+
+		if ($groupName === null) {
+			$groupName = 'Content';
+		}
+
+		$menuGroup = $this->menuGroups[$groupName] ?? $this->menuGroups[$groupName] = new MenuGroup($groupName);
+		$menuGroup->addLaunchPad($launchPad);
+	}
+
 	
 //	private function assembleEiTypeExtensions(EiMask $extendedEiMask, TypePath $extenedTypePath) {
 //		$eiType = $extendedEiMask->getEiType();
@@ -246,64 +247,64 @@ class Spec {
 //	}
 
 	
-	private function initLaunchPadFromTypePath(TypePath $typePath) {
-		$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
-		
-		if ($typePath->getEiTypeExtensionId() === null && !$this->specExtractionManager->containsEiTypeId($typePath->getTypeId())) {
-			return $this->launchPads[(string) $typePath] = new CustomLaunchPad($typePath, $this->getCustomTypeById($typePath->getTypeId()));
-		}
-		
-		$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByEiTypePath($typePath);
-			
-		$eiType = $this->getEiTypeById($typePath->getTypeId());
-		$eiMask = null;
-		if ($typePath->getEiTypeExtensionId() !== null) {
-			$eiMask = $eiType->getEiTypeExtensionCollection()->getById($typePath->getEiTypeExtensionId())->getEiMask();
-		} else {
-			$eiMask = $eiType->getEiMask();
-		}
-		
-		return $this->launchPads[(string) $typePath] = new EiLaunchPad($typePath, $eiMask, $launchPadExtraction->getLabel());
-	}
-	
-	/**
-	 * @param string $id
-	 * @return boolean
-	 */
-	public function containsTypeId(string $id) {
-		return isset($this->eiTypes[$id]) || isset($this->customTypes[$id]) || $this->specExtractionManager->containsTypeId($id);
-	}
-	
-	/**
-	 * @param string $id
-	 * @return bool
-	 */
-	public function containsCustomTypeId(string $id) {
-		return isset($this->customTypes[$id]);
-	}
-	
-	/**
-	 *
-	 * @param string $id
-	 * @return Type
-	 * @throws UnknownTypeException
-	 * @throws IllegalStateException
-	 */
-	public function getCustomTypeById(string $id) {
-		if (isset($this->customTypes[$id])) {
-			return $this->customTypes[$id];
-		}
-		
-		return $this->initCustomTypeFromExtr($this->specExtractionManager->getCustomTypeExtractionById($id));
-	}
-	
-	/**
-	 * @return CustomType[]
-	 */
-	public function getCustomTypes() {
-		return $this->customTypes;
-	}
-	
+//	private function initLaunchPadFromTypePath(TypePath $typePath) {
+//		$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByTypePath($typePath);
+//
+//		if ($typePath->getEiTypeExtensionId() === null && !$this->specExtractionManager->containsEiTypeId($typePath->getTypeId())) {
+//			return $this->launchPads[(string) $typePath] = new CustomLaunchPad($typePath, $this->getCustomTypeById($typePath->getTypeId()));
+//		}
+//
+//		$launchPadExtraction = $this->specExtractionManager->getLaunchPadExtractionByEiTypePath($typePath);
+//
+//		$eiType = $this->getEiTypeById($typePath->getTypeId());
+//		$eiMask = null;
+//		if ($typePath->getEiTypeExtensionId() !== null) {
+//			$eiMask = $eiType->getEiTypeExtensionCollection()->getById($typePath->getEiTypeExtensionId())->getEiMask();
+//		} else {
+//			$eiMask = $eiType->getEiMask();
+//		}
+//
+//		return $this->launchPads[(string) $typePath] = new EiLaunchPad($typePath, $eiMask, $launchPadExtraction->getLabel());
+//	}
+//
+//	/**
+//	 * @param string $id
+//	 * @return boolean
+//	 */
+//	public function containsTypeId(string $id) {
+//		return isset($this->eiTypes[$id]) || isset($this->customTypes[$id]) || $this->specExtractionManager->containsTypeId($id);
+//	}
+//
+//	/**
+//	 * @param string $id
+//	 * @return bool
+//	 */
+//	public function containsCustomTypeId(string $id) {
+//		return isset($this->customTypes[$id]);
+//	}
+//
+//	/**
+//	 *
+//	 * @param string $id
+//	 * @return Type
+//	 * @throws UnknownTypeException
+//	 * @throws IllegalStateException
+//	 */
+//	public function getCustomTypeById(string $id) {
+//		if (isset($this->customTypes[$id])) {
+//			return $this->customTypes[$id];
+//		}
+//
+//		return $this->initCustomTypeFromExtr($this->specExtractionManager->getCustomTypeExtractionById($id));
+//	}
+//
+//	/**
+//	 * @return CustomType[]
+//	 */
+//	public function getCustomTypes() {
+//		return $this->customTypes;
+//	}
+//
 	/**
 	 * @param string $id
 	 * @return bool
@@ -356,24 +357,17 @@ class Spec {
 	/**
 	 * @param \ReflectionClass $class
 	 * @return \rocket\ei\EiType
+	 * @throws UnknownEiTypeException
 	 */
 	public function getEiTypeByClassName(string $className) {
-		if (isset($this->eiTypeCis[$className])) {
-			return $this->eiTypeCis[$className];
+		if (isset($this->eiTypes[$className])) {
+			return $this->eiTypes[$className];
 		}
 		
-		$eiType = $this->initEiTypeFromClassName($className);
-		
-		$this->triggerEiSetup();
-		
-		return $eiType;
+		return $this->initEiTypeFromClass(ReflectionUtils::createReflectionClass($className), true);
 	}
 	
-	private function triggerEiSetup() {
-		if ($this->eiSetupQueue !== null) {
-			$this->eiSetupQueue->trigger();
-		}
-	}
+
 	
 	/**
 	 * @param object $entityObj

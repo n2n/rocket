@@ -36,6 +36,10 @@ class MenuGroup {
 	public function getLabel() {
 		return $this->label;
 	}
+
+	function setLabel(string $label) {
+		$this->label = $label;
+	}
 	
 	/**
 	 * @return LaunchPad[] 

@@ -19,10 +19,10 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\tree;
+namespace rocket\impl\ei\component\cmd\tree;
 
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 	const ID_BASE = 'tree-move';

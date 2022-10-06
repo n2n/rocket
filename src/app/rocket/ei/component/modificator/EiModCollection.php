@@ -62,12 +62,6 @@ class EiModCollection extends EiComponentCollection {
 		return $eiModificator;
 	}
 
-	function init(MagicContext $magicContext): bool {
-		$this->each(function (EiModificator $eiModificator) use ($magicContext) {
-			$eiModificator->getNature()->init(new Eiu($eiModificator, $magicContext));
-		});
-	}
-	
 	function setupEiGuiFrame(EiGuiFrame $eiGuiFrame) {
 		if ($this->isEmpty()) {
 			return;

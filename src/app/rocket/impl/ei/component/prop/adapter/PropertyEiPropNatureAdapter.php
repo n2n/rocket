@@ -29,8 +29,7 @@ use rocket\impl\ei\component\prop\adapter\config\EntityPropertyConfigurable;
 use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 
-abstract class PropertyEiPropNatureAdapter extends IndependentEiPropAdapter
-		implements EntityPropertyConfigurable, ObjectPropertyConfigurable {
+abstract class PropertyEiPropNatureAdapter extends EiPropAdapter {
 	
 	protected $entityProperty;
 	protected $objectPropertyAccessProxy;

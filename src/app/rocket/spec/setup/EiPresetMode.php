@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec;
+namespace rocket\spec\setup;
 
 use rocket\attribute\EiPreset;
 
@@ -72,7 +72,7 @@ enum EiPresetMode {
 
 	function hasReadCmds(): bool {
 		return match ($this) {
-			self::READ, self::READ_CMDS => true, self::READ_EDIT_CMDS
+			self::READ, self::READ_CMDS, self::READ_EDIT_CMDS  => true,
 			default => false
 		};
 	}

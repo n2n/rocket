@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\tree;
+namespace rocket\impl\ei\component\cmd\tree;
 
 use n2n\persistence\orm\util\NestedSetUtils;
 use rocket\ei\manage\entry\UnknownEiObjectException;

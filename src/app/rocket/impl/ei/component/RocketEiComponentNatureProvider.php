@@ -2,24 +2,25 @@
 
 namespace rocket\impl\ei\component;
 
-use rocket\spec\EiSetupPhase;
-use rocket\spec\EiTypeSetup;
+use rocket\spec\setup\EiSetupPhase;
+use rocket\spec\setup\EiTypeSetup;
 use n2n\util\type\NamedTypeConstraint;
-use rocket\spec\EiPresetProp;
+use rocket\spec\setup\EiPresetProp;
 use rocket\impl\ei\component\prop\string\StringEiPropNatureNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
-use rocket\impl\ei\component\command\common\OverviewEiCmdNature;
-use rocket\impl\ei\component\command\common\DetailEiCmdNature;
-use rocket\impl\ei\component\command\common\EditEiCmdNature;
+use rocket\impl\ei\component\cmd\common\OverviewEiCmdNature;
+use rocket\impl\ei\component\cmd\common\DetailEiCmdNature;
+use rocket\impl\ei\component\cmd\common\EditEiCmdNature;
 use rocket\attribute\impl\EiCmdOverview;
 use rocket\attribute\impl\EiCmdAdd;
 use rocket\attribute\impl\EiCmdEdit;
 use rocket\attribute\impl\EiCmdDetail;
-use rocket\impl\ei\component\command\common\DeleteEiCmdNature;
-use rocket\impl\ei\component\command\common\AddEiCmdNature;
+use rocket\impl\ei\component\cmd\common\DeleteEiCmdNature;
+use rocket\impl\ei\component\cmd\common\AddEiCmdNature;
 use rocket\attribute\impl\EiCmdDelete;
+use rocket\spec\setup\EiComponentNatureProvider;
 
-class RocketEiComponentNatureProvider implements \rocket\spec\EiComponentNatureProvider {
+class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 	/**
 	 * @inheritDoc
@@ -45,7 +46,9 @@ class RocketEiComponentNatureProvider implements \rocket\spec\EiComponentNatureP
 				$eiPropNature = $this->findSuitablePresetMatch($eiPresetProp, $namedTypeConstraints[0]);
 			}
 
-			$eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $eiPropNature);
+			if ($eiPropNature !== null) {
+				$eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $eiPropNature);
+			}
 		}
 
 	}

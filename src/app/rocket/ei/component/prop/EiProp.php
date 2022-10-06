@@ -5,21 +5,14 @@ use rocket\ei\EiPropPath;
 use rocket\ei\component\EiComponent;
 
 class EiProp implements EiComponent {
-	private $eiPropPath;
-	private $eiProp;
-	private $eiPropCollection;
 
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param EiPropNature $eiProp
+	 * @param EiPropNature $nature
 	 * @param EiPropCollection $eiPropCollection
 	 */
-	public function __construct(EiPropPath $eiPropPath, EiPropNature $eiProp, EiPropCollection $eiPropCollection) {
-		$this->eiPropPath = $eiPropPath;
-		$this->eiProp = $eiProp;
-		$this->eiPropCollection = $eiPropCollection;
-		
-		$eiProp->setWrapper($this);
+	public function __construct(private EiPropPath $eiPropPath, private EiPropNature $nature,
+			private EiPropCollection $eiPropCollection) {
 	}
 	
 	/**
@@ -32,8 +25,8 @@ class EiProp implements EiComponent {
 	/**
 	 * @return EiPropNature
 	 */
-	public function getEiProp() {
-		return $this->eiProp;
+	public function getNature(): EiPropNature {
+		return $this->nature;
 	}
 	
 	/**

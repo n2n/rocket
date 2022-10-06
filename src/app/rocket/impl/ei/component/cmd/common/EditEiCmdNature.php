@@ -19,14 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\common;
+namespace rocket\impl\ei\component\cmd\common;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\command\common\controller\EditController;
-use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\cmd\common\controller\EditController;
+use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
@@ -34,7 +34,7 @@ use n2n\util\uri\Path;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\command\adapter\EiCmdNatureAdapter;
+use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'edit';

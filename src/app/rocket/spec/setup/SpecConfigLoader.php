@@ -1,6 +1,25 @@
 <?php
-
-namespace rocket\spec;
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
+namespace rocket\spec\setup;
 
 use rocket\spec\source\ModularConfigSource;
 use rocket\spec\extr\SpecConfigSourceDecorator;
@@ -11,6 +30,7 @@ use n2n\util\magic\MagicContext;
 use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use n2n\util\magic\MagicLookupFailedException;
+use n2n\util\StringUtils;
 
 class SpecConfigLoader {
 
@@ -61,12 +81,13 @@ class SpecConfigLoader {
 			foreach ($dataMap->optArray(self::ATTR_EI_COMPONENT_NATURE_PROVIDERS, 'string') as $lookupId) {
 				$eiComponentNatureProvider = $this->magicContext->lookup($lookupId);;
 				if ($eiComponentNatureProvider instanceof EiComponentNatureProvider) {
-					throw new InvalidConfigurationException(get_class($eiComponentNatureProvider)
-							. ' must implement ' . EiComponentNatureProvider::class . ' if used in '
-							. self::ATTR_EI_COMPONENT_NATURE_PROVIDERS);
+					$eiComponentNatureProviders[] = $eiComponentNatureProvider;
+					continue;
 				}
 
-				$eiComponentNatureProviders[] = $eiComponentNatureProvider;
+				throw new InvalidConfigurationException(get_class($eiComponentNatureProvider)
+						. ' must implement ' . EiComponentNatureProvider::class . ' if used in '
+						. self::ATTR_EI_COMPONENT_NATURE_PROVIDERS);
 			}
 		} catch (AttributesException|MagicLookupFailedException|InvalidConfigurationException $e) {
 			throw new InvalidConfigurationException('Configuration error in data source: ' . $configSource,0, $e);
@@ -76,11 +97,19 @@ class SpecConfigLoader {
 	}
 
 	/**
-	 * @param \Exception $previous
-	 * @throws InvalidConfigurationException
+	 * @param \ReflectionClass $class
+	 * @return string
 	 */
-	private function createDataSourceException(\Exception $previous) {
+	function moduleNamespaceOf(\ReflectionClass $class) {
+		$namespaceName = $class->getNamespaceName();
 
+		foreach ($this->moduleNamespaces as $moduleNamespace) {
+			if (StringUtils::startsWith($moduleNamespace, $namespaceName)) {
+				return $moduleNamespace;
+			}
+		}
+
+		return $namespaceName;
 	}
 
 	function getEiComponentNatureProviders(): array {

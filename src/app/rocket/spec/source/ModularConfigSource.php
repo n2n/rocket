@@ -30,7 +30,7 @@ interface ModularConfigSource {
 	 * @param string $moduleNamespace
 	 * @return ConfigSource
 	 */
-	public function getOrCreateConfigSourceByModuleNamespace(string $moduleNamespace): WritableConfigSource;
+	public function getOrCreateConfigSourceByModuleNamespace(string $moduleNamespace): ConfigSource;
 
 	/**
 	 * @param string $module

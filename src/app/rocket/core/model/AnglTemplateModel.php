@@ -129,7 +129,7 @@ class AnglTemplateModel implements Lookupable {
 		
 		$siMenuGroups = [];
 		
-		foreach ($this->rocket->getLayout()->getMenuGroups() as $menuGroup) {
+		foreach ($this->rocket->getSpec()->getMenuGroups() as $menuGroup) {
 			$siMenuItems = [];
 			
 			foreach ($menuGroup->getLaunchPads() as $launchPad) {

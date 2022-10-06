@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\file\command;
 
-use rocket\impl\ei\component\command\adapter\EiCmdNatureAdapter;
+use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use rocket\impl\ei\component\prop\file\command\controller\ThumbController;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;

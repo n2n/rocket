@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\spec;
+namespace rocket\spec\setup;
 
 use n2n\core\TypeNotFoundException;
 use n2n\reflection\ReflectionUtils;
@@ -76,11 +76,16 @@ class EiTypeFactory {
 
 	private InitListener $initListener;
 
-	public function __construct(private SpecConfigLoader $specConfigLoader,
-			private EntityModelManager $entityModelManager, private ?EiSetupQueue $setupQueue) {
+	public function __construct(private readonly SpecConfigLoader $specConfigLoader,
+			private readonly EntityModelManager $entityModelManager) {
 
 		$this->initListener = new InitListener($specConfigLoader->getMagicContext());
 	}
+
+	function getEntityModelManager(): EntityModelManager {
+		return $this->entityModelManager;
+	}
+
 	/**
 	 * @param \ReflectionClass $class
 	 * @throws UnknownEiTypeException
@@ -90,13 +95,13 @@ class EiTypeFactory {
 		$className = $class->getName();
 
 		try {
-			$entityModel = $this->entityModelManager->getEntityModelByClass($className);
+			$entityModel = $this->entityModelManager->getEntityModelByClass($class);
 		} catch (OrmException $e) {
 			throw new UnknownEiTypeException('Could not lookup EntityModel of ' . $className
 					. '. Reason: ' . $e->getMessage(), 0, $e);
 		}
 
-		return new EiType($className, $this->specConfigLoader->moduleNamespaceOf($className), $entityModel);
+		return new EiType($className, $this->specConfigLoader->moduleNamespaceOf($class), $entityModel);
 	}
 
 	function assemble(EiType $eiType): void {
@@ -110,19 +115,18 @@ class EiTypeFactory {
 		if ($eiPresetAttribute !== null) {
 			$eiPresetUtil= new EiPresetUtil($eiPresetAttribute, $entityModel);
 			$eiPresetProps = $eiPresetUtil->createEiPresetProps();
-			return;
 		}
 
-		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetProps);
+		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetAttribute?->getInstance()->mode, $eiPresetProps);
 		foreach (EiSetupPhase::cases() as $eiSetupPhase) {
 			foreach ($this->specConfigLoader->getEiComponentNatureProviders() as $eiComponentNatureProvider) {
-				$eiComponentNatureProvider->provide($eiSetupPhase, $eiSetupPhase);
+				$eiComponentNatureProvider->provide($eiTypeSetup, $eiSetupPhase);
 			}
 		}
 
 		$uninitializedEiPresetProps = $eiTypeSetup->getUnassignedEiPresetProps();
 		if ($eiPresetUtil !== null && !empty($uninitializedEiPresetProps)) {
-			throw $eiPresetUtil->createUninitializedEiPresetPropsErrror($uninitializedEiPresetProps);
+			throw $eiPresetUtil->createUnassignedEiPresetPropsError($uninitializedEiPresetProps);
 		}
 
 		$eiModCollection = $eiType->getEiMask()->getEiModCollection();

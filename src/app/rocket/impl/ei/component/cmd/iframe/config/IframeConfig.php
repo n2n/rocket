@@ -1,5 +1,5 @@
 <?php
-namespace rocket\impl\ei\component\command\iframe\config;
+namespace rocket\impl\ei\component\cmd\iframe\config;
 
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;

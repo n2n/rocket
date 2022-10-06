@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\adapter;
+namespace rocket\impl\ei\component\cmd\adapter;
 
 use rocket\ei\component\command\EiCmdNature;
 use rocket\impl\ei\component\EiComponentNatureAdapter;

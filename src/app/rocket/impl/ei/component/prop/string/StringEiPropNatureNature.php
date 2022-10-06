@@ -26,9 +26,10 @@ use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\StringConfig;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\factory\EifGuiField;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class StringEiPropNatureNature extends AlphanumericEiPropNatureNature {
-	
+
 	private bool $multiline = false;
 
 	/**

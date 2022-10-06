@@ -21,18 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\type\attrs\InvalidAttributeException;
-use n2n\util\type\attrs\LenientAttributeReader;
-use n2n\util\type\attrs\DataSet;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
-use rocket\ei\util\Eiu;
-use n2n\persistence\meta\structure\Column;
 
-class EditConfig extends PropConfigAdaption {
-	protected $constant = false;
-	protected $readOnly = false;
-	protected $mandatory = false;
+trait EditConfig {
+	protected bool $constant = false;
+	protected bool $readOnly = false;
+	protected bool $mandatory = false;
 
 	/**
 	 * @return bool

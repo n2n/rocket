@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\file\command;
 
-use rocket\impl\ei\component\command\adapter\EiCmdNatureAdapter;
+use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use n2n\l10n\N2nLocale;
 use n2n\l10n\DynamicTextCollection;
 use n2n\impl\web\ui\view\html\HtmlView;

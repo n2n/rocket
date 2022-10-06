@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\common\model\critmod;
+namespace rocket\impl\ei\component\cmd\common\model\critmod;
 
 use rocket\ei\manage\frame\EiFrame;
 use n2n\web\dispatch\Dispatchable;

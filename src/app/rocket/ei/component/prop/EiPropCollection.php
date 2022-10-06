@@ -70,13 +70,11 @@ class EiPropCollection extends EiComponentCollection {
 			$eiPropPath = $forkEiPropPath->ext($id);
 		}
 		
-		$eiPropWrapper = new EiProp($eiPropPath, $eiProp, $this);
+		$eiProp = new EiProp($eiPropPath, $eiProp, $this);
 		
 		$this->addEiComponent($eiPropPath, $eiProp);
 		
-		
-		
-		return $eiPropWrapper;
+		return $eiProp;
 	}
 	
 	/**

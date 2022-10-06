@@ -19,16 +19,16 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\common;
+namespace rocket\impl\ei\component\cmd\common;
 
 use rocket\ei\component\command\GenericOverviewEiCmd;
-use rocket\impl\ei\component\command\adapter\IndependentEiCommandAdapter;
+use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\command\common\controller\OverviewController;
+use rocket\impl\ei\component\cmd\common\controller\OverviewController;
 use rocket\ei\component\EiConfigurator;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -37,7 +37,7 @@ use n2n\web\http\controller\Controller;
 use rocket\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
 use rocket\si\control\SiNavPoint;
-use rocket\impl\ei\component\command\adapter\EiCmdNatureAdapter;
+use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class OverviewEiCmdNature extends EiCmdNatureAdapter implements GenericOverviewEiCmd {
 	const ID_BASE = 'overview';

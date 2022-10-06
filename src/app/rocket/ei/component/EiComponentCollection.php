@@ -96,7 +96,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 *@throws InvalidEiComponentConfigurationException
 	 */
 	protected function makeId(?string $id, EiComponentNature $eiComponent) {
-		if (0 == mb_strlen($id)) {
+		if ($id === null || 0 == mb_strlen($id)) {
 			$id = $this->createUniqueId($eiComponent->getIdBase() 
 					?? TypeUtils::buildTypeAcronym(get_class($eiComponent)));
 		} else if (IdPath::constainsSpecialIdChars($id)) {
@@ -113,7 +113,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 //		IllegalStateException::assertTrue($this->initMagicContext === null, 'Already initialized.');
 //		$this->initMagicContext = $magicContext;
 
-		while (false !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
+		while (null !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
 			$eiComponent->getNature()->init(new Eiu($eiComponent, $magicContext));
 		}
 	}
@@ -145,12 +145,6 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		$this->uninitializedEiComponents[] = $eiComponent;
 
 		$this->triggerChanged();
-	}
-
-	function init(MagicContext $magicContext): void {
-		while (null !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
-			$eiComponent->init(new Eiu($eiComponent, $magicContext));
-		}
 	}
 	
 	/**

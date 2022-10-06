@@ -33,22 +33,24 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 
 abstract class EditablePropertyEiPropNatureNatureAdapter extends DisplayablePropertyEiPropNatureNatureAdapter implements PrivilegedEiProp {
-	private ?EditConfig $editConfig;
+	use EditConfig;
+
+//	private ?EditConfig $editConfig;
 
 	function isPrivileged(): bool {
 		return true;
 	}
 
-	/**
-	 * @return EditConfig
-	 */
-	protected function getEditConfig() {
-		if ($this->editConfig === null) {
-			$this->editConfig = new EditConfig();
-		}
-
-		return $this->editConfig;
-	}
+//	/**
+//	 * @return EditConfig
+//	 */
+//	protected function getEditConfig() {
+//		if ($this->editConfig === null) {
+//			$this->editConfig = new EditConfig();
+//		}
+//
+//		return $this->editConfig;
+//	}
 
 	/**
 	 * {@inheritDoc}

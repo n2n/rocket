@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\command\adapter\config;
+namespace rocket\impl\ei\component\cmd\adapter\config;
 
 use rocket\impl\ei\component\config\AdaptableEiConfigurator;
 use rocket\impl\ei\component\config\EiConfiguratorAdaption;
@@ -36,7 +36,7 @@ class AdaptableEiCommandConfigurator extends AdaptableEiConfigurator {
 	
 	/**
 	 * @param EiConfiguratorAdaption $adaption
-	 * @return \rocket\impl\ei\component\command\adapter\config\AdaptableEiCommandConfigurator
+	 * @return \rocket\impl\ei\component\cmd\adapter\config\AdaptableEiCommandConfigurator
 	 */
 	function addAdaption(EiConfiguratorAdaption $adaption) {
 		$this->registerAdaption($adaption);
@@ -45,7 +45,7 @@ class AdaptableEiCommandConfigurator extends AdaptableEiConfigurator {
 	
 	/**
 	 * @param EiConfiguratorAdaption $adaption
-	 * @return \rocket\impl\ei\component\command\adapter\config\AdaptableEiCommandConfigurator
+	 * @return \rocket\impl\ei\component\cmd\adapter\config\AdaptableEiCommandConfigurator
 	 */
 	function removeAdaption(EiConfiguratorAdaption $adaption) {
 		$this->unregisterAdaption($adaption);
@@ -54,7 +54,7 @@ class AdaptableEiCommandConfigurator extends AdaptableEiConfigurator {
 	
 	/**
 	 * @param \Closure $setupCallback
-	 * @return \rocket\impl\ei\component\command\adapter\config\AdaptableEiCommandConfigurator
+	 * @return \rocket\impl\ei\component\cmd\adapter\config\AdaptableEiCommandConfigurator
 	 */
 	function addSetupCallback(\Closure $setupCallback) {
 		$this->registerSetupCallback($setupCallback);
@@ -63,7 +63,7 @@ class AdaptableEiCommandConfigurator extends AdaptableEiConfigurator {
 	
 	/**
 	 * @param \Closure $setupCallback
-	 * @return \rocket\impl\ei\component\command\adapter\config\AdaptableEiCommandConfigurator
+	 * @return \rocket\impl\ei\component\cmd\adapter\config\AdaptableEiCommandConfigurator
 	 */
 	function removeSetupCallback(\Closure $setupCallback) {
 		$this->unregisterSetupCallback($setupCallback);
