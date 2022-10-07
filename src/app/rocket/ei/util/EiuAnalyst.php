@@ -33,7 +33,6 @@ use rocket\ei\manage\draft\Draft;
 use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
@@ -42,10 +41,8 @@ use rocket\ei\manage\gui\EiEntryGuiAssembler;
 use rocket\ei\EiEngine;
 use rocket\spec\Spec;
 use rocket\ei\EiTypeExtension;
-use rocket\ei\component\EiComponentNature;
 use rocket\core\model\Rocket;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\util\spec\EiuContext;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\util\spec\EiuMask;
@@ -59,7 +56,6 @@ use rocket\ei\util\spec\EiuProp;
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
-use rocket\ei\component\modificator\EiModNature;
 use n2n\util\type\TypeUtils;
 use rocket\ei\manage\DefPropPath;
 use rocket\spec\UnknownTypeException;
@@ -71,6 +67,10 @@ use rocket\ei\manage\gui\EiEntryGuiTypeDef;
 use rocket\ei\util\gui\EiuEntryGuiTypeDef;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\util\gui\EiuGuiModel;
+use rocket\ei\component\prop\EiProp;
+use rocket\ei\component\command\EiCmd;
+use rocket\ei\component\modificator\EiMod;
+use rocket\ei\component\EiComponent;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -79,9 +79,9 @@ class EiuAnalyst {
 	const EI_GUI_TYPES = array(EiGuiFrame::class, EiuGuiFrame::class, EiEntryGui::class, EiuEntryGui::class);
 	const EI_ENTRY_GUI_TYPES = array(EiEntryGui::class, EiuEntryGui::class);
 	const EI_TYPES = array(EiFrame::class, N2nContext::class, EiObject::class, EiEntry::class, EiEntityObj::class, 
-			Draft::class, EiGuiFrame::class, EiuGuiFrame::class, EiEntryGui::class, EiEntryGui::class, EiPropNature::class,
+			Draft::class, EiGuiFrame::class, EiuGuiFrame::class, EiEntryGui::class, EiEntryGui::class, EiProp::class,
 			EiPropPath::class, EiuFrame::class, EiuEntry::class, EiuEntryGui::class, EiuField::class, Eiu::class);
-	const EI_FIELD_TYPES = array(EiPropNature::class, EiPropPath::class, EiuField::class);
+	const EI_FIELD_TYPES = array(EiProp::class, EiPropPath::class, EiuField::class);
 	
 	protected $n2nContext;
 	protected $eiType;
@@ -96,7 +96,7 @@ class EiuAnalyst {
 	protected $eiEntryGuiAssembler;
 	protected $eiPropPath;
 	protected $defPropPath;
-	protected $eiCommandPath;
+	protected $eiCmdPath;
 	protected $eiEngine;
 	protected $spec;
 	protected $eiMask;
@@ -144,9 +144,9 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiPropNature) {
+			if ($eiArg instanceof EiProp) {
 				$this->eiPropPath = EiPropPath::from($eiArg);
-				$this->assignEiMask($eiArg->getWrapper()->getEiPropCollection()->getEiMask());
+				$this->assignEiMask($eiArg->getEiPropCollection()->getEiMask());
 				continue;
 			}
 			
@@ -160,19 +160,19 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiCmdNature) {
-				$this->eiCommandPath = EiCommandPath::from($eiArg);
-				$this->assignEiMask($eiArg->getWrapper()->getEiCommandCollection()->getEiMask());
+			if ($eiArg instanceof EiCmd) {
+				$this->eiCmdPath = EiCmdPath::from($eiArg);
+				$this->assignEiMask($eiArg->getEiCommandCollection()->getEiMask());
 				continue;
 			}
 			
-			if ($eiArg instanceof EiCommandPath) {
-				$this->eiCommandPath = $eiArg;
+			if ($eiArg instanceof EiCmdPath) {
+				$this->eiCmdPath = $eiArg;
 				continue;
 			}
 			
-			if ($eiArg instanceof EiModNature) {
-				$this->assignEiMask($eiArg->getWrapper()->getEiModificatorCollection()->getEiMask());
+			if ($eiArg instanceof EiMod) {
+				$this->assignEiMask($eiArg->getEiModificatorCollection()->getEiMask());
 				continue;
 			}
 			
@@ -226,10 +226,10 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiComponentNature) {
-				$this->assignEiMask($eiArg->getEiMask());
-				continue;
-			}
+//			if ($eiArg instanceof EiComponent) {
+//				$this->assignEiMask($eiArg->getCollection()->getMask());
+//				continue;
+//			}
 			
 			if ($eiArg instanceof EiType) {
 				$this->assignEiType($eiArg, true);
@@ -379,8 +379,8 @@ class EiuAnalyst {
 				if ($eiuAnalyst->defPropPath !== null) {
 					$this->defPropPath = $eiuAnalyst->defPropPath;
 				}
-				if ($eiuAnalyst->eiCommandPath !== null) {
-					$this->eiCommandPath = $eiuAnalyst->eiCommandPath;
+				if ($eiuAnalyst->eiCmdPath !== null) {
+					$this->eiCmdPath = $eiuAnalyst->eiCmdPath;
 				}
 				if ($eiuAnalyst->eiEngine !== null) {
 					$this->eiEngine = $eiuAnalyst->eiEngine;
@@ -499,7 +499,7 @@ class EiuAnalyst {
 // 		}
 		
 // 		$this->assignEiuEngine($eiuCommand->getEiuEngine());
-// 		$this->eiCommandPath = $eiuProp->getEiCommandPath();
+// 		$this->eiCmdPath = $eiuProp->getEiCmdPath();
 // 		$this->eiuCommand = $eiuCommand;
 // 	}
 	
@@ -924,13 +924,13 @@ class EiuAnalyst {
 				. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
-	public function getEiCommandPath(bool $required) {
-		if (!$required || $this->eiCommandPath !== null) {
-			return $this->eiCommandPath;
+	public function getEiCmdPath(bool $required) {
+		if (!$required || $this->eiCmdPath !== null) {
+			return $this->eiCmdPath;
 		}
 		
 		throw new EiuPerimeterException(
-				'Could not determine EiCommandPath because non of the following types were provided as eiArgs: '
+				'Could not determine EiCmdPath because non of the following types were provided as eiArgs: '
 				. implode(', ', self::EI_FIELD_TYPES));
 	}
 	

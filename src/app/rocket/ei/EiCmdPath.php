@@ -19,47 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\ei;
 
-use rocket\ei\component\EiComponentNature;
-use rocket\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\controller\Controller;
-use n2n\l10n\Lstr;
+use rocket\ei\component\command\EiCmdNature;
+use n2n\util\type\ArgUtils;
+use rocket\ei\component\command\EiCmd;
 
-interface EiCmdNature extends EiComponentNature {
+class EiCmdPath extends IdPath {
 	
-	/**
-	 * @return Lstr
-	 */
-	function getLabelLstr(): Lstr;
+	public function __construct(string $id) {
+		parent::__construct([$id]);
+	}
+
+	public static function from(EiCmd $eiCmd): EiCmdPath {
+		return $eiCmd->getEiCmdPath();
+	}
 	
-	/**
-	 * @return bool
-	 */
-	function isPrivileged(): bool;
+	public static function create($expression): EiCmdPath {
+		if ($expression instanceof EiCmdPath) {
+			return $expression;
+		}
 	
-	/**
-	 * Will be the first called method by rocket
-	 * @param EiCmd $wrapper
-	 */
-	function setWrapper(EiCmd $wrapper);
+		if ($expression instanceof EiCmdNature) {
+			return self::from($expression);
+		}
 	
-	/**
-	 * @return EiCmd
-	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
-	 */
-	function getWrapper(): EiCmd;
+		if (is_string($expression)) {
+			return new EiCmdPath($expression);
+		}
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return Controller|null
-	 */
-	function lookupController(Eiu $eiu): ?Controller;
-	
-	/**
-	 * @param mixed $obj
-	 * @return boolean
-	 */
-	function equals($obj);
+		ArgUtils::valType($expression, ['string', EiCmdNature::class, EiCmdPath::class], false, 'expression');
+	}
 }

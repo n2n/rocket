@@ -25,7 +25,7 @@ use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\manage\security\EiExecution;
 use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\entry\EiEntry;
@@ -33,21 +33,21 @@ use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 
 class RestrictedEiExecution implements EiExecution {
-	private $eiCommand;
+	private $eiCmd;
 	private $comparatorConstraint;
 	private $eiEntryConstraint;
 	private $restrictedEiEntryAccessFactory;
 
 	/**
-	 * @param EiCmdNature|null $eiCommand
-	 * @param EiCommandPath $eiCommandPath
+	 * @param EiCmdNature|null $eiCmd
+	 * @param EiCmdPath $eiCmdPath
 	 * @param array $eiGrantPrivileges
 	 * @param PrivilegeDefinition $privilegeDefinition
 	 * @param SecurityFilterDefinition $securityFilterDefinition
 	 */
-	function __construct(EiCmdNature $eiCommand, ?ComparatorConstraint $comparatorConstraint, ?EiEntryConstraint $eiEntryConstraint,
+	function __construct(EiCmdNature $eiCmd, ?ComparatorConstraint $comparatorConstraint, ?EiEntryConstraint $eiEntryConstraint,
 			RestrictedEiEntryAccessFactory $restrictedEiEntryAccessFactory) {
-		$this->eiCommand = $eiCommand;
+		$this->eiCmd = $eiCmd;
 		$this->comparatorConstraint = $comparatorConstraint;
 		$this->eiEntryConstraint = $eiEntryConstraint;
 		$this->restrictedEiEntryAccessFactory = $restrictedEiEntryAccessFactory;
@@ -58,7 +58,7 @@ class RestrictedEiExecution implements EiExecution {
 	 * @see \rocket\ei\manage\security\EiExecution::getEiCommand()
 	 */
 	function getEiCommand(): EiCmdNature {
-		return $this->eiCommand;
+		return $this->eiCmd;
 	}
 	
 	/**

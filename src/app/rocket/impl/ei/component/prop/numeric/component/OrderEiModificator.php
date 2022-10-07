@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
 use rocket\ei\manage\entry\OnWriteMappingListener;
-use rocket\impl\ei\component\prop\numeric\OrderEiProp;
+use rocket\impl\ei\component\prop\numeric\OrderEiPropNature;
 use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -36,9 +36,9 @@ class OrderEiModificator extends EiModNatureAdapter {
 	private $eiProp;
 	
 	/**
-	 * @param OrderEiProp $eiProp
+	 * @param OrderEiPropNature $eiProp
 	 */
-	public function __construct(OrderEiProp $eiProp) {
+	public function __construct(OrderEiPropNature $eiProp) {
 		$this->eiProp = $eiProp;
 	}
 	
@@ -88,9 +88,9 @@ class OrderEiModificator extends EiModNatureAdapter {
 				->where()->match(CrIt::p('eo', $entityProperty), '>=', $targetOrderIndex)->endClause()
 				->order(CrIt::p('eo', $entityProperty), 'ASC');
 		
-		$newOrderIndex = $targetOrderIndex + OrderEiProp::ORDER_INCREMENT;
+		$newOrderIndex = $targetOrderIndex + OrderEiPropNature::ORDER_INCREMENT;
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$newOrderIndex += OrderEiProp::ORDER_INCREMENT;
+			$newOrderIndex += OrderEiPropNature::ORDER_INCREMENT;
 			$entityProperty->writeValue($entityObj, $newOrderIndex);
 		}
 		
@@ -118,7 +118,7 @@ class OrderEiModificator extends EiModNatureAdapter {
 					->select(CrIt::f('MAX', CrIt::p('eo', $entityProperty)))
 					->from($entityProperty->getEntityModel()->getClass(), 'eo');
 			
-			$ssm->setValue(EiPropPath::from($eiProp), $criteria->toQuery()->fetchSingle() + OrderEiProp::ORDER_INCREMENT);
+			$ssm->setValue(EiPropPath::from($eiProp), $criteria->toQuery()->fetchSingle() + OrderEiPropNature::ORDER_INCREMENT);
 		}));
 	}
 }

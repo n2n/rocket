@@ -4,7 +4,7 @@ namespace rocket\ei\component\modificator;
 use rocket\ei\EiModificatorPath;
 use rocket\ei\component\EiComponent;
 
-class EiModificator implements EiComponent {
+class EiMod implements EiComponent {
 	private $eiModificatorPath;
 	private $nature;
 	private $eiModificatorCollection;

@@ -51,11 +51,11 @@ class IframeController extends ControllerAdapter {
  		try {
  			$controller = $eiuCtrl->eiu()->lookup($this->iframeConfig->getControllerLookupId());
  		} catch (MagicObjectUnavailableException $e) {
- 			throw new InvalidEiComponentConfigurationException($this->eiCommand . ' invalid configured.', 0, $e);
+ 			throw new InvalidEiComponentConfigurationException($this->eiCmd . ' invalid configured.', 0, $e);
  		}
 		
  		if (!($controller instanceof Controller)) {
- 			throw new InvalidEiComponentConfigurationException($this->eiCommand . ' invalid configured. '
+ 			throw new InvalidEiComponentConfigurationException($this->eiCmd . ' invalid configured. '
  					. get_class($controller) . ' does not implement ' . Controller::class, 0, $e);
  		}
 		

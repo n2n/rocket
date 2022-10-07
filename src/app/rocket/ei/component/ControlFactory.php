@@ -142,15 +142,15 @@
 		
 // // 		$controls = array();
 		
-// // 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// // 			if (!($eiCommand instanceof OverallControlComponent) || !$eiu->frame()->isExecutableBy($eiCommand)) {
+// // 		foreach ($this->eiMask->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// // 			if (!($eiCmd instanceof OverallControlComponent) || !$eiu->frame()->isExecutableBy($eiCmd)) {
 // // 				continue;
 // // 			}
 			
-// // 			$overallControls = $eiCommand->createOverallControls($eiu, $view);
-// // 			ArgUtils::valArrayReturn($overallControls, $eiCommand, 'createOverallControls', Control::class);
+// // 			$overallControls = $eiCmd->createOverallControls($eiu, $view);
+// // 			ArgUtils::valArrayReturn($overallControls, $eiCmd, 'createOverallControls', Control::class);
 // // 			foreach ($overallControls as $controlId => $control) {
-// // 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// // 				$controls[ControlOrder::buildControlId($eiCmdId, $controlId)] = $control;
 // // 			}
 // // 		}
 		
@@ -167,16 +167,16 @@
 		
 // 		$controls = array();
 		
-// 		foreach ($this->eiMask->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof EntryGuiControlComponent)
-// 					|| !$eiu->entry()->access()->isExecutableBy($eiCommand)) {
+// 		foreach ($this->eiMask->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// 			if (!($eiCmd instanceof EntryGuiControlComponent)
+// 					|| !$eiu->entry()->access()->isExecutableBy($eiCmd)) {
 // 				continue;
 // 			}
 			
-// 			$entryControls = $eiCommand->createEntryGuiControls($eiu, $view);
-// 			ArgUtils::valArrayReturn($entryControls, $eiCommand, 'createEntryGuiControls', Control::class);
+// 			$entryControls = $eiCmd->createEntryGuiControls($eiu, $view);
+// 			ArgUtils::valArrayReturn($entryControls, $eiCmd, 'createEntryGuiControls', Control::class);
 // 			foreach ($entryControls as $controlId => $control) {
-// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 				$controls[ControlOrder::buildControlId($eiCmdId, $controlId)] = $control;
 // 			}
 // 		}
 		

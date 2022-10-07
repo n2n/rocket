@@ -3,7 +3,7 @@ namespace rocket\ei\util\entry;
 
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\EiPropPath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\component\command\EiCmdNature;
 
 class EiuEntryAccess {
@@ -16,11 +16,11 @@ class EiuEntryAccess {
 	}
 	
 	/**
-	 * @param string|EiCommandPath|EiCmdNature $eiCommandPath
+	 * @param string|EiCmdPath|EiCmdNature $eiCmdPath
 	 * @return boolean
 	 */
-	function isExecutableBy($eiCommandPath) {
-		return $this->eiEntryAccess->isEiCommandExecutable(EiCommandPath::create($eiCommandPath));
+	function isExecutableBy($eiCmdPath) {
+		return $this->eiEntryAccess->isEiCommandExecutable(EiCmdPath::create($eiCmdPath));
 	}
 	
 	function isPropWritable($eiPropPath) {

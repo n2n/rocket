@@ -53,10 +53,10 @@ class EiuCommandPrivilege implements EiCommandPrivilege {
 
 	/**
 	 * @param string $key
-	 * @param EiCommandPrivilege $eiCommandPrivilege
+	 * @param EiCommandPrivilege $eiCmdPrivilege
 	 */
-	public function putSubEiCommandPrivilege(string $key, EiCommandPrivilege $eiCommandPrivilege) {
-		$this->subEiCommandPrivileges[$key] = $eiCommandPrivilege;
+	public function putSubEiCommandPrivilege(string $key, EiCommandPrivilege $eiCmdPrivilege) {
+		$this->subEiCommandPrivileges[$key] = $eiCmdPrivilege;
 	}
 	
 	/**

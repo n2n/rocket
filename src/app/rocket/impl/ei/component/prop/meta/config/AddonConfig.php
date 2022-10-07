@@ -31,11 +31,7 @@ use rocket\si\content\impl\meta\SiCrumb;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 
-class AddonConfig extends PropConfigAdaption {
-	
-	const ATTR_PREFIX_ADDONS_KEY = 'prefixAddons';
-	const ATTR_SUFFIX_ADDONS_KEY = 'suffixAddons';
-	
+class AddonConfig {
 	private $prefixSiCrumbGroups;
 	private $suffixSiCrumbGroups;
 	
@@ -61,46 +57,6 @@ class AddonConfig extends PropConfigAdaption {
 	function getSuffixSiCrumbGroups() {
 		return $this->suffixSiCrumbGroups;
 	}
-	
-	/**
-	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
-	 */
-	static function create() {
-		return new AddonConfig();
-	}
-	
-	function mag(Eiu $eiu, DataSet $ds, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($ds);
-		
-		$magCollection->addMag(self::ATTR_PREFIX_ADDONS_KEY, 
-				self::createMag('Prefix Addons', self::ATTR_PREFIX_ADDONS_KEY, 
-						$lar->getScalarArray(self::ATTR_PREFIX_ADDONS_KEY)));
-		$magCollection->addMag(self::ATTR_SUFFIX_ADDONS_KEY,
-				self::createMag('Suffix Addons', self::ATTR_SUFFIX_ADDONS_KEY,
-						$lar->getScalarArray(self::ATTR_SUFFIX_ADDONS_KEY)));
-	}
-	
-	private static function createMag($label, $key, $values) {
-		return new StringArrayMag($label, $values, false, 
-				['placeholder' => 'eg. CHF, Notification {icon:fas fa-bell} ...']);
-	}
-	
-	function save(Eiu $eiu, MagCollection $magCollection, DataSet $ds) {
-		$ds->set(self::ATTR_PREFIX_ADDONS_KEY, 
-				$magCollection->getMagByPropertyName(self::ATTR_PREFIX_ADDONS_KEY)->getValue());
-		$ds->set(self::ATTR_SUFFIX_ADDONS_KEY,
-				$magCollection->getMagByPropertyName(self::ATTR_SUFFIX_ADDONS_KEY)->getValue());
-	}
-	
-	/**
-	 * @param DataSet $ds
-	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
-	 */
-	function setup(Eiu $eiu, DataSet $ds) {
-		$this->prefixSiCrumbGroups = SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_PREFIX_ADDONS_KEY));
-		$this->suffixSiCrumbGroups = SiCrumbGroupFactory::parseCrumbGroups($ds->optScalarArray(self::ATTR_SUFFIX_ADDONS_KEY));
-	}
-		
 		
 }
 

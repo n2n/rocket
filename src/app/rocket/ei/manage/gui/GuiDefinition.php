@@ -24,7 +24,7 @@ namespace rocket\ei\manage\gui;
 use n2n\core\container\N2nContext;
 use n2n\util\StringUtils;
 use n2n\util\type\ArgUtils;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\EiPropPath;
 use rocket\ei\IdPath;
 use rocket\ei\manage\DefPropPath;
@@ -377,14 +377,14 @@ class GuiDefinition {
 	 * @param EiPropPath $defPropPath
 	 * @throws GuiException
 	 */
-	function putGuiCommand(EiCommandPath $eiCommandPath, GuiCommand $guiCommand) {
-		$eiCommandPathStr = (string) $eiCommandPath;
+	function putGuiCommand(EiCmdPath $eiCmdPath, GuiCommand $guiCommand) {
+		$eiCmdPathStr = (string) $eiCmdPath;
 		
-		if (isset($this->guiCommand[$eiCommandPathStr])) {
-			throw new GuiException('GuiCommand for EiCommandPath \'' . $eiCommandPathStr . '\' is already registered');
+		if (isset($this->guiCommand[$eiCmdPathStr])) {
+			throw new GuiException('GuiCommand for EiCmdPath \'' . $eiCmdPathStr . '\' is already registered');
 		}
 		
-		$this->guiCommands[$eiCommandPathStr] = $guiCommand;
+		$this->guiCommands[$eiCmdPathStr] = $guiCommand;
 	}
 	
 	/**

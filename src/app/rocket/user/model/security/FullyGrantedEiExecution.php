@@ -26,22 +26,22 @@ use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\manage\frame\CriteriaConstraint;
 use rocket\ei\manage\security\EiEntryAccess;
 use rocket\ei\manage\security\EiExecution;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\EiPropPath;
 use rocket\ei\component\command\EiCmdNature;
 
 class FullyGrantedEiExecution implements EiExecution {
 // 	private $commandPath;
-	private $eiCommand;
+	private $eiCmd;
 	private $eiEntryAccessFactory;
 	
-	public function __construct(EiCmdNature $eiCommand) {
+	public function __construct(EiCmdNature $eiCmd) {
 // 		$this->commandPath = $commandPath;
-		$this->eiCommand = $eiCommand;
+		$this->eiCmd = $eiCmd;
 	}
 	
 	public function getEiCommand(): EiCmdNature {
-		return $this->eiCommand;
+		return $this->eiCmd;
 	}
 	
 	public function getCriteriaConstraint(): ?CriteriaConstraint {
@@ -69,7 +69,7 @@ class StaticEiEntryAccess implements EiEntryAccess {
 		return $this->granted;
 	}
 
-	public function isEiCommandExecutable(EiCommandPath $eiCommandPath): bool {
+	public function isEiCommandExecutable(EiCmdPath $eiCmdPath): bool {
 		return $this->granted;
 	}
 	public function getEiEntryConstraint(): ?EiEntryConstraint {

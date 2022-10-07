@@ -46,11 +46,11 @@ class ControlOrder {
 	}
 	
 	/**
-	 * @param string $eiCommandId
+	 * @param string $eiCmdId
 	 * @param string $controlId
 	 * @return string
 	 */
-	public static function buildControlId($eiCommandId, $controlId) {
-		return $eiCommandId . self::SEPARATOR . $controlId;
+	public static function buildControlId($eiCmdId, $controlId) {
+		return $eiCmdId . self::SEPARATOR . $controlId;
 	}
 }

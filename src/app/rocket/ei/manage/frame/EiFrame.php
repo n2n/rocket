@@ -30,7 +30,7 @@ use rocket\ei\manage\security\EiExecution;
 use n2n\web\http\HttpContext;
 use n2n\util\uri\Url;
 use n2n\util\type\ArgUtils;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\EiEngine;
 use rocket\ei\manage\ManageState;
 use rocket\ei\manage\EiObject;
@@ -163,13 +163,13 @@ class EiFrame {
 	/**
 	 * @param EiExecution $eiExecution
 	 */
-	public function exec(EiCmdNature $eiCommand) {
+	public function exec(EiCmdNature $eiCmd) {
 		if ($this->eiExecution !== null) {
 			throw new IllegalStateException('EiFrame already executed.');
 		}
 		
 		$this->eiExecution = $this->manageState->getEiPermissionManager()
-				->createEiExecution($this->contextEiEngine->getEiMask(), $eiCommand);
+				->createEiExecution($this->contextEiEngine->getEiMask(), $eiCmd);
 		
 		foreach ($this->listeners as $listener) {
 			$listener->whenExecuted($this->eiExecution);
@@ -368,11 +368,11 @@ class EiFrame {
 	}
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
+	 * @param EiCmdPath $eiCmdPath
 	 * @return bool
 	 */
-	public function isExecutableBy(EiCommandPath $eiCommandPath): bool {
-		return $this->getEiEntryAccessFactory()->isExecutableBy($eiCommandPath);
+	public function isExecutableBy(EiCmdPath $eiCmdPath): bool {
+		return $this->getEiEntryAccessFactory()->isExecutableBy($eiCmdPath);
 	}
 	
 	/**
@@ -475,21 +475,21 @@ class EiFrame {
 		}
 		
 		return $navPoint->complete($this->getBaseUrl()
-				->ext(EiFrameController::createCmdUrlExt($result->getEiCommandPath())));
+				->ext(EiFrameController::createCmdUrlExt($result->getEiCmdPath())));
 	}
 
-	public function getApiUrl(?EiCommandPath $eiCommandPath, string $apiSection) {
+	public function getApiUrl(?EiCmdPath $eiCmdPath, string $apiSection) {
 		ArgUtils::valEnum($apiSection, ApiController::getApiSections());
 		
-		if ($eiCommandPath === null) {
-			$eiCommandPath = EiCommandPath::from($this->getEiExecution()->getEiCommand());
+		if ($eiCmdPath === null) {
+			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCommand());
 		}
 		
-		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCommandPath])->pathExt($apiSection);
+		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCmdPath])->pathExt($apiSection);
 	}
 	
-	public function getCmdUrl(EiCommandPath $eiCommandPath) {
-		return $this->getBaseUrl()->ext([EiFrameController::CMD_PATH_PART, (string) $eiCommandPath]);
+	public function getCmdUrl(EiCmdPath $eiCmdPath) {
+		return $this->getBaseUrl()->ext([EiFrameController::CMD_PATH_PART, (string) $eiCmdPath]);
 	}
 	
 	/**
@@ -498,21 +498,21 @@ class EiFrame {
 	 * @param EiEntry|null $eiEntry
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getForkUrl(?EiCommandPath $eiCommandPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
-		if ($eiCommandPath === null) {
-			$eiCommandPath = EiCommandPath::from($this->getEiExecution()->getEiCommand());
+	public function getForkUrl(?EiCmdPath $eiCmdPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
+		if ($eiCmdPath === null) {
+			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCommand());
 		}
 		
 		if ($eiObject === null) {
-			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiCommandPath, (string) $eiPropPath, $mode]);
+			return $this->getBaseUrl()->ext([EiFrameController::FORK_PATH, (string) $eiCmdPath, (string) $eiPropPath, $mode]);
 		}
 		
 		if ($eiObject->isNew()) {
-			return $this->getBaseUrl()->ext([EiFrameController::FORK_NEW_ENTRY_PATH, (string) $eiCommandPath, 
+			return $this->getBaseUrl()->ext([EiFrameController::FORK_NEW_ENTRY_PATH, (string) $eiCmdPath, 
 					$eiObject->getEiEntityObj()->getEiType()->getId(), (string) $eiPropPath, $mode]);
 		}
 		
-		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, (string) $eiCommandPath, 
+		return $this->getBaseUrl()->ext([EiFrameController::FORK_ENTRY_PATH, (string) $eiCmdPath, 
 				$eiObject->getEiEntityObj()->getPid(), (string) $eiPropPath, $mode]);
 	}
 	

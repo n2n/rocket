@@ -164,12 +164,12 @@ class EiEntry {
 	}
 	
 // 	public function getEiCommandAccessRestrictors()  {
-// 		return $this->eiCommandAccessRestrictors;
+// 		return $this->eiCmdAccessRestrictors;
 // 	}
 	
-// 	public function isExecutableBy(EiCommandPath $eiCommandPath) {
-// 		foreach ($this->eiCommandAccessRestrictors as $eiExecutionRestrictor) {
-// 			if (!$eiExecutionRestrictor->isAccessibleBy($eiCommandPath)) {
+// 	public function isExecutableBy(EiCmdPath $eiCmdPath) {
+// 		foreach ($this->eiCmdAccessRestrictors as $eiExecutionRestrictor) {
+// 			if (!$eiExecutionRestrictor->isAccessibleBy($eiCmdPath)) {
 // 				return false;
 // 			}
 // 		}

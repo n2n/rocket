@@ -35,7 +35,7 @@ use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\util\frame\EiuFrame;
 use rocket\ei\manage\api\ZoneApiControlCallId;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 
 class EiuRefGuiControl implements GuiControl {
 	private $id;
@@ -70,12 +70,12 @@ class EiuRefGuiControl implements GuiControl {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCommandPath
+	 * @param EiCmdNature $eiCmdPath
 	 * @param mixed $urlExt
 	 * @return \n2n\util\uri\Url
 	 */
-	private function createCmdUrl(EiCommandPath $eiCommandPath) {
-		return $this->eiuFrame->getCmdUrl($eiCommandPath)->ext($this->urlExt);
+	private function createCmdUrl(EiCmdPath $eiCmdPath) {
+		return $this->eiuFrame->getCmdUrl($eiCmdPath)->ext($this->urlExt);
 	}
 	
 	/**
@@ -83,7 +83,7 @@ class EiuRefGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
 	 */
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		$cmdUrl = $this->createCmdUrl($siApiCallId->getGuiControlPath()->getEiCommandPath());
+		$cmdUrl = $this->createCmdUrl($siApiCallId->getGuiControlPath()->getEiCmdPath());
 
 		if ($this->href) {
 			$this->siButton->setHref($cmdUrl);
@@ -97,7 +97,7 @@ class EiuRefGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
 	 */
 	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		$eiCmdPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCommandPath();
+		$eiCmdPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCmdPath();
 		return new RefSiControl($this->createCmdUrl($eiCmdPath), $this->siButton, $this->newWindow);
 	}
 	

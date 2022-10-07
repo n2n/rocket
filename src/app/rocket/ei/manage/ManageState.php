@@ -174,8 +174,8 @@ class ManageState implements RequestScoped {
 		return $this->eiGuiModelCache;
 	}
 	
-// 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCommandPath $eiCommandPath) {
-// 		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCommandPath);
+// 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCmdPath $eiCmdPath) {
+// 		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCmdPath);
 		
 // 		$this->pushEiFrame($eiFrame);
 		

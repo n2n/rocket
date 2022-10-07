@@ -64,7 +64,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropNatureAdapter implements Fiel
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
-				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 		$field->setMandatory($this->getEditConfig()->isMandatory());
@@ -78,7 +78,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropNatureAdapter implements Fiel
 // 		}
 		
 // 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-// 				->exec($this->getRelationModel()->getTargetEditEiCommandPath());
+// 				->exec($this->getRelationModel()->getTargetEditEiCmdPath());
 		
 		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
 		
@@ -89,10 +89,10 @@ class EmbeddedOneToOneEiProp extends RelationEiPropNatureAdapter implements Fiel
 		$targetEiuFrame = null;
 		if ($readOnly){
 			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		} else {
 			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		}
 
 		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);

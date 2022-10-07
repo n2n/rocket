@@ -28,7 +28,7 @@ use rocket\ei\manage\entry\EiEntryConstraint;
 use n2n\util\type\ArgUtils;
 use rocket\user\bo\EiGrant;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\mask\EiMask;
@@ -73,20 +73,20 @@ class EiGrantConstraintCache {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCommand
+	 * @param EiCmdNature $eiCmd
 	 * @return NULL|\rocket\user\model\security\EiCommandAccessResult
 	 */
-	function testEiCommand(EiCmdNature $eiCommand) {
-		if (!$this->isEiCommandTestable($eiCommand)) {
+	function testEiCommand(EiCmdNature $eiCmd) {
+		if (!$this->isEiCommandTestable($eiCmd)) {
 			return null;
 		}
 		
 		$eiGrantPrivileges = [];
 		
-		$eiCommandPath = EiCommandPath::from($eiCommand);
+		$eiCmdPath = EiCmdPath::from($eiCmd);
 		foreach ($this->eiGrant->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			if ($eiCommand->isPrivileged() 
-					&& !$eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCommandPath($eiCommandPath)) {
+			if ($eiCmd->isPrivileged() 
+					&& !$eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCmdPath($eiCmdPath)) {
 					continue;
 			}
 			
@@ -113,27 +113,27 @@ class EiGrantConstraintCache {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCommand
+	 * @param EiCmdNature $eiCmd
 	 * @param EiEntry $eiEntry
 	 * @return NULL|\rocket\user\model\security\EiEntryAccessResult
 	 */
-	function testEiEntry(EiCmdNature $eiCommand, EiEntry $eiEntry) {
-		if (!$this->isEiCommandTestable($eiCommand)) {
+	function testEiEntry(EiCmdNature $eiCmd, EiEntry $eiEntry) {
+		if (!$this->isEiCommandTestable($eiCmd)) {
 			return null;
 		}
 		
 		if ($this->eiGrant->isFull()) {
 			return new EiEntryAccessResult(
 					$this->eiMask->getEiPropCollection()->getPrivilegedEiPropPaths(),
-					$this->eiMask->getEiCmdCollection()->getPrivilegedEiCommandPaths());
+					$this->eiMask->getEiCmdCollection()->getPrivilegedEiCmdPaths());
 		}
 		
 		$accessibleEiPropPaths = [];
-		$executableEiCommandPaths = [];
-		$eiCommandPath = EiCommandPath::from($eiCommand);
+		$executableEiCmdPaths = [];
+		$eiCmdPath = EiCmdPath::from($eiCmd);
 		foreach ($this->eiGrant->getEiGrantPrivileges() as $eiGrantPrivilege) {
-			if ($eiCommand->isPrivileged()
-					&& !$eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCommandPath($eiCommandPath)) {
+			if ($eiCmd->isPrivileged()
+					&& !$eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCmdPath($eiCmdPath)) {
 				continue;
 			}
 					
@@ -141,7 +141,7 @@ class EiGrantConstraintCache {
 				continue;
 			}
 			
-			array_push($executableEiCommandPaths, ...$eiGrantPrivilege->getPrivilegeSetting()->getExecutableEiCommandPropPaths());
+			array_push($executableEiCmdPaths, ...$eiGrantPrivilege->getPrivilegeSetting()->getExecutableEiCommandPropPaths());
 			array_push($accessibleEiPropPaths, ...$eiGrantPrivilege->getPrivilegeSetting()->getWritableEiPropPaths());
 		}
 		
@@ -153,13 +153,13 @@ class EiGrantConstraintCache {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCommand
+	 * @param EiCmdNature $eiCmd
 	 */
-	private function isEiCommandTestable($eiCommand) {
-		$eiCommandMask = $eiCommand->getWrapper()->getEiCommandCollection()->getEiMask();
+	private function isEiCommandTestable($eiCmd) {
+		$eiCmdMask = $eiCmd->getWrapper()->getEiCommandCollection()->getEiMask();
 		
-		return !$eiCommand->isPrivileged() || $eiCommandMask->equals($this->eiMask)
-				|| $this->eiMask->getEiType()->isA($eiCommandMask->getEiType());
+		return !$eiCmd->isPrivileged() || $eiCmdMask->equals($this->eiMask)
+				|| $this->eiMask->getEiType()->isA($eiCmdMask->getEiType());
 	}
 	
 // 	/**
@@ -245,17 +245,17 @@ class EiEntryAccessResult {
 	 */
 	private $writableEiPropPaths;
 	/**
-	 * @var EiCommandPath[]
+	 * @var EiCmdPath[]
 	 */
-	private $executableEiCommandPaths;
+	private $executableEiCmdPaths;
 	
 	/**
 	 * @param EiPropPath[] $writableEiPropPaths
-	 * @param EiCommandPath[] $executableEiCommandPaths
+	 * @param EiCmdPath[] $executableEiCmdPaths
 	 */
-	function __construct(array $writableEiPropPaths, array $executableEiCommandPaths) {
+	function __construct(array $writableEiPropPaths, array $executableEiCmdPaths) {
 		$this->writableEiPropPaths = $writableEiPropPaths;
-		$this->executableEiCommandPaths = $executableEiCommandPaths;
+		$this->executableEiCmdPaths = $executableEiCmdPaths;
 	}
 	
 	/**
@@ -266,9 +266,9 @@ class EiEntryAccessResult {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiCommandPath[]
+	 * @return \rocket\ei\EiCmdPath[]
 	 */
-	function getExecutableEiCommandPaths() {
-		return $this->executableEiCommandPaths;
+	function getExecutableEiCmdPaths() {
+		return $this->executableEiCmdPaths;
 	}
 }

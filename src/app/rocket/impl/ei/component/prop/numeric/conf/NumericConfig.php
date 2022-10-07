@@ -32,9 +32,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
-class NumericConfig extends PropConfigAdaption {
-	const ATTR_MIN_VALUE_KEY = 'minValue';
-	const ATTR_MAX_VALUE_KEY = 'maxValue';
+trait NumericConfig {
 	
 	protected $minValue = null;
 	protected $maxValue = null;
@@ -69,55 +67,5 @@ class NumericConfig extends PropConfigAdaption {
 	function setMaxValue(?float $maxValue) {
 	    $this->maxValue = $maxValue;
 	    return $this;
-	}
-	
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
-		if ($this->isGeneratedId()) {
-			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
-			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
-			$dataSet->set(EditConfig::ATTR_READ_ONLY_KEY, true);
-		}
-		
-		if ($column instanceof IntegerColumn) {
-			$dataSet->set(NumericConfig::ATTR_MIN_VALUE_KEY, $column->getMinValue());
-			$dataSet->set(NumericConfig::ATTR_MAX_VALUE_KEY, $column->getMaxValue());
-		}
-	}
-	
-	function setup(Eiu $eiu, DataSet $dataSet) {
-		if (null !== ($minValue = $dataSet->optNumeric(self::ATTR_MIN_VALUE_KEY))) {
-			$this->setMinValue($minValue);
-		}
-		
-		if (null !== ($maxValue = $dataSet->optNumeric(self::ATTR_MAX_VALUE_KEY))) {
-			$this->setMaxValue($maxValue);
-		}
-	}
-	
-	protected function isGeneratedId(): bool {
-		$entityProperty = $this->getPropertyAssignation()->getEntityProperty(false);
-		if ($entityProperty === null) return false;
-		
-		$idDef = $entityProperty->getEntityModel()->getIdDef();
-		return $idDef->isGenerated() && $idDef->getEntityProperty() === $entityProperty;
-	}
-	
-	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($dataSet);
-		
-		$magCollection->addMag(self::ATTR_MIN_VALUE_KEY, new NumericMag('Min Value',
-				$lar->getNumeric(self::ATTR_MIN_VALUE_KEY, $this->getMinValue())));
-		$magCollection->addMag(self::ATTR_MAX_VALUE_KEY, new NumericMag('Max Value',
-				$lar->getNumeric(self::ATTR_MAX_VALUE_KEY, $this->getMaxValue())));
-	}
-	
-	function save(Eiu $eiu, MagCollection $magCollection, DataSet $dataSet) {
-		if (null !== ($minValue = $magCollection->readValue(self::ATTR_MIN_VALUE_KEY))) {
-			$dataSet->set(self::ATTR_MIN_VALUE_KEY, $minValue);
-		}
-		
-		if (null !== ($maxValue = $magCollection->readValue(self::ATTR_MAX_VALUE_KEY))) {
-			$dataSet->set(self::ATTR_MAX_VALUE_KEY, $maxValue);
-		}
 	}
 }

@@ -26,17 +26,17 @@ use rocket\impl\ei\component\EiComponentNatureAdapter;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\modificator\EiModificator;
+use rocket\ei\component\modificator\EiMod;
 use n2n\util\ex\IllegalStateException;
 
 abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements EiModNature {
 	private $wrapper;
 	
-	public function setWrapper(EiModificator $wrapper) {
+	public function setWrapper(EiMod $wrapper) {
 		$this->wrapper = $wrapper;
 	}
 	
-	public function getWrapper(): EiModificator {
+	public function getWrapper(): EiMod {
 		if ($this->wrapper !== null) {
 			return $this->wrapper;
 		}

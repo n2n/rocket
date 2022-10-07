@@ -30,7 +30,7 @@ use rocket\si\control\SiCallResponse;
 use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 
 interface GuiControl {
 	
@@ -65,7 +65,7 @@ interface GuiControl {
 // 	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse;
 	
 	/**
-	 * @param GuiControlPath $guiCommandPath
+	 * @param GuiControlPath $guiCmdPath
 	 * @param ApiControlCallId $siApiCallId
 	 * @return SiControl
 	 */

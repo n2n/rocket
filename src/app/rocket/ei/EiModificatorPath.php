@@ -32,7 +32,7 @@ class EiModificatorPath extends IdPath {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCommand
+	 * @param EiCmdNature $eiCmd
 	 * @return EiModificatorPath
 	 */
 	public static function from(EiModNature $eiModificator) {

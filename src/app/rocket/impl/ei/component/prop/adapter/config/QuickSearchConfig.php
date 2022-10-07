@@ -27,7 +27,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 
-class QuickSearchConfig extends PropConfigAdaption {
+class QuickSearchConfig {
 	const ATTR_QUICK_SEARCHABLE_KEY = 'quickSearchable';
 	
 	private $quickSearchable = true;
@@ -52,25 +52,5 @@ class QuickSearchConfig extends PropConfigAdaption {
 	function setQuickSerachable(bool $quickSearchable) {
 		$this->quickSearchable = $quickSearchable;
 	}
-	
-	function mag(Eiu $eiu, DataSet $ds, MagCollection $magCollection) {
-		$lar = new LenientAttributeReader($ds);
-		
-		$magCollection->addMag(self::ATTR_QUICK_SEARCHABLE_KEY, 
-				new BoolMag('Quicksearchable', 
-						$lar->getBool(self::ATTR_QUICK_SEARCHABLE_KEY, $this->quickSearchable)));
-	}
-	
-	function save(Eiu $eiu, MagCollection $magCollection, DataSet $ds) {
-		$ds->set(self::ATTR_QUICK_SEARCHABLE_KEY, 
-				$magCollection->getMagByPropertyName(self::ATTR_QUICK_SEARCHABLE_KEY)->getValue());
-	}
-	
-	/**
-	 * @param DataSet $ds
-	 * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
-	 */
-	function setup(Eiu $eiu, DataSet $ds) {
-		$this->quickSearchable = $ds->optBool(self::ATTR_QUICK_SEARCHABLE_KEY, $this->quickSearchable);
-	}		
+
 }

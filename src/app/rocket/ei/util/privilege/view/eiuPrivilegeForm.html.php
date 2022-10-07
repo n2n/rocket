@@ -49,7 +49,7 @@ use rocket\ei\manage\RocketUiOutfitter;
 	
 		
 	<div class="rocket-structure-content rocket-command-privileges">
-		<?php $eiuPrivilegeHtml->privilegeCheckboxes($basePropertyPath->ext('eiCommandPathStrs[]'), 
+		<?php $eiuPrivilegeHtml->privilegeCheckboxes($basePropertyPath->ext('eiCmdPathStrs[]'), 
 				$eiuPrivilegeForm->getPrivilegeDefinition()) ?>
 	</div>
 </div>

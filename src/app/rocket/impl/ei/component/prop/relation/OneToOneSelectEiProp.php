@@ -68,7 +68,7 @@ class OneToOneSelectEiProp extends RelationEiPropNatureAdapter implements FieldE
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
-				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 		$field->setMandatory($this->getEditConfig()->isMandatory());

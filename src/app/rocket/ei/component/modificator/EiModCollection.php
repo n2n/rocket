@@ -40,7 +40,7 @@ class EiModCollection extends EiComponentCollection {
 		$this->setEiMask($eiMask);
 	}
 
-	public function getById(string $id): EiModificator {
+	public function getById(string $id): EiMod {
 		return $this->getEiComponentById($id);
 	}
 
@@ -48,14 +48,14 @@ class EiModCollection extends EiComponentCollection {
 	 * @param EiModNature $eiModificatorNature
 	 * @param string|null $id
 	 * @param bool $prepend
-	 * @return EiModificator
+	 * @return EiMod
 	 */
 	public function add(EiModNature $eiModificatorNature, string $id = null, bool $prepend = false) {
 		$eiModificatorPath = new EiModificatorPath($this->makeId($id, $eiModificatorNature));
-		$eiModificator = new EiModificator($eiModificatorPath, $eiModificator, $this);
+		$eiModificator = new EiMod($eiModificatorPath, $eiModificator, $this);
 		
 		$this->addEiComponent($eiModificatorPath,
-				new EiModificator($eiModificatorPath, $eiModificatorNature, $this));
+				new EiMod($eiModificatorPath, $eiModificatorNature, $this));
 
 		$this->uninitializedEiModificators[] = $eiModificator;
 

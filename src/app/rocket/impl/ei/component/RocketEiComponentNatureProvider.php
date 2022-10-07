@@ -19,6 +19,9 @@ use rocket\impl\ei\component\cmd\common\DeleteEiCmdNature;
 use rocket\impl\ei\component\cmd\common\AddEiCmdNature;
 use rocket\attribute\impl\EiCmdDelete;
 use rocket\spec\setup\EiComponentNatureProvider;
+use n2n\util\type\TypeConstraint;
+use rocket\attribute\EiPreset;
+use rocket\impl\ei\component\prop\numeric\IntegerEiPropNature;
 
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
@@ -32,25 +35,52 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 		}
 
 		foreach ($eiTypeSetup->getUnassignedEiPresetProps() as $eiPresetProp) {
-			$namedTypeConstraints = $eiPresetProp->getObjectPropertyAccessProxy()->getConstraint()
-					->getNamedTypeConstraints();
+			$nullAllowed = false;
+			foreach ($this->compileTypeNames($eiPresetProp, $nullAllowed) as $typeName) {
+				$eiPropNature = null;
+				if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
+					$eiPropNature = $this->findGoodPresetMatch($eiPresetProp, $typeName, $nullAllowed);
+				} else {
+					$eiPropNature = $this->findSuitablePresetMatch($eiPresetProp, $typeName, $nullAllowed);
+				}
 
-			if (count($namedTypeConstraints) !== 1) {
-				continue;
-			}
-
-			$eiPropNature = null;
-			if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
-				$eiPropNature = $this->findGoodPresetMatch($eiPresetProp, $namedTypeConstraints[0]);
-			} else {
-				$eiPropNature = $this->findSuitablePresetMatch($eiPresetProp, $namedTypeConstraints[0]);
-			}
-
-			if ($eiPropNature !== null) {
-				$eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $eiPropNature);
+				if ($eiPropNature !== null) {
+					$eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $eiPropNature);
+				}
 			}
 		}
 
+	}
+
+	private function compileTypeNames(EiPresetProp $eiPresetProp, bool &$nullAllowed) {
+		$accessProxy = $eiPresetProp->getObjectPropertyAccessProxy();
+
+		$namedTypeConstraints = [];
+		if ($accessProxy->isWritable()) {
+			array_push($namedTypeConstraints,
+					...$accessProxy->getSetterConstraint()->getNamedTypeConstraints());
+		}
+		if (!$eiPresetProp->isEditable()) {
+			array_push($namedTypeConstraints,
+					...$accessProxy->getGetterConstraint()->getNamedTypeConstraints());
+		}
+
+		$typeNames = [];
+		$nullAllowed = false;
+		foreach ($namedTypeConstraints as $namedTypeConstraint) {
+			if ($namedTypeConstraint->isMixed()) {
+				continue;
+			}
+
+			if ($namedTypeConstraint->allowsNull()) {
+				$nullAllowed = true;
+			}
+
+			$typeName = $namedTypeConstraint->getTypeName();
+			$typeNames[$typeName] = $typeName;
+		}
+
+		return $typeNames;
 	}
 
 	private function provideCmdNatures(EiTypeSetup $eiTypeSetup) {
@@ -88,21 +118,26 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 		}
 	}
 
-	private function findGoodPresetMatch(EiPresetProp $eiPresetProp, NamedTypeConstraint $namedTypeConstraint) {
+	private function findGoodPresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
 
 	}
 
-	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, NamedTypeConstraint $namedTypeConstraint) {
-		switch ($namedTypeConstraint->getTypeName()) {
+	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
+		switch ($typeName) {
 			case 'string':
 				$stringEiProp = new StringEiPropNature();
-				$stringEiProp->setMandatory(!$namedTypeConstraint->allowsNull());
+				$stringEiProp->setMandatory(!$nullAllowed);
 				$stringEiProp->setReadOnly(!$eiPresetProp->isEditable());
 				$stringEiProp->setMaxlength(255);
 				return $stringEiProp;
+			case 'int':
+				$intEiProp = new IntegerEiPropNature();
+				$intEiProp->setMandatory(!$nullAllowed);
+				$intEiProp->setReadOnly(!$eiPresetProp->isEditable());
+				return $intEiProp;
 			case 'bool':
 				$booleanEiProp = new BooleanEiPropNature();
-				$booleanEiProp->setMandatory(!$namedTypeConstraint->allowsNull());
+				$booleanEiProp->setMandatory(!$nullAllowed);
 				$booleanEiProp->setReadOnly(!$eiPresetProp->isEditable());
 				return $booleanEiProp;
 		}

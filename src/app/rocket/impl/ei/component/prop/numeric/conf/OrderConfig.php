@@ -30,7 +30,7 @@ use n2n\persistence\meta\structure\Column;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\impl\ei\component\prop\numeric\OrderEiProp;
+use rocket\impl\ei\component\prop\numeric\OrderEiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\spec\EiuMask;
 
@@ -41,7 +41,7 @@ class OrderConfig extends PropConfigAdaption {
 	
 	private $orderEiProp;
 	
-	public function __construct(OrderEiProp $orderEiProp) {
+	public function __construct(OrderEiPropNature $orderEiProp) {
 		$this->orderEiProp = $orderEiProp;
 	}
 	

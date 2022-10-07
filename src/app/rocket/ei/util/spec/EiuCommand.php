@@ -2,30 +2,30 @@
 namespace rocket\ei\util\spec;
 
 use rocket\ei\EiPropPath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\component\command\IndependentEiCmd;
 use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\factory\EiuFactory;
 
 class EiuCommand {
-	private $eiCommandPath;
+	private $eiCmdPath;
 	private $eiuEngine;
 	
 	/**
-	 * @param EiPropPath $eiCommandPath
+	 * @param EiPropPath $eiCmdPath
 	 * @param EiuEngine $eiuEngine
 	 */
-	function __construct(EiCommandPath $eiCommandPath, EiuEngine $eiuEngine) {
-		$this->eiCommandPath = $eiCommandPath;
+	function __construct(EiCmdPath $eiCmdPath, EiuEngine $eiuEngine) {
+		$this->eiCmdPath = $eiCmdPath;
 		$this->eiuEngine = $eiuEngine;
 	}
 	
 	/**
-	 * @return \rocket\ei\EiCommandPath
+	 * @return \rocket\ei\EiCmdPath
 	 */
-	function getEiCommandPath() {
-		return $this->eiCommandPath;
+	function getEiCmdPath() {
+		return $this->eiCmdPath;
 	}
 	
 	/**
@@ -33,19 +33,19 @@ class EiuCommand {
 	 */
 	function getEiCommand() {
 		return $this->eiuEngine->getEiEngine()->getEiMask()->getEiCmdCollection()
-				->getById((string) $this->eiCommandPath);
+				->getById((string) $this->eiCmdPath);
 	}
 	
 	/**
 	 * @return string
 	 */
 	function getTypeName() {
-		$eiCommand = $this->getEiCommand();
-		if ($eiCommand instanceof IndependentEiCmd) {
-			return $eiCommand->createEiConfigurator()->getTypeName();
+		$eiCmd = $this->getEiCommand();
+		if ($eiCmd instanceof IndependentEiCmd) {
+			return $eiCmd->createEiConfigurator()->getTypeName();
 		}
 		
-		return EiConfiguratorAdapter::createAutoTypeName($eiCommand, ['Ei', 'Command']);
+		return EiConfiguratorAdapter::createAutoTypeName($eiCmd, ['Ei', 'Command']);
 	}
 	
 	/**

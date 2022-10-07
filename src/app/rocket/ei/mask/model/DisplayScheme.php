@@ -198,11 +198,11 @@ class DisplayScheme {
 // 	public static function buildPartialControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 // 		$labels = array();
 	
-// 		foreach ($eiDef->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof PartialControlComponent)) continue;
+// 		foreach ($eiDef->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// 			if (!($eiCmd instanceof PartialControlComponent)) continue;
 				
-// 			foreach ($eiCommand->getPartialControlOptions($n2nLocale) as $controlId => $label) {
-// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			foreach ($eiCmd->getPartialControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCmdId, $controlId)] = $label;
 // 			}
 // 		}
 	
@@ -217,11 +217,11 @@ class DisplayScheme {
 // 	public static function buildOverallControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 // 		$labels = array();
 	
-// 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof OverallControlComponent)) continue;
+// 		foreach ($this->eiType->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// 			if (!($eiCmd instanceof OverallControlComponent)) continue;
 				
-// 			foreach ($eiCommand->getOverallControlOptions($n2nLocale) as $controlId => $label) {
-// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			foreach ($eiCmd->getOverallControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCmdId, $controlId)] = $label;
 // 			}
 // 		}
 	
@@ -236,11 +236,11 @@ class DisplayScheme {
 // 	public static function buildEntryGuiControlMap(EiMask $eiDef, N2nLocale $n2nLocale) {
 // 		$labels = array();
 	
-// 		foreach ($this->eiType->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof EntryGuiControlComponent)) continue;
+// 		foreach ($this->eiType->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// 			if (!($eiCmd instanceof EntryGuiControlComponent)) continue;
 				
-// 			foreach ($eiCommand->getEntryGuiControlOptions($n2nLocale) as $controlId => $label) {
-// 				$labels[ControlOrder::buildControlId($eiCommandId, $controlId)] = $label;
+// 			foreach ($eiCmd->getEntryGuiControlOptions($n2nLocale) as $controlId => $label) {
+// 				$labels[ControlOrder::buildControlId($eiCmdId, $controlId)] = $label;
 // 			}
 // 		}
 		

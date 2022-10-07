@@ -21,28 +21,28 @@
 //  */
 // namespace rocket\ei\manage\entry;
 
-// use rocket\ei\EiCommandPath;
+// use rocket\ei\EiCmdPath;
 // use n2n\util\col\HashSet;
 // use rocket\ei\manage\security\EiCommandAccessRestrictor;
 
 // class WhitelistEiCommandAccessRestrictor implements EiCommandAccessRestrictor {
-// 	private $eiCommandPaths;
+// 	private $eiCmdPaths;
 	
 // 	public function __construct() {
-// 		$this->eiCommandPaths = new HashSet(EiCommandPath::class);
+// 		$this->eiCmdPaths = new HashSet(EiCmdPath::class);
 // 	}
 	
 // 	/**
 // 	 * @return \n2n\util\col\HashSet
 // 	 */
-// 	public function getEiCommandPaths() {
-// 		return $this->eiCommandPaths;	
+// 	public function getEiCmdPaths() {
+// 		return $this->eiCmdPaths;	
 // 	}
 		
 // 	/* (non-PHPdoc)
 // 	 * @see \rocket\ei\manage\entry\EiCommandAccessRestrictor::isaccessibleBy()
 // 	 */
-// 	public function isAccessibleBy(EiCommandPath $eiCommandPath): bool {
-// 		return $this->eiCommandPaths->contains($eiCommandPath);
+// 	public function isAccessibleBy(EiCmdPath $eiCmdPath): bool {
+// 		return $this->eiCmdPaths->contains($eiCmdPath);
 // 	}
 // }

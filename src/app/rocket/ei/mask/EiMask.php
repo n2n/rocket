@@ -425,14 +425,14 @@ class EiMask {
 		
 // // 		$controls = array();
 		
-// // 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// // 			if (!($eiCommand instanceof OverallControlComponent)
-// // 					|| !$eiPermissionManager->isEiCommandAccessible($eiCommand)) continue;
+// // 		foreach ($this->eiEngine->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// // 			if (!($eiCmd instanceof OverallControlComponent)
+// // 					|| !$eiPermissionManager->isEiCommandAccessible($eiCmd)) continue;
 				
-// // 			$controls = $eiCommand->createOverallControls($eiu, $view);
-// // 			ArgUtils::valArrayReturn($controls, $eiCommand, 'createOverallControls', Control::class);
+// // 			$controls = $eiCmd->createOverallControls($eiu, $view);
+// // 			ArgUtils::valArrayReturn($controls, $eiCmd, 'createOverallControls', Control::class);
 // // 			foreach ($controls as $controlId => $control) {
-// // 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// // 				$controls[ControlOrder::buildControlId($eiCmdId, $controlId)] = $control;
 // // 			}
 // // 		}
 		
@@ -447,17 +447,17 @@ class EiMask {
 	
 // 	public function createPartialControls(EiFrame $eiFrame, HtmlView $view): array {
 // 		$controls = array();
-// 		foreach ($this->getEiCommandCollection() as $eiCommandId => $eiCommand) {
-// 			if (!($eiCommand instanceof PartialControlComponent)
-// 					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCommand)) continue;
+// 		foreach ($this->getEiCommandCollection() as $eiCmdId => $eiCmd) {
+// 			if (!($eiCmd instanceof PartialControlComponent)
+// 					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCmd)) continue;
 				
-// 			$executionPath = EiCommandPath::from($eiCommand);
-// 			$partialControls = $eiCommand->createPartialControls($eiFrame, $view);
-// 			ArgUtils::valArrayReturn($partialControls, $eiCommand, 'createPartialControls', PartialControl::class);
+// 			$executionPath = EiCmdPath::from($eiCmd);
+// 			$partialControls = $eiCmd->createPartialControls($eiFrame, $view);
+// 			ArgUtils::valArrayReturn($partialControls, $eiCmd, 'createPartialControls', PartialControl::class);
 // 			foreach ($partialControls as $controlId => $control) {
-// 				$controls[ControlOrder::buildControlId($eiCommandId, $controlId)] = $control;
+// 				$controls[ControlOrder::buildControlId($eiCmdId, $controlId)] = $control;
 				
-// 				if (!$control->hasEiCommandPath()) {
+// 				if (!$control->hasEiCmdPath()) {
 // 					$control->setExecutionPath($executionPath->ext($controlId));
 // 				}
 // 			}

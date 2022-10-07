@@ -80,7 +80,7 @@ class EiLaunchPad implements LaunchPad {
 		
 		if ($loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
 				->isEiCommandAccessible($this->eiMask, $result->getEiCommand())) {
-			return EiFrameController::createCmdUrlExt($result->getEiCommandPath());
+			return EiFrameController::createCmdUrlExt($result->getEiCmdPath());
 		}
 		
 		return null;

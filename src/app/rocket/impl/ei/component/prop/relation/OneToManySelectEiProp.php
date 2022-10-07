@@ -57,7 +57,7 @@ class OneToManySelectEiProp extends RelationEiPropNatureAdapter implements Field
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())->frame()
-				->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}

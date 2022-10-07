@@ -120,7 +120,8 @@ class EiPresetUtil {
 	function createUnassignedEiPresetPropsError(array $unassignedEiPresetProps) {
 		ArgUtils::valArray($unassignedEiPresetProps, EiPresetProp::class);
 
-		return $this->createAttributeError( 'No suitable EiProps found for the following properties: '
+		return $this->createAttributeError( 'No suitable EiProps found for the following properties in '
+				. $this->entityModel->getClass()->getName() . ': '
 				. implode(',', array_map(fn (EiPresetProp $p) => $p->getName(), $unassignedEiPresetProps)));
 	}
 

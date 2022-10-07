@@ -27,9 +27,9 @@ use n2n\web\http\ForbiddenException;
 use rocket\ei\manage\ManageState;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\manage\security\InaccessibleEiCmdPathException;
 use n2n\web\http\BadRequestException;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\LiveEiObject;
@@ -61,11 +61,11 @@ class EiFrameController extends ControllerAdapter {
 	
 	/**
 	 * @param string $str
-	 * @return \rocket\ei\EiCommandPath
+	 * @return \rocket\ei\EiCmdPath
 	 */
-	private function parseEiCommandPath($str) {
+	private function parseEiCmdPath($str) {
 		try {
-			return EiCommandPath::create($str);
+			return EiCmdPath::create($str);
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -97,14 +97,14 @@ class EiFrameController extends ControllerAdapter {
 	}
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
+	 * @param EiCmdPath $eiCmdPath
 	 * @return \rocket\ei\component\command\EiCmdNature
 	 *@throws PageNotFoundException
 	 */
-	private function lookupEiCommand($eiCommandPath) {
+	private function lookupEiCommand($eiCmdPath) {
 		try {
 			return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCmdCollection()
-					->getByPath($eiCommandPath);
+					->getByPath($eiCmdPath);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}
@@ -142,16 +142,16 @@ class EiFrameController extends ControllerAdapter {
 	}
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
-	 * @param EiCmdNature $eiCommand
+	 * @param EiCmdPath $eiCmdPath
+	 * @param EiCmdNature $eiCmd
 	 * @return EiFrame
 	 */
-	private function pushEiFrame($eiCommand) {
+	private function pushEiFrame($eiCmd) {
 		$eiFrame = null;
 		try {
 			$this->eiFrame->setBaseUrl($this->getUrlToController(null, null, $this->getControllerContext()));
-			$this->eiFrame->exec($eiCommand);
-		} catch (InaccessibleEiCommandPathException $e) {
+			$this->eiFrame->exec($eiCmd);
+		} catch (InaccessibleEiCmdPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
@@ -186,29 +186,29 @@ class EiFrameController extends ControllerAdapter {
 		try {
 			$eiEngine = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType, false)->getEiEngine();
 			return $eiEngine->createForkedEiFrame($eiPropPath, $eiForkLink);
-		} catch (InaccessibleEiCommandPathException $e) {
+		} catch (InaccessibleEiCmdPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		} catch (UnknownEiComponentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} 
 	}
 	
-	public function doApi($eiCommandPathStr, ApiController $apiController, array $delegateParams = null) {
-		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
-		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+	public function doApi($eiCmdPathStr, ApiController $apiController, array $delegateParams = null) {
+		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
+		$eiCmd = $this->lookupEiCommand($eiCmdPath);
 		
-		$this->pushEiFrame($eiCommand);
+		$this->pushEiFrame($eiCmd);
 		
 		$this->delegate($apiController);
 	}
 	
-	public function doCmd($eiCommandPathStr, array $delegateCmds = null) {		
-		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
-		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+	public function doCmd($eiCmdPathStr, array $delegateCmds = null) {		
+		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
+		$eiCmd = $this->lookupEiCommand($eiCmdPath);
 		
-		$this->pushEiFrame($eiCommand);
+		$this->pushEiFrame($eiCmd);
 		
-		$controller = $eiCommand->lookupController(new Eiu($this->eiFrame));
+		$controller = $eiCmd->lookupController(new Eiu($this->eiFrame));
 		if ($controller !== null) {
 			$this->delegate($controller);
 			return;
@@ -221,11 +221,11 @@ class EiFrameController extends ControllerAdapter {
 // 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 // 	}
 	
-	public function doFork($eiCommandPathStr, $eiPropPathStr, $mode, array $delegateCmds) {
-		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
-		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+	public function doFork($eiCmdPathStr, $eiPropPathStr, $mode, array $delegateCmds) {
+		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
+		$eiCmd = $this->lookupEiCommand($eiCmdPath);
 		
-		$this->pushEiFrame($eiCommand);
+		$this->pushEiFrame($eiCmd);
 		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
@@ -234,11 +234,11 @@ class EiFrameController extends ControllerAdapter {
 		$this->delegate(new EiFrameController($this->createForked($eiType, $eiPropPath, $eiForkLink)));
 	}
 	
-	public function doForkEntry($eiCommandPathStr, $pid, $eiPropPathStr, $mode, array $deleteCmds) {
-		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
-		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+	public function doForkEntry($eiCmdPathStr, $pid, $eiPropPathStr, $mode, array $deleteCmds) {
+		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
+		$eiCmd = $this->lookupEiCommand($eiCmdPath);
 		
-		$this->pushEiFrame($eiCommand);
+		$this->pushEiFrame($eiCmd);
 		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiObject = $this->lookupEiObject($pid);
@@ -248,11 +248,11 @@ class EiFrameController extends ControllerAdapter {
 		$this->delegate(new EiFrameController($this->createForked($eiType, $eiPropPath, $eiForkLink)));
 	}
 	
-	public function doForkNewEntry($eiCommandPathStr, $eiTypeId, $eiPropPathStr, $mode, array $deleteCmds) {
-		$eiCommandPath = $this->parseEiCommandPath($eiCommandPathStr);
-		$eiCommand = $this->lookupEiCommand($eiCommandPath);
+	public function doForkNewEntry($eiCmdPathStr, $eiTypeId, $eiPropPathStr, $mode, array $deleteCmds) {
+		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
+		$eiCmd = $this->lookupEiCommand($eiCmdPath);
 		
-		$this->pushEiFrame($eiCommand);
+		$this->pushEiFrame($eiCmd);
 		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiType = $this->lookupEiType($eiTypeId);
@@ -265,7 +265,7 @@ class EiFrameController extends ControllerAdapter {
 	 * @param Url $urlExt
 	 * @return Url
 	 */
-	static function createCmdUrlExt(EiCommandPath $eiCommandPath) {
-		return (new Path([self::CMD_PATH_PART]))->toUrl()->ext((string) $eiCommandPath);
+	static function createCmdUrlExt(EiCmdPath $eiCmdPath) {
+		return (new Path([self::CMD_PATH_PART]))->toUrl()->ext((string) $eiCmdPath);
 	}
 }

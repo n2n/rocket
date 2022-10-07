@@ -2,49 +2,49 @@
 namespace rocket\ei\manage\security\privilege\data;
 
 use n2n\util\type\ArgUtils;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\EiPropPath;
 use n2n\util\type\attrs\DataSet;
 
 class PrivilegeSetting {
-	const ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY = 'executableEiCommandPaths';
+	const ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY = 'executableEiCmdPaths';
 	const ATTR_WRITABLE_EI_PROP_PATHS_KEY = 'writableEiPropPaths';
 	
 	private $writableEiPropPaths = array();
-	private $executableEiCommandPaths = array();
+	private $executableEiCmdPaths = array();
 	
 	/**
-	 * @param EiCommandPath[] $executableEiCommandPaths
-	 * @param EiCommandPath[] $writableEiPropPaths
+	 * @param EiCmdPath[] $executableEiCmdPaths
+	 * @param EiCmdPath[] $writableEiPropPaths
 	 */
-	function __construct(array $executableEiCommandPaths = array(), array $writableEiPropPaths = null) {
-		$this->setExecutableEiCommandPaths($executableEiCommandPaths);
+	function __construct(array $executableEiCmdPaths = array(), array $writableEiPropPaths = null) {
+		$this->setExecutableEiCmdPaths($executableEiCmdPaths);
 		$this->setWritableEiPropPaths($writableEiPropPaths ?? new DataSet());
 	}
 	
 	/**
-	 * @return EiCommandPath[]
+	 * @return EiCmdPath[]
 	 */
-	function getExecutableEiCommandPaths() {
-		return $this->executableExecutableEiCommandPaths;
+	function getExecutableEiCmdPaths() {
+		return $this->executableExecutableEiCmdPaths;
 	}
 	
 	/**
-	 * @param EiCommandPath[] $executableEiCommandPaths
+	 * @param EiCmdPath[] $executableEiCmdPaths
 	 */
-	function setExecutableEiCommandPaths(array $executableEiCommandPaths) {
-		ArgUtils::valArray($executableEiCommandPaths, EiCommandPath::class);
-		$this->executableEiCommandPaths = $executableEiCommandPaths;
+	function setExecutableEiCmdPaths(array $executableEiCmdPaths) {
+		ArgUtils::valArray($executableEiCmdPaths, EiCmdPath::class);
+		$this->executableEiCmdPaths = $executableEiCmdPaths;
 	}
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
+	 * @param EiCmdPath $eiCmdPath
 	 * @return boolean
 	 */
-	public function acceptsEiCommandPath(EiCommandPath $eiCommandPath) {
-		foreach ($this->getEiCommandPaths() as $privilegeCommandPath) {
-			if ($privilegeCommandPath->startsWith($eiCommandPath)) return true;
+	public function acceptsEiCmdPath(EiCmdPath $eiCmdPath) {
+		foreach ($this->getEiCmdPaths() as $privilegeCommandPath) {
+			if ($privilegeCommandPath->startsWith($eiCmdPath)) return true;
 		}
 		return false;
 	}
@@ -68,9 +68,9 @@ class PrivilegeSetting {
 	 * @return array
 	 */
 	function toAttrs() {
-		$eiCommandPathAttrs = array();
-		foreach ($this->executableEiCommandPaths as $eiCommandPath) {
-			$eiCommandPathAttrs[] = (string) $eiCommandPath;
+		$eiCmdPathAttrs = array();
+		foreach ($this->executableEiCmdPaths as $eiCmdPath) {
+			$eiCmdPathAttrs[] = (string) $eiCmdPath;
 		}
 		
 		$eiPropPathAttrs = array();
@@ -79,7 +79,7 @@ class PrivilegeSetting {
 		}
 		
 		return array(
-				self::ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY => $eiCommandPathAttrs,
+				self::ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY => $eiCmdPathAttrs,
 				self::ATTR_WRITABLE_EI_PROP_PATHS_KEY => $eiPropPathAttrs);
 	}
 	
@@ -88,9 +88,9 @@ class PrivilegeSetting {
 	 * @return \rocket\ei\manage\security\privilege\data\PrivilegeSetting
 	 */
 	static function createFromDataSet(DataSet $ds) {
-		$executableEiCommandPaths = [];
-		foreach ($ds->optScalarArray(self::ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY) as $eiCommandPathStr) {
-			$executableEiCommandPaths[] = EiCommandPath::create($eiCommandPathStr);
+		$executableEiCmdPaths = [];
+		foreach ($ds->optScalarArray(self::ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY) as $eiCmdPathStr) {
+			$executableEiCmdPaths[] = EiCmdPath::create($eiCmdPathStr);
 		}
 		
 		$writableEiPropPaths = [];
@@ -98,6 +98,6 @@ class PrivilegeSetting {
 			$writableEiPropPaths[] = EiPropPath::create($eiPropPathStr);
 		}
 		
-		return new PrivilegeSetting($executableEiCommandPaths, $writableEiPropPaths);
+		return new PrivilegeSetting($executableEiCmdPaths, $writableEiPropPaths);
 	}
 }

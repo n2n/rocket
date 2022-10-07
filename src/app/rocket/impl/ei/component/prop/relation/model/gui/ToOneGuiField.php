@@ -49,7 +49,7 @@ class ToOneGuiField implements GuiField {
 		$this->eiu = $eiu;
 		
 		$this->targetEiu = $eiu->frame()->forkSelect($eiu->prop()->getPath(), $eiu->entry());
-		$this->targetEiu->frame()->exec($relationModel->getTargetReadEiCommandPath());
+		$this->targetEiu->frame()->exec($relationModel->getTargetReadEiCmdPath());
 		
 		$values = [];
 		if (null !== ($eiuEntry = $eiu->field()->getValue())) {

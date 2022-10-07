@@ -28,8 +28,8 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
-use rocket\ei\EiCommandPath;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\EiCmdPath;
+use rocket\ei\manage\security\InaccessibleEiCmdPathException;
 use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\EiException;
 use rocket\ei\EiPropPath;
@@ -47,10 +47,10 @@ class EiFrameFactory {
 	 * @param ControllerContext $controllerContext
 	 * @param ManageState $manageState
 	 * @param EiFrame $parentEiFrame
-	 * @param EiCommandPath $eiCommandPath
-	 * @throws InaccessibleEiCommandPathException
-	 * @throws UnknownEiComponentException
+	 * @param EiCmdPath $eiCmdPath
 	 * @return \rocket\ei\manage\frame\EiFrame
+	 *@throws UnknownEiComponentException
+	 * @throws InaccessibleEiCmdPathException
 	 */
 	public function create(ManageState $manageState) {
 		$eiFrame = new EiFrame($this->eiEngine, $manageState);
@@ -151,9 +151,9 @@ class EiFrameFactory {
 // 			return;
 // 		}
 		
-// 		$eiCommandPath = EiCommandPath::from($eiExecution->getEiCommand());
+// 		$eiCmdPath = EiCmdPath::from($eiExecution->getEiCommand());
 		
-// 		$this->forkedEiFrame->setBaseUrl($this->parentEiFrame->getForkUrl($eiCommandPath, $this->eiPropPath, 
+// 		$this->forkedEiFrame->setBaseUrl($this->parentEiFrame->getForkUrl($eiCmdPath, $this->eiPropPath, 
 // 				$this->eiForkLink->getMode(), $this->eiForkLink->getParentEiObject()));
 // 	}
 // }

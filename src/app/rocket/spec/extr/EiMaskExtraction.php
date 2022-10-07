@@ -38,7 +38,7 @@ class EiMaskExtraction {
 	private $defaultSortSettingGroup;
 	
 	private $eiPropExtractions = array();
-	private $eiCommandExtractions = array();
+	private $eiCmdExtractions = array();
 	
 	private $displayScheme;
 	
@@ -182,22 +182,22 @@ class EiMaskExtraction {
 	 * @return EiComponentExtraction[]
 	 */
 	public function getEiCommandExtractions() {
-		return $this->eiCommandExtractions;
+		return $this->eiCmdExtractions;
 	}
 	
 	/**
 	 * @param EiComponentExtraction $configurableExtraction
 	 */
 	public function addEiCommandExtraction(EiComponentExtraction $configurableExtraction) {
-		$this->eiCommandExtractions[] = $configurableExtraction;
+		$this->eiCmdExtractions[] = $configurableExtraction;
 	}
 	
 	/**
-	 * @param EiComponentExtraction[] $eiCommandExtractions
+	 * @param EiComponentExtraction[] $eiCmdExtractions
 	 */
-	public function setEiCommandExtraction(array $eiCommandExtractions) {
-		ArgUtils::valArray($eiCommandExtractions, EiComponentExtraction::class);
-		$this->eiCommandExtractions = $eiCommandExtractions;
+	public function setEiCommandExtraction(array $eiCmdExtractions) {
+		ArgUtils::valArray($eiCmdExtractions, EiComponentExtraction::class);
+		$this->eiCmdExtractions = $eiCmdExtractions;
 	}
 		
 	/**

@@ -36,7 +36,7 @@ use n2n\util\type\CastUtils;
 use n2n\persistence\orm\CascadeType;
 use n2n\util\type\TypeUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\relation\model\relation\TargetMasterRelationEiModificator;
 use rocket\ei\util\spec\EiuMask;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
@@ -102,13 +102,13 @@ class RelationModel {
 	 */
 	private $targetPropInfo;
 	/**
-	 * @var EiCommandPath
+	 * @var EiCmdPath
 	 */
-	private $targetReadEiCommandPath;
+	private $targetReadEiCmdPath;
 	/**
-	 * @var EiCommandPath
+	 * @var EiCmdPath
 	 */
-	private $targetEditEiCommandPath;
+	private $targetEditEiCmdPath;
 
 	/**
 	 * @param RelationEntityProperty $relationEntityProperty
@@ -357,40 +357,40 @@ class RelationModel {
 	}
 	
 	/**
-	 * @param EiCommandPath $targetEiCommandPath
+	 * @param EiCmdPath $targetEiCmdPath
 	 */
-	function setTargetReadEiCommandPath(EiCommandPath $targetEiCommandPath) {
-		$this->targetReadEiCommandPath = $targetEiCommandPath;
+	function setTargetReadEiCmdPath(EiCmdPath $targetEiCmdPath) {
+		$this->targetReadEiCmdPath = $targetEiCmdPath;
 	}
 	
 	/**
-	 * @throws IllegalStateException
-	 * @return \rocket\ei\EiCommandPath
+	 * @return \rocket\ei\EiCmdPath
+	 *@throws IllegalStateException
 	 */
-	function getTargetReadEiCommandPath() {
-		if ($this->targetReadEiCommandPath !== null) {
-			return $this->targetReadEiCommandPath;
+	function getTargetReadEiCmdPath() {
+		if ($this->targetReadEiCmdPath !== null) {
+			return $this->targetReadEiCmdPath;
 		}
 		
-		throw new IllegalStateException('TargetReadEiCommandPath not defined.');
+		throw new IllegalStateException('TargetReadEiCmdPath not defined.');
 	}
 	/**
-	 * @param EiCommandPath $targetEiCommandPath
+	 * @param EiCmdPath $targetEiCmdPath
 	 */
-	function setTargetEditEiCommandPath(EiCommandPath $targetEiCommandPath) {
-		$this->targetEditEiCommandPath = $targetEiCommandPath;
+	function setTargetEditEiCmdPath(EiCmdPath $targetEiCmdPath) {
+		$this->targetEditEiCmdPath = $targetEiCmdPath;
 	}
 	
 	/**
-	 * @throws IllegalStateException
-	 * @return \rocket\ei\EiCommandPath
+	 * @return \rocket\ei\EiCmdPath
+	 *@throws IllegalStateException
 	 */
-	function getTargetEditEiCommandPath() {
-		if ($this->targetEditEiCommandPath !== null) {
-			return $this->targetEditEiCommandPath;
+	function getTargetEditEiCmdPath() {
+		if ($this->targetEditEiCmdPath !== null) {
+			return $this->targetEditEiCmdPath;
 		}
 		
-		throw new IllegalStateException('TargetEditEiCommandPath not defined.');
+		throw new IllegalStateException('TargetEditEiCmdPath not defined.');
 	}
 	
 	function prepare(EiuMask $eiuMask, EiuMask $targetEiuMask) {

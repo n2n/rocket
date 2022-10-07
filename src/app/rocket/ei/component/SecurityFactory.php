@@ -29,7 +29,7 @@ use rocket\ei\component\command\EiCmdCollection;
 use rocket\ei\component\prop\PrivilegedEiProp;
 use rocket\ei\manage\security\privilege\PrivilegeDefinition;
 use rocket\ei\component\command\PrivilegedEiCommand;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\component\prop\SecurityFilterEiProp;
@@ -38,13 +38,13 @@ use rocket\ei\util\Eiu;
 
 class SecurityFactory {
 	private $eiPropCollection;
-	private $eiCommandCollection;
+	private $eiCmdCollection;
 	private $eiModificatorCollection;
 	
-	public function __construct(EiPropCollection $eiPropCollection, EiCmdCollection $eiCommandCollection,
+	public function __construct(EiPropCollection $eiPropCollection, EiCmdCollection $eiCmdCollection,
 			EiModCollection $eiModificatorCollection) {
 		$this->eiPropCollection = $eiPropCollection;
-		$this->eiCommandCollection = $eiCommandCollection;
+		$this->eiCmdCollection = $eiCmdCollection;
 		$this->eiModificatorCollection = $eiModificatorCollection;
 	}
 	
@@ -61,11 +61,11 @@ class SecurityFactory {
 		$eiu = new Eiu($n2nContext, $this->eiPropCollection->getEiMask());
 		
 		$privilegeDefinition = new PrivilegeDefinition();
-		foreach ($this->eiCommandCollection->toArray(false) as $eiCommand) {
-			if (!($eiCommand instanceof PrivilegedEiCommand)) continue;
+		foreach ($this->eiCmdCollection->toArray(false) as $eiCmd) {
+			if (!($eiCmd instanceof PrivilegedEiCommand)) continue;
 			
-			$privilegeDefinition->putEiCommandPrivilege(EiCommandPath::from($eiCommand), 
-					$eiCommand->createEiCommandPrivilege($eiu));
+			$privilegeDefinition->putEiCommandPrivilege(EiCmdPath::from($eiCmd),
+					$eiCmd->createEiCommandPrivilege($eiu));
 		}	
 		
 		foreach ($this->eiPropCollection->toArray(false) as $eiProp) {

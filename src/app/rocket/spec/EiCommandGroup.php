@@ -23,7 +23,7 @@ namespace rocket\spec;
 
 class EiCommandGroup {
 	private $name;
-	private $eiCommandClasses = array();
+	private $eiCmdClasses = array();
 	
 	public function __construct($name = null) {
 		$this->name = $name;
@@ -37,15 +37,15 @@ class EiCommandGroup {
 		$this->name = $name;
 	}
 	
-	public function addEiCommandClass(\ReflectionClass $eiCommandClass) {
-		$this->eiCommandClasses[$eiCommandClass->getName()] = $eiCommandClass;
+	public function addEiCommandClass(\ReflectionClass $eiCmdClass) {
+		$this->eiCmdClasses[$eiCmdClass->getName()] = $eiCmdClass;
 	}
 	
 	public function getEiCommandClasses() {
-		return $this->eiCommandClasses;
+		return $this->eiCmdClasses;
 	}
 	
 	public function removeAllEiCommandClasses() {
-		$this->eiCommandClasses = array();
+		$this->eiCmdClasses = array();
 	}
 }

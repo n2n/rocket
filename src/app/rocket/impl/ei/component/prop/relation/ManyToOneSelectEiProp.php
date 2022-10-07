@@ -72,7 +72,7 @@ class ManyToOneSelectEiProp extends RelationEiPropNatureAdapter implements Field
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
-				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 		$field->setMandatory($this->getEditConfig()->isMandatory());
@@ -114,7 +114,7 @@ class ManyToOneSelectEiProp extends RelationEiPropNatureAdapter implements Field
 		}
 		
 		$targetEiu = $eiu->frame()->forkDiscover($this);
-		$targetEiu->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+		$targetEiu->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, $targetEiu);
 	}
 

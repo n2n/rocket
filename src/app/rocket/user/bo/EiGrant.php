@@ -28,7 +28,7 @@ use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
 use rocket\spec\TypePath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 
 class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {
@@ -96,9 +96,9 @@ class EiGrant extends ObjectAdapter implements Grant {
 		$this->eiGrantPrivileges = $privilegeGrants;
 	}
 	
-	public function containsEiCommandPath(EiCommandPath $eiCommandPath) {
+	public function containsEiCmdPath(EiCmdPath $eiCmdPath) {
 		foreach ($this->eiGrantPrivileges as $eiGrantPrivilege) {
-			if ($eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCommandPath($eiCommandPath)) {
+			if ($eiGrantPrivilege->getPrivilegeSetting()->acceptsEiCmdPath($eiCmdPath)) {
 				return true;
 			}
 		}

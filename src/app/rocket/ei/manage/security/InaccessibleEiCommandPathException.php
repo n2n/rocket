@@ -21,5 +21,5 @@
  */
 namespace rocket\ei\manage\security;
 
-class InaccessibleEiCommandPathException extends SecurityException {
+class InaccessibleEiCmdPathException extends SecurityException {
 }

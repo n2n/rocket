@@ -50,7 +50,7 @@ use rocket\core\model\Rocket;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\EiPropPath;
 use rocket\spec\result\EiErrorResult;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\spec\result\EiCommandError;
 use rocket\spec\result\EiModificatorError;
 use rocket\ei\EiModificatorPath;

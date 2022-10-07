@@ -160,7 +160,7 @@ class TranslationEiProp extends RelationEiPropNatureAdapter implements FieldEiPr
 	 */
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($this)
-				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new TranslationQuickSearchProp(
 				$this->getRelationModel()->getRelationEntityProperty(),
@@ -170,7 +170,7 @@ class TranslationEiProp extends RelationEiPropNatureAdapter implements FieldEiPr
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
-				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}

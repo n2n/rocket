@@ -153,12 +153,12 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCommand
+	 * @param EiCmdNature $eiCmd
 	 * @param bool $prepend
 	 * @return \rocket\ei\util\spec\EiuEngine
 	 */
-	public function addEiCommand(EiCmdNature $eiCommand, bool $prepend = false) {
-		$this->eiMask->getEiCmdCollection()->add($eiCommand, $prepend);
+	public function addEiCommand(EiCmdNature $eiCmd, bool $prepend = false) {
+		$this->eiMask->getEiCmdCollection()->add($eiCmd, $prepend);
 		return $this;
 	}
 	

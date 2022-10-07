@@ -33,17 +33,17 @@ use rocket\ei\component\modificator\IndependentEiModNature;
 
 class EiComponentStore {
 	const EI_FIELD_CLASSES_KEY = 'eiPropClasses';
-	const EI_COMMAND_CLASSES_KEY = 'eiCommandClasses';
-	const EI_COMMAND_GROUPS_KEY = 'eiCommandGroups';
+	const EI_COMMAND_CLASSES_KEY = 'eiCmdClasses';
+	const EI_COMMAND_GROUPS_KEY = 'eiCmdGroups';
 	const EI_MODIFICATOR_CLASSES_KEY = 'eiModificatorClasses';
 	
 	private $eiComponentConfigSource;
 	private $eiPropClasses = array();
 	private $eiPropClassesByModule = array();
-	private $eiCommandClasses = array();
-	private $eiCommandClassesByModule = array();
-	private $eiCommandGroups = array();
-	private $eiCommandGroupsByModule = array();
+	private $eiCmdClasses = array();
+	private $eiCmdClassesByModule = array();
+	private $eiCmdGroups = array();
+	private $eiCmdGroupsByModule = array();
 	private $eiModificatorClasses = array();
 	private $eiModificatorClassesByModule = array();
 	
@@ -82,35 +82,35 @@ class EiComponentStore {
 		}
 		
 		// EiCommands
-		$this->eiCommandClassesByModule[$moduleNamespace] = array();
+		$this->eiCmdClassesByModule[$moduleNamespace] = array();
 		foreach ($this->extractElementArray(self::EI_COMMAND_CLASSES_KEY, $moduleRawData) 
-				as $key => $eiCommandClassName) {
+				as $key => $eiCmdClassName) {
 			try {
-				$eiCommandClass =  ReflectionUtils::createReflectionClass($eiCommandClassName);
-				if (!$eiCommandClass->implementsInterface(EiCmdNature::class)
-						|| !$eiCommandClass->implementsInterface(IndependentEiCmd::class)) continue;
+				$eiCmdClass =  ReflectionUtils::createReflectionClass($eiCmdClassName);
+				if (!$eiCmdClass->implementsInterface(EiCmdNature::class)
+						|| !$eiCmdClass->implementsInterface(IndependentEiCmd::class)) continue;
 				
-				$this->eiCommandClasses[$eiCommandClassName] = $eiCommandClass;
-				$this->eiCommandClassesByModule[$moduleNamespace][$eiCommandClassName] = $eiCommandClass;
+				$this->eiCmdClasses[$eiCmdClassName] = $eiCmdClass;
+				$this->eiCmdClassesByModule[$moduleNamespace][$eiCmdClassName] = $eiCmdClass;
 			} catch (TypeNotFoundException $e) { }
 		}
 				
 		// EiCommandGroups
-		$this->eiCommandGroupsByModule[$moduleNamespace] = array();
+		$this->eiCmdGroupsByModule[$moduleNamespace] = array();
 		foreach ($this->extractElementArray(self::EI_COMMAND_GROUPS_KEY, $moduleRawData) 
-				as $groupName => $eiCommandClassNames) {
-			if (!is_array($eiCommandClassNames)) {
+				as $groupName => $eiCmdClassNames) {
+			if (!is_array($eiCmdClassNames)) {
 				continue;
 			}
 		
-			$eiCommandGroup = new EiCommandGroup($groupName);
-			foreach ($eiCommandClassNames as $key => $eiCommandClassName) {
-				if (!isset($this->eiCommandClasses[$eiCommandClassName])) continue;
-				$eiCommandGroup->addEiCommandClass($this->eiCommandClasses[$eiCommandClassName]); 
+			$eiCmdGroup = new EiCommandGroup($groupName);
+			foreach ($eiCmdClassNames as $key => $eiCmdClassName) {
+				if (!isset($this->eiCmdClasses[$eiCmdClassName])) continue;
+				$eiCmdGroup->addEiCommandClass($this->eiCmdClasses[$eiCmdClassName]); 
 			}
 		
-			$this->eiCommandGroups[$groupName] = $eiCommandGroup;
-			$this->eiCommandGroupsByModule[$moduleNamespace][$groupName] = $eiCommandGroup;
+			$this->eiCmdGroups[$groupName] = $eiCmdGroup;
+			$this->eiCmdGroupsByModule[$moduleNamespace][$groupName] = $eiCmdGroup;
 		}
 		
 		// EiModificators
@@ -161,65 +161,65 @@ class EiComponentStore {
 	}
 	
 	public function getEiCommandClasses() {
-		return $this->eiCommandClasses;
+		return $this->eiCmdClasses;
 	}
 	
 	public function getEiCommandClassesByModuleNamespace(string $moduleNamespace) {
-		if (isset($this->eiCommandClassesByModule[$moduleNamespace])) {
-			return $this->eiCommandClassesByModule[$moduleNamespace];
+		if (isset($this->eiCmdClassesByModule[$moduleNamespace])) {
+			return $this->eiCmdClassesByModule[$moduleNamespace];
 		}
 		
 		return array();
 	}
 	
 	public function removeEiCommandClassesByModuleNamespace(string $moduleNamespace) {
-		if (!isset($this->eiCommandClassesByModule[$moduleNamespace])) return;
-		foreach ($this->eiCommandClassesByModule[$moduleNamespace] as $eiCommandClass) {
-			unset($this->eiCommandClasses[$eiCommandClass->getName()]);
+		if (!isset($this->eiCmdClassesByModule[$moduleNamespace])) return;
+		foreach ($this->eiCmdClassesByModule[$moduleNamespace] as $eiCmdClass) {
+			unset($this->eiCmdClasses[$eiCmdClass->getName()]);
 		}
-		$this->eiCommandClassesByModule[$moduleNamespace] = array();
+		$this->eiCmdClassesByModule[$moduleNamespace] = array();
 	}
 	
-	public function addEiCommandClass($moduleNamespace, \ReflectionClass $eiCommandClass) {
-		if (!isset($this->eiCommandClassesByModule[$moduleNamespace])) {
-			$this->eiCommandClassesByModule[$moduleNamespace] = array();
+	public function addEiCommandClass($moduleNamespace, \ReflectionClass $eiCmdClass) {
+		if (!isset($this->eiCmdClassesByModule[$moduleNamespace])) {
+			$this->eiCmdClassesByModule[$moduleNamespace] = array();
 		}
-		$className = $eiCommandClass->getName();
-		$this->eiCommandClasses[$className] = $eiCommandClass;
-		$this->eiCommandClassesByModule[$moduleNamespace][$className] = $eiCommandClass;
+		$className = $eiCmdClass->getName();
+		$this->eiCmdClasses[$className] = $eiCmdClass;
+		$this->eiCmdClassesByModule[$moduleNamespace][$className] = $eiCmdClass;
 	}
 	
 	/**
 	 * @return EiCommandGroup
 	 */
 	public function getEiCommandGroups() {
-		return $this->eiCommandGroups;
+		return $this->eiCmdGroups;
 	}
 	
 	public function getEiCommandGroupsByModuleNamespace(string $moduleNamespace) {
-		if (isset($this->eiCommandGroupsByModule[$moduleNamespace])) {
-			return $this->eiCommandGroupsByModule[$moduleNamespace];
+		if (isset($this->eiCmdGroupsByModule[$moduleNamespace])) {
+			return $this->eiCmdGroupsByModule[$moduleNamespace];
 		}
 		
 		return array();
 	}
 	
 	public function removeEiCommandGroupsByModuleNamespace(string $moduleNamespace) {
-		if (!isset($this->eiCommandGroupsByModule[$moduleNamespace])) return;
-		foreach ($this->eiCommandGroupsByModule[$moduleNamespace] as $eiCommandGroup) {
-			unset($this->eiCommandGroups[$eiCommandGroup->getName()]);
+		if (!isset($this->eiCmdGroupsByModule[$moduleNamespace])) return;
+		foreach ($this->eiCmdGroupsByModule[$moduleNamespace] as $eiCmdGroup) {
+			unset($this->eiCmdGroups[$eiCmdGroup->getName()]);
 		}
-		$this->eiCommandGroupsByModule[$moduleNamespace] = array();
+		$this->eiCmdGroupsByModule[$moduleNamespace] = array();
 	}
 	
-	public function addEiCommandGroup($moduleNamespace, EiCommandGroup $eiCommandGroup) {
-		if (!isset($this->eiCommandGroupsByModule[$moduleNamespace])) {
-			$this->eiCommandGroupsByModule[$moduleNamespace] = array();
+	public function addEiCommandGroup($moduleNamespace, EiCommandGroup $eiCmdGroup) {
+		if (!isset($this->eiCmdGroupsByModule[$moduleNamespace])) {
+			$this->eiCmdGroupsByModule[$moduleNamespace] = array();
 		}
 		
-		$className = $eiCommandGroup->getName();
-		$this->eiCommandGroups[$className] = $eiCommandGroup;
-		$this->eiCommandGroupsByModule[$moduleNamespace][$className] = $eiCommandGroup;
+		$className = $eiCmdGroup->getName();
+		$this->eiCmdGroups[$className] = $eiCmdGroup;
+		$this->eiCmdGroupsByModule[$moduleNamespace][$className] = $eiCmdGroup;
 	}
 	
 	public function getEiModificatorClasses() {
@@ -259,8 +259,8 @@ class EiComponentStore {
 		
 		$moduleNamespaces = array_unique(array_merge(
 				array_keys($this->eiPropClasses), array_keys($this->eiPropClassesByModule), 
-				array_keys($this->eiCommandClasses), array_keys($this->eiCommandClassesByModule), 
-				array_keys($this->eiCommandGroups), array_keys($this->eiCommandGroupsByModule), 
+				array_keys($this->eiCmdClasses), array_keys($this->eiCmdClassesByModule), 
+				array_keys($this->eiCmdGroups), array_keys($this->eiCmdGroupsByModule), 
 				array_keys($this->eiModificatorClasses), array_keys($this->eiModificatorClassesByModule)));
 		
 		foreach ($moduleNamespaces as $moduleNamespace) {
@@ -280,22 +280,22 @@ class EiComponentStore {
 			} 
 		}
 		
-		if (isset($this->eiCommandClassesByModule[$moduleNamespace])) {
+		if (isset($this->eiCmdClassesByModule[$moduleNamespace])) {
 			$write = true;
 			$moduleRawData[self::EI_COMMAND_CLASSES_KEY] = array();
-			foreach ($this->eiCommandClassesByModule[$moduleNamespace] as $eiCommandClass) {
-				$moduleRawData[self::EI_COMMAND_CLASSES_KEY][] = $eiCommandClass->getName();
+			foreach ($this->eiCmdClassesByModule[$moduleNamespace] as $eiCmdClass) {
+				$moduleRawData[self::EI_COMMAND_CLASSES_KEY][] = $eiCmdClass->getName();
 			}
 		}
 		
-		if (isset($this->eiCommandGroupsByModule[$moduleNamespace])) {
+		if (isset($this->eiCmdGroupsByModule[$moduleNamespace])) {
 			$write = true;
 			$moduleRawData[self::EI_COMMAND_GROUPS_KEY] = array();
-			foreach ($this->eiCommandGroupsByModule[$moduleNamespace] as $eiCommandGroup) {
-				$groupName = $eiCommandGroup->getName();
+			foreach ($this->eiCmdGroupsByModule[$moduleNamespace] as $eiCmdGroup) {
+				$groupName = $eiCmdGroup->getName();
 				$moduleRawData[self::EI_COMMAND_GROUPS_KEY][$groupName] = array();
-				foreach ($eiCommandGroup->getEiCommandClasses() as $eiCommandClass) {
-					$moduleRawData[self::EI_COMMAND_GROUPS_KEY][$groupName][] = $eiCommandClass->getName();
+				foreach ($eiCmdGroup->getEiCommandClasses() as $eiCmdClass) {
+					$moduleRawData[self::EI_COMMAND_GROUPS_KEY][$groupName][] = $eiCmdClass->getName();
 				}
 			}
 		}

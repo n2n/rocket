@@ -4,13 +4,13 @@ namespace rocket\spec\result;
 use rocket\spec\TypePath;
 use rocket\ei\EiPropPath;
 use rocket\ei\EiModificatorPath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use n2n\util\type\CastUtils;
 
 class EiErrorResult {
 	private $eiPropErrors = [];
 	private $eiModificatorErrors = [];
-	private $eiCommandErrors = [];
+	private $eiCmdErrors = [];
 	
 	/**
 	 * @param EiPropError $eiPropError
@@ -69,28 +69,28 @@ class EiErrorResult {
 // 	}
 	
 	/**
-	 * @param EiCommandError $eiCommandError
+	 * @param EiCommandError $eiCmdError
 	 */
-	public function putEiCommandError(EiCommandError $eiCommandError) {
-		$this->eiCommandErrors[spl_object_hash($eiCommandError)] = $eiCommandError;
+	public function putEiCommandError(EiCommandError $eiCmdError) {
+		$this->eiCmdErrors[spl_object_hash($eiCmdError)] = $eiCmdError;
 	}
 	
 // 	/**
-// 	 * @param EiCommand $eiCommand
+// 	 * @param EiCommand $eiCmd
 // 	 * @return EiCommandSetupError|null
 // 	 */
-// 	public function errorOfEiCommand(EiCommand $eiCommand) {
-// 		return $this->findEiCommandError($eiCommand->getWrapper()->getEiCommandCollection()->getEiMask()->getEiTypePath(), 
-// 				$eiCommand->getWrapper()->getEiCommandPath());
+// 	public function errorOfEiCommand(EiCommand $eiCmd) {
+// 		return $this->findEiCommandError($eiCmd->getWrapper()->getEiCommandCollection()->getEiMask()->getEiTypePath(), 
+// 				$eiCmd->getWrapper()->getEiCmdPath());
 // 	}
 	
 // 	/**
 // 	 * @param TypePath $typePath
-// 	 * @param EiCommandPath $eiCommandPath
+// 	 * @param EiCmdPath $eiCmdPath
 // 	 * @return EiCommandSetupError|null
 // 	 */
-// 	public function findEiCommandError(TypePath $typePath, EiCommandPath $eiCommandPath) {
-// 		return ArrayUtils::first($this->getEiCommandErrors($typePath, $eiCommandPath));
+// 	public function findEiCommandError(TypePath $typePath, EiCmdPath $eiCmdPath) {
+// 		return ArrayUtils::first($this->getEiCommandErrors($typePath, $eiCmdPath));
 // 	}
 	
 	public function getThrowables(TypePath $typePath = null) {
@@ -105,10 +105,10 @@ class EiErrorResult {
 			$throwables[] = $eiModificatorError->getThrowable();
 		});
 			
-		array_walk($this->eiCommandErrors, function (EiCommandError $eiCommandError) use ($typePath, $throwables) {
-			if ($typePath === null || !$eiCommandError->getEiTypePath()->equals($typePath)) return;
+		array_walk($this->eiCmdErrors, function (EiCommandError $eiCmdError) use ($typePath, $throwables) {
+			if ($typePath === null || !$eiCmdError->getEiTypePath()->equals($typePath)) return;
 			
-			$throwables[] = $eiCommandError->getThrowable();
+			$throwables[] = $eiCmdError->getThrowable();
 		});
 				
 		return $throwables;
@@ -144,10 +144,10 @@ class EiErrorResult {
 	 * @param TypePath $typePath
 	 * @return EiCommandError[]
 	 */
-	public function getEiCommandErrors(TypePath $typePath, EiCommandPath $eiCommandPath = null) {
-		return array_filter($this->eiCommandErrors, function (EiCommandError $eiCommandError) use ($typePath, $eiCommandPath) {
-			return $eiCommandError->getEiTypePath()->equals($typePath) 
-					&& (null === $eiCommandPath || $eiCommandError->getEiCommandPath()->equals($eiCommandPath));
+	public function getEiCommandErrors(TypePath $typePath, EiCmdPath $eiCmdPath = null) {
+		return array_filter($this->eiCmdErrors, function (EiCommandError $eiCmdError) use ($typePath, $eiCmdPath) {
+			return $eiCmdError->getEiTypePath()->equals($typePath) 
+					&& (null === $eiCmdPath || $eiCmdError->getEiCmdPath()->equals($eiCmdPath));
 		});
 	}
 }

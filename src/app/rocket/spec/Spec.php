@@ -332,7 +332,7 @@ class Spec {
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\ei\EiType
+	 * @return EiType
 	 * @throws UnknownTypeException
 	 * @throws IllegalStateException
 	 */
@@ -348,15 +348,15 @@ class Spec {
 	
 	/**
 	 * @param \ReflectionClass $class
-	 * @return \rocket\ei\EiType
+	 * @return EiType
 	 */
 	public function getEiTypeByClass(\ReflectionClass $class) {
 		return $this->getEiTypeByClassName($class->getName());
 	}
 	
 	/**
-	 * @param \ReflectionClass $class
-	 * @return \rocket\ei\EiType
+	 * @param string $className
+	 * @return EiType
 	 * @throws UnknownEiTypeException
 	 */
 	public function getEiTypeByClassName(string $className) {
@@ -367,13 +367,11 @@ class Spec {
 		return $this->initEiTypeFromClass(ReflectionUtils::createReflectionClass($className), true);
 	}
 	
-
-	
 	/**
 	 * @param object $entityObj
+	 * @return EiType
+	 *@throws UnknownTypeException
 	 * @throws \InvalidArgumentException
-	 * @throws UnknownTypeException
-	 * @return \rocket\ei\EiType
 	 */
 	public function getEiTypeOfObject($entityObj) {
 		ArgUtils::valType($entityObj, 'object');
@@ -395,7 +393,7 @@ class Spec {
 	
 	
 	/**
-	 * @return \rocket\ei\EiType[]
+	 * @return EiType[]
 	 */
 	public function getEiTypes() {
 		return $this->eiTypes;
@@ -417,7 +415,7 @@ class EiSetupQueue {
 	private $eiMasks = array();
 	private $eiPropSetupTasks = array();
 	private $eiModificatorSetupTasks = array();
-	private $eiCommandSetupTasks = array();
+	private $eiCmdSetupTasks = array();
 	
 	public function __construct(?EiErrorResult $eiErrorResult, N2nContext $n2nContext) {
 		$this->eiErrorResult = $eiErrorResult;
@@ -444,8 +442,8 @@ class EiSetupQueue {
 		$this->eiModificatorSetupTasks[] = new EiModificatorSetupTask($eiModificator, $eiConfigurator);
 	}
 	
-	public function addEiCommandConfigurator(EiCmdNature $eiCommand, EiConfigurator $eiConfigurator) {
-		$this->eiCommandSetupTasks[] = new EiCommandSetupTask($eiCommand, $eiConfigurator);
+	public function addEiCommandConfigurator(EiCmdNature $eiCmd, EiConfigurator $eiConfigurator) {
+		$this->eiCmdSetupTasks[] = new EiCommandSetupTask($eiCmd, $eiConfigurator);
 	}
 	
 	public function getPropIns() {
@@ -469,7 +467,7 @@ class EiSetupQueue {
 		//$this->eiConfigurators = array();
 		$this->eiPropSetupTasks = array();
 		$this->eiModificatorSetupTasks = array();
-		$this->eiCommandSetupTasks = array();
+		$this->eiCmdSetupTasks = array();
 	}
 		
 	public function trigger() {
@@ -507,17 +505,17 @@ class EiSetupQueue {
 			}
 		}
 		
- 		while (null !== ($eiCommandSetupTask = array_shift($this->eiCommandSetupTasks))) {
+ 		while (null !== ($eiCmdSetupTask = array_shift($this->eiCmdSetupTasks))) {
 			try {
-				$this->setup($eiCommandSetupTask->getEiConfigurator());
-				$eiMaskCallbackProcess->check(null, null, $eiCommandSetupTask->getEiCommand());
+				$this->setup($eiCmdSetupTask->getEiConfigurator());
+				$eiMaskCallbackProcess->check(null, null, $eiCmdSetupTask->getEiCommand());
 			} catch (\Throwable $e) {
 				if ($this->eiErrorResult === null) {
 					throw $e;
 				}
 				
 				$this->eiErrorResult->putEiCommandError(
-						EiCommandError::fromEiCommand($eiCommandSetupTask->getEiCommand(), $e));
+						EiCommandError::fromEiCommand($eiCmdSetupTask->getEiCommand(), $e));
 			}
 		}
 		
@@ -601,9 +599,9 @@ class EiMaskCallbackProcess {
 		$this->spec = $spec;
 	}
 	
-	function check(EiPropNature $eiProp = null, EiModNature $eiModificator = null, EiCmdNature $eiCommand = null) {
+	function check(EiPropNature $eiProp = null, EiModNature $eiModificator = null, EiCmdNature $eiCmd = null) {
 		foreach ($this->spec->getEiMasks() as $eiMask) {
-			$this->checkCallbacks($eiMask, $eiProp, $eiModificator, $eiCommand);
+			$this->checkCallbacks($eiMask, $eiProp, $eiModificator, $eiCmd);
 		}
 	}
 	
@@ -628,15 +626,15 @@ class EiMaskCallbackProcess {
 					$eiErrorResult->putEiModificatorError(EiModificatorError::fromEiModificator($callbackConfiguration['eiModificator'], $t));
 				}
 				
-				if (null !== $callbackConfiguration['eiCommand']) {
-					$eiErrorResult->putEiCommandError(EiCommandError::fromEiCommand($callbackConfiguration['eiCommand'], $t));
+				if (null !== $callbackConfiguration['eiCmd']) {
+					$eiErrorResult->putEiCommandError(EiCommandError::fromEiCommand($callbackConfiguration['eiCmd'], $t));
 				}
 			}
 		}
 	}
 	
 	private function checkCallbacks(EiMask $eiMask, EiPropNature $eiProp = null,
-			EiModNature $eiModificator = null, EiCmdNature $eiCommand = null) {
+			EiModNature $eiModificator = null, EiCmdNature $eiCmd = null) {
 		//$newCallbacks = [];
 		foreach ($eiMask->getEiEngineSetupCallbacks() as $objHash => $callback) {
 			if (isset($this->callbackConfigurations[$objHash])) {
@@ -645,7 +643,7 @@ class EiMaskCallbackProcess {
 			
 			//$newCallbacks[] = $callback;
 			$this->callbackConfigurations[$objHash] = ['callback' => $callback, 'eiMask' => $eiMask, 
-					'eiProp' => $eiProp, 'eiModificator' => $eiModificator, 'eiCommand' => $eiCommand];
+					'eiProp' => $eiProp, 'eiModificator' => $eiModificator, 'eiCmd' => $eiCmd];
 		}
 		
 		// return $newCallbacks;
@@ -736,11 +734,11 @@ class PropIn {
 }
 
 class EiCommandSetupTask {
-	private $eiCommand;
+	private $eiCmd;
 	private $eiConfigurator;
 	
-	public function __construct(EiCmdNature $eiCommand, EiConfigurator $eiConfigurator) {
-		$this->eiCommand = $eiCommand;
+	public function __construct(EiCmdNature $eiCmd, EiConfigurator $eiConfigurator) {
+		$this->eiCmd = $eiCmd;
 		$this->eiConfigurator = $eiConfigurator;
 	}
 	
@@ -748,7 +746,7 @@ class EiCommandSetupTask {
 	 * @return \rocket\ei\component\command\EiCmdNature
 	 */
 	public function getEiCommand() {
-		return $this->eiCommand;
+		return $this->eiCmd;
 	}
 	
 	/**

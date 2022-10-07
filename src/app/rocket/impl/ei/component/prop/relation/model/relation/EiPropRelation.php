@@ -38,8 +38,8 @@ use n2n\util\uri\Path;
 use rocket\ei\component\EiFrameFactory;
 use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
-use rocket\ei\EiCommandPath;
-use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\EiCmdPath;
+use rocket\ei\manage\security\InaccessibleEiCmdPathException;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
 use n2n\util\type\CastUtils;
@@ -271,7 +271,7 @@ abstract class EiPropRelation {
 	
 	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null,
 			ControllerContext $targetControllerContext): EiFrame {
-				$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCommandPath([]));
+				$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCmdPath([]));
 				$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 				$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
 				
@@ -279,39 +279,39 @@ abstract class EiPropRelation {
 	}
 	
 	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
-		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, new EiCommandPath(array()));
+		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, new EiCmdPath(array()));
 		
 		return $targetEiFrame;
 	}
 	
 	public function createTargetEditPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry): EiFrame {
-		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, EiCommandPath::from($this->embeddedEditEiCommand));
+		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, EiCmdPath::from($this->embeddedEditEiCommand));
 		
 		return $targetEiFrame;
 	}
 	
-	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null, ?EiCommandPath $eiCommandPath): EiFrame {
+	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null, ?EiCmdPath $eiCmdPath): EiFrame {
 		$eiObject = null;
 		if ($eiEntry !== null) {
 			$eiObject = $eiEntry->getEiObject();
 		}
 		
 		$targetCmdContextPath = $eiFrame->getControllerContext()->getCmdContextPath();
-		$eiCommandPathStr = $this->relationEiCommand->getWrapper()->getEiCommandPath();
+		$eiCmdPathStr = $this->relationEiCommand->getWrapper()->getEiCmdPath();
 		if ($eiObject === null) {
-			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'rel');
+			$targetCmdContextPath = $targetCmdContextPath->ext($eiCmdPathStr, 'rel');
 		} else if ($eiObject->isNew()) {
-			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'relnewentry',
+			$targetCmdContextPath = $targetCmdContextPath->ext($eiCmdPathStr, 'relnewentry',
 					$eiObject->getEiEntityObj()->getEiType()->getId());
 		} else {
-			$targetCmdContextPath = $targetCmdContextPath->ext($eiCommandPathStr, 'relentry',
+			$targetCmdContextPath = $targetCmdContextPath->ext($eiCmdPathStr, 'relentry',
 					$eiEntry->getPid());
 		}
 		
 		$targetControllerContext = new ControllerContext(new Path(array()), $targetCmdContextPath);
 		$targetEiFrameFactory = new EiFrameFactory($this->getTargetEiMask()->getEiEngine());
 		$targetEiFrame = $targetEiFrameFactory->create($targetControllerContext, $eiFrame->getManageState(), $eiFrame,
-				$eiCommandPath);
+				$eiCmdPath);
 		
 		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
 		
@@ -328,7 +328,7 @@ abstract class EiPropRelation {
 				
 			}
 			return true;
-		} catch (InaccessibleEiCommandPathException $e) {
+		} catch (InaccessibleEiCmdPathException $e) {
 			return false;
 		}
 	}
@@ -396,7 +396,7 @@ abstract class EiPropRelation {
 	// 	}
 	
 	public function buildTargetNewEiuEntryFormUrl(EiEntry $eiEntry, bool $draft, EiFrame $eiFrame, HttpContext $httpContext): Url {
-		$pathParts = array($this->relationEiCommand->getWrapper()->getEiCommandPath());
+		$pathParts = array($this->relationEiCommand->getWrapper()->getEiCmdPath());
 		if ($eiEntry->isNew()) {
 			$pathParts[] = 'relnewentry';
 			$pathParts[] = $eiEntry->getEiType()->getId();
@@ -404,7 +404,7 @@ abstract class EiPropRelation {
 			$pathParts[] = 'relentry';
 			$pathParts[] = $eiEntry->getPid();
 		}
-		$pathParts[] = $this->relationAjahEiCommand->getWrapper()->getEiCommandPath();
+		$pathParts[] = $this->relationAjahEiCommand->getWrapper()->getEiCmdPath();
 		$contextUrl = $httpContext->getControllerContextPath($eiFrame->getControllerContext())->ext(...$pathParts)
 		->toUrl();
 		return RelationJhtmlController::buildNewFormUrl($contextUrl, $draft);

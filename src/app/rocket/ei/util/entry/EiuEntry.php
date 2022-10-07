@@ -594,8 +594,8 @@ class EiuEntry {
 	}
 	
 	
-// 	public function isExecutableBy($eiCommandPath) {
-// 		return $this->getEiEntry()->isExecutableBy(EiCommandPath::create($eiCommandPath));
+// 	public function isExecutableBy($eiCmdPath) {
+// 		return $this->getEiEntry()->isExecutableBy(EiCmdPath::create($eiCmdPath));
 // 	}
 	
 	public function onValidate(\Closure $closure) {

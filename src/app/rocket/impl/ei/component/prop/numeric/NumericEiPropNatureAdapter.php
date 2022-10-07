@@ -53,7 +53,8 @@ use n2n\validation\validator\impl\Validators;
 abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapter
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
 			
-	private $numericConfig;
+	use NumericConfig;
+
 	/**
 	 * @var AddonConfig
 	 */
@@ -61,9 +62,6 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureN
 	private $quickSearchConfig;
 		    
     function __construct() {
-        parent::__construct();
-        
-        $this->numericConfig = new NumericConfig();
         $this->addonConfig = new AddonConfig();
         $this->quickSearchConfig = new QuickSearchConfig();
     }

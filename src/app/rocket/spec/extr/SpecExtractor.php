@@ -169,12 +169,12 @@ class SpecExtractor {
 		}
 	
 		foreach ($eiMaskDataSet->getArray(RawDef::EI_DEF_COMMANDS_KEY, false, array(), 
-				TypeConstraint::createSimple('array')) as $eiCommandId => $eiCommandRawData) {
+				TypeConstraint::createSimple('array')) as $eiCmdId => $eiCmdRawData) {
 			try {
-				$eiMaskExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCommandId, 
-						new DataSet($eiCommandRawData)));
+				$eiMaskExtraction->addEiCommandExtraction($this->createEiComponentExtraction($eiCmdId, 
+						new DataSet($eiCmdRawData)));
 			} catch (AttributesException $e) {
-				throw $this->createEiComponentException('EiCommand ' . $eiCommandId, $e);
+				throw $this->createEiComponentException('EiCommand ' . $eiCmdId, $e);
 			}
 		}
 
@@ -238,9 +238,9 @@ class SpecExtractor {
 		return $extraction;
 	}
 	
-	private function createEiComponentExtraction($eiCommandId, DataSet $dataSet) {
+	private function createEiComponentExtraction($eiCmdId, DataSet $dataSet) {
 		$extraction = new EiComponentExtraction();
-		$extraction->setId($eiCommandId);
+		$extraction->setId($eiCmdId);
 		$extraction->setClassName($this->upgradeTypeName($dataSet->getScalar(RawDef::EI_COMPONENT_CLASS_KEY)));
 		$extraction->setProps($dataSet->getArray(RawDef::EI_COMPONENT_PROPS_KEY, false));
 		return $extraction;

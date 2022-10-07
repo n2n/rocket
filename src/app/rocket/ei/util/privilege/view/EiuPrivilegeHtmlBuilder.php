@@ -27,7 +27,7 @@ use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\ui\Raw;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 
 class EiuPrivilegeHtmlBuilder {
 	private $view;
@@ -41,33 +41,33 @@ class EiuPrivilegeHtmlBuilder {
 	}
 	
 	public function getPrivilegeCheckboxes($propertyExpression, PrivilegeDefinition $privilegeDefinition): UiComponent {
-		return $this->buildPrivilegeUl($privilegeDefinition->getEiCommandPrivileges(), new EiCommandPath(array()), 
+		return $this->buildPrivilegeUl($privilegeDefinition->getEiCommandPrivileges(), new EiCmdPath(array()),
 				$this->view->getFormHtmlBuilder()->meta()->createPropertyPath($propertyExpression));
 	}
 	
-	private function buildPrivilegeUl(array $eiCommandPrivileges, EiCommandPath $baseEiCommandPath, PropertyPath $propertyPath) {
-		if (empty($eiCommandPrivileges)) return new Raw('');
+	private function buildPrivilegeUl(array $eiCmdPrivileges, EiCmdPath $baseEiCmdPath, PropertyPath $propertyPath) {
+		if (empty($eiCmdPrivileges)) return new Raw('');
 		
 		$formHtml = $this->view->getFormHtmlBuilder();
 		$n2nLocale = $this->view->getN2nContext()->getN2nLocale();
 		
 		$ulElement = new HtmlElement('ul');
 		
-		if ($baseEiCommandPath->isEmpty()) {
+		if ($baseEiCmdPath->isEmpty()) {
 			$ulElement->appendLn(new HtmlElement('li', null, new Raw(
 					'<input type="checkbox" disabled="disabled" checked="checked" /> <label>' 
 							. $this->view->getHtmlBuilder()->getL10nText('user_privilege_read_label') 
 							. '</label>')));
 		}
 		
-		foreach ($eiCommandPrivileges as $commandPathStr => $eiCommandPrivilege) {
+		foreach ($eiCmdPrivileges as $commandPathStr => $eiCmdPrivilege) {
 			$raw = new Raw();
 			
-			$commandPath = $baseEiCommandPath->ext($commandPathStr);
+			$commandPath = $baseEiCmdPath->ext($commandPathStr);
 			
 			$raw->appendLn($formHtml->getInputCheckbox($propertyPath, (string) $commandPath, 
-					array(), $eiCommandPrivilege->getLabel($n2nLocale)));
-			$raw->appendLn($this->buildPrivilegeUl($eiCommandPrivilege->getSubEiCommandPrivileges(), $commandPath, $propertyPath));
+					array(), $eiCmdPrivilege->getLabel($n2nLocale)));
+			$raw->appendLn($this->buildPrivilegeUl($eiCmdPrivilege->getSubEiCommandPrivileges(), $commandPath, $propertyPath));
 			
 			$ulElement->appendContent(new HtmlElement('li', null, $raw));
 		}

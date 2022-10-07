@@ -42,8 +42,8 @@
 // 		}
 // 	}
 	
-// 	public static function initializeController(EiCommand $eiCommand, TreeController $treeController, EiFrame $eiFrame) {
-// 		$eiType = $eiCommand->getEiType();
+// 	public static function initializeController(EiCommand $eiCmd, TreeController $treeController, EiFrame $eiFrame) {
+// 		$eiType = $eiCmd->getEiType();
 // 		$treeLeftEiProp = null;
 // 		$treeRightEiProp = null;
 // 		$treeRootIdEiProp = null;
@@ -56,11 +56,11 @@
 // 		}
 
 // 		if (null === $treeLeftEiProp) {
-// 			throw self::createIncompatibleSpecException($eiCommand, 'rocket\impl\ei\component\cmd\tree\field\TreeLeftEiProp');
+// 			throw self::createIncompatibleSpecException($eiCmd, 'rocket\impl\ei\component\cmd\tree\field\TreeLeftEiProp');
 // 		}
 
 // 		if (null === $treeRightEiProp) {
-// 			throw self::createIncompatibleSpecException($eiCommand, 'rocket\impl\ei\component\cmd\tree\field\TreeRightEiProp');
+// 			throw self::createIncompatibleSpecException($eiCmd, 'rocket\impl\ei\component\cmd\tree\field\TreeRightEiProp');
 // 		}
 
 // 		$treeController->initialize($treeLeftEiProp, $treeRightEiProp);
@@ -68,8 +68,8 @@
 // 		$eiFrame->getN2nContext()->magicInit($treeController);
 // 	}
 
-// 	private static function createIncompatibleSpecException(EiCommand $eiCommand, $missingEiProp) {
-// 		return new IncompatibleSpecException('Command \'' . get_class($eiCommand) . '\' requires a field of type \''
+// 	private static function createIncompatibleSpecException(EiCommand $eiCmd, $missingEiProp) {
+// 		return new IncompatibleSpecException('Command \'' . get_class($eiCmd) . '\' requires a field of type \''
 // 				. $missingEiProp . '\'.');
 // 	}
 // }

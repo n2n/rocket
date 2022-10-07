@@ -3,29 +3,29 @@
 namespace rocket\spec\result;
 
 use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\spec\TypePath;
 
 class EiCommandError {
 	private $eiTypePath;
-	private $eiCommandPath;
-	private $eiCommand;
+	private $eiCmdPath;
+	private $eiCmd;
 	private $t;
 	
-	public function __construct(TypePath $eiTypePath, EiCommandPath $eiCommandPath, \Throwable $t, 
-			EiCmdNature $eiCommand = null) {
+	public function __construct(TypePath $eiTypePath, EiCmdPath $eiCmdPath, \Throwable $t,
+			EiCmdNature $eiCmd = null) {
 		$this->eiTypePath = $eiTypePath;
-		$this->eiCommandPath = $eiCommandPath;
-		$this->eiCommand = $eiCommand;
+		$this->eiCmdPath = $eiCmdPath;
+		$this->eiCmd = $eiCmd;
 		$this->t = $t;
 	}
 	
-	public function getEiCommandPath() {
-		return $this->eiCommandPath;
+	public function getEiCmdPath() {
+		return $this->eiCmdPath;
 	}
 	
 	public function getEiCommand() {
-		return $this->eiCommand;
+		return $this->eiCmd;
 	}
 	
 	public function getEiTypePath() {
@@ -39,9 +39,9 @@ class EiCommandError {
 		return $this->t;
 	}
 	
-	public static function fromEiCommand(EiCmdNature $eiCommand, \Throwable $t) {
-		$wrapper = $eiCommand->getWrapper();
+	public static function fromEiCommand(EiCmdNature $eiCmd, \Throwable $t) {
+		$wrapper = $eiCmd->getWrapper();
 		return new EiCommandError($wrapper->getEiCommandCollection()->getEiMask()->getEiTypePath(),
-				$wrapper->getEiCommandPath(), $t, $eiCommand);
+				$wrapper->getEiCmdPath(), $t, $eiCmd);
 	}
 }

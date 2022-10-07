@@ -54,7 +54,7 @@ class ToManyGuiField implements GuiField {
 		$this->eiu = $eiu;
 		
 		$this->targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop()->getPath(), $eiu->object())->frame();
-		$this->targetEiuFrame->exec($relationModel->getTargetReadEiCommandPath());
+		$this->targetEiuFrame->exec($relationModel->getTargetReadEiCmdPath());
 		
 		$values = $this->readValues();
 		

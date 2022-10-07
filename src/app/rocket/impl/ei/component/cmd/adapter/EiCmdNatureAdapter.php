@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\cmd\adapter;
 
 use rocket\ei\component\command\EiCmdNature;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\ei\component\command\EiCommand;
+use rocket\ei\component\command\EiCmd;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
@@ -35,11 +35,11 @@ use n2n\util\StringUtils;
 abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, GuiEiCmd, GuiCommand {
 	private $wrapper;
 	
-	public function setWrapper(EiCommand $wrapper) {
+	public function setWrapper(EiCmd $wrapper) {
 		$this->wrapper = $wrapper;
 	}
 	
-	public function getWrapper(): EiCommand {
+	public function getWrapper(): EiCmd {
 		if ($this->wrapper !== null) {
 			return $this->wrapper;
 		}
@@ -48,7 +48,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	}
 	
 	public function getId() {
-		return (string) $this->wrapper->getEiCommandPath();
+		return (string) $this->wrapper->getEiCmdPath();
 	}
 	
 	public function getLabelLstr(): Lstr {
@@ -72,7 +72,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	 */
 	public function __toString(): string {
 		return (new \ReflectionClass($this))->getShortName()
-				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiCommandPath() : 'unknown') . ')';
+				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiCmdPath() : 'unknown') . ')';
 	}	
 	
 	/**

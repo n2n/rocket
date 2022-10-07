@@ -20,7 +20,7 @@ class RestrictedEiEntryAccessFactory {
 	
 	function createEiEntryAccess(EiEntryConstraint $eiEntryConstraint, EiEntry $eiEntry): EiEntryAccess {
 		$writableEiPropPaths = [];
-		$executableEiCommandPaths = [];
+		$executableEiCmdPaths = [];
 		
 		$eiEntryMask = $eiEntry->getEiMask();
 		foreach ($eiEntryMask->getEiType()->getAllSuperEiTypes(true) as $eiType) {
@@ -32,9 +32,9 @@ class RestrictedEiEntryAccessFactory {
 			
 			$result = $this->constraintCaches[$eiTypePathStr]->testEiEntryAccess();
 			array_push($writableEiPropPaths, ...$result->getWritableEiPropPaths());
-			array_push($executableEiCommandPaths, ...$result->getExecutableEiCommandPaths());
+			array_push($executableEiCmdPaths, ...$result->getExecutableEiCmdPaths());
 		}
 		
-		return new RestrictedEiEntryAccess($eiEntryConstraint, $writableEiPropPaths, $executableEiCommandPaths);	
+		return new RestrictedEiEntryAccess($eiEntryConstraint, $writableEiPropPaths, $executableEiCmdPaths);	
 	}
 }

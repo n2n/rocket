@@ -117,7 +117,7 @@ class ContentItemsEiProp extends RelationEiPropNatureAdapter implements FieldEiP
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
-				->frame()->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
@@ -136,10 +136,10 @@ class ContentItemsEiProp extends RelationEiPropNatureAdapter implements FieldEiP
 		$targetEiuFrame = null;
 		if ($readOnly){
 			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		} else {
 			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCommandPath());
+					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		}
 			
 		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 

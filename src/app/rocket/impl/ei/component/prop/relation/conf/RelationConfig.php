@@ -35,7 +35,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\col\ArrayUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommandNature;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
@@ -162,12 +162,12 @@ class RelationConfig extends PropConfigAdaption {
 		$targetReadEiCommand = new TargetReadEiCommandNature(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
 				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetReadEiCommand);
-		$this->relationModel->setTargetReadEiCommandPath(EiCommandPath::from($targetReadEiCommand));
+		$this->relationModel->setTargetReadEiCmdPath(EiCmdPath::from($targetReadEiCommand));
 		
 		$targetEditEiCommand = new TargetEditEiCommandNature(Lstr::create('Change this name'), (string) $eiu->mask()->getEiTypePath(),
 				(string) $targetEiuMask->getEiTypePath());
 		$targetEiuMask->addEiCommand($targetEditEiCommand);
-		$this->relationModel->setTargetEditEiCommandPath(EiCommandPath::from($targetEditEiCommand));
+		$this->relationModel->setTargetEditEiCmdPath(EiCmdPath::from($targetEditEiCommand));
 		
 				
 		if ($this->relationModel->isTargetMany()) {

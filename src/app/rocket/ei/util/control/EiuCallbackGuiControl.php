@@ -94,7 +94,7 @@ class EiuCallbackGuiControl implements GuiControl {
 	 */
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
 		return new ApiCallSiControl(
-				$this->eiuFrame->getApiControlUrl($siApiCallId->getGuiControlPath()->getEiCommandPath()), 
+				$this->eiuFrame->getApiControlUrl($siApiCallId->getGuiControlPath()->getEiCmdPath()), 
 				$siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	

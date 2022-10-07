@@ -15,13 +15,13 @@ use n2n\web\ui\ViewFactory;
 use n2n\util\type\CastUtils;
 use n2n\web\ui\BuildContext;
 use n2n\web\dispatch\map\PropertyPath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\impl\web\dispatch\map\val\ValEnum;
 
 class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	private static function _annos(AnnoInit $ai) {
-		$ai->c(new AnnoDispProperties('eiCommandPathStrs'));
+		$ai->c(new AnnoDispProperties('eiCmdPathStrs'));
 		$ai->p('eiPropMagForm', new AnnoDispObject());
 	}
 
@@ -84,24 +84,24 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 	/**
 	 * @return string[]
 	 */
-	function getEiCommandPathStrs() {
-		$eiCommandPathStrs = [];
-		foreach ($this->privilegeSetting->getEiCommandPaths() as $key => $eiCommandPath) {
-			$eiCommandPathStrs[$key] = (string) $eiCommandPath;
+	function getEiCmdPathStrs() {
+		$eiCmdPathStrs = [];
+		foreach ($this->privilegeSetting->getEiCmdPaths() as $key => $eiCmdPath) {
+			$eiCmdPathStrs[$key] = (string) $eiCmdPath;
 		}
-		return array_combine($eiCommandPathStrs, $eiCommandPathStrs);
+		return array_combine($eiCmdPathStrs, $eiCmdPathStrs);
 	}
 	
 	/**
-	 * @param string[] $eiCommandPathStrs
+	 * @param string[] $eiCmdPathStrs
 	 */
-	function setEiCommandPathStrs(array $eiCommandPathStrs) {
-		$eiCommandPaths = array();
-		foreach ($eiCommandPathStrs as $eiCommandPathStr) {
-			$eiCommandPaths[] = EiCommandPath::create($eiCommandPathStr);	
+	function setEiCmdPathStrs(array $eiCmdPathStrs) {
+		$eiCmdPaths = array();
+		foreach ($eiCmdPathStrs as $eiCmdPathStr) {
+			$eiCmdPaths[] = EiCmdPath::create($eiCmdPathStr);
 		}
 		
-		$this->privilegeSetting->setEiCommandPaths($eiCommandPaths);
+		$this->privilegeSetting->setEiCmdPaths($eiCmdPaths);
 	}
 	
 	/**
@@ -122,21 +122,21 @@ class EiuPrivilegeForm implements Dispatchable, UiComponent {
 						$magForm->getMagCollection()));
 	}
 	
-	private function buildPrivileges(array &$privileges, array $eiCommandPrivileges, EiCommandPath $baseEiCommandPath)  {
-		foreach ($eiCommandPrivileges as $commandPathStr => $eiCommandPrivilege) {
-			$commandPath = $baseEiCommandPath->ext($commandPathStr);
+	private function buildPrivileges(array &$privileges, array $eiCmdPrivileges, EiCmdPath $baseEiCmdPath)  {
+		foreach ($eiCmdPrivileges as $commandPathStr => $eiCmdPrivilege) {
+			$commandPath = $baseEiCmdPath->ext($commandPathStr);
 			
 			$privileges[] = (string) $commandPath;
 			
-			$this->buildPrivileges($privileges, $eiCommandPrivilege->getSubEiCommandPrivileges(), $commandPath);
+			$this->buildPrivileges($privileges, $eiCmdPrivilege->getSubEiCommandPrivileges(), $commandPath);
 		}
 	}
 	
 	private function _validation(BindingDefinition $bd) {
 		$commandPathStrs = array();
 		$this->buildPrivileges($commandPathStrs, $this->privilegeDefinition->getEiCommandPrivileges(),
-				new EiCommandPath(array()));
-		$bd->val('eiCommandPathStrs', new ValEnum($commandPathStrs));
+				new EiCmdPath(array()));
+		$bd->val('eiCmdPathStrs', new ValEnum($commandPathStrs));
 	}
 	
 	/**

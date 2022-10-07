@@ -22,16 +22,16 @@
 namespace rocket\ei\manage\security;
 
 use rocket\ei\EiPropPath;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\manage\entry\EiEntryConstraint;
 
 interface EiEntryAccess {
 	
 	/**
-	 * @param EiCommandPath $eiCommandPath
+	 * @param EiCmdPath $eiCmdPath
 	 * @return bool
 	 */
-	function isEiCommandExecutable(EiCommandPath $eiCommandPath): bool;
+	function isEiCommandExecutable(EiCmdPath $eiCmdPath): bool;
 	
 	/**
 	 * @param EiPropPath $eiPropPath

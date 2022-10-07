@@ -36,7 +36,7 @@ use rocket\ei\manage\gui\EiEntryGui;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\si\input\SiInputFactory;
-use rocket\ei\EiCommandPath;
+use rocket\ei\EiCmdPath;
 use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\UnknownEiTypeException;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
@@ -147,7 +147,7 @@ class ApiControlProcess {
 	}
 	
 	function determineGuiControl(GuiControlPath $guiControlPath) {
-		if (!$guiControlPath->startsWith(EiCommandPath::from($this->eiFrame->getEiExecution()->getEiCommand()))) {
+		if (!$guiControlPath->startsWith(EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCommand()))) {
 			throw new BadRequestException();
 		}
 		

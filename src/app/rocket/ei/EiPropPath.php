@@ -25,6 +25,7 @@ use rocket\ei\component\prop\EiPropNature;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\util\spec\EiuProp;
+use rocket\ei\component\prop\EiProp;
 
 class EiPropPath extends IdPath {
 
@@ -51,8 +52,8 @@ class EiPropPath extends IdPath {
 	 * @param EiPropNature $eiProp
 	 * @return \rocket\ei\EiPropPath
 	 */
-	public static function from(EiPropNature $eiProp) {
-		return $eiProp->getWrapper()->getEiPropPath();
+	public static function from(EiProp $eiProp) {
+		return $eiProp->getEiPropPath();
 	}
 	
 	/**

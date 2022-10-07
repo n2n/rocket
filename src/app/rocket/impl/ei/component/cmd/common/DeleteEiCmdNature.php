@@ -125,14 +125,14 @@ class DeleteEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 	
 // 	public function createPartialControlButtons(EiFrame $eiFrame, HtmlView $htmlView) {
 // 		$dtc = new DynamicTextCollection('rocket', $htmlView->getN2nContext()->getN2nLocale());
-// 		$eiCommandButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
+// 		$eiCmdButton = new SiButton(null, $dtc->translate('ei_impl_partial_delete_label'), 
 // 				$dtc->translate('ei_impl_partial_delete_tooltip'), false, SiButton::TYPE_SECONDARY,
 // 				SiIconType::ICON_TIMES_SIGN);
-// 		$eiCommandButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
-// 		$eiCommandButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
-// 		$eiCommandButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));
+// 		$eiCmdButton->setConfirmMessage($dtc->translate('ei_impl_partial_delete_confirm_message'));
+// 		$eiCmdButton->setConfirmOkButtonLabel($dtc->translate('common_yes_label'));
+// 		$eiCmdButton->setConfirmCancelButtonLabel($dtc->translate('common_no_label'));
 		
-// 		return array(self::CONTROL_BUTTON_KEY => $eiCommandButton);
+// 		return array(self::CONTROL_BUTTON_KEY => $eiCmdButton);
 // 	}
 	
 // 	public function getPartialControlOptions(N2nLocale $n2nLocale) {
