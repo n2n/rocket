@@ -6,7 +6,7 @@ use rocket\spec\setup\EiSetupPhase;
 use rocket\spec\setup\EiTypeSetup;
 use n2n\util\type\NamedTypeConstraint;
 use rocket\spec\setup\EiPresetProp;
-use rocket\impl\ei\component\prop\string\StringEiPropNatureNature;
+use rocket\impl\ei\component\prop\string\StringEiPropNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
 use rocket\impl\ei\component\cmd\common\OverviewEiCmdNature;
 use rocket\impl\ei\component\cmd\common\DetailEiCmdNature;
@@ -95,7 +95,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, NamedTypeConstraint $namedTypeConstraint) {
 		switch ($namedTypeConstraint->getTypeName()) {
 			case 'string':
-				$stringEiProp = new StringEiPropNatureNature();
+				$stringEiProp = new StringEiPropNature();
 				$stringEiProp->setMandatory(!$namedTypeConstraint->allowsNull());
 				$stringEiProp->setReadOnly(!$eiPresetProp->isEditable());
 				$stringEiProp->setMaxlength(255);

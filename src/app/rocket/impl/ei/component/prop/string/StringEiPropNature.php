@@ -28,7 +28,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
-class StringEiPropNatureNature extends AlphanumericEiPropNatureNature {
+class StringEiPropNature extends AlphanumericEiPropNatureNature {
 
 	private bool $multiline = false;
 
