@@ -106,16 +106,20 @@ class MailCenter {
 		return $mailFileNames;
 	}
 	
+	/**
+	 * @return \n2n\io\fs\FsPath
+	 */
 	public static function requestMailLogFile($fileName) {
-		return N2N::getVarStore()->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
-				AdminMailCenter::LOG_FOLDER, $fileName, true, false);
+		return new FsPath(N2N::getVarStore()->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
+				AdminMailCenter::LOG_FOLDER, $fileName, true, false));
 	}
+	
 	/**
 	 * @return \n2n\io\fs\FsPath
 	 */
 	public static function requestMailLogDir() {
-		return N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_LOG, N2N::NS,
-				AdminMailCenter::LOG_FOLDER, true);
+		return new FsPath(N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_LOG, N2N::NS,
+				AdminMailCenter::LOG_FOLDER, true));
 	}
 	
 	private function getAllItems() {
