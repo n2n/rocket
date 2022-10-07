@@ -29,7 +29,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * {@inheritDoc}
 	 * @see \n2n\web\http\payload\Payload::prepareForResponse()
 	 */
-	public function prepareForResponse(\n2n\web\http\Response $response) {
+	public function prepareForResponse(\n2n\web\http\Response $response): void {
 		$this->jsonResponse->prepareForResponse($response);
 	}
 
@@ -52,7 +52,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $eventInfo = null, 
+	public static function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $eventInfo = null,
 			JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 
@@ -70,16 +70,16 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @return BufferedPayload
 	 */
 	public static function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null,
-            JhtmlExec $jhtmlExec = null) {
-        $attrs = array();
-        
-        if ($ajahEventInfo !== null) {
-            $attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
-        }
-        
-        return JhtmlRedirectPayload::referer($fallbackUrl, $jhtmlExec, $attrs);
+			JhtmlExec $jhtmlExec = null) {
+		$attrs = array();
+
+		if ($ajahEventInfo !== null) {
+			$attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
+		}
+
+		return JhtmlRedirectPayload::referer($fallbackUrl, $jhtmlExec, $attrs);
 	}
-	
+
 	/**
 	 * @param string $url
 	 * @param EiJhtmlEventInfo $ajahEventInfo
@@ -88,14 +88,14 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 */
 	public static function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
-		
+
 		if ($ajahEventInfo !== null) {
 			$attrs[self::ATTR_EI_EVENT] = $ajahEventInfo->toAttrs();
 		}
-		
+
 		return JhtmlRedirectPayload::redirect($url, $jhtmlExec, $attrs);
 	}
-	
+
 	/**
 	 * @param EiJhtmlEventInfo $ajahEventInfo
 	 * @return BufferedPayload
@@ -106,7 +106,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 	}
 
 	public static function view(HtmlView $htmlView, EiJhtmlEventInfo $ajahEventInfo = null) {
-		return JhtmlResponse::view($htmlView, 
+		return JhtmlResponse::view($htmlView,
 				($ajahEventInfo !== null ? array(self::ATTR_EI_EVENT => $ajahEventInfo->toAttrs()) : array()));
 	}
 }
