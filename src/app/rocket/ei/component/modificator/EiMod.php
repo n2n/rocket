@@ -5,13 +5,11 @@ use rocket\ei\EiModificatorPath;
 use rocket\ei\component\EiComponent;
 
 class EiMod implements EiComponent {
-	private $eiModificatorPath;
-	private $nature;
-	private $eiModificatorCollection;
-	
+
 	/**
 	 * @param EiModificatorPath $eiModificatorPath
 	 * @param EiModNature $nature
+	 * @param EiModCollection $eiModificatorCollection
 	 */
 	public function __construct(private EiModificatorPath $eiModificatorPath,
 			private EiModNature $nature,
@@ -28,7 +26,7 @@ class EiMod implements EiComponent {
 	/**
 	 * @return EiModNature
 	 */
-	public function getNature() {
+	public function getNature(): EiModNature {
 		return $this->nature;
 	}
 	

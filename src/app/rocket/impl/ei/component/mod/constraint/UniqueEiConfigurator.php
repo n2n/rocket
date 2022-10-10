@@ -1,5 +1,5 @@
 <?php
-namespace rocket\impl\ei\component\modificator\constraint;
+namespace rocket\impl\ei\component\mod\constraint;
 
 use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use n2n\core\container\N2nContext;

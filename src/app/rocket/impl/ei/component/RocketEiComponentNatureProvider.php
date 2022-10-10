@@ -22,8 +22,21 @@ use rocket\spec\setup\EiComponentNatureProvider;
 use n2n\util\type\TypeConstraint;
 use rocket\attribute\EiPreset;
 use rocket\impl\ei\component\prop\numeric\IntegerEiPropNature;
+use rocket\impl\ei\component\mod\callback\CallbackEiModNature;
+use rocket\attribute\impl\EiSetup;
+use rocket\impl\ei\component\mod\callback\CallbackFinder;
+use n2n\util\magic\MagicObjectUnavailableException;
+use n2n\util\ex\err\ConfigurationError;
+use n2n\util\magic\MagicContext;
+use n2n\context\attribute\Inject;
+use rocket\attribute\impl\EiMods;
+use rocket\impl\ei\component\mod\callback\StaticCallbackEiModNature;
+use n2n\util\magic\MagicLookupFailedException;
 
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
+
+	#[Inject]
+	private MagicContext $magicContext;
 
 	/**
 	 * @inheritDoc
@@ -31,6 +44,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	public function provide(EiTypeSetup $eiTypeSetup, EiSetupPhase $eiSetupPhase): void {
 		if ($eiSetupPhase === EiSetupPhase::PERFECT_MATCHES) {
 			$this->provideCmdNatures($eiTypeSetup);
+			$this->provideModNatures($eiTypeSetup);
 			return;
 		}
 
@@ -115,6 +129,25 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 		if ($editCmdsMode || $attributeSet->hasClassAttribute(EiCmdDelete::class)) {
 			$eiTypeSetup->addEiCmdNature(new DeleteEiCmdNature());
+		}
+	}
+
+	private function provideModNatures(EiTypeSetup $eiTypeSetup) {
+		$eiTypeSetup->addEiModNature(new StaticCallbackEiModNature($eiTypeSetup->getClass()));
+
+		$eiModsAttribute = $eiTypeSetup->getAttributeSet()->getClassAttribute(EiMods::class);
+		if ($eiModsAttribute === null) {
+			return;
+		}
+
+		foreach ($eiModsAttribute->getInstance()->lookupIds as $lookupId) {
+			try {
+				$eiTypeSetup->addEiModNature(new CallbackEiModNature($this->magicContext->lookup($lookupId)));
+			} catch (MagicLookupFailedException $e) {
+				throw new ConfigurationError('Invalid lookup id \'' . $lookupId . '\' annotated. Reason: '
+								. $e->getMessage(),
+						$eiModsAttribute->getFile(), $eiModsAttribute->getLine(), previous: $e);
+			}
 		}
 	}
 

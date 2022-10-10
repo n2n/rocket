@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
+use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\entry\EiEntryListenerAdapter;
 use rocket\ei\util\Eiu;

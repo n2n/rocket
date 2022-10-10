@@ -26,7 +26,7 @@ use rocket\ei\manage\entry\UnknownEiObjectException;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\entry\EiuObject;
 use rocket\ei\util\frame\EiuFrame;
-use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
+use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
 
 class TreeMoveEiModificator extends EiModNatureAdapter {
 	

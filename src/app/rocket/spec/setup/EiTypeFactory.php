@@ -79,7 +79,7 @@ class EiTypeFactory {
 	public function __construct(private readonly SpecConfigLoader $specConfigLoader,
 			private readonly EntityModelManager $entityModelManager) {
 
-		$this->initListener = new InitListener($specConfigLoader->getMagicContext());
+		$this->initListener = new InitListener($specConfigLoader->getN2NContext());
 	}
 
 	function getEntityModelManager(): EntityModelManager {
@@ -130,15 +130,15 @@ class EiTypeFactory {
 		}
 
 		$eiModCollection = $eiType->getEiMask()->getEiModCollection();
-		$eiModCollection->init($this->specConfigLoader->getMagicContext());
+		$eiModCollection->init($this->specConfigLoader->getN2NContext());
 		$eiModCollection->registerListener($this->initListener);
 
 		$eiPropCollection = $eiType->getEiMask()->getEiPropCollection();
-		$eiPropCollection->init($this->specConfigLoader->getMagicContext());
+		$eiPropCollection->init($this->specConfigLoader->getN2NContext());
 		$eiPropCollection->registerListener($this->initListener);
 
 		$eiCmdCollection = $eiType->getEiMask()->getEiCmdCollection();
-		$eiCmdCollection->init($this->specConfigLoader->getMagicContext());
+		$eiCmdCollection->init($this->specConfigLoader->getN2NContext());
 		$eiCmdCollection->registerListener($this->initListener);
 	}
 

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\modificator\adapter;
+namespace rocket\impl\ei\component\mod\adapter;
 
 use rocket\ei\component\modificator\EiModNature;
 use rocket\ei\component\modificator\IndependentEiModNature;
@@ -42,7 +42,7 @@ abstract class IndependentEiModificatorAdapter extends EiModNatureAdapter implem
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter::equals()
+	 * @see \rocket\impl\ei\component\mod\adapter\EiModNatureAdapter::equals()
 	 */
 	public function equals($obj) {
 		return $obj instanceof EiModNature && parent::equals($obj);

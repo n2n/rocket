@@ -5,6 +5,9 @@ namespace testmdl\bo;
 use rocket\attribute\EiType;
 use rocket\attribute\EiPreset;
 use rocket\spec\setup\EiPresetMode;
+use rocket\attribute\impl\EiMods;
+use rocket\attribute\impl\EiSetup;
+use rocket\ei\util\Eiu;
 
 #[EiType]
 #[EiPreset(EiPresetMode::READ, readProps: ['stringGetTest'], editProps: ['stringEditablePriTest'])]
@@ -30,5 +33,10 @@ class PrimitiveReadPresetTestObj {
 
 	function getStringGetTest(): string {
 		return 'huiii';
+	}
+
+	#[EiSetup]
+	private static function setup(Eiu $eiu) {
+
 	}
 }

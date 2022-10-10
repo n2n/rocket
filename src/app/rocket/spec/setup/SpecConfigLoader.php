@@ -31,25 +31,27 @@ use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use n2n\util\magic\MagicLookupFailedException;
 use n2n\util\StringUtils;
+use n2n\core\container\N2nContext;
 
 class SpecConfigLoader {
 
 	private ?array $eiComponentNatureProviders = null;
 
 	/**
-	 * @param ModularConfigSource $moduleConfigSource
+	 * @param ModularConfigSource $modularConfigSource
 	 * @param string[] $moduleNamespaces Namespaces of all modules which spec configurations shall be loaded.
+	 * @param N2nContext $n2nContext
 	 */
 	function __construct(private ModularConfigSource $modularConfigSource, private array $moduleNamespaces,
-			private MagicContext $magicContext) {
+			private N2nContext $n2nContext) {
 		ArgUtils::valArray($moduleNamespaces, 'string');
 	}
 
 	/**
-	 * @return MagicContext
+	 * @return N2nContext
 	 */
-	function getMagicContext() {
-		return $this->magicContext;
+	function getN2NContext() {
+		return $this->n2nContext;
 	}
 
 
@@ -79,7 +81,7 @@ class SpecConfigLoader {
 
 		try {
 			foreach ($dataMap->optArray(self::ATTR_EI_COMPONENT_NATURE_PROVIDERS, 'string') as $lookupId) {
-				$eiComponentNatureProvider = $this->magicContext->lookup($lookupId);;
+				$eiComponentNatureProvider = $this->n2nContext->lookup($lookupId);;
 				if ($eiComponentNatureProvider instanceof EiComponentNatureProvider) {
 					$eiComponentNatureProviders[] = $eiComponentNatureProvider;
 					continue;

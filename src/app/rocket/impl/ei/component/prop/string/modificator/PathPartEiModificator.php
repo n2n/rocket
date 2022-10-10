@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\modificator;
 
-use rocket\impl\ei\component\modificator\adapter\EiModNatureAdapter;
+use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use n2n\util\col\ArrayUtils;

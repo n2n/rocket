@@ -27,6 +27,7 @@ use rocket\ei\mask\EiMask;
 use n2n\util\type\TypeUtils;
 use n2n\util\magic\MagicContext;
 use rocket\ei\util\Eiu;
+use n2n\core\container\N2nContext;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
@@ -109,12 +110,12 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 
 //	private ?MagicContext $initMagicContext = null;
 
-	function init(MagicContext $magicContext) {
+	function init(N2nContext $n2nContext) {
 //		IllegalStateException::assertTrue($this->initMagicContext === null, 'Already initialized.');
 //		$this->initMagicContext = $magicContext;
 
 		while (null !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
-			$eiComponent->getNature()->init(new Eiu($eiComponent, $magicContext));
+			$eiComponent->getNature()->init(new Eiu($eiComponent, $n2nContext));
 		}
 	}
 

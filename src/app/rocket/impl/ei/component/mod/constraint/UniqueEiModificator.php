@@ -1,5 +1,5 @@
 <?php
-namespace rocket\impl\ei\component\modificator\constraint;
+namespace rocket\impl\ei\component\mod\constraint;
 
 use rocket\ei\util\Eiu;
 use rocket\ei\component\EiConfigurator;
@@ -8,7 +8,7 @@ use n2n\persistence\orm\criteria\Criteria;
 use rocket\ei\util\spec\EiuEngine;
 use rocket\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\modificator\adapter\IndependentEiModificatorAdapter;
+use rocket\impl\ei\component\mod\adapter\IndependentEiModificatorAdapter;
 use rocket\ei\manage\frame\Boundry;
 
 class UniqueEiModificator extends IndependentEiModificatorAdapter {
@@ -47,7 +47,7 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\modificator\adapter\IndependentEiModificatorAdapter::createEiConfigurator()
+	 * @see \rocket\impl\ei\component\mod\adapter\IndependentEiModificatorAdapter::createEiConfigurator()
 	 */
 	function createEiConfigurator(): EiConfigurator {
 		return new UniqueEiConfigurator($this);		
@@ -55,7 +55,7 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\modificator\adapter\IndependentEiModificatorAdapter::setupEiEntry()
+	 * @see \rocket\impl\ei\component\mod\adapter\IndependentEiModificatorAdapter::setupEiEntry()
 	 */
 	function setupEiEntry(Eiu $eiu) {
 		if ($eiu->entry()->isDraft() 

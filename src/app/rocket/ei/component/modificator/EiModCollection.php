@@ -52,7 +52,7 @@ class EiModCollection extends EiComponentCollection {
 	 */
 	public function add(EiModNature $eiModificatorNature, string $id = null, bool $prepend = false) {
 		$eiModificatorPath = new EiModificatorPath($this->makeId($id, $eiModificatorNature));
-		$eiModificator = new EiMod($eiModificatorPath, $eiModificator, $this);
+		$eiModificator = new EiMod($eiModificatorPath, $eiModificatorNature, $this);
 		
 		$this->addEiComponent($eiModificatorPath,
 				new EiMod($eiModificatorPath, $eiModificatorNature, $this));
