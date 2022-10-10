@@ -14,7 +14,7 @@ class StaticCallbackEiModNature extends EiModNatureAdapter {
 		$this->callbackFinder = new CallbackFinder($this->class, true);
 	}
 
-	function init(Eiu $eiu): void {
+	function setup(Eiu $eiu): void {
 		foreach ($this->callbackFinder->find(EiSetup::class, $eiu) as $invoker) {
 			$invoker->invoke();
 		}

@@ -109,7 +109,7 @@ class FileConfig extends PropConfigAdaption {
 		}
 		
 		$thumbEiCommand = new ThumbNatureEiCommand($this->fileModel->getEiPropPath());
-		$eiu->mask()->supremeMask()->addEiCommand($thumbEiCommand);
+		$eiu->mask()->supremeMask()->addEiCmd($thumbEiCommand);
 		$this->thumbResolver->setThumbEiCommand($thumbEiCommand);
 		
 		if ($dataSet->optBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false)) {
@@ -141,7 +141,7 @@ class FileConfig extends PropConfigAdaption {
 		
 		$multiUploadEiCommand = new MultiUploadEiCommandNature($this->fileModel, null,
 				$dataSet->getString(self::ATTR_MULTI_UPLOAD_ORDER_KEY, false, MultiUploadEiController::ORDER_NONE, true));
-		$eiuMask->addEiCommand($multiUploadEiCommand);
+		$eiuMask->addEiCmd($multiUploadEiCommand);
 		
 		if ($dataSet->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
 			$fileModel = $this->fileModel;

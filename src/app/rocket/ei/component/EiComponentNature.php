@@ -25,7 +25,7 @@ use rocket\ei\util\Eiu;
 
 interface EiComponentNature {
 
-	function init(Eiu $eiu): void;
+	function setup(Eiu $eiu): void;
 
 
 	/**

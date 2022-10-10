@@ -395,7 +395,7 @@ class RelationModel {
 	
 	function prepare(EiuMask $eiuMask, EiuMask $targetEiuMask) {
 		if (!$this->getRelationEntityProperty()->isMaster()) {
-			$eiuMask->addEiModificator(new TargetMasterRelationEiModificator($this));
+			$eiuMask->addEiMod(new TargetMasterRelationEiModificator($this));
 		}
 		$targetEiuMask->onEngineReady(function ($eiuEngine) {
 			try {

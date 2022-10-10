@@ -61,7 +61,7 @@ class OrderConfig extends PropConfigAdaption {
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
 		$eiuMask = $eiu->mask();
-		$eiuMask->addEiModificator(new OrderEiModificator($this->orderEiProp));
+		$eiuMask->addEiMod(new OrderEiModificator($this->orderEiProp));
 	}
 	
 	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {

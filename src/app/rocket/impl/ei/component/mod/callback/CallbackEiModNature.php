@@ -20,7 +20,7 @@ class CallbackEiModNature extends EiModNatureAdapter {
 		$this->finder = new CallbackFinder(new \ReflectionClass($obj), false);
 	}
 
-	function init(Eiu $eiu): void {
+	function setup(Eiu $eiu): void {
 		$this->trigger(EiSetup::class, $eiu);
 	}
 

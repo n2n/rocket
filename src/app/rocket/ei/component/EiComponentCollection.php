@@ -115,7 +115,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 //		$this->initMagicContext = $magicContext;
 
 		while (null !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
-			$eiComponent->getNature()->init(new Eiu($eiComponent, $n2nContext));
+			$eiComponent->getNature()->setup(new Eiu($eiComponent, $n2nContext));
 		}
 	}
 

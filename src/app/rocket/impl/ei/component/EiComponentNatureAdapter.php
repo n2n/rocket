@@ -33,6 +33,6 @@ abstract class EiComponentNatureAdapter implements EiComponentNature {
 		return null;
 	}
 
-	function init(Eiu $eiu): void {
+	function setup(Eiu $eiu): void {
 	}
 }

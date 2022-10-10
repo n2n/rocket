@@ -63,7 +63,7 @@ class OnlineConfig extends PropConfigAdaption {
 		$onlineEiCommand = new OnlineNatureEiCommand();
 		$onlineEiCommand->setOnlineEiProp($this->onlineEiProp);
 		
-		$eiu->mask()->addEiCommand($onlineEiCommand, true);
+		$eiu->mask()->addEiCmd($onlineEiCommand, true);
 	}
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
