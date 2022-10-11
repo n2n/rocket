@@ -62,7 +62,7 @@
 // 			}
 // 		}
 		
-// 		foreach ($eiType->getEiModificatorCollection()->combineAll() as $constraint) {
+// 		foreach ($eiType->getEiModCollection()->combineAll() as $constraint) {
 // 			$constraint->setupDraftModel($draftModel, $this->drafManager !== null);
 // 		}
 

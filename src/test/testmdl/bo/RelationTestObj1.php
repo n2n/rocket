@@ -19,6 +19,10 @@ class RelationTestObj1 {
 	#[ManyToOne(RelationTestObj2::class)]
 	private RelationTestObj2 $testObj2;
 
+	function getId() {
+		return $this->id;
+	}
+
 	function getTestObj2() {
 		return $this->testObj2;
 	}

@@ -56,7 +56,7 @@ class GuiDefinition {
 	/**
 	 * @var GuiCommand[]
 	 */
-	private $guiCommands;
+	private $guiCommands = [];
 	
 	function __construct(EiMask $eiMask) {
 		$this->eiMask = $eiMask;

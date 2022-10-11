@@ -97,7 +97,7 @@ class EiuRefGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
 	 */
 	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		$eiCmdPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCommand()->getWrapper()->getEiCmdPath();
+		$eiCmdPath = $this->eiuFrame->getEiFrame()->getEiExecution()->getEiCmd()->getWrapper()->getEiCmdPath();
 		return new RefSiControl($this->createCmdUrl($eiCmdPath), $this->siButton, $this->newWindow);
 	}
 	

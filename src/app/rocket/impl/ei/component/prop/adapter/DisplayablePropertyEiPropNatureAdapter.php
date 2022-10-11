@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\component\prop\GuiEiProp;
+
+
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\ViewMode;use rocket\ei\manage\gui\field\GuiField;
@@ -35,7 +35,7 @@ use n2n\util\ex\UnsupportedOperationException;
 use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
 
 abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapter
-		implements DisplayableEiPropNature, PropertyEiPropNature, FieldEiProp, GuiEiProp, GuiFieldAssembler {
+		implements DisplayableEiPropNature, PropertyEiPropNature, GuiFieldAssembler {
 	use DisplayableAdapter, PropertyAdapter;
 
 	// EiField
@@ -52,7 +52,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 	}	
 
 	private function getEiFieldTypeConstraint(): ?TypeConstraint {
-		if (null !== ($accessProxy = $this->getObjectPropertyAccessProxy())) {
+		if (null !== ($accessProxy = $this->getPropertyAccessProxy())) {
 			return $accessProxy->getConstraint()->getLenientCopy();
 		}
 		

@@ -55,6 +55,7 @@ use rocket\si\meta\SiMaskQualifier;
 use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiMaskIdentifier;
 use rocket\ei\util\Eiu;
+use n2n\util\StringUtils;
 
 /**
  * @author andreas
@@ -229,8 +230,8 @@ class EiMask {
 		if (null !== ($label = $this->eiMaskDef->getLabel())) {
 			return Rocket::createLstr($label, $this->getModuleNamespace());
 		}
-		
-		return $this->getExtendedEiMask()->getLabelLstr();
+
+		return Lstr::create('Holeradio', $this->getModuleNamespace());
 	}
 	
 	/**
@@ -240,8 +241,8 @@ class EiMask {
 		if (null !== ($pluralLabel = $this->eiMaskDef->getPluralLabel())) {
 			return Rocket::createLstr($pluralLabel, $this->getModuleNamespace());
 		}
-		
-		return $this->getExtendedEiMask()->getPluralLabelLstr();
+
+		return Lstr::create('Holeradios', $this->getModuleNamespace());
 	}
 	
 	/**

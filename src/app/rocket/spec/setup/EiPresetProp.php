@@ -23,9 +23,10 @@ namespace rocket\spec\setup;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class EiPresetProp {
-	function __construct(private readonly string $name, private readonly ?AccessProxy $objectPropertyAccessProxy,
+	function __construct(private readonly string $name, private readonly ?PropertyAccessProxy $propertyAccessProxy,
 			private readonly ?EntityProperty $entityProperty, private readonly bool $editable) {
 	}
 
@@ -37,10 +38,10 @@ class EiPresetProp {
 	}
 
 	/**
-	 * @return AccessProxy|null
+	 * @return PropertyAccessProxy|null
 	 */
-	function getObjectPropertyAccessProxy() {
-		return $this->objectPropertyAccessProxy;
+	function getPropertyAccessProxy() {
+		return $this->propertyAccessProxy;
 	}
 
 	/**

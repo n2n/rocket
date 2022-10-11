@@ -25,6 +25,11 @@ use rocket\ei\component\EiComponentNature;
 use n2n\l10n\Lstr;
 use n2n\util\ex\IllegalStateException;
 use n2n\reflection\property\AccessProxy;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\manage\idname\IdNamePropFork;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\entry\EiField;
 
 interface EiPropNature extends EiComponentNature {
 	
@@ -44,21 +49,9 @@ interface EiPropNature extends EiComponentNature {
 	public function isPrivileged(): bool;
 	
 	/**
-	 * Will be the first called method by rocket
-	 * @param EiProp $eiPropWrapper
-	 */
-	public function setWrapper(EiProp $eiPropWrapper);
-	
-	/**
-	 * @return EiProp
-	 * @throws IllegalStateException if {@self::setWrapper()} hasn't been called yet.
-	 */
-	public function getWrapper(): EiProp;
-	
-	/**
 	 * @return AccessProxy|NULL
 	 */
-	public function getObjectPropertyAccessProxy(): ?AccessProxy;
+	public function getPropertyAccessProxy(): ?AccessProxy;
 	
 	/**
 	 * @return bool
@@ -71,4 +64,26 @@ interface EiPropNature extends EiComponentNature {
 	 * @throws IllegalStateException if {@see self::isPropFork()} returns false
 	 */
 	public function getPropForkObject(object $object): object;
+
+	/**
+	 * @param Eiu $eiu
+	 * @return IdNameProp|null
+	 */
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp;
+
+	/**
+	 * @param Eiu $eiu
+	 * @return IdNamePropFork|null
+	 */
+	function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork;
+
+	/**
+	 * @param Eiu $eiu {Eiu::frame()} is available.
+	 */
+	function buildEiField(Eiu $eiu): ?EiField;
+
+	/**
+	 * @return GuiProp|null null if not displayable
+	 */
+	function buildGuiProp(Eiu $eiu): ?GuiProp;
 }

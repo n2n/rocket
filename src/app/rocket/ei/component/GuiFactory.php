@@ -24,7 +24,7 @@ namespace rocket\ei\component;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\component\prop\GuiEiProp;
+
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\mask\EiMask;
@@ -60,16 +60,15 @@ class GuiFactory {
 		$guiDefinition = new GuiDefinition($this->eiMask);
 		
 		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
+			$eiPropPath = $eiProp->getEiPropPath();
 			
-			if (($eiProp instanceof GuiEiProp)
-					&& null !== ($guiProp = $eiProp->buildGuiProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
+			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 		}
 		
 		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
-			$eiCmdPath = $eiCmd->getWrapper()->getEiCmdPath();
+			$eiCmdPath = $eiCmd->getEiCmdPath();
 			
 			if ($eiCmd instanceof GuiEiCmd
 					&& null !== ($guiCommand = $eiCmd->buildGuiCommand(new Eiu($n2nContext, $this->eiMask, $eiCmdPath)))) {
@@ -95,7 +94,7 @@ class GuiFactory {
 		
 // 		$eiGuiFrame = new EiGuiFrame($eiFrame, $this->eiMask, $viewMode);
 		
-// 		$this->eiMask->getEiModificatorCollection()->setupEiGuiFrame($eiGuiFrame);
+// 		$this->eiMask->getEiModCollection()->setupEiGuiFrame($eiGuiFrame);
 		
 		
 // // 		if (!$init) {
@@ -226,7 +225,7 @@ class GuiFactory {
 // class ModEiGuiListener implements EiGuiListener {
 // 	private $eiModificatorCollection;
 	
-// 	public function __construct(EiModificatorCollection $eiModificatorCollection) {
+// 	public function __construct(EiModCollection $eiModificatorCollection) {
 // 		$this->eiModificatorCollection = $eiModificatorCollection;
 // 	}
 	

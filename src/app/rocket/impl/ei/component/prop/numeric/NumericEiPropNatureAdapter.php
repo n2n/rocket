@@ -40,18 +40,15 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
-use rocket\ei\util\factory\EifField;
-use n2n\validation\validator\impl\Validators;
 
 abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapterAdapter
-		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
+		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
 			
 	use NumericConfig;
 
@@ -85,11 +82,11 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureN
 //		$this->entityProperty = $entityProperty;
 //	}
 //
-//	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+//	function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 //		ArgUtils::assertTrue($propertyAccessProxy !== null);
 //		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 //				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-//		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+//		$this->propertyAccessProxy = $propertyAccessProxy;
 //	}
 	
 	function prepare() {

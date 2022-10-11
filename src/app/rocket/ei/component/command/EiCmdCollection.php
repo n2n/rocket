@@ -95,11 +95,12 @@ class EiCmdCollection extends EiComponentCollection {
 	 */
 	public function determineGenericOverview(bool $required) {
 		foreach ($this as $eiCmd) {
-			if (!($eiCmd instanceof GenericOverviewEiCmd)) {
+			$eiCmdNature = $eiCmd->getNature();
+			if (!($eiCmdNature instanceof GenericOverviewEiCmd)) {
 				continue;
 			}
 			
-			$navPoint = $eiCmd->buildOverviewNavPoint(new Eiu($this->eiMask, $eiCmd));
+			$navPoint = $eiCmdNature->buildOverviewNavPoint(new Eiu($this->eiMask, $eiCmd));
 			if ($navPoint == null) {
 				continue;
 			}
@@ -229,7 +230,7 @@ class GenericResult {
 	private $eiCmdPath;
 	private $navPoint;
 	
-	function __construct(EiCmdNature $eiCmd, SiNavPoint $navPoint) {
+	function __construct(EiCmd $eiCmd, SiNavPoint $navPoint) {
 		$this->eiCmd = $eiCmd;
 		$this->eiCmdPath = EiCmdPath::from($eiCmd);
 		$this->navPoint = $navPoint;

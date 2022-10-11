@@ -88,7 +88,11 @@ class Rocket implements RequestScoped {
 //
 //		return $this->layoutManager;
 //	}
-	
+
+	function setSpec(Spec $spec) {
+		$this->spec = $spec;
+	}
+
 	/**
 	 * @return \rocket\spec\Spec
 	 */

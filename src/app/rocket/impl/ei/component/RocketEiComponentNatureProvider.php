@@ -32,12 +32,15 @@ use n2n\io\managed\File;
 use rocket\impl\ei\component\prop\file\FileEiPropNature;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\impl\ei\component\prop\relation\ManyToManySelectEiProp;
-use rocket\impl\ei\component\prop\relation\OneToManySelectEiProp;
-use rocket\impl\ei\component\prop\relation\OneToOneSelectEiProp;
-use rocket\impl\ei\component\prop\relation\ManyToOneSelectEiProp;
+use rocket\impl\ei\component\prop\relation\ManyToManySelectEiPropNature;
+use rocket\impl\ei\component\prop\relation\OneToManySelectEiPropNature;
+use rocket\impl\ei\component\prop\relation\OneToOneSelectEiPropNature;
+use rocket\impl\ei\component\prop\relation\ManyToOneSelectEiPropNature;
 use n2n\util\ex\IllegalStateException;
+use n2n\util\type\TypeConstraints;
+use n2n\context\attribute\ThreadScoped;
 
+#[ThreadScoped]
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 	#[Inject]
@@ -68,11 +71,10 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 				}
 			}
 		}
-
 	}
 
 	private function compileTypeNames(EiPresetProp $eiPresetProp, bool &$nullAllowed) {
-		$accessProxy = $eiPresetProp->getObjectPropertyAccessProxy();
+		$accessProxy = $eiPresetProp->getPropertyAccessProxy();
 
 		$namedTypeConstraints = [];
 		if ($accessProxy->isWritable()) {
@@ -84,20 +86,26 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 					...$accessProxy->getGetterConstraint()->getNamedTypeConstraints());
 		}
 
+		if (null !== ($type = $accessProxy->getProperty()?->getType())) {
+			array_push($namedTypeConstraints,
+					...TypeConstraints::type($type)->getNamedTypeConstraints());
+		}
+
 		$typeNames = [];
 		$nullAllowed = false;
 		foreach ($namedTypeConstraints as $namedTypeConstraint) {
-			if ($namedTypeConstraint->isMixed()) {
-				continue;
-			}
-
 			if ($namedTypeConstraint->allowsNull()) {
 				$nullAllowed = true;
+			}
+
+			if ($namedTypeConstraint->isMixed()) {
+				continue;
 			}
 
 			$typeName = $namedTypeConstraint->getTypeName();
 			$typeNames[$typeName] = $typeName;
 		}
+
 
 		return $typeNames;
 	}
@@ -175,26 +183,29 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 			switch ($relationEntityProperty->getType()) {
 				case RelationEntityProperty::TYPE_MANY_TO_MANY:
-					$relationEiProp = new ManyToManySelectEiProp();
+					$relationEiProp = new ManyToManySelectEiPropNature();
 					break;
 				case RelationEntityProperty::TYPE_ONE_TO_MANY:
-					$relationEiProp = new OneToManySelectEiProp();
+					$relationEiProp = new OneToManySelectEiPropNature();
 					break;
 				case RelationEntityProperty::TYPE_MANY_TO_ONE:
-					$relationEiProp = new ManyToOneSelectEiProp();
+					$relationEiProp = new ManyToOneSelectEiPropNature();
 					$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
 					break;
 				case RelationEntityProperty::TYPE_ONE_TO_ONE:
-					$relationEiProp = new OneToOneSelectEiProp();
+					$relationEiProp = new OneToOneSelectEiPropNature();
 					$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
 					break;
 				default:
 					throw new IllegalStateException();
 			}
 			$relationEiProp->getRelationModel()->setReadOnly(!$eiPresetProp->isEditable());
+			$this->assignProperties($eiPresetProp, $relationEiProp);
 
 			return $relationEiProp;
 		}
+
+		return null;
 	}
 
 	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
@@ -229,6 +240,6 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 	private function assignProperties(EiPresetProp $eiPresetProp, PropertyEiPropNature $nature) {
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
-		$nature->setObjectPropertyAccessProxy($eiPresetProp->getObjectPropertyAccessProxy());
+		$nature->setPropertyAccessProxy($eiPresetProp->getPropertyAccessProxy());
 	}
 }

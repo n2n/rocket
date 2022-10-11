@@ -284,7 +284,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	
 	private function triggerChanged() {
 		foreach ($this->listeners as $listener) {
-			$listener->eiComponenetCollectionChanged($this);
+			$listener->eiComponentCollectionChanged($this);
 		}
 	}
 	

@@ -52,7 +52,7 @@ class EiErrorResult {
 // 	 * @return EiModificatorError|null
 // 	 */
 // 	public function errorOfEiModificator(EiModificator $eiModificator) {
-// 		return $this->findEiModificatorError($eiModificator->getWrapper()->getEiModificatorCollection()->getEiMask()->getEiTypePath(), 
+// 		return $this->findEiModificatorError($eiModificator->getWrapper()->getEiModCollection()->getEiMask()->getEiTypePath(), 
 // 				$eiModificator->getWrapper()->getEiModificatorPath());
 // 	}
 	

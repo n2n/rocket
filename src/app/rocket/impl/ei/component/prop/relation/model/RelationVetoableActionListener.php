@@ -184,9 +184,9 @@ class VetoCheck {
 	}
 	
 	private function isStillAssigned($entityObj) {
-		$objectPropertyAccessProxy = $this->relationEiProp->getObjectPropertyAccessProxy();
+		$propertyAccessProxy = $this->relationEiProp->getPropertyAccessProxy();
 		
-		$value = $objectPropertyAccessProxy->getValue($entityObj);
+		$value = $propertyAccessProxy->getValue($entityObj);
 		if ($this->isToOne()) {
 			return $value === $entityObj;
 		}
@@ -195,14 +195,14 @@ class VetoCheck {
 	}
 	
 	private function releaseEntityObj($entityObj) {
-		$objectPropertyAccessProxy = $this->relationEiProp->getObjectPropertyAccessProxy();
+		$propertyAccessProxy = $this->relationEiProp->getPropertyAccessProxy();
 		
 		if ($this->isToOne()) {
-			$objectPropertyAccessProxy->setValue($entityObj, null);
+			$propertyAccessProxy->setValue($entityObj, null);
 			return;
 		}
 		
-		$currentTargetEntityObjs = $objectPropertyAccessProxy->getValue($entityObj);
+		$currentTargetEntityObjs = $propertyAccessProxy->getValue($entityObj);
 		if ($currentTargetEntityObjs === null) {
 			$currentTargetEntityObjs = new \ArrayObject();
 		}

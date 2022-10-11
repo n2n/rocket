@@ -31,9 +31,9 @@ class EiMod implements EiComponent {
 	}
 	
 	/**
-	 * @return \rocket\ei\component\modificator\\EiModificatorCollection
+	 * @return \rocket\ei\component\modificator\\EiModCollection
 	 */
-	public function getEiModificatorCollection() {
+	public function getEiModCollection() {
 		return $this->eiModificatorCollection;
 	}
 }

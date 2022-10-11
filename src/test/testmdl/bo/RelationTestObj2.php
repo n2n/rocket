@@ -11,12 +11,12 @@ use rocket\ei\util\Eiu;
 use n2n\persistence\orm\attribute\OneToMany;
 
 #[EiType]
-#[EiPreset(EiPresetMode::READ, readProps: ['testObj2s'])]
+#[EiPreset(EiPresetMode::READ, readProps: ['testObj1s'])]
 class RelationTestObj2 {
 
 	public int $id;
 
 	#[OneToMany(RelationTestObj1::class)]
-	public \ArrayObject $testObjs2;
+	public \ArrayObject $testObj1s;
 
 }

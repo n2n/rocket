@@ -28,6 +28,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\component\prop\EiPropNature;
 use rocket\si\content\SiEntryQualifier;
+use rocket\ei\component\prop\EiProp;
 
 class EiuObject {
 	private $eiObject;
@@ -88,7 +89,7 @@ class EiuObject {
 	 * @param EiPropNature $eiProp
 	 * @return boolean
 	 */
-	public function isDraftProp(EiPropNature $eiProp) {
+	public function isDraftProp(EiProp $eiProp) {
 		return $this->eiObject->isDraft()
 				&& $eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getDraftDefinition()
 						->containsEiPropPath(EiPropPath::from($eiProp));
@@ -98,27 +99,27 @@ class EiuObject {
 	 * @param EiPropNature $eiProp
 	 * @return object
 	 */
-	public function getForkObject(EiPropNature $eiProp) {
-		$eiPropPath = EiPropPath::from($eiProp);
-		return $eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getForkObject($eiPropPath->poped(), $this->eiObject);
+	public function getForkObject(EiProp $eiProp) {
+		$eiPropPath = $eiProp->getEiPropPath();
+		return $eiProp->getEiPropCollection()->getEiMask()->getForkObject($eiPropPath->poped(), $this->eiObject);
 	}
 	
 	/**
-	 * @param EiPropNature $eiProp
+	 * @param EiProp $eiProp
 	 * @return NULL|mixed
 	 *@throws EiFieldOperationFailedException
 	 */
-	public function readNativValue(EiPropNature $eiProp) {
+	public function readNativValue(EiProp $eiProp) {
 		if ($this->isDraftProp($eiProp)) {
 			return $this->eiObject->getDraft()->getDraftValueMap()->getValue($eiPropPath);
 		}
 		
-		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
-		if ($objectPropertyAccessProxy !== null) {
-			 return $objectPropertyAccessProxy->getValue($this->getForkObject($eiProp));
+		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
+		if ($propertyAccessProxy !== null) {
+			 return $propertyAccessProxy->getValue($this->getForkObject($eiProp));
 		}
 		
-		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
+		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiProp);
 	}
 	
 	/**
@@ -130,7 +131,7 @@ class EiuObject {
 			return true;
 		}
 		
-		return $this->getObjectPropertyAccessProxy($eiProp)->isWritable();
+		return $this->getPropertyAccessProxy($eiProp)->isWritable();
 	}
 	
 	/**
@@ -138,13 +139,13 @@ class EiuObject {
 	 * @return \n2n\reflection\property\AccessProxy
 	 *@throws EiFieldOperationFailedException
 	 */
-	private function getObjectPropertyAccessProxy(EiPropNature $eiProp) {
-		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
-		if ($objectPropertyAccessProxy !== null) {
-			return $objectPropertyAccessProxy;
+	private function getPropertyAccessProxy(EiPropNature $eiProp) {
+		$propertyAccessProxy = $eiProp->getPropertyAccessProxy();
+		if ($propertyAccessProxy !== null) {
+			return $propertyAccessProxy;
 		}
 		
-		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
+		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiProp);
 	}
 	
 	/**
@@ -158,7 +159,7 @@ class EiuObject {
 			return;
 		}
 		
-		$this->getObjectPropertyAccessProxy($eiProp)->setValue($this->getForkObject($eiProp), $value);
+		$this->getPropertyAccessProxy($eiProp)->setValue($this->getForkObject($eiProp), $value);
 	}
 	
 	/**

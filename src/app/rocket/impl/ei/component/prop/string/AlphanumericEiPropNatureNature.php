@@ -45,7 +45,6 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
@@ -54,7 +53,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 
 abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp,
-		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp, IdNameEiProp {
+		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
 
 	/**
 	 * @var int|null

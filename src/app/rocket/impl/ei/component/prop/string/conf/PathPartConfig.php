@@ -114,7 +114,7 @@ class PathPartConfig extends PropConfigAdaption {
 	}
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
-		if (StringUtils::contains(self::$commonNeedles, $propertyAssignation->getObjectPropertyAccessProxy()
+		if (StringUtils::contains(self::$commonNeedles, $propertyAssignation->getPropertyAccessProxy()
 				->getPropertyName())) {
 			return CompatibilityLevel::COMMON;
 		}
@@ -147,7 +147,7 @@ class PathPartConfig extends PropConfigAdaption {
 			if ($allowEmpty && $this->mandatoryRequired()) {
 				throw new InvalidAttributeException(self::ATTR_NULL_ALLOWED_KEY 
 						. ' must be false because AccessProxy does not allow null value: '
-						. $this->getAssignedObjectPropertyAccessProxy());
+						. $this->getAssignedPropertyAccessProxy());
 			}
 			$this->setNullAllowed($allowEmpty);
 		}

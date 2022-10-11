@@ -19,7 +19,7 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
-		$this->assertCount(4, $eiProps);
+		$this->assertCount(5, $eiProps);
 	}
 
 	function testMod() {

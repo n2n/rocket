@@ -23,7 +23,7 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\component\prop\GuiEiProp;
+
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
@@ -36,7 +36,7 @@ use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\component\prop\EiPropNature;
 
 abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implements DisplayableEiPropNature,
-		GuiEiProp, GuiFieldAssembler {
+		GuiFieldAssembler {
 	use DisplayableAdapter;
 
 	/**

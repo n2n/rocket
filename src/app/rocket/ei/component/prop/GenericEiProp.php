@@ -23,7 +23,7 @@ namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\generic\GenericEiProperty;
 
-interface GenericEiProp extends FieldEiProp {
+interface GenericEiProp  {
 	
 	/**
 	 * @return GenericEiProperty|null

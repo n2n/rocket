@@ -49,11 +49,11 @@ class UrlEiPropNature extends AlphanumericEiPropNatureNature {
 // 		return "Link";
 // 	}
 	
-	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
-		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
+	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
+		parent::setPropertyAccessProxy($propertyAccessProxy);
 		
-		if ($objectPropertyAccessProxy !== null) {
-			$objectPropertyAccessProxy->getConstraint()->setWhitelistTypes([Url::class]);
+		if ($propertyAccessProxy !== null) {
+			$propertyAccessProxy->getConstraint()->setWhitelistTypes([Url::class]);
 		}
 	}
 	
@@ -105,7 +105,7 @@ class UrlEiPropNature extends AlphanumericEiPropNatureNature {
 	 */
 	private function writeMap(Eiu $eiu, $value) {
 		if ($value instanceof Url
-				&& $this->getObjectPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
+				&& $this->getPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
 			return (string) $value;
 		}
 		

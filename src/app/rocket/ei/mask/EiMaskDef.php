@@ -31,8 +31,8 @@ class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_REPLACE = 'replace';
 // 	const TYPE_CHANGE_MODE_CHANGE = 'change';
 	
-	private ?string $label;
-	private ?string $pluralLabel;
+	private ?string $label = null;
+	private ?string $pluralLabel = null;
 	private $iconType;
 //	private $draftingAllowed;
 //	private $draftHistorySize;

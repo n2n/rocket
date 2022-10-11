@@ -39,6 +39,7 @@ use n2n\util\uri\Url;
 use n2n\util\uri\Path;
 use rocket\ei\manage\api\ApiController;
 use rocket\ei\EiType;
+use rocket\ei\component\command\EiCmd;
 
 class EiFrameController extends ControllerAdapter {
 	const API_PATH_PART = 'api';
@@ -98,10 +99,10 @@ class EiFrameController extends ControllerAdapter {
 	
 	/**
 	 * @param EiCmdPath $eiCmdPath
-	 * @return \rocket\ei\component\command\EiCmdNature
+	 * @return EiCmd
 	 *@throws PageNotFoundException
 	 */
-	private function lookupEiCommand($eiCmdPath) {
+	private function lookupEiCmd($eiCmdPath) {
 		try {
 			return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 					->getByPath($eiCmdPath);
@@ -195,7 +196,7 @@ class EiFrameController extends ControllerAdapter {
 	
 	public function doApi($eiCmdPathStr, ApiController $apiController, array $delegateParams = null) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
-		$eiCmd = $this->lookupEiCommand($eiCmdPath);
+		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		
 		$this->pushEiFrame($eiCmd);
 		
@@ -204,11 +205,11 @@ class EiFrameController extends ControllerAdapter {
 	
 	public function doCmd($eiCmdPathStr, array $delegateCmds = null) {		
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
-		$eiCmd = $this->lookupEiCommand($eiCmdPath);
+		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		
 		$this->pushEiFrame($eiCmd);
 		
-		$controller = $eiCmd->lookupController(new Eiu($this->eiFrame));
+		$controller = $eiCmd->getNature()->lookupController(new Eiu($this->eiFrame));
 		if ($controller !== null) {
 			$this->delegate($controller);
 			return;
@@ -223,7 +224,7 @@ class EiFrameController extends ControllerAdapter {
 	
 	public function doFork($eiCmdPathStr, $eiPropPathStr, $mode, array $delegateCmds) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
-		$eiCmd = $this->lookupEiCommand($eiCmdPath);
+		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		
 		$this->pushEiFrame($eiCmd);
 		
@@ -236,7 +237,7 @@ class EiFrameController extends ControllerAdapter {
 	
 	public function doForkEntry($eiCmdPathStr, $pid, $eiPropPathStr, $mode, array $deleteCmds) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
-		$eiCmd = $this->lookupEiCommand($eiCmdPath);
+		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		
 		$this->pushEiFrame($eiCmd);
 		
@@ -250,7 +251,7 @@ class EiFrameController extends ControllerAdapter {
 	
 	public function doForkNewEntry($eiCmdPathStr, $eiTypeId, $eiPropPathStr, $mode, array $deleteCmds) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
-		$eiCmd = $this->lookupEiCommand($eiCmdPath);
+		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		
 		$this->pushEiFrame($eiCmd);
 		

@@ -49,13 +49,21 @@ class EiPresetUtil {
 		$eiPresetProps = [];
 
 		if ($this->eiPreset->mode->hasReadProps()) {
-			foreach ($propertiesAnalyzer->analyzeProperties() as $accessProxy) {
+			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
+				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
+					continue;
+				}
+
 				$propertyName = $accessProxy->getPropertyName();
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
 						$this->eiPreset->containsEditProp($propertyName));
 			}
 		} elseif ($this->eiPreset->mode->hasEditProps()) {
-			foreach ($propertiesAnalyzer->analyzeProperties() as $accessProxy) {
+			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
+				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
+					continue;
+				}
+
 				$propertyName = $accessProxy->getPropertyName();
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
 						!$this->eiPreset->containsReadProp($propertyName));
@@ -122,7 +130,7 @@ class EiPresetUtil {
 
 		return $this->createAttributeError( 'No suitable EiProps found for the following properties in '
 				. $this->entityModel->getClass()->getName() . ': '
-				. implode(',', array_map(fn (EiPresetProp $p) => $p->getName(), $unassignedEiPresetProps)));
+				. implode(', ', array_map(fn (EiPresetProp $p) => $p->getName(), $unassignedEiPresetProps)));
 	}
 
 	/**
@@ -136,7 +144,7 @@ class EiPresetUtil {
 			string $message = null) {
 		$attrPropName = $this->eiPreset->containsEditProp($propertyName) ? 'editProps' : 'readProps';
 
-		return $this->createAttributeError($this->eiPreset, 'Could not use property \'' . $propertyName
+		return $this->createAttributeError('Could not assign property \'' . $propertyName
 				. '\' annotated in '
 				. TypeUtils::prettyPropName(EiPreset::class, $attrPropName)
 				. ($message === null ? '' : ' Reason: ' . $message), $previous);

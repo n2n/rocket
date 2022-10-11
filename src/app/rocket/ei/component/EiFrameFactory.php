@@ -90,8 +90,8 @@ class EiFrameFactory {
 	
 	private function setupEiFrame($eiFrame) {
 		$eiu = new Eiu($eiFrame);
-		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiModificatorCollection()->toArray() as $eiModificator) {
-			$eiModificator->setupEiFrame($eiu);
+		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiModCollection()->toArray() as $eiModificator) {
+			$eiModificator->getNature()->setupEiFrame($eiu);
 		}
 	}
 	

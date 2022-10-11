@@ -28,6 +28,11 @@ use rocket\impl\ei\component\EiComponentNatureAdapter;
 use rocket\ei\component\prop\EiProp;
 use n2n\util\StringUtils;
 use n2n\reflection\property\AccessProxy;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\idname\IdNameProp;
+use rocket\ei\manage\idname\IdNamePropFork;
+use rocket\ei\manage\gui\GuiProp;
+use rocket\ei\manage\entry\EiField;
 
 abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements EiPropNature {
 	private $wrapper;
@@ -98,7 +103,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	 * @see \rocket\ei\component\prop\EiPropNature::getLabelLstr()
 	 */
 	public function getLabelLstr(): Lstr {
-		return Lstr::create(StringUtils::pretty($this->getWrapper()->getEiPropPath()->getLastId()));
+		return Lstr::create('Propname');
 	}
 	
 	/**
@@ -125,7 +130,23 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 		throw new IllegalStateException($this . ' is not a PropFork.');
 	}
 	
-	public function getObjectPropertyAccessProxy(): ?AccessProxy {
+	public function getPropertyAccessProxy(): ?AccessProxy {
+		return null;
+	}
+
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp {
+		return null;
+	}
+
+	public function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork {
+		return null;
+	}
+
+	function buildEiField(Eiu $eiu): ?EiField {
+		return null;
+	}
+
+	function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;
 	}
 }

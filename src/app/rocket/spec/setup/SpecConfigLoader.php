@@ -64,7 +64,6 @@ class SpecConfigLoader {
 			}
 
 			$configSource = $this->modularConfigSource->getOrCreateConfigSourceByModuleNamespace($moduleNamespace);
-
 			array_push($this->eiComponentNatureProviders, ...$this->lookupEiComponentNatureProviders($configSource));
 		}
 	}

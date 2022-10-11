@@ -51,7 +51,7 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 	
 	public function __construct(RelationModel $relationModel) {
 		$this->relationModel = $relationModel;
-		$this->accessProxy = $this->relationModel->getObjectPropertyAccessProxy();
+		$this->accessProxy = $this->relationModel->getPropertyAccessProxy();
 		$this->orphanRemoval = $this->relationModel->getRelationEntityProperty()->getRelation()->isOrphanRemoval();
 	}
 	

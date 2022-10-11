@@ -4,10 +4,11 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
+use n2n\util\ex\IllegalStateException;
 
 trait PropertyAdapter {
-	protected ?EntityProperty $entityProperty;
-	protected ?AccessProxy $objectPropertyAccessProxy;
+	protected ?EntityProperty $entityProperty = null;
+	protected ?AccessProxy $propertyAccessProxy = null;
 
 	/**
 	 * @param EntityProperty|null $entityProperty
@@ -24,16 +25,40 @@ trait PropertyAdapter {
 	}
 
 	/**
-	 * @return AccessProxy|null
+	 * @throws IllegalStateException
+	 * @return EntityProperty|NULL
 	 */
-	public function getObjectPropertyAccessProxy(): ?AccessProxy {
-		return $this->objectPropertyAccessProxy;
+	protected function requireEntityProperty(): ?EntityProperty  {
+		if ($this->entityProperty === null) {
+			throw new IllegalStateException('No EntityProperty assigned to ' . $this);
+		}
+
+		return $this->entityProperty;
 	}
 
 	/**
-	 * @param AccessProxy|null $objectPropertyAccessProxy
+	 * @param AccessProxy|null $propertyAccessProxy
 	 */
-	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy): void {
-		$this->objectPropertyAccessProxy = $objectPropertyAccessProxy;
+	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy): void {
+		$this->propertyAccessProxy = $propertyAccessProxy;
+	}
+
+	/**
+	 * @return AccessProxy|null
+	 */
+	public function getPropertyAccessProxy(): ?AccessProxy {
+		return $this->propertyAccessProxy;
+	}
+
+	/**
+	 * @throws IllegalStateException
+	 * @return AccessProxy
+	 */
+	protected function requirePropertyAccessProxy(): ?AccessProxy {
+		if ($this->propertyAccessProxy === null) {
+			throw new IllegalStateException('No PropertyAccessProxy assigned to ' . $this . '.');
+		}
+
+		return $this->propertyAccessProxy;
 	}
 }

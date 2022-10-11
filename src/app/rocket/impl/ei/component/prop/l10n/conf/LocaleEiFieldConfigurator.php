@@ -63,7 +63,7 @@
 		
 // 		if ($n2nLocaleEiProp->isMultiLingual()) return;
 		
-// 		$setupProcess->getEiDef()->getEiModificatorCollection()
+// 		$setupProcess->getEiDef()->getEiModCollection()
 // 				->add(new N2nLocaleEiModificator($this));
 // 		$n2nLocaleEiProp->getDisplayConfig()
 // 				->setDefaultDisplayedViewModes(DisplayConfig::NO_VIEW_MODES);

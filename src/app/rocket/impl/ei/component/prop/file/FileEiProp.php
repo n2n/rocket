@@ -54,10 +54,9 @@ use rocket\impl\ei\component\prop\file\conf\FileModel;
 use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\img\ImageDimension;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\util\factory\EifGuiField;
 
-class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements IdNameEiProp {
+class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 	
 	/**
 	 * @var EiPropPath|null
@@ -136,7 +135,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 // 	}
 	
 
-	protected function isObjectPropertyAccessProxyCompatible(?AccessProxy $accessProxy) {
+	protected function isPropertyAccessProxyCompatible(?AccessProxy $accessProxy) {
 		$accessProxy->getConstraint()->isPassableBy(TypeConstraints::type(File::class));
 	}
 	
@@ -144,10 +143,10 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 		return TypeConstraints::type(File::class);
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('n2n\io\managed\File',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 	
 	public function testEiFieldValue(Eiu $eiu, $eiFieldValue): bool {

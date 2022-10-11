@@ -31,10 +31,10 @@ class StringArrayEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter
 		return false;
 	}
 
-	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null) {
-		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+		parent::setPropertyAccessProxy($propertyAccessProxy);
 
-		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createArrayLike('array', false,
+		$propertyAccessProxy->setConstraint(TypeConstraint::createArrayLike('array', false,
 				TypeConstraint::createSimple('scalar')));
 	}
 

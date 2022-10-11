@@ -25,8 +25,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\StringUtils;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\component\prop\FieldEiProp;
-use rocket\ei\component\prop\IdNameEiProp;
+
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
@@ -37,7 +36,7 @@ use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\si\content\impl\SiFields;
 
 class StringDisplayEiPropNature extends DisplayableEiPropNature implements ObjectPropertyConfigurable,
-		FieldEiProp, GuiFieldFactory, IdNameEiProp {
+		FieldEiProp, GuiFieldFactory {
 	
 	function prepare() {
 		$this->getDisplayConfig()->setCompatibleViewModes(ViewMode::read());
@@ -47,10 +46,10 @@ class StringDisplayEiPropNature extends DisplayableEiPropNature implements Objec
 		return false;
 	}
 
-	function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy) {
-		ArgUtils::assertTrue($objectPropertyAccessProxy !== null);
-		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createSimple('string', true));
-		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
+	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
+		ArgUtils::assertTrue($propertyAccessProxy !== null);
+		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('string', true));
+		parent::setPropertyAccessProxy($propertyAccessProxy);
 	}
 
 

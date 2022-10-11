@@ -135,7 +135,7 @@ class Relation {
 		
 		if ($this->relationModel->getRelationEntityProperty()->isMaster() && !$eiuEntry->isDraft()) {
 			$targetEiFrame->registerListener(new MasterRelationEiModificator($targetEiFrame, $eiuEntry->getEntityObj(),
-					$this->eiProp->getObjectPropertyAccessProxy(), $this->relationModel->isTargetMany()));
+					$this->eiProp->getPropertyAccessProxy(), $this->relationModel->isTargetMany()));
 		}
 	}	
 }

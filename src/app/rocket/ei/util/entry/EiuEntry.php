@@ -674,12 +674,12 @@ class EiuEntry {
 		}
 		
 		$eiProp = $this->getEiEntry(true)->getEiMask()->getEiPropCollection()->getByPath($eiPropPath);
-		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
-		if ($objectPropertyAccessProxy !== null) {
-			return $objectPropertyAccessProxy->getValue($this->getForkObject($eiPropPath));
+		$propertyAccessProxy = $eiProp->getPropertyAccessProxy();
+		if ($propertyAccessProxy !== null) {
+			return $propertyAccessProxy->getValue($this->getForkObject($eiPropPath));
 		}
 		
-		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
+		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiProp);
 	}
 	
 	/**
@@ -695,13 +695,13 @@ class EiuEntry {
 			return;
 		}
 		
-		$objectPropertyAccessProxy = $eiProp->getObjectPropertyAccessProxy();
-		if ($objectPropertyAccessProxy !== null) {
-			$objectPropertyAccessProxy->setValue($this->getForkObject($eiProp), $value);
+		$propertyAccessProxy = $eiProp->getPropertyAccessProxy();
+		if ($propertyAccessProxy !== null) {
+			$propertyAccessProxy->setValue($this->getForkObject($eiProp), $value);
 			return;
 		}
 		
-		throw new EiFieldOperationFailedException('There is no ObjectPropertyAccessProxy configured for ' . $eiProp);
+		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiProp);
 	}
 	
 	/**

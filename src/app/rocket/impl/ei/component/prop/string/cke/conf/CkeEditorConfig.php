@@ -152,7 +152,7 @@ class CkeEditorConfig extends PropConfigAdaption {
 			return $level;
 		}
 		
-		if (StringUtils::endsWith('Html', $propertyAssignation->getObjectPropertyAccessProxy(true)->getPropertyName())) {
+		if (StringUtils::endsWith('Html', $propertyAssignation->getPropertyAccessProxy(true)->getPropertyName())) {
 			return CompatibilityLevel::COMMON;
 		}
 		

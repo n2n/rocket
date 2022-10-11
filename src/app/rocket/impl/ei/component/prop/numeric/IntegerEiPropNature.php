@@ -74,11 +74,11 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter implements ScalarEi
 //		$this->entityProperty = $entityProperty;
 //	}
 //
-//	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+//	function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 //		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
 //				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 //
-//		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+//		$this->propertyAccessProxy = $propertyAccessProxy;
 //	}
 	
 	function createEifField(Eiu $eiu): EifField {

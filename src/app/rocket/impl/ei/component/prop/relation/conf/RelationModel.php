@@ -83,9 +83,11 @@ class RelationModel {
 	private $removable = true;
 	
 	// ToMany / ToOne
-	
-	private $min = 0;
-	private $max = null;
+
+	private bool $readOnly = false;
+	private bool $mandatory = false;
+	private int $min = 0;
+	private ?int $max = null;
 	
 	// EmbeddedToMany
 	
@@ -116,24 +118,19 @@ class RelationModel {
 	 * @param bool $targetMany
 	 * @param bool $embedded
 	 */
-	function __construct(RelationEiProp $relationEiProp, bool $sourceMany, bool $targetMany, string $mode, 
-			?EditAdapter $editConfig) {
+	function __construct(RelationEiProp $relationEiProp, bool $sourceMany, bool $targetMany, string $mode) {
 		$this->relationEiProp = $relationEiProp;
 		$this->sourceMany = $sourceMany;
 		$this->targetMany = $targetMany;
 
 		ArgUtils::valEnum($mode, self::getModes());
 		$this->mode = $mode;
-		
-		$this->editConfig = $editConfig;
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	function isReadOnly() {
-		IllegalStateException::assertTrue($this->editConfig !== null);
-		
 		return $this->readOnly;
 	}
 
@@ -166,8 +163,8 @@ class RelationModel {
 		return $this->relationEiProp->getRelationEntityProperty();
 	}
 	
-	function getObjectPropertyAccessProxy() {
-		$accessProxy = $this->relationEiProp->getObjectPropertyAccessProxy();
+	function getPropertyAccessProxy() {
+		$accessProxy = $this->relationEiProp->getPropertyAccessProxy();
 		IllegalStateException::assertTrue($accessProxy !== null);
 		return $accessProxy;
 	}
@@ -396,6 +393,7 @@ class RelationModel {
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$eiuMask->addMod(new TargetMasterRelationEiModificator($this));
 		}
+
 		$targetEiuMask->onEngineReady(function ($eiuEngine) {
 			try {
 				$this->finalize($eiuEngine);
@@ -418,6 +416,7 @@ class RelationModel {
 		} else {
 			$rf->validateNonEmbeddedOrIntegrated();
 		}
+
 		$this->targetEiuEngine = $targetEiuEngine;
 		
 		
@@ -488,7 +487,7 @@ class RelationFinalizer {
 			if ($targetRelation instanceof MappedRelation
 					&& $targetRelation->getTargetEntityProperty()->equals($relationEntityProperty)) {
 				return new TargetPropInfo(EiPropPath::from($targetEiProp), 
-						$targetEiProp->getObjectPropertyAccessProxy());
+						$targetEiProp->getPropertyAccessProxy());
 			}
 		}
 		
@@ -510,7 +509,7 @@ class RelationFinalizer {
 		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
 			if (($targetEiProp instanceof RelationEiProp)
 					&& $targetEntityProperty->equals($targetEiProp->getRelationEntityProperty())) {
-				return new TargetPropInfo(EiPropPath::from($targetEiProp), $targetEiProp->getObjectPropertyAccessProxy());
+				return new TargetPropInfo(EiPropPath::from($targetEiProp), $targetEiProp->getPropertyAccessProxy());
 			}
 		}
 		

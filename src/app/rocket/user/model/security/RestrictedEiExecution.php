@@ -55,9 +55,9 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getEiCommand()
+	 * @see \rocket\ei\manage\security\EiExecution::getEiCmd()
 	 */
-	function getEiCommand(): EiCmdNature {
+	function getEiCmd(): EiCmdNature {
 		return $this->eiCmd;
 	}
 	

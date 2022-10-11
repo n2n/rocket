@@ -50,7 +50,7 @@ class EiType extends Type {
 	private $eiTypeExtensionCollection;
 	
 	private ?string $dataSourceName = null;
-	private ?NestedSetStrategy $nestedSetStrategy;
+	private ?NestedSetStrategy $nestedSetStrategy = null;
 	
 	/**
 	 * @var EiLifecycleListener[]
@@ -340,7 +340,7 @@ class EiType extends Type {
 	}
 	
 	/**
-	 * @return \n2n\persistence\orm\util\NestedSetStrategy
+	 * @return NestedSetStrategy
 	 */
 	public function getNestedSetStrategy() {
 		return $this->nestedSetStrategy;

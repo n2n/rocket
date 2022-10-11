@@ -242,11 +242,11 @@ class EiuMask  {
 	public function onEngineReady(\Closure $readyCallback) {
 		if ($this->eiMask->hasEiEngine()) {
 			$readyCallback($this->engine());
+			return;
 		}
-		
-		$that = $this;
-		$this->eiMask->onEiEngineSetup(function () use ($readyCallback, $that) {
-			$readyCallback($that->engine());
+
+		$this->eiMask->onEiEngineSetup(function () use ($readyCallback) {
+			$readyCallback($this->engine());
 		});
 	}
 	

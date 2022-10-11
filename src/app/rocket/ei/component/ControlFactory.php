@@ -25,7 +25,7 @@
 // use rocket\ei\manage\gui\GuiDefinition;
 // use rocket\ei\manage\gui\EiEntryGuiAssembler;
 // use rocket\ei\manage\gui\EiEntryGui;
-// use rocket\ei\component\prop\GuiEiProp;
+// 
 // use rocket\ei\EiPropPath;
 // use rocket\ei\manage\gui\GuiPropFork;
 // use rocket\ei\manage\gui\GuiProp;
@@ -77,7 +77,7 @@
 // 			}
 // 		}
 		
-// 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
+// 		foreach ($this->eiMask->getEiModCollection() as $eiModificator) {
 // 			$eiModificator->setupGuiDefinition($eiu);
 // 		}
 		
@@ -211,7 +211,7 @@
 // // class ModEiGuiListener implements EiGuiListener {
 // // 	private $eiModificatorCollection;
 
-// // 	public function __construct(EiModificatorCollection $eiModificatorCollection) {
+// // 	public function __construct(EiModCollection $eiModificatorCollection) {
 // // 		$this->eiModificatorCollection = $eiModificatorCollection;
 // // 	}
 

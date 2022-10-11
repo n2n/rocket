@@ -28,7 +28,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\component\modificator\EiModCollection;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
-use rocket\ei\component\prop\FieldEiProp;
+
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\util\Eiu;
 use rocket\ei\mask\EiMask;
@@ -86,7 +86,7 @@ class EiEntryFactory {
 		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, $copyFrom);
 	
 		foreach ($this->eiModificatorCollection as $constraint) {
-			$constraint->setupEiEntry($eiu);
+			$constraint->getNature()->setupEiEntry($eiu);
 		}
 	
 		return $eiEntry;
@@ -119,20 +119,16 @@ class EiEntryFactory {
 		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
 		
 		foreach ($this->eiPropCollection->getForkedByPath($forkEiPropPath) as $id => $eiProp) {
-			if (!($eiProp instanceof FieldEiProp)) continue;
-						
 			$eiPropPath = $forkEiPropPath->ext($id);
 			
 			$eiField = null;
 			if ($fromEiEntry !== null && $fromEiEntry->containsEiField($eiPropPath)) {
 				$fromEiField = $fromEiEntry->getEiField($eiPropPath);
 				$eiField = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
-				ArgUtils::valTypeReturn($eiField, EiField::class, $fromEiField, 'copyEiField', true);
 			}
 				
 			if ($eiField === null) {
-				$eiField = $eiProp->buildEiField(new Eiu($eiu, $eiProp));
-				ArgUtils::valTypeReturn($eiField, EiField::class, $eiProp, 'buildEiField', true);
+				$eiField = $eiProp->getNature()->buildEiField(new Eiu($eiu, $eiProp));
 			}
 			
 			if ($eiField !== null) { 
@@ -212,13 +208,9 @@ class EiEntryFactory {
 			}
 			
 			$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
-			if (!($eiProp instanceof FieldEiProp)) {
-				continue;
-			}
-			
+
 			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
 			$copy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
-			ArgUtils::valTypeReturn($copy, EiField::class, $fromEiField, 'copyEiField', true);
 			
 			if ($copy === null) {
 				continue;

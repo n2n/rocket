@@ -23,6 +23,7 @@ use n2n\core\module\ModuleManager;
 use n2n\util\ex\UnsupportedOperationException;
 use testmdl\bo\ModTestObj;
 use testmdl\bo\ModTestMod;
+use rocket\core\model\Rocket;
 
 class SpecTestEnv {
 
@@ -44,7 +45,13 @@ class SpecTestEnv {
 		$scl = new SpecConfigLoader(new TestModuleConfigSource(['rocket', 'testmdl']), ['rocket', 'testmdl'],
 				$n2nContext);
 
-		return new Spec($scl, $emm);
+		$spec = new Spec($scl, $emm);
+
+		$rocket = new Rocket();
+		$rocket->setSpec($spec);
+		$n2nContext->set(Rocket::class, $rocket);
+
+		return $spec;
 	}
 }
 

@@ -92,7 +92,7 @@ class UrlConfig extends PropConfigAdaption {
 		
 		if ($level <= CompatibilityLevel::NOT_COMPATIBLE) return $level;
 		
-		$propertyName = $propertyAssignation->getObjectPropertyAccessProxy()->getPropertyName();
+		$propertyName = $propertyAssignation->getPropertyAccessProxy()->getPropertyName();
 		if (StringUtils::contains(self::$commonNeedles, $propertyName, false) 
 				&& !StringUtils::contains(self::$commonNotNeedles, $propertyName, false)) {
 			return CompatibilityLevel::COMMON;

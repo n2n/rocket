@@ -48,13 +48,12 @@ use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp,
-		QuickSearchableEiProp, IdNameEiProp {
+		QuickSearchableEiProp {
 			
 	private $enumConfig;
 	private $quickSearchConfig;
@@ -69,7 +68,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
@@ -80,13 +79,13 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 			if (!$typeConstraint->isEmpty()) {
 				$typeConstraint->setConvertable(true);
 			}
-			$this->objectPropertyAccessProxy = $propertyAccessProxy;
+			$this->propertyAccessProxy = $propertyAccessProxy;
 			return;
 		}
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 	
 	function getEnumConfig() {

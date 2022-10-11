@@ -26,11 +26,10 @@ use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayableAdapter;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 
-class Type extends DisplayableAdapter implements IdNameEiProp {
+class Type extends DisplayableAdapter {
 	
 	protected function prepare() {
 	}

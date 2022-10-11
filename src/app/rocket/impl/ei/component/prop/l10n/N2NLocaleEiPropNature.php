@@ -34,7 +34,6 @@ use n2n\util\type\TypeConstraint;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\component\prop\GenericEiProp;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\component\prop\ScalarEiProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -52,7 +51,7 @@ use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 
 class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
-		ScalarEiProp, IdNameEiProp {
+		ScalarEiProp {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -60,10 +59,10 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAd
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('n2n\\l10n\\N2nLocale',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 	
 	public function getDefinedN2nLocales() {

@@ -79,7 +79,7 @@ class PasswordConfig extends PropConfigAdaption {
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$entityProperty = $propertyAssignation->getEntityProperty(false);
 		
-		if (StringUtils::endsWith('assword', $propertyAssignation->getObjectPropertyAccessProxy(true)->getPropertyName())) {
+		if (StringUtils::endsWith('assword', $propertyAssignation->getPropertyAccessProxy(true)->getPropertyName())) {
 			return CompatibilityLevel::COMMON;
 		}
 		

@@ -21,16 +21,13 @@
  */
 namespace rocket\ei\manage\security;
 
-use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\ei\component\command\EiCmd;
 
 interface EiExecution {
-	
-	/**
-	 * @return \rocket\ei\component\command\EiCmdNature
-	 */
-	function getEiCommand(): EiCmdNature;
+
+	function getEiCmd(): EiCmd;
 	
 	/**
 	 * @return CriteriaConstraint|NULL

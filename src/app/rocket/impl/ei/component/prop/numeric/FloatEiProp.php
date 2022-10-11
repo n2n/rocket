@@ -63,12 +63,12 @@ namespace rocket\impl\ei\component\prop\numeric;
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setObjectPropertyAccessProxy()
+// 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setPropertyAccessProxy()
 // 	 */
-// 	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+// 	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 // 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
 // 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
-// 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+// 		$this->propertyAccessProxy = $propertyAccessProxy;
 // 	}
 	
 // 	/**

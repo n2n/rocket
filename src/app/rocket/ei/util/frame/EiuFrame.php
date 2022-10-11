@@ -156,7 +156,7 @@ class EiuFrame {
 	 */
 	private function getApiUrl($eiCmdPath = null, string $apiSection = null) {
 		if ($eiCmdPath === null) {
-			$eiCmdPath = EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCommand());
+			$eiCmdPath = EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
 		} else {
 			$eiCmdPath = EiCmdPath::create($eiCmdPath);
 		}
@@ -170,7 +170,7 @@ class EiuFrame {
 	 */
 	public function getCmdUrl($eiCmdPath = null) {
 		if ($eiCmdPath === null) {
-			$eiCmdPath = EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCommand());
+			$eiCmdPath = EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
 		} else {
 			$eiCmdPath = EiCmdPath::create($eiCmdPath);
 		}
@@ -670,13 +670,13 @@ class EiuFrame {
 	}
 	
 	public function isExecutedBy($eiCmdPath) {
-		return EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCommand())
+		return EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd())
 				->equals(EiCmdPath::create($eiCmdPath));
 	}
 	
 	public function isExecutedByType($eiCmdType) {
 // 		ArgUtils::valType($eiCmdType, array('string', 'object'));
-		return $this->eiFrame->getEiExecution()->getEiCommand() instanceof $eiCmdType;
+		return $this->eiFrame->getEiExecution()->getEiCmd() instanceof $eiCmdType;
 	}
 	
 	/**

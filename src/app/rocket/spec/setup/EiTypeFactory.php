@@ -71,6 +71,7 @@ use n2n\reflection\property\AccessProxy;
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\component\EiComponentCollectionListener;
 use n2n\util\magic\MagicContext;
+use rocket\ei\util\Eiu;
 
 class EiTypeFactory {
 
@@ -91,7 +92,7 @@ class EiTypeFactory {
 	 * @throws UnknownEiTypeException
 	 * @return EiType
 	 */
-	public function create(\ReflectionClass $class) {
+	public function create(string $id, \ReflectionClass $class) {
 		$className = $class->getName();
 
 		try {
@@ -101,7 +102,7 @@ class EiTypeFactory {
 					. '. Reason: ' . $e->getMessage(), 0, $e);
 		}
 
-		return new EiType($className, $this->specConfigLoader->moduleNamespaceOf($class), $entityModel);
+		return new EiType($id, $this->specConfigLoader->moduleNamespaceOf($class), $entityModel);
 	}
 
 	function assemble(EiType $eiType): void {
@@ -140,6 +141,10 @@ class EiTypeFactory {
 		$eiCmdCollection = $eiType->getEiMask()->getEiCmdCollection();
 		$eiCmdCollection->init($this->specConfigLoader->getN2NContext());
 		$eiCmdCollection->registerListener($this->initListener);
+
+		foreach ($eiType->getEiMask()->setupEiEngine() as $callback) {
+			$callback(new Eiu($eiType->getEiMask()->getEiEngine()));
+		};
 	}
 
 

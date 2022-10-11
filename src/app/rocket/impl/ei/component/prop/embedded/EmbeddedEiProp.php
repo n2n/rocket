@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\gui\GuiFieldMap;
 use rocket\ei\manage\gui\GuiPropSetup;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\FieldEiProp;
+
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -40,12 +40,12 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\component\prop\GuiEiProp;
+
 use rocket\ei\manage\gui\GuiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\meta\SiStructureType;
 
-class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiProp, FieldEiProp {
+class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter {
 	private $sed;
 	
 	/**
@@ -71,16 +71,16 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiP
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setPropertyAccessProxy()
 	 */
-	public function setObjectPropertyAccessProxy(?AccessProxy $accessProxy) {
+	public function setPropertyAccessProxy(?AccessProxy $accessProxy) {
 		ArgUtils::assertTrue($accessProxy !== null);
 		
 		$targetClass = $this->requireEntityProperty()->getEmbeddedEntityPropertyCollection()->getClass();
 		$accessProxy->setConstraint(TypeConstraint::createSimple($targetClass,
 				$accessProxy->getConstraint()->allowsNull()));
 		
-		parent::setObjectPropertyAccessProxy($accessProxy);
+		parent::setPropertyAccessProxy($accessProxy);
 	}
 	
 
@@ -104,7 +104,7 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiP
 	 * @see \rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter::getPropForkObject()
 	 */
 	public function getPropForkObject(object $object): object {
-		return $this->getObjectPropertyAccessProxy()->getValue($object) 
+		return $this->getPropertyAccessProxy()->getValue($object) 
 				?? ReflectionUtils::createObject($this->getEntityProperty(true)
 						->getEmbeddedEntityPropertyCollection()->getClass());
 	}

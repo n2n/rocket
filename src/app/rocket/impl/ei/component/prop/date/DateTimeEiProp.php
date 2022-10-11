@@ -72,10 +72,10 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAda
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('DateTime', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {

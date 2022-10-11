@@ -42,6 +42,7 @@ use rocket\ei\component\command\GenericResult;
 use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiFrame;
 use rocket\ei\manage\api\ApiController;
+use rocket\ei\component\command\EiCmd;
 
 class EiFrame {
 	
@@ -163,7 +164,7 @@ class EiFrame {
 	/**
 	 * @param EiExecution $eiExecution
 	 */
-	public function exec(EiCmdNature $eiCmd) {
+	public function exec(EiCmd $eiCmd) {
 		if ($this->eiExecution !== null) {
 			throw new IllegalStateException('EiFrame already executed.');
 		}
@@ -482,7 +483,7 @@ class EiFrame {
 		ArgUtils::valEnum($apiSection, ApiController::getApiSections());
 		
 		if ($eiCmdPath === null) {
-			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCommand());
+			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCmd());
 		}
 		
 		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCmdPath])->pathExt($apiSection);
@@ -500,7 +501,7 @@ class EiFrame {
 	 */
 	public function getForkUrl(?EiCmdPath $eiCmdPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
 		if ($eiCmdPath === null) {
-			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCommand());
+			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCmd());
 		}
 		
 		if ($eiObject === null) {

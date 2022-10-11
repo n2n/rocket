@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\component\prop\ForkEiProp;
-use rocket\ei\component\prop\GuiEiProp;
+
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiProp;
@@ -37,7 +37,6 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\component\prop\IdNameEiProp;
 use rocket\impl\ei\component\prop\adapter\DisplayableAdapter;
 use n2n\util\col\ArrayUtils;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
@@ -49,8 +48,10 @@ use rocket\ei\util\spec\EiuEngine;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
 use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
 
-abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp, IdNameEiProp {
+abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements PropertyEiPropNature,
+		RelationEiProp, GuiFieldAssembler, ForkEiProp {
 	use DisplayableAdapter, PropertyAdapter;
 	
 	/**
@@ -62,7 +63,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 	 * @var Relation
 	 */
 	private $relation;
-			
+
 		
 	function isPrivileged(): bool {
 		return true;
@@ -73,6 +74,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
 		$targetEiuType = $eiu->context()->type($targetClass);
 
+
 //		$targetExtensionId = $dataSet->optString(self::ATTR_TARGET_EXTENSION_ID_KEY);
 //		$targetEiuMask = null;
 //		if ($targetExtensionId !== null) {
@@ -81,6 +83,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 //		if ($targetEiuMask === null) {
 			$targetEiuMask = $targetEiuType->mask();
 //		}
+
 
 		$targetReadEiCommand = new TargetReadEiCommandNature(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
 				(string) $targetEiuMask->getEiTypePath());
@@ -185,7 +188,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
-			return $this->displayConfig->buildGuiPropSetup($eiu, $this);
+			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
 		})->toGuiProp();
 	}
 	

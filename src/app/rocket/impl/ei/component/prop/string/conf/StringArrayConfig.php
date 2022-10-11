@@ -63,8 +63,8 @@ class StringArrayConfig extends PropConfigAdaption {
 	}
 	
 	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
-		if ($propertyAssignation->hasObjectPropertyAccessProxy() 
-				&& $propertyAssignation->getObjectPropertyAccessProxy()->getConstraint()->isArrayLike()) {
+		if ($propertyAssignation->hasPropertyAccessProxy() 
+				&& $propertyAssignation->getPropertyAccessProxy()->getConstraint()->isArrayLike()) {
 			return CompatibilityLevel::COMPATIBLE;
 		}
 		

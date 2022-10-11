@@ -73,12 +73,12 @@ class DecimalEiProp extends NumericEiPropNatureAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::setPropertyAccessProxy()
 	 */
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {

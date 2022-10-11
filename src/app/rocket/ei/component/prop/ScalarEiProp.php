@@ -4,7 +4,7 @@ namespace rocket\ei\component\prop;
 
 use rocket\ei\manage\generic\ScalarEiProperty;
 
-interface ScalarEiProp extends FieldEiProp {
+interface ScalarEiProp  {
 
 	public function getScalarEiProperty(): ?ScalarEiProperty;
 }

@@ -69,7 +69,7 @@ class EiModCollection extends EiComponentCollection {
 		
 		$eiu = new Eiu($eiGuiFrame);
 		foreach ($this as $eiModificator) {
-			$eiModificator->setupEiGuiFrame($eiu);
+			$eiModificator->getNature()->setupEiGuiFrame($eiu);
 		}
 	}
 	

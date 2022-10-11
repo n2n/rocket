@@ -120,8 +120,21 @@ class EiuAnalyst {
 	protected $eiuType;
 	protected $eiuProp;
 	protected $eiuCommand;
+
+	private ?array $unappliedEiArgs = null;
 	
 	public function applyEiArgs(...$eiArgs) {
+		$this->unappliedEiArgs = $eiArgs;
+	}
+
+	private function ensureAppied() {
+		if ($this->unappliedEiArgs === null) {
+			return;
+		}
+
+		$eiArgs = $this->unappliedEiArgs;
+		$this->unappliedEiArgs = null;
+
 		$remainingEiArgs = array();
 		
 		foreach ($eiArgs as $key => $eiArg) {
@@ -172,7 +185,7 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiMod) {
-				$this->assignEiMask($eiArg->getEiModificatorCollection()->getEiMask());
+				$this->assignEiMask($eiArg->getEiModCollection()->getEiMask());
 				continue;
 			}
 			
@@ -839,6 +852,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\manage\frame\EiFrame|null
 	 */
 	public function getEiFrame(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiFrame !== null) {
 			return $this->eiFrame;
 		}
@@ -852,6 +867,8 @@ class EiuAnalyst {
 	 * @return NULL|\rocket\ei\manage\entry\EiEntry
 	 */
 	public function getEiEntry() {
+		$this->ensureAppied();
+
 		return $this->eiEntry;
 	}
 	
@@ -862,6 +879,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\manage\EiObject|NULL
 	 */
 	public function getEiObject(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiObject !== null) {
 			return $this->eiObject;
 		}
@@ -877,6 +896,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
 	public function getEiGui(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiGui !== null) {
 			return $this->eiGui;
 		}
@@ -892,6 +913,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
 	public function getEiEntryGui(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiEntryGui !== null) {
 			return $this->eiEntryGui;
 		}
@@ -907,6 +930,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\manage\gui\EiEntryGuiAssembler
 	 */
 	public function getEiEntryGuiAssembler(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiEntryGuiAssembler !== null) {
 			return $this->eiEntryGuiAssembler;
 		}
@@ -915,6 +940,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiPropPath(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiPropPath !== null) {
 			return $this->eiPropPath;
 		}
@@ -925,6 +952,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiCmdPath(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiCmdPath !== null) {
 			return $this->eiCmdPath;
 		}
@@ -940,6 +969,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\manage\DefPropPath
 	 */
 	public function getDefPropPath(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->defPropPath !== null) {
 			return $this->defPropPath;
 		}
@@ -955,6 +986,8 @@ class EiuAnalyst {
 	 * @return EiEngine
 	 */
 	public function getEiEngine(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->eiEngine !== null) {
 			return $this->eiEngine;
 		}
@@ -968,6 +1001,8 @@ class EiuAnalyst {
 	 * @return Spec
 	 */
 	public function getSpec(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->spec !== null) {
 			return $this->spec;
 		}
@@ -985,6 +1020,8 @@ class EiuAnalyst {
 	 * @return N2nContext
 	 */
 	public function getN2nContext(bool $required) {
+		$this->ensureAppied();
+
 		if (!$required || $this->n2nContext !== null) {
 			return $this->n2nContext;
 		}
@@ -996,10 +1033,14 @@ class EiuAnalyst {
 	 * @return ManageState
 	 */
 	function getManageState() {
+		$this->ensureAppied();
+
 		return $this->getN2nContext(true)->lookup(ManageState::class);
 	}
 	
 	public function getEiuContext(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuContext !== null) {
 			return $this->eiuContext;
 		}
@@ -1022,6 +1063,8 @@ class EiuAnalyst {
 	 * @return EiuEngine
 	 */
 	public function getEiuEngine(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuEngine !== null) {
 			return $this->eiuEngine;
 		}
@@ -1045,6 +1088,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\mask\EiMask|NULL
 	 */
 	function getEiMask(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiMask !== null) {
 			return $this->eiMask;
 		}
@@ -1066,6 +1111,8 @@ class EiuAnalyst {
 	 * @return EiuMask
 	 */
 	public function getEiuMask(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuMask !== null) {
 			return $this->eiuMask;
 		}
@@ -1086,6 +1133,8 @@ class EiuAnalyst {
 		if ($this->eiuFrame !== null) {
 			return $this->eiuFrame;
 		}
+
+		$this->ensureAppied();
 		
 		if ($this->eiFrame !== null) {
 			return $this->eiuFrame = new EiuFrame($this->eiFrame, $this);
@@ -1107,6 +1156,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuObject(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuObject !== null) {
 			return $this->eiuObject;
 		}
@@ -1121,6 +1172,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuEntry(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuEntry !== null) {
 			return $this->eiuEntry;
 		}
@@ -1149,6 +1202,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuFieldMap(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuFieldMap !== null) {
 			return $this->eiuFieldMap;
 		}
@@ -1163,6 +1218,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuProp(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuProp !== null) {
 			return $this->eiuProp;
 		}
@@ -1176,6 +1233,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
 	public function getEiuEntryGui(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuEntryGui !== null) {
 			return $this->eiuEntryGui;
 		}
@@ -1197,6 +1256,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\util\gui\EiuEntryGuiTypeDef
 	 */
 	public function getEiuEntryGuiTypeDef(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuEntryGuiTypeDef !== null) {
 			return $this->eiuEntryGuiTypeDef;
 		}
@@ -1218,6 +1279,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\util\gui\EiuGuiFrame
 	 */
 	public function getEiuGui(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuGui !== null) {
 			return $this->eiuGui;
 		}
@@ -1238,6 +1301,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\util\gui\EiuGuiModel
 	 */
 	public function getEiuGuiModel(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuGuiModel !== null) {
 			return $this->eiuGuiModel;
 		}
@@ -1259,6 +1324,8 @@ class EiuAnalyst {
 	 * @return \rocket\ei\util\gui\EiuGuiFrame
 	 */
 	public function getEiuGuiFrame(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuGuiFrame !== null) {
 			return $this->eiuGuiFrame;
 		}
@@ -1275,6 +1342,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuField(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuField !== null) {
 			return $this->eiuField;
 		}
@@ -1298,6 +1367,8 @@ class EiuAnalyst {
 	}
 	
 	public function getEiuGuiField(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuGuiField !== null) {
 			return $this->eiuGuiField;
 		}

@@ -25,15 +25,15 @@ namespace rocket\spec\setup;
  * Used to indicate which EiComponents (EiProp, EiCommand, EiModificator) should be provided in
  * {@link RocketEiComponentNatureProvider::provide()}.
  */
-enum EiSetupPhase {
+enum EiSetupPhase: string {
 	/**
 	 * Clear matches, usually annotated by an attribute or a type that clearly indicates an affiliation to a certain
 	 * EiComponent
 	 */
-	case PERFECT_MATCHES;
-	case GOOD_MATCHES;
+	case PERFECT_MATCHES = 'perfect-matches';
+	case GOOD_MATCHES = 'good-matches';
 	/**
 	 * Last phase to add to fill still unassigned properties.
 	 */
-	case SATISFIABLE_MATCHES;
+	case SATISFIABLE_MATCHES = 'satisfiable_matches';
 }

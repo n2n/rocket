@@ -45,7 +45,7 @@ class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiP
 	
 // 	public function getPropertyAssignation(): PropertyAssignation {
 // 		return new PropertyAssignation($this->getAssignedEntityProperty(), 
-// 				$this->getAssignedObjectPropertyAccessProxy());
+// 				$this->getAssignedPropertyAccessProxy());
 // 	}
 
 	/**
@@ -141,8 +141,8 @@ class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiP
 	
 		if ($this->objectPropertyConfigurable !== null) {
 			try {
-				$this->objectPropertyConfigurable->setObjectPropertyAccessProxy(
-						$propertyAssignation->getObjectPropertyAccessProxy(
+				$this->objectPropertyConfigurable->setPropertyAccessProxy(
+						$propertyAssignation->getPropertyAccessProxy(
 								$this->objectPropertyConfigurable->isObjectPropertyRequired()));
 			} catch (\InvalidArgumentException $e) {
 				throw $propertyAssignation->createAccessProxyException(null, $e);
@@ -238,7 +238,7 @@ class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiP
 			return null;
 		}
 		
-		return $this->objectPropertyConfigurable->getObjectPropertyAccessProxy()->getPropertyName();
+		return $this->objectPropertyConfigurable->getPropertyAccessProxy()->getPropertyName();
 	}
 	
 	/**

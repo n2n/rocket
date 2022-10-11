@@ -32,8 +32,6 @@ use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\component\prop\IdNameEiProp;
-use rocket\ei\component\prop\IdNameEiPropFork;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\idname\IdNameDefinition;
 
@@ -56,20 +54,19 @@ class IdNameFactory {
 		$idNameDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 		
 		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			$eiPropPath = $eiProp->getWrapper()->getEiPropPath();
+			$eiPropPath = $eiProp->getEiPropPath();
+			$eiPropNature = $eiProp->getNature();
 			
-			if (($eiProp instanceof IdNameEiProp)
-					&& null !== ($idNameProp = $eiProp->buildIdNameProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
+			if (null !== ($idNameProp = $eiPropNature->buildIdNameProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
 				$idNameDefinition->putIdNameProp($eiPropPath, $idNameProp, EiPropPath::from($eiProp));
 			}
 			
-			if (($eiProp instanceof IdNameEiPropFork)
-					&& null !== ($idNamePropFork = $eiProp->buildIdNamePropFork(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))){
+			if (null !== ($idNamePropFork = $eiPropNature->buildIdNamePropFork(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
 				$idNameDefinition->putIdNamePropFork($eiPropPath, $idNamePropFork);
 			}
 		}
 		
-// 		foreach ($this->eiMask->getEiModificatorCollection() as $eiModificator) {
+// 		foreach ($this->eiMask->getEiModCollection() as $eiModificator) {
 // 			$eiModificator->setupIdNameDefinition($eiu);
 // 		}
 		
@@ -104,7 +101,7 @@ class IdNameFactory {
 // class ModEiGuiListener implements EiGuiListener {
 // 	private $eiModificatorCollection;
 
-// 	public function __construct(EiModificatorCollection $eiModificatorCollection) {
+// 	public function __construct(EiModCollection $eiModificatorCollection) {
 // 		$this->eiModificatorCollection = $eiModificatorCollection;
 // 	}
 

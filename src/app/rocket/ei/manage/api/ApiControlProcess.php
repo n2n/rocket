@@ -147,7 +147,7 @@ class ApiControlProcess {
 	}
 	
 	function determineGuiControl(GuiControlPath $guiControlPath) {
-		if (!$guiControlPath->startsWith(EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCommand()))) {
+		if (!$guiControlPath->startsWith(EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd()))) {
 			throw new BadRequestException();
 		}
 		

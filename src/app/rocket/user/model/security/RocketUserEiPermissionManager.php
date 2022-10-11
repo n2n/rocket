@@ -36,6 +36,7 @@ use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\security\InaccessibleEiCmdPathException;
 use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\ei\component\command\EiCmd;
 
 class RocketUserEiPermissionManager implements EiPermissionManager {
 	/**
@@ -98,10 +99,10 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\EiPermissionManager::isEiCommandAccessible()
 	 */
-	function isEiCommandAccessible(EiMask $contextEiMask, EiCmdNature $eiCmd): bool {
+	function isEiCommandAccessible(EiMask $contextEiMask, EiCmd $eiCmd): bool {
 		if ($this->rocketUser->isAdmin()) return true;
 		
-		$eiMask = $eiCmd->getWrapper()->getEiCommandCollection()->getEiMask();
+		$eiMask = $eiCmd->getEiCommandCollection()->getEiMask();
 		$privilegeDefinition = $this->manageState->getDef()->getPrivilegeDefinition($eiMask);
 		
 		$eiGrant = $this->findEiGrant($eiMask->getEiTypePath());
@@ -110,7 +111,7 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 				|| $eiGrant->containsEiCmdPath(EiCmdPath::from($eiCmd)));
 	}
 	
-	function createEiExecution(EiMask $contextEiMask, EiCmdNature $eiCmd): EiExecution {
+	function createEiExecution(EiMask $contextEiMask, EiCmd $eiCmd): EiExecution {
 		if ($this->rocketUser->isAdmin()) {
 			return new FullyGrantedEiExecution($eiCmd);
 		}

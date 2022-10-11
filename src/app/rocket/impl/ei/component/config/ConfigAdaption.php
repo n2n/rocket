@@ -57,7 +57,7 @@ abstract class ConfigAdaption implements EiConfiguratorAdaption {
 	}
 	
 	protected function mandatoryRequired() {
-		$accessProxy = $this->getPropertyAssignation()->getObjectPropertyAccessProxy(false);
+		$accessProxy = $this->getPropertyAssignation()->getPropertyAccessProxy(false);
 		if (null === $accessProxy) return false;
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
@@ -72,7 +72,7 @@ abstract class ConfigAdaption implements EiConfiguratorAdaption {
 			return $entityProperty->getName();
 		}
 		
-		if (null !== ($accessProxy = $propertyAssignation->getObjectPropertyAccessProxy())) {
+		if (null !== ($accessProxy = $propertyAssignation->getPropertyAccessProxy())) {
 			return $accessProxy->getPropertyName();
 		}
 		

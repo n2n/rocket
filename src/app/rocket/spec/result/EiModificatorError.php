@@ -40,7 +40,7 @@ class EiModificatorError {
 	
 	public static function fromEiModificator(EiModNature $eiModificator, \Throwable $t) {
 		$wrapper = $eiModificator->getWrapper();
-		return new EiModificatorError($wrapper->getEiModificatorCollection()->getEiMask()->getEiTypePath(),
+		return new EiModificatorError($wrapper->getEiModCollection()->getEiMask()->getEiTypePath(),
 				$wrapper->getEiModificatorPath(), $t, $eiModificator);
 	}
 }

@@ -90,7 +90,7 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterPropId = (string) $filterPropId;
 		$filterDefinition = (new CritmodFactory($eiThing->getEiMask()->getEiPropCollection(), 
-						$eiThing->getEiMask()->getEiModificatorCollection()))
+						$eiThing->getEiMask()->getEiModCollection()))
 				->createFilterDefinition($this->getN2nContext());
 	
 		$filterPropItemForm = null;

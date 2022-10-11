@@ -62,6 +62,7 @@ class Spec {
 
 	private array $eiTypes = array();
 	private array $menuGroups = [];
+	private array $launchPads = [];
 
 	/**
 	 * @param SpecConfigLoader $specConfigLoader
@@ -134,10 +135,19 @@ class Spec {
 	public function clear(): void {
 		$this->eiTypes = array();
 		$this->menuGroups = array();
+		$this->launchPads = array();
 	}
 
 	private function isEiTypeAnnotated(\ReflectionClass $class) {
 		return ReflectionContext::getAttributeSet($class)->hasClassAttribute(\rocket\attribute\EiType::class);
+	}
+
+	private function classNameToId(string $className) {
+		return str_replace('\\', '-', $className);
+	}
+
+	private function idToClassName(string $id) {
+		return str_replace('-', '\\', $className);
 	}
 
 	/**
@@ -162,7 +172,7 @@ class Spec {
 					. \rocket\attribute\EiType::class);
 		}
 
-		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($class);
+		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($this->classNameToId($className), $class);
 		
 		if ($eiType->getEntityModel()->hasSuperEntityModel()) {
 			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
@@ -219,6 +229,7 @@ class Spec {
 			}
 
 			$menuGroup->addLaunchPad($launchPad);
+			$this->launchPads[$launchPad->getId()] = $launchPad;
 			return;
 		}
 
@@ -228,6 +239,7 @@ class Spec {
 
 		$menuGroup = $this->menuGroups[$groupName] ?? $this->menuGroups[$groupName] = new MenuGroup($groupName);
 		$menuGroup->addLaunchPad($launchPad);
+		$this->launchPads[$launchPad->getId()] = $launchPad;
 	}
 
 	
@@ -326,8 +338,7 @@ class Spec {
 	 * @return bool
 	 */
 	public function containsEiTypeClassName(string $className) {
-		return isset($this->eiTypeCis[$className])
-				|| $this->specExtractionManager->containsEiTypeEntityClassName($className);
+		return isset($this->eiTypes[$className]);
 	}
 	
 	/**

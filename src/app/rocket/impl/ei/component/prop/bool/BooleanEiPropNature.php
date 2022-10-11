@@ -80,9 +80,9 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdap
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setObjectPropertyAccessProxy()
+	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setPropertyAccessProxy()
 	 */
-	function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
+	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
 // 		if ($propertyAccessProxy === null) {
 // 			return;
 // 		}
@@ -90,7 +90,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdap
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('bool',
 					$propertyAccessProxy->getConstraint()->allowsNull(), true));
-		parent::setObjectPropertyAccessProxy($propertyAccessProxy);
+		parent::setPropertyAccessProxy($propertyAccessProxy);
 	}
 	
 	/**

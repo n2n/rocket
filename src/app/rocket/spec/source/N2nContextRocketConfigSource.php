@@ -29,9 +29,7 @@ use n2n\config\source\WritableConfigSource;
 
 class N2nContextRocketConfigSource implements RocketConfigSource {
 	const ROCKET_CONFIG_FOLDER = 'rocket';
-	const LAYOUT_CONFIG_FILE = 'layout.json';
-	const SCRIPT_CONFIG_FILE = 'specs.json';
-	const COMPONENT_STORAGE_FILE = 'components.json';
+	const SPEC_CONFIG_FILE = 'spec.json';
 	
 	private $n2nContext;
 	private $layoutConfigSource;
@@ -55,7 +53,7 @@ class N2nContextRocketConfigSource implements RocketConfigSource {
 	public function getSpecsConfigSource(): ModularConfigSource {
 		if ($this->scriptsConfigSource === null) {
 			$this->scriptsConfigSource = new VarStoreConfigSource($this->n2nContext->getVarStore(), 
-					self::ROCKET_CONFIG_FOLDER, self::SCRIPT_CONFIG_FILE);
+					self::ROCKET_CONFIG_FOLDER, self::SPEC_CONFIG_FILE);
 		}
 		
 		return $this->scriptsConfigSource;
@@ -74,6 +72,6 @@ class N2nContextRocketConfigSource implements RocketConfigSource {
 	 * @see \rocket\spec\RocketConfigSource::getConfiguratedModules()
 	 */
 	public function getModuleNamespaces() {
-		return $this->n2nContext->getModuleManager()->getModules();
+		return array_map(fn ($m) => (string) $m, $this->n2nContext->getModuleManager()->getModules());
 	}
 }

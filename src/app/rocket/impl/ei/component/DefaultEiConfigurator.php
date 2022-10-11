@@ -46,9 +46,9 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::getAssignedObjectPropertyAccessProxy()
+	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::getAssignedPropertyAccessProxy()
 	 */
-	public function getAssignedObjectPropertyAccessProxy() {
+	public function getAssignedPropertyAccessProxy() {
 		return null;
 	}
 
