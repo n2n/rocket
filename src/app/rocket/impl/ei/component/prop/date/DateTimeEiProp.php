@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\date;
 use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\l10n\L10nUtils;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\component\prop\SortableEiProp;
+ 
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\si\control\SiIconType;
@@ -52,7 +52,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use n2n\l10n\DateTimeFormat;
 
-class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements SortableEiProp {
+class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter  {
 
 	/**
 	 * @var DateTimeConfig
@@ -128,10 +128,6 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAda
 						->buildDateTimeRawValue($value));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortProp()
-	 */
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}

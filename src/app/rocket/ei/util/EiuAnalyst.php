@@ -1130,11 +1130,11 @@ class EiuAnalyst {
 	 * @return \rocket\ei\util\frame\EiuFrame
 	 */
 	public function getEiuFrame(bool $required) {
+		$this->ensureAppied();
+
 		if ($this->eiuFrame !== null) {
 			return $this->eiuFrame;
 		}
-
-		$this->ensureAppied();
 		
 		if ($this->eiFrame !== null) {
 			return $this->eiuFrame = new EiuFrame($this->eiFrame, $this);

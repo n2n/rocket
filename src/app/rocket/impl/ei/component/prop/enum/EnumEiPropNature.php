@@ -21,9 +21,9 @@
  */
 namespace rocket\impl\ei\component\prop\enum;
 
-use rocket\ei\component\prop\FilterableEiProp;
-use rocket\ei\component\prop\SortableEiProp;
-use rocket\ei\component\prop\QuickSearchableEiProp;
+
+ 
+
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\ei\manage\frame\EiFrame;
@@ -52,8 +52,7 @@ use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
 
-class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp,
-		QuickSearchableEiProp {
+class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 			
 	private $enumConfig;
 	private $quickSearchConfig;
@@ -216,11 +215,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 	public function buildSecurityFilterProp(N2nContext $n2nContext) {
 		return null;
 	}
-		
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortProp()
-	 */
+
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());

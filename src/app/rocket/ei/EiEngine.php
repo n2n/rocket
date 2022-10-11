@@ -35,8 +35,8 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\component\DraftDefinitionFactory;
 use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\mask\EiMask;
-use rocket\ei\component\prop\GenericEiProp;
-use rocket\ei\component\prop\ScalarEiProp;
+
+
 use rocket\ei\manage\generic\ScalarEiDefinition;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\generic\ScalarEiProperty;
@@ -293,11 +293,8 @@ class EiEngine {
 		$this->genericEiDefinition = new GenericEiDefinition();
 		$genericEiPropertyMap = $this->genericEiDefinition->getMap();
 		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			if ($eiProp instanceof GenericEiProp 
-					&& $genericEiProperty = $eiProp->getGenericEiProperty()) {
-				ArgUtils::valTypeReturn($genericEiProperty, GenericEiProperty::class, $eiProp, 
-						'getGenericEiProperty', true);
-				$genericEiPropertyMap->offsetSet(EiPropPath::from($eiProp), $genericEiProperty);		
+			if (null !== ($genericEiProperty = $eiProp->getNature()->getGenericEiProperty())) {
+				$genericEiPropertyMap->offsetSet($eiProp->getEiPropPath(), $genericEiProperty);
 			}
 		}
 		return $this->genericEiDefinition;
@@ -314,9 +311,7 @@ class EiEngine {
 		$this->scalarEiDefinition = new ScalarEiDefinition();
 		$scalarEiProperties = $this->scalarEiDefinition->getMap();
 		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			if ($eiProp instanceof ScalarEiProp
-					&& null !== ($scalarEiProperty = $eiProp->getScalarEiProperty())) {
-				ArgUtils::valTypeReturn($scalarEiProperty, ScalarEiProperty::class, $eiProp, 'getScalarEiProperty', true);
+			if (null !== ($scalarEiProperty = $eiProp->getNature()->getScalarEiProperty())) {
 				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
 			}
 		}

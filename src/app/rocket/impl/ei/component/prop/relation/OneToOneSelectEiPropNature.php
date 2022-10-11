@@ -36,13 +36,13 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
-use rocket\ei\component\prop\QuickSearchableEiProp;
+
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\impl\ei\component\prop\adapter\EditableAdapter;
 
-class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter implements QuickSearchableEiProp {
+class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	private $quickSearchableConfig;
 	
 	public function __construct() {

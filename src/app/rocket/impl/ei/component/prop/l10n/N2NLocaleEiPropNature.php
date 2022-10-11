@@ -32,10 +32,10 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
-use rocket\ei\component\prop\FilterableEiProp;
-use rocket\ei\component\prop\GenericEiProp;
-use rocket\ei\component\prop\ScalarEiProp;
-use rocket\ei\component\prop\SortableEiProp;
+
+
+
+ 
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
@@ -50,8 +50,7 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAda
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 
-class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
-		ScalarEiProp {
+class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

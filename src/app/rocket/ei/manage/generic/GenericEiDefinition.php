@@ -28,7 +28,7 @@ class GenericEiDefinition {
 	private $genericEiProperties;
 	
 	public function __construct() {
-		$this->genericEiProperties = new HashMap(EiPropPath::class, GenericEiProperty::class);
+		$this->genericEiProperties = new HashMap(EiPropPath::classerty::class);
 	}
 	
 	/**

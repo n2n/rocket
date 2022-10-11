@@ -21,10 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use rocket\ei\component\prop\QuickSearchableEiProp;
+
 use rocket\ei\util\filter\prop\StringFilterProp;
-use rocket\ei\component\prop\SortableEiProp;
-use rocket\ei\component\prop\FilterableEiProp;
+ 
+
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
@@ -46,10 +46,9 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
-abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapterAdapter
-		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp {
-			
+abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 	use NumericConfig;
 
 	/**
@@ -111,16 +110,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureN
 	function buildFilterProp(Eiu $eiu): ?FilterProp {
 		return new StringFilterProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}
-	
-	function buildSecurityFilterProp(N2nContext $n2nContext) {
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::createGlobalSortProp()
-	 * @return SortProp
-	 */
+
 	function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->getEntityProperty()), $this->getLabelLstr());
 	}

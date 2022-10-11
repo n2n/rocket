@@ -33,7 +33,7 @@ use n2n\util\col\ArrayUtils;
 use n2n\util\type\ArgUtils;
 use rocket\ei\EiPropPath;
 
-use rocket\ei\component\prop\QuickSearchableEiProp;
+
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\ei\manage\critmod\sort\SortConstraint;
@@ -53,7 +53,7 @@ use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
 use rocket\ei\manage\idname\IdNamePropFork;
 use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 
-class TranslationEiProp extends RelationEiPropNatureAdapter implements QuickSearchableEiProp {
+class TranslationEiProp extends RelationEiPropNatureAdapter {
 	/**
 	 * @var TranslationConfig
 	 */

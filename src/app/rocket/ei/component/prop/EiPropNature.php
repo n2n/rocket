@@ -30,6 +30,14 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\manage\idname\IdNamePropFork;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\manage\draft\DraftProperty;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\critmod\sort\SortProp;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
+
 
 interface EiPropNature extends EiComponentNature {
 	
@@ -86,4 +94,37 @@ interface EiPropNature extends EiComponentNature {
 	 * @return GuiProp|null null if not displayable
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp;
+
+	/**
+	 * @return GenericEiProperty|null
+	 */
+	function getGenericEiProperty(): ?GenericEiProperty;
+
+	function getScalarEiProperty(): ?ScalarEiProperty;
+
+	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp;
+
+	function getDraftProperty(): ?DraftProperty;
+
+	/**
+	 * @param Eiu $eiu EiFrame {@see Eiu::frame()} is not available if the FilteProp is created for a filter to restrict
+	 * {@see EiTypeExtension}s.
+	 * @return FilterProp|null
+	 */
+	public function buildFilterProp(Eiu $eiu): ?FilterProp;
+
+	/**
+	 * @param Eiu $eiu EiFrame {@see Eiu::frame()} is not available if the FilteProp is created for a filter to restrict
+	 * {@see EiTypeExtension}s.
+	 * @return SortProp
+	 */
+	public function buildSortProp(Eiu $eiu): ?SortProp;
+
+	/**
+	 * @param Eiu $eiu
+	 * @return SecurityFilterProp|null
+	 */
+	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp;
+
+
 }

@@ -191,10 +191,6 @@ class AdaptableEiPropConfigurator extends AdaptableEiConfigurator implements EiP
 	
 
 	
-// 	public function registerDraftConfigurable(DraftConfigurable $confDraftableEiProp) {
-// 		$this->confDraftableEiProp = $confDraftableEiProp;		
-// 	}
-	
 	/**
 	 * @throws IllegalStateException
 	 * @return \rocket\ei\component\prop\indepenent\PropertyAssignation

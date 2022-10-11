@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\ei\manage\security\filter\SecurityFilterProp;
+
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\ei\manage\entry\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
@@ -36,7 +36,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 
-class RelationSecurityFilterProp extends RelationFilterProp implements SecurityFilterProp {
+class RelationSecurityFilterProp extends RelationFilterProp {
 	
 	private function getSecurityFilterDefinition(): SecurityFilterDefinition {
 		$securityFilterDefinition = $this->targetFilterDef->getFilterDefinition();

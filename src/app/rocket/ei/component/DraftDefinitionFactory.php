@@ -24,7 +24,7 @@ namespace rocket\ei\component;
 use rocket\ei\component\prop\EiPropCollection;
 use rocket\ei\component\modificator\EiModCollection;
 use n2n\util\type\ArgUtils;
-use rocket\ei\component\prop\DraftableEiProp;
+
 use rocket\ei\manage\draft\DraftDefinition;
 use n2n\persistence\orm\model\EntityModel;
 use rocket\ei\manage\draft\DraftProperty;
@@ -44,7 +44,7 @@ class DraftDefinitionFactory {
 		$draftDefinition = new DraftDefinition($tableName, $this->entityModel);
 	
 		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (!($eiProp instanceof DraftableEiProp && $eiProp->isDraftable())) continue;
+			if (!($eiProp instanceof { && $eiProp->isDraftable())) continue;
 			
 			$draftProperty = $eiProp->getDraftProperty();
 			ArgUtils::valTypeReturn($draftProperty, DraftProperty::class, $eiProp, 'getDraftProperty', true);

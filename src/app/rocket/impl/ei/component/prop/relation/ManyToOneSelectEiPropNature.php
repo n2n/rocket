@@ -29,7 +29,7 @@ use rocket\ei\util\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
+
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
@@ -41,11 +41,11 @@ use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
-use rocket\ei\component\prop\QuickSearchableEiProp;
+
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 
-class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter implements QuickSearchableEiProp {
+class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	private $quickSearchableConfig;
 	
 	function __construct() {

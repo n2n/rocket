@@ -27,7 +27,7 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\component\prop\ScalarEiProp;
+
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\util\Eiu;
@@ -37,7 +37,7 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifField;
 
-class IntegerEiPropNature extends NumericEiPropNatureAdapter implements ScalarEiProp {
+class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
 	

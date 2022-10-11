@@ -22,8 +22,8 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use rocket\ei\util\filter\prop\StringFilterProp;
-use rocket\ei\component\prop\SortableEiProp;
-use rocket\ei\component\prop\FilterableEiProp;
+ 
+
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\ei\manage\frame\EiFrame;
@@ -32,8 +32,8 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\ei\util\Eiu;
-use rocket\ei\component\prop\ScalarEiProp;
-use rocket\ei\component\prop\GenericEiProp;
+
+
 use rocket\ei\manage\generic\CommonGenericEiProperty;
 use rocket\ei\manage\generic\CommonScalarEiProperty;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
@@ -42,18 +42,12 @@ use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\generic\ScalarEiProperty;
-use n2n\impl\persistence\orm\property\StringEntityProperty;
-use rocket\impl\ei\component\prop\meta\config\AddonConfig;
-use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
 use rocket\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
-use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 
-abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp,
-		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp {
+abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 
 	/**
 	 * @var int|null
@@ -123,11 +117,7 @@ abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNat
 
 		return null;
 	}
-	
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {
-		return null;
-	}
-	
+
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {
 			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());

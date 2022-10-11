@@ -21,9 +21,9 @@
  */
 namespace rocket\ei\util\filter\prop;
 
-use rocket\ei\manage\security\filter\SecurityFilterProp;
 
-class BoolSecurityFilterProp extends BoolFilterProp implements SecurityFilterProp {
+
+class BoolSecurityFilterProp extends BoolFilterProp {
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\security\filter\SecurityFilterProp::createEiFieldConstraint()

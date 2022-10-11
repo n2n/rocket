@@ -21,12 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use rocket\ei\manage\security\filter\SecurityFilterProp;
 use n2n\util\type\attrs\DataSet;
 use rocket\ei\manage\critmod\filter\ComparatorConstraint;
 use rocket\ei\manage\entry\EiFieldConstraint;
 
-class ToOneSecurityFilterProp extends RelationFilterProp implements SecurityFilterProp {
+class ToOneSecurityFilterProp extends RelationFilterProp {
 	
 	/**
 	 * {@inheritDoc}

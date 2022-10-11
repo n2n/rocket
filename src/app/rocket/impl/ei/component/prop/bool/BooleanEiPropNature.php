@@ -28,14 +28,14 @@ use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\component\prop\FilterableEiProp;
-use rocket\ei\component\prop\SecurityFilterEiProp;
-use rocket\ei\component\prop\SortableEiProp;
+
+
+ 
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
+
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
@@ -46,7 +46,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\control\SiIconType;
 
-class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
+class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements SecurityFilterEiProp {
 	private $booleanConfig;
 	
 	function __construct() {
@@ -161,19 +161,11 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdap
 			
 		return parent::buildEiField($eiu);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
-	 */
+
 	function buildFilterProp(Eiu $eiu): ?FilterProp {
 		return $this->buildSecurityFilterProp($eiu);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FilterableEiProp::buildFilterProp()
-	 */
+
 	function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new BoolFilterProp(CrIt::p($entityProperty), $this->getLabelLstr());
@@ -181,11 +173,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdap
 		
 		return null;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\SortableEiProp::buildSortProp()
-	 */
+
 	function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());

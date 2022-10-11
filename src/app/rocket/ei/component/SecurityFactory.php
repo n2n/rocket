@@ -32,8 +32,8 @@ use rocket\ei\component\command\PrivilegedEiCommand;
 use rocket\ei\EiCmdPath;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\security\filter\SecurityFilterDefinition;
-use rocket\ei\component\prop\SecurityFilterEiProp;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
+
+
 use rocket\ei\util\Eiu;
 
 class SecurityFactory {
@@ -102,38 +102,5 @@ class SecurityFactory {
 		
 		return $securityFilterDefinition;
 	}
-	
-// 	public static function createSortModel(EiType $eiType, N2nContext $n2nContext) {
-// 		return self::createSortModelInstance($eiType, $n2nContext);
-// 	}
-	
-// 	public static function createSortModelFromEiFrame(EiFrame $eiFrame) {
-// 		return self::createSortModelInstance($eiFrame->getContextEiEngine()->getEiMask()->getEiType(), $eiFrame->getN2nContext());
-// 	}
-	
-// 	public static function createSortModel() {
-// 		$sortModel = new SortModel();
-// 		foreach ($this->eiPropCollection as $id => $eiProp) {
-// 			if (!($eiProp instanceof SortableEiProp)) continue;
-			
-// 			if (null !== ($sortItem = $eiProp->getSortItem())) {
-// 				$sortModel->putSortItem($id, $eiProp->getSortItem());
-// 			}
-			
-// 			if (null !== ($sortItemFork = $eiProp->getSortItemFork())) {
-// 				$sortModel->putSortItemFork($id, $eiProp->getSortItemFork());
-// 			}
-// 		}
-// 		return $sortModel;
-// 	}
-		
-// 	public static function createQuickSearchableModel(EiFrame $eiFrame) {
-// 		$quickSerachModel = new QuickSearchModel();
-// 		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEiPropCollection() as $field) {
-// 			if ($field instanceof QuickSearchableEiProp) {
-// 				$quickSerachModel->addQuickSearchable($field);
-// 			}
-// 		}
-// 		return $quickSerachModel;
-// 	}
+
 }

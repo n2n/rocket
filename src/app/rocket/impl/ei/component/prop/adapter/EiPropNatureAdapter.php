@@ -33,6 +33,15 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\manage\idname\IdNamePropFork;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\entry\EiField;
+use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\ei\manage\generic\ScalarEiProperty;
+use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\ei\manage\draft\DraftProperty;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use rocket\ei\manage\critmod\sort\SortProp;
+use rocket\ei\manage\critmod\sort\SortPropFork;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
+
 
 abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements EiPropNature {
 	private $wrapper;
@@ -147,6 +156,38 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	}
 
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
+		return null;
+	}
+
+	public function getGenericEiProperty(): ?GenericEiProperty {
+		return null;
+	}
+
+	function getScalarEiProperty(): ?ScalarEiProperty {
+		return null;
+	}
+
+	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
+		return null;
+	}
+
+	function getDraftProperty(): ?DraftProperty {
+		return null;
+	}
+
+	function buildFilterProp(Eiu $eiu): ?FilterProp {
+		return null;
+	}
+
+	function buildSortProp(Eiu $eiu): ?SortProp {
+		return null;
+	}
+
+	function buildSortPropFork(Eiu $eiu): ?SortPropFork {
+		return null;
+	}
+
+	function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		return null;
 	}
 }
