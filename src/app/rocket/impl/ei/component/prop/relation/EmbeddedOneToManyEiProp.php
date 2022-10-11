@@ -27,7 +27,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\entry\EiField;
@@ -51,7 +51,7 @@ class EmbeddedOneToManyEiProp extends RelationEiPropNatureAdapter implements Fie
 		$this->setup(
 				new DisplayConfig(ViewMode::all()),
 				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
-						(new EditConfig())->setMandatoryChoosable(false)->setMandatory(false)));
+						(new EditAdapter())->setMandatoryChoosable(false)->setMandatory(false)));
 	}
 	
 	
@@ -74,7 +74,7 @@ class EmbeddedOneToManyEiProp extends RelationEiPropNatureAdapter implements Fie
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
+		$readOnly = $readOnly || $this->isReadOnly();
 		
 		if ($readOnly && $eiu->gui()->isCompact()) {
 			return $this->createCompactGuiField($eiu);

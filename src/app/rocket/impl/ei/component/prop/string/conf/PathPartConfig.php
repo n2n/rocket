@@ -160,7 +160,7 @@ class PathPartConfig extends PropConfigAdaption {
 			$this->setCriticalMessage($dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
 		}
 
-		$eiu->mask()->addEiMod(new PathPartEiModificator($this, $eiu->prop()->getPath(), $eiu->mask()));
+		$eiu->mask()->addMod(new PathPartEiModificator($this, $eiu->prop()->getPath(), $eiu->mask()));
 	}
 	
 	private function setupRef(Eiu $eiu, DataSet $dataSet) {

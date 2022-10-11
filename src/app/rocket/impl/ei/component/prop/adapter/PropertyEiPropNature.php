@@ -19,22 +19,30 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
+namespace rocket\impl\ei\component\prop\adapter;
 
-namespace rocket\impl\ei\component\prop\enum;
+use rocket\ei\component\prop\EiPropNature;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\AccessProxy;
 
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature;
-use rocket\ei\util\Eiu;
-use rocket\si\content\SiField;
+interface PropertyEiPropNature extends EiPropNature {
+	/**
+	 * @param EntityProperty|null $entityProperty
+	 */
+	public function setEntityProperty(?EntityProperty $entityProperty): void;
 
-class EnumGuiGroupEiPropNature extends DisplayableEiPropNature {
+	/**
+	 * @return EntityProperty|null
+	 */
+	public function getEntityProperty(): ?EntityProperty;
 
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		
-	}
-	protected function prepare() {
-	}
+	/**
+	 * @return AccessProxy|null
+	 */
+	public function getObjectPropertyAccessProxy(): ?AccessProxy;
 
-
-
+	/**
+	 * @param AccessProxy|null $objectPropertyAccessProxy
+	 */
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy);
 }
-

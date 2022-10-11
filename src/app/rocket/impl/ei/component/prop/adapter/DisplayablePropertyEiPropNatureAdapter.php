@@ -25,36 +25,19 @@ use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\gui\ViewMode;use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\util\factory\EifField;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
 
-abstract class DisplayablePropertyEiPropNatureNatureAdapter extends PropertyEiPropNatureAdapter
-		implements FieldEiProp, GuiEiProp, GuiFieldAssembler {
-	private $displayConfig;
+abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapter
+		implements DisplayableEiPropNature, PropertyEiPropNature, FieldEiProp, GuiEiProp, GuiFieldAssembler {
+	use DisplayableAdapter, PropertyAdapter;
 
-	/**
-	 * @return DisplayConfig
-	 */
-	protected function getDisplayConfig(): DisplayConfig {
-		if ($this->displayConfig !== null) {
-			return $this->displayConfig;
-		}
-		
-		return $this->displayConfig = new DisplayConfig(ViewMode::all());
-	}
-
-	protected function createConfigurator(): AdaptableEiPropConfigurator {
-		return parent::createConfigurator()->addAdaption($this->getDisplayConfig());
-	}
-	
 	// EiField
 	
 	function buildEiField(Eiu $eiu): ?EiField {

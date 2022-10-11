@@ -51,7 +51,7 @@ use rocket\ei\util\entry\EiuEntry;
 use rocket\ei\util\gui\EiuEntryGui;
 use rocket\ei\util\gui\EiuGuiFrame;
 use rocket\ei\util\entry\EiuField;
-use rocket\ei\util\spec\EiuCommand;
+use rocket\ei\util\spec\EiuCmd;
 use rocket\ei\util\spec\EiuProp;
 use rocket\ei\manage\entry\EiFieldMap;
 use rocket\ei\util\entry\EiuFieldMap;
@@ -321,8 +321,8 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuCommand) {
-				$this->assignEiCommand($eiArg->getEiCommand());
+			if ($eiArg instanceof EiuCmd) {
+				$this->assignEiCommand($eiArg->getEiCmd());
 				continue;
 			}
 			

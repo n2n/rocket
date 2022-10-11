@@ -5,7 +5,7 @@ namespace testmdl\bo;
 use rocket\attribute\EiType;
 use rocket\attribute\EiPreset;
 use rocket\spec\setup\EiPresetMode;
-use rocket\attribute\impl\EiMods;
+use rocket\attribute\impl\EiModCallback;
 use rocket\attribute\impl\EiSetup;
 use rocket\ei\util\Eiu;
 

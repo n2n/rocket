@@ -4,7 +4,7 @@ namespace rocket\spec\result;
 use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\EiPropPath;
 use rocket\spec\TypePath;
-use rocket\impl\ei\component\prop\adapter\EiPropAdapter;
+use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 
 class EiPropError {
 	private $eiTypePath;
@@ -38,7 +38,7 @@ class EiPropError {
 		return $this->t;
 	}
 	
-	public static function fromEiProp(EiPropAdapter $eiProp, \Throwable $t) {
+	public static function fromEiProp(EiPropNatureAdapter $eiProp, \Throwable $t) {
 		$wrapper = $eiProp->getWrapper();
 		return new EiPropError($wrapper->getEiPropCollection()->getEiMask()->getEiTypePath(), 
 				$wrapper->getEiPropPath(), $t, $eiProp);

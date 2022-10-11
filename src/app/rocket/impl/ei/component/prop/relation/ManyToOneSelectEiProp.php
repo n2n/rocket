@@ -31,7 +31,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\ei\manage\entry\EiField;
@@ -53,7 +53,7 @@ class ManyToOneSelectEiProp extends RelationEiPropNatureAdapter implements Field
 		
 		$this->setup(
 				new DisplayConfig(ViewMode::all()),
-				new RelationModel($this, true, false, RelationModel::MODE_SELECT, new EditConfig()));
+				new RelationModel($this, true, false, RelationModel::MODE_SELECT, new EditAdapter()));
 		
 		$this->quickSearchableConfig = new QuickSearchConfig();
 	}
@@ -75,12 +75,12 @@ class ManyToOneSelectEiProp extends RelationEiPropNatureAdapter implements Field
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
-		$field->setMandatory($this->getEditConfig()->isMandatory());
+		$field->setMandatory($this->isMandatory());
 		return $field;
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
+		if ($readOnly || $this->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

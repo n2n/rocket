@@ -31,12 +31,12 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
 use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\si\content\impl\SiFields;
 
-class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureNatureAdapter implements ObjectPropertyConfigurable,
+class StringDisplayEiPropNature extends DisplayableEiPropNature implements ObjectPropertyConfigurable,
 		FieldEiProp, GuiFieldFactory, IdNameEiProp {
 	
 	function prepare() {

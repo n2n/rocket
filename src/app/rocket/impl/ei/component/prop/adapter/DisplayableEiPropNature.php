@@ -19,18 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\attribute\impl;
+namespace rocket\impl\ei\component\prop\adapter;
 
-use Attribute;
+use rocket\ei\manage\gui\ViewMode;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ei\component\prop\EiPropNature;
 
-#[Attribute(Attribute::TARGET_CLASS)]
-class EiMods {
-	/**
-	 * @var string[]
-	 */
-	public readonly array $lookupIds;
+interface DisplayableEiPropNature extends EiPropNature  {
 
-	function __construct(string ...$lookupIds) {
-		$this->lookupIds = $lookupIds;
-	}
+	function getDisplayConfig(): DisplayConfig;
 }

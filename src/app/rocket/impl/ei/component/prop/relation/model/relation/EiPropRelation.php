@@ -168,7 +168,7 @@ abstract class EiPropRelation {
 		// supreme EiEngine to make cmd available in EiFrames with super context EiTypes.
 		$superemeEiuMask = $eiu->mask()->supremeMask();
 		$this->relationEiCommand = new RelationEiCommand($this);
-		$superemeEiuMask->addEiCmd($this->relationEiCommand);
+		$superemeEiuMask->addCmd($this->relationEiCommand);
 		
 		$this->relationAjahEiCommand = new RelationAjahEiCommand($this);
 		$targetEiMask->getEiCmdCollection()->add($this->relationAjahEiCommand);
@@ -176,7 +176,7 @@ abstract class EiPropRelation {
 		if (!$this->getRelationEntityProperty()->isMaster()) {
 			$entityProperty = $this->getRelationEntityProperty();
 			
-			$eiu->mask()->addEiMod(new TargetMasterRelationEiModificator($this));
+			$eiu->mask()->addMod(new TargetMasterRelationEiModificator($this));
 		}
 	}
 	
@@ -214,8 +214,8 @@ abstract class EiPropRelation {
 	// 	}
 	
 	public function isReadOnly(EiEntry $mapping, EiFrame $eiFrame) {
-		return $this->relationEiProp->getEditConfig()->isReadOnly()
-		|| (!$mapping->isNew() && $this->relationEiProp->getEditConfig()->isConstant())
+		return $this->relationEiProp->isReadOnly()
+		|| (!$mapping->isNew() && $this->relationEiProp->isConstant())
 		|| (!$this->relationEiProp->isDraftable() && $mapping->getEiObject()->isDraft())
 		|| ($this->isFiltered() && $eiFrame->getEiRelation(EiPropPath::from($this->relationEiProp)));
 	}

@@ -38,7 +38,7 @@ use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\si\content\impl\SiFields;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\bool\conf\BooleanConfig;
@@ -46,7 +46,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\control\SiIconType;
 
-class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
+class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp, SecurityFilterEiProp {
 	private $booleanConfig;
 	
 	function __construct() {
@@ -55,7 +55,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter imp
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter::createEiPropConfigurator()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter::createEiPropConfigurator()
 	 */
 	protected function prepare() {
 		$this->getEditConfig()->setMandatoryChoosable(false)
@@ -95,7 +95,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter imp
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter::read()
 	 */
 	function readEiFieldValue(Eiu $eiu) {
 		return (bool) parent::readEiFieldValue($eiu);
@@ -117,7 +117,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter imp
 		$mapCb = function ($defPropPath) { return (string) $defPropPath; };
 
 		$siField = SiFields::boolIn((bool) $eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setOnAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedDefPropPaths()))
 				->setOffAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedDefPropPaths()))
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());

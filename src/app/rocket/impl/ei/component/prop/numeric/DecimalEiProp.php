@@ -86,7 +86,7 @@ class DecimalEiProp extends NumericEiPropNatureAdapter {
 		
 		$step = 1 / pow(10, $this->decimalConfig->getDecimalPlaces());
 		$siField = SiFields::numberIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMin($this->getNumericConfig()->getMinValue())
 				->setMax($this->getNumericConfig()->getMaxValue())
 				->setStep($step)

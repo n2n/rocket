@@ -26,7 +26,7 @@ use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\util\Eiu;
@@ -45,7 +45,7 @@ class OneToManySelectEiProp extends RelationEiPropNatureAdapter implements Field
 		$this->setup(
 				new DisplayConfig(ViewMode::all()),
 				new RelationModel($this, false, true, RelationModel::MODE_SELECT, 
-						(new EditConfig())->setReadOnly(true)->setMandatoryChoosable(false)));
+						(new EditAdapter())->setReadOnly(true)->setMandatoryChoosable(false)));
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -63,7 +63,7 @@ class OneToManySelectEiProp extends RelationEiPropNatureAdapter implements Field
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
+		if ($readOnly || $this->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

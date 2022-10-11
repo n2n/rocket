@@ -4,7 +4,6 @@ namespace rocket\impl\ei\component;
 
 use rocket\spec\setup\EiSetupPhase;
 use rocket\spec\setup\EiTypeSetup;
-use n2n\util\type\NamedTypeConstraint;
 use rocket\spec\setup\EiPresetProp;
 use rocket\impl\ei\component\prop\string\StringEiPropNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
@@ -19,19 +18,25 @@ use rocket\impl\ei\component\cmd\common\DeleteEiCmdNature;
 use rocket\impl\ei\component\cmd\common\AddEiCmdNature;
 use rocket\attribute\impl\EiCmdDelete;
 use rocket\spec\setup\EiComponentNatureProvider;
-use n2n\util\type\TypeConstraint;
-use rocket\attribute\EiPreset;
 use rocket\impl\ei\component\prop\numeric\IntegerEiPropNature;
 use rocket\impl\ei\component\mod\callback\CallbackEiModNature;
-use rocket\attribute\impl\EiSetup;
-use rocket\impl\ei\component\mod\callback\CallbackFinder;
-use n2n\util\magic\MagicObjectUnavailableException;
 use n2n\util\ex\err\ConfigurationError;
 use n2n\util\magic\MagicContext;
 use n2n\context\attribute\Inject;
-use rocket\attribute\impl\EiMods;
+use rocket\attribute\impl\EiModCallback;
 use rocket\impl\ei\component\mod\callback\StaticCallbackEiModNature;
 use n2n\util\magic\MagicLookupFailedException;
+use n2n\util\StringUtils;
+use rocket\impl\ei\component\prop\string\cke\CkeEiPropNature;
+use n2n\io\managed\File;
+use rocket\impl\ei\component\prop\file\FileEiPropNature;
+use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
+use rocket\impl\ei\component\prop\relation\ManyToManySelectEiProp;
+use rocket\impl\ei\component\prop\relation\OneToManySelectEiProp;
+use rocket\impl\ei\component\prop\relation\OneToOneSelectEiProp;
+use rocket\impl\ei\component\prop\relation\ManyToOneSelectEiProp;
+use n2n\util\ex\IllegalStateException;
 
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
@@ -135,7 +140,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	private function provideModNatures(EiTypeSetup $eiTypeSetup) {
 		$eiTypeSetup->addEiModNature(new StaticCallbackEiModNature($eiTypeSetup->getClass()));
 
-		$eiModsAttribute = $eiTypeSetup->getAttributeSet()->getClassAttribute(EiMods::class);
+		$eiModsAttribute = $eiTypeSetup->getAttributeSet()->getClassAttribute(EiModCallback::class);
 		if ($eiModsAttribute === null) {
 			return;
 		}
@@ -152,27 +157,78 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	}
 
 	private function findGoodPresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
+		if ($typeName === 'string' && StringUtils::endsWith('Html', $eiPresetProp->getName())) {
+			$ckeEiPropNature = new CkeEiPropNature();
+			$ckeEiPropNature->setMandatory(!$nullAllowed);
+			$ckeEiPropNature->setReadOnly(!$eiPresetProp->isEditable());
+			$ckeEiPropNature->setMaxlength(255);
+			$this->assignProperties($eiPresetProp, $ckeEiPropNature);
+			return $ckeEiPropNature;
+		}
 
+		// temporary hack
+		if ($eiPresetProp->getEntityProperty() instanceof RelationEntityProperty) {
+			/**
+			 * @var RelationEntityProperty $relationEntityProperty;
+			 */
+			$relationEntityProperty = $eiPresetProp->getEntityProperty();
+
+			switch ($relationEntityProperty->getType()) {
+				case RelationEntityProperty::TYPE_MANY_TO_MANY:
+					$relationEiProp = new ManyToManySelectEiProp();
+					break;
+				case RelationEntityProperty::TYPE_ONE_TO_MANY:
+					$relationEiProp = new OneToManySelectEiProp();
+					break;
+				case RelationEntityProperty::TYPE_MANY_TO_ONE:
+					$relationEiProp = new ManyToOneSelectEiProp();
+					$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
+					break;
+				case RelationEntityProperty::TYPE_ONE_TO_ONE:
+					$relationEiProp = new OneToOneSelectEiProp();
+					$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
+					break;
+				default:
+					throw new IllegalStateException();
+			}
+			$relationEiProp->getRelationModel()->setReadOnly(!$eiPresetProp->isEditable());
+
+			return $relationEiProp;
+		}
 	}
 
 	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
 		switch ($typeName) {
+			case File::class:
+				$fileEiProp = new FileEiPropNature();
+				$fileEiProp->setMandatory(!$nullAllowed);
+				$fileEiProp->setReadOnly(!$eiPresetProp->isEditable());
+				$this->assignProperties($fileEiProp);
+				return $fileEiProp;
 			case 'string':
 				$stringEiProp = new StringEiPropNature();
 				$stringEiProp->setMandatory(!$nullAllowed);
 				$stringEiProp->setReadOnly(!$eiPresetProp->isEditable());
 				$stringEiProp->setMaxlength(255);
+				$this->assignProperties($eiPresetProp, $stringEiProp);
 				return $stringEiProp;
 			case 'int':
 				$intEiProp = new IntegerEiPropNature();
 				$intEiProp->setMandatory(!$nullAllowed);
 				$intEiProp->setReadOnly(!$eiPresetProp->isEditable());
+				$this->assignProperties($eiPresetProp, $intEiProp);
 				return $intEiProp;
 			case 'bool':
 				$booleanEiProp = new BooleanEiPropNature();
 				$booleanEiProp->setMandatory(!$nullAllowed);
 				$booleanEiProp->setReadOnly(!$eiPresetProp->isEditable());
+				$this->assignProperties($eiPresetProp, $booleanEiProp);
 				return $booleanEiProp;
 		}
+	}
+
+	private function assignProperties(EiPresetProp $eiPresetProp, PropertyEiPropNature $nature) {
+		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
+		$nature->setObjectPropertyAccessProxy($eiPresetProp->getObjectPropertyAccessProxy());
 	}
 }

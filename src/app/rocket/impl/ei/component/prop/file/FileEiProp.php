@@ -39,7 +39,7 @@ use n2n\web\http\UploadDefinition;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\impl\ei\component\prop\file\conf\FileConfig;
 use rocket\impl\ei\component\prop\file\conf\FileId;
 use rocket\impl\ei\component\prop\file\conf\FileVerificator;
@@ -57,7 +57,7 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
 use rocket\ei\util\factory\EifGuiField;
 
-class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implements IdNameEiProp {
+class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements IdNameEiProp {
 	
 	/**
 	 * @var EiPropPath|null
@@ -82,7 +82,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implem
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter::createEiPropConfigurator()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter::createEiPropConfigurator()
 	 */
 	public function prepare() {
 		$this->getConfigurator()->addAdaption(
@@ -237,7 +237,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implem
 		
 		$siField = SiFields::fileIn($siFile, $eiu->frame()->getApiFieldUrl(), $eiu->guiField()->createCallId(), 
 						new SiFileHanlderImpl($eiu, $this->thumbResolver, $this->fileVerificator, $siFile))
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMaxSize($this->fileVerificator->getMaxSize())
 				->setAcceptedExtensions($this->fileVerificator->getAllowedExtensions())
 				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes())

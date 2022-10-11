@@ -32,7 +32,7 @@ use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\ei\manage\entry\EiField;
@@ -54,7 +54,7 @@ class ContentItemsEiProp extends RelationEiPropNatureAdapter implements FieldEiP
 		$this->setup(
 				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
 				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED,
-						(new EditConfig())->setMandatoryChoosable(false)->setMandatory(false)));
+						(new EditAdapter())->setMandatoryChoosable(false)->setMandatory(false)));
 		
 		$this->contentItemsConfig = new ContentItemsConfig();
 		
@@ -127,7 +127,7 @@ class ContentItemsEiProp extends RelationEiPropNatureAdapter implements FieldEiP
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
-		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
+		$readOnly = $readOnly || $this->isReadOnly();
 		
 		if ($readOnly && $eiu->gui()->isCompact()) {
 			return $this->createCompactGuiField($eiu);

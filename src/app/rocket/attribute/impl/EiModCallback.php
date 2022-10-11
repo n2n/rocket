@@ -19,22 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
+namespace rocket\attribute\impl;
 
-namespace rocket\impl\ei\component\prop\enum;
+use Attribute;
 
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature;
-use rocket\ei\util\Eiu;
-use rocket\si\content\SiField;
+#[Attribute(Attribute::TARGET_CLASS)]
+class EiModCallback {
+	/**
+	 * @var string[]
+	 */
+	public readonly array $lookupIds;
 
-class EnumGuiGroupEiPropNature extends DisplayableEiPropNature {
-
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		
+	function __construct(string ...$lookupIds) {
+		$this->lookupIds = $lookupIds;
 	}
-	protected function prepare() {
-	}
-
-
-
 }
-

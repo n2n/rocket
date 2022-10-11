@@ -29,7 +29,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\meta\SiStructureType;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\ei\component\prop\FieldEiProp;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\ei\util\Eiu;
@@ -52,7 +52,7 @@ class EmbeddedOneToOneEiProp extends RelationEiPropNatureAdapter implements Fiel
 		$this->setup(
 				(new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
 						->setDefaultDisplayedViewModes(ViewMode::bulky()),
-				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditConfig()));
+				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditAdapter()));
 	}
 
 	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -67,20 +67,20 @@ class EmbeddedOneToOneEiProp extends RelationEiPropNatureAdapter implements Fiel
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
-		$field->setMandatory($this->getEditConfig()->isMandatory());
+		$field->setMandatory($this->isMandatory());
 		return $field;
 	}
 	
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-// 		if ($readOnly || $this->getEditConfig()->isReadOnly()) {
+// 		if ($readOnly || $this->isReadOnly()) {
 // 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 // 		}
 		
 // 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
 // 				->exec($this->getRelationModel()->getTargetEditEiCmdPath());
 		
-		$readOnly = $readOnly || $this->getEditConfig()->isReadOnly();
+		$readOnly = $readOnly || $this->isReadOnly();
 		
 		if ($readOnly && $eiu->gui()->isCompact()) {
 			return $this->createCompactGuiField($eiu);

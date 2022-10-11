@@ -38,7 +38,7 @@ use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\component\prop\GuiEiProp;
 use rocket\ei\manage\gui\GuiProp;
@@ -49,10 +49,10 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiP
 	private $sed;
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig
+	 * @return \rocket\impl\ei\component\prop\adapter\config\EditAdapter
 	 */
 	private function getEditConfig() {
-		return $this->sed ?? $this->sed = new EditConfig();
+		return $this->sed ?? $this->sed = new EditAdapter();
 	}
 	
 	function prepare() {
@@ -88,12 +88,12 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiP
 	 * @return boolean
 	 */
 	public function isMandatory() {
-		return $this->getEditConfig()->isMandatory();
+		return $this->isMandatory();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EiPropAdapter::isPropFork()
+	 * @see \rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter::isPropFork()
 	 */
 	public function isPropFork(): bool {
 		return true;
@@ -101,7 +101,7 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter implements GuiEiP
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\EiPropAdapter::getPropForkObject()
+	 * @see \rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter::getPropForkObject()
 	 */
 	public function getPropForkObject(object $object): object {
 		return $this->getObjectPropertyAccessProxy()->getValue($object) 

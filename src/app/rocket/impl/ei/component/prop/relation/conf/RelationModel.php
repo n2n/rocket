@@ -39,7 +39,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\relation\model\relation\TargetMasterRelationEiModificator;
 use rocket\ei\util\spec\EiuMask;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use n2n\config\InvalidConfigurationException;
 
 class RelationModel {
@@ -66,7 +66,7 @@ class RelationModel {
 	 */
 	private $mode;
 	/**
-	 * @var EditConfig
+	 * @var EditAdapter
 	 */
 	private $editConfig;
 	
@@ -117,7 +117,7 @@ class RelationModel {
 	 * @param bool $embedded
 	 */
 	function __construct(RelationEiProp $relationEiProp, bool $sourceMany, bool $targetMany, string $mode, 
-			?EditConfig $editConfig) {
+			?EditAdapter $editConfig) {
 		$this->relationEiProp = $relationEiProp;
 		$this->sourceMany = $sourceMany;
 		$this->targetMany = $targetMany;
@@ -129,30 +129,29 @@ class RelationModel {
 	}
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig|null
-	 */
-	function getEditConfig() {
-		return $this->editConfig;
-	}
-	
-	/**
 	 * @return boolean
 	 */
 	function isReadOnly() {
 		IllegalStateException::assertTrue($this->editConfig !== null);
 		
-		return $this->editConfig->isReadOnly();
+		return $this->readOnly;
 	}
-	
+
+	function setReadOnly(bool $readOnly) {
+		$this->readOnly = $readOnly;
+	}
+
 	/**
 	 * @return boolean
 	 */
 	function isMandatory() {
-		IllegalStateException::assertTrue($this->editConfig !== null);
-		
-		return ($this->min > 0 || $this->editConfig->isMandatory());
+		return ($this->min > 0 || $this->mandatory);
 	}
-	
+
+	function setMandatory(bool $mandatory) {
+		$this->mandatory = $mandatory;
+	}
+
 	/**
 	 * @return string[]
 	 */
@@ -395,7 +394,7 @@ class RelationModel {
 	
 	function prepare(EiuMask $eiuMask, EiuMask $targetEiuMask) {
 		if (!$this->getRelationEntityProperty()->isMaster()) {
-			$eiuMask->addEiMod(new TargetMasterRelationEiModificator($this));
+			$eiuMask->addMod(new TargetMasterRelationEiModificator($this));
 		}
 		$targetEiuMask->onEngineReady(function ($eiuEngine) {
 			try {

@@ -36,7 +36,7 @@ use rocket\ei\EiPropPath;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\impl\ei\component\prop\adapter\config\DraftConfigurable;
 
-abstract class DraftablePropertyEiPropNatureNatureAdapter extends EditablePropertyEiPropNatureNatureAdapter implements DraftConfigurable, DraftProperty {
+abstract class DraftablePropertyEiPropNatureNatureAdapterAdapter extends EditablePropertyEiPropNatureAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;
 
 	public function isDraftable(): bool {

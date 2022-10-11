@@ -32,34 +32,21 @@ use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 
-abstract class EditablePropertyEiPropNatureNatureAdapter extends DisplayablePropertyEiPropNatureNatureAdapter implements PrivilegedEiProp {
-	use EditConfig;
-
-//	private ?EditConfig $editConfig;
+abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
+	use EditableAdapter;
 
 	function isPrivileged(): bool {
 		return true;
 	}
 
-//	/**
-//	 * @return EditConfig
-//	 */
-//	protected function getEditConfig() {
-//		if ($this->editConfig === null) {
-//			$this->editConfig = new EditConfig();
-//		}
-//
-//		return $this->editConfig;
-//	}
-
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureNatureAdapter::createEifField()
+	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::createEifField()
 	 */
 	protected function createEifField(Eiu $eiu): EifField {
 		$eifField = parent::createEifField($eiu);
 		
-		if (!$this->getEditConfig()->isReadOnly()) {
+		if (!$this->isReadOnly()) {
 			$eifField->setWriter(function ($value) use ($eiu) {
 				$eiu->entry()->writeNativeValue($this, $value);
 			});
@@ -69,7 +56,7 @@ abstract class EditablePropertyEiPropNatureNatureAdapter extends DisplayableProp
 			return $value;
 		});
 				
-		if ($this->getEditConfig()->isMandatory()) {
+		if ($this->isMandatory()) {
 			$eifField->val(Validators::mandatory());
 		}
 		
@@ -78,11 +65,11 @@ abstract class EditablePropertyEiPropNatureNatureAdapter extends DisplayableProp
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureNatureAdapter::buildGuiField()
+	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $eiu->guiFrame()->isReadOnly()
-				|| ($eiu->entry()->isNew() && $this->getEditConfig()->isConstant())) {
+				|| ($eiu->entry()->isNew() && $this->isConstant())) {
 			return $this->createOutEifGuiField($eiu)->toGuiField();
 		}
 		

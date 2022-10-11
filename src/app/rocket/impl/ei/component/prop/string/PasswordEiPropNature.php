@@ -27,13 +27,13 @@ use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\string\conf\PasswordConfig;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
 use n2n\config\InvalidConfigurationException;
 
-class PasswordEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter {
+class PasswordEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 	private $passwordConfig;
 	private $alphanumericConfig;
 
@@ -55,7 +55,7 @@ class PasswordEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter {
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		
 		$siField = SiFields::passwordIn()
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setPasswordSet(!empty($eiu->field()->getValue()))
 				->setMinlength($this->alphanumericConfig->getMinlength())
 				->setMaxlength($this->alphanumericConfig->getMaxlength())

@@ -47,11 +47,11 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 
-class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
+class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp, SortableEiProp, GenericEiProp,
 		ScalarEiProp, IdNameEiProp {
 	private $definedN2nLocales;
 	
@@ -85,7 +85,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter i
 		$options = $this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale());
 		$value = $eiu->field()->getValue();
 		$siField = SiFields::enumIn($options, ($value !== null ? (string) $value : null))
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)

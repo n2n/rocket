@@ -7,12 +7,12 @@ use rocket\attribute\EiPreset;
 use rocket\spec\setup\EiPresetMode;
 use rocket\attribute\impl\EiSetup;
 use rocket\ei\util\Eiu;
-use rocket\attribute\impl\EiMods;
+use rocket\attribute\impl\EiModCallback;
 use rocket\si\control\SiButton;
 use rocket\impl\ei\component\cmd\EiCmdNatures;
 
 #[EiType]
-#[EiMods(ModTestMod::class)]
+#[EiModCallback(ModTestMod::class)]
 class ModTestObj {
 
 	public int $id;
@@ -20,7 +20,7 @@ class ModTestObj {
 
 	#[EiSetup]
 	private static function setup(Eiu $eiu): void {
-		$eiu->mask()->addEiCmd(EiCmdNatures::generalCallback(
+		$eiu->mask()->addCmd(EiCmdNatures::generalCallback(
 				function (Eiu $eiu) {
 					return SiButton::danger('Super duper danger!');
 				},

@@ -19,22 +19,60 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
+namespace rocket\impl\ei\component\prop\adapter;
 
-namespace rocket\impl\ei\component\prop\enum;
 
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature;
-use rocket\ei\util\Eiu;
-use rocket\si\content\SiField;
+trait EditableAdapter {
+	protected bool $constant = false;
+	protected bool $readOnly = false;
+	protected bool $mandatory = false;
 
-class EnumGuiGroupEiPropNature extends DisplayableEiPropNature {
-
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		
+	/**
+	 * @return bool
+	 */
+	function isConstant() {
+		return $this->constant;
 	}
-	protected function prepare() {
+
+	/**
+	 * @param bool $constant
+	 * @return $this
+	 */
+	function setConstant(bool $constant): static {
+		$this->constant = $constant;
+		return $this;
 	}
 
+	/**
+	 * @return bool
+	 */
+	function isReadOnly(): bool {
+		return $this->readOnly;
+	}
 
+	/**
+	 * @param bool $readOnly
+	 * @return $this
+	 */
+	function setReadOnly(bool $readOnly): static {
+		$this->readOnly = (bool) $readOnly;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	function isMandatory(): bool {
+		return $this->mandatory;
+	}
+
+	/**
+	 * @param bool $mandatory
+	 * @return $this
+	 */
+	function setMandatory(bool $mandatory): static {
+		$this->mandatory = $mandatory;
+		return $this;
+	}
 
 }
-

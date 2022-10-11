@@ -26,7 +26,7 @@ use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\StringConfig;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 
 class StringEiPropNature extends AlphanumericEiPropNatureNature {
 
@@ -57,7 +57,7 @@ class StringEiPropNature extends AlphanumericEiPropNatureNature {
 		$addonConfig = $this->getAddonConfig();
 		
 		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
 				->setMultiline($this->stringConfig->isMultiline())

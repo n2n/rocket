@@ -82,7 +82,7 @@ class PathPartEiPropNature extends AlphanumericEiPropNatureNature {
 	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
 				->setPrefixAddons($this->getAddonConfig()->getPrefixSiCrumbGroups())

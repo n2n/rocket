@@ -28,7 +28,7 @@ use rocket\ei\component\prop\SortableEiProp;
 use n2n\core\container\N2nContext;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
@@ -52,7 +52,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use n2n\l10n\DateTimeFormat;
 
-class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter implements SortableEiProp {
+class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements SortableEiProp {
 
 	/**
 	 * @var DateTimeConfig
@@ -87,7 +87,7 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter im
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::dateTimeIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setDateChoosable($this->dateTimeConfig->getDateStyle() !== DateTimeFormat::STYLE_NONE)
 				->setTimeChoosable($this->dateTimeConfig->getTimeStyle() !== DateTimeFormat::STYLE_NONE)
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());

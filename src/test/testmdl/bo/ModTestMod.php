@@ -13,7 +13,7 @@ class ModTestMod {
 
 	#[EiSetup]
 	private function setup(Eiu $eiu): void {
-		$eiu->mask()->addEiCmd(EiCmdNatures::entryCallback(
+		$eiu->mask()->addCmd(EiCmdNatures::entryCallback(
 				SiButton::info('Login'),
 				function (Eiu $eiu) {
 					return $eiu->factory()->newControlResponse()->redirectToHref('https://n2n.rocks/');

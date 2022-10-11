@@ -36,10 +36,10 @@ use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\si\content\SiField;
 
-class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureNatureAdapter {
+class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
 	const ATTR_OPTIONS_KEY = 'options';
 	const ATTR_OPTIONS_LABEL_KEY = 'label';
 	const ATTR_OPTIONS_VALUE_KEY = 'value';

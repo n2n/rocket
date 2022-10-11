@@ -6,7 +6,7 @@ use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
 use rocket\ei\util\Eiu;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\reflection\attribute\ClassAttribute;
-use rocket\attribute\impl\EiMods;
+use rocket\attribute\impl\EiModCallback;
 use n2n\util\magic\MagicObjectUnavailableException;
 use n2n\util\ex\err\ConfigurationError;
 use rocket\ei\component\modificator\EiMod;

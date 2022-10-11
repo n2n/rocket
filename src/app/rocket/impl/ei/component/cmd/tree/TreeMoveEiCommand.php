@@ -36,7 +36,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 	
 	protected function prepare() {
 		$this->getConfigurator()->addSetupCallback(function (Eiu $eiu) {
-			$eiu->mask()->addEiMod(new TreeMoveEiModificator());
+			$eiu->mask()->addMod(new TreeMoveEiModificator());
 		});
 	}
 	

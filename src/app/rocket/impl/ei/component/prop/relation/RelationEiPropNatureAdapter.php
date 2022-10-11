@@ -38,18 +38,25 @@ use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\component\prop\IdNameEiProp;
+use rocket\impl\ei\component\prop\adapter\DisplayableAdapter;
+use n2n\util\col\ArrayUtils;
+use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
+use n2n\l10n\Lstr;
+use rocket\ei\EiCmdPath;
+use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommandNature;
+use rocket\ei\EiPropPath;
+use rocket\ei\util\spec\EiuEngine;
+use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
+use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
+use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 
-abstract class RelationEiPropNatureAdapter extends PropertyEiPropNatureAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp, IdNameEiProp {
-			
-	/**
-	 * @var DisplayConfig
-	 */
-	private $displayConfig;
+abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, GuiEiProp, GuiFieldAssembler, ForkEiProp, IdNameEiProp {
+	use DisplayableAdapter, PropertyAdapter;
 	
 	/**
 	 * @var RelationModel
 	 */
-	private $relationModel;
+	protected RelationModel $relationModel;
 	
 	/**
 	 * @var Relation
@@ -60,42 +67,95 @@ abstract class RelationEiPropNatureAdapter extends PropertyEiPropNatureAdapter i
 	function isPrivileged(): bool {
 		return true;
 	}
-	
-	/**
-	 * @param RelationModel $relationModel
-	 */
-	protected function setup(?DisplayConfig $displayConfig, RelationModel $relationModel) {
-		$this->displayConfig = $displayConfig;
-		$this->relationModel = $relationModel;
-	}
-	
-	protected function prepare() {
-		$relationModel = $this->getRelationModel();
-		$configurator = $this->getConfigurator();
-		
-		if (null !== $this->displayConfig) {
-			$configurator->addAdaption($this->displayConfig);
+
+
+	function setup(Eiu $eiu): void {
+		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
+		$targetEiuType = $eiu->context()->type($targetClass);
+
+//		$targetExtensionId = $dataSet->optString(self::ATTR_TARGET_EXTENSION_ID_KEY);
+//		$targetEiuMask = null;
+//		if ($targetExtensionId !== null) {
+//			$targetEiuMask = $targetEiuType->extensionMask($targetExtensionId, false);
+//		}
+//		if ($targetEiuMask === null) {
+			$targetEiuMask = $targetEiuType->mask();
+//		}
+
+		$targetReadEiCommand = new TargetReadEiCommandNature(Lstr::create('Embedded Read'), (string) $eiu->mask()->getEiTypePath(),
+				(string) $targetEiuMask->getEiTypePath());
+		$targetReadEiCmdPath = $targetEiuMask->addCmd($targetReadEiCommand)->getEiCmdPath();
+		$this->relationModel->setTargetReadEiCmdPath($targetReadEiCmdPath);
+
+		$targetEditEiCommand = new TargetEditEiCommandNature(Lstr::create('Change this name'), (string) $eiu->mask()->getEiTypePath(),
+				(string) $targetEiuMask->getEiTypePath());
+		$targetEditEiCmdPath = $targetEiuMask->addCmd($targetEditEiCommand)->getEiCmdPath();
+		$this->relationModel->setTargetEditEiCmdPath($targetEditEiCmdPath);
+
+
+//		if ($this->relationModel->isTargetMany()) {
+//			$this->relationModel->setMin($dataSet->optInt(self::ATTR_MIN_KEY,
+//					$this->relationModel->getMin(), false));
+//			$this->relationModel->setMax($dataSet->optInt(self::ATTR_MAX_KEY,
+//					$this->relationModel->getMax(), true));
+//		}
+
+		if ($this->relationModel->isEmbedded() && $this->relationModel->isTargetMany()) {
+//			$targetOrderEiPropPath = EiPropPath::build(
+//					$dataSet->optString(self::ATTR_TARGET_ORDER_EI_PROP_PATH_KEY));
+//			$targetEiuType->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($targetOrderEiPropPath) {
+//				if ($targetOrderEiPropPath !== null && $eiuEngine->containsScalarEiProperty($targetOrderEiPropPath)) {
+//					$this->relationModel->setTargetOrderEiPropPath($targetOrderEiPropPath);
+//				} else {
+//					$this->relationModel->setTargetOrderEiPropPath(null);
+//				}
+//			});
 		}
-		
-		if (null !== ($editConfig = $relationModel->getEditConfig())) {
-			$configurator->addAdaption($editConfig);
+
+//		if ($this->relationModel->isEmbedded()) {
+//			$this->relationModel->setOrphansAllowed(
+//					$dataSet->optBool(self::ATTR_ORPHANS_ALLOWED_KEY, $this->relationModel->isOrphansAllowed()));
+//
+//			$this->relationModel->setReduced(
+//					$dataSet->optBool(self::ATTR_REDUCED_KEY, $this->relationModel->isReduced()));
+//
+//
+//			$this->relationModel->setRemovable(
+//					$dataSet->optBool(self::ATTR_REMOVABLE_KEY, $this->relationModel->isRemovable()));
+//		}
+
+// 		if (!$this->relationModel->isSourceMany() && $this->relationModel->isSelect()) {
+// 			$this->relationModel->setFiltered(
+// 					$dataSet->optBool(self::ATTR_FILTERED_KEY, $this->relationModel->isFiltered()));
+// 		}
+
+		if ($this->relationModel->isSelect()) {
+//			$this->relationModel->setHiddenIfTargetEmpty(
+//					$dataSet->optBool(self::ATTR_HIDDEN_IF_TARGET_EMPTY_KEY,
+//							$this->relationModel->isHiddenIfTargetEmpty()));
+//
+//			$this->relationModel->setMaxPicksNum($dataSet->optInt(self::ATTR_MAX_PICKS_NUM_KEY,
+//					$this->relationModel->getMaxPicksNum()));
 		}
-		
-		$configurator->addAdaption(new RelationConfig($relationModel));
+
+		if ($this->relationModel->isMaster()) {
+//			$strategy = $dataSet->optEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY,
+//					RelationVetoableActionListener::getStrategies(),
+//					RelationVetoableActionListener::STRATEGY_UNSET, false);
+
+			$strategy = RelationVetoableActionListener::STRATEGY_UNSET;
+
+			$targetEiuType->getEiType()->registerVetoableActionListener(
+					new RelationVetoableActionListener($this->relationModel, $strategy));
+		}
+
+		$this->relationModel->prepare($eiu->mask(), $targetEiuMask);
 	}
-	
+
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditConfig|NULL
+	 * @return RelationModel
 	 */
-	protected function getEditConfig() {
-		return $this->getRelationModel()->getEditConfig();
-	}
-	
-	/**
-	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
-	 */
-	protected function getRelationModel() {
-		IllegalStateException::assertTrue($this->relationModel !== null, get_class($this));
+	function getRelationModel() {
 		return $this->relationModel;
 	}
 	

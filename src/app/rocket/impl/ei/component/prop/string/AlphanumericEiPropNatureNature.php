@@ -25,7 +25,7 @@ use rocket\ei\util\filter\prop\StringFilterProp;
 use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -53,7 +53,7 @@ use rocket\ei\component\prop\QuickSearchableEiProp;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 
-abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNatureNatureAdapter implements FilterableEiProp,
+abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements FilterableEiProp,
 		SortableEiProp, QuickSearchableEiProp, ScalarEiProp, GenericEiProp, IdNameEiProp {
 
 	/**
@@ -101,7 +101,7 @@ abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNat
 		$addonConfig = $this->getAddonConfig();
 		
 		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMinlength($this->getAlphanumericConfig()->getMinlength())
 				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())

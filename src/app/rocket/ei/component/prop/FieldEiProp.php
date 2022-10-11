@@ -34,8 +34,3 @@ interface FieldEiProp extends EiPropNature {
 }
 
 
-
-interface ScalarEiProp extends FieldEiProp {
-	
-	public function getScalarEiProperty(): ?ScalarEiProperty;
-}

@@ -68,18 +68,18 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter implements ScalarEi
 		});
 	}
 	
-	function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof IntEntityProperty 
-				|| $entityProperty instanceof ScalarEntityProperty);
-		$this->entityProperty = $entityProperty;
-	}
-	
-	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
-		
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
-	}
+//	function setEntityProperty(?EntityProperty $entityProperty) {
+//		ArgUtils::assertTrue($entityProperty instanceof IntEntityProperty
+//				|| $entityProperty instanceof ScalarEntityProperty);
+//		$this->entityProperty = $entityProperty;
+//	}
+//
+//	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+//		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
+//				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
+//
+//		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+//	}
 	
 	function createEifField(Eiu $eiu): EifField {
 		return parent::createEifField($eiu)
@@ -90,7 +90,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter implements ScalarEi
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::numberIn($eiu->field()->getValue())
-				->setMandatory($this->getEditConfig()->isMandatory())
+				->setMandatory($this->isMandatory())
 				->setMin($this->getNumericConfig()->getMinValue())
 				->setMax($this->getNumericConfig()->getMaxValue())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());

@@ -27,7 +27,7 @@ use rocket\ei\component\prop\SortableEiProp;
 use rocket\ei\component\prop\FilterableEiProp;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
@@ -50,7 +50,7 @@ use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\ei\util\factory\EifField;
 use n2n\validation\validator\impl\Validators;
 
-abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapter
+abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 		implements FilterableEiProp, SortableEiProp, QuickSearchableEiProp, IdNameEiProp {
 			
 	use NumericConfig;
@@ -79,18 +79,18 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureN
     protected function getAddonConfig() {
     	return $this->addonConfig;
     }
-    
-	function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
-		$this->entityProperty = $entityProperty;
-	}
-	
-	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		ArgUtils::assertTrue($propertyAccessProxy !== null);
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->objectPropertyAccessProxy = $propertyAccessProxy;
-	}
+//
+//	function setEntityProperty(?EntityProperty $entityProperty) {
+//		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+//		$this->entityProperty = $entityProperty;
+//	}
+//
+//	function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+//		ArgUtils::assertTrue($propertyAccessProxy !== null);
+//		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
+//				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
+//		$this->objectPropertyAccessProxy = $propertyAccessProxy;
+//	}
 	
 	function prepare() {
 		$this->getConfigurator()->addAdaption($this->numericConfig)
