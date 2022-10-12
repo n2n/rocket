@@ -65,14 +65,14 @@ class EiPropPath extends IdPath {
 			return $expression;
 		}
 		
-		if ($expression instanceof EiPropNature) {
-			return self::from($expression);
-		}
-		
 		if ($expression instanceof EiuProp) {
 			return self::from($expression->getEiProp());
 		}
-	
+
+		if ($expression instanceof EiProp) {
+			return self::from($expression);
+		}
+
 		if (is_array($expression)) {
 			return new EiPropPath($expression);
 		}
@@ -81,7 +81,7 @@ class EiPropPath extends IdPath {
 			return new EiPropPath(explode(self::ID_SEPARATOR, $expression));
 		}
 		
-		ArgUtils::valType($expression, ['string', EiPropPath::class, EiPropNature::class, EiuProp::class]);
+		ArgUtils::valType($expression, ['string', EiPropPath::class, EiProp::class, EiuProp::class]);
 		throw new IllegalStateException();
 	}
 	

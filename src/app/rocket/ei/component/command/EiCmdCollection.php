@@ -131,7 +131,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 * @return GenericResult
 	 */
 	public function determineGenericDetail(EiObject $eiObject, bool $required = false) {
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCmd) {
+		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
 			if (!($eiCmd instanceof GenericDetailEiCommand)) {
 				continue;
 			}

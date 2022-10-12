@@ -94,7 +94,7 @@ class ToOneEiField extends EiFieldAdapter {
 	}
 	
 	protected function readValue() {
-		$targetEntityObj = $this->eiu->object()->readNativValue($this->eiProp);
+		$targetEntityObj = $this->eiu->object()->readNativValue($this->eiu->prop()->getEiProp());
 		
 		if ($targetEntityObj === null) {
 			return $targetEntityObj;

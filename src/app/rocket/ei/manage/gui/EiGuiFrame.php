@@ -250,9 +250,10 @@ class EiGuiFrame {
 		$siProps = [];
 		foreach ($this->defPropPaths as $defPropPath) {
 			$eiProp = $this->guiDefinition->getGuiPropWrapperByDefPropPath($defPropPath)->getEiProp();
-			$label = $eiProp->getLabelLstr()->t($n2nLocale);
+			$eiPropNature = $eiProp->getNature();
+			$label = $eiPropNature->getLabelLstr()->t($n2nLocale);
 			$helpText = null;
-			if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
+			if (null !== ($helpTextLstr = $eiPropNature->getHelpTextLstr())) {
 				$helpText = $helpTextLstr->t($n2nLocale);
 			}
 			

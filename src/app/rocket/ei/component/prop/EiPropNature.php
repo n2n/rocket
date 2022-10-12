@@ -37,6 +37,8 @@ use rocket\ei\manage\draft\DraftProperty;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\frame\EiFrame;
 
 
 interface EiPropNature extends EiComponentNature {
@@ -126,5 +128,5 @@ interface EiPropNature extends EiComponentNature {
 	 */
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp;
 
-
+	public function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame;
 }

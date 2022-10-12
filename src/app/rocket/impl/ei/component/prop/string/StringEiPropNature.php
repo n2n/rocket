@@ -50,7 +50,7 @@ class StringEiPropNature extends AlphanumericEiPropNatureNature {
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return $eiu->factory()->newGuiField(
 				SiFields::stringOut($eiu->field()->getValue())
-						->setMultiline($this->stringConfig->isMultiline()));
+						->setMultiline($this->isMultiline()));
 	}
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
@@ -58,9 +58,9 @@ class StringEiPropNature extends AlphanumericEiPropNatureNature {
 		
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setMinlength($this->getAlphanumericConfig()->getMinlength())
-				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
-				->setMultiline($this->stringConfig->isMultiline())
+				->setMinlength($this->getMinlength())
+				->setMaxlength($this->getMaxlength())
+				->setMultiline($this->isMultiline())
 				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
 				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());

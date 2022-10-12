@@ -47,7 +47,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 	protected function createEifField(Eiu $eiu): EifField {
 		return $eiu->factory()
 				->newField($this->getEiFieldTypeConstraint(), function () use ($eiu) {
-					return $eiu->object()->readNativValue($this);
+					return $eiu->object()->readNativValue($eiu->prop()->getEiProp());
 				});
 	}	
 

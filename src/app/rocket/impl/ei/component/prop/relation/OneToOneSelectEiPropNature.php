@@ -59,7 +59,7 @@ class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 //	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
@@ -88,6 +88,6 @@ class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 		}
 		
 		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, 
-				$eiu->frame()->forkDiscover($this, $eiu->object()));
+				$eiu->frame()->forkDiscover($eiu->prop(), $eiu->object()));
 	}
 }

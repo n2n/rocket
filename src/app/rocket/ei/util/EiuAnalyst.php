@@ -127,7 +127,7 @@ class EiuAnalyst {
 		$this->unappliedEiArgs = $eiArgs;
 	}
 
-	private function ensureAppied() {
+	protected function ensureAppied() {
 		if ($this->unappliedEiArgs === null) {
 			return;
 		}
@@ -355,6 +355,7 @@ class EiuAnalyst {
 			
 			if ($eiArg instanceof Eiu) {
 				$eiuAnalyst = $eiArg->getEiuAnalyst();
+				$eiuAnalyst->ensureAppied();
 				
 				if ($eiuAnalyst->n2nContext !== null) {
 					$this->n2nContext = $eiuAnalyst->n2nContext;
@@ -1397,12 +1398,12 @@ class EiuAnalyst {
 		}
 		
 		if ($eiArg instanceof EiFrame) {
-			return new EiuFrame($eiArg, $this);
+			return new EiuFrame($eiArg, new EiuAnalyst());
 		}
 		
 		if ($eiArg instanceof N2nContext) {
 			try {
-				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiFrame(), $this);
+				return new EiuFrame($eiArg->lookup(ManageState::class)->preakEiFrame(), new EiuAnalyst());
 			} catch (ManageException $e) {
 				throw new EiuPerimeterException('Can not create EiuFrame in invalid context.', 0, $e);
 			}

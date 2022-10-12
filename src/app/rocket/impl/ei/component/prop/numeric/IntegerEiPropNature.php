@@ -83,16 +83,16 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	
 	function createEifField(Eiu $eiu): EifField {
 		return parent::createEifField($eiu)
-				->val(Validators::min($this->getNumericConfig()->getMinValue() ?? self::INT_SIGNED_MIN), 
-						Validators::max($this->getNumericConfig()->getMaxValue() ?? self::INT_SIGNED_MAX));
+				->val(Validators::min($this->getMinValue() ?? self::INT_SIGNED_MIN),
+						Validators::max($this->getMaxValue() ?? self::INT_SIGNED_MAX));
 	}
 	
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setMin($this->getNumericConfig()->getMinValue())
-				->setMax($this->getNumericConfig()->getMaxValue())
+				->setMin($this->getMinValue())
+				->setMax($this->getMaxValue())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {

@@ -63,13 +63,6 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureN
     }
 
     /**
-     * @return \rocket\impl\ei\component\prop\numeric\conf\NumericConfig
-     */
-    function getNumericConfig() {
-        return $this->numericConfig;
-    }
-    
-    /**
      * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
      */
     protected function getAddonConfig() {

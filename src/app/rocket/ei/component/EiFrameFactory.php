@@ -30,7 +30,6 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\EiCmdPath;
 use rocket\ei\manage\security\InaccessibleEiCmdPathException;
-use rocket\ei\component\prop\ForkEiProp;
 use rocket\ei\EiException;
 use rocket\ei\EiPropPath;
 use n2n\util\type\TypeUtils;
@@ -103,13 +102,10 @@ class EiFrameFactory {
 	 */
 	public function createForked(EiPropPath $eiPropPath, EiForkLink $eiForkLink) {
 		$eiProp = $this->eiEngine->getEiMask()->getEiPropCollection()->getByPath($eiPropPath);
-		if (!($eiProp instanceof ForkEiProp)) {
-			throw new EiException('EiProp ' . $eiProp . ' does not implement ' . ForkEiProp::class);
-		}
-		
+
 		$parentEiFrame = $eiForkLink->getParent();
 		$eiu = new Eiu($parentEiFrame, $eiForkLink->getParentEiObject(), $eiPropPath);
-		$forkedEiFrame = $eiProp->createForkedEiFrame($eiu, $eiForkLink);
+		$forkedEiFrame = $eiProp->getNature()->createForkedEiFrame($eiu, $eiForkLink);
 		
 		if ($forkedEiFrame->hasEiExecution()) {
 			throw new EiException(TypeUtils::prettyMethName(get_class($eiProp), 'createForkedEiFrame')

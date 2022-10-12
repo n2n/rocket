@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\component\prop\ForkEiProp;
+
 
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\EiFrame;
@@ -51,7 +51,7 @@ use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
 
 abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements PropertyEiPropNature,
-		RelationEiProp, GuiFieldAssembler, ForkEiProp {
+		RelationEiProp, GuiFieldAssembler {
 	use DisplayableAdapter, PropertyAdapter;
 	
 	/**

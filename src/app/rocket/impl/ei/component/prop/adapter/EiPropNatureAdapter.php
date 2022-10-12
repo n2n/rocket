@@ -41,6 +41,9 @@ use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\SortProp;
 use rocket\ei\manage\critmod\sort\SortPropFork;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\frame\EiFrame;
+use n2n\util\ex\UnsupportedOperationException;
 
 
 abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements EiPropNature {
@@ -189,5 +192,14 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 
 	function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		return null;
+	}
+
+	/**
+	 * @param Eiu $eiu
+	 * @param EiForkLink $eiForkLink
+	 * @return EiFrame
+	 */
+	public function createForkedEiFrame(Eiu $eiu, EiForkLink $eiForkLink): EiFrame {
+		throw new UnsupportedOperationException(get_class($this) . ' can not be forked.');
 	}
 }
