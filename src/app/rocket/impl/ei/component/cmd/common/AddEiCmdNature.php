@@ -25,7 +25,6 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
-use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
@@ -126,7 +125,8 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 // 	}
 	
 	public function createGeneralGuiControls(Eiu $eiu): array {
-		if ($eiu->frame()->isExecutedBy($eiu->cmd())) {
+		if ($eiu->frame()->isExecutedBy($eiu->cmd())
+				|| $eiu->guiFrame()->isBulky()) {
 			return [];
 		}
 		
@@ -224,37 +224,4 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 		
 		return [$groupControl];
 	}
-	
-	public function createEiConfigurator(): EiConfigurator {
-		return new AddEiConfigurator($this);
-	}
 }
-	
-
-class AddEiConfigurator extends EiConfiguratorAdapter {
-	const OPTION_DUPLICATE_ALLOWED_KEY = 'duplicateAllowed';
-	
-	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
-		$eiComponent = $this->eiComponent;
-		IllegalStateException::assertTrue($eiComponent instanceof AddEiCommand);
-		
-		$magCollection = new MagCollection();
-		$magCollection->addMag(self::OPTION_DUPLICATE_ALLOWED_KEY, new BoolMag('Duplicating Allowed', 
-				$this->getDataSet()->get(
-						self::OPTION_DUPLICATE_ALLOWED_KEY, false, $eiComponent->isDuplicatingAllowed())));
-		return new MagForm($magCollection);
-	}
-	
-	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
-		$this->dataSet->set(self::OPTION_DUPLICATE_ALLOWED_KEY, $magDispatchable->getPropertyValue(self::OPTION_DUPLICATE_ALLOWED_KEY));
-	}
-	
-	public function setup(EiSetup $eiSetupProcess) {
-		$eiComponent = $this->eiComponent;
-		CastUtils::assertTrue($eiComponent instanceof AddEiCommand);
-		
-		$eiComponent->setDuplicatingAllowed($this->dataSet->optBool(self::OPTION_DUPLICATE_ALLOWED_KEY,
-				$eiComponent->isDuplicatingAllowed()));
-	}
-}
-
