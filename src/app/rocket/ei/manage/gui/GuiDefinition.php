@@ -499,12 +499,11 @@ class GuiDefinition {
 	 * @return GuiControl[]
 	 */
 	function createGeneralGuiControls(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame): array {
-		$eiu = new Eiu($eiFrame, $eiGuiFrame);
-		
 		$siControls = [];
-		foreach ($this->guiCommands as $id => $guiCommand) {
-			foreach ($this->extractGeneralGuiControls($guiCommand, $id, $eiu) as $generalGuiControl) {
-				$guiControlPath = new GuiControlPath([$id, $generalGuiControl->getId()]);
+		foreach ($this->guiCommands as $eiCmdPath => $guiCommand) {
+			$eiu = new Eiu($eiFrame, $eiGuiFrame, $this->eiCmdPaths[$eiCmdPath]);
+			foreach ($this->extractGeneralGuiControls($guiCommand, $eiCmdPath, $eiu) as $generalGuiControl) {
+				$guiControlPath = new GuiControlPath([$eiCmdPath, $generalGuiControl->getId()]);
 				$siControls[(string) $guiControlPath] = $generalGuiControl;
 			}
 		}

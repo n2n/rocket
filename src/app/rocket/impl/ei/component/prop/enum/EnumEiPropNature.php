@@ -33,7 +33,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
@@ -52,7 +52,7 @@ use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
 
-class EnumEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
+class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 			
 	private $enumConfig;
 	private $quickSearchConfig;

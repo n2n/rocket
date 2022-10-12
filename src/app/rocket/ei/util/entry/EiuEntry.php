@@ -683,19 +683,19 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param EiPropNature $eiProp
+	 * @param EiProp $eiProp
 	 * @param mixed $value
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function writeNativeValue(EiPropNature $eiProp, $value) {
-		$eiPropPath = EiPropPath::from($eiProp);
+	public function writeNativeValue(EiProp $eiProp, $value) {
+		$eiPropPath = $eiProp->getEiPropPath();
 		
 		if ($this->isDraftProp($eiProp)) {
 			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
 			return;
 		}
 		
-		$propertyAccessProxy = $eiProp->getPropertyAccessProxy();
+		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
 		if ($propertyAccessProxy !== null) {
 			$propertyAccessProxy->setValue($this->getForkObject($eiProp), $value);
 			return;

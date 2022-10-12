@@ -121,7 +121,7 @@ class ToOneEiField extends EiFieldAdapter {
 	}
 
 	public function isWritable(): bool {
-		return $this->eiu->object()->isNativeWritable($this->eiProp);
+		return $this->eiu->object()->isNativeWritable($this->eiu->prop()->getEiProp());
 	}
 	
 	protected function writeValue($value) {
@@ -136,7 +136,7 @@ class ToOneEiField extends EiFieldAdapter {
 			$nativeValue = $value->getEntityObj();
 		}
 		
-		$this->eiu->object()->writeNativeValue($this->eiProp, $nativeValue);		
+		$this->eiu->object()->writeNativeValue($this->eiu->prop()->getEiProp(), $nativeValue);
 	}
 	
 	public function isCopyable(): bool {

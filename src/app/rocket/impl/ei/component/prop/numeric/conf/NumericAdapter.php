@@ -19,47 +19,53 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\impl\ei\component\prop\numeric\conf;
 
-use rocket\ei\component\EiComponentNature;
+use n2n\impl\web\dispatch\mag\model\NumericMag;
+use n2n\persistence\meta\structure\Column;
+use n2n\persistence\meta\structure\IntegerColumn;
+use n2n\util\type\attrs\LenientAttributeReader;
+use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+use n2n\util\type\attrs\DataSet;
 use rocket\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\controller\Controller;
-use n2n\l10n\Lstr;
-use rocket\ei\manage\gui\GuiCommand;
-use rocket\si\control\SiNavPoint;
+use n2n\web\dispatch\mag\MagCollection;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 
-interface EiCmdNature extends EiComponentNature {
+trait NumericAdapter {
+	
+	protected ?float $minValue = null;
+	protected ?float $maxValue = null;
 	
 	/**
-	 * @return Lstr
+	 * @return int
 	 */
-	function getLabelLstr(): Lstr;
+	function getMinValue() {
+	    return $this->minValue;
+	}
+
+	/**
+	 * @param float|null $minValue
+	 * @return $this
+	 */
+	function setMinValue(?float $minValue) {
+	    $this->minValue = $minValue;
+	    return $this;
+	}
 	
 	/**
-	 * @return bool
+	 * @return float
 	 */
-	function isPrivileged(): bool;
-	
+	function getMaxValue() {
+	    return $this->maxValue;
+	}
+
 	/**
-	 * @param Eiu $eiu
-	 * @return Controller|null
+	 * @param float|null $maxValue
+	 * @return $this
 	 */
-	function lookupController(Eiu $eiu): ?Controller;
-	
-	/**
-	 * @param mixed $obj
-	 * @return boolean
-	 */
-	function equals($obj);
-
-	function buildGuiCommand(Eiu $eiu): ?GuiCommand;
-
-	function buildOverviewNavPoint(Eiu $eiu): ?SiNavPoint;
-
-	function buildEditNavPoint(Eiu $eiu): ?SiNavPoint;
-
-	function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint;
-
-	function buildAddNavPoint(Eiu $eiu): ?SiNavPoint;
+	function setMaxValue(?float $maxValue) {
+	    $this->maxValue = $maxValue;
+	    return $this;
+	}
 }

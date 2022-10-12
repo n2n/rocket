@@ -39,7 +39,7 @@ use n2n\web\http\UploadDefinition;
 use rocket\ei\EiPropPath;
 use rocket\ei\manage\entry\EiFieldValidationResult;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\impl\ei\component\prop\file\conf\FileConfig;
 use rocket\impl\ei\component\prop\file\conf\FileId;
 use rocket\impl\ei\component\prop\file\conf\FileVerificator;
@@ -56,7 +56,7 @@ use n2n\io\managed\img\ImageDimension;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
 
-class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
+class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	
 	/**
 	 * @var EiPropPath|null
@@ -81,7 +81,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter::createEiPropConfigurator()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter::createEiPropConfigurator()
 	 */
 	public function prepare() {
 		$this->getConfigurator()->addAdaption(

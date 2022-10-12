@@ -39,6 +39,11 @@ use rocket\impl\ei\component\prop\relation\ManyToOneSelectEiPropNature;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\TypeConstraints;
 use n2n\context\attribute\ThreadScoped;
+use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
+use n2n\persistence\orm\property\ClassSetup;
+use rocket\attribute\impl\Addon;
+use rocket\impl\ei\component\prop\meta\SiCrumbGroupFactory;
+use n2n\reflection\property\PropertyAccessProxy;
 
 #[ThreadScoped]
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
@@ -61,9 +66,9 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 			foreach ($this->compileTypeNames($eiPresetProp, $nullAllowed) as $typeName) {
 				$eiPropNature = null;
 				if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
-					$eiPropNature = $this->findGoodPresetMatch($eiPresetProp, $typeName, $nullAllowed);
+					$eiPropNature = $this->findGoodPresetMatch($eiPresetProp, $typeName, $nullAllowed, $eiTypeSetup);
 				} else {
-					$eiPropNature = $this->findSuitablePresetMatch($eiPresetProp, $typeName, $nullAllowed);
+					$eiPropNature = $this->findSuitablePresetMatch($eiPresetProp, $typeName, $nullAllowed, $eiTypeSetup);
 				}
 
 				if ($eiPropNature !== null) {
@@ -113,8 +118,8 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	private function provideCmdNatures(EiTypeSetup $eiTypeSetup) {
 		$attributeSet = $eiTypeSetup->getAttributeSet();
 
-		$readCmdsMode = $eiTypeSetup->getEiPresetMode()?->hasReadCmds();
-		$editCmdsMode = $eiTypeSetup->getEiPresetMode()?->hasEditCmds();
+		$readCmdsMode = $eiTypeSetup->getEiPresetMode()?->isReadCmdsMode();
+		$editCmdsMode = $eiTypeSetup->getEiPresetMode()?->isEditCmdsMode();
 
 		$eiCmdOverviewAttribute = $attributeSet->getClassAttribute(EiCmdOverview::class);
 		if ($eiCmdOverviewAttribute !== null) {
@@ -208,38 +213,60 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 		return null;
 	}
 
-	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
+	private function findSuitablePresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed,
+			EiTypeSetup $eiTypeSetup) {
 		switch ($typeName) {
 			case File::class:
-				$fileEiProp = new FileEiPropNature();
-				$fileEiProp->setMandatory(!$nullAllowed);
-				$fileEiProp->setReadOnly(!$eiPresetProp->isEditable());
-				$this->assignProperties($fileEiProp);
-				return $fileEiProp;
+				$nature = new FileEiPropNature();
+				$nature->setMandatory(!$nullAllowed);
+				$nature->setReadOnly(!$eiPresetProp->isEditable());
+				$this->assignProperties($nature);
+				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
+				return $nature;
 			case 'string':
-				$stringEiProp = new StringEiPropNature();
-				$stringEiProp->setMandatory(!$nullAllowed);
-				$stringEiProp->setReadOnly(!$eiPresetProp->isEditable());
-				$stringEiProp->setMaxlength(255);
-				$this->assignProperties($eiPresetProp, $stringEiProp);
-				return $stringEiProp;
+				$nature = new StringEiPropNature();
+				$nature->setMandatory(!$nullAllowed);
+				$nature->setReadOnly(!$eiPresetProp->isEditable());
+				$nature->setMaxlength(255);
+				$this->assignProperties($eiPresetProp, $nature);
+				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
+				return $nature;
 			case 'int':
-				$intEiProp = new IntegerEiPropNature();
-				$intEiProp->setMandatory(!$nullAllowed);
-				$intEiProp->setReadOnly(!$eiPresetProp->isEditable());
-				$this->assignProperties($eiPresetProp, $intEiProp);
-				return $intEiProp;
+				$nature = new IntegerEiPropNature();
+				$nature->setMandatory(!$nullAllowed);
+				$nature->setReadOnly(!$eiPresetProp->isEditable());
+				$this->assignProperties($eiPresetProp, $nature);
+				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
+				return $nature;
 			case 'bool':
-				$booleanEiProp = new BooleanEiPropNature();
-				$booleanEiProp->setMandatory(!$nullAllowed);
-				$booleanEiProp->setReadOnly(!$eiPresetProp->isEditable());
-				$this->assignProperties($eiPresetProp, $booleanEiProp);
-				return $booleanEiProp;
+				$nature = new BooleanEiPropNature();
+				$nature->setMandatory(!$nullAllowed);
+				$nature->setReadOnly(!$eiPresetProp->isEditable());
+				$this->assignProperties($eiPresetProp, $nature);
+				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
+				return $nature;
 		}
 	}
 
 	private function assignProperties(EiPresetProp $eiPresetProp, PropertyEiPropNature $nature) {
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
 		$nature->setPropertyAccessProxy($eiPresetProp->getPropertyAccessProxy());
+	}
+
+	private function assignAddons(EiTypeSetup $eiTypeSetup, PropertyAccessProxy $propertyAccessProxy, AddonEiPropNature $nature) {
+		$property = $propertyAccessProxy->getProperty();
+		if ($property == null) {
+			return;
+		}
+
+		$addonAttribute = $eiTypeSetup->getAttributeSet()->getPropertyAttribute($property->getName(), Addon::class);
+		if ($addonAttribute === null) {
+			return;
+		}
+
+		$addon = $addonAttribute->getInstance();
+
+		$nature->setPrefixSiCrumbGroups(SiCrumbGroupFactory::parseCrumbGroups($addon->prefixes));
+		$nature->setSuffixSiCrumbGroups(SiCrumbGroupFactory::parseCrumbGroups($addon->suffixes));
 	}
 }

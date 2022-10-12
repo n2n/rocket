@@ -37,7 +37,7 @@ use n2n\web\http\controller\Controller;
 use rocket\ei\component\command\GenericDetailEiCommand;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
-class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand, GenericDetailEiCommand {
+class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'detail';
 	const CONTROL_DETAIL_KEY = 'detail'; 
 	const CONTROL_PREVIEW_KEY = 'preview';

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\cke;
 
-use rocket\impl\ei\component\prop\string\AlphanumericEiPropNatureNature;
+use rocket\impl\ei\component\prop\string\AlphanumericEiPropNature;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\ViewMode;
@@ -35,7 +35,7 @@ use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
 use rocket\ei\util\factory\EifGuiField;
 
-class CkeEiPropNature extends AlphanumericEiPropNatureNature {
+class CkeEiPropNature extends AlphanumericEiPropNature {
 	/**
 	 * @var CkeEditorConfig
 	 */

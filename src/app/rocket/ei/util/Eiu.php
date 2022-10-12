@@ -11,6 +11,7 @@ use n2n\web\ui\ViewFactory;
 use n2n\util\type\CastUtils;
 use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\ei\util\spec\EiuProp;
+use rocket\ei\util\spec\EiuCmd;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -94,7 +95,7 @@ class Eiu implements Lookupable {
 
 	/**
 	 * @param bool $required
-	 * @return EiuProp
+	 * @return EiuCmd
 	 */
 	public function cmd(bool $required = true) {
 		if ($this->eiuCmd !== null) {

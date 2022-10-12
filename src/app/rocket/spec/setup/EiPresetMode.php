@@ -56,30 +56,30 @@ enum EiPresetMode {
 	 */
 	case READ_PROPS_READ_EDIT_COMMANDS;
 
-	function hasReadProps(): bool {
+	function isReadPropsMode(): bool {
 		return match ($this) {
 			self::READ, self::READ_PROPS, self::READ_PROPS_READ_EDIT_COMMANDS => true,
 			default => false,
 		};
 	}
 
-	function hasEditProps(): bool {
+	function isEditPropsMode(): bool {
 		return match ($this) {
 			self::EDIT, self::EDIT_PROPS => true,
 			default => false,
 		};
 	}
 
-	function hasReadCmds(): bool {
+	function isReadCmdsMode(): bool {
 		return match ($this) {
-			self::READ, self::READ_CMDS, self::READ_EDIT_CMDS  => true,
+			self::READ, self::READ_CMDS, self::READ_EDIT_CMDS, self::READ_PROPS_READ_EDIT_COMMANDS  => true,
 			default => false
 		};
 	}
 
-	function hasEditCmds(): bool {
+	function isEditCmdsMode(): bool {
 		return match ($this) {
-			self::EDIT, self::READ_EDIT_CMDS => true,
+			self::EDIT, self::READ_EDIT_CMDS, self::READ_PROPS_READ_EDIT_COMMANDS => true,
 			default => false,
 		};
 	}

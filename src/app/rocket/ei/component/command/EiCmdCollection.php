@@ -42,7 +42,7 @@ class EiCmdCollection extends EiComponentCollection {
 
 	/**
 	 * @param string $id
-	 * @return EiCmdNature
+	 * @return EiCmd
 	 * @throws UnknownEiComponentException;
 	 */
 	public function getByPath(EiCmdPath $eiCmdPath) {
@@ -96,12 +96,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 */
 	public function determineGenericOverview(bool $required) {
 		foreach ($this as $eiCmd) {
-			$eiCmdNature = $eiCmd->getNature();
-			if (!($eiCmdNature instanceof GenericOverviewEiCmd)) {
-				continue;
-			}
-			
-			$navPoint = $eiCmdNature->buildOverviewNavPoint(new Eiu($this->eiMask, $eiCmd));
+			$navPoint = $eiCmd->getNature()->buildOverviewNavPoint(new Eiu($this->eiMask, $eiCmd));
 			if ($navPoint == null) {
 				continue;
 			}
@@ -114,8 +109,7 @@ class EiCmdCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiMask . ' provides no compatible' 
-				. GenericOverviewEiCmd::class . '.');
+		throw new UnknownEiComponentException($this->eiMask . ' provides no generic overview EiCommand.');
 	}
 	
 	/**
@@ -133,11 +127,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 */
 	public function determineGenericDetail(EiObject $eiObject, bool $required = false) {
 		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
-			if (!($eiCmd instanceof GenericDetailEiCommand)) {
-				continue;
-			}
-			
-			$navPoint = $eiCmd->buildDetailNavPoint(new Eiu($this->eiMask, $eiObject, $eiCmd));
+			$navPoint = $eiCmd->getNature()->buildDetailNavPoint(new Eiu($this->eiMask, $eiObject, $eiCmd));
 			if ($navPoint == null) {
 				continue;
 			}
@@ -150,8 +140,8 @@ class EiCmdCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no ' 
-				. GenericDetailEiCommand::class . ' for ' . $eiObject);
+		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel()
+				. ' provides no generic detail EiCommand for ' . $eiObject);
 	}
 	
 	/**
@@ -169,11 +159,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 */
 	public function determineGenericEdit(EiObject $eiObject, bool $required = false) {
 		foreach ($this->eiMask->getEiCommandCollection() as $eiCmd) {
-			if (!($eiCmd instanceof GenericEditEiCommand)) {
-				continue;
-			}
-			
-			$navPoint = $eiCmd->buildEditNavPoint(new Eiu($this->eiMask, $eiObject, $eiCmd));
+			$navPoint = $eiCmd->getNature()->buildEditNavPoint(new Eiu($this->eiMask, $eiObject, $eiCmd));
 			if ($navPoint == null) {
 				continue;
 			}
@@ -186,8 +172,8 @@ class EiCmdCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel() . ' provides no '
-				. GenericEditEiCommand::class . ' for ' . $eiObject);
+		throw new UnknownEiComponentException($this->eiMask->getEiEngineModel()
+				. ' provides no generic edit EiCommand for ' . $eiObject);
 	}
 	
 		/**
@@ -204,11 +190,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 */
 	public function determineGenericAdd(bool $required) {
 		foreach ($this as $eiCmd) {
-			if (!($eiCmd instanceof GenericAddEiCommand)) {
-				continue;
-			}
-			
-			$navPoint = $eiCmd->buildAddNavPoint(new Eiu($this->eiMask, $eiCmd));
+			$navPoint = $eiCmd->getNature()->buildAddNavPoint(new Eiu($this->eiMask, $eiCmd));
 			if ($navPoint == null) {
 				continue;
 			}
@@ -221,8 +203,7 @@ class EiCmdCollection extends EiComponentCollection {
 		
 		if (!$required) return null;
 		
-		throw new UnknownEiComponentException($this->eiMask . ' provides no compatible' 
-				. GenericAddEiCommand::class . '.');
+		throw new UnknownEiComponentException($this->eiMask . ' provides no generic add EiCommand.');
 	}
 }
 

@@ -41,6 +41,6 @@ class EiPreset {
 	}
 
 	function containsEditProp(string $prop): bool {
-		return in_array($prop, $this->readProps);
+		return in_array($prop, $this->editProps);
 	}
 }

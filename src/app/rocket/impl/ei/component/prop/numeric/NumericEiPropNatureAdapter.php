@@ -27,7 +27,7 @@ use rocket\ei\util\filter\prop\StringFilterProp;
 
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
@@ -39,7 +39,7 @@ use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\ei\manage\critmod\filter\FilterProp;
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\impl\ei\component\prop\numeric\conf\NumericConfig;
+use rocket\impl\ei\component\prop\numeric\conf\NumericAdapter;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
@@ -47,27 +47,19 @@ use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\impl\ei\component\prop\meta\AddonAdapter;
+use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 
-abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
-	use NumericConfig;
+abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureAdapter
+		implements AddonEiPropNature {
+	use NumericAdapter, AddonAdapter;
 
-	/**
-	 * @var AddonConfig
-	 */
-	private $addonConfig;
 	private $quickSearchConfig;
 		    
     function __construct() {
-        $this->addonConfig = new AddonConfig();
         $this->quickSearchConfig = new QuickSearchConfig();
     }
 
-    /**
-     * @return \rocket\impl\ei\component\prop\meta\config\AddonConfig
-     */
-    protected function getAddonConfig() {
-    	return $this->addonConfig;
-    }
 //
 //	function setEntityProperty(?EntityProperty $entityProperty) {
 //		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
@@ -80,12 +72,6 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureN
 //				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 //		$this->propertyAccessProxy = $propertyAccessProxy;
 //	}
-	
-	function prepare() {
-		$this->getConfigurator()->addAdaption($this->numericConfig)
-				->addAdaption($this->addonConfig)
-				->addAdaption($this->quickSearchConfig);
-	}
 	
 	/**
 	 * {@inheritDoc}

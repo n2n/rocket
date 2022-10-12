@@ -19,18 +19,38 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\component\command;
+namespace rocket\impl\ei\component\prop\meta;
 
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\Eiu;
-use rocket\si\control\SiNavPoint;
+use rocket\si\content\impl\meta\SiCrumbGroup;
+use n2n\util\type\ArgUtils;
 
-interface GenericOverviewEiCmd extends EiCmdNature {
-	
+trait AddonAdapter {
+	private array $prefixSiCrumbGroups = [];
+	private array $suffixSiCrumbGroups = [];
+
 	/**
-	 * @param Eiu $eiu
-	 * @return \n2n\util\uri\Url
-	 * @throws IllegalStateException
+	 * @return SiCrumbGroup[]
 	 */
-	public function buildOverviewNavPoint(Eiu $eiu): ?SiNavPoint;
+	function getPrefixSiCrumbGroups(): array {
+		return $this->prefixSiCrumbGroups;
+	}
+
+	function setPrefixSiCrumbGroups(array $prefixSiCrumbGroups): static {
+		ArgUtils::valArray($prefixSiCrumbGroups, SiCrumbGroup::class);
+		$this->prefixSiCrumbGroups = $prefixSiCrumbGroups;
+		return $this;
+	}
+
+	/**
+	 * @return SiCrumbGroup[]
+	 */
+	function getSuffixSiCrumbGroups(): array {
+		return $this->suffixSiCrumbGroups;
+	}
+
+	function setSuffixSiCrumbGroups(array $suffixSiCrumbGroups): static {
+		ArgUtils::valArray($suffixSiCrumbGroups, SiCrumbGroup::class);
+		$this->suffixSiCrumbGroups = $suffixSiCrumbGroups;
+		return $this;
+	}
 }

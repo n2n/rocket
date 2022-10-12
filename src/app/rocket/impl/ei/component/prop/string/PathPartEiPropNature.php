@@ -32,7 +32,7 @@ use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
 
-class PathPartEiPropNature extends AlphanumericEiPropNatureNature {
+class PathPartEiPropNature extends AlphanumericEiPropNature {
 	function __construct() {
 		parent::__construct();
 	}

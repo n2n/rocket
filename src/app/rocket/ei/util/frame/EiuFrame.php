@@ -77,6 +77,8 @@ use rocket\ei\util\control\EiuControlResponse;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\manage\api\ApiController;
 use rocket\ei\manage\api\ApiControlCallId;
+use rocket\ei\util\spec\EiuCmd;
+use rocket\ei\component\command\EiCmd;
 
 class EiuFrame {
 	private $eiFrame;
@@ -669,15 +671,15 @@ class EiuFrame {
 				$eiuEntry->object()->getEiObject(), $eiuEntry->getEiEntry(false));
 	}
 	
-	public function isExecutedBy($eiCmdPath) {
-		return EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd())
+	public function isExecutedBy(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath) {
+		return $this->eiFrame->getEiExecution()->getEiCmd()->getEiCmdPath()
 				->equals(EiCmdPath::create($eiCmdPath));
 	}
 	
-	public function isExecutedByType($eiCmdType) {
-// 		ArgUtils::valType($eiCmdType, array('string', 'object'));
-		return $this->eiFrame->getEiExecution()->getEiCmd() instanceof $eiCmdType;
-	}
+//	public function isExecutedByType($eiCmdType) {
+//// 		ArgUtils::valType($eiCmdType, array('string', 'object'));
+//		return $this->eiFrame->getEiExecution()->getEiCmd()->getNature() instanceof $eiCmdType;
+//	}
 	
 	/**
 	 * @param string|EiCmdNature|EiCmdPath $eiCmdPath

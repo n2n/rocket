@@ -39,7 +39,7 @@ use n2n\util\type\CastUtils;
 use rocket\si\control\SiNavPoint;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
-class OverviewEiCmdNature extends EiCmdNatureAdapter implements GenericOverviewEiCmd {
+class OverviewEiCmdNature extends EiCmdNatureAdapter {
 	const ID_BASE = 'overview';
 	
 	private $pageSize = 30;

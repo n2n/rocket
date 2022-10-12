@@ -31,25 +31,9 @@ use n2n\web\http\controller\Controller;
 use rocket\ei\manage\gui\GuiCommand;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
+use rocket\si\control\SiNavPoint;
 
 abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, GuiCommand {
-	private $wrapper;
-	
-	public function setWrapper(EiCmd $wrapper) {
-		$this->wrapper = $wrapper;
-	}
-	
-	public function getWrapper(): EiCmd {
-		if ($this->wrapper !== null) {
-			return $this->wrapper;
-		}
-		
-		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
-	}
-	
-	public function getId() {
-		return (string) $this->wrapper->getEiCmdPath();
-	}
 	
 	public function getLabelLstr(): Lstr {
 		return StringUtils::pretty($this->getIdBase());
@@ -83,10 +67,25 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 		return $obj instanceof EiCmdNature && parent::equals($obj);
 	}
 
+	function buildOverviewNavPoint(Eiu $eiu): ?SiNavPoint {
+		return null;
+	}
+
+	function buildEditNavPoint(Eiu $eiu): ?SiNavPoint {
+		return null;
+	}
+
+	function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint {
+		return null;
+	}
+
+	function buildAddNavPoint(Eiu $eiu): ?SiNavPoint {
+		return null;
+	}
+
 	public function buildGuiCommand(Eiu $eiu): ?GuiCommand {
 		return $this;
 	}
-	
 	
 	/**
 	 * {@inheritDoc}

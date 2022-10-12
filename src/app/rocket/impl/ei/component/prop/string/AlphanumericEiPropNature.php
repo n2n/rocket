@@ -25,7 +25,7 @@ use rocket\ei\util\filter\prop\StringFilterProp;
  
 
 use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -46,8 +46,11 @@ use rocket\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\meta\AddonAdapter;
+use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 
-abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
+abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
+	use AddonAdapter;
 
 	/**
 	 * @var int|null
@@ -91,14 +94,12 @@ abstract class AlphanumericEiPropNatureNature extends DraftablePropertyEiPropNat
 	}
 	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$addonConfig = $this->getAddonConfig();
-		
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setMinlength($this->getAlphanumericConfig()->getMinlength())
-				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
-				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
-				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups());
+				->setMinlength($this->getMinlength())
+				->setMaxlength($this->getMaxlength())
+				->setPrefixAddons($this->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getSuffixSiCrumbGroups());
 		
 		return $eiu->factory()->newGuiField($siField)
 				->setSaver(function () use ($siField, $eiu) {

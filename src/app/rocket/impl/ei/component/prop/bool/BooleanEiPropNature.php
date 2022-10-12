@@ -38,7 +38,7 @@ use rocket\ei\manage\entry\EiField;
 
 use rocket\ei\util\Eiu;
 use rocket\ei\util\filter\prop\BoolFilterProp;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\si\content\impl\SiFields;
 use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\bool\conf\BooleanConfig;
@@ -46,7 +46,7 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\control\SiIconType;
 
-class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter implements SecurityFilterEiProp {
+class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements SecurityFilterEiProp {
 	private $booleanConfig;
 	
 	function __construct() {
@@ -55,7 +55,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdap
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter::createEiPropConfigurator()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter::createEiPropConfigurator()
 	 */
 	protected function prepare() {
 		$this->getEditConfig()->setMandatoryChoosable(false)
@@ -95,7 +95,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdap
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter::read()
+	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter::read()
 	 */
 	function readEiFieldValue(Eiu $eiu) {
 		return (bool) parent::readEiFieldValue($eiu);

@@ -72,7 +72,7 @@ class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand 
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuEntry = $eiu->entry();
 		
-		if ($eiuEntry->isNew() || $eiu->frame()->isExecutedBy($this)) {
+		if ($eiuEntry->isNew() || $eiu->frame()->isExecutedBy($eiu->cmd())) {
 			return array();
 		}
 		

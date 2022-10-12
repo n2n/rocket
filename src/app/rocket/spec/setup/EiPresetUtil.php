@@ -31,6 +31,7 @@ use n2n\util\type\TypeUtils;
 use n2n\util\type\ArgUtils;
 use n2n\reflection\attribute\Attribute;
 use Throwable;
+use n2n\util\ex\IllegalStateException;
 
 class EiPresetUtil {
 	private EiPreset $eiPreset;
@@ -48,7 +49,7 @@ class EiPresetUtil {
 
 		$eiPresetProps = [];
 
-		if ($this->eiPreset->mode->hasReadProps()) {
+		if ($this->eiPreset->mode->isReadPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
 				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
 					continue;
@@ -58,7 +59,7 @@ class EiPresetUtil {
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
 						$this->eiPreset->containsEditProp($propertyName));
 			}
-		} elseif ($this->eiPreset->mode->hasEditProps()) {
+		} elseif ($this->eiPreset->mode->isEditPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
 				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
 					continue;
@@ -79,7 +80,7 @@ class EiPresetUtil {
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp(
 						$propertiesAnalyzer->analyzeProperty($propertyName, false), false);
 			} catch (ReflectionException $e) {
-				throw $this->createEiPresetAttributeError( $propertyName, $e);
+				throw $this->createEiPresetAttributeError($propertyName, $e);
 			}
 		}
 
@@ -90,9 +91,11 @@ class EiPresetUtil {
 			}
 
 			if (isset($eiPresetProps[$propertyName])) {
-				if (!$eiPresetProps[$propertyName]->isEditable()) {
+				if ($eiPresetProps[$propertyName]->isEditable()) {
 					continue;
 				}
+
+				throw new IllegalStateException($propertyName);
 			}
 
 			try {

@@ -66,7 +66,7 @@ class TemplateModel implements Lookupable {
 		$accessibleLaunchPadIds = $this->getAccesableLaunchPadIds();
 		$this->navArray = array();
 		
-		foreach ($rocket->getLayout()->getMenuGroups() as $menuGroup) {
+		foreach ($rocket->getSpec()->getMenuGroups() as $menuGroup) {
 			$launchPads = $menuGroup->getLaunchPads();
 			
 			foreach ($launchPads as $key => $launchPad) {

@@ -20,6 +20,23 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
 		$this->assertCount(5, $eiProps);
+
+		$this->assertTrue($eiProps['id']->getNature()->isReadOnly());
+		$this->assertTrue($eiProps['id']->getNature()->isMandatory());
+
+		$this->assertTrue($eiProps['stringPriTest']->getNature()->isReadOnly());
+		$this->assertTrue($eiProps['stringPriTest']->getNature()->isMandatory());
+
+		$this->assertTrue($eiProps['stringNullPriTest']->getNature()->isReadOnly());
+		$this->assertFalse($eiProps['stringNullPriTest']->getNature()->isMandatory());
+
+		$this->assertFalse($eiProps['stringEditablePriTest']->getNature()->isReadOnly());
+		$this->assertTrue($eiProps['stringEditablePriTest']->getNature()->isMandatory());
+
+		$this->assertTrue($eiProps['stringGetTest']->getNature()->isReadOnly());
+		$this->assertTrue($eiProps['stringGetTest']->getNature()->isMandatory());
+
+
 	}
 
 	function testMod() {

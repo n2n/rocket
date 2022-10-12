@@ -36,7 +36,7 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\si\control\SiNavPoint;
 
-class UrlEiPropNature extends AlphanumericEiPropNatureNature {
+class UrlEiPropNature extends AlphanumericEiPropNature {
 	
 	private $urlConfig;
 	

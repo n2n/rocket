@@ -27,13 +27,13 @@ use n2n\util\crypt\hash\algorithm\Sha256Algorithm;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\string\conf\PasswordConfig;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\AlphanumericConfig;
 use n2n\config\InvalidConfigurationException;
 
-class PasswordEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
+class PasswordEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	private $passwordConfig;
 	private $alphanumericConfig;
 

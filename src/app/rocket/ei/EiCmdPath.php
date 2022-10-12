@@ -25,6 +25,7 @@ use rocket\ei\component\command\EiCmdNature;
 use n2n\util\type\ArgUtils;
 use rocket\ei\component\command\EiCmd;
 use rocket\ei\util\spec\EiuCmd;
+use n2n\util\ex\IllegalStateException;
 
 class EiCmdPath extends IdPath {
 	
@@ -36,7 +37,7 @@ class EiCmdPath extends IdPath {
 		return $eiCmd->getEiCmdPath();
 	}
 	
-	public static function create($expression): EiCmdPath {
+	public static function create(EiCmdPath|EiCmd|EiuCmd|string $expression): EiCmdPath {
 		if ($expression instanceof EiCmdPath) {
 			return $expression;
 		}
@@ -53,6 +54,6 @@ class EiCmdPath extends IdPath {
 			return new EiCmdPath($expression);
 		}
 	
-		ArgUtils::valType($expression, ['string', EiCmd::class, EiCmdPath::class, EiuCmd::class], false, 'expression');
+		throw new IllegalStateException();
 	}
 }

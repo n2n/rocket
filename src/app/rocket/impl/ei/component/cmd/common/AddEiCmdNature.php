@@ -126,7 +126,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 // 	}
 	
 	public function createGeneralGuiControls(Eiu $eiu): array {
-		if ($eiu->frame()->isExecutedBy($this)) {
+		if ($eiu->frame()->isExecutedBy($eiu->cmd())) {
 			return [];
 		}
 		
@@ -141,7 +141,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 		$eiuControlFactory = $eiu->factory()->controls();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
-		$nestedSet = null !== $this->getWrapper()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
+		$nestedSet = null !== $eiu->cmd()->getEiCmd()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
 		$siButton = SiButton::success($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'), SiIconType::ICON_PLUS_CIRCLE)
@@ -181,7 +181,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuEntry = $eiu->entry();
 		
-		if ($eiuEntry->isNew() || $eiu->frame()->isExecutedBy($this)) {
+		if ($eiuEntry->isNew() || $eiu->frame()->isExecutedBy($eiu->cmd())) {
 			return array();
 		}
 		

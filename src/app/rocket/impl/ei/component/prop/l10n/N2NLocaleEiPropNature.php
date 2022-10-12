@@ -46,11 +46,11 @@ use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 
-class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureNatureAdapterAdapter {
+class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	private $definedN2nLocales;
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

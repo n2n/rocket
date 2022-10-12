@@ -85,15 +85,15 @@ class EiuObject {
 		return $this->eiObject->getEiEntityObj()->getEiType();
 	}
 	
-	/**
-	 * @param EiPropNature $eiProp
-	 * @return boolean
-	 */
-	public function isDraftProp(EiProp $eiProp) {
-		return $this->eiObject->isDraft()
-				&& $eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getDraftDefinition()
-						->containsEiPropPath(EiPropPath::from($eiProp));
-	}
+//	/**
+//	 * @param EiProp $eiProp
+//	 * @return boolean
+//	 */
+//	public function isDraftProp(EiProp $eiProp) {
+//		return $this->eiObject->isDraft()
+//				&& $eiProp->getWrapper()->getEiPropCollection()->getEiMask()->getEiEngine()->getDraftDefinition()
+//						->containsEiPropPath(EiPropPath::from($eiProp));
+//	}
 	
 	/**
 	 * @param EiPropNature $eiProp
@@ -110,9 +110,9 @@ class EiuObject {
 	 *@throws EiFieldOperationFailedException
 	 */
 	public function readNativValue(EiProp $eiProp) {
-		if ($this->isDraftProp($eiProp)) {
-			return $this->eiObject->getDraft()->getDraftValueMap()->getValue($eiPropPath);
-		}
+//		if ($this->isDraftProp($eiProp)) {
+//			return $this->eiObject->getDraft()->getDraftValueMap()->getValue($eiPropPath);
+//		}
 		
 		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
 		if ($propertyAccessProxy !== null) {
@@ -123,43 +123,43 @@ class EiuObject {
 	}
 	
 	/**
-	 * @param EiPropNature $eiProp
+	 * @param EiProp $eiProp
 	 * @return boolean
 	 */
-	public function isNativeWritable(EiPropNature $eiProp) {
-		if ($this->isDraftProp($eiProp)) {
-			return true;
-		}
+	public function isNativeWritable(EiProp $eiProp) {
+//		if ($this->isDraftProp($eiProp)) {
+//			return true;
+//		}
 		
-		return $this->getPropertyAccessProxy($eiProp)->isWritable();
+		return $this->getPropertyAccessProxy($eiProp->getNature())->isWritable();
 	}
 	
 	/**
-	 * @param EiPropNature $eiProp
+	 * @param EiPropNature $eiPropNature
 	 * @return \n2n\reflection\property\AccessProxy
 	 *@throws EiFieldOperationFailedException
 	 */
-	private function getPropertyAccessProxy(EiPropNature $eiProp) {
-		$propertyAccessProxy = $eiProp->getPropertyAccessProxy();
+	private function getPropertyAccessProxy(EiPropNature $eiPropNature) {
+		$propertyAccessProxy = $eiPropNature->getPropertyAccessProxy();
 		if ($propertyAccessProxy !== null) {
 			return $propertyAccessProxy;
 		}
 		
-		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiProp);
+		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiPropNature);
 	}
 	
 	/**
-	 * @param EiPropNature $eiProp
+	 * @param EiProp $eiProp
 	 * @param mixed $value
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function writeNativeValue(EiPropNature $eiProp, $value) {
-		if ($this->isDraftProp($eiProp)) {
-			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
-			return;
-		}
-		
-		$this->getPropertyAccessProxy($eiProp)->setValue($this->getForkObject($eiProp), $value);
+	public function writeNativeValue(EiProp $eiProp, $value) {
+//		if ($this->isDraftProp($eiProp)) {
+//			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
+//			return;
+//		}
+
+		$this->getPropertyAccessProxy($eiProp->getNature())->setValue($this->getForkObject($eiProp), $value);
 	}
 	
 	/**

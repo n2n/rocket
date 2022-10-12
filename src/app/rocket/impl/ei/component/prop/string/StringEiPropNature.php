@@ -28,7 +28,7 @@ use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 
-class StringEiPropNature extends AlphanumericEiPropNatureNature {
+class StringEiPropNature extends AlphanumericEiPropNature {
 
 	private bool $multiline = false;
 
@@ -54,15 +54,13 @@ class StringEiPropNature extends AlphanumericEiPropNatureNature {
 	}
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$addonConfig = $this->getAddonConfig();
-		
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
 				->setMinlength($this->getMinlength())
 				->setMaxlength($this->getMaxlength())
 				->setMultiline($this->isMultiline())
-				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
-				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups())
+				->setPrefixAddons($this->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getSuffixSiCrumbGroups())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)

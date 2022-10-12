@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureNatureAdapterAdapter;
+use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
@@ -132,7 +132,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 	
 	public function isDraftable() {
 		return false;
-		return $this->relationEiProp->getDataSet()->get(DraftablePropertyEiPropNatureNatureAdapterAdapter::ATTR_DRAFTABLE_KEY,
+		return $this->relationEiProp->getDataSet()->get(DraftablePropertyEiPropNatureAdapter::ATTR_DRAFTABLE_KEY,
 				self::OPTION_DRAFTABLE_DEFAULT);
 	}
 	

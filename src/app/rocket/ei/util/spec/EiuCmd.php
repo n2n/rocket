@@ -27,7 +27,8 @@ class EiuCmd {
 	 * @return EiCmd
 	 */
 	function getEiCmd() {
-		return $this->eiCmd ?? $this->eiCmd = $this->eiuMask->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
+		return $this->eiCmd
+				?? $this->eiCmd = $this->eiuMask->getEiMask()->getEiCmdCollection()->getByPath($this->eiCmdPath);
 	}
 	
 	/**
