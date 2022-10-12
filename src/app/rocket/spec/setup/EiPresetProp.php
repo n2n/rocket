@@ -27,7 +27,8 @@ use n2n\reflection\property\PropertyAccessProxy;
 
 class EiPresetProp {
 	function __construct(private readonly string $name, private readonly ?PropertyAccessProxy $propertyAccessProxy,
-			private readonly ?EntityProperty $entityProperty, private readonly bool $editable) {
+			private readonly ?EntityProperty $entityProperty, private readonly bool $editable,
+			private readonly string $label) {
 	}
 
 	/**
@@ -56,5 +57,9 @@ class EiPresetProp {
 	 */
 	function isEditable() {
 		return $this->editable;
+	}
+
+	function getLabel() {
+		return $this->label;
 	}
 }

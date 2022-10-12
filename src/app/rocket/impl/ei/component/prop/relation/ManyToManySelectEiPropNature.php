@@ -40,14 +40,10 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
 class ManyToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	
 	public function __construct() {
-		parent::__construct();
-		
-		$this->setup(new DisplayConfig(ViewMode::all()),
-				new RelationModel($this, true, true, RelationModel::MODE_SELECT,
-						(new EditAdapter())->setMandatoryChoosable(false)));
+		$this->relationModel = new RelationModel($this, true, true, RelationModel::MODE_SELECT);
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	public function setEntityProperty(?EntityProperty $entityProperty): void {
 		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
 				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
 	

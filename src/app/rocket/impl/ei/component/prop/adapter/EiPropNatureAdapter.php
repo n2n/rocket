@@ -59,41 +59,6 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::setWrapper()
-	 */
-	public function setWrapper(EiProp $wrapper) {
-		$this->wrapper = $wrapper;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::getWrapper()
-	 */
-	public function getWrapper(): EiProp {
-		if ($this->wrapper !== null) {
-			return $this->wrapper;
-		}
-		
-		throw new IllegalStateException(get_class($this) . ' is not assigned to a Wrapper.');
-	}
-	
-	/**
-	 * @return \rocket\ei\mask\EiMask
-	 */
-	function getEiMask() {
-		return $this->getWrapper()->getEiPropCollection()->getEiMask();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\EiComponentNatureAdapter::getIdBase()
-	 */
-	public function getIdBase(): ?string {
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {
@@ -115,7 +80,15 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	 * @see \rocket\ei\component\prop\EiPropNature::getLabelLstr()
 	 */
 	public function getLabelLstr(): Lstr {
-		return Lstr::create('Propname');
+		return Lstr::create($this->getLabel());
+	}
+
+	function getLabel() {
+		return $this->label ?? $this->label = StringUtils::pretty((new \ReflectionClass())->getShortName());
+	}
+
+	function setLabel(string $label) {
+		$this->label = $label;
 	}
 	
 	/**

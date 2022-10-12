@@ -10,7 +10,7 @@ use rocket\attribute\impl\EiSetup;
 use rocket\ei\util\Eiu;
 
 #[EiType]
-#[EiPreset(EiPresetMode::READ, readProps: ['stringGetTest'], editProps: ['stringEditablePriTest'])]
+#[EiPreset(EiPresetMode::READ, readProps: ['stringGetTest'], editProps: ['stringEditablePriTest' => 'Super duper label'])]
 class PrimitiveReadPresetTestObj {
 
 	public int $id;

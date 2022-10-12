@@ -32,6 +32,8 @@ use n2n\util\type\ArgUtils;
 use n2n\reflection\attribute\Attribute;
 use Throwable;
 use n2n\util\ex\IllegalStateException;
+use n2n\util\StringUtils;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class EiPresetUtil {
 	private EiPreset $eiPreset;
@@ -57,7 +59,8 @@ class EiPresetUtil {
 
 				$propertyName = $accessProxy->getPropertyName();
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
-						$this->eiPreset->containsEditProp($propertyName));
+						$this->eiPreset->containsEditProp($propertyName),
+						$this->eiPreset->getPropLabel($propertyName));
 			}
 		} elseif ($this->eiPreset->mode->isEditPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
@@ -67,24 +70,25 @@ class EiPresetUtil {
 
 				$propertyName = $accessProxy->getPropertyName();
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
-						!$this->eiPreset->containsReadProp($propertyName));
+						!$this->eiPreset->containsReadProp($propertyName),
+						$this->eiPreset->getPropLabel($propertyName));
 			}
 		}
 
-		foreach ($this->eiPreset->readProps as $propertyName) {
+		foreach ($this->eiPreset->readProps as $propertyName => $label) {
 			if (isset($eiPresetProps[$propertyName])) {
 				continue;
 			}
 
 			try {
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp(
-						$propertiesAnalyzer->analyzeProperty($propertyName, false), false);
+						$propertiesAnalyzer->analyzeProperty($propertyName, false), false, $label);
 			} catch (ReflectionException $e) {
 				throw $this->createEiPresetAttributeError($propertyName, $e);
 			}
 		}
 
-		foreach ($this->eiPreset->editProps as $propertyName) {
+		foreach ($this->eiPreset->editProps as $propertyName => $label) {
 			if ($this->eiPreset->containsReadProp($propertyName)) {
 				throw $this->createEiPresetAttributeError($propertyName,
 						message: 'Already defined in readProps.');
@@ -100,7 +104,7 @@ class EiPresetUtil {
 
 			try {
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp(
-						$propertiesAnalyzer->analyzeProperty($propertyName), true);
+						$propertiesAnalyzer->analyzeProperty($propertyName), true, $label);
 			} catch (ReflectionException $e) {
 				throw $this->createEiPresetAttributeError($this->eiPreset, $propertyName, $e);
 			}
@@ -110,18 +114,19 @@ class EiPresetUtil {
 	}
 
 	/**
-	 * @param AccessProxy $accessProxy
+	 * @param PropertyAccessProxy $propertyAccessProxy
 	 * @param bool $editable
 	 * @return EiPresetProp
 	 */
-	private function createEiPresetProp(AccessProxy $accessProxy, bool $editable) {
-		$propertyName = $accessProxy->getPropertyName();
+	private function createEiPresetProp(PropertyAccessProxy $propertyAccessProxy, bool $editable, ?string $label) {
+		$propertyName = $propertyAccessProxy->getPropertyName();
 		$entityProperty = null;
 		if ($this->entityModel->containsEntityPropertyName($propertyName)) {
 			$entityProperty = $this->entityModel->getLevelEntityPropertyByName($propertyName);
 		}
 
-		return new EiPresetProp($propertyName, $accessProxy, $entityProperty, $editable);
+		return new EiPresetProp($propertyName, $propertyAccessProxy, $entityProperty, $editable,
+				$label ?? StringUtils::pretty($propertyName));
 	}
 
 	/**

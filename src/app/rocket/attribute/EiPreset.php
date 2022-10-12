@@ -23,24 +23,53 @@ namespace rocket\attribute;
 
 use rocket\spec\setup\EiPresetMode;
 use n2n\util\type\ArgUtils;
+use http\Exception\InvalidArgumentException;
+use n2n\util\ex\IllegalStateException;
 
 /**
  * Used together with {@link EiType} attribute to define how the EiType should be initialized.
  */
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class EiPreset {
+	public readonly	array $readProps;
+	public readonly	array $editProps;
 
-	function __construct(public readonly ?EiPresetMode $mode = null, public readonly array $readProps = [],
-			public readonly array $editProps = []) {
-		ArgUtils::valArray($this->readProps, 'string');
-		ArgUtils::valArray($this->editProps, 'string');
+	function __construct(public readonly ?EiPresetMode $mode = null, array $readProps = [], array $editProps = []) {
+		$this->readProps = $this->clean($readProps);
+		$this->editProps = $this->clean($editProps);
+	}
+
+	/**
+	 * @param array $props
+	 * @return array
+	 */
+	private function clean(array $props) {
+		$cleaned = [];
+		foreach ($props as $key => $value) {
+			if (!is_string($value)) {
+				ArgUtils::valArray($value, 'string');
+				throw new IllegalStateException();
+			}
+
+			if (is_string($key)) {
+				$cleaned[$key] = $value;
+			} else {
+				$cleaned[$value] = null;
+			}
+		}
+
+		return $cleaned;
 	}
 
 	function containsReadProp(string $prop): bool {
-		return in_array($prop, $this->readProps);
+		return array_key_exists($prop, $this->readProps);
 	}
 
 	function containsEditProp(string $prop): bool {
-		return in_array($prop, $this->editProps);
+		return array_key_exists($prop, $this->editProps);
+	}
+
+	function getPropLabel(string $prop): ?string {
+		return $this->readProps[$prop] ?? $this->editProps[$prop] ?? null;
 	}
 }

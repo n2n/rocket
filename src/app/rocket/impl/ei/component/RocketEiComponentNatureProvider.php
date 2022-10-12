@@ -170,14 +170,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	}
 
 	private function findGoodPresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
-		if ($typeName === 'string' && StringUtils::endsWith('Html', $eiPresetProp->getName())) {
-			$ckeEiPropNature = new CkeEiPropNature();
-			$ckeEiPropNature->setMandatory(!$nullAllowed);
-			$ckeEiPropNature->setReadOnly(!$eiPresetProp->isEditable());
-			$ckeEiPropNature->setMaxlength(255);
-			$this->assignProperties($eiPresetProp, $ckeEiPropNature);
-			return $ckeEiPropNature;
-		}
+
 
 		// temporary hack
 		if ($eiPresetProp->getEntityProperty() instanceof RelationEntityProperty) {
@@ -205,6 +198,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 					throw new IllegalStateException();
 			}
 			$relationEiProp->getRelationModel()->setReadOnly(!$eiPresetProp->isEditable());
+			$relationEiProp->setLabel($eiPresetProp->getLabel());
 			$this->assignProperties($eiPresetProp, $relationEiProp);
 
 			return $relationEiProp;
@@ -218,34 +212,29 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 		switch ($typeName) {
 			case File::class:
 				$nature = new FileEiPropNature();
-				$nature->setMandatory(!$nullAllowed);
-				$nature->setReadOnly(!$eiPresetProp->isEditable());
-				$this->assignProperties($nature);
-				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
-				return $nature;
+				break;
 			case 'string':
-				$nature = new StringEiPropNature();
-				$nature->setMandatory(!$nullAllowed);
-				$nature->setReadOnly(!$eiPresetProp->isEditable());
+				$nature = (StringUtils::endsWith('Html', $eiPresetProp->getName())
+						? new CkeEiPropNature() : new StringEiPropNature());
 				$nature->setMaxlength(255);
-				$this->assignProperties($eiPresetProp, $nature);
-				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
-				return $nature;
+				break;
 			case 'int':
 				$nature = new IntegerEiPropNature();
-				$nature->setMandatory(!$nullAllowed);
-				$nature->setReadOnly(!$eiPresetProp->isEditable());
-				$this->assignProperties($eiPresetProp, $nature);
-				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
-				return $nature;
+				break;
 			case 'bool':
 				$nature = new BooleanEiPropNature();
-				$nature->setMandatory(!$nullAllowed);
-				$nature->setReadOnly(!$eiPresetProp->isEditable());
-				$this->assignProperties($eiPresetProp, $nature);
-				$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
-				return $nature;
+				break;
+			default:
+				return null;
 		}
+
+		$nature->setLabel($eiPresetProp->getLabel());
+		$nature->setMandatory(!$nullAllowed);
+		$nature->setReadOnly(!$eiPresetProp->isEditable());
+		$this->assignProperties($eiPresetProp, $nature);
+		$this->assignAddons($eiTypeSetup, $eiPresetProp->getPropertyAccessProxy(), $nature);
+
+		return $nature;
 	}
 
 	private function assignProperties(EiPresetProp $eiPresetProp, PropertyEiPropNature $nature) {

@@ -32,6 +32,8 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$this->assertFalse($eiProps['stringEditablePriTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringEditablePriTest']->getNature()->isMandatory());
+		$this->assertEquals('Super duper label', $eiProps['stringEditablePriTest']->getNature()->getLabel());
+
 
 		$this->assertTrue($eiProps['stringGetTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringGetTest']->getNature()->isMandatory());

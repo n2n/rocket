@@ -42,7 +42,7 @@ enum EiPresetMode {
 	/**
 	 * Adds suitable EiCommands (if found) which provide read or edit functionality .
 	 */
-	case READ_EDIT_CMDS;
+	case EDIT_CMDS;
 	/**
 	 * Adds for every property a suitable EiProp (if found) which is read only.
 	 */
@@ -54,11 +54,11 @@ enum EiPresetMode {
 	/**
 	 *
 	 */
-	case READ_PROPS_READ_EDIT_COMMANDS;
+	case READ_PROPS_EDIT_CMDS;
 
 	function isReadPropsMode(): bool {
 		return match ($this) {
-			self::READ, self::READ_PROPS, self::READ_PROPS_READ_EDIT_COMMANDS => true,
+			self::READ, self::READ_PROPS, self::READ_PROPS_EDIT_CMDS => true,
 			default => false,
 		};
 	}
@@ -72,14 +72,14 @@ enum EiPresetMode {
 
 	function isReadCmdsMode(): bool {
 		return match ($this) {
-			self::READ, self::READ_CMDS, self::READ_EDIT_CMDS, self::READ_PROPS_READ_EDIT_COMMANDS  => true,
+			self::READ, self::READ_CMDS, self::EDIT_CMDS, self::READ_PROPS_EDIT_CMDS  => true,
 			default => false
 		};
 	}
 
 	function isEditCmdsMode(): bool {
 		return match ($this) {
-			self::EDIT, self::READ_EDIT_CMDS, self::READ_PROPS_READ_EDIT_COMMANDS => true,
+			self::EDIT, self::EDIT_CMDS, self::READ_PROPS_EDIT_CMDS => true,
 			default => false,
 		};
 	}
