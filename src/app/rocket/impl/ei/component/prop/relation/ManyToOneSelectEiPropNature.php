@@ -44,6 +44,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	private $quickSearchableConfig;
@@ -79,13 +80,12 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
-		$eiEntryFilterProp = parent::createSecurityFilterProp($n2nContext);
+		$eiEntryFilterProp = parent::createSecurityFilterProp($eiu);
 		CastUtils::assertTrue($eiEntryFilterProp instanceof ToOneSecurityFilterProp);
-				
-		$that = $this;
-		$eiEntryFilterProp->setTargetSelectToolsUrlCallback(function () use ($n2nContext, $that) {
+
+		$eiEntryFilterProp->setTargetSelectToolsUrlCallback(function () use ($eiu) {
 			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
-					$n2nContext->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
+					$eiu->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
 					$this->eiPropRelation->getTargetEiMask());
 		});
 				

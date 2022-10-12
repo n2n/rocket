@@ -8,31 +8,33 @@ use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 use rocket\ei\util\privilege\EiuCommandPrivilege;
 use rocket\ei\util\factory\EiuFactory;
 use rocket\ei\component\command\EiCmd;
+use rocket\ei\util\EiuAnalyst;
 
 class EiuCmd {
+	private ?EiCmd $eiCmd;
 
-	function __construct(private readonly EiCmd $eiCmd) {
+	function __construct(private readonly EiCmdPath $eiCmdPath, private readonly EiuMask $eiuMask) {
 	}
 	
 	/**
 	 * @return EiCmdPath
 	 */
 	function getEiCmdPath() {
-		return $this->eiCmd->getEiCmdPath();
+		return $this->eiCmdPath;
 	}
 
 	/**
 	 * @return EiCmd
 	 */
 	function getEiCmd() {
-		return $this->eiCmd;
+		return $this->eiCmd ?? $this->eiCmd = $this->eiuMask->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
 	
 	/**
 	 * @return string
 	 */
 	function getTypeName() {
-		return EiConfiguratorAdapter::createAutoTypeName($this->eiCmd->getNature(), ['Ei', 'Cmd', 'Nature']);
+		return EiConfiguratorAdapter::createAutoTypeName($this->getEiCmd()->getNature(), ['Ei', 'Cmd', 'Nature']);
 	}
 	
 	/**

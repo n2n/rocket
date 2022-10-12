@@ -99,7 +99,6 @@ class EiuAnalyst {
 	protected $eiPropPath;
 	protected $defPropPath;
 	protected $eiCmdPath;
-	protected $eiCmd;
 	protected $eiEngine;
 	protected $spec;
 	protected $eiMask;
@@ -179,7 +178,6 @@ class EiuAnalyst {
 			
 			if ($eiArg instanceof EiCmd) {
 				$this->eiCmdPath = EiCmdPath::from($eiArg);
-				$this->eiCmd = $eiArg;
 				$this->assignEiMask($eiArg->getEiCommandCollection()->getEiMask());
 				continue;
 			}
@@ -400,9 +398,6 @@ class EiuAnalyst {
 				}
 				if ($eiuAnalyst->eiCmdPath !== null) {
 					$this->eiCmdPath = $eiuAnalyst->eiCmdPath;
-				}
-				if ($eiuAnalyst->eiCmd !== null) {
-					$this->eiCmd = $eiuAnalyst->eiCmd;
 				}
 				if ($eiuAnalyst->eiEngine !== null) {
 					$this->eiEngine = $eiuAnalyst->eiEngine;
@@ -972,26 +967,6 @@ class EiuAnalyst {
 				. implode(', ', self::EI_FIELD_TYPES));
 	}
 
-	function getEiCmd(bool $required) {
-		$this->ensureAppied();
-
-		if ($this->eiCmd === null && $this->eiCmdPath !== null) {
-			try {
-				$this->eiCmd = $this->getEiMask($required)?->getEiCmdCollection()->getByPath($this->eiCmdPath);
-			} catch (UnknownEiComponentException $e) {
-				throw new EiuPerimeterException('Could not determine EiCmd.', 0, $e);
-			}
-		}
-
-		if (!$required || $this->eiCmd !== null) {
-			return $this->eiCmd;
-		}
-
-		throw new EiuPerimeterException(
-				'Could not determine EiCmd because non of the following types were provided as eiArgs: '
-				. implode(', ', self::EI_CMD_TYPES));
-	}
-
 	
 	/**
 	 * @param bool $required
@@ -1264,13 +1239,13 @@ class EiuAnalyst {
 			return $this->eiuCmd;
 		}
 
-		return $this->eiuCmd = new EiuCmd($this->getEiCmd(true), $this->getEiuMask(true), $this);
+		return $this->eiuCmd = new EiuCmd($this->getEiCmdPath(true), $this->getEiuMask(true));
 	}
 	
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 * @return EiuEntryGui
 	 */
 	public function getEiuEntryGui(bool $required) {
 		$this->ensureAppied();

@@ -145,11 +145,11 @@ class EiuMask  {
 	/**
 	 * @param EiPropNature $eiProp
 	 * @param bool $prepend
-	 * @return \rocket\ei\util\spec\EiuEngine
+	 * @return EiuProp
 	 */
 	public function addProp(EiPropNature $eiProp, bool $prepend = false) {
-		$this->eiMask->getEiPropCollection()->add($eiProp, $prepend);
-		return $this;
+		return new EiuProp($this->eiMask->getEiPropCollection()->add($eiProp, $prepend)->getEiPropPath(), $this,
+				$this->eiuAnalyst);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ class EiuMask  {
 	 * @return EiuCmd
 	 */
 	public function addCmd(EiCmdNature $eiCmd, bool $prepend = false) {
-		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($eiCmd, $prepend));
+		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($eiCmd, $prepend)->getEiCmdPath(), $this);
 	}
 	
 	/**
