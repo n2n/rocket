@@ -92,9 +92,8 @@ class EiTypeFactory {
 	 * @throws UnknownEiTypeException
 	 * @return EiType
 	 */
-	public function create(string $id, \ReflectionClass $class) {
+	public function create(string $id, \ReflectionClass $class, ?string $label, ?string $pluralLabel) {
 		$className = $class->getName();
-
 		try {
 			$entityModel = $this->entityModelManager->getEntityModelByClass($class);
 		} catch (OrmException $e) {
@@ -102,7 +101,7 @@ class EiTypeFactory {
 					. '. Reason: ' . $e->getMessage(), 0, $e);
 		}
 
-		return new EiType($id, $this->specConfigLoader->moduleNamespaceOf($class), $entityModel);
+		return new EiType($id, $this->specConfigLoader->moduleNamespaceOf($class), $entityModel, $label, $pluralLabel);
 	}
 
 	function assemble(EiType $eiType): void {

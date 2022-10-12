@@ -147,7 +147,7 @@ class Spec {
 	}
 
 	private function idToClassName(string $id) {
-		return str_replace('-', '\\', $className);
+		return str_replace('-', '\\', $id);
 	}
 
 	/**
@@ -163,7 +163,8 @@ class Spec {
 			return $this->eiTypes[$className];
 		}
 
-		if (!$this->isEiTypeAnnotated($class)) {
+		$eiTypeAttribute = ReflectionContext::getAttributeSet($class)->getClassAttribute(\rocket\attribute\EiType::class);
+		if ($eiTypeAttribute === null) {
 			if (!$required) {
 				return null;
 			}
@@ -172,7 +173,12 @@ class Spec {
 					. \rocket\attribute\EiType::class);
 		}
 
-		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($this->classNameToId($className), $class);
+		$eiTypeA = $eiTypeAttribute->getInstance();
+		$label = $eiTypeA->label ?? StringUtils::pretty($class->getShortName());
+		$pluralLabel = $eiTypeA->pluralLabel ?? $label;
+
+		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($this->classNameToId($className), $class,
+				$label, $pluralLabel);
 		
 		if ($eiType->getEntityModel()->hasSuperEntityModel()) {
 			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();

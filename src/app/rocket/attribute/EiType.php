@@ -26,4 +26,8 @@ namespace rocket\attribute;
  */
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class EiType {
+
+	function __construct(public ?string $label = null, public ?string $pluralLabel = null) {
+
+	}
 }

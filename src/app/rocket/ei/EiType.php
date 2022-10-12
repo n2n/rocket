@@ -62,10 +62,11 @@ class EiType extends Type {
 	 * @param Module $moduleNamespace
 	 * @param EntityModel $entityModel
 	 */
-	public function __construct(string $id, $moduleNamespace, private EntityModel $entityModel) {
+	public function __construct(string $id, string $moduleNamespace, private EntityModel $entityModel,
+			string $label, string $pluralLabel) {
 		parent::__construct($id, $moduleNamespace);
 
-		$this->eiMask = new EiMask($this, new DisplayScheme());
+		$this->eiMask = new EiMask($this, $label, $pluralLabel);
 		$this->eiTypeExtensionCollection = new EiTypeExtensionCollection($this);
 	}
 	

@@ -31,8 +31,7 @@ class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_REPLACE = 'replace';
 // 	const TYPE_CHANGE_MODE_CHANGE = 'change';
 	
-	private ?string $label = null;
-	private ?string $pluralLabel = null;
+
 	private $iconType;
 //	private $draftingAllowed;
 //	private $draftHistorySize;
@@ -40,6 +39,10 @@ class EiMaskDef {
 	private $previewControllerLookupId;
 	private $filterSettingGroup;
 	private $defaultSortSettingGroup;
+
+	function __construct(private string $label, private ?string $pluralLabel) {
+
+	}
 	
 	/**
 	 * @return string
