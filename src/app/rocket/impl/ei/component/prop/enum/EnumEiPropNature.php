@@ -48,7 +48,7 @@ use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
 
@@ -61,7 +61,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return false;
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
+	public function setEntityProperty(?EntityProperty $entityProperty): void {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
 				|| $entityProperty instanceof IntEntityProperty);
 		$this->entityProperty = $entityProperty;
@@ -94,21 +94,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		
 		return $this->enumConfig;
 	}
-	
-	function getQuickSearchConfig() {
-		if ($this->quickSearchConfig === null) {
-			$this->quickSearchConfig = new QuickSearchConfig();
-		}
-		
-		return $this->quickSearchConfig;
-	}
-	
-	public function prepare() {
-		$this->getConfigurator()
-				->addAdaption($this->getEnumConfig())
-				->addAdaption($this->getQuickSearchConfig());
-	}
-	
+
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$eiu->entry()->onValidate(function () use ($eiu) {
 			$type = $eiu->field()->getValue();
@@ -212,10 +198,6 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return null;
 	}
 
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {
-		return null;
-	}
-
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
 			return new SimpleSortProp(CrIt::p($entityProperty), $this->getLabelLstr());
@@ -225,7 +207,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->getQuickSearchConfig()->isQuickSerachable() 
+		if ($this->isQuickSerachable()
 				&& null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}

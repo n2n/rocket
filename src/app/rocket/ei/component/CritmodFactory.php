@@ -91,7 +91,7 @@ class CritmodFactory {
 		$sortDefinition = new SortDefinition();
 		
 		foreach ($this->eiPropCollection as $eiPropPathStr => $eiProp) {
-			f (null !== ($sortProp = $eiProp->getNature()->buildSortProp($eiu))) {
+			if (null !== ($sortProp = $eiProp->getNature()->buildSortProp($eiu))) {
 				$sortDefinition->putSortProp(EiPropPath::create($eiPropPathStr), $sortProp);
 			}
 
@@ -122,11 +122,11 @@ class CritmodFactory {
 	}
 	
 	public function createFramedQuickSearchDefinition(EiFrame $eiFrame) {
-		$eiu = new Eiu($eiFrame);
 		$quickSearchDefinition = new QuickSearchDefinition($this->eiPropCollection->getEiMask());
 	
 		foreach ($this->eiPropCollection as $id => $eiProp) {
-			if (null !== ($quickSearchField = $eiProp->buildQuickSearchProp($eiu))) {
+			$eiu = new Eiu($eiFrame, $eiProp);
+			if (null !== ($quickSearchField = $eiProp->getNature()->buildQuickSearchProp($eiu))) {
 				$quickSearchDefinition->putQuickSearchProp(EiPropPath::from($eiProp), $quickSearchField);
 			}
 		}

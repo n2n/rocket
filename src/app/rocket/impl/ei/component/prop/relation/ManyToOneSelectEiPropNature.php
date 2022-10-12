@@ -43,7 +43,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 
 class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
@@ -52,7 +52,7 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	function __construct() {
 		$this->relationModel = new RelationModel($this, true, false, RelationModel::MODE_SELECT);
 		
-		$this->quickSearchableConfig = new QuickSearchConfig();
+		
 	}
 	
 	function setEntityProperty(?EntityProperty $entityProperty): void {
@@ -93,7 +93,7 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if (!$this->quickSearchableConfig->isQuickSerachable()) {
+		if (!$this->isQuickSerachable()) {
 			return null;
 		}
 		

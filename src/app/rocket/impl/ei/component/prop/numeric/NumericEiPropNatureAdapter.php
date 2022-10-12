@@ -41,7 +41,7 @@ use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\numeric\conf\NumericAdapter;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
@@ -52,13 +52,7 @@ use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 
 abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureAdapter
 		implements AddonEiPropNature {
-	use NumericAdapter, AddonAdapter;
-
-	private $quickSearchConfig;
-		    
-    function __construct() {
-        $this->quickSearchConfig = new QuickSearchConfig();
-    }
+	use NumericAdapter, AddonAdapter, QuickSearchTrait;
 
 //
 //	function setEntityProperty(?EntityProperty $entityProperty) {
@@ -99,7 +93,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->quickSearchConfig->isQuickSerachable()) {
+		if ($this->isQuickSerachable()) {
 			return new LikeQuickSearchProp(CrIt::p($this->getEntityProperty()));
 		}
 		

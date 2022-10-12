@@ -39,16 +39,16 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
+use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\impl\ei\component\prop\adapter\EditableAdapter;
 
 class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
-	private $quickSearchableConfig;
+	use QuickSearchTrait;
 	
 	public function __construct() {
 		$this->relationModel = new RelationModel($this, false, false, RelationModel::MODE_SELECT);
 		
-		$this->quickSearchableConfig = new QuickSearchConfig();
+		
 	}
 
 //	public function setEntityProperty(?EntityProperty $entityProperty) {
@@ -76,18 +76,18 @@ class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if (!$this->quickSearchableConfig->isQuickSerachable()) {
+		if (!$this->isQuickSerachable()) {
 			return null;
 		}
 		
 		$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
-		$targetDefPropPaths = $targetEiuEngine->idNameDefinition()->getUsedDefProps();
+		$targetDefPropPaths = $targetEiuEngine->getIdNameDefinition()->getAllIdNameProps();
 		
 		if (empty($targetDefPropPaths)) {
 			return null;
 		}
 		
 		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, 
-				$eiu->frame()->forkDiscover($eiu->prop(), $eiu->object()));
+				$eiu->frame()->forkDiscover($eiu->prop()));
 	}
 }

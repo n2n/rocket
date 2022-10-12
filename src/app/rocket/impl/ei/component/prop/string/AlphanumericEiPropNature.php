@@ -48,9 +48,10 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
+use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
-	use AddonAdapter;
+	use AddonAdapter, QuickSearchTrait;
 
 	/**
 	 * @var int|null
@@ -132,8 +133,8 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->quickSearchConfig->isQuickSerachable()
-				&& null !== ($entityProperty = $this->getEntityProperty(false))) {
+		if ($this->isQuickSerachable()
+				&& null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
 		
