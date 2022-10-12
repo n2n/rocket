@@ -26,6 +26,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\controller\Controller;
 use n2n\l10n\Lstr;
+use rocket\ei\manage\gui\GuiCommand;
 
 interface EiCmdNature extends EiComponentNature {
 	
@@ -62,4 +63,6 @@ interface EiCmdNature extends EiComponentNature {
 	 * @return boolean
 	 */
 	function equals($obj);
+
+	function buildGuiCommand(Eiu $eiu): ?GuiCommand;
 }

@@ -27,12 +27,12 @@ use rocket\ei\component\command\EiCmd;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\ei\component\command\GuiEiCmd;
+
 use rocket\ei\manage\gui\GuiCommand;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
 
-abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, GuiEiCmd, GuiCommand {
+abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, GuiCommand {
 	private $wrapper;
 	
 	public function setWrapper(EiCmd $wrapper) {
@@ -82,11 +82,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	public function equals($obj) {
 		return $obj instanceof EiCmdNature && parent::equals($obj);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\GuiEiCmd::buildGuiCommand()
-	 */
+
 	public function buildGuiCommand(Eiu $eiu): ?GuiCommand {
 		return $this;
 	}

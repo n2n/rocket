@@ -10,6 +10,7 @@ use rocket\ei\util\factory\EiuFactory;
 use n2n\web\ui\ViewFactory;
 use n2n\util\type\CastUtils;
 use n2n\util\magic\MagicObjectUnavailableException;
+use rocket\ei\util\spec\EiuProp;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -17,6 +18,7 @@ class Eiu implements Lookupable {
 	private $eiuEngine;
 	private $eiuMask;
 	private $eiuProp;
+	private $eiuCmd;
 	private $eiuFrame;
 	private $eiuObject;
 	private $eiuEntry;
@@ -80,7 +82,7 @@ class Eiu implements Lookupable {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ei\util\spec\EiuProp
+	 * @return EiuProp
 	 */
 	public function prop(bool $required = true) {
 		if ($this->eiuProp !== null) {
@@ -88,6 +90,18 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuProp = $this->eiuAnalyst->getEiuProp($required);
+	}
+
+	/**
+	 * @param bool $required
+	 * @return EiuProp
+	 */
+	public function cmd(bool $required = true) {
+		if ($this->eiuCmd !== null) {
+			return $this->eiuCmd;
+		}
+
+		return $this->eiuCmd = $this->eiuAnalyst->getEiuCmd($required);
 	}
 	
 	/**

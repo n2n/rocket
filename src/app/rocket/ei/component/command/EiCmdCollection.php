@@ -43,6 +43,7 @@ class EiCmdCollection extends EiComponentCollection {
 	/**
 	 * @param string $id
 	 * @return EiCmdNature
+	 * @throws UnknownEiComponentException;
 	 */
 	public function getByPath(EiCmdPath $eiCmdPath) {
 		return $this->getElementByIdPath($eiCmdPath);

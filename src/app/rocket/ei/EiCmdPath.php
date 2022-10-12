@@ -24,6 +24,7 @@ namespace rocket\ei;
 use rocket\ei\component\command\EiCmdNature;
 use n2n\util\type\ArgUtils;
 use rocket\ei\component\command\EiCmd;
+use rocket\ei\util\spec\EiuCmd;
 
 class EiCmdPath extends IdPath {
 	
@@ -40,14 +41,18 @@ class EiCmdPath extends IdPath {
 			return $expression;
 		}
 	
-		if ($expression instanceof EiCmdNature) {
-			return self::from($expression);
+		if ($expression instanceof EiCmd) {
+			return $expression->getEiCmdPath();
 		}
-	
+
+		if ($expression instanceof EiuCmd) {
+			return $expression->getEiCmdPath();
+		}
+
 		if (is_string($expression)) {
 			return new EiCmdPath($expression);
 		}
 	
-		ArgUtils::valType($expression, ['string', EiCmdNature::class, EiCmdPath::class], false, 'expression');
+		ArgUtils::valType($expression, ['string', EiCmd::class, EiCmdPath::class, EiuCmd::class], false, 'expression');
 	}
 }

@@ -57,6 +57,10 @@ class GuiDefinition {
 	 * @var GuiCommand[]
 	 */
 	private $guiCommands = [];
+	/**
+	 * @var EiCmdPath[]
+	 */
+	private $eiCmdPaths = [];
 	
 	function __construct(EiMask $eiMask) {
 		$this->eiMask = $eiMask;
@@ -380,11 +384,12 @@ class GuiDefinition {
 	function putGuiCommand(EiCmdPath $eiCmdPath, GuiCommand $guiCommand) {
 		$eiCmdPathStr = (string) $eiCmdPath;
 		
-		if (isset($this->guiCommand[$eiCmdPathStr])) {
+		if (isset($this->guiCommands[$eiCmdPathStr])) {
 			throw new GuiException('GuiCommand for EiCmdPath \'' . $eiCmdPathStr . '\' is already registered');
 		}
 		
 		$this->guiCommands[$eiCmdPathStr] = $guiCommand;
+		$this->eiCmdPaths[$eiCmdPathStr] = $eiCmdPath;
 	}
 	
 	/**
@@ -423,12 +428,11 @@ class GuiDefinition {
 	 * @return GuiControl[]
 	 */
 	function createEntryGuiControls(EiFrame $eiFrame, EiGuiFrame $eiGuiFrame, EiEntry $eiEntry): array {
-		$eiu = new Eiu($eiFrame, $eiGuiFrame, $eiEntry);
-		
 		$guiControls = [];
-		foreach ($this->guiCommands as $id => $guiCommand) {
-			foreach ($this->extractEntryGuiControls($guiCommand, $id, $eiu) as $entryGuiControl) {
-				$guiControlPath = new GuiControlPath([$id, $entryGuiControl->getId()]);
+		foreach ($this->guiCommands as $eiCmdPathStr => $guiCommand) {
+			$eiu = new Eiu($eiFrame, $eiGuiFrame, $eiEntry, $this->eiCmdPaths[$eiCmdPathStr]);
+			foreach ($this->extractEntryGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $entryGuiControl) {
+				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $entryGuiControl->getId()]);
 				
 				$guiControls[(string) $guiControlPath] = $entryGuiControl;
 			}

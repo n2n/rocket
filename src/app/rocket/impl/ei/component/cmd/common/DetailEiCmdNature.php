@@ -72,7 +72,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 		$eiuFrame = $eiu->frame();
 		$eiuEntry = $eiu->entry();
 		
-		if ($eiuEntry->isNew() || $eiuFrame->isExecutedBy($this)) {
+		if ($eiuEntry->isNew() || $eiuFrame->isExecutedBy($eiu->cmd())) {
 			return array();
 		}
 		
