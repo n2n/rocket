@@ -8,6 +8,7 @@ use n2n\l10n\Message;
 use n2n\util\uri\Url;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\EiObject;
+use rocket\si\control\SiNavPoint;
 
 class EiuControlResponse {
 	private $eiuAnalyst;
@@ -74,17 +75,18 @@ class EiuControlResponse {
 	 */
 	function redirectToRef(Url $url) {
 		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
-		$this->siResult->setRef($url);
+		$this->siResult->setNavPoint(SiNavPoint::siref($url));
 		return $this;
 	}
-	
+
 	/**
-	 * @param Url $url
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @param Url|string $url
+	 * @return EiuControlResponse
 	 */
-	function redirectToHref(Url $url) {
-		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
-		$this->siResult->setHref($url);
+	function redirectToHref(Url|string $url) {
+		$url = Url::create($url);
+		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
+		$this->siResult->setNavPoint(SiNavPoint::href($url));
 		return $this;
 	}
 	
@@ -145,7 +147,7 @@ class EiuControlResponse {
 	 */
 	function entryAdded(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, SiCallResponse::MOD_TYPE_ADDED);
+			$this->eiObjectMod($eiObjectArg, SiCallResponse::EVENT_TYPE_ADDED);
 		}
 		return $this;
 	}
@@ -156,7 +158,7 @@ class EiuControlResponse {
 	 */
 	function entryChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, SiCallResponse::MOD_TYPE_CHANGED);
+			$this->eiObjectMod($eiObjectArg, SiCallResponse::EVENT_TYPE_CHANGED);
 		}
 		return $this;
 	}
@@ -167,7 +169,7 @@ class EiuControlResponse {
 	 */
 	function entryRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$this->eiObjectMod($eiObjectArg, SiCallResponse::MOD_TYPE_REMOVED);
+			$this->eiObjectMod($eiObjectArg, SiCallResponse::EVENT_TYPE_REMOVED);
 		}
 		return $this;
 	}

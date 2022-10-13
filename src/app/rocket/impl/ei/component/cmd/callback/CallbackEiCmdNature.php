@@ -81,13 +81,13 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 	private function createGuiControls(array $defs, Eiu $eiu) {
 		$guiControls = [];
 
-		foreach ($defs as $def) {
+		foreach ($defs as $key => $def) {
 			$siButton = $def->buildSiButton($eiu);
 			if ($siButton === null) {
 				continue;
 			}
 
-			$guiControls[] = $eiu->factory()->controls()->newCallback($siButton, $def->getCallback());
+			$guiControls[] = $eiu->factory()->controls()->newCallback($key, $siButton, $def->getCallback());
 		}
 
 		return $guiControls;

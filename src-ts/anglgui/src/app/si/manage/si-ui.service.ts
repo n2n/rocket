@@ -11,6 +11,7 @@ import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiDirective, SiControlResult } from './si-control-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
+import { SiNavPoint } from '../model/control/si-nav-point';
 
 @Injectable({
 	providedIn: 'root'
@@ -153,15 +154,23 @@ export class SiUiService {
 			this.replaceEntries(result.inputResult.entries, inputEntries);
 		}
 
+
 		switch (result.callResponse?.directive) {
 			case SiDirective.REDIRECT:
-				this.navigateByUrl(result.callResponse.navPoint!.url, uiLayer);
+				this.navigateByNavPoint(result.callResponse.navPoint!, uiLayer);
 				break;
 			case SiDirective.REDIRECT_BACK:
 				this.navigateBack(uiLayer, result.callResponse.navPoint!.url);
 				break;
 		}
+	}
 
+	private navigateByNavPoint(navPoint: SiNavPoint, uiLayer: UiLayer): void {
+		if (navPoint.siref) {
+			this.navigateByUrl(navPoint.url, uiLayer);
+		} else {
+			window.location.href = navPoint.url;
+		}
 	}
 
 	private replaceEntries(errorEntries: Map<string, SiEntry>, entries: SiEntry[]): void {

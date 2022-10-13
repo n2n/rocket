@@ -37,7 +37,7 @@ class EditController extends ControllerAdapter {
 	const CONTROL_CANCEL_KEY = 'canel';
 	
 	private $dtc;
-	private $eiuCtrl;
+	private EiuCtrl $eiuCtrl;
 	
 	public function prepare(DynamicTextCollection $dtc) {
 		$this->dtc = $dtc;
@@ -49,11 +49,12 @@ class EditController extends ControllerAdapter {
 		
 		$this->eiuCtrl->pushOverviewBreadcrumb()
 				->pushDetailBreadcrumb($eiuEntry)
-				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
+				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_edit_label'));
 		
 // 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 		
-		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false, $this->createControls());
+		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false,
+				$this->createControls());
 	}
 	
 	private function createControls() {
