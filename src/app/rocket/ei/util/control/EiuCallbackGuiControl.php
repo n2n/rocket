@@ -46,9 +46,10 @@ class EiuCallbackGuiControl implements GuiControl {
 	private $callback;
 	private $siButton;
 	private $inputHandled = false;
-	
+
 	/**
 	 * @param string $id
+	 * @param EiuFrame $eiuFrame
 	 * @param \Closure $callback
 	 * @param SiButton $siButton
 	 */
