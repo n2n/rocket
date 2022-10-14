@@ -19,60 +19,33 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\attribute\impl;
 
+use rocket\ei\manage\DefPropPath;
+use n2n\util\type\ArgUtils;
+use Attribute;
 
-trait EditableAdapter {
-	protected bool $constant = false;
-	protected bool $readOnly = false;
-	protected bool $mandatory = false;
-
-	/**
-	 * @return bool
-	 */
-	function isConstant(): bool {
-		return $this->constant;
-	}
+#[Attribute(Attribute::TARGET_PROPERTY)]
+class EiPropEnum {
 
 	/**
-	 * @param bool $constant
-	 * @return $this
+	 * @var DefPropPath[][]
 	 */
-	function setConstant(bool $constant): static {
-		$this->constant = $constant;
-		return $this;
-	}
+	public readonly array $associatedDefPropPathMap;
 
 	/**
-	 * @return bool
+	 * @param string[] $options e.g. ['small' => 'Small Article', 'other-value' => 'Other Label']
+	 * @param bool|null $constant
+	 * @param bool|null $readOnly
+	 * @param bool|null $mandatory
+	 * @param string|null $emptyLabel
+	 * @param array $guiPropsMap e.g. ['small' => [ 'mode' ], 'other-value' => ['additionalInfo', 'otherProperty']]
 	 */
-	function isReadOnly(): bool {
-		return $this->readOnly;
+	function __construct(public readonly array $options,
+			public ?bool $constant = null, public ?bool $readOnly = null, public ?bool $mandatory = null,
+			public ?string $emptyLabel = null, array $guiPropsMap = []) {
+		ArgUtils::valArray($this->options, 'string');
+		ArgUtils::valArray($guiPropsMap, 'array');
+		$this->associatedDefPropPathMap = array_map(fn ($arr) => DefPropPath::buildArray($arr), $guiPropsMap);
 	}
-
-	/**
-	 * @param bool $readOnly
-	 * @return $this
-	 */
-	function setReadOnly(bool $readOnly): static {
-		$this->readOnly = (bool) $readOnly;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isMandatory(): bool {
-		return $this->mandatory;
-	}
-
-	/**
-	 * @param bool $mandatory
-	 * @return $this
-	 */
-	function setMandatory(bool $mandatory): static {
-		$this->mandatory = $mandatory;
-		return $this;
-	}
-
 }

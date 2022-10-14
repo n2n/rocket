@@ -26,7 +26,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\PropertyAccessProxy;
 
 class EiPresetProp {
-	function __construct(private readonly string $name, private readonly ?PropertyAccessProxy $propertyAccessProxy,
+	function __construct(private readonly string $name, private readonly PropertyAccessProxy $propertyAccessProxy,
 			private readonly ?EntityProperty $entityProperty, private readonly bool $editable,
 			private readonly string $label) {
 	}
@@ -39,7 +39,7 @@ class EiPresetProp {
 	}
 
 	/**
-	 * @return PropertyAccessProxy|null
+	 * @return PropertyAccessProxy
 	 */
 	function getPropertyAccessProxy() {
 		return $this->propertyAccessProxy;

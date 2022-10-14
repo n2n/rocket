@@ -40,9 +40,4 @@ interface PropertyEiPropNature extends EiPropNature {
 	 * @return AccessProxy|null
 	 */
 	public function getPropertyAccessProxy(): ?AccessProxy;
-
-	/**
-	 * @param AccessProxy|null $propertyAccessProxy
-	 */
-	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy);
 }

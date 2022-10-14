@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use rocket\ei\util\Eiu;
 use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\prop\numeric\DecimalEiProp;
+use rocket\impl\ei\component\prop\numeric\DecimalEiPropNature;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;

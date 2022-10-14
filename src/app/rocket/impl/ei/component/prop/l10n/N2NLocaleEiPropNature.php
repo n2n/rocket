@@ -49,21 +49,16 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraints;
 
 class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	private $definedN2nLocales;
-	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof N2nLocaleEntityProperty);
-		$this->entityProperty = $entityProperty;
+
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::namedType(N2nLocale::class, true)));
 	}
-	
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('n2n\\l10n\\N2nLocale',
-				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->propertyAccessProxy = $propertyAccessProxy;
-	}
-	
+
 	public function getDefinedN2nLocales() {
 		return $this->definedN2nLocales;
 	}
@@ -161,11 +156,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return new N2nLocaleFilterProp(CrIt::p($this->entityProperty), $this->getLabelLstr(), 
 				$this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->getN2nLocale()));
 	}
-	
-	public function buildSecurityFilterProp(N2nContext $n2nContext) {
-		return null;
-	}
-	
+
 	public function buildSortProp(Eiu $eiu): ?SortProp {
 		return new SimpleSortProp(CrIt::p($this->entityProperty), $this->getLabelLstr());
 	}

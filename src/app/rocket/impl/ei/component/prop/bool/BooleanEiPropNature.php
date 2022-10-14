@@ -48,28 +48,49 @@ use rocket\si\control\SiIconType;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
+use rocket\ei\manage\DefPropPath;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraints;
 
 class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
 	use AddonAdapter;
 
-	private $booleanConfig;
-	
-	function __construct() {
-		$this->booleanConfig = new BooleanConfig();
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::bool(true)));
 	}
-	
+
+	private $onAssociatedDefPropPaths = array();
+	private $offAssociatedDefPropPaths = array();
+
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter::createEiPropConfigurator()
+	 * @param DefPropPath[] $onAssociatedDefPropPaths
 	 */
-	protected function prepare() {
-		$this->getEditConfig()->setMandatoryChoosable(false)
-				->setMandatory(false);
-		$this->getConfigurator()->addAdaption($this->booleanConfig);
+	public function setOnAssociatedDefPropPaths(array $onAssociatedDefPropPaths) {
+		ArgUtils::valArray($onAssociatedDefPropPaths, DefPropPath::class);
+		$this->onAssociatedDefPropPaths = $onAssociatedDefPropPaths;
 	}
-	
-	function isEntityPropertyRequired(): bool {
-		return false;
+
+	/**
+	 * @return DefPropPath[]
+	 */
+	public function getOnAssociatedDefPropPaths() {
+		return $this->onAssociatedDefPropPaths;
+	}
+
+	/**
+	 * @param DefPropPath[] $offAssociatedDefPropPaths
+	 */
+	public function setOffAssociatedDefPropPaths(array $offAssociatedDefPropPaths) {
+		ArgUtils::valArray($offAssociatedDefPropPaths, DefPropPath::class);
+		$this->offAssociatedDefPropPaths = $offAssociatedDefPropPaths;
+
+	}
+
+	/**
+	 * @return DefPropPath[]
+	 */
+	public function getOffAssociatedDefPropPaths() {
+		return $this->offAssociatedDefPropPaths;
 	}
 	
 	/**

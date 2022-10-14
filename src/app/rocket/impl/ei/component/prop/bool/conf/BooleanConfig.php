@@ -21,42 +21,7 @@ class BooleanConfig {
 	const ATTR_OFF_ASSOCIATED_GUI_PROP_KEY = 'offAssociatedGuiProps';
 	
 	private static $booleanNeedles = ['Available', 'Enabled'];
-	
-	private $onAssociatedDefPropPaths = array();
-	private $offAssociatedDefPropPaths = array();
-	
-	/**
-	 * @param DefPropPath[] $onAssociatedDefPropPaths
-	 */
-	public function setOnAssociatedDefPropPaths(array $onAssociatedDefPropPaths) {
-		ArgUtils::valArray($onAssociatedDefPropPaths, DefPropPath::class);
-		$this->onAssociatedDefPropPaths = $onAssociatedDefPropPaths;
-	}
-	
-	/**
-	 * @return DefPropPath[]
-	 */
-	public function getOnAssociatedDefPropPaths() {
-		return $this->onAssociatedDefPropPaths;
-	}
-	
-	/**
-	 * @param DefPropPath[] $offAssociatedDefPropPaths
-	 */
-	public function setOffAssociatedDefPropPaths(array $offAssociatedDefPropPaths) {
-		ArgUtils::valArray($offAssociatedDefPropPaths, DefPropPath::class);
-		$this->offAssociatedDefPropPaths = $offAssociatedDefPropPaths;
-		
-	}
-	
-	/**
-	 * @return DefPropPath[]
-	 */
-	public function getOffAssociatedDefPropPaths() {
-		return $this->offAssociatedDefPropPaths;
-	}
-	
-	
+
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$propertyName = $this->requirePropertyName();
 		foreach (self::$booleanNeedles as $booleanNeedle) {

@@ -11,6 +11,32 @@ trait PropertyAdapter {
 	protected ?AccessProxy $propertyAccessProxy = null;
 
 	/**
+	 * @param AccessProxy|null $propertyAccessProxy
+	 */
+	function __construct(?AccessProxy $propertyAccessProxy) {
+		$this->propertyAccessProxy = $propertyAccessProxy;
+	}
+
+	/**
+	 * @return AccessProxy|null
+	 */
+	public function getPropertyAccessProxy(): ?AccessProxy {
+		return $this->propertyAccessProxy;
+	}
+
+	/**
+	 * @throws IllegalStateException
+	 * @return AccessProxy
+	 */
+	protected function requirePropertyAccessProxy(): ?AccessProxy {
+		if ($this->propertyAccessProxy === null) {
+			throw new IllegalStateException('No PropertyAccessProxy assigned to ' . $this . '.');
+		}
+
+		return $this->propertyAccessProxy;
+	}
+
+	/**
 	 * @param EntityProperty|null $entityProperty
 	 */
 	public function setEntityProperty(?EntityProperty $entityProperty): void {
@@ -36,29 +62,7 @@ trait PropertyAdapter {
 		return $this->entityProperty;
 	}
 
-	/**
-	 * @param AccessProxy|null $propertyAccessProxy
-	 */
-	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy): void {
-		$this->propertyAccessProxy = $propertyAccessProxy;
-	}
 
-	/**
-	 * @return AccessProxy|null
-	 */
-	public function getPropertyAccessProxy(): ?AccessProxy {
-		return $this->propertyAccessProxy;
-	}
 
-	/**
-	 * @throws IllegalStateException
-	 * @return AccessProxy
-	 */
-	protected function requirePropertyAccessProxy(): ?AccessProxy {
-		if ($this->propertyAccessProxy === null) {
-			throw new IllegalStateException('No PropertyAccessProxy assigned to ' . $this . '.');
-		}
 
-		return $this->propertyAccessProxy;
-	}
 }

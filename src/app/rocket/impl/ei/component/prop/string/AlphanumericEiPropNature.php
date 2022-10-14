@@ -49,6 +49,8 @@ use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraints;
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
 	use AddonAdapter, QuickSearchTrait;
@@ -61,6 +63,10 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	 * @var int|null
 	 */
 	private $maxlength;
+
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::string(true)));
+	}
 
 	/**
 	 * @return int|null

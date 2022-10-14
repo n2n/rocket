@@ -12,6 +12,7 @@ use testmdl\bo\TranslatableTestObj;
 use testmdl\bo\TranslationTestObj;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
+use testmdl\bo\AnnotatedReadPresetTestObj;
 
 class RocketEiComponentNatureProviderTest extends TestCase {
 
@@ -43,8 +44,16 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$this->assertTrue($eiProps['stringGetTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringGetTest']->getNature()->isMandatory());
+	}
 
+	function testAnnotated() {
+		$spec = SpecTestEnv::setUpSpec([AnnotatedReadPresetTestObj::class]);
 
+		$eiType = $spec->getEiTypeByClassName(AnnotatedReadPresetTestObj::class);
+
+		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
+
+		$this->assertCount(4, $eiProps);
 	}
 
 	function testMod() {

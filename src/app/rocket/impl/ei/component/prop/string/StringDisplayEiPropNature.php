@@ -21,45 +21,23 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\reflection\property\AccessProxy;
 use n2n\util\StringUtils;
-use n2n\util\type\ArgUtils;
-use n2n\util\type\TypeConstraint;
-
-use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature;
-use rocket\impl\ei\component\prop\adapter\config\ObjectPropertyConfigurable;
-use rocket\impl\ei\component\prop\adapter\gui\GuiFieldFactory;
 use rocket\si\content\impl\SiFields;
+use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNatureAdapter;
 
-class StringDisplayEiPropNature extends DisplayableEiPropNature implements ObjectPropertyConfigurable,
-		FieldEiProp, GuiFieldFactory {
-	
-	function prepare() {
-		$this->getDisplayConfig()->setCompatibleViewModes(ViewMode::read());
-	}
-	
-	function isEntityPropertyRequired(): bool {
-		return false;
-	}
-
-	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
-		ArgUtils::assertTrue($propertyAccessProxy !== null);
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('string', true));
-		parent::setPropertyAccessProxy($propertyAccessProxy);
-	}
-
+class StringDisplayEiPropNature extends DisplayableEiPropNatureAdapter {
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::reduce($eiu->object()->readNativValue($this), 30, '..');
-		});
+			return StringUtils::reduce(StringUtils::strOf($eiu->object()->readNativValue($eiu->prop())), 30, '..');
+		})->toIdNameProp();
 	}
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
+		return $eiu->factory()->newGuiField(SiFields::stringOut(
+				StringUtils::strOf($eiu->field()->getValue(), true)));
 	}
 }

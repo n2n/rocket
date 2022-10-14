@@ -51,22 +51,59 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
+use rocket\ei\manage\DefPropPath;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
-			
-	private $enumConfig;
-	private $quickSearchConfig;
-	
-	function isEntityPropertyRequired(): bool {
-		return false;
+
+	private $options = array();
+	private $associatedDefPropPathMap = array();
+	private $emptyLabel = null;
+
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::scalar(true)));
 	}
-	
-	public function setEntityProperty(?EntityProperty $entityProperty): void {
-		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
-				|| $entityProperty instanceof IntEntityProperty);
-		$this->entityProperty = $entityProperty;
+
+	public function setOptions(array $options) {
+		ArgUtils::valArray($options, 'scalar');
+		$this->options = $options;
 	}
-	
+
+	public function getOptions() {
+		return $this->options;
+	}
+
+	/**
+	 * @param array $associatedDefPropPathMap
+	 * @return void
+	 */
+	public function setAssociatedDefPropPathMap(array $associatedDefPropPathMap) {
+		ArgUtils::valArray($associatedDefPropPathMap,
+				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(DefPropPath::class)));
+		$this->associatedDefPropPathMap = $associatedDefPropPathMap;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAssociatedDefPropPathMap() {
+		return $this->associatedDefPropPathMap;
+	}
+
+	/**
+	 * @param string|null $emptyLabel
+	 */
+	function setEmptyLabel(?string $emptyLabel) {
+		$this->emptyLabel = $emptyLabel;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	function getEmptyLabel() {
+		return $this->emptyLabel;
+	}
+
 	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
@@ -124,7 +161,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$choicesMap = $this->getEnumConfig()->getOptions();
+		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($this, $value)) {
 				unset($choicesMap[$value]);

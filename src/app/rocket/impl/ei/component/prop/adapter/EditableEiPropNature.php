@@ -21,58 +21,20 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
+use rocket\ei\component\prop\EiPropNature;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\AccessProxy;
 
-trait EditableAdapter {
-	protected bool $constant = false;
-	protected bool $readOnly = false;
-	protected bool $mandatory = false;
+interface EditableEiPropNature extends EiPropNature {
+	function isConstant(): bool;
 
-	/**
-	 * @return bool
-	 */
-	function isConstant(): bool {
-		return $this->constant;
-	}
+	function setConstant(bool $constant): static;
 
-	/**
-	 * @param bool $constant
-	 * @return $this
-	 */
-	function setConstant(bool $constant): static {
-		$this->constant = $constant;
-		return $this;
-	}
+	function isReadOnly(): bool;
 
-	/**
-	 * @return bool
-	 */
-	function isReadOnly(): bool {
-		return $this->readOnly;
-	}
+	function setReadOnly(bool $readOnly): static;
 
-	/**
-	 * @param bool $readOnly
-	 * @return $this
-	 */
-	function setReadOnly(bool $readOnly): static {
-		$this->readOnly = (bool) $readOnly;
-		return $this;
-	}
+	function isMandatory(): bool;
 
-	/**
-	 * @return bool
-	 */
-	function isMandatory(): bool {
-		return $this->mandatory;
-	}
-
-	/**
-	 * @param bool $mandatory
-	 * @return $this
-	 */
-	function setMandatory(bool $mandatory): static {
-		$this->mandatory = $mandatory;
-		return $this;
-	}
-
+	function setMandatory(bool $mandatory): static;
 }

@@ -1,5 +1,5 @@
 {
   "eiComponentNatureProviders": [
-    "rocket\\impl\\ei\\component\\RocketEiComponentNatureProvider"
+    "rocket\\impl\\ei\\component\\provider\\RocketEiComponentNatureProvider"
   ]
 }

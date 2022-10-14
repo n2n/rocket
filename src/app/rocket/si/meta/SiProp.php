@@ -26,10 +26,10 @@ class SiProp implements \JsonSerializable {
 	private $label;
 	private $helpText;
 	private $descendantPropIds = [];
-	
+
 	/**
-	 * @param string $id
-	 * @param string $label
+	 * @param string|null $id
+	 * @param string|null $label
 	 */
 	function __construct(?string $id, ?string $label) {
 		$this->id = $id;

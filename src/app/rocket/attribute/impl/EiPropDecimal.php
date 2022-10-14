@@ -19,60 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\attribute\impl;
 
+use Attribute;
 
-trait EditableAdapter {
-	protected bool $constant = false;
-	protected bool $readOnly = false;
-	protected bool $mandatory = false;
+#[Attribute(Attribute::TARGET_PROPERTY)]
+class EiPropDecimal {
 
-	/**
-	 * @return bool
-	 */
-	function isConstant(): bool {
-		return $this->constant;
+	function __construct(public int $decimalPlaces = 2, public ?bool $constant = null, public ?bool $readOnly = null,
+			public ?bool $mandatory = null) {
 	}
-
-	/**
-	 * @param bool $constant
-	 * @return $this
-	 */
-	function setConstant(bool $constant): static {
-		$this->constant = $constant;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isReadOnly(): bool {
-		return $this->readOnly;
-	}
-
-	/**
-	 * @param bool $readOnly
-	 * @return $this
-	 */
-	function setReadOnly(bool $readOnly): static {
-		$this->readOnly = (bool) $readOnly;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	function isMandatory(): bool {
-		return $this->mandatory;
-	}
-
-	/**
-	 * @param bool $mandatory
-	 * @return $this
-	 */
-	function setMandatory(bool $mandatory): static {
-		$this->mandatory = $mandatory;
-		return $this;
-	}
-
 }

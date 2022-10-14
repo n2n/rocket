@@ -32,7 +32,7 @@ use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 
-abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
+abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp, EditableEiPropNature {
 	use EditableAdapter;
 
 	function isPrivileged(): bool {

@@ -8,7 +8,7 @@ use rocket\spec\setup\SpecConfigLoader;
 use n2n\persistence\orm\model\EntityModelManager;
 use rocket\spec\Spec;
 use n2n\util\magic\SimpleMagicContext;
-use rocket\impl\ei\component\RocketEiComponentNatureProvider;
+use rocket\impl\ei\component\provider\RocketEiComponentNatureProvider;
 use n2n\core\container\N2nContext;
 use n2n\core\util\N2nUtil;
 use n2n\core\container\AppCache;

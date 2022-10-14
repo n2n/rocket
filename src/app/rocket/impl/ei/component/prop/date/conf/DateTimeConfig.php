@@ -39,26 +39,7 @@ class DateTimeConfig extends PropConfigAdaption {
 	const ATTR_DATE_STYLE_KEY = 'dateStyle';
 	const ATTR_TIME_STYLE_KEY = 'timeStyle';
 	
-	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
-	private $timeStyle = DateTimeFormat::STYLE_NONE;
-	
-	function getDateStyle() {
-		return $this->dateStyle;
-	}
-	
-	function setDateStyle($dateStyle) {
-		ArgUtils::valEnum($dateStyle, DateTimeFormat::getStyles());
-		$this->dateStyle = $dateStyle;
-	}
-	
-	function getTimeStyle() {
-		return $this->timeStyle;
-	}
-	
-	function setTimeStyle($timeStyle) {
-		ArgUtils::valEnum($timeStyle, DateTimeFormat::getStyles());
-		$this->timeStyle = $timeStyle;
-	}
+
 	
 	function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return CompatibilityLevel::SUITABLE;

@@ -34,7 +34,6 @@ use rocket\ei\manage\DefPropPath;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
-use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraints;
 
 // @todo validate if dataSet are arrays
@@ -44,48 +43,7 @@ class EnumConfig extends PropConfigAdaption {
 	const ATTR_EMPTY_LABEL_KEY = 'emptyLabel';
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiProps';
 	
-	private $options = array();
-	private $associatedDefPropPathMap = array();
-	private $emptyLabel = null;
-	
-	
-	public function setOptions(array $options) {
-		ArgUtils::valArray($options, 'scalar');
-		$this->options = $options;
-	}
-	
-	public function getOptions() {
-		return $this->options;
-	}
-	
-	
-	
-	public function setAssociatedDefPropPathMap(array $associatedDefPropPathMap) {
-		ArgUtils::valArray($associatedDefPropPathMap,
-				TypeConstraint::createArrayLike('array', false, TypeConstraint::createSimple(DefPropPath::class)));
-		$this->associatedDefPropPathMap = $associatedDefPropPathMap;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getAssociatedDefPropPathMap() {
-		return $this->associatedDefPropPathMap;
-	}
-	
-	/**
-	 * @param string|null $emptyLabel
-	 */
-	function setEmptyLabel(?string $emptyLabel) {
-		$this->emptyLabel = $emptyLabel;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	function getEmptyLabel() {
-		return $this->emptyLabel;
-	}
+
 	
 	public function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection): MagDispatchable {
 		$lar = new LenientAttributeReader($dataSet);

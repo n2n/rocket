@@ -30,6 +30,18 @@ use n2n\reflection\attribute\AttributeSet;
 use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\component\modificator\EiModNature;
+use n2n\reflection\property\PropertiesAnalyzer;
+use n2n\reflection\ReflectionException;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\StringUtils;
+use n2n\persistence\orm\model\UnknownEntityPropertyException;
+use n2n\reflection\property\InaccessiblePropertyException;
+use n2n\reflection\property\InvalidPropertyAccessMethodException;
+use n2n\reflection\property\UnknownPropertyException;
+use n2n\util\ex\err\ConfigurationError;
+use n2n\reflection\attribute\PropertyAttribute;
+use n2n\util\type\TypeUtils;
+use n2n\persistence\orm\property\EntityProperty;
 
 class EiTypeSetup {
 
@@ -92,5 +104,60 @@ class EiTypeSetup {
 
 	function addEiModNature(EiModNature $eiModNature, ?string $id = null) {
 		$this->eiType->getEiMask()->getEiModCollection()->add($eiModNature, $id);
+	}
+
+	/**
+	 * @param string $propertyName
+	 * @param bool|null $editable
+	 * @return PropertyAccessProxy
+	 * @throws \ReflectionException
+	 * @throws InaccessiblePropertyException
+	 * @throws InvalidPropertyAccessMethodException
+	 * @throws UnknownPropertyException
+	 */
+	function getPropertyAccessProxy(string $propertyName, ?bool $editable) {
+		$propertyAccessProxy = $this->unassignedEiPresetPropsMap[$propertyName]?->getPropertyAccessProxy();
+
+		if ($propertyAccessProxy !== null && ($editable !== true || $propertyAccessProxy->isWritable())) {
+			return $propertyAccessProxy;
+		}
+
+		$propertiesAnalyzer = new PropertiesAnalyzer($this->getClass());
+		return $propertiesAnalyzer->analyzeProperty($propertyName, false);
+	}
+
+	/**
+	 * @param string $propertyName
+	 * @param bool $required
+	 * @return EntityProperty
+	 */
+	function getEntityProperty(string $propertyName, bool $required = false): ?EntityProperty {
+		try {
+			return $this->unassignedEiPresetPropsMap[$propertyName]?->getEntityProperty()
+					?? $this->getEntityModel()->getLevelEntityPropertyByName($propertyName);
+		} catch (UnknownEntityPropertyException $e) {
+			if (!$required) {
+				return null;
+			}
+
+			throw $e;
+		}
+	}
+
+	/**
+	 * @param string $propertyName
+	 * @return string
+	 */
+	function getPropertyLabel(string $propertyName) {
+		return $this->unassignedEiPresetPropsMap[$propertyName]?->getLabel() ?? StringUtils::pretty($propertyName);
+	}
+
+	function createPropertyAttributeError(PropertyAttribute $propertyAttribute, \Throwable $previous = null,
+			string $message = null): ConfigurationError {
+
+		throw new ConfigurationError(
+				$message ?? 'Could not initialize EiProp for '
+						. TypeUtils::prettyReflPropName($propertyAttribute->getProperty()),
+				$propertyAttribute->getFile(), $propertyAttribute->getLine(), previous: $previous);
 	}
 }

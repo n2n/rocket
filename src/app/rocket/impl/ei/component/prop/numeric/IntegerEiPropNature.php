@@ -36,12 +36,16 @@ use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifField;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraints;
 
 class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	const INT_SIGNED_MIN = -2147483648;
 	const INT_SIGNED_MAX = 2147483647;
-	
 
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::int(true)));
+	}
 	
 	/**
 	 * {@inheritDoc}
