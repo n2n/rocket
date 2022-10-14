@@ -35,20 +35,18 @@ use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
 use rocket\ei\manage\gui\field\GuiField;
+use n2n\reflection\property\PropertyAccessProxy;
 
 
 class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	
-	public function __construct() {
-		$this->relationModel = new RelationModel($this, false, true, RelationModel::MODE_SELECT);
+	public function __construct(ToManyEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, false, true, RelationModel::MODE_SELECT));
+
 		$this->relationModel->setReadOnly(true);
-	}
-	
-	public function setEntityProperty(?EntityProperty $entityProperty): void {
-		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty 
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
-	
-		parent::setEntityProperty($entityProperty);
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {

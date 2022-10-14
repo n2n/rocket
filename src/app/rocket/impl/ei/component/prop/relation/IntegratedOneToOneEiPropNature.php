@@ -35,7 +35,6 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\Raw;
 use n2n\web\ui\UiComponent;
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
@@ -52,23 +51,18 @@ use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\ei\manage\EiObject;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class IntegratedOneToOneEiProp extends RelationEiPropNatureAdapter /*implements GuiPropFork*/ {
-	
-	public function __construct() {
-		parent::__construct();
-		
-		$this->setup(null, new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, null));
+
+	public function __construct(ToOneEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, null));
 	}
 	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
-	
-		parent::setEntityProperty($entityProperty);
-	}
-	
-	private $forkedGuiDefinition;
+	private GuiDefinition $forkedGuiDefinition;
 	
 	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
 		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())

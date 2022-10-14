@@ -49,22 +49,27 @@ use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
 use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\reflection\property\AccessProxy;
+use n2n\util\type\TypeConstraints;
+use rocket\impl\ei\component\prop\adapter\EditableAdapter;
 
-abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements PropertyEiPropNature,
-		RelationEiProp, GuiFieldAssembler {
-	use DisplayableAdapter, PropertyAdapter;
-	
-	/**
-	 * @var RelationModel
-	 */
-	protected RelationModel $relationModel;
-	
-	/**
-	 * @var Relation
-	 */
-	private $relation;
+abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, GuiFieldAssembler {
+	use DisplayableAdapter;
 
-		
+	private PropertyAccessProxy $proertyAccessProxy;
+
+	function __construct(private readonly RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy,
+			protected readonly RelationModel $relationModel) {
+		$getterTypeConstraint = TypeConstraints::namedType($entityProperty->getTargetEntityModel()->getClass(), true);
+		if ($this->relationModel->isTargetMany()) {
+			$getterTypeConstraint = TypeConstraints::arrayLike(true, $getterTypeConstraint);
+		}
+
+		$this->proertyAccessProxy = $accessProxy->createRestricted($getterTypeConstraint);
+
+	}
+
 	function isPrivileged(): bool {
 		return true;
 	}
@@ -179,7 +184,11 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 	 * @see \rocket\impl\ei\component\prop\relation\RelationEiProp::getRelationEntityProperty()
 	 */
 	function getRelationEntityProperty(): RelationEntityProperty {
-		return $this->requireEntityProperty();
+		return $this->entityProperty;
+	}
+
+	function getPropertyAccessProxy(): ?AccessProxy {
+		return $this->propertyAccessProxy;
 	}
 	
 	/**

@@ -34,7 +34,7 @@ use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 
 trait DisplayableAdapter {
-	private DisplayConfig $displayConfig;
+	protected DisplayConfig $displayConfig;
 
 	/**
 	 *

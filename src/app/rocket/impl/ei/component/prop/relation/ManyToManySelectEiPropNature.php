@@ -35,21 +35,20 @@ use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraint;
+use n2n\util\type\TypeConstraints;
 
 
 class ManyToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	
-	public function __construct() {
-		$this->relationModel = new RelationModel($this, true, true, RelationModel::MODE_SELECT);
+	public function __construct(ToManyEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, true, true, RelationModel::MODE_SELECT));
 	}
-	
-	public function setEntityProperty(?EntityProperty $entityProperty): void {
-		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
-	
-		parent::setEntityProperty($entityProperty);
-	}
-	
+
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
@@ -58,7 +57,7 @@ class ManyToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->isReadOnly()) {
+		if ($readOnly || $this->relationModel->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

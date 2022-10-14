@@ -39,31 +39,20 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\entry\EiuEntry;
+use n2n\impl\persistence\orm\property\ToOneEntityProperty;
+use n2n\reflection\property\PropertyAccessProxy;
+use rocket\si\meta\SiStructureType;
 
 class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 
-	/**
-	 * 
-	 */
-	public function __construct() {	
-		parent::__construct();
-		
-		$this->setup(
-				new DisplayConfig(ViewMode::all()),
-				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED, 
-						(new EditAdapter())->setMandatoryChoosable(false)->setMandatory(false)));
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setEntityProperty()
-	 */
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
-	
-		parent::setEntityProperty($entityProperty);
+	public function __construct(ToManyEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED));
+
+		$this->displayConfig = (new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
+				->setDefaultDisplayedViewModes(ViewMode::bulky());
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {

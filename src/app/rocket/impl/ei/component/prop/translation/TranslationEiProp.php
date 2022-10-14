@@ -58,20 +58,12 @@ class TranslationEiProp extends RelationEiPropNatureAdapter {
 	 * @var TranslationConfig
 	 */
 	private $translationConfig;
-	
-	public function __construct() {
-		parent::__construct();
-		
-		$this->setup(
-				new DisplayConfig(ViewMode::all()),
+
+	public function __construct(ToOneEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
+
+		parent::__construct($entityProperty, $accessProxy,
 				new RelationModel($this, false, true, RelationModel::MODE_INTEGRATED, null));
-		
-		$this->translationConfig = new TranslationConfig();
-	}
-	
-	public function prepare() {
-		parent::prepare();
-		$this->getConfigurator()->addAdaption($this->translationConfig);
 	}
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {

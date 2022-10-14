@@ -40,28 +40,20 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\entry\EiuEntry;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
-	
-	/**
-	 * 
-	 */
-	public function __construct() {
-		parent::__construct();
-		
-		$this->setup(
-				(new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
-						->setDefaultDisplayedViewModes(ViewMode::bulky()),
-				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED, new EditAdapter()));
+
+	public function __construct(ToOneEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED));
+
+		$this->displayConfig = (new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
+				->setDefaultDisplayedViewModes(ViewMode::bulky());
 	}
 
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
-	
-		parent::setEntityProperty($entityProperty);
-	}
-	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());

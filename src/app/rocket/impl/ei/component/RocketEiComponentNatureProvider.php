@@ -44,6 +44,14 @@ use n2n\persistence\orm\property\ClassSetup;
 use rocket\attribute\impl\Addon;
 use rocket\impl\ei\component\prop\meta\SiCrumbGroupFactory;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\impl\ei\component\prop\translation\Translatable;
+use rocket\impl\ei\component\prop\translation\TranslationEiProp;
+use n2n\persistence\orm\attribute\OneToMany;
+use n2n\reflection\attribute\Attribute;
+use n2n\persistence\orm\CascadeType;
+use rocket\ei\component\prop\EiProp;
+use n2n\reflection\attribute\PropertyAttribute;
+use rocket\impl\ei\component\prop\relation\RelationEiProp;
 
 #[ThreadScoped]
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
@@ -169,29 +177,37 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 		}
 	}
 
-	private function findGoodPresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed) {
+	private function findGoodPresetMatch(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed,
+			EiTypeSetup $eiTypeSetup) {
 
 
 		// temporary hack
 		if ($eiPresetProp->getEntityProperty() instanceof RelationEntityProperty) {
 			/**
-			 * @var RelationEntityProperty $relationEntityProperty;
+			 * @var RelationEntityProperty $entityProperty;
 			 */
-			$relationEntityProperty = $eiPresetProp->getEntityProperty();
+			$entityProperty = $eiPresetProp->getEntityProperty();
+			$accessProxy = $eiPresetProp->getPropertyAccessProxy();
 
-			switch ($relationEntityProperty->getType()) {
+			switch ($entityProperty->getType()) {
 				case RelationEntityProperty::TYPE_MANY_TO_MANY:
-					$relationEiProp = new ManyToManySelectEiPropNature();
+					$relationEiProp = new ManyToManySelectEiPropNature($entityProperty, $accessProxy);
 					break;
 				case RelationEntityProperty::TYPE_ONE_TO_MANY:
-					$relationEiProp = new OneToManySelectEiPropNature();
+					if ($entityProperty->getTargetEntityModel()->getClass()->implementsInterface(Translatable::class)) {
+						$relationEiProp = new TranslationEiProp($entityProperty, $accessProxy);
+						$this->checkCascadeAllAndOrphanRemoval($relationEiProp, $eiTypeSetup->getAttributeSet()
+								->getPropertyAttribute($eiPresetProp->getName(), OneToMany::class));
+					} else {
+						$relationEiProp = new OneToManySelectEiPropNature($entityProperty, $accessProxy);
+					}
 					break;
 				case RelationEntityProperty::TYPE_MANY_TO_ONE:
-					$relationEiProp = new ManyToOneSelectEiPropNature();
+					$relationEiProp = new ManyToOneSelectEiPropNature($entityProperty, $accessProxy);
 					$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
 					break;
 				case RelationEntityProperty::TYPE_ONE_TO_ONE:
-					$relationEiProp = new OneToOneSelectEiPropNature();
+					$relationEiProp = new OneToOneSelectEiPropNature($entityProperty, $accessProxy);
 					$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
 					break;
 				default:
@@ -257,5 +273,19 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 		$nature->setPrefixSiCrumbGroups(SiCrumbGroupFactory::parseCrumbGroups($addon->prefixes));
 		$nature->setSuffixSiCrumbGroups(SiCrumbGroupFactory::parseCrumbGroups($addon->suffixes));
+	}
+
+	private function checkCascadeAllAndOrphanRemoval(RelationEiProp $eiProp, ?PropertyAttribute $attribute) {
+		$relationEntityProperty = $eiProp->getRelationEntityProperty();
+		IllegalStateException::assertTrue($relationEntityProperty);
+
+		$relation = $relationEntityProperty->getRelation();
+
+		if ($relation->getCascadeType() === CascadeType::ALL && $relation->isOrphanRemoval()) {
+			return;
+		}
+
+		throw new ConfigurationError(get_class($eiProp) . ' requires CascadeType::ALL and orphanRemoval=true for'
+				. $relationEntityProperty->toPropertyString(), $attribute?->getFile(), $attribute?->getLine());
 	}
 }

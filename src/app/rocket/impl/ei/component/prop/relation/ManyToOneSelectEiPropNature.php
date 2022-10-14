@@ -45,21 +45,19 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\ei\manage\security\filter\SecurityFilterProp;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	private $quickSearchableConfig;
-	
-	function __construct() {
-		$this->relationModel = new RelationModel($this, true, false, RelationModel::MODE_SELECT);
-		
-		
-	}
-	
-	function setEntityProperty(?EntityProperty $entityProperty): void {
-		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
-				&& $entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
-		
-		parent::setEntityProperty($entityProperty);
+
+	public function __construct(ToOneEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, true, false, RelationModel::MODE_SELECT));
+
+		$this->relationModel->setReadOnly(true);
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {

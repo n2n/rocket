@@ -41,22 +41,20 @@ use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
 use rocket\impl\ei\component\prop\adapter\EditableAdapter;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
+use n2n\reflection\property\PropertyAccessProxy;
 
 class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	use QuickSearchTrait;
-	
-	public function __construct() {
-		$this->relationModel = new RelationModel($this, false, false, RelationModel::MODE_SELECT);
-		
-		
-	}
 
-//	public function setEntityProperty(?EntityProperty $entityProperty) {
-//		ArgUtils::assertTrue($entityProperty instanceof ToOneEntityProperty
-//				&& $entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
-//
-//		parent::setEntityProperty($entityProperty);
-//	}
+	public function __construct(ToManyEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
+
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, false, false, RelationModel::MODE_SELECT));
+
+		$this->relationModel->setReadOnly(true);
+	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
 		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
