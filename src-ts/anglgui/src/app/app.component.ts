@@ -4,7 +4,7 @@ import { Extractor } from './util/mapping/extractor';
 import { UiMenuGroup } from './ui/structure/model/ui-menu';
 import { SiUiService } from './si/manage/si-ui.service';
 import { AppStateService } from './app-state.service';
-import { UserFactory } from './op/user/model/user-fatory';
+import { UserFactory } from './op/user/model/user-factory';
 import { User } from './op/user/bo/user';
 import { UiNavPoint } from './ui/util/model/ui-nav-point';
 import { PlatformService } from './util/nav/platform.service';

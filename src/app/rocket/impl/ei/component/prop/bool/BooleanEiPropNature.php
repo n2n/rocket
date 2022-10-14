@@ -45,8 +45,13 @@ use rocket\impl\ei\component\prop\bool\conf\BooleanConfig;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\control\SiIconType;
+use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
+use rocket\impl\ei\component\prop\meta\AddonAdapter;
 
-class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements SecurityFilterEiProp {
+class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
+	use AddonAdapter;
+
 	private $booleanConfig;
 	
 	function __construct() {
@@ -71,7 +76,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setEntityProperty()
 	 */
-	function setEntityProperty(?EntityProperty $entityProperty) {
+	function setEntityProperty(?EntityProperty $entityProperty): void {
 		ArgUtils::assertTrue($entityProperty instanceof BoolEntityProperty 
 				|| $entityProperty instanceof ScalarEntityProperty || $entityProperty === null);
 		
@@ -82,7 +87,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter::setPropertyAccessProxy()
 	 */
-	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
+	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy): void {
 // 		if ($propertyAccessProxy === null) {
 // 			return;
 // 		}

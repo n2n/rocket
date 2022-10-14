@@ -15,7 +15,7 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\ArgUtils;
 
-class BooleanConfig extends PropConfigAdaption {
+class BooleanConfig {
 	const ATTR_BIND_GUI_PROPS_KEY = 'associatedGuiProps';
 	const ATTR_ON_ASSOCIATED_GUI_PROP_KEY = 'onAssociatedGuiProps';
 	const ATTR_OFF_ASSOCIATED_GUI_PROP_KEY = 'offAssociatedGuiProps';

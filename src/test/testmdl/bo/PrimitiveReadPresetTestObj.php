@@ -18,6 +18,8 @@ class PrimitiveReadPresetTestObj {
 	private ?string $stringNullPriTest = null;
 	private string $stringEditablePriTest;
 
+	public bool $boolPubTest;
+
 
 	public function getStringNullPriTest(): ?string {
 		return $this->stringNullPriTest;

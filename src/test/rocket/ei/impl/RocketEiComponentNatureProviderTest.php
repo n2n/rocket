@@ -11,6 +11,7 @@ use testmdl\bo\RelationTestObj2;
 use testmdl\bo\TranslatableTestObj;
 use testmdl\bo\TranslationTestObj;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
+use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
 
 class RocketEiComponentNatureProviderTest extends TestCase {
 
@@ -22,7 +23,7 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
-		$this->assertCount(5, $eiProps);
+		$this->assertCount(6, $eiProps);
 
 		$this->assertTrue($eiProps['id']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['id']->getNature()->isMandatory());
@@ -36,6 +37,8 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$this->assertFalse($eiProps['stringEditablePriTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringEditablePriTest']->getNature()->isMandatory());
 		$this->assertEquals('Super duper label', $eiProps['stringEditablePriTest']->getNature()->getLabel());
+
+		$this->assertInstanceOf(BooleanEiPropNature::class, $eiProps['boolPubTest']->getNature());
 
 
 		$this->assertTrue($eiProps['stringGetTest']->getNature()->isReadOnly());

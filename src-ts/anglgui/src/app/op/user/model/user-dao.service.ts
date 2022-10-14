@@ -3,7 +3,7 @@ import { User, UserPower } from '../bo/user';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { UserFactory } from './user-fatory';
+import { UserFactory } from './user-factory';
 import { Observable } from 'rxjs';
 import { ErrorMapFactory } from 'src/app/util/err/error-map';
 
