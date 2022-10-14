@@ -51,7 +51,7 @@ use n2n\reflection\property\PropertyAccessProxy;
 class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	private $quickSearchableConfig;
 
-	public function __construct(ToOneEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+	public function __construct(RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
 		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_ONE);
 
 		parent::__construct($entityProperty, $accessProxy,

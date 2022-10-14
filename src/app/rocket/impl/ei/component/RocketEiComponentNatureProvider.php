@@ -45,7 +45,7 @@ use rocket\attribute\impl\Addon;
 use rocket\impl\ei\component\prop\meta\SiCrumbGroupFactory;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\impl\ei\component\prop\translation\Translatable;
-use rocket\impl\ei\component\prop\translation\TranslationEiProp;
+use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use n2n\persistence\orm\attribute\OneToMany;
 use n2n\reflection\attribute\Attribute;
 use n2n\persistence\orm\CascadeType;
@@ -195,7 +195,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 					break;
 				case RelationEntityProperty::TYPE_ONE_TO_MANY:
 					if ($entityProperty->getTargetEntityModel()->getClass()->implementsInterface(Translatable::class)) {
-						$relationEiProp = new TranslationEiProp($entityProperty, $accessProxy);
+						$relationEiProp = new TranslationEiPropNature($entityProperty, $accessProxy);
 						$this->checkCascadeAllAndOrphanRemoval($relationEiProp, $eiTypeSetup->getAttributeSet()
 								->getPropertyAttribute($eiPresetProp->getName(), OneToMany::class));
 					} else {
@@ -215,7 +215,6 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 			}
 			$relationEiProp->getRelationModel()->setReadOnly(!$eiPresetProp->isEditable());
 			$relationEiProp->setLabel($eiPresetProp->getLabel());
-			$this->assignProperties($eiPresetProp, $relationEiProp);
 
 			return $relationEiProp;
 		}
@@ -277,7 +276,6 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 	private function checkCascadeAllAndOrphanRemoval(RelationEiProp $eiProp, ?PropertyAttribute $attribute) {
 		$relationEntityProperty = $eiProp->getRelationEntityProperty();
-		IllegalStateException::assertTrue($relationEntityProperty);
 
 		$relation = $relationEntityProperty->getRelation();
 

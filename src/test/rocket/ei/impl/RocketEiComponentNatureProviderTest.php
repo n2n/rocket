@@ -8,6 +8,9 @@ use testmdl\bo\PrimitiveReadPresetTestObj;
 use testmdl\bo\ModTestObj;
 use testmdl\bo\RelationTestObj1;
 use testmdl\bo\RelationTestObj2;
+use testmdl\bo\TranslatableTestObj;
+use testmdl\bo\TranslationTestObj;
+use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class RocketEiComponentNatureProviderTest extends TestCase {
 
@@ -59,5 +62,19 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
 		$this->assertCount(2, $eiProps);
+	}
+
+	function testTranslations() {
+		$spec = SpecTestEnv::setUpSpec([TranslatableTestObj::class, TranslationTestObj::class]);
+
+		$eiType = $spec->getEiTypeByClassName(TranslatableTestObj::class);
+
+		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
+
+
+		$this->assertCount(1, $eiProps);
+
+		$nature = $eiProps['translatableTestObjs']->getNature();
+		$this->assertInstanceOf(TranslationEiPropNature::class, $nature);
 	}
 }

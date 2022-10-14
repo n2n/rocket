@@ -25,7 +25,7 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\idname\IdNamePropFork;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\translation\TranslationEiProp;
+use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use n2n\util\col\ArrayUtils;
 use rocket\ei\manage\LiveEiObject;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
@@ -37,11 +37,11 @@ class TranslationIdNamePropFork implements IdNamePropFork {
 	 */
 	private $relationModel;
 	/**
-	 * @var TranslationEiProp
+	 * @var TranslationEiPropNature
 	 */
 	private $eiProp;
 	
-	public function __construct(RelationModel $relationModel, TranslationEiProp $eiProp) {
+	public function __construct(RelationModel $relationModel, TranslationEiPropNature $eiProp) {
 		$this->relationModel = $relationModel;
 		$this->eiProp = $eiProp;
 	}

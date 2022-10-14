@@ -40,7 +40,7 @@ use n2n\reflection\property\PropertyAccessProxy;
 
 class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	
-	public function __construct(ToManyEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+	public function __construct(RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
 		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_MANY);
 
 		parent::__construct($entityProperty, $accessProxy,

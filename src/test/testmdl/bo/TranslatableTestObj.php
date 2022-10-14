@@ -14,13 +14,15 @@ use n2n\l10n\N2nLocale;
 use page\bo\PageT;
 use rocket\impl\ei\component\prop\translation\Translator;
 use n2n\persistence\orm\attribute\ManyToMany;
+use n2n\persistence\orm\attribute\OneToMany;
+use n2n\persistence\orm\CascadeType;
 
 #[EiType]
 #[EiPreset(EiPresetMode::READ)]
 class TranslatableTestObj {
 
 	private int $id;
-	#[OneToMany(TranslationTestObj::class, mappedBy: 'translatableTestObj')]
+	#[OneToMany(TranslationTestObj::class, mappedBy: 'translatableTestObj', cascade: CascadeType::ALL, orphanRemoval: true)]
 	public \ArrayObject $translatableTestObjs;
 
 

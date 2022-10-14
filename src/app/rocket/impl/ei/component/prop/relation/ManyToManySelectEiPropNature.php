@@ -42,7 +42,7 @@ use n2n\util\type\TypeConstraints;
 
 class ManyToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	
-	public function __construct(ToManyEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+	public function __construct(RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
 		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_MANY_TO_MANY);
 
 		parent::__construct($entityProperty, $accessProxy,
