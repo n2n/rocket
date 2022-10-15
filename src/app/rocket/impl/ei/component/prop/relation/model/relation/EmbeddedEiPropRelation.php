@@ -27,7 +27,7 @@ use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeUtils;
@@ -50,14 +50,14 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 
 		if (!$this->isPersistCascaded()) {
 			$entityProperty = $this->getRelationEiProp()->getEntityProperty();
-			throw new InvalidEiComponentConfigurationException(
+			throw new InvalidEiConfigurationException(
 					'EiProp requires an EntityProperty which cascades persist: ' 
 							. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(),
 									$entityProperty->getName()));
 		}
 		
 		if ($this->isDraftable() && !$this->isJoinTableRelation($this)) {
-			throw new InvalidEiComponentConfigurationException(
+			throw new InvalidEiConfigurationException(
 					'Only EiProps of properties with join table relations can be drafted.');
 		}
 		
@@ -67,7 +67,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 		$entityProperty = $this->getRelationEntityProperty();
 		if (!$entityProperty->getRelation()->isOrphanRemoval()) {
 			if (!$this->getOrphansAllowed()) {
-				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+				throw new InvalidEiConfigurationException('EiProp requires an EntityProperty '
 						. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or an EiProp configuration with ' 
 						. RelationConfig::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
@@ -75,7 +75,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 			
 			if (!$this->getRelationEntityProperty()->isMaster() && !$this->isSourceMany()
 					&& !$this->getTargetMasterAccessProxy()->getConstraint()->allowsNull()) {
-				throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+				throw new InvalidEiConfigurationException('EiProp requires an EntityProperty '
 						. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 						. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
 						. ' must accept null.');

@@ -25,7 +25,7 @@ use rocket\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\persistence\meta\structure\Column;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use n2n\util\ex\IllegalStateException;
 
 abstract class ConfigAdaption implements EiConfiguratorAdaption {
@@ -62,8 +62,8 @@ abstract class ConfigAdaption implements EiConfiguratorAdaption {
 		return !$accessProxy->getConstraint()->allowsNull() && !$accessProxy->getConstraint()->isArrayLike();
 	}
 	/**
-	 * @throws InvalidEiComponentConfigurationException
 	 * @return string
+	 * @throws InvalidEiConfigurationException
 	 */
 	protected function requirePropertyName() {
 		$propertyAssignation = $this->getPropertyAssignation();
@@ -76,6 +76,6 @@ abstract class ConfigAdaption implements EiConfiguratorAdaption {
 			return $accessProxy->getPropertyName();
 		}
 		
-		throw new InvalidEiComponentConfigurationException('No property assigned to EiProp: ' . $this->eiComponent);
+		throw new InvalidEiConfigurationException('No property assigned to EiProp: ' . $this->eiComponent);
 	}
 }

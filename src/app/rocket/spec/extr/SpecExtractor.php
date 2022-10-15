@@ -22,7 +22,7 @@
 namespace rocket\spec\extr;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use n2n\util\type\attrs\AttributesException;
 use n2n\config\InvalidConfigurationException;
 use rocket\spec\InvalidSpecConfigurationException;
@@ -58,7 +58,7 @@ class SpecExtractor {
 	}
 	
 	private function createEiComponentException($componentName, \Exception $previous) {
-		throw new InvalidEiComponentConfigurationException('Component invalid configurated: ' . $componentName, 
+		throw new InvalidEiConfigurationException('Component invalid configurated: ' . $componentName,
 				0, $previous);
 	}
 	
@@ -265,12 +265,12 @@ class SpecExtractor {
 	}
 	
 	private function createEiModificatorsException(TypePath $typePath, \Exception $previous) {
-		throw new InvalidEiComponentConfigurationException('EiModificators for type path \'' 
+		throw new InvalidEiConfigurationException('EiModificators for type path \''
 				. $typePath . '\' have invalid configurations.', 0, $previous);
 	}
 	
 	private function createEiModificatorException(string $id, TypePath $typePath, \Exception $previous) {
-		throw new InvalidEiComponentConfigurationException('EiModificator with id \'' . $id
+		throw new InvalidEiConfigurationException('EiModificator with id \'' . $id
 				. '\' for type path \'' . $typePath . '\' contains invalid configurations.', 0, $previous);
 	}
 	

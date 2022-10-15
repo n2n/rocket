@@ -30,7 +30,7 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\ReflectionException;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\util\type\CastUtils;
 use n2n\persistence\orm\CascadeType;
@@ -398,7 +398,7 @@ class RelationModel {
 			try {
 				$this->finalize($eiuEngine);
 			} catch (InvalidConfigurationException $e) {
-				throw new InvalidEiComponentConfigurationException('Failed to setup EiProp: ' . $this->relationEiProp,
+				throw new InvalidEiConfigurationException('Failed to setup EiProp: ' . $this->relationEiProp,
 						0, $e);
 			}
 		});
@@ -458,7 +458,7 @@ class RelationFinalizer {
 	}
 	
 	/**
-	 * @throws InvalidEiComponentConfigurationException
+	 * @throws InvalidEiConfigurationException
 	 */
 	function deterTargetPropInfo(EiuEngine $targetEiuEngine) {
 		$targetEiMask = $targetEiuEngine->getEiEngine()->getEiMask();
@@ -497,8 +497,8 @@ class RelationFinalizer {
 	/**
 	 * @param RelationEntityProperty $entityProperty
 	 * @param EiMask $targetEiMask
-	 * @throws InvalidEiComponentConfigurationException
 	 * @return TargetPropInfo
+	 * @throws InvalidEiConfigurationException
 	 */
 	private function deterTargetMaster(EiMask $targetEiMask) {
 		$mappedRelation = $this->relationModel->getRelationEntityProperty()->getRelation();
@@ -518,7 +518,7 @@ class RelationFinalizer {
 		try {
 			return new TargetPropInfo(null, $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName()));
 		} catch (ReflectionException $e) {
-			throw new InvalidEiComponentConfigurationException('No target master property accessible: '
+			throw new InvalidEiConfigurationException('No target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}
 	}
@@ -532,7 +532,7 @@ class RelationFinalizer {
 			return;			
 		}
 		
-		throw new InvalidEiComponentConfigurationException('Non-master OneToXEiProp is editable and doesn\'t remove '
+		throw new InvalidEiConfigurationException('Non-master OneToXEiProp is editable and doesn\'t remove '
 				. 'orphans. So target master property must allow null: '
 				. $this->relationModel->getTargetPropInfo()->masterAccessProxy);
 	}
@@ -542,7 +542,7 @@ class RelationFinalizer {
 		$entityProperty = $this->relationModel->getRelationEntityProperty();
 		
 		if (!($entityProperty->getRelation()->getCascadeType() & CascadeType::PERSIST)) {
-			throw new InvalidEiComponentConfigurationException(
+			throw new InvalidEiConfigurationException(
 					'EiProp requires an EntityProperty which cascades persist: '
 							. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(),
 									$entityProperty->getName()));
@@ -559,7 +559,7 @@ class RelationFinalizer {
 		}
 		
 		if (!$this->relationModel->isOrphansAllowed()) {
-			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+			throw new InvalidEiConfigurationException('EiProp requires an EntityProperty '
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 					. ' which removes orphans or an EiProp configuration with '
 					. RelationConfig::ATTR_ORPHANS_ALLOWED_KEY . '=true.');
@@ -567,7 +567,7 @@ class RelationFinalizer {
 		
 		if (!$entityProperty->isMaster() && !$this->relationModel->isSourceMany()
 				&& !$this->relationModel->getTargetPropInfo()->masterAccessProxy->getConstraint()->allowsNull()) {
-			throw new InvalidEiComponentConfigurationException('EiProp requires an EntityProperty '
+			throw new InvalidEiConfigurationException('EiProp requires an EntityProperty '
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
 					. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
 					. ' must accept null.');

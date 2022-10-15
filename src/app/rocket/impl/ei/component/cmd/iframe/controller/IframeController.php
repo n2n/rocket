@@ -6,7 +6,7 @@ use n2n\web\http\PageNotFoundException;
 use n2n\web\ui\Raw;
 use rocket\ei\util\EiuCtrl;
 use rocket\impl\ei\component\cmd\iframe\config\IframeConfig;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use n2n\util\magic\MagicObjectUnavailableException;
 use n2n\web\http\controller\Controller;
 
@@ -51,11 +51,11 @@ class IframeController extends ControllerAdapter {
  		try {
  			$controller = $eiuCtrl->eiu()->lookup($this->iframeConfig->getControllerLookupId());
  		} catch (MagicObjectUnavailableException $e) {
- 			throw new InvalidEiComponentConfigurationException($this->eiCmd . ' invalid configured.', 0, $e);
+ 			throw new InvalidEiConfigurationException($this->eiCmd . ' invalid configured.', 0, $e);
  		}
 		
  		if (!($controller instanceof Controller)) {
- 			throw new InvalidEiComponentConfigurationException($this->eiCmd . ' invalid configured. '
+ 			throw new InvalidEiConfigurationException($this->eiCmd . ' invalid configured. '
  					. get_class($controller) . ' does not implement ' . Controller::class, 0, $e);
  		}
 		

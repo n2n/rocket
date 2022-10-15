@@ -43,7 +43,7 @@ use rocket\ei\manage\security\InaccessibleEiCmdPathException;
 use n2n\util\uri\Url;
 use rocket\ei\EiPropPath;
 use n2n\util\type\CastUtils;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
@@ -120,7 +120,7 @@ abstract class EiPropRelation {
 	
 	
 	/**
-	 * @throws InvalidEiComponentConfigurationException
+	 * @throws InvalidEiConfigurationException
 	 */
 	private function initTargetMasterEiProp() {
 		$entityProperty = $this->getRelationEntityProperty();
@@ -149,7 +149,7 @@ abstract class EiPropRelation {
 		try {
 			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName());
 		} catch (ReflectionException $e) {
-			throw new InvalidEiComponentConfigurationException('No Target master property accessible: '
+			throw new InvalidEiConfigurationException('No Target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}
 	}

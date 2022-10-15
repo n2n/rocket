@@ -94,14 +94,14 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @param string $id
 	 * @param EiComponentNature $eiComponent
 	 * @return string
-	 *@throws InvalidEiComponentConfigurationException
+	 *@throws InvalidEiConfigurationException
 	 */
 	protected function makeId(?string $id, EiComponentNature $eiComponent) {
 		if ($id === null || 0 == mb_strlen($id)) {
 			$id = $this->createUniqueId($eiComponent->getIdBase() 
 					?? TypeUtils::buildTypeAcronym(get_class($eiComponent)));
 		} else if (IdPath::constainsSpecialIdChars($id)) {
-			throw new InvalidEiComponentConfigurationException($this->elementName . ' contains invalid id: '
+			throw new InvalidEiConfigurationException($this->elementName . ' contains invalid id: '
 					. $id);
 		}
 		

@@ -30,7 +30,7 @@ use rocket\core\model\launch\UnknownLaunchPadException;
 use n2n\util\type\attrs\AttributesException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\reflection\ReflectionException;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use n2n\persistence\orm\model\UnknownEntityPropertyException;
 use n2n\config\InvalidConfigurationException;
 use rocket\ei\mask\EiMask;
@@ -53,6 +53,10 @@ use n2n\util\StringUtils;
 use rocket\spec\setup\EiTypeFactory;
 use rocket\spec\setup\SpecConfigLoader;
 use n2n\reflection\ReflectionUtils;
+use rocket\attribute\NestedSet;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use n2n\persistence\orm\criteria\item\CrIt;
+use n2n\util\ex\err\ConfigurationError;
 
 class Spec {
 	/**
@@ -163,7 +167,8 @@ class Spec {
 			return $this->eiTypes[$className];
 		}
 
-		$eiTypeAttribute = ReflectionContext::getAttributeSet($class)->getClassAttribute(\rocket\attribute\EiType::class);
+		$attributeSet = ReflectionContext::getAttributeSet($class);
+		$eiTypeAttribute = $attributeSet->getClassAttribute(\rocket\attribute\EiType::class);
 		if ($eiTypeAttribute === null) {
 			if (!$required) {
 				return null;
@@ -179,14 +184,16 @@ class Spec {
 
 		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($this->classNameToId($className), $class,
 				$label, $pluralLabel);
-		
+
+		$this->checkForNestedSet($eiType);
+
 		if ($eiType->getEntityModel()->hasSuperEntityModel()) {
 			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
 			
 			try {
 				$eiType->setSuperEiType($this->initEiTypeFromClass($superClass, true));
 			} catch (UnknownEiTypeException $e) {
-				throw new InvalidConfigurationException('EiType for ' . $class->getName()
+				throw new InvalidEiConfigurationException('EiType for ' . $class->getName()
 						. ' requires super EiType for ' . $superClass->getName());
 			}
 		}
@@ -207,6 +214,23 @@ class Spec {
 		$this->checkForMenuItem($eiType);
 		
 		return $eiType;
+	}
+
+	private function checkForNestedSet(EiType $eiType) {
+		$nestedSetAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
+				->getClassAttribute(NestedSet::class);
+		if ($nestedSetAttribute === null) {
+			return;
+		}
+
+		$nestedSet = $nestedSetAttribute->getInstance();
+		try {
+			$eiType->setNestedSetStrategy(new NestedSetStrategy(CrIt::p($nestedSet->leftProp),
+					CrIt::p($nestedSet->rightProp)));
+		} catch (\InvalidArgumentException $e) {
+			throw new ConfigurationError($e->getMessage(), $nestedSetAttribute->getFile(),
+					$nestedSetAttribute->getLine(), previous: $e);
+		}
 	}
 
 	private function checkForMenuItem(EiType $eiType) {
@@ -704,7 +728,7 @@ class PropIn {
 				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
 				$accessProxy->setNullReturnAllowed(true);
 			} catch (ReflectionException $e) {
-				$this->handleException(new InvalidEiComponentConfigurationException('EiProp is assigned to unknown property: '
+				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown property: '
 						. $this->objectPropertyName, 0, $e), $eiErrorResult);
 			}
 		}
@@ -714,7 +738,7 @@ class PropIn {
 			try {
 				$entityProperty = $entityPropertyCollection->getEntityPropertyByName($this->entityPropertyName, true);
 			} catch (UnknownEntityPropertyException $e) {
-				$this->handleException(new InvalidEiComponentConfigurationException('EiProp is assigned to unknown EntityProperty: '
+				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown EntityProperty: '
 						. $this->entityPropertyName, 0, $e), $eiErrorResult);
 			}
 		}
@@ -740,12 +764,12 @@ class PropIn {
 	
 	/**
 	 * @param \Throwable $e
-	 * @return \rocket\ei\component\InvalidEiComponentConfigurationException
+	 * @return \rocket\ei\component\InvalidEiConfigurationException
 	 */
 	private function createException($e) {
 		$eiComponent = $this->eiPropConfigurator->getEiComponent();
 		
-		return new InvalidEiComponentConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in ' 
+		return new InvalidEiConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in '
 				. $eiComponent->getWrapper()->getEiPropCollection()->getEiMask(), 0, $e);
 	}
 }

@@ -56,7 +56,7 @@ use rocket\attribute\impl\EiPropBool;
 use rocket\impl\ei\component\prop\enum\EnumEiPropNature;
 use rocket\attribute\impl\EiPropEnum;
 use rocket\impl\ei\component\prop\adapter\EditableEiPropNature;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use n2n\reflection\property\AccessProxy;
 
 #[ThreadScoped]

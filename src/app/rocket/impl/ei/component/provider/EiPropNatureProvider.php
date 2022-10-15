@@ -19,7 +19,7 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\reflection\attribute\PropertyAttribute;
 use n2n\persistence\orm\CascadeType;
 use n2n\util\ex\err\ConfigurationError;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use rocket\spec\setup\EiPresetProp;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\impl\ei\component\prop\relation\ManyToManySelectEiPropNature;
@@ -268,6 +268,6 @@ class EiPropNatureProvider {
 			throw $this->eiTypeSetup->createPropertyAttributeError($attribute, null, $message);
 		}
 
-		throw new InvalidEiComponentConfigurationException($message);
+		throw new InvalidEiConfigurationException($message);
 	}
 }

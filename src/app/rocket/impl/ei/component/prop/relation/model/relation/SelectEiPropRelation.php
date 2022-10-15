@@ -25,7 +25,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
-use rocket\ei\component\InvalidEiComponentConfigurationException;
+use rocket\ei\component\InvalidEiConfigurationException;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;
@@ -42,7 +42,7 @@ class SelectEiPropRelation extends EiPropRelation {
 		parent::init($eiu, $targetEiType, $targetEiMask, $targetEiTypeExtensions);
 
 		if ($this->isEmbeddedAddEnabled() && !$this->isPersistCascaded()) {
-			throw new InvalidEiComponentConfigurationException(
+			throw new InvalidEiConfigurationException(
 					'Enabled embedded add option requires EntityProperty which cascades persist.');
 		}
 		
