@@ -28,6 +28,7 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$this->assertTrue($eiProps['id']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['id']->getNature()->isMandatory());
+		$this->assertEquals('Id', $eiProps['id']->getNature()->getLabel());
 
 		$this->assertTrue($eiProps['stringPriTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringPriTest']->getNature()->isMandatory());

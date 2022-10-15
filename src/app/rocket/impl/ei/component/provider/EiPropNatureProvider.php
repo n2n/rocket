@@ -215,8 +215,10 @@ class EiPropNatureProvider {
 			return false;
 		}
 
-		$this->eiTypeSetup->addEiPropNature($eiPresetProp->getName(),
-				new StringDisplayEiPropNature($eiPresetProp->getPropertyAccessProxy()));
+		$nature = new StringDisplayEiPropNature($eiPresetProp->getPropertyAccessProxy());
+		$nature->setLabel($eiPresetProp->getLabel());
+
+		$this->eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $nature);
 		return true;
 	}
 
