@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\bool\command;
 
-use rocket\impl\ei\component\prop\bool\OnlineEiProp;
+use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
@@ -39,7 +39,7 @@ class OnlineController extends ControllerAdapter {
 		$this->mc = $mc;
 	}
 	
-	public function setOnlineEiProp(OnlineEiProp $onlineEiProp) {
+	public function setOnlineEiProp(OnlineEiPropNature $onlineEiProp) {
 		$this->onlineEiProp = $onlineEiProp;
 	}
 	

@@ -158,7 +158,7 @@ class ToManyEiField extends EiFieldAdapter {
 	 * @see \rocket\ei\manage\entry\EiField::isWritable()
 	 */
 	public function isWritable(): bool {
-		return $this->eiu->object()->isNativeWritable($this->eiProp);
+		return $this->eiu->object()->isNativeWritable($this->eiu->prop()->getEiProp());
 	}
 	
 	/**
@@ -178,7 +178,7 @@ class ToManyEiField extends EiFieldAdapter {
 			}
 		}
 		
-		$this->eiu->object()->writeNativeValue($this->eiProp, $nativeValues);		
+		$this->eiu->object()->writeNativeValue($this->eiu->prop()->getEiProp(), $nativeValues);
 	}
 	
 	/**

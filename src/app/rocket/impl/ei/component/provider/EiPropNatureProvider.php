@@ -40,6 +40,8 @@ use n2n\l10n\N2nLocale;
 use rocket\impl\ei\component\prop\l10n\N2NLocaleEiPropNature;
 use rocket\impl\ei\component\prop\date\DateTimeEiPropNature;
 use rocket\impl\ei\component\prop\string\StringDisplayEiPropNature;
+use rocket\attribute\impl\EiPropOnlineStatus;
+use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 
 class EiPropNatureProvider {
 
@@ -93,6 +95,17 @@ class EiPropNatureProvider {
 
 			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
 		}
+
+		foreach ($this->eiTypeSetup->getAttributeSet()->getPropertyAttributesByName(EiPropOnlineStatus::class)
+				 as $eiPropOnlineAttribute) {
+			$propertyName = $eiPropOnlineAttribute->getProperty()->getName();
+
+			$nature = new OnlineEiPropNature($this->getPropertyAccessProxy($eiPropOnlineAttribute, false));
+			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
+
+			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
+		}
+
 	}
 
 	function provideRelation(EiPresetProp $eiPresetProp): bool{
@@ -143,7 +156,7 @@ class EiPropNatureProvider {
 	function provideCommon(EiPresetProp $eiPresetProp): bool {
 		$nullAllowed = false;
 		foreach (NatureProviderUtils::compileTypeNames($eiPresetProp, $nullAllowed) as $typeName) {
-			if ($this->provideObjectPropNaturesByType($eiPresetProp, $typeName, $nullAllowed)
+			if ($this->provideAdvPropNaturesByType($eiPresetProp, $typeName, $nullAllowed)
 					|| $this->providePrimitivePropNaturesByType($eiPresetProp, $typeName, $nullAllowed)) {
 				return true;
 			}
@@ -152,7 +165,7 @@ class EiPropNatureProvider {
 		return false;
 	}
 
-	private function provideObjectPropNaturesByType(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed): bool {
+	private function provideAdvPropNaturesByType(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed): bool {
 		switch ($typeName) {
 			case File::class:
 				$nature = new FileEiPropNature($eiPresetProp->getPropertyAccessProxy());
@@ -162,6 +175,13 @@ class EiPropNatureProvider {
 				break;
 			case \DateTime::class:
 				$nature = new DateTimeEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				break;
+			case 'bool':
+				if ($eiPresetProp->getName() !== 'online' || !$eiPresetProp->isEditable()) {
+					return false;
+				}
+
+				$nature = new OnlineEipropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
 			default:
 				return false;

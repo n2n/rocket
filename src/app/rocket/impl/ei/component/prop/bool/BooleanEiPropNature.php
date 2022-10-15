@@ -165,11 +165,11 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 			$notactiveDefPropPaths = array();
 			
 			if ($eiu->field()->getValue()) {
-				$activeDefPropPaths = $this->booleanConfig->getOnAssociatedDefPropPaths();
-				$notactiveDefPropPaths = $this->booleanConfig->getOffAssociatedDefPropPaths();
+				$activeDefPropPaths = $this->getOnAssociatedDefPropPaths();
+				$notactiveDefPropPaths = $this->getOffAssociatedDefPropPaths();
 			} else {
-				$activeDefPropPaths = $this->booleanConfig->getOffAssociatedDefPropPaths();
-				$notactiveDefPropPaths = $this->booleanConfig->getOnAssociatedDefPropPaths();
+				$activeDefPropPaths = $this->getOffAssociatedDefPropPaths();
+				$notactiveDefPropPaths = $this->getOnAssociatedDefPropPaths();
 			}
 			
 			foreach ($notactiveDefPropPaths as $eiPropPath) {

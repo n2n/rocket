@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\bool\command;
 
-use rocket\impl\ei\component\prop\bool\OnlineEiProp;
+use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiIconType;
@@ -30,12 +30,13 @@ use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use rocket\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
+use rocket\ei\EiPropPath;
 
 class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 	const CONTROL_KEY = 'online';
 	const ID_BASE = 'online-status';
 	
-	private $onlineEiProp;
+	private $eiPropPath;
 	
 	public function getIdBase(): ?string {
 		return self::ID_BASE;
@@ -45,13 +46,13 @@ class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 		return 'Online Status';
 	}
 	
-	public function setOnlineEiProp(OnlineEiProp $onlineEiProp) {
-		$this->onlineEiProp = $onlineEiProp;
+	public function setEiPropPath(EiPropPath $eiPropPath) {
+		$this->eiPropPath = $eiPropPath;
 	}
 		
 	public function lookupController(Eiu $eiu): Controller {
 		$controller = $eiu->lookup(OnlineController::class);
-		$controller->setOnlineEiProp($this->onlineEiProp);
+		$controller->setOnlineEiProp($this->eiPropPath);
 		$controller->setOnlineEiCommand($this);
 		return $controller;
 	}
@@ -73,7 +74,7 @@ class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 				->setIconImportant(true)
 				->setIconAlways(true);
 		
-		$status = $eiuEntry->getValue($this->onlineEiProp);
+		$status = $eiuEntry->getValue($this->eiPropPath);
 		if ($status) {
 			$siButton->setType(SiButton::TYPE_SUCCESS);
 			$siButton->setIconType(SiIconType::ICON_CHECK_CIRCLE);
@@ -84,7 +85,7 @@ class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 		
 		$guiControl = $eiuControlFactory->newCallback(self::CONTROL_KEY, $siButton, 
 				function () use ($eiu, $eiuEntry, $status, $dtc) {
-					$eiuEntry->setValue($this->onlineEiProp, !$status);
+					$eiuEntry->setValue($this->eiPropPath, !$status);
 					if (!$eiuEntry->save()) {
 						return $eiu->factory()->newControlResponse()
 								->message($dtc->t('ei_entry_errors_must_first_be_handled_err'));

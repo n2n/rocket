@@ -116,7 +116,10 @@ class EiTypeSetup {
 	 * @throws UnknownPropertyException
 	 */
 	function getPropertyAccessProxy(string $propertyName, ?bool $editable) {
-		$propertyAccessProxy = $this->unassignedEiPresetPropsMap[$propertyName]?->getPropertyAccessProxy();
+		$propertyAccessProxy = null;
+		if (isset($this->unassignedEiPresetPropsMap[$propertyName])) {
+			$propertyAccessProxy = $this->unassignedEiPresetPropsMap[$propertyName]->getPropertyAccessProxy();
+		}
 
 		if ($propertyAccessProxy !== null && ($editable !== true || $propertyAccessProxy->isWritable())) {
 			return $propertyAccessProxy;
@@ -132,9 +135,13 @@ class EiTypeSetup {
 	 * @return EntityProperty
 	 */
 	function getEntityProperty(string $propertyName, bool $required = false): ?EntityProperty {
+		$entityProperty = null;
+		if (isset($this->unassignedEiPresetPropsMap[$propertyName])) {
+			$entityProperty = $this->unassignedEiPresetPropsMap[$propertyName]->getEntityProperty();
+		}
+
 		try {
-			return $this->unassignedEiPresetPropsMap[$propertyName]?->getEntityProperty()
-					?? $this->getEntityModel()->getLevelEntityPropertyByName($propertyName);
+			return $entityProperty ?? $this->getEntityModel()->getLevelEntityPropertyByName($propertyName);
 		} catch (UnknownEntityPropertyException $e) {
 			if (!$required) {
 				return null;

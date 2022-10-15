@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\manage\gui;
+namespace rocket\ei\util\control;
 
 use rocket\si\control\SiCallResponse;
 use rocket\ei\util\EiuAnalyst;

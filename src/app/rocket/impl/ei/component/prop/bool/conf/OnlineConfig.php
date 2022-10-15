@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\bool\conf;
 
-use rocket\impl\ei\component\prop\bool\OnlineEiProp;
+use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use rocket\impl\ei\component\prop\bool\command\OnlineNatureEiCommand;
 use rocket\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
@@ -37,7 +37,7 @@ class OnlineConfig extends PropConfigAdaption {
 
 	private $onlineEiProp;
 	
-	function __construct(OnlineEiProp $onlineEiProp) {
+	function __construct(OnlineEiPropNature $onlineEiProp) {
 		$this->onlineEiProp = $onlineEiProp;
 	}
 	
@@ -59,12 +59,7 @@ class OnlineConfig extends PropConfigAdaption {
 		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);
 	}
 	
-	function setup(Eiu $eiu, DataSet $dataSet) {
-		$onlineEiCommand = new OnlineNatureEiCommand();
-		$onlineEiCommand->setOnlineEiProp($this->onlineEiProp);
-		
-		$eiu->mask()->addCmd($onlineEiCommand, true);
-	}
+
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 	}
