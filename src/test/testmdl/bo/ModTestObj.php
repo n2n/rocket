@@ -20,12 +20,11 @@ class ModTestObj {
 
 	#[EiSetup]
 	private static function setup(Eiu $eiu): void {
-		$eiu->mask()->addCmd(EiCmdNatures::generalCallback(
-				function (Eiu $eiu) {
-					return SiButton::danger('Super duper danger!');
-				},
-				function (Eiu $eiu) {
-					return $eiu->factory()->newControlResponse()->redirectToHref('https://n2n.rocks/');
-				}));
+		$eiu->mask()->addCmd(EiCmdNatures::callback()->addGeneralGuiControl(function (Eiu $eiu) {
+			return $eiu->f()->gc()->newCallback('hc', SiButton::danger('Super duper danger!'),
+					function (Eiu $eiu) {
+						return $eiu->factory()->newControlResponse()->redirectToHref('https://n2n.rocks/');
+					});
+		}));
 	}
 }
