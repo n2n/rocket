@@ -154,6 +154,15 @@ class Spec {
 		return str_replace('-', '\\', $id);
 	}
 
+
+	private function initEiTypeFromClassName(string $className, bool $required) {
+		if (isset($this->eiTypes[$className])) {
+			return $this->eiTypes[$className];
+		}
+
+		return $this->initEiTypeFromClass(new \ReflectionClass($className));
+	}
+
 	/**
 	 * @param \ReflectionClass $class
 	 * @param bool $required
@@ -184,6 +193,9 @@ class Spec {
 
 		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($this->classNameToId($className), $class,
 				$label, $pluralLabel);
+		if ($eiTypeA->icon !== null) {
+			$eiType->getEiMask()->getDef()->setIconType($eiTypeA->icon);
+		}
 
 		$this->checkForNestedSet($eiType);
 
@@ -411,27 +423,22 @@ class Spec {
 	/**
 	 * @param object $entityObj
 	 * @return EiType
-	 *@throws UnknownTypeException
-	 * @throws \InvalidArgumentException
+	 * @throws UnknownEiTypeException
 	 */
-	public function getEiTypeOfObject($entityObj) {
-		ArgUtils::valType($entityObj, 'object');
-		
+	public function getEiTypeOfObject(object $entityObj) {
 		$class = new \ReflectionClass($entityObj);
 		$orgClassName = $class->getName();
 		
 		do {
 			$className = $class->getName();
 			if ($this->containsEiTypeClassName($className)) {
-				$eiType = $this->initEiTypeFromClassName($className);
-				$this->triggerEiSetup();
-				return $eiType;
+				return $this->initEiTypeFromClassName($className, true);
 			}
 		} while ($class = $class->getParentClass());
 		
-		$this->specExtractionManager->getEiTypeExtractionByClassName($orgClassName);
+		throw new UnknownEiTypeException('No EiType found for class: ' . get_class($entityObj));
 	}
-	
+
 	
 	/**
 	 * @return EiType[]

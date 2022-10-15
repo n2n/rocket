@@ -28,6 +28,7 @@ use n2n\util\type\CastUtils;
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
 use rocket\ei\util\gui\EiuEntryGui;
+use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class LazyTranslationEssentialsDeterminer {
 	private $eiu;
@@ -46,7 +47,7 @@ class LazyTranslationEssentialsDeterminer {
 	 */
 	private $targetEiuEntryGuis = [];
 	
-	function __construct(Eiu $eiu, Eiu $targetEiu, TranslationConfig $translationConfig) {
+	function __construct(Eiu $eiu, Eiu $targetEiu, TranslationEiPropNature $translationConfig) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiu->frame();
 		$this->targetEiuGuiFrame = $targetEiu->guiFrame();

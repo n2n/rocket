@@ -19,14 +19,42 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\attribute;
+namespace rocket\impl\ei\component\prop\translation\conf;
 
-/**
- * Marks an entity for usage in rocket.
- */
-#[\Attribute(\Attribute::TARGET_CLASS)]
-class EiType {
+use n2n\l10n\N2nLocale;
 
-	function __construct(public ?string $label = null, public ?string $pluralLabel = null, public ?string $icon = null) {
+class N2nLocaleDef {
+	private $n2nLocale;
+	private $mandatory;
+	private $label;
+	
+	public function __construct(N2nLocale $n2nLocale, bool $mandatory, string $label = null) {
+		$this->n2nLocale = $n2nLocale;
+		$this->mandatory = $mandatory;
+		$this->label = $label;
+	}
+	
+	public function getN2nLocaleId() {
+		return $this->n2nLocale->getId();
+	}
+	
+	public function getN2nLocale() {
+		return $this->n2nLocale;
+	}
+	
+	public function isMandatory(): bool {
+		return $this->mandatory;
+	}
+	
+	public function getLabel() {
+		return $this->label;
+	}
+	
+	public function buildLabel(N2nLocale $n2nLocale) {
+		if ($this->label !== null) {
+			return $this->label;
+		}
+		
+		return $this->n2nLocale->getName($n2nLocale);
 	}
 }

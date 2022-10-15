@@ -85,7 +85,7 @@ class ToManyEiField extends EiFieldAdapter {
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::readValue()
 	 */
 	protected function readValue() {
-		$targetEntityObjs = $this->eiu->object()->readNativValue($this->eiProp);
+		$targetEntityObjs = $this->eiu->object()->readNativValue($this->eiu->prop()->getEiProp());
 		
 		if ($targetEntityObjs === null) {
 			return [];

@@ -628,12 +628,12 @@ class ContextSiFieldDeterminer {
 		foreach ($this->forkDefPropPaths as $forkDefPropPath) {
 			$eiProp = $eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByDefPropPath($forkDefPropPath)->getEiProp();
 			
-			$siProp = (new SiProp((string) $forkDefPropPath, $eiProp->getLabelLstr()->t($n2nLocale)))
+			$siProp = (new SiProp((string) $forkDefPropPath, $eiProp->getNature()->getLabelLstr()->t($n2nLocale)))
 					->setDescendantPropIds(array_map(
 							function ($defPropPath) { return (string) $defPropPath; },
 							$this->forkedDefPropPaths[(string) $forkDefPropPath]));
 			
-			if (null !== ($helpTextLstr = $eiProp->getHelpTextLstr())) {
+			if (null !== ($helpTextLstr = $eiProp->getNature()->getHelpTextLstr())) {
 				$siProp->setHelpText($helpTextLstr);
 			}
 			

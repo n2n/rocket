@@ -27,6 +27,7 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 use rocket\ei\manage\gui\GuiPropSetup;
+use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -47,7 +48,7 @@ class TranslationGuiProp implements GuiProp {
 	/**
 	 * @param GuiDefinition $guiDefinition
 	 */
-	function __construct(RelationModel $relationModel, TranslationConfig $translationConfig) {
+	function __construct(RelationModel $relationModel, TranslationEiPropNature $translationConfig) {
 		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getGuiDefinition();
 		$this->relationModel = $relationModel;
 		$this->translationConfig = $translationConfig;

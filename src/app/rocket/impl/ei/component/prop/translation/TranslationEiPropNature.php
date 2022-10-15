@@ -53,6 +53,8 @@ use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
 use rocket\ei\manage\idname\IdNamePropFork;
 use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
+use n2n\core\config\WebConfig;
 
 class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	/**
@@ -67,23 +69,67 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 		parent::__construct($entityProperty, $accessProxy,
 				new RelationModel($this, false, true, RelationModel::MODE_INTEGRATED, null));
 	}
-	
-//	public function setEntityProperty(?EntityProperty $entityProperty) {
-//		ArgUtils::assertTrue($entityProperty instanceof ToManyEntityProperty
-//				&& $entityProperty->getType() == RelationEntityProperty::);
-//
-//		if (!$entityProperty->getRelation()->getTargetEntityModel()->getClass()
-//				->implementsInterface(Translatable::class)) {
-//			throw new \InvalidArgumentException('Target entity ('
-//					. $entityProperty->getTargetEntityModel()->getClass()->getName()
-//					. ') must implement ' . Translatable::class);
-//		}
-//
-//		$this->entityProperty = $entityProperty;
-//	}
+
+	/**
+	 * @var array
+	 */
+	private array $n2nLocaleDefs = array();
+	/**
+	 * @var int
+	 */
+	private int $translationsMinNum = 1;
+
+
+// 	public function __construct(TranslationEiProp $translationEiProp) {
+// 		$this->translationEiProp = $translationEiProp;
+// 	}
+
+
+	function setup(Eiu $eiu): void {
+		parent::setup($eiu);
+
+		if (empty($this->n2nLocaleDefs)) {
+			$n2nLocaleDefs = array_map(fn ($l) => new N2nLocaleDef($l, false),
+					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
+
+			foreach ($n2nLocaleDefs as $n2nLocaleDef) {
+				$this->n2nLocaleDefs[$n2nLocaleDef->getN2nLocale()->getId()] = $n2nLocaleDef;
+			}
+		}
+	}
+
+	public function setN2nLocaleDefs(array $n2nLocaleDefs) {
+		ArgUtils::valArray($n2nLocaleDefs, N2nLocaleDef::class);
+		$this->n2nLocaleDefs = $n2nLocaleDefs;
+	}
+
+	/**
+	 * @return N2nLocaleDef[]
+	 */
+	public function getN2nLocaleDefs() {
+		return $this->n2nLocaleDefs;
+	}
+
+// 	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
+// 		$this->copyCommand = $translationCopyCommand;
+// 	}
+
+	/**
+	 * @param int $minNumTranslations
+	 */
+	public function setTranslationsMinNum(int $minNumTranslations) {
+		$this->translationsMinNum = $minNumTranslations;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTranslationsMinNum() {
+		return $this->translationsMinNum;
+	}
 	
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
-		return new TranslationGuiProp($this->getRelationModel(), $this->translationConfig);
+		return new TranslationGuiProp($this->getRelationModel(), $this);
 	}
 
 	public function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork {
@@ -162,7 +208,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());

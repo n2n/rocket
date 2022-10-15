@@ -30,6 +30,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\manage\DefPropPath;
 use rocket\ei\EiCmdPath;
+use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $targetEiuGuiFrame;
@@ -37,7 +38,7 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $translationConfig;
 	
 	function __construct(EiuGuiFrame $targetEiuGuiFrame, EiCmdPath $eiCmdPath,
-			TranslationConfig $translationConfig) {
+			TranslationEiPropNature $translationConfig) {
 		$this->targetEiuGuiFrame = $targetEiuGuiFrame;
 		$this->eiCmdPath = $eiCmdPath;
 		$this->translationConfig = $translationConfig;

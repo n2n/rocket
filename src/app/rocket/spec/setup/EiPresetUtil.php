@@ -51,7 +51,7 @@ class EiPresetUtil {
 
 		$eiPresetProps = [];
 
-		if ($this->eiPreset->mode->isReadPropsMode()) {
+		if ($this->eiPreset->mode?->isReadPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
 				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
 					continue;
@@ -62,7 +62,7 @@ class EiPresetUtil {
 						$this->eiPreset->containsEditProp($propertyName),
 						$this->eiPreset->getPropLabel($propertyName));
 			}
-		} elseif ($this->eiPreset->mode->isEditPropsMode()) {
+		} elseif ($this->eiPreset->mode?->isEditPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
 				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
 					continue;
