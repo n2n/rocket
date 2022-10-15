@@ -53,7 +53,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 
 	private function getEiFieldTypeConstraint(): ?TypeConstraint {
 		if (null !== ($accessProxy = $this->getPropertyAccessProxy())) {
-			return $accessProxy->getConstraint()->getLenientCopy();
+			return $accessProxy->getSetterConstraint()->getLenientCopy();
 		}
 		
 		return null;
@@ -68,7 +68,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutEifGuiField($eiu);
+		return $this->createOutEifGuiField($eiu)->toGuiField();
 	}
 	
 	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {

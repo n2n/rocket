@@ -288,7 +288,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	private function buildIdentityString(Eiu $eiu) {
-		$file = $eiu->object()->readNativValue($this);
+		$file = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
 		if ($file === null) return null;
 		
 		CastUtils::assertTrue($file instanceof File);

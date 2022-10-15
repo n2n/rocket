@@ -26,18 +26,18 @@ use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
-use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNatureAdapter;
+use rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureAdapter;
 
-class StringDisplayEiPropNature extends DisplayableEiPropNatureAdapter {
+class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureAdapter {
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::reduce(StringUtils::strOf($eiu->object()->readNativValue($eiu->prop())), 30, '..');
+			return StringUtils::reduce(StringUtils::strOf($eiu->object()->readNativValue($eiu->prop()->getEiProp())), 30, '..');
 		})->toIdNameProp();
 	}
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		return $eiu->factory()->newGuiField(SiFields::stringOut(
-				StringUtils::strOf($eiu->field()->getValue(), true)));
+				StringUtils::strOf($eiu->object()->readNativValue($eiu->prop()->getEiProp()), true)));
 	}
 }

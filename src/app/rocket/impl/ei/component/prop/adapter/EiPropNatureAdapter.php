@@ -84,7 +84,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	}
 
 	function getLabel() {
-		return $this->label ?? $this->label = StringUtils::pretty((new \ReflectionClass())->getShortName());
+		return $this->label ?? $this->label = StringUtils::pretty((new \ReflectionClass($this))->getShortName());
 	}
 
 	function setLabel(string $label) {

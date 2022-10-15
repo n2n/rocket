@@ -57,7 +57,8 @@ use rocket\impl\ei\component\prop\adapter\EditableAdapter;
 abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, GuiFieldAssembler {
 	use DisplayableAdapter;
 
-	private PropertyAccessProxy $proertyAccessProxy;
+	private ?Relation $relation = null;
+	private PropertyAccessProxy $propertyAccessProxy;
 
 	function __construct(private readonly RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy,
 			protected readonly RelationModel $relationModel) {
@@ -66,7 +67,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 			$getterTypeConstraint = TypeConstraints::arrayLike(true, $getterTypeConstraint);
 		}
 
-		$this->proertyAccessProxy = $accessProxy->createRestricted($getterTypeConstraint);
+		$this->propertyAccessProxy = $accessProxy->createRestricted($getterTypeConstraint);
 
 	}
 
