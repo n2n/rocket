@@ -28,6 +28,5 @@ namespace rocket\attribute;
 class EiType {
 
 	function __construct(public ?string $label = null, public ?string $pluralLabel = null) {
-
 	}
 }

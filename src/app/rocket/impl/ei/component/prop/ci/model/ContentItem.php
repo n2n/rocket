@@ -27,7 +27,14 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\reflection\ObjectAdapter;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoInheritance;
+use rocket\attribute\EiType;
+use n2n\persistence\orm\attribute\Inheritance;
+use n2n\persistence\orm\attribute\Table;
+use rocket\attribute\EiPreset;
 
+#[Table('rocket_content_item')]
+#[Inheritance(InheritanceType::JOINED)]
+#[EiType]
 abstract class ContentItem extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_content_item'));
