@@ -153,12 +153,12 @@ class EiuMask  {
 	}
 	
 	/**
-	 * @param EiCmdNature $eiCmd
+	 * @param EiCmdNature $eiCmdNature
 	 * @param bool $prepend
 	 * @return EiuCmd
 	 */
-	public function addCmd(EiCmdNature $eiCmd, bool $prepend = false) {
-		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($eiCmd, $prepend)->getEiCmdPath(), $this);
+	public function addCmd(EiCmdNature $eiCmdNature, bool $prepend = false) {
+		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($eiCmdNature, $prepend)->getEiCmdPath(), $this);
 	}
 	
 	/**

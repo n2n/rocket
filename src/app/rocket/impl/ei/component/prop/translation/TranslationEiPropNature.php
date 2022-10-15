@@ -93,7 +93,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 // 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
 // 		// @todo access locale and use EiObject with admin locale.
 		
-// 		$targetObjects = $eiu->object()->readNativValue($this);
+// 		$targetObjects = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
 		
 // 		if (empty($targetObjects)) {
 // 			return null;

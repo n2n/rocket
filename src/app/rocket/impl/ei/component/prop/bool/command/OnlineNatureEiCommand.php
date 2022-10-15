@@ -63,7 +63,7 @@ class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->factory()->controls();
+		$eiuControlFactory = $eiu->factory()->guiControl();
 		
 		$eiuFrame = $eiu->frame();
 		$dtc = new DynamicTextCollection('rocket', $eiuFrame->getN2nLocale());

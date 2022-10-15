@@ -30,64 +30,47 @@ use Closure;
 use rocket\ei\manage\gui\control\GuiControl;
 
 class CallbackEiCmdNature extends EiCmdNatureAdapter {
-	private array $entryGuiControlDefs = [];
-	private array $selectionGuiControlDefs = [];
-	private array $generalGuiControlDefs = [];
+	private array $entryCallbacks = [];
+	private array $selectionCallbacks = [];
+	private array $generalCallbacks = [];
 
-	private int $idCounter = 0;
-
-	private function makeId(?string $id): string {
-		return $id ?? 'callback-' . $this->idCounter++;
+	function addGeneralGuiControl(Closure|GuiControl $callback): static {
+		$this->generalCallbacks[] = $callback;
+		return $this;
 	}
 
-	/**
-	 * @param SiButton|Closure $siButton
-	 * @param Closure $callback
-	 * @param string|null $id
-	 * @return $this
-	 */
-	function addGeneralGuiControl(SiButton|Closure $siButton, Closure $callback, string $id = null): static {
-		$this->generalGuiControlDefs[$this->makeId($id)] = new GuiControlDef($siButton, $callback);
+	function addEntryGuiControl(Closure|GuiControl $callback): static {
+		$this->entryCallbacks[] = $callback;
+		return $this;
+	}
+
+	function addSelectionGuiControl(Closure|GuiControl $callback): static {
+		$this->selectionCallbacks[] = $callback;
 		return $this;
 	}
 
 	/**
-	 * @param SiButton|Closure $siButton
-	 * @param Closure $callback
-	 * @param string|null $id
-	 * @return $this
-	 */
-	function addEntryGuiControl(SiButton|Closure $siButton, Closure $callback, string $id = null): static {
-		$this->entryGuiControlDefs[$this->makeId($id)] = new GuiControlDef($siButton, $callback);
-		return $this;
-	}
-
-	/**
-	 * @param SiButton|Closure $siButton
-	 * @param Closure $callback
-	 * @param string|null $id
-	 * @return $this
-	 */
-	function addSelectionGuiControl(SiButton|Closure $siButton, Closure $callback, string $id = null): static {
-		$this->selectionGuiControlDefs[$this->makeId($id)] = new GuiControlDef($siButton, $callback);
-		return $this;
-	}
-
-	/**
-	 * @param GuiControlDef[] $defs
+	 * @param array $callbacks
 	 * @param Eiu $eiu
 	 * @return GuiControl[]
 	 */
-	private function createGuiControls(array $defs, Eiu $eiu) {
+	private function createGuiControls(array $callbacks, Eiu $eiu) {
 		$guiControls = [];
 
-		foreach ($defs as $key => $def) {
-			$siButton = $def->buildSiButton($eiu);
-			if ($siButton === null) {
+		foreach ($callbacks as $callback) {
+			if ($callback instanceof GuiControl) {
+				$guiControl[] = $callback;
 				continue;
 			}
 
-			$guiControls[] = $eiu->factory()->controls()->newCallback($key, $siButton, $def->getCallback());
+			$invoker = new MagicMethodInvoker($eiu->getN2nContext());
+			$invoker->setClosure($callback);
+			$invoker->setClassParamObject(Eiu::class, $eiu);
+			$invoker->setReturnTypeConstraint(TypeConstraints::namedType(GuiControl::class, true));
+
+			if (null !== ($guiControl = $invoker->invoke())) {
+				$guiControls[] = $guiControl;
+			}
 		}
 
 		return $guiControls;
@@ -98,7 +81,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 	 * @see \rocket\ei\component\command\EiCmdNature::createSelectionGuiControls()
 	 */
 	public function createSelectionGuiControls(Eiu $eiu): array {
-		return $this->createGuiControls($this->selectionGuiControlDefs, $eiu);
+		return $this->createGuiControls($this->selectionCallbacks, $eiu);
 	}
 
 	/**
@@ -106,7 +89,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 	 * @see \rocket\ei\component\command\EiCmdNature::createEntryGuiControls()
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
-		return $this->createGuiControls($this->entryGuiControlDefs, $eiu);
+		return $this->createGuiControls($this->entryCallbacks, $eiu);
 	}
 
 	/**
@@ -114,30 +97,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 	 * @see \rocket\ei\component\command\EiCmdNature::createOverallControls()
 	 */
 	public function createGeneralGuiControls(Eiu $eiu): array {
-		return $this->createGuiControls($this->generalGuiControlDefs, $eiu);
+		return $this->createGuiControls($this->generalCallbacks, $eiu);
 	}
 
-}
-
-
-class GuiControlDef {
-	function __construct(private SiButton|Closure $siButton, private Closure $callback) {
-
-	}
-
-	function buildSiButton(Eiu $eiu) {
-		if ($this->siButton instanceof SiButton) {
-			return $this->siButton;
-		}
-
-		$invoker = new MagicMethodInvoker($eiu->getN2nContext());
-		$invoker->setClassParamObject(Eiu::class, $eiu);
-		$invoker->setReturnTypeConstraint(TypeConstraints::namedType(SiButton::class, true));
-
-		return $invoker->invoke();
-	}
-
-	function getCallback() {
-		return $this->callback;
-	}
 }

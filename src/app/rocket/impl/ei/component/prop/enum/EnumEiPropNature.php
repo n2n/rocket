@@ -254,7 +254,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::strOf($eiu->object()->readNativValue($this));
+			return StringUtils::strOf($eiu->object()->readNativValue($eiu->prop()->getEiProp()));
 		})->toIdNameProp();
 	}
 }

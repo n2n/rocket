@@ -64,7 +64,7 @@ class DeleteEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 		$siButton = SiButton::danger($name, SiIconType::ICON_TRASH_ALT)->setTooltip($tooltip)
 				->setConfirm(new SiConfirm($confirmMessage, $dtc->t('common_yes_label'), $dtc->t('common_no_label'), true));
 		
-		$eiuControlFactory = $eiu->factory()->controls();
+		$eiuControlFactory = $eiu->factory()->guiControl();
 		$control = $eiuControlFactory->newCallback(self::CONTROL_BUTTON_KEY, $siButton, function (Eiu $eiu) {
 			$eiu->entry()->remove();
 		});

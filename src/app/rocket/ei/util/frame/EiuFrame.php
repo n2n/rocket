@@ -158,7 +158,8 @@ class EiuFrame {
 	 */
 	private function getApiUrl($eiCmdPath = null, string $apiSection = null) {
 		if ($eiCmdPath === null) {
-			$eiCmdPath = EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
+			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
+					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
 		} else {
 			$eiCmdPath = EiCmdPath::create($eiCmdPath);
 		}
@@ -172,7 +173,8 @@ class EiuFrame {
 	 */
 	public function getCmdUrl($eiCmdPath = null) {
 		if ($eiCmdPath === null) {
-			$eiCmdPath = EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
+			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
+					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
 		} else {
 			$eiCmdPath = EiCmdPath::create($eiCmdPath);
 		}

@@ -89,7 +89,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 		}
 		
 		$dtc = $eiu->dtc(Rocket::NS);
-		$eiuControlFactory = $eiu->factory()->controls();
+		$eiuControlFactory = $eiu->factory()->guiControl();
 		
 		$siButton = SiButton::secondary($dtc->t('ei_impl_detail_label'), $iconType)
 				->setTooltip($dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())));

@@ -108,7 +108,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return $eiu->object()->readNativValue($this);
+			return $eiu->object()->readNativValue($eiu->prop()->getEiProp());
 		})->toIdNameProp();
 	}
 }

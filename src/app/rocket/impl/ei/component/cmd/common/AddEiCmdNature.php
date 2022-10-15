@@ -135,10 +135,10 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\ei\util\control\EiuRefGuiControl
+	 * @return \rocket\ei\util\control\RefGuiControl
 	 */
 	private function createAddControl(Eiu $eiu) {
-		$eiuControlFactory = $eiu->factory()->controls();
+		$eiuControlFactory = $eiu->factory()->guiControl();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		$nestedSet = null !== $eiu->cmd()->getEiCmd()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
@@ -185,7 +185,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 			return array();
 		}
 		
-		$eiuControlFactory = $eiu->factory()->controls();
+		$eiuControlFactory = $eiu->factory()->guiControl();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
 		if ($eiu->frame()->getNestedSetStrategy() === null) {

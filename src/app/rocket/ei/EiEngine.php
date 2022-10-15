@@ -51,6 +51,7 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\component\IdNameFactory;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
+use rocket\ei\manage\gui\control\GuiControl;
 
 class EiEngine {
 	/**
@@ -321,7 +322,7 @@ class EiEngine {
 	/**
 	 * @param EiEntryGui $eiEntryGui
 	 * @param HtmlView $view
-	 * @return \rocket\ei\manage\gui\control\GuiControl[]
+	 * @return GuiControl[]
 	 */
 	function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
 		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiEntryGui, $view);

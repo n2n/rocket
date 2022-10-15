@@ -232,7 +232,7 @@ class Eiu implements Lookupable {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\factory\EiuFactory
+	 * @return EiuFactory
 	 */
 	public function factory() {
 		if ($this->eiuFactory === null) {
@@ -240,6 +240,13 @@ class Eiu implements Lookupable {
 		}
 		
 		return $this->eiuFactory;
+	}
+
+	/**
+	 * @return EiuFactory
+	 */
+	function f() {
+		return $this->factory();
 	}
 	
 	/**

@@ -80,7 +80,7 @@ class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand 
 			return [];
 		}
 		
-		$eiuControlFactory = $eiu->factory()->controls();
+		$eiuControlFactory = $eiu->factory()->guiControl();
 		$dtc = $eiu->dtc(Rocket::NS);
 			
 		$siButton = SiButton::warning($dtc->t('common_edit_label'), SiIconType::ICON_PENCIL_ALT)

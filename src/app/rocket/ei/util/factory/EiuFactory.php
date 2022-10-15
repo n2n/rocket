@@ -9,7 +9,7 @@ use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\util\control\EiuControlFactory;
+use rocket\ei\util\control\EiuGuiControlFactory;
 
 class EiuFactory {
 	private $eiu;
@@ -33,17 +33,24 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return EiuControlResponse
 	 */
 	function newControlResponse() {
 		return new EiuControlResponse($this->eiuAnalyst);
 	}
 	
 	/**
-	 * @return \rocket\ei\util\control\EiuControlFactory
+	 * @return EiuGuiControlFactory
 	 */
-	function controls() {
-		return new EiuControlFactory($this->eiuAnalyst);
+	function guiControl() {
+		return new EiuGuiControlFactory($this->eiuAnalyst);
+	}
+
+	/**
+	 * @return EiuGuiControlFactory
+	 */
+	function gc() {
+		return $this->guiControl();
 	}
 	
 	/**

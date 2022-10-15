@@ -58,7 +58,7 @@ class EditController extends ControllerAdapter {
 	}
 	
 	private function createControls() {
-		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->controls();
+		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->guiControl();
 		$dtc = $this->eiuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [

@@ -37,7 +37,6 @@ class SiCallResponse implements \JsonSerializable {
 	
 	private $directive;
 	private $navPoint;
-	private $href;
 	/**
 	 * @var array
 	 */

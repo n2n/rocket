@@ -111,7 +111,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	public function buildIdentityString(Eiu $eiu, N2nLocale $n2nLocale): ?string {
-		$value = $eiu->object()->readNativValue($this);
+		$value = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
 		
 		if ($value === null) {
 			return null;

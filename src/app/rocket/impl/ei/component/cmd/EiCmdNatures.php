@@ -23,39 +23,15 @@ namespace rocket\impl\ei\component\cmd;
 
 use rocket\si\control\SiButton;
 use rocket\impl\ei\component\cmd\callback\CallbackEiCmdNature;
+use rocket\ei\manage\gui\control\GuiControl;
+use Closure;
 
 class EiCmdNatures {
 
 	/**
-	 * @param SiButton|\Closure $siButton
-	 * @param \Closure $closure
 	 * @return CallbackEiCmdNature
 	 */
-	static function generalCallback(SiButton|\Closure $siButton, \Closure $closure) {
-		$nature = new CallbackEiCmdNature();
-		$nature->addGeneralGuiControl($siButton, $closure);
-		return $nature;
-	}
-
-	/**
-	 * @param SiButton|\Closure $siButton
-	 * @param \Closure $closure
-	 * @return CallbackEiCmdNature
-	 */
-	static function entryCallback(SiButton|\Closure $siButton, \Closure $closure) {
-		$nature = new CallbackEiCmdNature();
-		$nature->addEntryGuiControl($siButton, $closure);
-		return $nature;
-	}
-
-	/**
-	 * @param SiButton|\Closure $siButton
-	 * @param \Closure $closure
-	 * @return CallbackEiCmdNature
-	 */
-	static function selectionCallback(SiButton|\Closure $siButton, \Closure $closure) {
-		$nature = new CallbackEiCmdNature();
-		$nature->addSelectionGuiControl($siButton, $closure);
-		return $nature;
+	static function callback() {
+		return new CallbackEiCmdNature();
 	}
 }

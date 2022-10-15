@@ -19,37 +19,34 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\util\control;
+namespace rocket\impl\ei\manage\gui;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiCallResponse;
+use n2n\util\ex\NotYetImplementedException;
+use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
+use rocket\si\control\impl\RefSiControl;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\si\control\impl\GroupSiControl;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\api\ZoneApiControlCallId;
-use n2n\util\uri\Url;
 use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\ei\util\frame\EiuFrame;
+use rocket\ei\manage\api\ZoneApiControlCallId;
+use rocket\ei\EiCmdPath;
 
-class EiuGroupGuiControl implements GuiControl {
-	private $id;
-	private $siButton;
-	private $childrean = [];
-	
-	function __construct(string $id, SiButton $siButton) {
-		$this->id = $id;
-		$this->siButton = $siButton;
+class RefGuiControl implements GuiControl {
+	private $newWindow = false;
+
+	function __construct(private string $id, private Url $url, private SiButton $siButton, private bool $href) {
 	}
 	
 	function getId(): string {
 		return $this->id;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::isInputHandled()
@@ -58,26 +55,20 @@ class EiuGroupGuiControl implements GuiControl {
 		return false;
 	}
 	
-	/**
-	 * @param GuiControl $guiControl
-	 * @return \rocket\ei\util\control\EiuGroupGuiControl
-	 */
-	function add(GuiControl ...$guiControls) {
-		foreach ($guiControls as $guiControl) {
-			$this->childrean[$guiControl->getId()] = $guiControl;
-		}
-		return $this;
+	function getChilById(string $id): ?GuiControl {
+		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
 	 */
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new GroupSiControl($this->siButton, 
-				array_map(function ($child) use ($siApiCallId) {
-					return $child->toCmdSiControl($siApiCallId->guiControlPathExt($child->getId()));
-				}, $this->childrean));;
+		if ($this->href) {
+			$this->siButton->setHref($this->url);
+		}
+
+		return new RefSiControl($this->url, $this->siButton, $this->newWindow);
 	}
 	
 	/**
@@ -85,25 +76,27 @@ class EiuGroupGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
 	 */
 	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		return new GroupSiControl($this->siButton,
-				array_map(function ($child) use ($zoneUrl, $zoneControlCallId) {
-					return $child->toZoneSiControl($zoneUrl, $zoneControlCallId->guiControlPathExt($child->getId()));
-				}, $this->childrean));
-	}
-	
-	function getChilById(string $id): ?GuiControl {
-		return $this->childrean[$id] ?? null;
+		return new RefSiControl($this->url, $this->siButton, $this->newWindow);
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
-		throw new UnsupportedOperationException('no input handled');
+		throw new NotYetImplementedException();
 	}
 
 	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
-		throw new UnsupportedOperationException('no input handled');
+		throw new NotYetImplementedException();
 	}
 
 	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
-		throw new UnsupportedOperationException('no input handled');
+		throw new NotYetImplementedException();
+	}
+
+	/**
+	 * @param bool $newWindow
+	 * @return $this
+	 */
+	public function setNewWindow(bool $newWindow) {
+		$this->newWindow = $newWindow;
+		return $this;
 	}
 }

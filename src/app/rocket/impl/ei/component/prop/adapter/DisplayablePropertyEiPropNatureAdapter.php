@@ -53,7 +53,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 
 	private function getEiFieldTypeConstraint(): ?TypeConstraint {
 		if (null !== ($accessProxy = $this->getPropertyAccessProxy())) {
-			return $accessProxy->getSetterConstraint()->getLenientCopy();
+			return $accessProxy->getGetterConstraint()->getLenientCopy();
 		}
 		
 		return null;

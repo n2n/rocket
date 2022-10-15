@@ -162,7 +162,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::reduce((string) $eiu->object()->readNativValue($this), 30, '...');
+			return StringUtils::reduce((string) $eiu->object()->readNativValue($eiu->prop()->getEiProp()), 30, '...');
 		})->toIdNameProp();
 	}
 }

@@ -19,23 +19,24 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\util\control;
+namespace rocket\impl\ei\manage\gui;
 
 use rocket\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiCallResponse;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\si\control\SiButton;
 use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\si\control\impl\DeactivatedSiControl;
 use rocket\ei\manage\gui\control\GuiControl;
-use n2n\util\uri\Url;
-use rocket\ei\manage\gui\control\GuiControlPath;
+use rocket\si\control\impl\GroupSiControl;
+use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\manage\api\ZoneApiControlCallId;
+use n2n\util\uri\Url;
+use rocket\ei\component\command\EiCmdNature;
+use rocket\ei\manage\gui\control\GuiControlPath;
 
-class EiuDeactivatedGuiControl implements GuiControl {
+class GroupGuiControl implements GuiControl {
 	private $id;
 	private $siButton;
 	private $childrean = [];
@@ -57,8 +58,15 @@ class EiuDeactivatedGuiControl implements GuiControl {
 		return false;
 	}
 	
-	function getChilById(string $id): ?GuiControl {
-		return null;
+	/**
+	 * @param GuiControl $guiControl
+	 * @return \rocket\ei\util\control\GroupGuiControl
+	 */
+	function add(GuiControl ...$guiControls) {
+		foreach ($guiControls as $guiControl) {
+			$this->childrean[$guiControl->getId()] = $guiControl;
+		}
+		return $this;
 	}
 	
 	/**
@@ -66,7 +74,10 @@ class EiuDeactivatedGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
 	 */
 	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new DeactivatedSiControl($this->siButton);
+		return new GroupSiControl($this->siButton, 
+				array_map(function ($child) use ($siApiCallId) {
+					return $child->toCmdSiControl($siApiCallId->guiControlPathExt($child->getId()));
+				}, $this->childrean));;
 	}
 	
 	/**
@@ -74,18 +85,25 @@ class EiuDeactivatedGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
 	 */
 	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		return new DeactivatedSiControl($this->siButton);
+		return new GroupSiControl($this->siButton,
+				array_map(function ($child) use ($zoneUrl, $zoneControlCallId) {
+					return $child->toZoneSiControl($zoneUrl, $zoneControlCallId->guiControlPathExt($child->getId()));
+				}, $this->childrean));
+	}
+	
+	function getChilById(string $id): ?GuiControl {
+		return $this->childrean[$id] ?? null;
 	}
 	
 	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
-		throw new NotYetImplementedException();
+		throw new UnsupportedOperationException('no input handled');
 	}
 
 	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
-		throw new NotYetImplementedException();
+		throw new UnsupportedOperationException('no input handled');
 	}
 
 	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
-		throw new NotYetImplementedException();
+		throw new UnsupportedOperationException('no input handled');
 	}
 }

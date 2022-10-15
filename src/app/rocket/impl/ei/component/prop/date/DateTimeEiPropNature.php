@@ -108,7 +108,7 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			if (null !== ($dateTime = $eiu->object()->readNativValue($this))) {
+			if (null !== ($dateTime = $eiu->object()->readNativValue($eiu->prop()->getEiProp()))) {
 				return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
 			}
 			

@@ -120,7 +120,7 @@ class IntegratedOneToOneEiProp extends RelationEiPropNatureAdapter /*implements 
 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineForkedEiObject()
 	 */
 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
-		$targetObject = $eiu->object()->readNativValue($this);
+		$targetObject = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
 		if ($targetObject === null) {
 			return null;
 		}

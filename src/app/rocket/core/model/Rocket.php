@@ -108,6 +108,7 @@ class Rocket implements RequestScoped {
 
 		$this->spec = new Spec($sem, $this->dbhPool->getEntityModelManager(), $this->n2nContext, 0);
 		$this->spec->reload();
+
 		return $this->spec;
 	}
 	
