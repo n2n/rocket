@@ -26,12 +26,14 @@ class DisplayItem {
 	 * @param DefPropPath $defPropPath
 	 * @return DisplayItem
 	 */
-	public static function create(DefPropPath $defPropPath, ?string $siStructureType/*, bool $autonomic = false*/) {
+	public static function create(DefPropPath $defPropPath, ?string $siStructureType/*, bool $autonomic = false*/,
+			string $label = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
 		$orderItem->defPropPath = $defPropPath;
 // 		$orderItem->autonomic = $autonomic;
+		$orderItem->label = $label;
 		return $orderItem;
 	}
 	

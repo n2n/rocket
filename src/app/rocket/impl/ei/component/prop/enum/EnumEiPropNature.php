@@ -123,14 +123,6 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
-	
-	function getEnumConfig() {
-		if ($this->enumConfig === null) {
-			$this->enumConfig = new EnumConfig();
-		}
-		
-		return $this->enumConfig;
-	}
 
 	public function buildEiField(Eiu $eiu): ?EiField {
 		$eiu->entry()->onValidate(function () use ($eiu) {
@@ -163,7 +155,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
-			if (!$eiu->entry()->acceptsValue($this, $value)) {
+			if (!$eiu->entry()->acceptsValue($eiu->prop(), $value)) {
 				unset($choicesMap[$value]);
 			}
 		}
@@ -174,9 +166,9 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		
 		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setAssociatedPropIdsMap(array_map($mapCb, $this->enumConfig->getAssociatedDefPropPathMap()))
+				->setAssociatedPropIdsMap(array_map($mapCb, $this->getAssociatedDefPropPathMap()))
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs())
-				->setEmptyLabel($this->enumConfig->getEmptyLabel());
+				->setEmptyLabel($this->getEmptyLabel());
 		
 // 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
 // 		if (empty($defPropPathMap)) {

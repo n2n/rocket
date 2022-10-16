@@ -144,8 +144,8 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 
 		$siField = SiFields::boolIn((bool) $eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setOnAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOnAssociatedDefPropPaths()))
-				->setOffAssociatedPropIds(array_map($mapCb, $this->booleanConfig->getOffAssociatedDefPropPaths()))
+				->setOnAssociatedPropIds(array_map($mapCb, $this->getOnAssociatedDefPropPaths()))
+				->setOffAssociatedPropIds(array_map($mapCb, $this->getOffAssociatedDefPropPaths()))
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)

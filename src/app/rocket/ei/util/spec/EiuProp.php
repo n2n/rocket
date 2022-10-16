@@ -5,15 +5,18 @@ use rocket\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\EiuAnalyst;
+use rocket\ei\component\InvalidEiConfigurationException;
+use Throwable;
 
 class EiuProp {
 	private $eiPropPath;
 	private $eiuMask;
 	private $eiuAnalyst;
-	
+
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param EiuEngine $eiuEngine
+	 * @param EiuMask $eiuMask
+	 * @param EiuAnalyst $eiuAnalyst
 	 */
 	public function __construct(EiPropPath $eiPropPath, EiuMask $eiuMask, EiuAnalyst $eiuAnalyst) {
 		$this->eiPropPath = $eiPropPath;
@@ -84,5 +87,15 @@ class EiuProp {
 		
 		return $this->eiuMask->engine()->getGenericEiProperty($this->eiPropPath)
 				->eiFieldValueToEntityValue($eiEntry->getValue($this->eiPropPath, $ignoreAccessRestriction));
+	}
+
+	/**
+	 * @param string|null $message
+	 * @param Throwable|null $previous
+	 * @return mixed
+	 */
+	function createConfigException(string $message = null, Throwable $previous = null) {
+		throw new InvalidEiConfigurationException('Invalid configuration for ' . $this->getEiProp()
+				. ' Reason: ' . ($message ?? $previous?->getMessage() ?? 'unknown'), $previous);
 	}
 }

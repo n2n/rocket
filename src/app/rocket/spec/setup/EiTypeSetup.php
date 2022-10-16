@@ -95,15 +95,15 @@ class EiTypeSetup {
 			unset($this->unassignedEiPresetPropsMap[$propertyName]);
 		}
 
-		$this->eiType->getEiMask()->getEiPropCollection()->add($eiPropNature, $id ?? $propertyName);
+		$this->eiType->getEiMask()->getEiPropCollection()->add($id ?? $propertyName, $eiPropNature);
 	}
 
 	function addEiCmdNature(EiCmdNature $eiCmdNature, ?string $id = null) {
-		$this->eiType->getEiMask()->getEiCmdCollection()->add($eiCmdNature, $id);
+		$this->eiType->getEiMask()->getEiCmdCollection()->add($id, $eiCmdNature);
 	}
 
 	function addEiModNature(EiModNature $eiModNature, ?string $id = null) {
-		$this->eiType->getEiMask()->getEiModCollection()->add($eiModNature, $id);
+		$this->eiType->getEiMask()->getEiModCollection()->add($id, $eiModNature);
 	}
 
 	/**
@@ -156,7 +156,9 @@ class EiTypeSetup {
 	 * @return string
 	 */
 	function getPropertyLabel(string $propertyName) {
-		return $this->unassignedEiPresetPropsMap[$propertyName]?->getLabel() ?? StringUtils::pretty($propertyName);
+		$eiPresetProp = $this->unassignedEiPresetPropsMap[$propertyName] ?? null;
+
+		return $eiPresetProp?->getLabel() ?? StringUtils::pretty($propertyName);
 	}
 
 	function createPropertyAttributeError(PropertyAttribute $propertyAttribute, \Throwable $previous = null,

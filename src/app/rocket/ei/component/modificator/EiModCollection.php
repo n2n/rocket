@@ -45,19 +45,18 @@ class EiModCollection extends EiComponentCollection {
 	}
 
 	/**
-	 * @param EiModNature $eiModificatorNature
 	 * @param string|null $id
-	 * @param bool $prepend
+	 * @param EiModNature $eiModificatorNature
 	 * @return EiMod
 	 */
-	public function add(EiModNature $eiModificatorNature, string $id = null, bool $prepend = false) {
+	public function add(?string $id, EiModNature $eiModificatorNature) {
 		$eiModificatorPath = new EiModificatorPath($this->makeId($id, $eiModificatorNature));
 		$eiModificator = new EiMod($eiModificatorPath, $eiModificatorNature, $this);
 		
 		$this->addEiComponent($eiModificatorPath,
 				new EiMod($eiModificatorPath, $eiModificatorNature, $this));
 
-		$this->uninitializedEiModificators[] = $eiModificator;
+//		$this->uninitializedEiModificators[] = $eiModificator;
 
 		return $eiModificator;
 	}

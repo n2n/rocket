@@ -55,13 +55,13 @@ class EiPropCollection extends EiComponentCollection {
 	}
 	
 	/**
-	 * @param EiPropNature $eiProp
+	 * @param EiPropNature $eiPropNature
 	 * @param string $id
 	 * @param EiPropPath $forkEiPropPath
-	 * @return \rocket\ei\component\prop\EiProp
+	 * @return EiProp
 	 */
-	public function add(EiPropNature $eiProp, string $id = null, EiPropPath $forkEiPropPath = null) {
-		$id = $this->makeId($id, $eiProp);
+	public function add(?string $id, EiPropNature $eiPropNature, EiPropPath $forkEiPropPath = null) {
+		$id = $this->makeId($id, $eiPropNature);
 		
 		$eiPropPath = null;
 		if ($forkEiPropPath === null) {
@@ -70,18 +70,18 @@ class EiPropCollection extends EiComponentCollection {
 			$eiPropPath = $forkEiPropPath->ext($id);
 		}
 		
-		$eiProp = new EiProp($eiPropPath, $eiProp, $this);
+		$eiPropNature = new EiProp($eiPropPath, $eiPropNature, $this);
 		
-		$this->addEiComponent($eiPropPath, $eiProp);
+		$this->addEiComponent($eiPropPath, $eiPropNature);
 		
-		return $eiProp;
+		return $eiPropNature;
 	}
 	
 	/**
 	 * @param string $id
 	 * @param EiPropNature $eiProp
 	 * @param EiPropPath $forkEiPropPath
-	 * @return \rocket\ei\component\prop\EiProp
+	 * @return EiProp
 	 */
 	public function addIndependent(string $id, EiPropNature $eiProp, EiPropPath $forkEiPropPath = null) {
 		$eiPropWrapper = $this->add($eiProp, $id, $forkEiPropPath);

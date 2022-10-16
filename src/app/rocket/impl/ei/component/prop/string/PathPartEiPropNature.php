@@ -31,62 +31,120 @@ use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
+use n2n\reflection\property\PropertyAccessProxy;
+use rocket\ei\EiPropPath;
+use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
+use rocket\ei\util\spec\EiuEngine;
+use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
+use test\model\Entity;
 
 class PathPartEiPropNature extends AlphanumericEiPropNature {
-	function __construct() {
-		parent::__construct();
-	}
-	
-	function prepare() {
+
+	private ?EiPropPath $baseEiPropPath = null;
+	private ?EiPropPath $uniquePerEiPropPath = null;
+
+	private bool $allowsNull = true;
+
+	public function __construct(PropertyAccessProxy $propertyAccessProxy, EntityProperty $entityProperty) {
+		parent::__construct($propertyAccessProxy);
+
+		$this->setEntityProperty($entityProperty);
+
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
-		$this->getEditConfig()->setMandatory(false)->setMandatoryChoosable(false);
-		$this->getConfigurator()->addAdaption(new PathPartConfig($this));
+		parent::setMandatory(false);
 	}
-	
-	function getTypeName(): string {
-		return 'Path Part';
-	}
-	
-// 	function getUrlEiCommand() {
-// 		return $this->urlEiCommand;
-// 	}
 
-// 	function setUrlEiCommand($urlEiCommand) {
-// 		$this->urlEiCommand = $urlEiCommand;
-// 	}
+	function isMandatory(): bool {
+		return false;
+	}
 
-	function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
-		
-		parent::setEntityProperty($entityProperty);
+	function setMandatory(bool $nullAllowed): static {
+		$this->allowsNull = $nullAllowed;
+		return $this;
 	}
-	
-	private function buildMagInputAttrs(Eiu $eiu): array {
-		$attrs = array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control');
-		
-		if ($eiu->entry()->isNew() || $eiu->entry()->isDraft() || !$this->critical) {
-			return $attrs;
-		}
-	
-		$attrs['class'] = 'rocket-critical-input';
-		
-		if (null !== $this->criticalMessage) {
-			$dtc = new DynamicTextCollection('rocket', $eiu->getN2nLocale());
-			$attrs['data-confirm-message'] = $this->criticalMessage;
-			$attrs['data-edit-label'] =  $dtc->translate('common_edit_label');
-			$attrs['data-cancel-label'] =  $dtc->translate('common_cancel_label');
-		}
-		
-		return $attrs;
+
+	function setup(Eiu $eiu): void {
+		parent::setup($eiu);
+
+		$eiu->mask()->addMod($mod = new PathPartEiModNature($eiu->prop()->getPath(), $eiu->mask(),
+				$this->requireEntityProperty(), $this->allowsNull));
+
+		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu, $mod) {
+			if ($this->baseEiPropPath !== null) {
+				try {
+					$mod->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty($this->baseEiPropPath));
+				} catch (UnknownScalarEiPropertyException $e) {
+					throw $eiu->prop()->createConfigException(null, $e);
+				}
+			}
+
+			if ($this->uniquePerEiPropPath !== null) {
+				try {
+					$mod->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty($this->uniquePerEiPropPath));
+				} catch (UnknownGenericEiPropertyException $e) {
+					throw $eiu->prop()->createConfigException(null, $e);
+				}
+			}
+		});
 	}
+
+	/**
+	 * @return EiPropPath|null
+	 */
+	public function getBaseEiPropPath(): ?EiPropPath {
+		return $this->baseEiPropPath;
+	}
+
+	/**
+	 * @param EiPropPath|null $baseEiPropPath
+	 */
+	public function setBaseEiPropPath(?EiPropPath $baseEiPropPath): void {
+		$this->baseEiPropPath = $baseEiPropPath;
+	}
+
+	/**
+	 * @return EiPropPath|null
+	 */
+	public function getUniquePerEiPropPath(): ?EiPropPath {
+		return $this->uniquePerEiPropPath;
+	}
+
+	/**
+	 * @param EiPropPath|null $uniquePerEiPropPath
+	 */
+	public function setUniquePerEiPropPath(?EiPropPath $uniquePerEiPropPath): void {
+		$this->uniquePerEiPropPath = $uniquePerEiPropPath;
+	}
+
+//	private function buildMagInputAttrs(Eiu $eiu): array {
+//		$attrs = array('placeholder' => $this->getLabelLstr(), 'class' => 'form-control');
+//
+//		if ($eiu->entry()->isNew() || $eiu->entry()->isDraft() || !$this->critical) {
+//			return $attrs;
+//		}
+//
+//		$attrs['class'] = 'rocket-critical-input';
+//
+//		if (null !== $this->criticalMessage) {
+//			$dtc = new DynamicTextCollection('rocket', $eiu->getN2nLocale());
+//			$attrs['data-confirm-message'] = $this->criticalMessage;
+//			$attrs['data-edit-label'] =  $dtc->translate('common_edit_label');
+//			$attrs['data-cancel-label'] =  $dtc->translate('common_cancel_label');
+//		}
+//
+//		return $attrs;
+//	}
 	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setMinlength($this->getAlphanumericConfig()->getMinlength())
-				->setMaxlength($this->getAlphanumericConfig()->getMaxlength())
-				->setPrefixAddons($this->getAddonConfig()->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getAddonConfig()->getSuffixSiCrumbGroups())
+				->setMinlength($this->getMinlength())
+				->setMaxlength($this->getMaxlength())
+				->setPrefixAddons($this->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getSuffixSiCrumbGroups())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)

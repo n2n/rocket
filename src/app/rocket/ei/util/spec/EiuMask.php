@@ -147,8 +147,8 @@ class EiuMask  {
 	 * @param bool $prepend
 	 * @return EiuProp
 	 */
-	public function addProp(EiPropNature $eiProp, bool $prepend = false) {
-		return new EiuProp($this->eiMask->getEiPropCollection()->add($eiProp, $prepend)->getEiPropPath(), $this,
+	public function addProp(EiPropNature $eiProp, string $id = null) {
+		return new EiuProp($this->eiMask->getEiPropCollection()->add($id, $eiProp)->getEiPropPath(), $this,
 				$this->eiuAnalyst);
 	}
 	
@@ -157,8 +157,8 @@ class EiuMask  {
 	 * @param bool $prepend
 	 * @return EiuCmd
 	 */
-	public function addCmd(EiCmdNature $eiCmdNature, bool $prepend = false) {
-		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($eiCmdNature, $prepend)->getEiCmdPath(), $this);
+	public function addCmd(EiCmdNature $eiCmdNature, string $id = null) {
+		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($id, $eiCmdNature)->getEiCmdPath(), $this);
 	}
 	
 	/**
@@ -166,8 +166,8 @@ class EiuMask  {
 	 * @param bool $prepend
 	 * @return \rocket\ei\util\spec\EiuEngine
 	 */
-	public function addMod(EiModNature $eiModificator, bool $prepend = false) {
-		$this->eiMask->getEiModCollection()->add($eiModificator, $prepend);
+	public function addMod(EiModNature $eiModificator, string $id = null) {
+		$this->eiMask->getEiModCollection()->add($id, $eiModificator);
 		return $this;
 	}
 	

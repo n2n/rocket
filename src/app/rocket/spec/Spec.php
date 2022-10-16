@@ -57,6 +57,7 @@ use rocket\attribute\NestedSet;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\ex\err\ConfigurationError;
+use rocket\attribute\DisplayScheme;
 
 class Spec {
 	/**
@@ -198,6 +199,7 @@ class Spec {
 		}
 
 		$this->checkForNestedSet($eiType);
+		$this->checkForDisplayScheme($eiType);
 
 		if ($eiType->getEntityModel()->hasSuperEntityModel()) {
 			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
@@ -243,6 +245,24 @@ class Spec {
 			throw new ConfigurationError($e->getMessage(), $nestedSetAttribute->getFile(),
 					$nestedSetAttribute->getLine(), previous: $e);
 		}
+	}
+
+	private function checkForDisplayScheme(EiType $eiType) {
+		$displaySchemeAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
+				->getClassAttribute(DisplayScheme::class);
+		if ($displaySchemeAttribute === null) {
+			return;
+		}
+
+		$displaySchemeA = $displaySchemeAttribute->getInstance();
+		$displayScheme = $eiType->getEiMask()->getDisplayScheme();
+
+		$displayScheme->setOverviewDisplayStructure($displaySchemeA->compactDisplayStructure);
+		$displayScheme->setBulkyDisplayStructure($displaySchemeA->bulkyDisplayStructure);
+		$displayScheme->setDetailDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
+		$displayScheme->setEditDisplayStructure($displaySchemeA->bulkyEditDisplayStructure);
+		$displayScheme->setAddDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
+
 	}
 
 	private function checkForMenuItem(EiType $eiType) {

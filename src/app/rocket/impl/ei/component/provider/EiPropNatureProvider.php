@@ -42,6 +42,8 @@ use rocket\impl\ei\component\prop\date\DateTimeEiPropNature;
 use rocket\impl\ei\component\prop\string\StringDisplayEiPropNature;
 use rocket\attribute\impl\EiPropOnlineStatus;
 use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
+use rocket\impl\ei\component\prop\string\PathPartEiPropNature;
+use rocket\attribute\impl\EiPropPathPart;
 
 class EiPropNatureProvider {
 
@@ -56,6 +58,7 @@ class EiPropNatureProvider {
 
 			$nature = new BooleanEiPropNature($this->getPropertyAccessProxy($eiPropBoolAttribute, $eiPropBool->readOnly));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
+			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
 			$this->configureEditiable($eiPropBool->constant, $eiPropBool->readOnly, $eiPropBool->mandatory,
 					$nature->getPropertyAccessProxy(), $nature);
 
@@ -71,7 +74,9 @@ class EiPropNatureProvider {
 			$propertyName = $eiPropEnumAttribute->getProperty()->getName();
 
 			$nature = new EnumEiPropNature($this->getPropertyAccessProxy($eiPropEnumAttribute, $eiPropEnum->readOnly));
+			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
+			$nature->setOptions($eiPropEnum->options);
 			$nature->setAssociatedDefPropPathMap($eiPropEnum->associatedDefPropPathMap);
 
 			$this->configureEditiable($eiPropEnum->constant, $eiPropEnum->readOnly, $eiPropEnum->mandatory,
@@ -81,12 +86,13 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeSetup->getAttributeSet()->getPropertyAttributesByName(EiPropDecimal::class)
-				 as $eiPropDecimalAttribute) {
-			$eiPropDecimal = $eiPropDecimalAttribute->getInstance();
-			$propertyName = $eiPropDecimalAttribute->getProperty()->getName();
+				 as $attribute) {
+			$eiPropDecimal = $attribute->getInstance();
+			$propertyName = $attribute->getProperty()->getName();
 
-			$nature = new DecimalEiPropNature($this->getPropertyAccessProxy($eiPropDecimalAttribute, $eiPropDecimal->readOnly));
+			$nature = new DecimalEiPropNature($this->getPropertyAccessProxy($attribute, $eiPropDecimal->readOnly));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
+			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
 			$nature->setDecimalPlaces($eiPropDecimal->decimalPlaces);
 
 			$this->configureEditiable($eiPropDecimal->constant, $eiPropDecimal->readOnly, $eiPropDecimal->mandatory,
@@ -102,6 +108,25 @@ class EiPropNatureProvider {
 
 			$nature = new OnlineEiPropNature($this->getPropertyAccessProxy($eiPropOnlineAttribute, false));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
+			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
+
+			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
+		}
+
+		foreach ($this->eiTypeSetup->getAttributeSet()->getPropertyAttributesByName(EiPropPathPart::class)
+				 as $attribute) {
+			$eiPropPathPart = $attribute->getInstance();
+			$propertyName = $attribute->getProperty()->getName();
+
+			$nature = new PathPartEiPropNature($this->getPropertyAccessProxy($attribute, $eiPropPathPart->readOnly),
+					$this->eiTypeSetup->getEntityProperty($propertyName, true));
+			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
+			$nature->setBaseEiPropPath($eiPropPathPart->baseEiPropPath);
+			$nature->setUniquePerEiPropPath($eiPropPathPart->uniquePerEiPropPath);
+
+			$this->configureEditiable($eiPropPathPart->constant, $eiPropPathPart->readOnly, $eiPropPathPart->mandatory,
+					$nature->getPropertyAccessProxy(), $nature);
+			$this->configureAddons($nature->getPropertyAccessProxy(), $nature);
 
 			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
 		}
@@ -183,6 +208,16 @@ class EiPropNatureProvider {
 
 				$nature = new OnlineEipropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
+			case 'string':
+				if ($eiPresetProp->getName() === 'pathPart') {
+					$nature = new PathPartEiPropNature($eiPresetProp->getPropertyAccessProxy(), $eiPresetProp->getEntityProperty());
+				} else if (StringUtils::endsWith('Html', $eiPresetProp->getName())) {
+					$nature = new CkeEiPropNature($eiPresetProp->getPropertyAccessProxy());
+					$nature->setMaxlength(255);
+				} else {
+					return false;
+				}
+				break;
 			default:
 				return false;
 		}
@@ -201,9 +236,7 @@ class EiPropNatureProvider {
 		switch ($typeName) {
 
 			case 'string':
-				$nature = (StringUtils::endsWith('Html', $eiPresetProp->getName())
-						? new CkeEiPropNature($eiPresetProp->getPropertyAccessProxy())
-						: new StringEiPropNature($eiPresetProp->getPropertyAccessProxy()));
+				$nature = new StringEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				$nature->setMaxlength(255);
 				break;
 			case 'int':

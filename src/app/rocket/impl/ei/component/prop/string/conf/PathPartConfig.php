@@ -25,7 +25,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\impl\ei\component\prop\string\PathPartEiPropNature;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\impl\ei\component\prop\string\modificator\PathPartEiModificator;
+use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\StringUtils;
@@ -160,7 +160,7 @@ class PathPartConfig extends PropConfigAdaption {
 			$this->setCriticalMessage($dataSet->getString(self::ATTR_CRITICAL_MESSAGE_KEY));
 		}
 
-		$eiu->mask()->addMod(new PathPartEiModificator($this, $eiu->prop()->getPath(), $eiu->mask()));
+		$eiu->mask()->addMod(new PathPartEiModNature($this, $eiu->prop()->getPath(), $eiu->mask()));
 	}
 	
 	private function setupRef(Eiu $eiu, DataSet $dataSet) {

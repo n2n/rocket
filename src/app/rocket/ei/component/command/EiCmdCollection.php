@@ -56,30 +56,19 @@ class EiCmdCollection extends EiComponentCollection {
 	public function getById(string $id) {
 		return $this->getElementByIdPath(new EiCmdPath($id));
 	}
-	
+
 	/**
+	 * @param string|null $id
 	 * @param EiCmdNature $eiCmd
-	 * @param bool $prepend
 	 * @return EiCmd
 	 */
-	public function add(EiCmdNature $eiCmd, string $id = null, bool $prepend = false) {
+	public function add(?string $id, EiCmdNature $eiCmd) {
 		$eiCmdPath = new EiCmdPath($this->makeId($id, $eiCmd));
 		$eiCmd = new EiCmd($eiCmdPath, $eiCmd, $this);
 		
 		$this->addEiComponent($eiCmdPath, $eiCmd);
 		
 		return $eiCmd;
-	}
-	
-	/**
-	 * @param IndependentEiCmd $independentEiCommand
-	 * @param string $id
-	 * @return \rocket\ei\component\command\EiCmd
-	 */
-	public function addIndependent(string $id, IndependentEiCmd $independentEiCommand) {
-		$eiCmdWrapper = $this->add($independentEiCommand, $id);
-		$this->addIndependentElement($eiCmdWrapper->getEiCmdPath(), $independentEiCommand);
-		return $eiCmdWrapper;
 	}
 	
 	/**
