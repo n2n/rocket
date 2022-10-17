@@ -44,6 +44,10 @@ use rocket\attribute\impl\EiPropOnlineStatus;
 use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use rocket\impl\ei\component\prop\string\PathPartEiPropNature;
 use rocket\attribute\impl\EiPropPathPart;
+use rocket\attribute\impl\EiPropOneToManyEmbedded;
+use rocket\attribute\impl\EiPropOneToOneEmbedded;
+use n2n\util\uri\Url;
+use rocket\impl\ei\component\prop\string\UrlEiPropNature;
 
 class EiPropNatureProvider {
 
@@ -145,6 +149,7 @@ class EiPropNatureProvider {
 		$entityProperty = $eiPresetProp->getEntityProperty();
 		$accessProxy = $eiPresetProp->getPropertyAccessProxy();
 		$nullAllowed = $accessProxy->getSetterConstraint()->allowsNull();
+		$propertyName = $eiPresetProp->getName();
 
 		switch ($entityProperty->getType()) {
 			case RelationEntityProperty::TYPE_MANY_TO_MANY:
@@ -157,6 +162,14 @@ class EiPropNatureProvider {
 							->getPropertyAttribute($eiPresetProp->getName(), OneToMany::class));
 				} else {
 					$relationEiProp = new OneToManySelectEiPropNature($entityProperty, $accessProxy);
+					$oneToManyEmbeddedAttribute = $this->eiTypeSetup->getAttributeSet()
+							->getPropertyAttribute($propertyName, EiPropOneToManyEmbedded::class);
+					if ($oneToManyEmbeddedAttribute !== null) {
+						$oneToManyEmbedded = $oneToManyEmbeddedAttribute->getInstance();
+						$relationEiProp->getRelationModel()->setReduced($oneToManyEmbedded->reduced);
+						$relationEiProp->getRelationModel()->setTargetOrderEiPropPath(
+								$oneToManyEmbedded->targetOrderEiPropPath);
+					}
 				}
 				break;
 			case RelationEntityProperty::TYPE_MANY_TO_ONE:
@@ -166,6 +179,13 @@ class EiPropNatureProvider {
 			case RelationEntityProperty::TYPE_ONE_TO_ONE:
 				$relationEiProp = new OneToOneSelectEiPropNature($entityProperty, $accessProxy);
 				$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
+
+				$oneToOneEmbeddedAttribute = $this->eiTypeSetup->getAttributeSet()
+						->getPropertyAttribute($propertyName, EiPropOneToOneEmbedded::class);
+				if ($oneToOneEmbeddedAttribute !== null) {
+					$oneToOneEmbedded = $oneToOneEmbeddedAttribute->getInstance();
+					$relationEiProp->getRelationModel()->setReduced($oneToOneEmbedded->reduced);
+				}
 				break;
 			default:
 				throw new IllegalStateException();
@@ -200,6 +220,9 @@ class EiPropNatureProvider {
 				break;
 			case \DateTime::class:
 				$nature = new DateTimeEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				break;
+			case Url::class:
+				$nature = new UrlEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
 			case 'bool':
 				if ($eiPresetProp->getName() !== 'online' || !$eiPresetProp->isEditable()) {

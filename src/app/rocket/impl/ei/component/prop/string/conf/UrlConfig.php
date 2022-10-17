@@ -44,48 +44,7 @@ class UrlConfig extends PropConfigAdaption {
 	
 	private static $commonNeedles = array('url', 'link');
 	private static $commonNotNeedles = array('label', 'title', 'text');
-	
-	private $autoScheme = null;
-	private $allowedSchemes = null;
-	private $relativeAllowed = false;
-	private $lytebox = false;
-	
-	
-	public function setAllowedSchemes(?array $allowedSchemes) {
-		ArgUtils::valArray($allowedSchemes, 'string', true);
-		$this->allowedSchemes = $allowedSchemes;
-	}
-	
-	/**
-	 * @return string[]|null
-	 */
-	public function getAllowedSchemes() {
-		return $this->allowedSchemes;
-	}
-	
-	public function isRelativeAllowed(): bool {
-		return $this->relativeAllowed;
-	}
-	
-	public function setRelativeAllowed(bool $relativeAllowed) {
-		$this->relativeAllowed = $relativeAllowed;
-	}
-	
-	public function setAutoScheme(string $autoScheme = null) {
-		$this->autoScheme = $autoScheme;
-	}
-	
-	public function getAutoScheme() {
-		return $this->autoScheme;
-	}
-	
-	public function isLytebox(): bool {
-		return $this->lytebox;
-	}
-	
-	public function setLytebox(bool $lytebox) {
-		$this->lytebox = $lytebox;
-	}
+
 	
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		$level = parent::testCompatibility($propertyAssignation);

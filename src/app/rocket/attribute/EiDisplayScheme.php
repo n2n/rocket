@@ -27,7 +27,7 @@ use rocket\si\meta\SiStructureType;
 use n2n\util\StringUtils;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-class DisplayScheme {
+class EiDisplayScheme {
 
 	public ?DisplayStructure $compactDisplayStructure;
 	public ?DisplayStructure $bulkyDisplayStructure;

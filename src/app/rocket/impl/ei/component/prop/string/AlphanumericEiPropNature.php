@@ -64,9 +64,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	 */
 	private $maxlength;
 
-	function __construct(PropertyAccessProxy $propertyAccessProxy) {
-		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::string(true)));
-	}
+
 
 	/**
 	 * @return int|null

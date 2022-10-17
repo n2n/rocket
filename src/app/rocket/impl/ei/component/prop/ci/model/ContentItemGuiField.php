@@ -40,7 +40,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
 use rocket\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\impl\ei\component\prop\ci\ContentItemsEiProp;
+use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
 
 class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	/**

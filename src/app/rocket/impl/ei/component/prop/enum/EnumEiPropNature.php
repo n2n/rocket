@@ -129,7 +129,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 			$type = $eiu->field()->getValue();
 				
 			$activeDefPropPaths = array();
-			foreach ($this->enumConfig->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
+			foreach ($this->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
 				if ($value == $type) {
 					$activeDefPropPaths = $defPropPaths;
 					continue;
@@ -221,7 +221,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {
-			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->enumConfig->getOptions());
+			return new EnumFilterProp(CrIt::p($entityProperty), $this->getLabelLstr(), $this->getOptions());
 		}
 		
 		return null;

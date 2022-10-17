@@ -40,6 +40,7 @@ use rocket\ei\component\InvalidEiConfigurationException;
 use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
 use test\model\Entity;
+use n2n\util\type\TypeConstraints;
 
 class PathPartEiPropNature extends AlphanumericEiPropNature {
 
@@ -49,7 +50,7 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 	private bool $allowsNull = true;
 
 	public function __construct(PropertyAccessProxy $propertyAccessProxy, EntityProperty $entityProperty) {
-		parent::__construct($propertyAccessProxy);
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::string(true)));
 
 		$this->setEntityProperty($entityProperty);
 

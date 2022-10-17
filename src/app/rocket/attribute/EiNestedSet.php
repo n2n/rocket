@@ -24,7 +24,7 @@ namespace rocket\attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class NestedSet {
+class EiNestedSet {
 	function __construct(public string $leftProp = 'lft', public string $rightProp = 'rgt') {
 
 	}

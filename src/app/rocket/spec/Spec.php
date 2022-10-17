@@ -53,11 +53,11 @@ use n2n\util\StringUtils;
 use rocket\spec\setup\EiTypeFactory;
 use rocket\spec\setup\SpecConfigLoader;
 use n2n\reflection\ReflectionUtils;
-use rocket\attribute\NestedSet;
+use rocket\attribute\EiNestedSet;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\ex\err\ConfigurationError;
-use rocket\attribute\DisplayScheme;
+use rocket\attribute\EiDisplayScheme;
 
 class Spec {
 	/**
@@ -208,7 +208,7 @@ class Spec {
 				$eiType->setSuperEiType($this->initEiTypeFromClass($superClass, true));
 			} catch (UnknownEiTypeException $e) {
 				throw new InvalidEiConfigurationException('EiType for ' . $class->getName()
-						. ' requires super EiType for ' . $superClass->getName());
+						. ' requires super EiType for ' . $superClass->getName(), 0, $e);
 			}
 		}
 		
@@ -232,7 +232,7 @@ class Spec {
 
 	private function checkForNestedSet(EiType $eiType) {
 		$nestedSetAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
-				->getClassAttribute(NestedSet::class);
+				->getClassAttribute(EiNestedSet::class);
 		if ($nestedSetAttribute === null) {
 			return;
 		}
@@ -249,7 +249,7 @@ class Spec {
 
 	private function checkForDisplayScheme(EiType $eiType) {
 		$displaySchemeAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
-				->getClassAttribute(DisplayScheme::class);
+				->getClassAttribute(EiDisplayScheme::class);
 		if ($displaySchemeAttribute === null) {
 			return;
 		}

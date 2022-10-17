@@ -61,16 +61,16 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
-		$field->setMandatory($this->isMandatory());
+		$field->setMandatory($this->relationModel->isMandatory());
 		return $field;
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->isReadOnly()) {
+		if ($readOnly || $this->relationModel->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		

@@ -34,24 +34,49 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
 use rocket\ei\util\factory\EifGuiField;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraints;
+use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
 
 class CkeEiPropNature extends AlphanumericEiPropNature {
 	/**
 	 * @var CkeEditorConfig
 	 */
 	private $ckeConfig;
-	
-	public function __construct() {
-		parent::__construct();
-		
+
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::string(true)));
+
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
-		$this->getEditConfig()->setMandatory(false);
-		
-		$this->ckeConfig = new CkeEditorConfig();
+		$this->setMandatory(false);
 	}
-	
-	public function prepare() {
-		$this->getConfigurator()->addAdaption($this->ckeConfig);
+
+	private string $mode = self::MODE_SIMPLE;
+	private bool $tableEnabled = false;
+	private bool $bbcodeEnabled = false;
+
+	const MODE_SIMPLE = 'simple';
+	const MODE_NORMAL = 'normal';
+	const MODE_ADVANCED = 'advanced';
+
+	public function getMode() {
+		return $this->mode;
+	}
+
+	public function isTablesEnabled() {
+		return $this->tableEnabled;
+	}
+
+	public function isBbcodeEnabled() {
+		return $this->bbcodeEnabled;
+	}
+
+	public static function createDefault() {
+		return new CkeConfig(self::MODE_NORMAL, false, false);
+	}
+
+	static function getModes() {
+		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
 	}
 	
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {

@@ -39,36 +39,7 @@ use n2n\util\type\ArgUtils;
 class ContentItemsConfig extends PropConfigAdaption {
 	const ATTR_PANELS_KEY = 'panels';
 	
-	/**
-	 * @var PanelDeclaration[]
-	 */
-	private $panelDeclarations = array();
-	
-	function __construct() {
-		$this->panelDeclarations = array(new PanelDeclaration('main', 'Main', null, 0));
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function hasPanelDeclarations() {
-		return !empty($this->panelDeclarations);
-	}
-	
-	/**
-	 * @return PanelDeclaration[]
-	 */
-	function getPanelDeclarations() {
-		return $this->panelDeclarations;
-	}
-	
-	/**
-	 * @param PanelDeclaration[] $panelDeclarations
-	 */
-	function setPanelDeclarations(array $panelDeclarations) {
-		ArgUtils::valArray($panelDeclarations, PanelDeclaration::class);
-		$this->panelDeclarations = $panelDeclarations;
-	}
+
 	
 	function mag(Eiu $eiu, DataSet $dataSet, MagCollection $magCollection) {
 		$ciConfigUtils = null;

@@ -35,37 +35,60 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\si\control\SiNavPoint;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\TypeConstraints;
+use n2n\util\type\ArgUtils;
 
 class UrlEiPropNature extends AlphanumericEiPropNature {
-	
-	private $urlConfig;
-	
-	function __construct() {
-		parent::__construct();
-		$this->urlConfig = new UrlConfig();
+
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::type([Url::class, 'string', 'null'])));
 	}
-	
-// 	public function getTypeName(): string {
-// 		return "Link";
-// 	}
-	
-	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy) {
-		parent::setPropertyAccessProxy($propertyAccessProxy);
-		
-		if ($propertyAccessProxy !== null) {
-			$propertyAccessProxy->getConstraint()->setWhitelistTypes([Url::class]);
-		}
+
+
+
+	private $autoScheme = null;
+	private $allowedSchemes = null;
+	private $relativeAllowed = false;
+	private $lytebox = false;
+
+
+	public function setAllowedSchemes(?array $allowedSchemes) {
+		ArgUtils::valArray($allowedSchemes, 'string', true);
+		$this->allowedSchemes = $allowedSchemes;
 	}
-	
-	public function setEntityProperty(?EntityProperty $entityProperty) {
-		if ($entityProperty instanceof UrlEntityProperty) {
-			$this->entityProperty = $entityProperty;
-			return;
-		}
-		
-		parent::setEntityProperty($entityProperty);
+
+	/**
+	 * @return string[]|null
+	 */
+	public function getAllowedSchemes() {
+		return $this->allowedSchemes;
 	}
-	
+
+	public function isRelativeAllowed(): bool {
+		return $this->relativeAllowed;
+	}
+
+	public function setRelativeAllowed(bool $relativeAllowed) {
+		$this->relativeAllowed = $relativeAllowed;
+	}
+
+	public function setAutoScheme(string $autoScheme = null) {
+		$this->autoScheme = $autoScheme;
+	}
+
+	public function getAutoScheme() {
+		return $this->autoScheme;
+	}
+
+	public function isLytebox(): bool {
+		return $this->lytebox;
+	}
+
+	public function setLytebox(bool $lytebox) {
+		$this->lytebox = $lytebox;
+	}
+
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		if ($this->entityProperty instanceof UrlEntityProperty) {
 			return null;
@@ -74,16 +97,11 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		return parent::buildQuickSearchProp($eiu);
 	}
 
-	public function prepare() {
-		parent::prepare();
-		$this->getConfigurator()->addAdaption($this->urlConfig);
-	}
-
 	function createEifField(Eiu $eiu): EifField {
 		return parent::createEifField($eiu)
 				->setReadMapper(function ($value) { return $this->readMap($value); })
 				->setWriteMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
-				->val(Validators::url(!$this->urlConfig->isRelativeAllowed(), $this->urlConfig->getAllowedSchemes()));
+				->val(Validators::url(!$this->isRelativeAllowed(), $this->getAllowedSchemes()));
 	}
 	
 	/**
