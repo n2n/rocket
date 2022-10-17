@@ -75,8 +75,8 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 	
 	function createEifField(Eiu $eiu): EifField {
 		return parent::createEifField($eiu)
-				->val(Validators::min($this->getNumericConfig()->getMinValue() ?? PHP_FLOAT_MIN),
-						Validators::max($this->getNumericConfig()->getMaxValue() ?? PHP_FLOAT_MAX));
+				->val(Validators::min($this->getMinValue() ?? PHP_FLOAT_MIN),
+						Validators::max($this->getMaxValue() ?? PHP_FLOAT_MAX));
 	}
 	
 	/**
@@ -90,18 +90,17 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$addonConfig = $this->getAddonConfig();
 		
-		$step = 1 / pow(10, $this->decimalConfig->getDecimalPlaces());
+		$step = 1 / pow(10, $this->getDecimalPlaces());
 		$siField = SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
-				->setMin($this->getNumericConfig()->getMinValue())
-				->setMax($this->getNumericConfig()->getMaxValue())
+				->setMin($this->getMinValue())
+				->setMax($this->getMaxValue())
 				->setStep($step)
 				->setArrowStep($step)
 				->setFixed(true)
-				->setPrefixAddons($addonConfig->getPrefixSiCrumbGroups())
-				->setSuffixAddons($addonConfig->getSuffixSiCrumbGroups())
+				->setPrefixAddons($this->getPrefixSiCrumbGroups())
+				->setSuffixAddons($this->getSuffixSiCrumbGroups())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
