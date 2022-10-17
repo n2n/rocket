@@ -154,8 +154,8 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
-	public function getScalarEiProperty(): ?ScalarEiProperty {
-		return new CommonScalarEiProperty($this);
+	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
+		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr());
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {

@@ -28,27 +28,25 @@ use rocket\ei\manage\entry\EiEntry;
 use rocket\ei\EiPropPath;
 
 class CommonScalarEiProperty implements ScalarEiProperty {
-	private $eiProp;
 	private $scalarValueBuilder;
 	private $eiFieldValueBuilder;
 
-	public function __construct(EiPropNature $eiProp, \Closure $scalarValueBuilder = null,
-			\Closure $eiFieldValueBuilder = null) {
-		$this->eiProp = $eiProp;
+	public function __construct(private readonly EiPropPath $eiPropPath, private readonly Lstr $labelLstr,
+			\Closure $scalarValueBuilder = null, \Closure $eiFieldValueBuilder = null) {
 		$this->scalarValueBuilder = $scalarValueBuilder;
 		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
-		return $this->eiProp->getLabelLstr();
+		return $this->labelLstr;
 	}
 	
 	public function getEiPropPath(): EiPropPath {
-		return EiPropPath::from($this->eiProp);
+		return $this->eiPropPath;
 	}
 
 	public function buildScalarValue(EiEntry $eiEntry) {
-		return $this->eiFieldValueToScalarValue($eiEntry->getValue($this->eiProp));
+		return $this->eiFieldValueToScalarValue($eiEntry->getValue($this->eiPropPath));
 	}
 
 	public function eiFieldValueToScalarValue($eiFieldValue) {

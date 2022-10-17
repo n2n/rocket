@@ -39,6 +39,7 @@ use rocket\ei\component\command\EiCmdNature;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\ei\manage\api\ApiController;
+use rocket\ei\util\control\EiuControlResponse;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;

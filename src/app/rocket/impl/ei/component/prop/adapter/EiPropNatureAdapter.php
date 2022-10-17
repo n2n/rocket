@@ -139,7 +139,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 		return null;
 	}
 
-	function getScalarEiProperty(): ?ScalarEiProperty {
+	function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
 		return null;
 	}
 

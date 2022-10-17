@@ -55,11 +55,11 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 	}
 
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
-		$field->setMandatory($this->isMandatory());
+		$field->setMandatory($this->getRelationModel()->isMandatory());
 		return $field;
 	}
 	
@@ -72,7 +72,7 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 // 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
 // 				->exec($this->getRelationModel()->getTargetEditEiCmdPath());
 		
-		$readOnly = $readOnly || $this->isReadOnly();
+		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
 		
 		if ($readOnly && $eiu->gui()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
@@ -80,10 +80,10 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		
 		$targetEiuFrame = null;
 		if ($readOnly){
-			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		} else {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		}
 

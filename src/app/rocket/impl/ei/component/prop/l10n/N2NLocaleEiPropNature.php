@@ -168,7 +168,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 
 
-	public function getScalarEiProperty(): ?ScalarEiProperty {
+	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this,
 				function (N2nLocale $n2nLocale = null) {
 					if ($n2nLocale === null) return null;

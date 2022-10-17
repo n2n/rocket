@@ -102,7 +102,7 @@ interface EiPropNature extends EiComponentNature {
 	 */
 	function getGenericEiProperty(): ?GenericEiProperty;
 
-	function getScalarEiProperty(): ?ScalarEiProperty;
+	function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty;
 
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp;
 

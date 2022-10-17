@@ -52,6 +52,7 @@ use rocket\ei\component\IdNameFactory;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\control\GuiControl;
+use rocket\ei\util\Eiu;
 
 class EiEngine {
 	/**
@@ -312,7 +313,8 @@ class EiEngine {
 		$this->scalarEiDefinition = new ScalarEiDefinition();
 		$scalarEiProperties = $this->scalarEiDefinition->getMap();
 		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			if (null !== ($scalarEiProperty = $eiProp->getNature()->getScalarEiProperty())) {
+			$eiu = new Eiu($this, $eiProp);
+			if (null !== ($scalarEiProperty = $eiProp->getNature()->buildScalarEiProperty($eiu))) {
 				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
 			}
 		}

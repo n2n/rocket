@@ -51,7 +51,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
-	function getScalarEiProperty(): ?ScalarEiProperty {
+	function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this, null, function ($value) {
 			ArgUtils::valScalar($value, true);
 			if ($value === null) return null;

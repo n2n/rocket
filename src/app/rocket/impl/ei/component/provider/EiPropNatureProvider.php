@@ -48,6 +48,8 @@ use rocket\attribute\impl\EiPropOneToManyEmbedded;
 use rocket\attribute\impl\EiPropOneToOneEmbedded;
 use n2n\util\uri\Url;
 use rocket\impl\ei\component\prop\string\UrlEiPropNature;
+use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiPropNature;
+use rocket\impl\ei\component\prop\relation\EmbeddedOneToOneEiPropNature;
 
 class EiPropNatureProvider {
 
@@ -166,6 +168,7 @@ class EiPropNatureProvider {
 							->getPropertyAttribute($propertyName, EiPropOneToManyEmbedded::class);
 					if ($oneToManyEmbeddedAttribute !== null) {
 						$oneToManyEmbedded = $oneToManyEmbeddedAttribute->getInstance();
+						$relationEiProp = new EmbeddedOneToManyEiPropNature($entityProperty, $accessProxy);
 						$relationEiProp->getRelationModel()->setReduced($oneToManyEmbedded->reduced);
 						$relationEiProp->getRelationModel()->setTargetOrderEiPropPath(
 								$oneToManyEmbedded->targetOrderEiPropPath);
@@ -184,6 +187,7 @@ class EiPropNatureProvider {
 						->getPropertyAttribute($propertyName, EiPropOneToOneEmbedded::class);
 				if ($oneToOneEmbeddedAttribute !== null) {
 					$oneToOneEmbedded = $oneToOneEmbeddedAttribute->getInstance();
+					$relationEiProp = new EmbeddedOneToOneEiPropNature($entityProperty, $accessProxy);
 					$relationEiProp->getRelationModel()->setReduced($oneToOneEmbedded->reduced);
 				}
 				break;
