@@ -78,14 +78,10 @@ class EiPropCollection extends EiComponentCollection {
 	}
 	
 	/**
-	 * @param string $id
-	 * @param EiPropNature $eiProp
-	 * @param EiPropPath $forkEiPropPath
-	 * @return EiProp
+	 * @param bool $includeInherited
+	 * @return EiPropNature[]
 	 */
-	public function addIndependent(string $id, EiPropNature $eiProp, EiPropPath $forkEiPropPath = null) {
-		$eiPropWrapper = $this->add($eiProp, $id, $forkEiPropPath);
-		$this->addIndependentElement($eiPropWrapper->getEiPropPath(), $eiProp);
-		return $eiPropWrapper;
+	function toArray(bool $includeInherited = true): array {
+		return parent::toArray($includeInherited);
 	}
 }
