@@ -76,7 +76,7 @@ class EiPropCollection extends EiComponentCollection {
 		
 		return $eiPropNature;
 	}
-	
+
 	/**
 	 * @param bool $includeInherited
 	 * @return EiPropNature[]
