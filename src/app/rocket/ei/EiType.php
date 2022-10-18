@@ -88,8 +88,7 @@ class EiType extends Type {
 		$superEiMask = $superEiType->getEiMask();
 		$this->eiMask->getEiPropCollection()->setInheritedCollection($superEiMask->getEiPropCollection());
 		$this->eiMask->getEiCmdCollection()->setInheritedCollection($superEiMask->getEiCmdCollection());
-		$this->eiMask->getEiModCollection()->setInheritedCollection(
-				$superEiMask->getEiModCollection());
+		$this->eiMask->getEiModCollection()->setInheritedCollection($superEiMask->getEiModCollection());
 	}
 	
 	/**
