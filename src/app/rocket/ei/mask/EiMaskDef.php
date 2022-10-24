@@ -32,7 +32,6 @@ class EiMaskDef {
 // 	const TYPE_CHANGE_MODE_CHANGE = 'change';
 	
 
-	private $iconType;
 //	private $draftingAllowed;
 //	private $draftHistorySize;
 	private $identityStringPattern;
@@ -40,7 +39,7 @@ class EiMaskDef {
 	private $filterSettingGroup;
 	private $defaultSortSettingGroup;
 
-	function __construct(private string $label, private ?string $pluralLabel) {
+	function __construct(private string $label, private string $pluralLabel, private string $iconType) {
 
 	}
 	
@@ -54,7 +53,7 @@ class EiMaskDef {
 	/**
 	 * @param string $label
 	 */
-	public function setLabel(?string $label) {
+	public function setLabel(string $label) {
 		$this->label = $label;
 	}
 	
@@ -68,18 +67,18 @@ class EiMaskDef {
 	/**
 	 * @param string $pluralLabel
 	 */
-	public function setPluralLabel(?string $pluralLabel) {
+	public function setPluralLabel(string $pluralLabel) {
 		$this->pluralLabel = $pluralLabel;
 	}
 	
 	/**
-	 * @return string|null
+	 * @return string
 	 */
 	public function getIconType() {
 		return $this->iconType;
 	}
 	
-	public function setIconType(?string $iconType) {
+	public function setIconType(string $iconType) {
 		$this->iconType = $iconType;
 	}
 	

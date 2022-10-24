@@ -58,6 +58,8 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\util\ex\err\ConfigurationError;
 use rocket\attribute\EiDisplayScheme;
+use n2n\util\ex\DuplicateElementException;
+use ReflectionClass;
 
 class Spec {
 	/**
@@ -66,32 +68,16 @@ class Spec {
 	private EiTypeFactory $eiTypeFactory;
 
 	private array $eiTypes = array();
+	private array $ciEiTypes = array();
 	private array $menuGroups = [];
 	private array $launchPads = [];
-
-	/**
-	 * @param SpecConfigLoader $specConfigLoader
-	 * @param EntityModelManager $entityModelManager
-	 */
-	public function __construct(SpecConfigLoader $specConfigLoader, EntityModelManager $entityModelManager) {
-		$this->eiTypeFactory = new EiTypeFactory($specConfigLoader, $entityModelManager);
-	}
-
-	public function reload(): void {
-		$this->eiTypes = [];
-
-		foreach ($this->eiTypeFactory->getEntityModelManager()->getEntityClasses() as $entityClass) {
-			$this->initEiTypeFromClass($entityClass, false);
-		}
-	}
-
 
 	/**
 	 * @param string $id
 	 * @return bool
 	 */
 	public function containsLaunchPad(string $id) {
-		return isset($this->launchPads[$id]) || $this->specExtractionManager->containsLaunchPadExtractionTypePath(TypePath::create($id));
+		return isset($this->launchPads[$id]);
 	}
 	
 	/**
@@ -104,7 +90,17 @@ class Spec {
 			return $this->launchPads[$id];
 		}
 
-		return $this->initLaunchPadFromTypePath(TypePath::create($id));
+		throw new UnknownLaunchPadException('Unknown LaunchPad id: ' . $id);
+	}
+
+	function addLaunchPad(LaunchPad $launchPad) {
+		$id = $launchPad->getId();
+
+		if (isset($this->launchPads[$id])) {
+			throw new DuplicateElementException('Duplicated LaunchPad id: ' . $id);
+		}
+
+		$this->launchPads[$id] = $launchPad;
 	}
 
 	/**
@@ -112,6 +108,33 @@ class Spec {
 	 */
 	function getMenuGroups() {
 		return $this->menuGroups;
+	}
+
+	function putMenuGroup(string $groupKey, MenuGroup $menuGroup) {
+		$this->menuGroups[$groupKey] = $menuGroup;
+	}
+
+	function containsMenuGroupKey(string $groupkey) {
+		return isset($this->menuGroups[$groupkey]);
+	}
+
+	function getMenuGroup(string $groupKey) {
+		if (isset($this->menuGroups[$groupKey])) {
+			return $this->menuGroups[$groupKey];
+		}
+
+		throw new UnknownMenuGroupException();
+	}
+
+	function addEiType(EiType $eiType) {
+		$id = $eiType->getId();
+
+		if (isset($this->eiTypes[$id])) {
+			throw new DuplicateElementException('Duplicated EiType id: ' . $id);
+		}
+
+		$this->eiTypes[$eiType->getId()] = $eiType;
+		$this->ciEiTypes[$eiType->getClass()->getName()] = $eiType;
 	}
 	
 // 	/**
@@ -139,170 +162,16 @@ class Spec {
 	 */
 	public function clear(): void {
 		$this->eiTypes = array();
+		$this->ciEiTypes = [];
 		$this->menuGroups = array();
 		$this->launchPads = array();
 	}
-
-	private function isEiTypeAnnotated(\ReflectionClass $class) {
-		return ReflectionContext::getAttributeSet($class)->hasClassAttribute(\rocket\attribute\EiType::class);
-	}
-
-	private function classNameToId(string $className) {
-		return str_replace('\\', '-', $className);
-	}
-
-	private function idToClassName(string $id) {
-		return str_replace('-', '\\', $id);
-	}
+//
+//	private function isEiTypeAnnotated(\ReflectionClass $class) {
+//		return ReflectionContext::getAttributeSet($class)->hasClassAttribute(\rocket\attribute\EiType::class);
+//	}
 
 
-	private function initEiTypeFromClassName(string $className, bool $required) {
-		if (isset($this->eiTypes[$className])) {
-			return $this->eiTypes[$className];
-		}
-
-		return $this->initEiTypeFromClass(new \ReflectionClass($className));
-	}
-
-	/**
-	 * @param \ReflectionClass $class
-	 * @param bool $required
-	 * @return EiType|null
-	 * @throws UnknownEiTypeException
-	 */
-	private function initEiTypeFromClass(\ReflectionClass $class, bool $required) {
-		$className = $class->getName();
-
-		if (isset($this->eiTypes[$className])) {
-			return $this->eiTypes[$className];
-		}
-
-		$attributeSet = ReflectionContext::getAttributeSet($class);
-		$eiTypeAttribute = $attributeSet->getClassAttribute(\rocket\attribute\EiType::class);
-		if ($eiTypeAttribute === null) {
-			if (!$required) {
-				return null;
-			}
-
-			throw new UnknownEiTypeException($className . ' is not annotated with attribute '
-					. \rocket\attribute\EiType::class);
-		}
-
-		$eiTypeA = $eiTypeAttribute->getInstance();
-		$label = $eiTypeA->label ?? StringUtils::pretty($class->getShortName());
-		$pluralLabel = $eiTypeA->pluralLabel ?? $label;
-
-		$this->eiTypes[$className] = $eiType = $this->eiTypeFactory->create($this->classNameToId($className), $class,
-				$label, $pluralLabel);
-		if ($eiTypeA->icon !== null) {
-			$eiType->getEiMask()->getDef()->setIconType($eiTypeA->icon);
-		}
-
-		$this->checkForNestedSet($eiType);
-		$this->checkForDisplayScheme($eiType);
-
-		if ($eiType->getEntityModel()->hasSuperEntityModel()) {
-			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
-			
-			try {
-				$eiType->setSuperEiType($this->initEiTypeFromClass($superClass, true));
-			} catch (UnknownEiTypeException $e) {
-				throw new InvalidEiConfigurationException('EiType for ' . $class->getName()
-						. ' requires super EiType for ' . $superClass->getName(), 0, $e);
-			}
-		}
-		
-//		$this->eiSetupQueue->addEiMask($eiType->getEiMask());
-//		$this->assembleEiTypeExtensions($eiType->getEiMask(), $typePath);
-		
-		foreach ($eiType->getEntityModel()->getSubEntityModels() as $subEntityModel) {
-			$class = $subEntityModel->getClass();
-			
-			if ($this->containsEiTypeClass($class)) {
-				$this->initEiTypeFromClass($class, false);
-			}
-		}
-
-		$this->eiTypeFactory->assemble($eiType);
-
-		$this->checkForMenuItem($eiType);
-		
-		return $eiType;
-	}
-
-	private function checkForNestedSet(EiType $eiType) {
-		$nestedSetAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
-				->getClassAttribute(EiNestedSet::class);
-		if ($nestedSetAttribute === null) {
-			return;
-		}
-
-		$nestedSet = $nestedSetAttribute->getInstance();
-		try {
-			$eiType->setNestedSetStrategy(new NestedSetStrategy(CrIt::p($nestedSet->leftProp),
-					CrIt::p($nestedSet->rightProp)));
-		} catch (\InvalidArgumentException $e) {
-			throw new ConfigurationError($e->getMessage(), $nestedSetAttribute->getFile(),
-					$nestedSetAttribute->getLine(), previous: $e);
-		}
-	}
-
-	private function checkForDisplayScheme(EiType $eiType) {
-		$displaySchemeAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
-				->getClassAttribute(EiDisplayScheme::class);
-		if ($displaySchemeAttribute === null) {
-			return;
-		}
-
-		$displaySchemeA = $displaySchemeAttribute->getInstance();
-		$displayScheme = $eiType->getEiMask()->getDisplayScheme();
-
-		$displayScheme->setOverviewDisplayStructure($displaySchemeA->compactDisplayStructure);
-		$displayScheme->setBulkyDisplayStructure($displaySchemeA->bulkyDisplayStructure);
-		$displayScheme->setDetailDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
-		$displayScheme->setEditDisplayStructure($displaySchemeA->bulkyEditDisplayStructure);
-		$displayScheme->setAddDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
-
-	}
-
-	private function checkForMenuItem(EiType $eiType) {
-		$menuItemAttribute = ReflectionContext::getAttributeSet($eiType->getEntityModel()->getClass())
-				->getClassAttribute(MenuItem::class);
-
-		if ($menuItemAttribute === null) {
-			return;
-		}
-
-		/**
-		 * @var MenuItem $menuItem
-		 */
-		$menuItem = $menuItemAttribute->getInstance();
-		$launchPad = new EiLaunchPad($eiType->getId(), $eiType->getEiMask(), $menuItem->name);
-
-		$groupKey = $menuItem->groupKey;
-		$groupName = $menuItem->groupName;
-
-		if ($groupKey !== null) {
-			$menuGroup = $this->menuGroups[$groupKey]
-					?? $this->menuGroups[$groupKey] = new MenuGroup($groupName ?? StringUtils::pretty($groupKey));
-
-			if ($groupName !== null) {
-				$menuGroup->setLabel($groupName);
-			}
-
-			$menuGroup->addLaunchPad($launchPad);
-			$this->launchPads[$launchPad->getId()] = $launchPad;
-			return;
-		}
-
-		if ($groupName === null) {
-			$groupName = 'Content';
-		}
-
-		$menuGroup = $this->menuGroups[$groupName] ?? $this->menuGroups[$groupName] = new MenuGroup($groupName);
-		$menuGroup->addLaunchPad($launchPad);
-		$this->launchPads[$launchPad->getId()] = $launchPad;
-	}
 
 	
 //	private function assembleEiTypeExtensions(EiMask $extendedEiMask, TypePath $extenedTypePath) {
@@ -383,15 +252,15 @@ class Spec {
 	 * @param string $id
 	 * @return bool
 	 */
-	public function containsEiTypeId(string $id) {
+	public function containsEiTypeId(string $id): bool {
 		return isset($this->eiTypes[$id]) || $this->specExtractionManager->containsCustomTypeId($id);
 	}
 	
 	/**
-	 * @param \ReflectionClass $class
+	 * @param ReflectionClass $class
 	 * @return bool
 	 */
-	public function containsEiTypeClass(\ReflectionClass $class) {
+	public function containsEiTypeClass(ReflectionClass $class): bool {
 		return $this->containsEiTypeClassName($class->getName());
 	}
 	
@@ -399,31 +268,28 @@ class Spec {
 	 * @param string $className
 	 * @return bool
 	 */
-	public function containsEiTypeClassName(string $className) {
+	public function containsEiTypeClassName(string $className): bool {
 		return isset($this->eiTypes[$className]);
 	}
-	
+
 	/**
-	 * @param \ReflectionClass $class
+	 * @param string $id
 	 * @return EiType
-	 * @throws UnknownTypeException
-	 * @throws IllegalStateException
 	 */
-	public function getEiTypeById(string $id) {
+	public function getEiTypeById(string $id): EiType {
 		if (isset($this->eiTypes[$id])) {
 			return $this->eiTypes[$id];
 		}
 		
-		$eiType = $this->initEiTypeFromExtr($this->specExtractionManager->getEiTypeExtractionById($id));
-		$this->triggerEiSetup();
-		return $eiType;
+		throw new UnknownEiTypeException('EiType with id \''. $id . '\' not found.');
 	}
 	
 	/**
-	 * @param \ReflectionClass $class
+	 * @param ReflectionClass $class
 	 * @return EiType
+	 * @throws UnknownEiTypeException
 	 */
-	public function getEiTypeByClass(\ReflectionClass $class) {
+	public function getEiTypeByClass(ReflectionClass $class) {
 		return $this->getEiTypeByClassName($class->getName());
 	}
 	
@@ -433,11 +299,11 @@ class Spec {
 	 * @throws UnknownEiTypeException
 	 */
 	public function getEiTypeByClassName(string $className) {
-		if (isset($this->eiTypes[$className])) {
-			return $this->eiTypes[$className];
+		if (isset($this->ciEiTypes[$className])) {
+			return $this->ciEiTypes[$className];
 		}
-		
-		return $this->initEiTypeFromClass(ReflectionUtils::createReflectionClass($className), true);
+
+		throw new UnknownEiTypeException('EiType for class \'' . $className . '\' found.');
 	}
 	
 	/**
@@ -446,13 +312,13 @@ class Spec {
 	 * @throws UnknownEiTypeException
 	 */
 	public function getEiTypeOfObject(object $entityObj) {
-		$class = new \ReflectionClass($entityObj);
+		$class = new ReflectionClass($entityObj);
 		$orgClassName = $class->getName();
 		
 		do {
 			$className = $class->getName();
 			if ($this->containsEiTypeClassName($className)) {
-				return $this->initEiTypeFromClassName($className, true);
+				return $this->getEiTypeByClassName($className);
 			}
 		} while ($class = $class->getParentClass());
 		
@@ -465,13 +331,6 @@ class Spec {
 	 */
 	public function getEiTypes() {
 		return $this->eiTypes;
-	}
-	
-	/**
-	 * @return \rocket\spec\EiSetupQueue
-	 */
-	public function getEiSetupQueue() {
-		return $this->eiSetupQueue;
 	}
 }
 

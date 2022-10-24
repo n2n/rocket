@@ -47,6 +47,14 @@ use rocket\ei\component\EiComponentCollection;
 use rocket\ei\component\EiComponentCollectionListener;
 use n2n\util\magic\MagicContext;
 use rocket\ei\util\Eiu;
+use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\spec\Spec;
+use n2n\util\StringUtils;
+use rocket\attribute\EiNestedSet;
+use n2n\persistence\orm\util\NestedSetStrategy;
+use n2n\persistence\orm\criteria\item\CrIt;
+use rocket\attribute\EiDisplayScheme;
+use rocket\si\control\SiIconType;
 
 class EiTypeFactory {
 
@@ -63,23 +71,113 @@ class EiTypeFactory {
 	}
 
 	/**
+	 * @param string $id
 	 * @param \ReflectionClass $class
-	 * @throws UnknownEiTypeException
 	 * @return EiType
 	 */
-	public function create(string $id, \ReflectionClass $class, ?string $label, ?string $pluralLabel) {
-		$className = $class->getName();
-		try {
-			$entityModel = $this->entityModelManager->getEntityModelByClass($class);
-		} catch (OrmException $e) {
-			throw new UnknownEiTypeException('Could not lookup EntityModel of ' . $className
-					. '. Reason: ' . $e->getMessage(), 0, $e);
+	public function create(\ReflectionClass $class, Spec $spec) {
+		$attributeSet = ReflectionContext::getAttributeSet($class);
+		$eiTypeAttribute = $attributeSet->getClassAttribute(\rocket\attribute\EiType::class);
+		if ($eiTypeAttribute === null) {
+			throw new UnknownEiTypeException($class->getName() . ' is not annotated with attribute '
+					. \rocket\attribute\EiType::class);
 		}
 
-		return new EiType($id, $this->specConfigLoader->moduleNamespaceOf($class), $entityModel, $label, $pluralLabel);
+		$eiTypeA = $eiTypeAttribute->getInstance();
+		$label = $eiTypeA->label ?? StringUtils::pretty($class->getShortName());
+		$pluralLabel = $eiTypeA->pluralLabel ?? $label;
+		$icon = $eiTypeA->icon ?? SiIconType::ICON_ROCKET;
+
+		return new EiType($this->classNameToId($class->getName()), $this->specConfigLoader->moduleNamespaceOf($class), $class,
+				$label, $pluralLabel, $icon, $spec,
+				function () use ($class) {
+					return $this->getEntityModel($class);
+				},
+				function (EiType $eiType) {
+					$this->checkForNestedSet($eiType);
+					$this->checkForDisplayScheme($eiType);
+					$this->assemble($eiType);
+				});
 	}
 
-	function assemble(EiType $eiType): void {
+	private function classNameToId(string $className) {
+		return str_replace('\\', '-', $className);
+	}
+
+	private function idToClassName(string $id) {
+		return str_replace('-', '\\', $id);
+	}
+
+
+	private function getEntityModel(\ReflectionClass $class): EntityModel {
+		try {
+			return $this->entityModelManager->getEntityModelByClass($class);
+		} catch (OrmException $e) {
+			throw new UnknownEiTypeException('Could not lookup EntityModel of ' . $class->getName()
+					. '. Reason: ' . $e->getMessage(), 0, $e);
+		}
+	}
+
+	private function checkForNestedSet(EiType $eiType): void {
+		$nestedSetAttribute = ReflectionContext::getAttributeSet($eiType->getClass())
+				->getClassAttribute(EiNestedSet::class);
+		if ($nestedSetAttribute === null) {
+			return;
+		}
+
+		$nestedSet = $nestedSetAttribute->getInstance();
+		try {
+			$eiType->setNestedSetStrategy(new NestedSetStrategy(CrIt::p($nestedSet->leftProp),
+					CrIt::p($nestedSet->rightProp)));
+		} catch (\InvalidArgumentException $e) {
+			throw new ConfigurationError($e->getMessage(), $nestedSetAttribute->getFile(),
+					$nestedSetAttribute->getLine(), previous: $e);
+		}
+	}
+
+	private function checkForDisplayScheme(EiType $eiType) {
+		$displaySchemeAttribute = ReflectionContext::getAttributeSet($eiType->getClass())
+				->getClassAttribute(EiDisplayScheme::class);
+		if ($displaySchemeAttribute === null) {
+			return;
+		}
+
+		$displaySchemeA = $displaySchemeAttribute->getInstance();
+		$displayScheme = $eiType->getEiMask()->getDisplayScheme();
+
+		$displayScheme->setOverviewDisplayStructure($displaySchemeA->compactDisplayStructure);
+		$displayScheme->setBulkyDisplayStructure($displaySchemeA->bulkyDisplayStructure);
+		$displayScheme->setDetailDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
+		$displayScheme->setEditDisplayStructure($displaySchemeA->bulkyEditDisplayStructure);
+		$displayScheme->setAddDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
+
+	}
+
+	private function checkForInheritance(EiType $eiType) {
+		$entityModel = $eiType->getEntityModel();
+		$spec = $eiType->getSpec();
+
+		if ($entityModel->hasSuperEntityModel()) {
+			$superClass = $eiType->getEntityModel()->getSuperEntityModel()->getClass();
+
+			try {
+				$eiType->setSuperEiType($spec->getEiTypeByClass($superClass));
+			} catch (UnknownEiTypeException $e) {
+				throw new InvalidEiConfigurationException('EiType for ' . $eiType->getClass()->getName()
+						. ' requires super EiType for ' . $superClass->getName(), 0, $e);
+			}
+		}
+
+		foreach ($eiType->getEntityModel()->getSubEntityModels() as $subEntityModel) {
+			$class = $subEntityModel->getClass();
+
+			if ($spec->containsEiTypeClass($class)) {
+				$spec->getEiTypeByClass($class)->ensureInitialized();
+			}
+		}
+	}
+
+	private function assemble(EiType $eiType): void {
 		$entityModel = $eiType->getEntityModel();
 		$class = $entityModel->getClass();
 		$attributeSet = ReflectionContext::getAttributeSet($class);

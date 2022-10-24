@@ -117,7 +117,7 @@ class EiEntityObj {
 	public static function createFrom(EiType $contextEiType, object $entityObj) {
 		if (!$contextEiType->isObjectValid($entityObj)) {
 			throw new \InvalidArgumentException('Passed object is not compatible with EiType ' . $contextEiType->getId() 
-					. '. EiType class: ' . $contextEiType->getEntityModel()->getClass()->getName() 
+					. '. EiType class: ' . $contextEiType->getClass()->getName() 
 					. ', Passed object type: ' . get_class($entityObj));
 		}
 		
@@ -127,7 +127,7 @@ class EiEntityObj {
 	}
 	
 	public static function createNew(EiType $eiType) {
-		$entityObj = ReflectionUtils::createObject($eiType->getEntityModel()->getClass());
+		$entityObj = ReflectionUtils::createObject($eiType->getClass());
 		return new EiEntityObj(false, null, $entityObj, $eiType);
 	}
 }

@@ -41,11 +41,17 @@ use rocket\ei\manage\DraftEiObject;
 use rocket\ei\manage\draft\Draft;
 use rocket\spec\TypePath;
 use rocket\si\meta\SiTypeContext;
+use PhpParser\Node\Expr\Closure;
+use n2n\util\type\ArgUtils;
+use rocket\spec\Spec;
+use ReflectionClass;
 
 class EiType extends Type {
+	private EntityModel $entityModel;
+
 	private ?EiType $superEiType = null;
 	protected array $subEiTypes = array();
-	
+
 	private EiMask $eiMask;
 	private $eiTypeExtensionCollection;
 	
@@ -56,26 +62,59 @@ class EiType extends Type {
 	 * @var EiLifecycleListener[]
 	 */
 	private array $eiLifecycleListeners = array();
-	
-	/**
-	 * @param string $id
-	 * @param Module $moduleNamespace
-	 * @param EntityModel $entityModel
-	 */
-	public function __construct(string $id, string $moduleNamespace, private EntityModel $entityModel,
-			string $label, string $pluralLabel) {
+
+	public function __construct(string $id, string $moduleNamespace, private ReflectionClass $class,
+			string $label, string $pluralLabel, string $iconType, private Spec $spec,
+			private ?\Closure $entityModelCallback, private ?\Closure $initializeCallback) {
 		parent::__construct($id, $moduleNamespace);
 
-		$this->eiMask = new EiMask($this, $label, $pluralLabel);
+		$this->eiMask = new EiMask($this, $label, $pluralLabel, $iconType);
 		$this->eiTypeExtensionCollection = new EiTypeExtensionCollection($this);
 	}
-	
+
+	/**
+	 * @return ReflectionClass
+	 */
+	function getClass() {
+		return $this->class;
+	}
+
+	/**
+	 * @return Spec
+	 */
+	function getSpec() {
+		return $this->spec;
+	}
+
 	/**
 	 * @return EntityModel
 	 */
 	public function getEntityModel(): EntityModel {
-		IllegalStateException::assertTrue($this->entityModel !== null);
-		return $this->entityModel;
+		if ($this->entityModelCallback === null) {
+			IllegalStateException::assertTrue(isset($this->entityModel));
+			return $this->entityModel;
+		}
+
+		$callback = $this->entityModelCallback;
+		$this->entityModelCallback = null;
+		$entityModel = $callback();
+		IllegalStateException::assertTrue($entityModel instanceof EntityModel
+				&& $this->class->getName() === $entityModel->getClass()->getName());
+		return $this->entityModel = $entityModel;
+	}
+
+	function isInitialized(): bool {
+		return $this->initializeCallback === null;
+	}
+
+	function ensureInitialized(): void {
+		if ($this->initializeCallback === null) {
+			return;
+		}
+
+		$callback = $this->initializeCallback;
+		$this->initializeCallback = null;
+		$callback($this);
 	}
 	
 	/**
@@ -84,17 +123,20 @@ class EiType extends Type {
 	public function setSuperEiType(EiType $superEiType) {
 		$this->superEiType = $superEiType;
 		$superEiType->subEiTypes[$this->getId()] = $this;
-		
+
+		$eiMask = $this->getEiMask();
 		$superEiMask = $superEiType->getEiMask();
-		$this->eiMask->getEiPropCollection()->setInheritedCollection($superEiMask->getEiPropCollection());
-		$this->eiMask->getEiCmdCollection()->setInheritedCollection($superEiMask->getEiCmdCollection());
-		$this->eiMask->getEiModCollection()->setInheritedCollection($superEiMask->getEiModCollection());
+		$eiMask->getEiPropCollection()->setInheritedCollection($superEiMask->getEiPropCollection());
+		$eiMask->getEiCmdCollection()->setInheritedCollection($superEiMask->getEiCmdCollection());
+		$eiMask->getEiModCollection()->setInheritedCollection($superEiMask->getEiModCollection());
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType
+	 * @return EiType
 	 */
 	public function getSuperEiType(): EiType {
+		$this->ensureInitialized();
+
 		if ($this->superEiType !== null) {
 			return $this->superEiType;
 		}
@@ -106,13 +148,17 @@ class EiType extends Type {
 	 * @return boolean
 	 */
 	public function hasSuperEiType(): bool {
+		$this->ensureInitialized();
+
 		return $this->superEiType !== null;
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType
+	 * @return EiType
 	 */
 	public function getSupremeEiType(): EiType {
+		$this->ensureInitialized();
+
 		$topEiType = $this;
 		while ($topEiType->hasSuperEiType()) {
 			$topEiType = $topEiType->getSuperEiType();
@@ -121,6 +167,8 @@ class EiType extends Type {
 	}
 	
 	public function getAllSuperEiTypes($includeSelf = false) {
+		$this->ensureInitialized();
+
 		$superEiTypes = array();
 		
 		if ($includeSelf) {
@@ -138,18 +186,24 @@ class EiType extends Type {
 	/**
 	 * @return boolean
 	 */
-	public function hasSubEiTypes() {
+	public function hasSubEiTypes(): bool {
+		$this->ensureInitialized();
+
 		return (bool) sizeof($this->subEiTypes);
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType[]
+	 * @return EiType[]
 	 */
 	public function getSubEiTypes() {
+		$this->ensureInitialized();
+
 		return $this->subEiTypes;
 	}
 	
 	public function containsSubEiTypeId(string $eiTypeId, bool $deepCheck = false) {
+		$this->ensureInitialized();
+
 		if (isset($this->subEiTypes[$eiTypeId])) return true;
 		
 		if ($deepCheck) {
@@ -162,12 +216,14 @@ class EiType extends Type {
 		
 		return false;
 	}
-	
+
 	/**
 	 * @param string $eiTypeId
 	 * @throws UnknownEiTypeException
 	 */
 	function determineEiTypeById(string $eiTypeId) {
+		$this->ensureInitialized();
+
 		if ($this->getId() === $eiTypeId) {
 			return $this;
 		}
@@ -182,6 +238,8 @@ class EiType extends Type {
 	 * @return EiType
 	 */
 	public function getSubEiTypeById(string $eiTypeId, bool $deepCheck = false) {
+		$this->ensureInitialized();
+
 		if (isset($this->subEiTypes[$eiTypeId])) {
 			return $this->subEiTypes[$eiTypeId];
 		}
@@ -198,9 +256,11 @@ class EiType extends Type {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiType[]
+	 * @return EiType[]
 	 */
 	public function getAllSubEiTypes(bool $includeSelf = false) {
+		$this->ensureInitialized();
+		
 		$subEiTypes = [];
 		
 		if ($includeSelf) {
@@ -212,9 +272,11 @@ class EiType extends Type {
 	
 	/**
 	 * @param EiType $eiType
-	 * @return \rocket\ei\EiType[]
+	 * @return EiType[]
 	 */
 	private function lookupAllSubEiTypes(EiType $eiType) {
+		$this->ensureInitialized();
+		
 		$subEiTypes = $eiType->getSubEiTypes();
 		foreach ($subEiTypes as $subEiType) {
 			$subEiTypes = array_merge($subEiTypes, 
@@ -225,6 +287,8 @@ class EiType extends Type {
 	}
 	
 	public function findEiTypeByEntityModel(EntityModel $entityModel) {
+		$this->ensureInitialized();
+		
 		if ($this->entityModel->equals($entityModel)) {
 			return $this;
 		}
@@ -243,10 +307,12 @@ class EiType extends Type {
 	}
 	/**
 	 * @param EntityModel $entityModel
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\ei\EiType
+	 * @return EiType
+	 *@throws \InvalidArgumentException
 	 */
 	public function determineEiType(EntityModel $entityModel): EiType {
+		$this->ensureInitialized();
+		
 		if ($this->entityModel->equals($entityModel)) {
 			return $this;
 		}
@@ -262,7 +328,9 @@ class EiType extends Type {
 				. $entityModel->getClass()->getName() . '\' defined.');
 	}
 		
-	public function determineAdequateEiType(\ReflectionClass $class): EiType {
+	public function determineAdequateEiType(ReflectionClass $class): EiType {
+		$this->ensureInitialized();
+		
 		if (!ReflectionUtils::isClassA($class, $this->entityModel->getClass())) {
 			throw new \InvalidArgumentException('Class \'' . $class->getName()
 					. '\' is not instance of \'' . $this->getEntityModel()->getClass()->getName() . '\'.');
@@ -271,7 +339,7 @@ class EiType extends Type {
 		$eiType = $this;
 		
 		foreach ($this->getAllSubEiTypes() as $subEiType) {
-			if (ReflectionUtils::isClassA($class, $subEiType->getEntityModel()->getClass())) {
+			if (ReflectionUtils::isClassA($class, $subEiType->getClass())) {
 				$eiType = $subEiType;
 			}
 		}
@@ -286,6 +354,8 @@ class EiType extends Type {
 	 * @return EiMask
 	 */
 	public function determineEiMask(TypePath $typePath) {
+		$this->ensureInitialized();
+		
 		$eiType = $this;
 		if ($this->getId() !== $typePath->getTypeId()) {
 			$eiType = $this->getSubEiTypeById($typePath->getTypeId(), true);
@@ -310,12 +380,11 @@ class EiType extends Type {
 	 * @return boolean
 	 */
 	public function isObjectValid($object) {
-		return is_object($object) && ReflectionUtils::isObjectA($object, $this->getEntityModel()->getClass());
+		return is_object($object) && ReflectionUtils::isObjectA($object, $this->getClass());
 	}
 	
 	public function isA(EiType $eiType) {
-		return $this->equals($eiType)
-				|| $this->entityModel->getClass()->isSubclassOf($eiType->getEntityModel()->getClass());
+		return $this->equals($eiType) || $this->getClass()->isSubclassOf($eiType->getClass());
 	}
 
 	/**
@@ -323,6 +392,8 @@ class EiType extends Type {
 	 * @return EiMask
 	 */
 	public function getEiMask() {
+		$this->ensureInitialized();
+
 		return $this->eiMask;
 	}
 	
@@ -336,6 +407,8 @@ class EiType extends Type {
 	 * @return string
 	 */
 	public function getDataSourceName() {
+		$this->ensureInitialized();
+
 		return $this->dataSourceName;
 	}
 	
@@ -343,6 +416,8 @@ class EiType extends Type {
 	 * @return NestedSetStrategy
 	 */
 	public function getNestedSetStrategy() {
+		$this->ensureInitialized();
+
 		return $this->nestedSetStrategy;
 	}
 	
@@ -370,14 +445,14 @@ class EiType extends Type {
 	 * @return \n2n\persistence\orm\EntityManagerFactory
 	 */
 	public function lookupEntityManagerFactory(PdoPool $dbhPool) {
-		return $dbhPool->getEntityManagerFactory($this->dataSourceName);
+		return $dbhPool->getEntityManagerFactory($this->getDataSourceName());
 	}
 	/**
 	 * @param object $entityObj
 	 * @return mixed
 	 */
 	public function extractId($entityObj) {
-		return $this->entityModel->getIdDef()->getEntityProperty()->readValue($entityObj);
+		return $this->getEntityModel()->getIdDef()->getEntityProperty()->readValue($entityObj);
 	}
 	
 	/**

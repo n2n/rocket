@@ -129,7 +129,7 @@ class EiFrameUtil {
 		}
 		
 		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(),
-				$eiType->getEntityModel()->getClass(), $nestedSetStrategy);
+				$eiType->getClass(), $nestedSetStrategy);
 		return $nestedSetUtils->fetchLevel($eiObject->getEiEntityObj()->getEntityObj());
 	}
 	
@@ -363,7 +363,7 @@ class EiFrameUtil {
 		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
-			$this->treeLookup($eiGui, $criteria, $eiType->getEntityModel()->getClass(), $nestedSetStrategy);
+			$this->treeLookup($eiGui, $criteria, $eiType->getClass(), $nestedSetStrategy);
 		} else {
 			$this->simpleLookup($eiGui, $criteria);
 		}

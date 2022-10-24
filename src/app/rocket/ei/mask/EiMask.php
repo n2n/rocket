@@ -79,11 +79,12 @@ class EiMask {
 	 * @param EiType $eiType
 	 * @param string $label
 	 * @param string $pluralLabel
+	 * @param string $iconType
 	 */
-	public function __construct(EiType $eiType, string $label, string $pluralLabel) {
+	public function __construct(EiType $eiType, string $label, string $pluralLabel, string $iconType) {
 		$this->eiType = $eiType;
 		
-		$this->eiMaskDef = new EiMaskDef($label, $pluralLabel);
+		$this->eiMaskDef = new EiMaskDef($label, $pluralLabel, $iconType);
 
 		$this->eiPropCollection = new EiPropCollection($this);
 		$this->eiCmdCollection = new EiCmdCollection($this);

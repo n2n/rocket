@@ -24,6 +24,7 @@ use n2n\util\ex\UnsupportedOperationException;
 use testmdl\bo\ModTestObj;
 use testmdl\bo\ModTestMod;
 use rocket\core\model\Rocket;
+use rocket\spec\SpecFactory;
 
 class SpecTestEnv {
 
@@ -45,7 +46,7 @@ class SpecTestEnv {
 		$scl = new SpecConfigLoader(new TestModuleConfigSource(['rocket', 'testmdl']), ['rocket', 'testmdl'],
 				$n2nContext);
 
-		$spec = new Spec($scl, $emm);
+		$spec = (new SpecFactory($scl, $emm))->create();
 
 		$rocket = new Rocket();
 		$rocket->setSpec($spec);

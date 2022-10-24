@@ -12,7 +12,6 @@ class SpecTest extends TestCase {
 
 	function testInit() {
 		$spec = SpecTestEnv::setUpSpec([BasicTestObj::class, Basic2TestObj::class, Basic3TestObj::class]);
-		$spec->reload();
 
 		$eiTypes = $spec->getEiTypes();
 		$this->assertCount(3, $eiTypes);

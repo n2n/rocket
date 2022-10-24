@@ -423,7 +423,7 @@ class EiuAnalyst {
 			$eiType = $this->eiMask->getEiType();
 		} else if ($this->eiFrame !== null) {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
-			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
+			$eiObjectTypes[] = $eiType->getClass()->getName();
 		}
 		
 		foreach ($remainingEiArgs as $argNo => $eiArg) {
@@ -1709,7 +1709,7 @@ class EiuAnalyst {
 		$eiObjectTypes = self::EI_ENTRY_TYPES;
 		
 		if ($eiType !== null) {
-			$eiObjectTypes[] = $eiType->getEntityModel()->getClass()->getName();
+			$eiObjectTypes[] = $eiType->getClass()->getName();
 			try {
 				return LiveEiObject::create($eiType, $eiObjectObj);
 			} catch (\InvalidArgumentException $e) {

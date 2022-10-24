@@ -552,7 +552,7 @@ class EiuFrame {
 		
 // 		$chosenId = null;
 // 		foreach ($eiTypes as $subEiTypeId => $subEiType) {
-// 			if ($subEiType->getEntityModel()->getClass()->isAbstract()) {
+// 			if ($subEiType->getClass()->isAbstract()) {
 // 				continue;
 // 			}
 				

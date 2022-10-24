@@ -121,7 +121,7 @@ class DraftFetcher {
 		
 		$entityObj = null;
 		if (null !== $entityObjId) {
-			$entityObj = $this->em->find($this->eiType->getEntityModel()->getClass(), $entityObjId);
+			$entityObj = $this->em->find($this->eiType->getClass(), $entityObjId);
 		}
 		
 		$eiEntityObj = null;

@@ -236,7 +236,7 @@ class ManageState implements RequestScoped {
 		if (null === $nss) {
 			$this->getEntityManager()->remove($eiObject->getEiEntityObj()->getEntityObj());
 		} else {
-			$nsu = new NestedSetUtils($this->getEntityManager(), $eiType->getEntityModel()->getClass(), $nss);
+			$nsu = new NestedSetUtils($this->getEntityManager(), $eiType->getClass(), $nss);
 			$nsu->remove($eiObject->getLiveObject());
 		}
 	}
