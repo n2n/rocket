@@ -561,7 +561,6 @@ class EiuAnalyst {
 		
 		if ($this->eiType === null || $eiType->isA($this->eiType)) {
 			$this->eiType = $eiType;
-			$this->spec = $eiType->getSpec();
 			return;
 		}
 		
@@ -1012,7 +1011,11 @@ class EiuAnalyst {
 		if ($this->spec !== null) {
 			return $this->spec;
 		}
-		
+
+		if ($this->eiType !== null) {
+			return $this->spec = $this->eiType->getSpec();
+		}
+
 		if ($this->n2nContext !== null) {
 			return $this->n2nContext->lookup(Rocket::class)->getSpec();
 		}
