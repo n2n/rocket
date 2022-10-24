@@ -13,6 +13,7 @@ use rocket\ei\EiLaunchPad;
 use rocket\core\model\launch\MenuGroup;
 use n2n\util\StringUtils;
 use n2n\util\type\ArgUtils;
+use n2n\reflection\ReflectionUtils;
 
 class SpecFactory {
 	private EiTypeFactory $eiTypeFactory;
@@ -25,16 +26,20 @@ class SpecFactory {
 		$this->eiTypeFactory = new EiTypeFactory($specConfigLoader, $entityModelManager);
 	}
 
-	function create(array $entityClasses = null) {
+	function create(Spec $spec = null, array $entityClasses = null) {
 		ArgUtils::valArray($entityClasses, \ReflectionClass::class, true);
 
-		$spec = new Spec();
+		$spec = $spec ?? new Spec();
 		foreach ($entityClasses ?? $this->eiTypeFactory->getEntityModelManager()->getEntityClasses() as $entityClass) {
-			$eiType = $this->eiTypeFactory->create($entityClass, $spec);
-			$spec->addEiType($eiType);
+			$eiType = $this->eiTypeFactory->build($entityClass, $spec, false);
+			if ($eiType === null) {
+				continue;
+			}
 
+			$spec->addEiType($eiType);
 			$this->checkForMenuItem($eiType);
 		}
+
 		return $spec;
 	}
 
@@ -62,7 +67,7 @@ class SpecFactory {
 		 * @var MenuItem $menuItem
 		 */
 		$menuItem = $menuItemAttribute->getInstance();
-		$launchPad = new EiLaunchPad($eiType->getId(), $eiType->getEiMask(), $menuItem->name);
+		$launchPad = new EiLaunchPad($eiType->getId(), fn() => $eiType->getEiMask(), $menuItem->name);
 
 		$groupKey = $menuItem->groupKey;
 		$groupName = $menuItem->groupName;

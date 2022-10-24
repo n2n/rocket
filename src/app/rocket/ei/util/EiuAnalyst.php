@@ -561,6 +561,7 @@ class EiuAnalyst {
 		
 		if ($this->eiType === null || $eiType->isA($this->eiType)) {
 			$this->eiType = $eiType;
+			$this->spec = $eiType->getSpec();
 			return;
 		}
 		

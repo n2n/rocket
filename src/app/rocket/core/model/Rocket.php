@@ -36,6 +36,7 @@ use n2n\l10n\Lstr;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerContext;
 use rocket\spec\setup\SpecConfigLoader;
+use rocket\spec\SpecFactory;
 
 class Rocket implements RequestScoped {
 	const VERSION = '3.1.0';
@@ -106,8 +107,8 @@ class Rocket implements RequestScoped {
 		$sem = new SpecConfigLoader($rocketConfigSource->getSpecsConfigSource(),
 				$rocketConfigSource->getModuleNamespaces(), $this->n2nContext);
 
-		$this->spec = new Spec($sem, $this->dbhPool->getEntityModelManager(), $this->n2nContext, 0);
-		$this->spec->reload();
+		$this->spec = new Spec();
+		(new SpecFactory($sem, $this->dbhPool->getEntityModelManager()))->create($this->spec);
 
 		return $this->spec;
 	}

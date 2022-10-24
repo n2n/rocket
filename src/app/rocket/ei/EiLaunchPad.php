@@ -34,16 +34,13 @@ use n2n\core\container\PdoPool;
 use rocket\core\model\launch\TransactionApproveAttempt;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrameController;
+use n2n\util\ex\IllegalStateException;
+use n2n\util\type\ArgUtils;
 
 class EiLaunchPad implements LaunchPad {
-	private $id;
-	private $eiMask;
-	private $label;
-	
-	public function __construct(string $id, EiMask $eiMask, string $label = null) {
-		$this->id = $id;
-		$this->eiMask = $eiMask;
-		$this->label = $label;
+	private EiMask $eiMask;
+
+	public function __construct(private string $id, private ?\Closure $eiMaskCallback, private ?string $label = null) {
 	}
 	
 	/**
@@ -55,17 +52,30 @@ class EiLaunchPad implements LaunchPad {
 	}
 
 	public function getLabel(): string {
-		return $this->label ?? $this->eiMask->getPluralLabelLstr();
+		return $this->label ?? $this->getEiMask()->getPluralLabelLstr();
+	}
+
+	function getEiMask() {
+		if ($this->eiMaskCallback === null) {
+			IllegalStateException::assertTrue(isset($this->eiMask));
+			return $this->eiMask;
+		}
+
+		$callback = $this->eiMaskCallback;
+		$this->eiMaskCallback = null;
+		$eiMask = $callback();
+		ArgUtils::valTypeReturn($eiMask, EiMask::class, null, $callback);
+		return $this->eiMask = $eiMask;
 	}
 	
 	public function isAccessible(N2nContext $n2nContext): bool {
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		
-		$overviewEiCommand = $this->eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCommand();
+		$overviewEiCommand = $this->getEiMask()->getEiCmdCollection()->determineGenericOverview(true)->getEiCommand();
 		
 		return $loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
-				->isEiCommandAccessible($this->eiMask, $overviewEiCommand);
+				->isEiCommandAccessible($this->getEiMask(), $overviewEiCommand);
 	}
 	
 	/**
@@ -73,13 +83,13 @@ class EiLaunchPad implements LaunchPad {
 	 * @see \rocket\core\model\launch\LaunchPad::determinePathExt($n2nContext)
 	 */
 	public function determinePathExt(N2nContext $n2nContext) {
-		$result = $this->eiMask->getEiCmdCollection()->determineGenericOverview(true);
+		$result = $this->getEiMask()->getEiCmdCollection()->determineGenericOverview(true);
 		
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		
 		if ($loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
-				->isEiCommandAccessible($this->eiMask, $result->getEiCommand())) {
+				->isEiCommandAccessible($this->getEiMask(), $result->getEiCommand())) {
 			return EiFrameController::createCmdUrlExt($result->getEiCmdPath());
 		}
 		
@@ -106,7 +116,7 @@ class EiLaunchPad implements LaunchPad {
 		$rocket = $n2nContext->lookup(Rocket::class);
 		CastUtils::assertTrue($rocket instanceof Rocket);
 		
-		$em = $this->eiMask->getEiType()->lookupEntityManager($n2nContext->lookup(PdoPool::class));
+		$em = $this->getEiMask()->getEiType()->lookupEntityManager($n2nContext->lookup(PdoPool::class));
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->createEiPermissionManager($manageState));
@@ -115,7 +125,7 @@ class EiLaunchPad implements LaunchPad {
 		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);
 		$manageState->setEiLifecycleMonitor($eiLifecycleMonitor);
 		
-		$eiFrame = $this->eiMask->getEiEngine()->createRootEiFrame($manageState);
+		$eiFrame = $this->getEiMask()->getEiEngine()->createRootEiFrame($manageState);
 		
 		return new EiFrameController($eiFrame);
 	}

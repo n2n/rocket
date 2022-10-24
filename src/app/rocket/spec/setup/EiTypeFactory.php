@@ -73,12 +73,16 @@ class EiTypeFactory {
 	/**
 	 * @param string $id
 	 * @param \ReflectionClass $class
-	 * @return EiType
+	 * @return EiType|null
 	 */
-	public function create(\ReflectionClass $class, Spec $spec) {
+	public function build(\ReflectionClass $class, Spec $spec, bool $required) {
 		$attributeSet = ReflectionContext::getAttributeSet($class);
 		$eiTypeAttribute = $attributeSet->getClassAttribute(\rocket\attribute\EiType::class);
 		if ($eiTypeAttribute === null) {
+			if (!$required) {
+				return null;
+			}
+
 			throw new UnknownEiTypeException($class->getName() . ' is not annotated with attribute '
 					. \rocket\attribute\EiType::class);
 		}

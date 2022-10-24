@@ -68,7 +68,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		$value = $eiu->entry()->getValue($this);
+		$value = $eiu->entry()->getValue($eiu->prop());
 		
 		return $eiu->factory()->newGuiField(SiFields::stringOut($value === null ? '' 
 				: $this->generateDisplayNameForN2nLocale($value, $eiu->getN2nLocale())));

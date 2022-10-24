@@ -85,7 +85,7 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 		$dateTime = $eiu->field()->getValue();
 		
 		return $eiu->factory()->newGuiField(SiFields::stringOut($dateTime === null ? ''
-				: L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->dateTimeConfig->getDateStyle(), $this->dateTimeConfig->getTimeStyle())));
+				: L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->getDateStyle(), $this->getTimeStyle())));
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
@@ -109,7 +109,7 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
 			if (null !== ($dateTime = $eiu->object()->readNativValue($eiu->prop()->getEiProp()))) {
-				return L10nUtils::formatDateTime($dateTime, $n2nLocale, $this->getDateStyle(), $this->getTimeStyle());
+				return L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->getDateStyle(), $this->getTimeStyle());
 			}
 			
 			return null;

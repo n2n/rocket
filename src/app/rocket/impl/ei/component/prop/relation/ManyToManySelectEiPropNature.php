@@ -50,7 +50,7 @@ class ManyToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkSelect($this, $eiu->object())->frame()
+		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
