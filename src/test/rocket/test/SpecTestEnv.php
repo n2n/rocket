@@ -25,6 +25,7 @@ use testmdl\bo\ModTestObj;
 use testmdl\bo\ModTestMod;
 use rocket\core\model\Rocket;
 use rocket\spec\SpecFactory;
+use n2n\test\TestEnv;
 
 class SpecTestEnv {
 
@@ -33,10 +34,8 @@ class SpecTestEnv {
 
 		$natureProvider = new RocketEiComponentNatureProvider();
 
-		$n2nContext = new N2nContextMock([
-			RocketEiComponentNatureProvider::class => $natureProvider,
-			ModTestMod::class => new ModTestMod()
-		]);
+		$n2nContext = TestEnv::replaceN2nContext();
+		$n2nContext->putLookupInjection(RocketEiComponentNatureProvider::class, $natureProvider);
 
 		$class = new ReflectionClass($natureProvider);
 		$property = $class->getProperty('magicContext');
@@ -48,9 +47,8 @@ class SpecTestEnv {
 
 		$spec = (new SpecFactory($scl, $emm))->create();
 
-		$rocket = new Rocket();
-		$rocket->setSpec($spec);
-		$n2nContext->set(Rocket::class, $rocket);
+		$n2nContext->lookup(Rocket::class)->setSpec($spec);
+
 
 		return $spec;
 	}

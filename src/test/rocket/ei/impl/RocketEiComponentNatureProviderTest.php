@@ -77,17 +77,17 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$this->assertCount(2, $eiProps);
 	}
 
-//	function testTranslations() {
-//		$spec = SpecTestEnv::setUpSpec([TranslatableTestObj::class, TranslationTestObj::class]);
-//
-//		$eiType = $spec->getEiTypeByClassName(TranslatableTestObj::class);
-//
-//		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
-//
-//
-//		$this->assertCount(1, $eiProps);
-//
-//		$nature = $eiProps['translatableTestObjs']->getNature();
-//		$this->assertInstanceOf(TranslationEiPropNature::class, $nature);
-//	}
+	function testTranslations() {
+		$spec = SpecTestEnv::setUpSpec([TranslatableTestObj::class, TranslationTestObj::class]);
+
+		$eiType = $spec->getEiTypeByClassName(TranslatableTestObj::class);
+
+		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
+
+
+		$this->assertCount(1, $eiProps);
+
+		$nature = $eiProps['translatableTestObjs']->getNature();
+		$this->assertInstanceOf(TranslationEiPropNature::class, $nature);
+	}
 }
