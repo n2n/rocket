@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "npx ng build --watch --configuration development --output-hashing none --output-path=../../src/public/assets/rocket/angl-dev",
-    "build": "npx ng build --prod --configuration production --output-hashing none --output-path=../../src/public/assets/rocket/angl",
+    "build": "npx ng build --configuration production --output-hashing none --output-path=../../src/public/assets/rocket/angl",
     "test": "npx ng test",
     "test-ci": "npx ng test --browsers=ChromeHeadlessCI --watch=false",
     "lint": "ng lint",
