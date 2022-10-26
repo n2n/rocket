@@ -31,6 +31,7 @@ use rocket\si\content\SiField;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\util\factory\EifGuiField;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 class PathPartEiProp extends AlphanumericEiProp {
 	function __construct() {
@@ -56,7 +57,8 @@ class PathPartEiProp extends AlphanumericEiProp {
 // 	}
 
 	function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty
+				|| $entityProperty instanceof StringEntityProperty);
 		
 		parent::setEntityProperty($entityProperty);
 	}

@@ -52,6 +52,7 @@ use rocket\ei\component\prop\IdNameEiProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfig;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp, IdNameEiProp {
@@ -65,7 +66,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
-				|| $entityProperty instanceof IntEntityProperty);
+				|| $entityProperty instanceof IntEntityProperty || $entityProperty instanceof StringEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
