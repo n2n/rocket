@@ -28,6 +28,7 @@ use n2n\util\type\TypeUtils;
 use n2n\util\magic\MagicContext;
 use rocket\ei\util\Eiu;
 use n2n\core\container\N2nContext;
+use rocket\ei\EiException;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
@@ -110,12 +111,17 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 
 //	private ?MagicContext $initMagicContext = null;
 
-	function init(N2nContext $n2nContext) {
+	function setup(N2nContext $n2nContext) {
 //		IllegalStateException::assertTrue($this->initMagicContext === null, 'Already initialized.');
 //		$this->initMagicContext = $magicContext;
 
 		while (null !== ($eiComponent = array_pop($this->uninitializedEiComponents))) {
-			$eiComponent->getNature()->setup(new Eiu($eiComponent, $n2nContext));
+			try {
+				$eiComponent->getNature()->setup(new Eiu($eiComponent, $n2nContext));
+			} catch (\RuntimeException $e) {
+				throw new EiException('Setup of ' . $this->elementName . ' ' . $eiComponent . 'failed. Reason: '
+						. $e->getMessage());
+			}
 		}
 	}
 

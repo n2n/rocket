@@ -1,26 +1,26 @@
 <?php
 namespace rocket\ei\component\modificator;
 
-use rocket\ei\EiModificatorPath;
+use rocket\ei\EiModPath;
 use rocket\ei\component\EiComponent;
 
 class EiMod implements EiComponent {
 
 	/**
-	 * @param EiModificatorPath $eiModificatorPath
+	 * @param EiModPath $eiModPath
 	 * @param EiModNature $nature
-	 * @param EiModCollection $eiModificatorCollection
+	 * @param EiModCollection $eiModCollection
 	 */
-	public function __construct(private EiModificatorPath $eiModificatorPath,
+	public function __construct(private EiModPath $eiModPath,
 			private EiModNature $nature,
-			private EiModCollection $eiModificatorCollection) {
+			private EiModCollection $eiModCollection) {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiModificatorPath
+	 * @return \rocket\ei\EiModPath
 	 */
-	public function getEiModificatorPath() {
-		return $this->eiModificatorPath;
+	public function getEiModPath() {
+		return $this->eiModPath;
 	}
 	
 	/**
@@ -34,6 +34,11 @@ class EiMod implements EiComponent {
 	 * @return \rocket\ei\component\modificator\\EiModCollection
 	 */
 	public function getEiModCollection() {
-		return $this->eiModificatorCollection;
+		return $this->eiModCollection;
+	}
+
+
+	public function __toString(): string {
+		return (new \ReflectionClass($this->nature))->getShortName() . ' (id: ' . $this->getEiModPath() . ')';
 	}
 }

@@ -3,7 +3,7 @@ namespace rocket\spec\result;
 
 use rocket\spec\TypePath;
 use rocket\ei\EiPropPath;
-use rocket\ei\EiModificatorPath;
+use rocket\ei\EiModPath;
 use rocket\ei\EiCmdPath;
 use n2n\util\type\CastUtils;
 
@@ -133,7 +133,7 @@ class EiErrorResult {
 	 * @param TypePath $typePath
 	 * @return EiModificatorError[]
 	 */
-	public function getEiModificatorErrors(TypePath $typePath, EiModificatorPath $eiModificatorPath = null) {
+	public function getEiModificatorErrors(TypePath $typePath, EiModPath $eiModificatorPath = null) {
 		return array_filter($this->eiModificatorErrors, function (EiModificatorError $eiModificatorError) use ($typePath, $eiModificatorPath) {
 			return $eiModificatorError->getEiTypePath()->equals($typePath) 
 					&& (null === $eiModificatorPath || $eiModificatorError->getEiModificatorPath()->equals($eiModificatorPath));

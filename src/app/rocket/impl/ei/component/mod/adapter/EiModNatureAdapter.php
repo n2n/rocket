@@ -53,7 +53,7 @@ abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements Ei
 	 * @see \rocket\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {
-		return $obj instanceof EiModNature && $this->getWrapper()->getEiModificatorPath()->equals(
+		return $obj instanceof EiModNature && $this->getWrapper()->getEiModPath()->equals(
 				$obj->getWrapper()->getEiModificatorPath());
 		
 	}

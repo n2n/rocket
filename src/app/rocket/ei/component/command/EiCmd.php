@@ -37,4 +37,12 @@ class EiCmd implements EiComponent {
 	public function getEiCommandCollection() {
 		return $this->eiCmdCollection;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\ei\component\EiComponentNature::__toString()
+	 */
+	public function __toString(): string {
+		return (new \ReflectionClass($this->nature))->getShortName() . ' (id: ' . $this->getEiCmdPath() . ')';
+	}
 }
