@@ -2,7 +2,7 @@
 
 namespace rocket\ei\component;
 
-interface EiComponent {
+interface EiComponent extends \Stringable {
 
 	function getNature(): EiComponentNature;
 }

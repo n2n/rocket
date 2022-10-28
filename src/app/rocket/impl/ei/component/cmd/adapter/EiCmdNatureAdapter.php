@@ -52,15 +52,6 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::__toString()
-	 */
-	public function __toString(): string {
-		return (new \ReflectionClass($this))->getShortName()
-				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiCmdPath() : 'unknown') . ')';
-	}	
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {

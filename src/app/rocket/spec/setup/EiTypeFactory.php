@@ -207,15 +207,15 @@ class EiTypeFactory {
 		}
 
 		$eiModCollection = $eiType->getEiMask()->getEiModCollection();
-		$eiModCollection->init($this->specConfigLoader->getN2NContext());
+		$eiModCollection->setup($this->specConfigLoader->getN2NContext());
 		$eiModCollection->registerListener($this->initListener);
 
 		$eiPropCollection = $eiType->getEiMask()->getEiPropCollection();
-		$eiPropCollection->init($this->specConfigLoader->getN2NContext());
+		$eiPropCollection->setup($this->specConfigLoader->getN2NContext());
 		$eiPropCollection->registerListener($this->initListener);
 
 		$eiCmdCollection = $eiType->getEiMask()->getEiCmdCollection();
-		$eiCmdCollection->init($this->specConfigLoader->getN2NContext());
+		$eiCmdCollection->setup($this->specConfigLoader->getN2NContext());
 		$eiCmdCollection->registerListener($this->initListener);
 
 		foreach ($eiType->getEiMask()->setupEiEngine() as $callback) {
@@ -234,6 +234,6 @@ class InitListener implements EiComponentCollectionListener {
 	}
 
 	function eiComponentCollectionChanged(EiComponentCollection $collection) {
-		$collection->init($this->magicContext);
+		$collection->setup($this->magicContext);
 	}
 }

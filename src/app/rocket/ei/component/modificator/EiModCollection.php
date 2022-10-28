@@ -24,10 +24,11 @@ namespace rocket\ei\component\modificator;
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
-use rocket\ei\EiModificatorPath;
+use rocket\ei\EiModPath;
 use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\util\Eiu;
 use n2n\util\magic\MagicContext;
+use rocket\ei\EiPropPath;
 
 class EiModCollection extends EiComponentCollection {
 
@@ -40,8 +41,12 @@ class EiModCollection extends EiComponentCollection {
 		$this->setEiMask($eiMask);
 	}
 
-	public function getById(string $id): EiMod {
-		return $this->getEiComponentById($id);
+	/**
+	 * @param EiPropPath $eiPropPath
+	 * @return EiMod
+	 */
+	public function getByPath(EiPropPath $eiPropPath) {
+		return $this->getElementByIdPath($eiPropPath);
 	}
 
 	/**
@@ -50,7 +55,7 @@ class EiModCollection extends EiComponentCollection {
 	 * @return EiMod
 	 */
 	public function add(?string $id, EiModNature $eiModificatorNature) {
-		$eiModificatorPath = new EiModificatorPath($this->makeId($id, $eiModificatorNature));
+		$eiModificatorPath = new EiModPath($this->makeId($id, $eiModificatorNature));
 		$eiModificator = new EiMod($eiModificatorPath, $eiModificatorNature, $this);
 		
 		$this->addEiComponent($eiModificatorPath,

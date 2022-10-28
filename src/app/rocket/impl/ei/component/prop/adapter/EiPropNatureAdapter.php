@@ -68,15 +68,6 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::__toString()
-	 */
-	public function __toString(): string {
-		return (new \ReflectionClass($this))->getShortName()
-				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiPropPath() : 'unknown') . ')';
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\EiPropNature::getLabelLstr()
 	 */
 	public function getLabelLstr(): Lstr {

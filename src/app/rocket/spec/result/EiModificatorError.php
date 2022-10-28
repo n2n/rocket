@@ -2,7 +2,7 @@
 namespace rocket\spec\result;
 
 use rocket\ei\component\modificator\EiModNature;
-use rocket\ei\EiModificatorPath;
+use rocket\ei\EiModPath;
 use rocket\spec\TypePath;
 
 class EiModificatorError {
@@ -11,7 +11,7 @@ class EiModificatorError {
 	private $eiModificator;
 	private $t;
 	
-	public function __construct(TypePath $eiTypePath, EiModificatorPath $eiModificatorPath, \Throwable $t, 
+	public function __construct(TypePath $eiTypePath, EiModPath $eiModificatorPath, \Throwable $t,
 			EiModNature $eiModificator = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiModificatorPath = $eiModificatorPath;

@@ -269,7 +269,7 @@ class Spec {
 	 * @return bool
 	 */
 	public function containsEiTypeClassName(string $className): bool {
-		return isset($this->eiTypes[$className]);
+		return isset($this->ciEiTypes[$className]);
 	}
 
 	/**

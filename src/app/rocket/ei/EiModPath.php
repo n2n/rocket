@@ -19,24 +19,44 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component;
+namespace rocket\ei;
 
-use rocket\ei\component\EiComponentNature;
-use rocket\ei\util\Eiu;
+use rocket\ei\component\command\EiCmdNature;
+use rocket\ei\component\modificator\EiModNature;
+use n2n\util\type\ArgUtils;
 
-abstract class EiComponentNatureAdapter implements EiComponentNature {
+class EiModPath extends IdPath {
+
+	public function __construct(string $id) {
+		parent::__construct([$id]);
+	}
+	
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::getIdBase()
+	 * @param EiCmdNature $eiCmd
+	 * @return EiModPath
 	 */
-	public function getIdBase(): ?string {
-		return null;
+	public static function from(EiModNature $eiModificator) {
+		return $eiModificator->getWrapper()->getEiModificatorPath();
 	}
-
-	function setup(Eiu $eiu): void {
-	}
-
-	function __toString(): string {
-		return (new \ReflectionClass($this))->getShortName();
+	
+	/**
+	 * @param mixed $expression
+	 * @return \rocket\ei\EiModPath
+	 */
+	public static function create($expression) {
+		if ($expression instanceof EiModPath) {
+			return $expression;
+		}
+	
+		if ($expression instanceof EiModNature) {
+			return self::from($expression);
+		}
+	
+		if (is_string($expression)) {
+			return new EiModPath($expression);
+		}
+		
+		ArgUtils::valType($expression, ['string', EiModNature::class, EiModPath::class], false,
+				'expression');
 	}
 }

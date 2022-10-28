@@ -35,4 +35,8 @@ class EiProp implements EiComponent {
 	public function getEiPropCollection() {
 		return $this->eiPropCollection;
 	}
+
+	public function __toString(): string {
+		return (new \ReflectionClass($this->nature))->getShortName() . ' (id: ' . $this->getEiPropPath() . ')';
+	}
 }

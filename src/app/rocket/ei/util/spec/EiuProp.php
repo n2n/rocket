@@ -95,7 +95,7 @@ class EiuProp {
 	 * @return mixed
 	 */
 	function createConfigException(string $message = null, Throwable $previous = null) {
-		throw new InvalidEiConfigurationException('Invalid configuration for ' . $this->getEiProp()
+		throw new InvalidEiConfigurationException('Invalid configuration for EiProp ' . $this->getEiProp()
 				. ' Reason: ' . ($message ?? $previous?->getMessage() ?? 'unknown'), $previous);
 	}
 }
