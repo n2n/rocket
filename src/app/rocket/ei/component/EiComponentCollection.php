@@ -119,8 +119,8 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 			try {
 				$eiComponent->getNature()->setup(new Eiu($eiComponent, $n2nContext));
 			} catch (\RuntimeException $e) {
-				throw new EiException('Setup of ' . $this->elementName . ' ' . $eiComponent . 'failed. Reason: '
-						. $e->getMessage());
+				throw new EiException('Setup of ' . $this->elementName . ' ' . $eiComponent
+						. ' failed. Reason: ' . $e->getMessage());
 			}
 		}
 	}
