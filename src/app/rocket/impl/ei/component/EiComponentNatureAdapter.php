@@ -35,4 +35,8 @@ abstract class EiComponentNatureAdapter implements EiComponentNature {
 
 	function setup(Eiu $eiu): void {
 	}
+
+	function __toString(): string {
+		return (new \ReflectionClass($this))->getShortName();
+	}
 }

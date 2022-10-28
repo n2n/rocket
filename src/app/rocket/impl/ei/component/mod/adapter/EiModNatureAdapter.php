@@ -57,11 +57,6 @@ abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements Ei
 				$obj->getWrapper()->getEiModificatorPath());
 		
 	}
-	
-	public function __toString(): string {
-		return (new \ReflectionClass($this))->getShortName() 
-				. ' (id: ' . ($this->wrapper ? $this->wrapper->getEiPropPath() : 'unknown') . ')';
-	}
 
 	/**
 	 * {@inheritDoc}
