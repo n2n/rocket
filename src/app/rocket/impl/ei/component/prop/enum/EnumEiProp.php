@@ -54,6 +54,7 @@ use rocket\ei\manage\entry\EiField;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiProp, SortableEiProp, 
 		QuickSearchableEiProp {
@@ -63,7 +64,7 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 	
 	public function setEntityProperty(?EntityProperty $entityProperty) {
 		ArgUtils::assertTrue($entityProperty === null || $entityProperty instanceof ScalarEntityProperty
-				|| $entityProperty instanceof IntEntityProperty);
+				|| $entityProperty instanceof IntEntityProperty || $entityProperty instanceof StringEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
 	
