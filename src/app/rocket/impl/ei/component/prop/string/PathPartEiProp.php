@@ -36,6 +36,7 @@ use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\ScalarEiProperty;
 use rocket\ei\component\prop\indepenent\EiPropConfigurator;
 use rocket\ei\manage\gui\ViewMode;
+use n2n\impl\persistence\orm\property\StringEntityProperty;
 
 class PathPartEiProp extends AlphanumericEiProp  {
 	const URL_COUNT_SEPERATOR = '-';
@@ -118,7 +119,8 @@ class PathPartEiProp extends AlphanumericEiProp  {
 // 	}
 
 	public function setEntityProperty(?EntityProperty $entityProperty) {
-		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty);
+		ArgUtils::assertTrue($entityProperty instanceof ScalarEntityProperty 
+				|| $entityProperty instanceof StringEntityProperty);
 		
 		parent::setEntityProperty($entityProperty);
 	}
