@@ -56,7 +56,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
@@ -71,10 +71,10 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 		
 		$targetEiuFrame = null; 
 		if ($readOnly){
-			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		} else {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		}
 		
