@@ -303,7 +303,7 @@ class Spec {
 			return $this->ciEiTypes[$className];
 		}
 
-		throw new UnknownEiTypeException('EiType for class \'' . $className . '\' found.');
+		throw new UnknownEiTypeException('EiType for class \'' . $className . '\' not found.');
 	}
 	
 	/**
