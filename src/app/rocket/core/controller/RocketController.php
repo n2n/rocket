@@ -60,6 +60,8 @@ class RocketController extends ControllerAdapter {
 		$scrRegistry->setBaseUrl($this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 				->ext('scr')->toUrl());
 		$rocket->setControllerContext($this->getControllerContext());
+
+		$this->getResponse()->setHeader("Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'");
 	}
 	
 	public function doDevLogin($userId) {
