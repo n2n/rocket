@@ -44,6 +44,7 @@ use n2n\util\type\TypeUtils;
 use n2n\persistence\orm\property\EntityProperty;
 
 class EiTypeSetup {
+	private array $propertyNames;
 
 	/**
 	 * @param EiType $eiType
@@ -53,6 +54,7 @@ class EiTypeSetup {
 	function __construct(private readonly EiType $eiType, private readonly ?EiPresetMode $eiPresetMode,
 			private array $unassignedEiPresetPropsMap) {
 		ArgUtils::valArray($unassignedEiPresetPropsMap, EiPresetProp::class);
+		$this->propertyNames = array_keys($unassignedEiPresetPropsMap);
 	}
 
 	/**
@@ -90,12 +92,23 @@ class EiTypeSetup {
 		return ReflectionContext::getAttributeSet($this->getClass());
 	}
 
-	function addEiPropNature(?string $propertyName, EiPropNature $eiPropNature, ?string $id = null) {
-		if ($propertyName !== null) {
-			unset($this->unassignedEiPresetPropsMap[$propertyName]);
+	private function findNextPropertyName(string $propertyName) {
+		$key = array_search($propertyName, $this->propertyNames);
+		if ($key === false) {
+			return null;
 		}
 
-		$this->eiType->getEiMask()->getEiPropCollection()->add($id ?? $propertyName, $eiPropNature);
+		return $this->propertyNames[$key + 1] ?? null;
+	}
+
+	function addEiPropNature(?string $propertyName, EiPropNature $eiPropNature, ?string $id = null) {
+		$beforePropertyName = null;
+		if ($propertyName !== null) {
+			unset($this->unassignedEiPresetPropsMap[$propertyName]);
+			$beforePropertyName = $this->findNextPropertyName($propertyName);
+		}
+
+		$this->eiType->getEiMask()->getEiPropCollection()->add($id ?? $propertyName, $eiPropNature, beforeId: $beforePropertyName);
 	}
 
 	function addEiCmdNature(EiCmdNature $eiCmdNature, ?string $id = null) {

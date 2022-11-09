@@ -29,6 +29,7 @@ use n2n\util\magic\MagicContext;
 use rocket\ei\util\Eiu;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiException;
+use n2n\util\col\ArrayUtils;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
@@ -119,22 +120,24 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 			try {
 				$eiComponent->getNature()->setup(new Eiu($eiComponent, $n2nContext));
 			} catch (\RuntimeException $e) {
-				throw new EiException('Setup of ' . $this->elementName . ' ' . $eiComponent . 'failed. Reason: '
-						. $e->getMessage());
+				throw new EiException('Setup of ' . $this->elementName . ' ' . $eiComponent
+								. ' of EiType ' . $this->getEiMask()->getEiType() . ' failed. Reason: '
+								. $e->getMessage(),
+						0, $e);
 			}
 		}
 	}
 
-	protected function addEiComponent(IdPath $idPath, EiComponent $eiComponent, bool $prepend = false): void {
+	protected function addEiComponent(IdPath $idPath, EiComponent $eiComponent, IdPath $beforeIdPath = null): void {
 		$idPathStr = (string) $idPath;
 		
 		$this->idPaths[$idPathStr] = $idPath; 
-		if (!$prepend) {
+		if ($beforeIdPath === null) {
 			$this->eiComponents[$idPathStr] = $eiComponent;
 		} else {
-			$this->eiComponents = array($idPathStr => $eiComponent) + $this->eiComponents;
+			ArrayUtils::insertBeforeKey($this->eiComponents, (string) $beforeIdPath, [$idPathStr => $eiComponent]);
 		}
-		
+
 		if (!$idPath->hasMultipleIds()) {
 			$this->rootElements[$idPathStr] = $eiComponent;
 		}

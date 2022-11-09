@@ -13,10 +13,12 @@ use rocket\attribute\impl\EiPropEnum;
 use rocket\attribute\impl\EiPropDecimal;
 
 #[EiType]
-#[EiPreset(EiPresetMode::READ)]
+#[EiPreset(EiPresetMode::READ, excludeProps: ['exclProp'])]
 class AnnotatedReadPresetTestObj {
 
 	public int $id;
+
+	public string $exclProp;
 
 	#[EiPropBool(onGuiProps: ['on1', 'on2'], offGuiProps: ['off1', 'off2'])]
 	public bool $pubBoolTest = false;
@@ -28,3 +30,4 @@ class AnnotatedReadPresetTestObj {
 	#[EiPropDecimal(decimalPlaces: 3)]
 	public float $pubDecimalTest = 0;
 }
+

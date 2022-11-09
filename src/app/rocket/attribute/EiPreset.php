@@ -33,10 +33,13 @@ use n2n\util\ex\IllegalStateException;
 class EiPreset {
 	public readonly	array $readProps;
 	public readonly	array $editProps;
+	public readonly array $excludeProps;
 
-	function __construct(public readonly ?EiPresetMode $mode = null, array $readProps = [], array $editProps = []) {
+	function __construct(public readonly ?EiPresetMode $mode = null, array $readProps = [], array $editProps = [],
+			array $excludeProps = []) {
 		$this->readProps = $this->clean($readProps);
 		$this->editProps = $this->clean($editProps);
+		$this->excludeProps = $this->clean($excludeProps);
 	}
 
 	/**
@@ -67,6 +70,10 @@ class EiPreset {
 
 	function containsEditProp(string $prop): bool {
 		return array_key_exists($prop, $this->editProps);
+	}
+
+	function containsExcludeProp(string $prop):	bool {
+		return array_key_exists($prop, $this->excludeProps);
 	}
 
 	function getPropLabel(string $prop): ?string {

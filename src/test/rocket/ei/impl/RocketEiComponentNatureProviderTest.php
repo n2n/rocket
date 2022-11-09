@@ -55,6 +55,8 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
 		$this->assertCount(4, $eiProps);
+
+		$this->assertEquals(['id', 'pubBoolTest', 'pubEnumTest', 'pubDecimalTest'], array_keys($eiProps));
 	}
 
 	function testMod() {
@@ -83,7 +85,6 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$eiType = $spec->getEiTypeByClassName(TranslatableTestObj::class);
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
-
 
 		$this->assertCount(1, $eiProps);
 
