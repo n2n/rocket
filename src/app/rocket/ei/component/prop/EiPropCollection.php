@@ -60,19 +60,22 @@ class EiPropCollection extends EiComponentCollection {
 	 * @param EiPropPath $forkEiPropPath
 	 * @return EiProp
 	 */
-	public function add(?string $id, EiPropNature $eiPropNature, EiPropPath $forkEiPropPath = null) {
+	public function add(?string $id, EiPropNature $eiPropNature, EiPropPath $forkEiPropPath = null, string $beforeId = null) {
 		$id = $this->makeId($id, $eiPropNature);
 		
 		$eiPropPath = null;
+		$beforeEiPropPath = null;
 		if ($forkEiPropPath === null) {
 			$eiPropPath = new EiPropPath([$id]);
+			$beforeEiPropPath = $beforeId === null ? null : new EiPropPath([$beforeId]);
 		} else {
 			$eiPropPath = $forkEiPropPath->ext($id);
+			$beforeEiPropPath = $beforeId === null ? null : $forkEiPropPath->ext($beforeId);
 		}
 		
 		$eiPropNature = new EiProp($eiPropPath, $eiPropNature, $this);
 		
-		$this->addEiComponent($eiPropPath, $eiPropNature);
+		$this->addEiComponent($eiPropPath, $eiPropNature, beforeIdPath: $beforeEiPropPath);
 		
 		return $eiPropNature;
 	}

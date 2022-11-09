@@ -53,18 +53,23 @@ class EiPresetUtil {
 
 		if ($this->eiPreset->mode?->isReadPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
-				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
+				$propertyName = $accessProxy->getPropertyName();
+
+				if ((!$accessProxy->isReadable() && !$accessProxy->isWritable())
+						|| $this->eiPreset->containsExcludeProp($propertyName)) {
 					continue;
 				}
 
-				$propertyName = $accessProxy->getPropertyName();
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
 						$this->eiPreset->containsEditProp($propertyName),
 						$this->eiPreset->getPropLabel($propertyName));
 			}
 		} elseif ($this->eiPreset->mode?->isEditPropsMode()) {
 			foreach ($propertiesAnalyzer->analyzeProperties(true, false) as $accessProxy) {
-				if (!$accessProxy->isReadable() && !$accessProxy->isWritable()) {
+				$propertyName = $accessProxy->getPropertyName();
+
+				if ((!$accessProxy->isReadable() && !$accessProxy->isWritable())
+						|| $this->eiPreset->containsExcludeProp($propertyName)) {
 					continue;
 				}
 
@@ -80,6 +85,8 @@ class EiPresetUtil {
 				continue;
 			}
 
+			$this->ensureNotExcluded($propertyName);
+
 			try {
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp(
 						$propertiesAnalyzer->analyzeProperty($propertyName, false), false, $label);
@@ -93,6 +100,8 @@ class EiPresetUtil {
 				throw $this->createEiPresetAttributeError($propertyName,
 						message: 'Already defined in readProps.');
 			}
+
+			$this->ensureNotExcluded($propertyName);
 
 			if (isset($eiPresetProps[$propertyName])) {
 				if ($eiPresetProps[$propertyName]->isEditable()) {
@@ -111,6 +120,13 @@ class EiPresetUtil {
 		}
 
 		return $eiPresetProps;
+	}
+
+	private function ensureNotExcluded(string $propertyName) {
+		if ($this->eiPreset->containsExcludeProp($propertyName)) {
+			throw $this->createEiPresetAttributeError($propertyName,
+					message: 'Also defined in excludedProps.');
+		}
 	}
 
 	/**
