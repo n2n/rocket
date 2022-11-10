@@ -28,7 +28,7 @@ use rocket\ei\EiPropPath;
 
 class EiPropCollection extends EiComponentCollection {
 	private array $eiPropPaths = array();
-	
+
 	/**
 	 * @param EiMask $eiMask
 	 */
@@ -45,7 +45,7 @@ class EiPropCollection extends EiComponentCollection {
 	public function getByPath(EiPropPath $eiPropPath) {
 		return $this->getElementByIdPath($eiPropPath);
 	}
-	
+
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @return EiPropNature[]
@@ -53,31 +53,32 @@ class EiPropCollection extends EiComponentCollection {
 	public function getForkedByPath(EiPropPath $eiPropPath) {
 		return $this->getElementsByForkIdPath($eiPropPath);
 	}
-	
+
 	/**
-	 * @param EiPropNature $eiPropNature
 	 * @param string $id
+	 * @param EiPropNature $eiPropNature
 	 * @param EiPropPath $forkEiPropPath
 	 * @return EiProp
 	 */
-	public function add(?string $id, EiPropNature $eiPropNature, EiPropPath $forkEiPropPath = null, string $beforeId = null) {
+	public function add(?string $id, EiPropNature $eiPropNature, EiPropPath $forkEiPropPath = null) {
 		$id = $this->makeId($id, $eiPropNature);
-		
+
 		$eiPropPath = null;
-		$beforeEiPropPath = null;
 		if ($forkEiPropPath === null) {
 			$eiPropPath = new EiPropPath([$id]);
-			$beforeEiPropPath = $beforeId === null ? null : new EiPropPath([$beforeId]);
 		} else {
 			$eiPropPath = $forkEiPropPath->ext($id);
-			$beforeEiPropPath = $beforeId === null ? null : $forkEiPropPath->ext($beforeId);
 		}
-		
+
 		$eiPropNature = new EiProp($eiPropPath, $eiPropNature, $this);
-		
-		$this->addEiComponent($eiPropPath, $eiPropNature, beforeIdPath: $beforeEiPropPath);
-		
+
+		$this->addEiComponent($eiPropPath, $eiPropNature);
+
 		return $eiPropNature;
+	}
+
+	function changeOrder(array $eiPropPaths) {
+		$this->changeEiComponentOrder($eiPropPaths);
 	}
 
 	/**
