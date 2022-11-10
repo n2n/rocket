@@ -45,6 +45,7 @@ use n2n\persistence\orm\property\EntityProperty;
 
 class EiTypeSetup {
 	private array $propertyNames;
+	private array $sortedEiPropPaths = [];
 
 	/**
 	 * @param EiType $eiType
@@ -92,23 +93,17 @@ class EiTypeSetup {
 		return ReflectionContext::getAttributeSet($this->getClass());
 	}
 
-	private function findNextPropertyName(string $propertyName) {
-		$key = array_search($propertyName, $this->propertyNames);
-		if ($key === false) {
-			return null;
-		}
-
-		return $this->propertyNames[$key + 1] ?? null;
-	}
-
 	function addEiPropNature(?string $propertyName, EiPropNature $eiPropNature, ?string $id = null) {
-		$beforePropertyName = null;
+		$i = false;
 		if ($propertyName !== null) {
 			unset($this->unassignedEiPresetPropsMap[$propertyName]);
-			$beforePropertyName = $this->findNextPropertyName($propertyName);
+			$i = array_search($propertyName, $this->propertyNames);
 		}
 
-		$this->eiType->getEiMask()->getEiPropCollection()->add($id ?? $propertyName, $eiPropNature, beforeId: $beforePropertyName);
+		$eiProp = $this->eiType->getEiMask()->getEiPropCollection()->add($id ?? $propertyName, $eiPropNature);
+		if ($i !== false) {
+			$this->sortedEiPropPaths[$i] = $eiProp->getEiPropPath();
+		}
 	}
 
 	function addEiCmdNature(EiCmdNature $eiCmdNature, ?string $id = null) {
@@ -179,7 +174,12 @@ class EiTypeSetup {
 
 		throw new ConfigurationError(
 				$message ?? 'Could not initialize EiProp for '
-						. TypeUtils::prettyReflPropName($propertyAttribute->getProperty()),
+		. TypeUtils::prettyReflPropName($propertyAttribute->getProperty()),
 				$propertyAttribute->getFile(), $propertyAttribute->getLine(), previous: $previous);
+	}
+
+	function finalize(): void {
+		ksort($this->sortedEiPropPaths);
+		$this->eiType->getEiMask()->getEiPropCollection()->changeOrder($this->sortedEiPropPaths);
 	}
 }

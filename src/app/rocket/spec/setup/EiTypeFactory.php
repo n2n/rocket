@@ -200,6 +200,7 @@ class EiTypeFactory {
 				$eiComponentNatureProvider->provide($eiTypeSetup, $eiSetupPhase);
 			}
 		}
+		$eiTypeSetup->finalize();
 
 		$uninitializedEiPresetProps = $eiTypeSetup->getUnassignedEiPresetProps();
 		if ($eiPresetUtil !== null && !empty($uninitializedEiPresetProps)) {
