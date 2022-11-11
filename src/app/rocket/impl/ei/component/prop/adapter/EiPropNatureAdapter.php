@@ -80,6 +80,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 
 	function setLabel(string $label) {
 		$this->label = $label;
+		return $this;
 	}
 	
 	/**

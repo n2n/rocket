@@ -189,12 +189,12 @@ class EiuMask  {
 	}
 	
 	public function getPropLabel($eiPropPath, N2nLocale $n2nLocale = null) {
-		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getLabelLstr()
+		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getNature()->getLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
 	public function getPropPluralLabel($eiPropPath, N2nLocale $n2nLocale = null) {
-		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getPluralLabelLstr()
+		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getNature()->getPluralLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
