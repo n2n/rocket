@@ -39,7 +39,7 @@ class EiPropCollection extends EiComponentCollection {
 
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return EiPropNature
+	 * @return EiProp
 	 * @throws UnknownEiComponentException
 	 */
 	public function getByPath(EiPropPath $eiPropPath) {
@@ -48,7 +48,7 @@ class EiPropCollection extends EiComponentCollection {
 
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return EiPropNature[]
+	 * @return EiProp[]
 	 */
 	public function getForkedByPath(EiPropPath $eiPropPath) {
 		return $this->getElementsByForkIdPath($eiPropPath);

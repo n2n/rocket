@@ -24,7 +24,7 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
-		$this->assertCount(6, $eiProps);
+		$this->assertCount(7, $eiProps);
 
 		$this->assertTrue($eiProps['id']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['id']->getNature()->isMandatory());
@@ -39,6 +39,9 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 		$this->assertFalse($eiProps['stringEditablePriTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringEditablePriTest']->getNature()->isMandatory());
 		$this->assertEquals('Super duper label', $eiProps['stringEditablePriTest']->getNature()->getLabel());
+
+		$this->assertFalse($eiProps['stringEditableNullNotNullTest']->getNature()->isReadOnly());
+		$this->assertTrue($eiProps['stringEditableNullNotNullTest']->getNature()->isMandatory());
 
 		$this->assertInstanceOf(BooleanEiPropNature::class, $eiProps['boolPubTest']->getNature());
 

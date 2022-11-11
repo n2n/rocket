@@ -75,7 +75,8 @@ class EiPresetUtil {
 
 				$propertyName = $accessProxy->getPropertyName();
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
-						!$this->eiPreset->containsReadProp($propertyName),
+						!$this->eiPreset->containsReadProp($propertyName) &&
+								($this->eiPreset->containsEditProp($propertyName) || $accessProxy->isWritable()),
 						$this->eiPreset->getPropLabel($propertyName));
 			}
 		}

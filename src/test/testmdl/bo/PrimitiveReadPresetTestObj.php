@@ -10,13 +10,15 @@ use rocket\attribute\impl\EiSetup;
 use rocket\ei\util\Eiu;
 
 #[EiType]
-#[EiPreset(EiPresetMode::READ, readProps: ['stringGetTest'], editProps: ['stringEditablePriTest' => 'Super duper label'])]
+#[EiPreset(EiPresetMode::READ, readProps: ['stringGetTest'],
+		editProps: ['stringEditablePriTest' => 'Super duper label', 'stringEditableNullNotNullTest'])]
 class PrimitiveReadPresetTestObj {
 
 	public int $id;
 	public string $stringPriTest;
 	private ?string $stringNullPriTest = null;
 	private string $stringEditablePriTest;
+	private ?string $stringEditableNullNotNullTest = null;
 
 	public bool $boolPubTest;
 
@@ -36,6 +38,16 @@ class PrimitiveReadPresetTestObj {
 	function getStringGetTest(): string {
 		return 'huiii';
 	}
+
+	public function getStringEditableNullNotNullTest(): ?string {
+		return $this->stringEditableNullNotNullTest;
+	}
+
+	public function setStringEditableNullNotNullTest(string $stringEditableNullNotNullTest): void {
+		$this->stringEditableNullNotNullTest = $stringEditableNullNotNullTest;
+	}
+
+
 
 	#[EiSetup]
 	private static function setup(Eiu $eiu) {
