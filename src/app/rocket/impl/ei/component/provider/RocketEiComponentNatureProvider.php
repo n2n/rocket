@@ -98,11 +98,11 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 		if ($eiCmdOverviewAttribute !== null) {
 			$pageSize = $eiCmdOverviewAttribute->getInstance()->pageSize;
 			$eiTypeSetup->addEiCmdNature((new OverviewEiCmdNature())->setPageSize($pageSize));
-		} else if ($readCmdsMode) {
+		} else if ($readCmdsMode || $editCmdsMode) {
 			$eiTypeSetup->addEiCmdNature(new OverviewEiCmdNature());
 		}
 
-		if ($readCmdsMode || $attributeSet->hasClassAttribute(EiCmdDetail::class)) {
+		if ($readCmdsMode || $editCmdsMode || $attributeSet->hasClassAttribute(EiCmdDetail::class)) {
 			$eiTypeSetup->addEiCmdNature(new DetailEiCmdNature());
 		}
 

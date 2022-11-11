@@ -39,7 +39,7 @@ class AddController extends ControllerAdapter {
 	const CONTROL_CANCEL_KEY = 'canel';
 	
 	private $dtc;
-	private $eiuCtrl;
+	private EiuCtrl $eiuCtrl;
 	
 	private $parentEiuObject;
 	private $beforeEiuObject;
@@ -78,7 +78,7 @@ class AddController extends ControllerAdapter {
 	}
 	
 	private function createControls() {
-		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->controls();
+		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->guiControl();
 		$dtc = $this->eiuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [

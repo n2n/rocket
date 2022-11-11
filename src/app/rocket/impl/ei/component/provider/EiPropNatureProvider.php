@@ -261,7 +261,6 @@ class EiPropNatureProvider {
 
 	private function providePrimitivePropNaturesByType(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed): bool {
 		switch ($typeName) {
-
 			case 'string':
 				$nature = new StringEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				$nature->setMaxlength(255);

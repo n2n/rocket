@@ -57,10 +57,10 @@ class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->isReadOnly()) {
+		if ($readOnly || $this->relationModel->isReadOnly()) {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
-		return new ToManyGuiField($eiu, $this->getRelationModel(), $this->getEditConfig());
+		return new ToManyGuiField($eiu, $this->getRelationModel());
 	}
 }
