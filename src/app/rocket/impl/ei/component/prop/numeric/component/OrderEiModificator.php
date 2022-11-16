@@ -36,10 +36,10 @@ class OrderEiModificator extends EiModNatureAdapter {
 	private $eiProp;
 	
 	/**
-	 * @param OrderEiPropNature $eiProp
+	 * @param OrderEiPropNature $eiPropNature
 	 */
-	public function __construct(OrderEiPropNature $eiProp) {
-		$this->eiProp = $eiProp;
+	public function __construct(OrderEiPropNature $eiPropNature, private EiPropPath $eiPropPath) {
+		$this->eiProp = $eiPropNature;
 	}
 	
 	/**
@@ -107,9 +107,9 @@ class OrderEiModificator extends EiModNatureAdapter {
 		$eiFrame = $eiu->frame()->getEiFrame();
 		$eiProp = $this->eiProp;
 		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiProp) {
-			$orderIndex = $ssm->getValue(EiPropPath::from($eiProp));
+			$orderIndex = $ssm->getValue($this->eiPropPath);
 			
-			if (mb_strlen($orderIndex)) return;
+			if (mb_strlen((string) $orderIndex)) return;
 			
 			$entityProperty = $eiProp->getEntityProperty();
 			
@@ -118,7 +118,7 @@ class OrderEiModificator extends EiModNatureAdapter {
 					->select(CrIt::f('MAX', CrIt::p('eo', $entityProperty)))
 					->from($entityProperty->getEntityModel()->getClass(), 'eo');
 			
-			$ssm->setValue(EiPropPath::from($eiProp), $criteria->toQuery()->fetchSingle() + OrderEiPropNature::ORDER_INCREMENT);
+			$ssm->setValue($this->eiPropPath, $criteria->toQuery()->fetchSingle() + OrderEiPropNature::ORDER_INCREMENT);
 		}));
 	}
 }

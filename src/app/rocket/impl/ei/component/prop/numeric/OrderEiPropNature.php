@@ -30,21 +30,24 @@ use rocket\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
+use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\type\attrs\DataSet;
+use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
+use rocket\ei\manage\gui\ViewMode;
 
 class OrderEiPropNature extends IntegerEiPropNature {
     const ORDER_INCREMENT = 10;
-	
-	private $orderConfig;
-	
-	function __construct() {
-	    parent::__construct();
-	    
-	    $this->orderConfig = new OrderConfig($this);
+
+	function __construct(PropertyAccessProxy $propertyAccessProxy) {
+		parent::__construct($propertyAccessProxy);
+
+		$this->getDisplayConfig()->changeDefaultDisplayedViewModes(ViewMode::all(), false);
 	}
-	
-	function prepare() {
-	    parent::prepare();
-	    $this->getConfigurator()->addAdaption($this->orderConfig);
+
+	function setup(Eiu $eiu): void {
+		$this->setMandatory(false);
+		$eiuMask = $eiu->mask();
+		$eiuMask->addMod(new OrderEiModificator($this, $eiu->prop()->getPath()));
 	}
 
 	public function isCompatibleWith(EntityProperty $entityProperty) {
