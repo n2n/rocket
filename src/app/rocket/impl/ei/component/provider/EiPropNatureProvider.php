@@ -50,6 +50,7 @@ use n2n\util\uri\Url;
 use rocket\impl\ei\component\prop\string\UrlEiPropNature;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiPropNature;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToOneEiPropNature;
+use rocket\impl\ei\component\prop\numeric\OrderEiPropNature;
 
 class EiPropNatureProvider {
 
@@ -113,6 +114,17 @@ class EiPropNatureProvider {
 			$propertyName = $eiPropOnlineAttribute->getProperty()->getName();
 
 			$nature = new OnlineEiPropNature($this->getPropertyAccessProxy($eiPropOnlineAttribute, false));
+			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
+			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
+
+			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
+		}
+
+		foreach ($this->eiTypeSetup->getAttributeSet()->getPropertyAttributesByName(EiPropOrder::class)
+				 as $eiPropOrderAttribute) {
+			$propertyName = $eiPropOrderAttribute->getProperty()->getName();
+
+			$nature = new OrderEiPropNature($this->getPropertyAccessProxy($eiPropOrderAttribute, false));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
 			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
 
@@ -233,7 +245,14 @@ class EiPropNatureProvider {
 					return false;
 				}
 
-				$nature = new OnlineEipropNature($eiPresetProp->getPropertyAccessProxy());
+				$nature = new OnlineEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				break;
+			case 'int':
+				if ($eiPresetProp->getName() !== 'orderIndex' || !$eiPresetProp->isEditable()) {
+					return false;
+				}
+
+				$nature = new OrderEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
 			case 'string':
 				if ($eiPresetProp->getName() === 'pathPart') {
