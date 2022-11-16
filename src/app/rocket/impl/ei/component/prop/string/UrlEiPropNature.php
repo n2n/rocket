@@ -165,7 +165,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		
 		$url = Url::create($value, true);
 		
-		$autoScheme = $this->urlConfig->getAutoScheme();
+		$autoScheme = $this->getAutoScheme();
 		if ($autoScheme !== null && !$url->hasScheme()) {
 			$url = $url->chScheme($autoScheme);
 		}
@@ -182,7 +182,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		$label = $this->buildLabel(Url::create($value, true), $eiu->entryGui()->isBulky());
 		return $eiu->factory()->newGuiField(
 				SiFields::linkOut(SiNavPoint::href(Url::create($value, true)), $label)
-						->setLytebox($this->urlConfig->isLytebox()));
+						->setLytebox($this->isLytebox()));
 	}
 	
 
