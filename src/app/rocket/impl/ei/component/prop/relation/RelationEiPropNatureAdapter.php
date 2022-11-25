@@ -22,40 +22,27 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use n2n\util\ex\IllegalStateException;
-
-
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\impl\ei\component\prop\adapter\DisplayableAdapter;
-use n2n\util\col\ArrayUtils;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
 use n2n\l10n\Lstr;
-use rocket\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommandNature;
-use rocket\ei\EiPropPath;
-use rocket\ei\util\spec\EiuEngine;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
-use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
 use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
-use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraints;
-use rocket\impl\ei\component\prop\adapter\EditableAdapter;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 
 abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, GuiFieldAssembler {
-	use DisplayableAdapter;
+	use DisplayConfigTrait;
 
 	private ?Relation $relation = null;
 	private PropertyAccessProxy $propertyAccessProxy;
@@ -75,6 +62,9 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 		return true;
 	}
 
+	function getNativeAccessProxy(): ?AccessProxy {
+		return $this->propertyAccessProxy;
+	}
 
 	function setup(Eiu $eiu): void {
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
@@ -212,7 +202,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 		}
 		
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			$targetEntityObj = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
+			$targetEntityObj = $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
 			
 			if ($targetEntityObj === null) {
 				return null;

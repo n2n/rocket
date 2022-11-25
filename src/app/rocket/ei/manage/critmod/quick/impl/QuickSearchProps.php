@@ -19,22 +19,18 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\ei\manage\critmod\quick\impl;
 
-use rocket\ei\component\prop\EiPropNature;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\property\AccessProxy;
+use n2n\persistence\orm\criteria\item\CriteriaProperty;
+use n2n\persistence\orm\criteria\item\CriteriaItem;
+use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 
-interface EditableEiPropNature extends EiPropNature {
-	function isConstant(): bool;
+class QuickSearchProps {
+	static function like(CriteriaProperty $criteriaProperty): LikeQuickSearchProp {
+		return new LikeQuickSearchProp($criteriaProperty);
+	}
 
-	function setConstant(bool $constant): static;
-
-	function isReadOnly(): bool;
-
-	function setReadOnly(bool $readOnly): static;
-
-	function isMandatory(): bool;
-
-	function setMandatory(bool $mandatory): static;
+	static function simple(CriteriaItem $criteriaItem, string $operator = CriteriaComparator::OPERATOR_LIKE): SimpleQuickSearchProp {
+		return new SimpleQuickSearchProp($criteriaItem, $operator);
+	}
 }

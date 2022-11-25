@@ -55,7 +55,7 @@ use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\img\ImageDimension;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\EditableAdapter;
+use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
 use n2n\reflection\property\PropertyAccessProxy;
 use Cassandra\Type;
 
@@ -288,7 +288,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	private function buildIdentityString(Eiu $eiu) {
-		$file = $eiu->object()->readNativValue($eiu->prop()->getEiProp());
+		$file = $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
 		if ($file === null) return null;
 		
 		CastUtils::assertTrue($file instanceof File);

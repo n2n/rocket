@@ -29,6 +29,9 @@ use rocket\ei\util\EiuAnalyst;
 use rocket\ei\component\prop\EiPropNature;
 use rocket\si\content\SiEntryQualifier;
 use rocket\ei\component\prop\EiProp;
+use n2n\reflection\property\PropertyAccessException;
+use n2n\reflection\property\AccessProxy;
+use rocket\ei\util\EiuPerimeterException;
 
 class EiuObject {
 	private $eiObject;
@@ -103,69 +106,69 @@ class EiuObject {
 		$eiPropPath = $eiProp->getEiPropPath();
 		return $eiProp->getEiPropCollection()->getEiMask()->getForkObject($eiPropPath->poped(), $this->eiObject);
 	}
-	
-	/**
-	 * @param EiProp $eiProp
-	 * @return NULL|mixed
-	 *@throws EiFieldOperationFailedException
-	 */
-	public function readNativValue(EiProp $eiProp) {
-//		if ($this->isDraftProp($eiProp)) {
-//			return $this->eiObject->getDraft()->getDraftValueMap()->getValue($eiPropPath);
-//		}
-		
-		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
-		if ($propertyAccessProxy !== null) {
-			 return $propertyAccessProxy->getValue($this->getForkObject($eiProp));
-		}
-		
-		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiProp);
-	}
-	
-	/**
-	 * @param EiProp $eiProp
-	 * @return boolean
-	 */
-	public function isNativeWritable(EiProp $eiProp) {
-//		if ($this->isDraftProp($eiProp)) {
-//			return true;
-//		}
-		
-		return $this->getPropertyAccessProxy($eiProp->getNature())->isWritable();
-	}
-	
-	/**
-	 * @param EiPropNature $eiPropNature
-	 * @return \n2n\reflection\property\AccessProxy
-	 *@throws EiFieldOperationFailedException
-	 */
-	private function getPropertyAccessProxy(EiPropNature $eiPropNature) {
-		$propertyAccessProxy = $eiPropNature->getPropertyAccessProxy();
-		if ($propertyAccessProxy !== null) {
-			return $propertyAccessProxy;
-		}
-		
-		throw new EiFieldOperationFailedException('There is no PropertyAccessProxy configured for ' . $eiPropNature);
-	}
-	
-	/**
-	 * @param EiProp $eiProp
-	 * @param mixed $value
-	 * @throws EiFieldOperationFailedException
-	 */
-	public function writeNativeValue(EiProp $eiProp, $value) {
-//		if ($this->isDraftProp($eiProp)) {
-//			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
-//			return;
-//		}
 
-		$this->getPropertyAccessProxy($eiProp->getNature())->setValue($this->getForkObject($eiProp), $value);
+	private function getEiProp(EiProp|EiPropPath|string|null $arg = null) {
+		if ($arg === null) {
+			$arg = $this->eiuAnalyst->getEiPropPath(true);
+		}
+
+		if (!($arg instanceof EiProp)) {
+			$arg = $this->getEiType()->getEiMask()->getEiPropCollection()->getByPath(EiPropPath::create($arg));
+		}
+
+		return $arg;
+	}
+
+	/**
+	 * @param EiProp|EiPropPath|string|null $eiProp
+	 * @return mixed
+	 * @throws PropertyAccessException
+	 */
+	public function readNativeValue(EiProp|EiPropPath|string|null $eiProp = null): mixed {
+		$eiProp = $this->getEiProp($eiProp);
+
+		return $this->getNativeAccessProxy($eiProp, true)->getValue($this->getForkObject($eiProp));
 	}
 	
 	/**
-	 * @return \rocket\ei\util\entry\EiuEntry
+	 * @param EiProp $eiProp
+	 * @return bool
 	 */
-	public function newEntry() {
+	public function isNativeWritable(EiProp $eiProp): bool {
+		return (bool) $this->getNativeAccessProxy($eiProp, false)?->isWritable();
+	}
+
+	/**
+	 * @param EiProp $eiProp
+	 * @param bool $required
+	 * @return AccessProxy|null
+	 */
+	private function getNativeAccessProxy(EiProp $eiProp, bool $required): ?AccessProxy {
+		$nativeAccessProxy = $eiProp->getNature()->getNativeAccessProxy();
+		if (!$required || $nativeAccessProxy !== null) {
+			return $nativeAccessProxy;
+		}
+		
+		throw new EiuPerimeterException('There is no native AccessProxy configured for ' . $eiProp);
+	}
+
+	/**
+	 * @param mixed $value
+	 * @param EiProp|EiPropPath|string|null $eiProp
+	 * @return EiuObject
+	 * @throws PropertyAccessException
+	 */
+	public function writeNativeValue(mixed $value, EiProp|EiPropPath|string|null $eiProp = null): static {
+		$eiProp = $this->getEiProp($eiProp);
+
+		$this->getNativeAccessProxy($eiProp->getNature(), true)->setValue($this->getForkObject($eiProp), $value);
+		return $this;
+	}
+	
+	/**
+	 * @return EiuEntry
+	 */
+	public function newEntry(): EiuEntry {
 		$this->eiuAnalyst->getEiFrame(true);
 		return new EiuEntry(null, $this, null, $this->eiuAnalyst);
 	}
@@ -173,7 +176,7 @@ class EiuObject {
 	/**
 	 * @return string
 	 */
-	function createIdentityString() {
+	function createIdentityString(): string {
 		return $this->eiuAnalyst->getEiuFrame(true)->engine()->createIdentityString($this->eiObject);
 	}
 	
@@ -181,7 +184,7 @@ class EiuObject {
 	 * @param string $name
 	 * @return SiEntryQualifier
 	 */
-	function createSiEntryQualifier(string $name = null) {
+	function createSiEntryQualifier(string $name = null): SiEntryQualifier {
 		$name = $name ?? $this->createIdentityString();
 		
 		$siMaskQualifier = $this->eiuAnalyst->getEiuFrame(true)->mask($this->eiObject)->createSiMaskQualifier();

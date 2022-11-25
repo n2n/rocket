@@ -39,13 +39,13 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
-use rocket\impl\ei\component\prop\adapter\EditableAdapter;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
+use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
 
 class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
-	use QuickSearchTrait;
+	use QuickSearchConfigTrait;
 
 	public function __construct(RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
 		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
@@ -74,7 +74,7 @@ class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if (!$this->isQuickSerachable()) {
+		if (!$this->isQuickSearchable()) {
 			return null;
 		}
 		

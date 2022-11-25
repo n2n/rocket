@@ -15,23 +15,27 @@
  *
  * The following people participated in this project:
  *
- * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Andreas von Burg...........: Architect, Lead Developer, Concept
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
-trait EditableAdapter {
-	protected bool $constant = false;
-	protected bool $readOnly = false;
-	protected bool $mandatory = false;
+trait EditConfigTrait {
+
+	protected ?EditConfig $editConfig;
+
+	function getEditConfig(): EditConfig {
+		return $this->editConfig ?? $this->editConfig = new EditConfig();
+	}
 
 	/**
 	 * @return bool
 	 */
 	function isConstant(): bool {
-		return $this->constant;
+		return $this->getEditConfig()->isConstant();
 	}
 
 	/**
@@ -39,7 +43,7 @@ trait EditableAdapter {
 	 * @return $this
 	 */
 	function setConstant(bool $constant): static {
-		$this->constant = $constant;
+		$this->getEditConfig()->setConstant($constant);
 		return $this;
 	}
 
@@ -47,7 +51,7 @@ trait EditableAdapter {
 	 * @return bool
 	 */
 	function isReadOnly(): bool {
-		return $this->readOnly;
+		return $this->getEditConfig()->isReadOnly();
 	}
 
 	/**
@@ -55,7 +59,7 @@ trait EditableAdapter {
 	 * @return $this
 	 */
 	function setReadOnly(bool $readOnly): static {
-		$this->readOnly = (bool) $readOnly;
+		$this->getEditConfig()->setReadOnly($readOnly);
 		return $this;
 	}
 
@@ -63,7 +67,7 @@ trait EditableAdapter {
 	 * @return bool
 	 */
 	function isMandatory(): bool {
-		return $this->mandatory;
+		return $this->getEditConfig()->isMandatory();
 	}
 
 	/**
@@ -71,8 +75,7 @@ trait EditableAdapter {
 	 * @return $this
 	 */
 	function setMandatory(bool $mandatory): static {
-		$this->mandatory = $mandatory;
+		$this->getEditConfig()->setMandatory($mandatory);
 		return $this;
 	}
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2012-2016, Hofmänner New Media.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -20,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter;
+namespace rocket\impl\ei\component\prop\adapter\config;
 
 use rocket\ei\manage\gui\GuiProp;
 use rocket\ei\util\Eiu;
@@ -33,7 +32,7 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 
-trait DisplayableAdapter {
+trait DisplayConfigTrait {
 	protected DisplayConfig $displayConfig;
 
 	/**
@@ -67,7 +66,10 @@ trait DisplayableAdapter {
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField ();
 	}
+
 	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		throw new UnsupportedOperationException ( get_class ( $this ) . ' must implement  either' . ' createOutEifGuiField(Eiu $eiu): EifGuiField or' . ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
+		throw new UnsupportedOperationException ( get_class ($this) . ' must implement either'
+				. ' createOutEifGuiField(Eiu $eiu): EifGuiField or'
+				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
 	}
 }

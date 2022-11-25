@@ -48,7 +48,7 @@ use rocket\si\content\SiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
 use rocket\ei\manage\idname\IdNameProp;
-use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
 use rocket\ei\manage\DefPropPath;
@@ -236,7 +236,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->isQuickSerachable()
+		if ($this->isQuickSearchable()
 				&& null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
@@ -246,7 +246,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::strOf($eiu->object()->readNativValue($eiu->prop()->getEiProp()));
+			return StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp()));
 		})->toIdNameProp();
 	}
 }

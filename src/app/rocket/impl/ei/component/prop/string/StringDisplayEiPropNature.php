@@ -32,12 +32,12 @@ class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureAdapter {
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::reduce(StringUtils::strOf($eiu->object()->readNativValue($eiu->prop()->getEiProp())), 30, '..');
+			return StringUtils::reduce(StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp())), 30, '..');
 		})->toIdNameProp();
 	}
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		return $eiu->factory()->newGuiField(SiFields::stringOut(
-				StringUtils::strOf($eiu->object()->readNativValue($eiu->prop()->getEiProp()), true)));
+				StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp()), true)));
 	}
 }

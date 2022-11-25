@@ -51,6 +51,7 @@ use rocket\impl\ei\component\prop\string\UrlEiPropNature;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiPropNature;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToOneEiPropNature;
 use rocket\impl\ei\component\prop\numeric\OrderEiPropNature;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 
 class EiPropNatureProvider {
 
@@ -67,7 +68,7 @@ class EiPropNatureProvider {
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
 			$nature->setLabel($this->eiTypeSetup->getPropertyLabel($propertyName));
 			$this->configureEditiable($eiPropBool->constant, $eiPropBool->readOnly, $eiPropBool->mandatory,
-					$nature->getPropertyAccessProxy(), $nature);
+					$nature->getPropertyAccessProxy(), $nature->getEditConfig());
 
 			$nature->setOnAssociatedDefPropPaths($eiPropBool->onAssociatedDefPropPaths);
 			$nature->setOffAssociatedDefPropPaths($eiPropBool->offAssociatedDefPropPaths);
@@ -87,7 +88,7 @@ class EiPropNatureProvider {
 			$nature->setAssociatedDefPropPathMap($eiPropEnum->associatedDefPropPathMap);
 
 			$this->configureEditiable($eiPropEnum->constant, $eiPropEnum->readOnly, $eiPropEnum->mandatory,
-					$nature->getPropertyAccessProxy(), $nature);
+					$nature->getPropertyAccessProxy(), $nature->getEditConfig());
 
 			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
 		}
@@ -103,7 +104,7 @@ class EiPropNatureProvider {
 			$nature->setDecimalPlaces($eiPropDecimal->decimalPlaces);
 
 			$this->configureEditiable($eiPropDecimal->constant, $eiPropDecimal->readOnly, $eiPropDecimal->mandatory,
-					$nature->getPropertyAccessProxy(), $nature);
+					$nature->getPropertyAccessProxy(), $nature->getEditConfig());
 			$this->configureAddons($nature->getPropertyAccessProxy(), $nature);
 
 			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
@@ -227,6 +228,8 @@ class EiPropNatureProvider {
 	}
 
 	private function provideAdvPropNaturesByType(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed): bool {
+		$editConfig = null;
+
 		switch ($typeName) {
 			case File::class:
 				$nature = new FileEiPropNature($eiPresetProp->getPropertyAccessProxy());
@@ -271,7 +274,7 @@ class EiPropNatureProvider {
 		$nature->setLabel($eiPresetProp->getLabel());
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
 		$this->configureEditiable(null, !$eiPresetProp->isEditable(), !$nullAllowed, $eiPresetProp->getPropertyAccessProxy(),
-				$nature);
+				$nature->getEditConfig());
 
 		$this->eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $nature);
 
@@ -279,19 +282,25 @@ class EiPropNatureProvider {
 	}
 
 	private function providePrimitivePropNaturesByType(EiPresetProp $eiPresetProp, string $typeName, bool $nullAllowed): bool {
+		$editConfig = null;
+
 		switch ($typeName) {
 			case 'string':
 				$nature = new StringEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				$nature->setMaxlength(255);
+				$editConfig = $nature->getEditConfig();
 				break;
 			case 'int':
 				$nature = new IntegerEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				$editConfig = $nature->getEditConfig();
 				break;
 			case 'bool':
 				$nature = new BooleanEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				$editConfig = $nature->getEditConfig();
 				break;
 			case 'float':
 				$nature = new DecimalEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				$editConfig = $nature->getEditConfig();
 				break;
 			default:
 				return false;
@@ -300,7 +309,7 @@ class EiPropNatureProvider {
 		$nature->setLabel($eiPresetProp->getLabel());
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
 		$this->configureEditiable(null, !$eiPresetProp->isEditable(), !$nullAllowed, $eiPresetProp->getPropertyAccessProxy(),
-				$nature);
+				$editConfig);
 		$this->configureAddons($eiPresetProp->getPropertyAccessProxy(), $nature);
 
 		$this->eiTypeSetup->addEiPropNature($eiPresetProp->getName(), $nature);
@@ -329,7 +338,7 @@ class EiPropNatureProvider {
 	}
 
 	private function configureEditiable(?bool $constant, ?bool $readOnly, ?bool $mandatory, AccessProxy $accessProxy,
-			EditableEiPropNature $nature) {
+			EditConfig $nature) {
 		$nature->setConstant($constant ?? false);
 		$nature->setReadOnly($readOnly ?? !$accessProxy->isWritable());
 		$nature->setMandatory($mandatory ?? $accessProxy->getSetterConstraint()->allowsNull());

@@ -132,7 +132,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 			$value = $value->getObject();
 		}
 		
-		$this->eiu->entry()->writeNativeValue($this->eiProp, $value);
+		$this->eiu->entry()->writeNativeValue($value, $this->eiProp);
 	}
 	
 	public function isReadable(): bool {

@@ -7,6 +7,9 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\component\InvalidEiConfigurationException;
 use Throwable;
+use n2n\reflection\property\PropertyAccessException;
+use rocket\ei\util\entry\EiuObject;
+use n2n\util\type\TypeConstraint;
 
 class EiuProp {
 	private $eiPropPath;
@@ -32,7 +35,7 @@ class EiuProp {
 	}
 	
 	/**
-	 * @return \rocket\ei\component\prop\EiPropNature
+	 * @return \rocket\ei\component\prop\EiProp
 	 */
 	public function getEiProp() {
 		return $this->eiuMask->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
@@ -97,5 +100,32 @@ class EiuProp {
 	function createConfigException(string $message = null, Throwable $previous = null) {
 		throw new InvalidEiConfigurationException('Invalid configuration for EiProp ' . $this->getEiProp()
 				. ' Reason: ' . ($message ?? $previous?->getMessage() ?? 'unknown'), $previous);
+	}
+
+	function getNativeReadTypeConstraint(): ?TypeConstraint {
+		return $this->getEiProp()->getNature()->getNativeAccessProxy()?->getGetterConstraint();
+	}
+
+	function isNativeReadable(): bool {
+		return (bool) $this->getEiProp()->getNature()->getNativeAccessProxy()?->isReadable();
+	}
+
+	/**
+	 * @throws PropertyAccessException
+	 */
+	function readNativeValue(EiuObject $eiuObject = null) {
+		return ($eiuObject ?? $this->eiuAnalyst->getEiuObject(true))->readNativeValue($this->getEiProp());
+	}
+
+	function isNativeWritable(): bool {
+		return (bool) $this->getEiProp()->getNature()->getNativeAccessProxy()?->isReadable();
+	}
+
+	/**
+	 * @throws PropertyAccessException
+	 */
+	function writeNativeValue(mixed $value, EiuObject $eiuObject = null): static {
+		($eiuObject ?? $this->eiuAnalyst->getEiuObject(true))->writeNativeValue($value, $this->getEiProp());
+		return $this;
 	}
 }

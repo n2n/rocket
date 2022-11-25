@@ -17,6 +17,10 @@ trait PropertyAdapter {
 		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 
+	function getNativeAccessProxy(): ?AccessProxy {
+		return $this->propertyAccessProxy;
+	}
+
 	/**
 	 * @return AccessProxy|null
 	 */

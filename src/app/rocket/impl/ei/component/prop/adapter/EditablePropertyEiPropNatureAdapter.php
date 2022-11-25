@@ -31,36 +31,13 @@ use rocket\ei\util\factory\EifField;
 use n2n\validation\validator\impl\Validators;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\impl\ei\component\prop\adapter\config\EditConfigTrait;
 
-abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp, EditableEiPropNature {
-	use EditableAdapter;
+abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
+	use EditEiFieldTrait;
 
 	function isPrivileged(): bool {
 		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::createEifField()
-	 */
-	protected function createEifField(Eiu $eiu): EifField {
-		$eifField = parent::createEifField($eiu);
-		
-		if (!$this->isReadOnly()) {
-			$eifField->setWriter(function ($value) use ($eiu) {
-				$eiu->entry()->writeNativeValue($eiu->prop()->getEiProp(), $value);
-			});
-		}
-		
-		$eifField->setCopier(function ($value) {
-			return $value;
-		});
-				
-		if ($this->isMandatory()) {
-			$eifField->val(Validators::mandatory());
-		}
-		
-		return $eifField;
 	}
 	
 	/**

@@ -48,28 +48,29 @@ use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
-use rocket\impl\ei\component\prop\adapter\QuickSearchTrait;
+use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
+use rocket\ei\manage\critmod\quick\impl\QuickSearchProps;
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
-	use AddonAdapter, QuickSearchTrait;
+	use AddonAdapter, QuickSearchConfigTrait;
 
 	/**
 	 * @var int|null
 	 */
-	private $minlength;
+	private ?int $minlength = null;
 	/**
 	 * @var int|null
 	 */
-	private $maxlength;
+	private ?int $maxlength = null;
 
 
 
 	/**
 	 * @return int|null
 	 */
-	function getMinlength() {
+	function getMinlength(): ?int {
 		return $this->minlength;
 	}
 
@@ -83,7 +84,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	/**
 	 * @return int|null
 	 */
-	function getMaxlength() {
+	function getMaxlength(): ?int {
 		return $this->maxlength;
 	}
 
@@ -131,15 +132,11 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 
 		return null;
 	}
-	
-	public function getSortItemFork() {
-		return null;
-	}
-	
+
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->isQuickSerachable()
+		if ($this->isQuickSearchable()
 				&& null !== ($entityProperty = $this->getEntityProperty())) {
-			return new LikeQuickSearchProp(CrIt::p($entityProperty));
+			return QuickSearchProps::like(CrIt::p($entityProperty));
 		}
 		
 		return null;
@@ -151,7 +148,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty));
 	}
 	/**
-	 * {@inheritDoc}
+	 * {}
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
 	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
@@ -160,7 +157,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::reduce((string) $eiu->object()->readNativValue($eiu->prop()->getEiProp()), 30, '...');
+			return StringUtils::reduce((string) $eiu->object()->readNativeValue(), 30, '...');
 		})->toIdNameProp();
 	}
 }
