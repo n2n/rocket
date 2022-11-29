@@ -128,7 +128,7 @@ class EiFrameUtil {
 			return null;
 		}
 		
-		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(),
+		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getEiLaunch()->getEntityManager(),
 				$eiType->getClass(), $nestedSetStrategy);
 		return $nestedSetUtils->fetchLevel($eiObject->getEiEntityObj()->getEntityObj());
 	}
@@ -198,7 +198,7 @@ class EiFrameUtil {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		$allowedEiTypes = $this->determineEiTypes($allowedEiTypeIds);
 		
-		$eiGui = new EiGui($this->eiFrame->getManageState()->getEiGuiModelCache()->obtainForgeMultiEiGuiModel(
+		$eiGui = new EiGui($this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainForgeMultiEiGuiModel(
 				$this->eiFrame->getContextEiEngine()->getEiMask(), $viewMode, $allowedEiTypes, $defPropPaths));
 		
 		$eiGui->appendNewEiEntryGui($this->eiFrame, 0);
@@ -220,7 +220,7 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
 	private function createEiGuiFrame(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
-		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($eiMask);
+		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiMask);
 		
 		
 		if ($defPropPaths === null) {
@@ -237,7 +237,7 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGuiModel
 	 */
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
-		return $this->eiFrame->getManageState()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths);
+		return $this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths);
 	}
 	
 	/**
@@ -271,7 +271,7 @@ class EiFrameUtil {
 					$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId));
 		}
 		
-		$eiGui = new EiGui($this->eiFrame->getManageState()->getEiGuiModelCache()
+		$eiGui = new EiGui($this->eiFrame->getEiLaunch()->getEiGuiModelCache()
 				->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths));
 		
 		$eiGui->appendEiEntryGui($this->eiFrame, [$eiEntry], $treeLevel);
@@ -352,7 +352,7 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $defPropPaths = null, string $quickSearchStr = null) {
-		$eiGuiModelCache = $this->eiFrame->getManageState()->getEiGuiModelCache();
+		$eiGuiModelCache = $this->eiFrame->getEiLaunch()->getEiGuiModelCache();
 		$eiGuiModel = $eiGuiModelCache->obtainEiGuiModel($this->eiFrame->getContextEiEngine()->getEiMask(), 
 				ViewMode::determine($bulky, $readOnly, false), $defPropPaths, true);
 		$eiGui = new EiGui($eiGuiModel);
@@ -399,7 +399,7 @@ class EiFrameUtil {
 	 */
 	private function treeLookup(EiGui $eiGui, Criteria $criteria, \ReflectionClass $class, 
 			NestedSetStrategy $nestedSetStrategy) {
-		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getManageState()->getEntityManager(), 
+		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getEiLaunch()->getEntityManager(), 
 				$class, $nestedSetStrategy);
 		
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
@@ -446,7 +446,7 @@ class EiFrameUtil {
 		}
 		
 		$n2nContext = $this->eiFrame->getN2nContext();
-		return $this->eiFrame->getManageState()->getDef()->getIdNameDefinition($eiMask)
+		return $this->eiFrame->getEiLaunch()->getDef()->getIdNameDefinition($eiMask)
 				->createIdentityString($eiObject, $n2nContext, $n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 }

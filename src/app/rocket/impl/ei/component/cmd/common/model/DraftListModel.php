@@ -44,7 +44,7 @@
 // 	public function __construct(EiFrame $eiFrame, int $listSize) {
 // 		$this->utils = new EiuFrame($eiFrame);
 // 		$this->listSize = $listSize;
-// 		$this->draftManager = $eiFrame->getManageState()->getDraftManager();
+// 		$this->draftManager = $eiFrame->getEiLaunch()->getDraftManager();
 // 		$this->draftDefinition = $eiFrame->getContextEiEngine()->getDraftDefinition();
 // 	}
 	

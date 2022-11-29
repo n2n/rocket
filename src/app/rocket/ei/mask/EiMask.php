@@ -359,7 +359,7 @@ class EiMask {
 // 			throw new \InvalidArgumentException('Incompatible EiGuiFrame');
 // 		}
 		
-// 		$guiDefinition = $eiFrame->getManageState()->getDef()->getGuiDefinition($this);
+// 		$guiDefinition = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($this);
 // 		$eiGuiFrame = new EiGuiFrame($eiFrame, $guiDefinition, $viewMode);
 		
 // 		if (!$init) {
@@ -425,7 +425,7 @@ class EiMask {
 // 	 */
 // 	public function sortOverallControls(array $controls, EiGuiFrame $eiGuiFrame, HtmlView $view): array {
 // // 		$eiu = new Eiu($eiGuiFrame);
-// // 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getManageState()->getEiPermissionManager();
+// // 		$eiPermissionManager = $eiu->frame()->getEiFrame()->getEiLaunch()->getEiPermissionManager();
 		
 // // 		$controls = array();
 		
@@ -453,7 +453,7 @@ class EiMask {
 // 		$controls = array();
 // 		foreach ($this->getEiCommandCollection() as $eiCmdId => $eiCmd) {
 // 			if (!($eiCmd instanceof PartialControlComponent)
-// 					|| !$eiFrame->getManageState()->getEiPermissionManager()->isEiCommandAccessible($eiCmd)) continue;
+// 					|| !$eiFrame->getEiLaunch()->getEiPermissionManager()->isEiCommandAccessible($eiCmd)) continue;
 				
 // 			$executionPath = EiCmdPath::from($eiCmd);
 // 			$partialControls = $eiCmd->createPartialControls($eiFrame, $view);

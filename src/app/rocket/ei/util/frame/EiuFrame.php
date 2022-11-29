@@ -208,7 +208,7 @@ class EiuFrame {
 	 * @return EntityManager
 	 */
 	public function em() {
-		return $this->eiFrame->getManageState()->getEntityManager();
+		return $this->eiFrame->getEiLaunch()->getEntityManager();
 	}
 
 	
@@ -454,7 +454,7 @@ class EiuFrame {
 	}
 	
 	public function getDraftManager() {
-		return $this->eiFrame->getManageState()->getDraftManager();
+		return $this->eiFrame->getEiLaunch()->getDraftManager();
 	}
 	
 	/**
@@ -529,7 +529,7 @@ class EiuFrame {
 // 		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 // 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
-// 		$guiDefinition = $this->eiFrame->getManageState()->getDef()->getGuiDefinition($contextEiMask);
+// 		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getGuiDefinition($contextEiMask);
 // 		$eiGuiFrame = $contextEiMask->createEiGuiFrame($this->eiFrame, ViewMode::BULKY_ADD, true);
 		
 // 		ArgUtils::valArray($eiEntries, EiEntry::class);
@@ -730,7 +730,7 @@ class EiuFrame {
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 		
-		$obtainer = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$obtainer = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiGui =  new EiGui($obtainer->obtainForgeMultiEiGuiModel($eiMask, $viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
 		$eiGui->appendNewEiEntryGui($this->eiFrame);
@@ -1230,6 +1230,6 @@ class EiuCallbackSortAbility implements SortAbility {
 			$eiuControlResponse = new EiuControlResponse($this->eiuAnalyst);
 		}
 		
-		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
+		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getEiLaunch()->getEiLifecycleMonitor());
 	}
 }

@@ -149,7 +149,7 @@ class EiuGui {
 	function copy(bool $bulky, bool $readOnly, array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
 		$eiGuiModel = $this->eiGui->getEiGuiModel();
 		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($eiGuiModel->getViewMode()));
-		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$cache = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 		
 		$newEiGui = new EiGui($cache->obtainMultiEiGuiModel($eiGuiModel->getContextEiMask(), $viewMode, 

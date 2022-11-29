@@ -113,7 +113,7 @@ class OrderEiModificator extends EiModNatureAdapter {
 			
 			$entityProperty = $eiProp->getEntityProperty();
 			
-			$em = $eiFrame->getManageState()->getEntityManager();
+			$em = $eiFrame->getEiLaunch()->getEntityManager();
 			$criteria = $em->createCriteria()
 					->select(CrIt::f('MAX', CrIt::p('eo', $entityProperty)))
 					->from($entityProperty->getEntityModel()->getClass(), 'eo');

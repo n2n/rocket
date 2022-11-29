@@ -200,7 +200,7 @@ class EiuEngine {
 	/**
 	 * @return ManageState
 	 */
-	private function getManageState() {
+	private function getEiLaunch() {
 		return $this->eiuAnalyst->getN2nContext(true)->lookup(ManageState::class);
 	}
 	
@@ -208,7 +208,7 @@ class EiuEngine {
 	 * @return \rocket\ei\manage\critmod\filter\FilterDefinition
 	 */
 	public function getFilterDefinition() {
-		return $this->getManageState()->getDef()->getFilterDefinition($this->eiEngine->getEiMask());
+		return $this->eiEngine->getFilterDefinition($this->eiEngine->getEiMask());
 	}
 	/**
 	 * @return boolean
@@ -221,7 +221,7 @@ class EiuEngine {
 	 * @return \rocket\ei\manage\security\filter\SecurityFilterDefinition
 	 */
 	public function getSecurityFilterDefinition() {
-		return $this->getManageState()->getDef()->getSecurityFilterDefinition($this->eiEngine->getEiMask());
+		return $this->eiEngine->getSecurityFilterDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
@@ -236,7 +236,7 @@ class EiuEngine {
 	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
 	 */
 	public function getSortDefinition() {
-		return $this->getManageState()->getDef()->getSortDefinition($this->eiEngine->getEiMask());
+		return $this->eiEngine->getSortDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
@@ -250,28 +250,28 @@ class EiuEngine {
 	 * @return GuiDefinition 
 	 */
 	public function getGuiDefinition() {
-		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
+		return $this->eiEngine->getGuiDefinition($this->eiEngine->getEiMask());
 	}
 	
 	/**
 	 * @return \rocket\ei\manage\security\privilege\PrivilegeDefinition
 	 */
 	public function getPrivilegeDefinition() {
-		return $this->getManageState()->getDef()->getPrivilegeDefinition($this->eiEngine->getEiMask());
+		return $this->eiEngine->getPrivilegeDefinition($this->eiEngine->getEiMask());
 	}
 	
 // 	/**
 // 	 * @return \rocket\ei\manage\gui\GuiDefinition
 // 	 */
 // 	public function getGuiDefinition() {
-// 		return $this->getManageState()->getDef()->getGuiDefinition($this->eiEngine->getEiMask());
+// 		return $this->eiEngine->getGuiDefinition($this->eiEngine->getEiMask());
 // 	}
 	
 	/**
 	 * @return \rocket\ei\manage\idname\IdNameDefinition
 	 */
 	public function getIdNameDefinition() {
-		return $this->getManageState()->getDef()->getIdNameDefinition($this->eiEngine->getEiMask());
+		return $this->eiEngine->getIdNameDefinition($this->eiEngine->getEiMask());
 	}
 	
 	
@@ -415,7 +415,7 @@ class EiuEngine {
 	function newGuiModel(int $viewMode, array $defPropPathsArg = null) {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 		
-		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$cache = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
 		$eiGuiModel =  $cache->obtainEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $defPropPaths);
 		
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
@@ -439,7 +439,7 @@ class EiuEngine {
 	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
 			array $defPropPathsArg = null) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
-		$cache = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$cache = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 		$eiGuiModel =  $cache->obtainForgeMultiEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $defPropPaths);

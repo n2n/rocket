@@ -108,7 +108,7 @@ class ApiControlProcess {
 	
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode) {
 		try {
-			return $this->eiFrame->getManageState()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, null);
+			return $this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, null);
 		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}

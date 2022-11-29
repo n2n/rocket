@@ -38,7 +38,7 @@ class ApiUtil {
 	
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
-		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getManageState());
+		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getEiLaunch());
 	}
 	
 // 	/**

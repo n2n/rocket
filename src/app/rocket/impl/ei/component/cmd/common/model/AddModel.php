@@ -87,7 +87,7 @@
 // 	}
 	
 // 	private function persist($entityObj) {
-// 		$em = $this->eiFrame->getManageState()->getEntityManager();
+// 		$em = $this->eiFrame->getEiLaunch()->getEntityManager();
 // 		if ($this->nestedSetStrategy === null) {
 // 			$em->persist($entityObj);
 // 			$em->flush();
@@ -136,7 +136,7 @@
 // 		$draft = $eiObject->getDraft();
 // 		$draftDefinition = $this->eiuEntryForm->getChosenEiuEntryTypeForm()->getEntryGuiModel()->getEiMask()->getEiEngine()
 // 				->getDraftDefinition();
-// 		$draftManager = $this->eiFrame->getManageState()->getDraftManager();
+// 		$draftManager = $this->eiFrame->getEiLaunch()->getDraftManager();
 // 		$draftManager->persist($draft, $draftDefinition);
 // 		$draftManager->flush();
 		

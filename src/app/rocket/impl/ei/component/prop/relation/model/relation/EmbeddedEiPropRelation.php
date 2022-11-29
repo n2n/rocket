@@ -109,7 +109,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 	public function isReadOnlyRequired(EiEntry $mapping, EiFrame $eiFrame) {
 		if (parent::isReadOnlyRequired($mapping, $eiFrame) || $this->hasRecursiveConflict($eiFrame)) return true;
 
-		$esConstraint = $eiFrame->getManageState()->getSecurityManager()
+		$esConstraint = $eiFrame->getEiLaunch()->getSecurityManager()
 				->getConstraintBy($this->getTarget());
 		
 		return $esConstraint !== null
