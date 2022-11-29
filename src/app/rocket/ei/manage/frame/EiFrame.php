@@ -43,11 +43,9 @@ use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiFrame;
 use rocket\ei\manage\api\ApiController;
 use rocket\ei\component\command\EiCmd;
+use rocket\ei\manage\EiLaunch;
 
 class EiFrame {
-	
-	private $contextEiEngine;
-	private $manageState;
 	/**
 	 * @var Boundry
 	 */
@@ -77,13 +75,9 @@ class EiFrame {
 	 * @param EiMask $contextEiEngine
 	 * @param ManageState $manageState
 	 */
-	public function __construct(EiEngine $contextEiEngine, ManageState $manageState) {
-		$this->contextEiEngine = $contextEiEngine;
-		$this->manageState = $manageState;
+	public function __construct(private EiEngine $contextEiEngine, private EiLaunch $eiLaunch) {
 		$this->boundry = new Boundry();
 		$this->ability = new Ability();
-
-// 		$this->eiTypeConstraint = $manageState->getSecurityManager()->getConstraintBy($contextEiMask);
 	}
 
 // 	/**
@@ -104,7 +98,7 @@ class EiFrame {
 	 * @return ManageState
 	 */
 	public function getManageState() {
-		return $this->manageState;
+		return $this->eiLaunch;
 	}
 	
 	/**
@@ -112,14 +106,14 @@ class EiFrame {
 // 	 * @return \n2n\persistence\orm\EntityManager
 // 	 */
 // 	public function getEntityManager(): EntityManager {
-// 		return $this->manageState->getEntityManager();
+// 		return $this->eiLaunch->getEntityManager();
 // 	}
 	
 	/**
 	 * @return N2nContext
 	 */
 	public function getN2nContext() {
-		return $this->manageState->getN2nContext();
+		return $this->eiLaunch->getN2nContext();
 	}
 	
 	/**
@@ -169,7 +163,7 @@ class EiFrame {
 			throw new IllegalStateException('EiFrame already executed.');
 		}
 		
-		$this->eiExecution = $this->manageState->getEiPermissionManager()
+		$this->eiExecution = $this->eiLaunch->getEiPermissionManager()
 				->createEiExecution($this->contextEiEngine->getEiMask(), $eiCmd);
 		
 		foreach ($this->listeners as $listener) {
@@ -251,12 +245,12 @@ class EiFrame {
 				->createFramedFilterDefinition($this);
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasFilterProps() {
-		return !$this->getFilterDefinition()->isEmpty();
-	}
+//	/**
+//	 * @return boolean
+//	 */
+//	public function hasFilterProps() {
+//		return !$this->getFilterDefinition()->isEmpty();
+//	}
 	
 	/**
 	 * @return \rocket\ei\manage\critmod\sort\SortDefinition
@@ -270,12 +264,12 @@ class EiFrame {
 				->createFramedSortDefinition($this);
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasSortProps() {
-		return !$this->getSortDefinition()->isEmpty();
-	}
+//	/**
+//	 * @return boolean
+//	 */
+//	public function hasSortProps() {
+//		return !$this->getSortDefinition()->isEmpty();
+//	}
 	
 	/**
 	 * @return \rocket\ei\manage\critmod\quick\QuickSearchDefinition
@@ -289,12 +283,12 @@ class EiFrame {
 				->createFramedQuickSearchDefinition($this);
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasQuickSearchProps() {
-		return !$this->getQuickSearchDefinition()->isEmpty();
-	}
+//	/**
+//	 * @return boolean
+//	 */
+//	public function hasQuickSearchProps() {
+//		return !$this->getQuickSearchDefinition()->isEmpty();
+//	}
 	
 
 	/**
@@ -303,7 +297,7 @@ class EiFrame {
 	 * @return \n2n\persistence\orm\criteria\Criteria
 	 */
 	public function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0) {
-		$em = $this->manageState->getEntityManager();
+		$em = $this->eiLaunch->getEntityManager();
 		$criteria = null;
 		$criteriaFactory = $this->boundry->getCriteriaFactory();		
 		if ($criteriaFactory !== null && !($ignoreConstraintTypes & Boundry::TYPE_MANAGE)) {

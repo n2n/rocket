@@ -29,6 +29,8 @@ use rocket\ei\EiCmdPath;
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiObject;
 use rocket\si\control\SiNavPoint;
+use rocket\ei\manage\gui\GuiDefinition;
+use n2n\core\container\N2nContext;
 
 class EiCmdCollection extends EiComponentCollection {
 	
@@ -193,6 +195,19 @@ class EiCmdCollection extends EiComponentCollection {
 		if (!$required) return null;
 		
 		throw new UnknownEiComponentException($this->eiMask . ' provides no generic add EiCommand.');
+	}
+
+	function supplyGuiDefinition(GuiDefinition $guiDefinition) {
+		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
+
+		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
+			$eiCmdPath = $eiCmd->getEiCmdPath();
+
+			if (null !== ($guiCommand = $eiCmd->getNature()
+							->buildGuiCommand(new Eiu($this->eiMask, $eiCmdPath)))) {
+				$guiDefinition->putGuiCommand($eiCmdPath, $guiCommand);
+			}
+		}
 	}
 }
 

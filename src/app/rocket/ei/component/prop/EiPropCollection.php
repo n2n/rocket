@@ -25,6 +25,19 @@ use rocket\ei\component\EiComponentCollection;
 use rocket\ei\component\UnknownEiComponentException;
 use rocket\ei\mask\EiMask;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\frame\EiFrame;
+use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
+use rocket\ei\util\Eiu;
+use rocket\ei\manage\critmod\filter\FilterDefinition;
+use n2n\util\type\ArgUtils;
+use rocket\ei\manage\critmod\filter\FilterProp;
+use n2n\core\container\N2nContext;
+use rocket\ei\manage\critmod\sort\SortDefinition;
+use rocket\ei\manage\critmod\sort\SortPropFork;
+use rocket\ei\manage\gui\GuiDefinition;
+use rocket\ei\manage\generic\GenericEiDefinition;
+use rocket\ei\manage\generic\ScalarEiDefinition;
+use rocket\ei\manage\idname\IdNameDefinition;
 
 class EiPropCollection extends EiComponentCollection {
 	private array $eiPropPaths = array();
@@ -87,5 +100,145 @@ class EiPropCollection extends EiComponentCollection {
 	 */
 	function toArray(bool $includeInherited = true): array {
 		return parent::toArray($includeInherited);
+	}
+
+	function createGenericEiDefinition(): GenericEiDefinition {
+		$genericEiDefinition = new GenericEiDefinition();
+
+		$genericEiPropertyMap = $genericEiDefinition->getMap();
+		foreach ($this as $eiProp) {
+			if (null !== ($genericEiProperty = $eiProp->getNature()->getGenericEiProperty())) {
+				$genericEiPropertyMap->offsetSet($eiProp->getEiPropPath(), $genericEiProperty);
+			}
+		}
+
+		return $genericEiDefinition;
+	}
+
+	function createScalarEiDefinition(): ScalarEiDefinition {
+		$scalarEiDefinition = new ScalarEiDefinition();
+		$scalarEiProperties = $scalarEiDefinition->getMap();
+		foreach ($this as $eiProp) {
+			$eiu = new Eiu($this, $eiProp);
+			if (null !== ($scalarEiProperty = $eiProp->getNature()->buildScalarEiProperty($eiu))) {
+				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
+			}
+		}
+		return $scalarEiDefinition;
+	}
+
+	/**
+	 * @throws \InvalidArgumentException
+	 * @return IdNameDefinition
+	 */
+	function createIdNameDefinition(): IdNameDefinition {
+		$idNameDefinition = new IdNameDefinition($this->eiMask, $this->eiMask->getLabelLstr());
+		$idNameDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
+
+		foreach ($this as $eiProp) {
+			$eiPropPath = $eiProp->getEiPropPath();
+			$eiPropNature = $eiProp->getNature();
+
+			if (null !== ($idNameProp = $eiPropNature->buildIdNameProp(new Eiu($this->eiMask, $eiPropPath)))) {
+				$idNameDefinition->putIdNameProp($eiPropPath, $idNameProp, EiPropPath::from($eiProp));
+			}
+
+			if (null !== ($idNamePropFork = $eiPropNature->buildIdNamePropFork(new Eiu($this->eiMask, $eiPropPath)))) {
+				$idNameDefinition->putIdNamePropFork($eiPropPath, $idNamePropFork);
+			}
+		}
+
+		return $idNameDefinition;
+	}
+
+	public function createFramedQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
+		$quickSearchDefinition = new QuickSearchDefinition($this->getEiMask());
+
+		foreach ($this as $eiProp) {
+			$eiu = new Eiu($eiFrame, $eiProp);
+			if (null !== ($quickSearchField = $eiProp->getNature()->buildQuickSearchProp($eiu))) {
+				$quickSearchDefinition->putQuickSearchProp(EiPropPath::from($eiProp), $quickSearchField);
+			}
+		}
+
+		return $quickSearchDefinition;
+	}
+
+//	public function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
+//		$eiu = new Eiu($eiFrame);
+//
+//		$filterDefinition = new FilterDefinition();
+//		foreach ($this as $id => $eiProp) {
+//			$filterProp = $eiProp->buildFilterProp($eiu);
+//			ArgUtils::valTypeReturn($filterProp, FilterProp::class, $eiProp, 'buildManagedFilterProp', true);
+//
+//			if ($filterProp !== null) {
+//				$filterDefinition->putFilterProp($id, $filterProp);
+//			}
+//		}
+//		return $filterDefinition;
+//	}
+//
+//	public function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+//		$eiu = new Eiu($n2nContext);
+//
+//		$filterDefinition = new FilterDefinition();
+//		foreach ($this as $id => $eiProp) {
+//			$filterProp = $eiProp->getNature()->buildFilterProp($eiu);
+//
+//			if ($filterProp !== null) {
+//				$filterDefinition->putFilterProp($id, $filterProp);
+//			}
+//		}
+//		return $filterDefinition;
+//	}
+//
+//	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
+//		$eiu = new Eiu($eiFrame);
+//		$sortDefinition = new SortDefinition();
+//
+//		foreach ($this as $eiPropPathStr => $eiProp) {
+//			if (null !== ($sortProp = $eiProp->getNature()->buildSortProp($eiu))) {
+//				$sortDefinition->putSortProp(EiPropPath::create($eiPropPathStr), $sortProp);
+//			}
+//
+//			if (null !== ($sortPropFork = $eiProp->buildSortPropFork($eiu))) {
+//				ArgUtils::valTypeReturn($sortPropFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
+//				$sortDefinition->putSortPropFork(EiPropPath::create($eiPropPathStr), $sortPropFork);
+//			}
+//		}
+//
+//		return $sortDefinition;
+//	}
+//
+//	public function createSortDefinition(N2nContext $n2nContext): SortDefinition {
+//		$eiu = new Eiu($n2nContext);
+//		$sortDefinition = new SortDefinition();
+//
+//		foreach ($this as $eiPropPathStr => $eiProp) {
+//			if (null !== ($sortProp = $eiProp->getNature()->buildSortProp($eiu))) {
+//				$sortDefinition->putSortProp($eiProp->getEiPropPath(), $sortProp);
+//			}
+//
+//			if (null !== ($sortPropFork = $eiProp->getNature()->buildSortPropFork($eiu))) {
+//				$sortDefinition->putSortPropFork($eiProp->getEiPropPath(), $sortPropFork);
+//			}
+//		}
+//
+//		return $sortDefinition;
+//	}
+
+	function createGuiDefinition(): GuiDefinition {
+		$guiDefinition = new GuiDefinition($this->eiMask);
+
+		foreach ($this as $eiProp) {
+			$eiPropPath = $eiProp->getEiPropPath();
+
+			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp(new Eiu($this->eiMask, $eiPropPath)))) {
+				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
+			}
+		}
+
+		return $guiDefinition;
 	}
 }

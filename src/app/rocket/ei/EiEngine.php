@@ -53,25 +53,24 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\util\Eiu;
+use rocket\ei\manage\EiLaunch;
 
 class EiEngine {
-	/**
-	 * @var EiMask
-	 */
-	private $eiMask;
-	
-	private $scalarEiDefinition;
-	private $genericEiDefinition;
+
+
+	private ?GenericEiDefinition $genericEiDefinition = null;
+	private ?ScalarEiDefinition $scalarEiDefinition = null;
+	private ?IdNameDefinition $idNameDefinition = null;
 
 	/**
 	 * @param EiMask $eiMask
+	 * @param N2nContext $n2nContext
 	 */
-	function __construct(EiMask $eiMask) {
-		$this->eiMask = $eiMask;
+	function __construct(private EiMask $eiMask) {
 	}
 	
 	/**
-	 * @return \rocket\ei\mask\EiMask
+	 * @return EiMask
 	 */
 	function getEiMask() {
 		return $this->eiMask;
@@ -92,7 +91,33 @@ class EiEngine {
 	function getSupremeEiEngine() {
 		return $this->getSupremeEiMask()->getEiEngine();
 	}
-	
+
+
+	function getGenericEiDefinition(): GenericEiDefinition {
+		if ($this->genericEiDefinition !== null) {
+			return $this->genericEiDefinition;
+		}
+
+		return $this->genericEiDefinition = $this->eiMask->getEiPropCollection()->createGenericEiDefinition();
+	}
+
+	function getScalarEiDefinition(): ScalarEiDefinition {
+		if ($this->scalarEiDefinition !== null) {
+			return $this->scalarEiDefinition;
+		}
+
+		return $this->scalarEiDefinition = $this->eiMask->getEiPropCollection()->createScalarEiDefinition();
+	}
+
+
+	function getIdNameDefinition(): IdNameDefinition {
+		if ($this->idNameDefinition !== null) {
+			return $this->idNameDefinition;
+		}
+
+		return $this->idNameDefinition = $this->eiMask->getEiPropCollection()->createIdNameDefinition();
+	}
+
 	private $eiFrameFactory;
 	
 	/**
@@ -105,113 +130,102 @@ class EiEngine {
 		
 		return $this->eiFrameFactory;
 	}
+//
+//	/**
+//	 * @param EiLaunch $eiLaunch
+//	 * @return EiFrame
+//	 */
+//	function createEiFrame(EiLaunch $eiLaunch) {
+//		return $this->getEiFrameFactory()->create($eiLaunch);
+//	}
 	
 	/**
 	 * @param ManageState $manageState
-	 * @return \rocket\ei\manage\frame\EiFrame
+	 * @return EiFrame
 	 */
-	function createEiFrame(ManageState $manageState) {
-		return $this->getEiFrameFactory()->create($manageState);
-	}
-	
-	/**
-	 * @param ManageState $manageState
-	 * @return \rocket\ei\manage\frame\EiFrame
-	 */
-	function createRootEiFrame(ManageState $manageState) {
-		return $this->getEiFrameFactory()->createRoot($manageState);
+	function createRootEiFrame(EiLaunch $eiLaunch) {
+		$eiFrame = $this->getEiFrameFactory()->create($eiLaunch);
+		$this->eiMask->getEiModCollection()->setupEiFrame($eiFrame);
+		return $eiFrame;
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param EiForkLink $eiForkLink
-	 * @return \rocket\ei\manage\frame\EiFrame
+	 * @return EiFrame
 	 */
 	function createForkedEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink) {
 		return $this->getEiFrameFactory()->createForked($eiPropPath, $eiForkLink);
 	}
-	
-	/**
-	 * @return GuiDefinition
-	 */
-	function createGuiDefinition(N2nContext $n2nContext) {
-		return (new GuiFactory($this->eiMask))->createGuiDefinition($n2nContext);
+
+	private ?GuiDefinition $guiDefinition = null;
+
+	function getGuiDefinition(): ?GuiDefinition {
+		if ($this->guiDefinition !== null) {
+			return $this->guiDefinition;
+		}
+
+		$this->guiDefinition = $this->eiMask->getEiPropCollection()->createGuiDefinition();
+		$this->eiMask->getEiCmdCollection()->supplyGuiDefinition($this->guiDefinition);
+		return $this->guiDefinition;
 	}
 
-	/**
-	 * @param N2nContext $n2nContext
-	 * @return IdNameDefinition
-	 */
-	function createIdNameDefinition(N2nContext $n2nContext) {
-		$idNameFactory = new IdNameFactory($this->eiMask);
-		return $idNameFactory->createIdNameDefinition($n2nContext);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private $critmodFactory;
-	
-	private function getCritmodFactory() {
-		if ($this->critmodFactory === null) {
-			$this->critmodFactory = new CritmodFactory($this->eiMask->getEiPropCollection(), 
-					$this->eiMask->getEiModCollection());
-		}
-		
-		return $this->critmodFactory;
-	}
+
+//	private $critmodFactory;
+//
+//	private function getCritmodFactory() {
+//		if ($this->critmodFactory === null) {
+//			$this->critmodFactory = new CritmodFactory($this->eiMask->getEiPropCollection(),
+//					$this->eiMask->getEiModCollection());
+//		}
+//
+//		return $this->critmodFactory;
+//	}
 	
 	function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
 		return $this->getCritmodFactory()->createFramedFilterDefinition($eiFrame);
 	}
 	
-	function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
-		return $this->getCritmodFactory()->createFilterDefinition($n2nContext);
-	}
+//	function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
+//		return $this->getCritmodFactory()->createFilterDefinition($n2nContext);
+//	}
 	
 	function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
 		return $this->getCritmodFactory()->createFramedSortDefinition($eiFrame);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\mask\EiMask::createSortDefinition($n2nContext)
-	 */
-	function createSortDefinition(N2nContext $n2nContext): SortDefinition {
-		return $this->getCritmodFactory()->createSortDefinition($n2nContext);
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\ei\mask\EiMask::createSortDefinition($n2nContext)
+//	 */
+//	function createSortDefinition(N2nContext $n2nContext): SortDefinition {
+//		return $this->getCritmodFactory()->createSortDefinition($n2nContext);
+//	}
 	
 	function createFramedQuickSearchDefinition(EiFrame $eiFrame): QuickSearchDefinition {
-		return $this->getCritmodFactory()->createFramedQuickSearchDefinition($eiFrame);
+		return $this->eiMask->getEiPropCollection()->createFramedQuickSearchDefinition($eiFrame);
 	}
 	
-	private $securityFactory;
-	
-	private function getSecurityFactory() {
-		if ($this->securityFactory === null) {
-			$this->securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(),
-					$this->eiMask->getEiCmdCollection(), $this->eiMask->getEiModCollection());
-		}
-		
-		return $this->securityFactory;
-	}
-	
-	function createSecurityFilterDefinition(N2nContext $n2nContext) {
-		return $this->getSecurityFactory()->createSecurityFilterDefinition($n2nContext);
-	}
-	
-	function createPrivilegeDefinition(N2nContext $n2nContext) {
-		$securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(), 
-				$this->eiMask->getEiCmdCollection(), $this->eiMask->getEiModCollection());
-		return $securityFactory->createPrivilegedDefinition($n2nContext);
-	}
+//	private $securityFactory;
+//
+//	private function getSecurityFactory() {
+//		if ($this->securityFactory === null) {
+//			$this->securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(),
+//					$this->eiMask->getEiCmdCollection(), $this->eiMask->getEiModCollection());
+//		}
+//
+//		return $this->securityFactory;
+//	}
+//
+//	function createSecurityFilterDefinition(N2nContext $n2nContext) {
+//		return $this->getSecurityFactory()->createSecurityFilterDefinition($n2nContext);
+//	}
+//
+//	function createPrivilegeDefinition(N2nContext $n2nContext) {
+//		$securityFactory = new SecurityFactory($this->eiMask->getEiPropCollection(),
+//				$this->eiMask->getEiCmdCollection(), $this->eiMask->getEiModCollection());
+//		return $securityFactory->createPrivilegedDefinition($n2nContext);
+//	}
 	
 	/**
 	 * @param EiFrame $eiFrame
@@ -269,57 +283,21 @@ class EiEngine {
 // 		return $guiFactory->createEiEntryGui($eiMask, $eiuEntry, $viewMode, $eiPropPaths);
 // 	}
 	
-	function getDraftDefinition(): DraftDefinition {
-		if ($this->draftDefinition !== null) {
-			return $this->draftDefinition;
-		}
-		
-		$eiThing = $this->eiMask ?? $this->eiType;
-		do {
-			$id = $eiThing->getId();
-		} while (($id === null || $eiThing->getEiEngine()->getEiMask()->getEiPropCollection()->isEmpty(true))
-				&& null !== ($eiThing = $eiThing->getMaskedEiEngineModel()));
-		return $this->draftDefinition = (new DraftDefinitionFactory($this->eiMask->getEntityModel(), 
-						$this->eiPropCollection, $this->eiModificatorCollection))
-				->create(DraftMetaInfo::buildTableName($eiThing));
-	}
+//	function getDraftDefinition(): DraftDefinition {
+//		if ($this->draftDefinition !== null) {
+//			return $this->draftDefinition;
+//		}
+//
+//		$eiThing = $this->eiMask ?? $this->eiType;
+//		do {
+//			$id = $eiThing->getId();
+//		} while (($id === null || $eiThing->getEiEngine()->getEiMask()->getEiPropCollection()->isEmpty(true))
+//				&& null !== ($eiThing = $eiThing->getMaskedEiEngineModel()));
+//		return $this->draftDefinition = (new DraftDefinitionFactory($this->eiMask->getEntityModel(),
+//						$this->eiPropCollection, $this->eiModificatorCollection))
+//				->create(DraftMetaInfo::buildTableName($eiThing));
+//	}
 
-	/**
-	 * @return \rocket\ei\manage\generic\GenericEiDefinition
-	 */
-	function getGenericEiDefinition() {
-		if ($this->genericEiDefinition !== null) {
-			return $this->genericEiDefinition;
-		}
-		
-		$this->genericEiDefinition = new GenericEiDefinition();
-		$genericEiPropertyMap = $this->genericEiDefinition->getMap();
-		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			if (null !== ($genericEiProperty = $eiProp->getNature()->getGenericEiProperty())) {
-				$genericEiPropertyMap->offsetSet($eiProp->getEiPropPath(), $genericEiProperty);
-			}
-		}
-		return $this->genericEiDefinition;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\generic\ScalarEiDefinition
-	 */
-	function getScalarEiDefinition() {
-		if ($this->scalarEiDefinition !== null) {
-			return $this->scalarEiDefinition;
-		}
-		
-		$this->scalarEiDefinition = new ScalarEiDefinition();
-		$scalarEiProperties = $this->scalarEiDefinition->getMap();
-		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			$eiu = new Eiu($this, $eiProp);
-			if (null !== ($scalarEiProperty = $eiProp->getNature()->buildScalarEiProperty($eiu))) {
-				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
-			}
-		}
-		return $this->scalarEiDefinition;
-	}
 	
 	/**
 	 * @param EiEntryGui $eiEntryGui

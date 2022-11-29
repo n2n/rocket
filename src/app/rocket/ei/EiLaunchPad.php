@@ -36,6 +36,7 @@ use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrameController;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
+use rocket\ei\manage\EiLaunch;
 
 class EiLaunchPad implements LaunchPad {
 	private EiMask $eiMask;
@@ -124,9 +125,10 @@ class EiLaunchPad implements LaunchPad {
 		$eiLifecycleMonitor = new EiLifecycleMonitor($rocket->getSpec());
 		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);
 		$manageState->setEiLifecycleMonitor($eiLifecycleMonitor);
-		
-		$eiFrame = $this->getEiMask()->getEiEngine()->createRootEiFrame($manageState);
-		
+
+		$eiLaunch = new EiLaunch($n2nContext, $manageState->getEiPermissionManager(), $em);
+		$eiFrame = $eiLaunch->createRootEiFrame($this->getEiMask()->getEiEngine());
+
 		return new EiFrameController($eiFrame);
 	}
 

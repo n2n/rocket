@@ -403,7 +403,7 @@ class EiuEngine {
 	 */
 	public function newFrame(EiForkLink $eiForkLink = null) {
 		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		
+
 		$newEiFrame = $this->eiEngine->createEiFrame($n2nContext->lookup(ManageState::class));
 		if ($eiForkLink !== null) {
 			$newEiFrame->setEiForkLink($eiForkLink);
