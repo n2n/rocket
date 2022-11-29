@@ -38,6 +38,9 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\generic\ScalarEiDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
+use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\EiException;
+use n2n\util\type\TypeUtils;
 
 class EiPropCollection extends EiComponentCollection {
 	private array $eiPropPaths = array();
@@ -240,5 +243,28 @@ class EiPropCollection extends EiComponentCollection {
 		}
 
 		return $guiDefinition;
+	}
+
+	function createForkedEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink): EiFrame {
+		$eiProp = $this->getByPath($eiPropPath);
+
+		$parentEiFrame = $eiForkLink->getParent();
+		$eiu = new Eiu($parentEiFrame, $eiForkLink->getParentEiObject(), $eiPropPath);
+		$forkedEiFrame = $eiProp->getNature()->createForkedEiFrame($eiu, $eiForkLink);
+
+		if ($forkedEiFrame->hasEiExecution()) {
+			throw new EiException(TypeUtils::prettyMethName(get_class($eiProp), 'createForkedEiFrame')
+					. ' must return an EiFrame which is not yet executed.');
+		}
+
+		if ($forkedEiFrame->getEiForkLink() !== $eiForkLink) {
+			throw new EiException(TypeUtils::prettyMethName(get_class($eiProp), 'createForkedEiFrame')
+					. ' must return an EiFrame with passed EiForkLink.');
+		}
+
+		$forkedEiFrame->setBaseUrl($parentEiFrame->getForkUrl(null, $eiPropPath,
+				$eiForkLink->getMode(), $eiForkLink->getParentEiObject()));
+
+		return $forkedEiFrame;
 	}
 }

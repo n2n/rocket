@@ -291,9 +291,8 @@ class EiuEngine {
 		}
 		
 		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-		return $this->getManageState()->getDef()->getIdNameDefinition($eiMask)
-				->createIdentityString($eiObject, $n2nContext,
-						$n2nLocale ?? $n2nContext->getN2nLocale());
+		return $eiMask->getEiEngine()->getIdNameDefinition()->createIdentityString($eiObject, $n2nContext,
+				$n2nLocale ?? $n2nContext->getN2nLocale());
 	}
 	
 	public function onNewGui(\Closure $callback) {
@@ -398,19 +397,11 @@ class EiuEngine {
 // 						$n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 // 	}
 
-	/**
-	 * @return \rocket\ei\util\frame\EiuFrame
-	 */
-	public function newFrame(EiForkLink $eiForkLink = null) {
-		$n2nContext = $this->eiuAnalyst->getN2nContext(true);
-
-		$newEiFrame = $this->eiEngine->createEiFrame($n2nContext->lookup(ManageState::class));
-		if ($eiForkLink !== null) {
-			$newEiFrame->setEiForkLink($eiForkLink);
-		}
+	public function newFrame(EiForkLink $eiForkLink): EiuFrame {
+		$newEiFrame = $this->eiEngine->createForkEiFrame($eiForkLink);
 		
 		$newEiuAnalyst = new EiuAnalyst();
-		$newEiuAnalyst->applyEiArgs($n2nContext);
+		$newEiuAnalyst->applyEiArgs($newEiFrame);
 		
 		return new EiuFrame($newEiFrame, $newEiuAnalyst);
 	}

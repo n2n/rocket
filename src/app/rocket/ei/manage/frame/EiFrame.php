@@ -54,7 +54,6 @@ class EiFrame {
 	 * @var Ability
 	 */
 	private $ability;
-	private $eiForkLink;
 	private $baseUrl;
 	
 	private $eiExecution;
@@ -75,7 +74,8 @@ class EiFrame {
 	 * @param EiMask $contextEiEngine
 	 * @param ManageState $manageState
 	 */
-	public function __construct(private EiEngine $contextEiEngine, private EiLaunch $eiLaunch) {
+	public function __construct(private EiEngine $contextEiEngine, private EiLaunch $eiLaunch,
+			private ?EiForkLink $eiForkLink = null) {
 		$this->boundry = new Boundry();
 		$this->ability = new Ability();
 	}
@@ -93,11 +93,8 @@ class EiFrame {
 	public function getContextEiEngine() {	
 		return $this->contextEiEngine;
 	}
-	
-	/**
-	 * @return ManageState
-	 */
-	public function getManageState() {
+
+	public function getEiLaunch(): EiLaunch {
 		return $this->eiLaunch;
 	}
 	
@@ -115,19 +112,12 @@ class EiFrame {
 	public function getN2nContext() {
 		return $this->eiLaunch->getN2nContext();
 	}
-	
-	/**
-	 * @param EiForkLink|null $forkLink
-	 */
-	public function setEiForkLink(?EiForkLink $forkLink) {
-		$this->forkLink = $forkLink;
-	}
-	
+
 	/**
 	 * @return EiForkLink|null
 	 */
 	public function getEiForkLink() {
-		return $this->forkLink;
+		return $this->eiForkLink;
 	}
 	
 	/**

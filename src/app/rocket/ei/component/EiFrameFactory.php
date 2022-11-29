@@ -45,10 +45,11 @@ class EiFrameFactory {
 
 	/**
 	 * @param EiLaunch $eiLaunch
+	 * @param EiForkLink|null $eiForkLink
 	 * @return EiFrame
 	 */
-	public function create(EiLaunch $eiLaunch) {
-		$eiFrame = new EiFrame($this->eiEngine, $eiLaunch);
+	public function create(EiLaunch $eiLaunch, EiForkLink $eiForkLink = null): EiFrame {
+		$eiFrame = new EiFrame($this->eiEngine, $eiLaunch, $eiForkLink);
 
 		$eiMask = $this->eiEngine->getEiMask();
 

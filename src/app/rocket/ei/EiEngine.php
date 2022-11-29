@@ -22,9 +22,6 @@
 namespace rocket\ei;
 
 use n2n\core\container\N2nContext;
-use rocket\ei\component\CritmodFactory;
-use rocket\ei\component\SecurityFactory;
-use rocket\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\ei\component\GuiFactory;
 use rocket\ei\component\EiEntryFactory;
 use rocket\ei\manage\frame\EiFrame;
@@ -32,15 +29,11 @@ use rocket\ei\manage\EiObject;
 use rocket\ei\manage\critmod\filter\FilterDefinition;
 use rocket\ei\manage\critmod\sort\SortDefinition;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\component\DraftDefinitionFactory;
-use rocket\ei\manage\draft\DraftDefinition;
 use rocket\ei\mask\EiMask;
 
 
 use rocket\ei\manage\generic\ScalarEiDefinition;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\generic\GenericEiDefinition;
 use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\ei\manage\ManageState;
@@ -48,11 +41,9 @@ use rocket\ei\component\EiFrameFactory;
 use rocket\ei\manage\gui\EiEntryGui;
 use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\ei\manage\frame\EiForkLink;
-use rocket\ei\component\IdNameFactory;
 use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\util\Eiu;
 use rocket\ei\manage\EiLaunch;
 
 class EiEngine {
@@ -143,19 +134,26 @@ class EiEngine {
 	 * @param ManageState $manageState
 	 * @return EiFrame
 	 */
-	function createRootEiFrame(EiLaunch $eiLaunch) {
+	function createRootEiFrame(EiLaunch $eiLaunch): EiFrame {
 		$eiFrame = $this->getEiFrameFactory()->create($eiLaunch);
 		$this->eiMask->getEiModCollection()->setupEiFrame($eiFrame);
 		return $eiFrame;
 	}
-	
+
+
+	function createForkEiFrame(EiForkLink $eiForkLink): EiFrame {
+		$eiFrame = $this->getEiFrameFactory()->create($eiForkLink->getParent()->getEiLaunch(), $eiForkLink);
+		$this->eiMask->getEiModCollection()->setupEiFrame($eiFrame);
+		return $eiFrame;
+	}
+
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param EiForkLink $eiForkLink
 	 * @return EiFrame
 	 */
-	function createForkedEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink) {
-		return $this->getEiFrameFactory()->createForked($eiPropPath, $eiForkLink);
+	function forkEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink): EiFrame {
+		return $this->eiMask->getEiPropCollection()->createForkedEiFrame($eiPropPath, $eiForkLink);
 	}
 
 	private ?GuiDefinition $guiDefinition = null;

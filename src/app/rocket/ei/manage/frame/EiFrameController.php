@@ -186,7 +186,7 @@ class EiFrameController extends ControllerAdapter {
 	private function createForked($eiType, $eiPropPath, $eiForkLink) {
 		try {
 			$eiEngine = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType, false)->getEiEngine();
-			return $eiEngine->createForkedEiFrame($eiPropPath, $eiForkLink);
+			return $eiEngine->forkEiFrame($eiPropPath, $eiForkLink);
 		} catch (InaccessibleEiCmdPathException $e) {
 			throw new ForbiddenException(null, 0, $e);
 		} catch (UnknownEiComponentException $e) {

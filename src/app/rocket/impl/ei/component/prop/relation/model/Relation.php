@@ -35,6 +35,7 @@ use rocket\ei\manage\frame\EiForkLink;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\relation\model\relation\OneToManySelectCriteriaConstraint;
 use rocket\impl\ei\component\prop\relation\model\relation\OneToOneSelectCriteriaConstraint;
+use rocket\ei\manage\frame\EiFrame;
 
 class Relation {
 	private $eiProp;
@@ -50,15 +51,15 @@ class Relation {
 		$this->eiProp = $eiProp;
 		$this->relationModel = $relationModel;
 	}
-	
+
 	/**
 	 * @param Eiu $eiu
-	 * @return Eiu
+	 * @param EiForkLink $eiForkLink
+	 * @return EiFrame
 	 */
 	function createForkEiFrame(Eiu $eiu, EiForkLink $eiForkLink) {
 		$targetEiuFrame = $this->relationModel->getTargetEiuEngine()->newFrame($eiForkLink);
-		
-		
+
 		if ($eiForkLink->getMode() == EiForkLink::MODE_SELECT && !$this->relationModel->isSourceMany()
 				&& null !== ($eiuEntry = $eiu->entry(false)) && $this->relationModel->isFiltered()) {
 			$this->applyOneToTargetSelectConstraints($targetEiuFrame, $eiuEntry);
