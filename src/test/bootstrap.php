@@ -21,7 +21,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 n2n\core\N2N::initialize($pubPath, $varPath, new \n2n\core\FileN2nCache(), enableExceptionHandler: false);
 
-// $testSqlFsPath = N2N::getVarStore()->requestFileFsPath('bak', null, null, 'backup.sql', false, false, false);
+// $testSqlFsPath = N2N::getVarStore()->requestFileFsPath('bak', null, null, __DIR__ . DIRECTOR_SEPARATOR . 'backup.sql', false, false, false);
 
 // $sql = IoUtils::getContents($testSqlFsPath);
 

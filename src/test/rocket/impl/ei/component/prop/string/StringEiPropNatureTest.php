@@ -8,12 +8,13 @@ use testmdl\bo\PrimitiveReadPresetTestObj;
 use testmdl\string\bo\StringTestObj;
 use rocket\ei\util\Eiu;
 use n2n\test\TestEnv;
+use rocket\test\GeneralTestEnv;
 
 class StringEiPropNatureTest extends TestCase {
 
 
 	function setUp(): void {
-
+		GeneralTestEnv::teardown();
 	}
 
 	function testQuickSearch() {

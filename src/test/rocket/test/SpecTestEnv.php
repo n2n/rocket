@@ -34,7 +34,7 @@ class SpecTestEnv {
 
 		$natureProvider = new RocketEiComponentNatureProvider();
 
-		$n2nContext = TestEnv::replaceN2nContext();
+		$n2nContext = TestEnv::getN2nContext();
 		$n2nContext->putLookupInjection(RocketEiComponentNatureProvider::class, $natureProvider);
 
 		$class = new ReflectionClass($natureProvider);

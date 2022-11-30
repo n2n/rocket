@@ -29,8 +29,8 @@ use n2n\util\col\GenericArrayObject;
 class SortSettingGroup {
 	private $sortItemDatas;
 
-	public function __construct() {
-		$this->sortItemDatas = new GenericArrayObject(null, SortSetting::class);
+	public function __construct(array $sortSettings = []) {
+		$this->sortItemDatas = new GenericArrayObject($sortSettings, SortSetting::class);
 	}
 	
 	/**

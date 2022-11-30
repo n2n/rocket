@@ -55,6 +55,8 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\attribute\EiDisplayScheme;
 use rocket\si\control\SiIconType;
+use rocket\attribute\EiDefaultSort;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 
 class EiTypeFactory {
 
@@ -120,6 +122,19 @@ class EiTypeFactory {
 			throw new UnknownEiTypeException('Could not lookup EntityModel of ' . $class->getName()
 					. '. Reason: ' . $e->getMessage(), 0, $e);
 		}
+	}
+
+
+	private function checkForDefaultSort(EiType $eiType): void {
+		$eiDefaultSortAttribute = ReflectionContext::getAttributeSet($eiType->getClass())
+				->getClassAttribute(EiDefaultSort::class);
+		if ($eiDefaultSortAttribute === null) {
+			return;
+		}
+
+		$eiDefaultSort = $eiDefaultSortAttribute->getInstance();
+		$eiType->getEiMask()->getDef()->setDefaultSortSettingGroup(
+				new SortSettingGroup($eiDefaultSort->getSortSettings()));
 	}
 
 	private function checkForNestedSet(EiType $eiType): void {
