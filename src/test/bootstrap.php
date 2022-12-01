@@ -36,6 +36,6 @@ $testSqlFsPath = __DIR__ . DIRECTORY_SEPARATOR . 'install.my.sql';
  $sql = preg_replace('/INT (UNSIGNED )?NOT NULL AUTO_INCREMENT/', 'INTEGER PRIMARY KEY AUTOINCREMENT', $sql);
  $sql = preg_replace("/[\r\n]+/", "\n", $sql);
  $sql = str_replace('UNSIGNED ', '', $sql);
- file_put_contents('huii.sql', $sql);
+// file_put_contents('huii.sql', $sql);
 
  N2N::getPdoPool()->getPdo()->exec($sql);
