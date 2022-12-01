@@ -230,13 +230,12 @@ class EiTypeFactory {
 }
 
 
-//
-//class InitListener implements EiComponentCollectionListener {
-//
-//	function __construct(private MagicContext $magicContext) {
-//	}
-//
-//	function eiComponentCollectionChanged(EiComponentCollection $collection) {
-//		$collection->setup($this->magicContext);
-//	}
-//}
+class InitListener implements EiComponentCollectionListener {
+
+	function __construct(private readonly MagicContext $magicContext) {
+	}
+
+	function eiComponentCollectionChanged(EiComponentCollection $collection) {
+		$collection->setup($this->magicContext);
+	}
+}
