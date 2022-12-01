@@ -1,5 +1,8 @@
 <?php
 
+use n2n\core\N2N;
+use n2n\util\io\IoUtils;
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -19,20 +22,20 @@ require __DIR__ . '/../vendor/autoload.php';
 // 		require __DIR__ . '/../vendor/composer/autoload_psr4.php',
 // 		require __DIR__ . '/../vendor/composer/autoload_classmap.php');
 
-n2n\core\N2N::initialize($pubPath, $varPath, new \n2n\core\FileN2nCache(), enableExceptionHandler: false);
+N2N::initialize($pubPath, $varPath, new \n2n\core\FileN2nCache(), enableExceptionHandler: false);
 
-// $testSqlFsPath = N2N::getVarStore()->requestFileFsPath('bak', null, null, __DIR__ . DIRECTOR_SEPARATOR . 'backup.sql', false, false, false);
+$testSqlFsPath = __DIR__ . DIRECTORY_SEPARATOR . 'install.my.sql';
 
-// $sql = IoUtils::getContents($testSqlFsPath);
+ $sql = IoUtils::getContents($testSqlFsPath);
 
-// $sql = preg_replace('/^(INSERT|VALUES|\().*/m', '', $sql);
-// $sql = preg_replace('/^ALTER TABLE .* ADD (INDEX|UNIQUE|FULLTEXT).*/m', '', $sql);
-// $sql = preg_replace('/ENGINE=InnoDB DEFAULT CHARSET=utf8[^\W]* COLLATE [^;]+/', '', $sql);
-// $sql = preg_replace('/\\,(\\s)*PRIMARY KEY.*/m', '', $sql);
-// $sql = preg_replace('/ENUM\([^\)]+\)/', 'VARCHAR(255)', $sql);
-// $sql = preg_replace('/INT (UNSIGNED )?NOT NULL AUTO_INCREMENT/', 'INTEGER PRIMARY KEY AUTOINCREMENT', $sql);
-// $sql = preg_replace("/[\r\n]+/", "\n", $sql);
-// $sql = str_replace('UNSIGNED ', '', $sql);
-// file_put_contents('huii.sql', $sql);
+ $sql = preg_replace('/^(INSERT|VALUES|\().*/m', '', $sql);
+ $sql = preg_replace('/^ALTER TABLE .* ADD (INDEX|UNIQUE|FULLTEXT).*/m', '', $sql);
+ $sql = preg_replace('/ENGINE=InnoDB DEFAULT CHARSET=utf8[^\W]* COLLATE [^;]+/', '', $sql);
+ $sql = preg_replace('/\\,(\\s)*PRIMARY KEY.*/m', '', $sql);
+ $sql = preg_replace('/ENUM\([^\)]+\)/', 'VARCHAR(255)', $sql);
+ $sql = preg_replace('/INT (UNSIGNED )?NOT NULL AUTO_INCREMENT/', 'INTEGER PRIMARY KEY AUTOINCREMENT', $sql);
+ $sql = preg_replace("/[\r\n]+/", "\n", $sql);
+ $sql = str_replace('UNSIGNED ', '', $sql);
+ file_put_contents('huii.sql', $sql);
 
-// N2N::getPdoPool()->getPdo()->exec($sql);
+ N2N::getPdoPool()->getPdo()->exec($sql);

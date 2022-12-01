@@ -181,7 +181,7 @@ class EiEngine {
 //	}
 	
 	function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
-		return $this->getCritmodFactory()->createFramedFilterDefinition($eiFrame);
+		return $this->eiMask->getEiPropCollection()->createFramedFilterDefinition($eiFrame);
 	}
 	
 //	function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
@@ -189,7 +189,7 @@ class EiEngine {
 //	}
 	
 	function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
-		return $this->getCritmodFactory()->createFramedSortDefinition($eiFrame);
+		return $this->eiMask->getEiPropCollection()->createFramedSortDefinition($eiFrame);
 	}
 	
 //	/**

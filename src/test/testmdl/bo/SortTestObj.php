@@ -12,6 +12,6 @@ use rocket\spec\setup\EiPresetMode;
 #[EiPreset(EiPresetMode::READ)]
 class SortTestObj {
 	public int $id;
-	public string $holeradio = 'dings';
-	PUBLIC int $num = 0;
+	public ?string $holeradio = 'dings';
+	public ?int $num = 0;
 }
