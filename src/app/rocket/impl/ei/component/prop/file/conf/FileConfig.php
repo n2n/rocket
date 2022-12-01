@@ -48,6 +48,7 @@ use n2n\io\orm\ManagedFileEntityProperty;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
+use rocket\ei\util\spec\EiuMask;
 
 class FileConfig extends PropConfigAdaption {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';
@@ -145,9 +146,9 @@ class FileConfig extends PropConfigAdaption {
 		
 		if ($dataSet->contains(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY)) {
 			$fileModel = $this->fileModel;
-			$eiuMask->onEngineReady(function (EiuEngine $eiuEngine) use ($fileModel, $dataSet) {
+			$eiuMask->whenSetUp(function (EiuMask $eiuMask) use ($fileModel, $dataSet) {
 				try {
-					$fileModel->setNamingEiPropPath($eiuEngine
+					$fileModel->setNamingEiPropPath($eiuMask
 							->getScalarEiProperty($dataSet->reqString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY))
 							->getEiPropPath());
 				} catch (\InvalidArgumentException $e) {
@@ -201,7 +202,7 @@ class FileConfig extends PropConfigAdaption {
 				$lar->getBool(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, false));
 		$magCollection->addMag(self::ATTR_MULTI_UPLOAD_AVAILABLE_KEY, $enablerMag);
 		
-		if ($eiu->mask()->isEngineReady()) {
+		if ($eiu->mask()->isSetUp()) {
 			$namingMag = new EnumMag('Naming Field', $eiu->engine()->getScalarEiPropertyOptions(),
 					$lar->getString(self::ATTR_MULTI_UPLOAD_NAMING_EI_PROP_PATH_KEY));
 			$sortMag = new EnumMag('Upload Order', $this->getMultiUploadSortOptions(),

@@ -94,7 +94,7 @@ class ToOneEiField extends EiFieldAdapter {
 	}
 	
 	protected function readValue() {
-		$targetEntityObj = $this->eiu->object()->readNativValue($this->eiu->prop()->getEiProp());
+		$targetEntityObj = $this->eiu->object()->readNativeValue($this->eiu->prop()->getEiProp());
 		
 		if ($targetEntityObj === null) {
 			return $targetEntityObj;
@@ -136,7 +136,7 @@ class ToOneEiField extends EiFieldAdapter {
 			$nativeValue = $value->getEntityObj();
 		}
 		
-		$this->eiu->object()->writeNativeValue($this->eiu->prop()->getEiProp(), $nativeValue);
+		$this->eiu->object()->writeNativeValue($nativeValue, $this->eiu->prop()->getEiProp());
 	}
 	
 	public function isCopyable(): bool {

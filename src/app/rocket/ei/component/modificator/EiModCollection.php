@@ -29,6 +29,8 @@ use rocket\ei\manage\gui\EiGuiFrame;
 use rocket\ei\util\Eiu;
 use n2n\util\magic\MagicContext;
 use rocket\ei\EiPropPath;
+use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
+use rocket\ei\manage\frame\EiFrame;
 
 class EiModCollection extends EiComponentCollection {
 
@@ -66,6 +68,18 @@ class EiModCollection extends EiComponentCollection {
 		return $eiModificator;
 	}
 
+
+	function setupEiFrame(EiFrame $eiFrame) {
+		if ($this->isEmpty()) {
+			return;
+		}
+
+		$eiu = new Eiu($eiFrame);
+		foreach ($this as $eiMod) {
+			$eiMod->getNature()->setupEiFrame($eiu);
+		}
+	}
+
 	function setupEiGuiFrame(EiGuiFrame $eiGuiFrame) {
 		if ($this->isEmpty()) {
 			return;
@@ -76,5 +90,7 @@ class EiModCollection extends EiComponentCollection {
 			$eiModificator->getNature()->setupEiGuiFrame($eiu);
 		}
 	}
-	
+
+
+
 }

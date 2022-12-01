@@ -23,14 +23,15 @@ namespace rocket\ei;
 
 use rocket\ei\manage\EiObject;
 use rocket\ei\manage\ManageState;
+use rocket\ei\manage\EiLaunch;
 
 class EiEngineUtil {
 	private $eiEngine;
-	private $manageState;
+	private $eiLaunch;
 	
-	function __construct(EiEngine $eiEngine, ManageState $manageState) {
+	function __construct(EiEngine $eiEngine, EiLaunch $eiLaunch) {
 		$this->eiEngine = $eiEngine;
-		$this->manageState = $manageState;
+		$this->eiLaunch = $eiLaunch;
 	}
 	
 	/**
@@ -53,8 +54,8 @@ class EiEngineUtil {
 			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());
 		}
 		
-		$n2nContext = $this->manageState->getN2nContext();
-		return $this->manageState->getDef()->getIdNameDefinition($eiMask)
+		$n2nContext = $this->eiLaunch->getN2nContext();
+		return $this->eiLaunch->getDef()->getIdNameDefinition($eiMask)
 				->createIdentityString($eiObject, $n2nContext, $n2nContext->getN2nLocale());
 	}
 }

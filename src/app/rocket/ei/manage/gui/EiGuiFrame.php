@@ -506,8 +506,7 @@ class EiGuiFrame {
 		$typeId = $eiEntryGuiTypeDef->getEiMask()->getEiType()->getId();
 		$idName = null;
 		if (!$eiEntry->isNew()) {
-			$deterIdNameDefinition = $eiFrame->getManageState()->getDef()
-					->getIdNameDefinition($eiEntry->getEiMask());
+			$deterIdNameDefinition = $eiEntry->getEiMask()->getEiEngine()->getIdNameDefinition();
 			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), 
 					$eiFrame->getN2nContext(), $n2nLocale);
 		}

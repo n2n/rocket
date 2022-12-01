@@ -30,49 +30,12 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 
 abstract class EditableEiPropNatureAdapter extends DisplayableEiPropNatureAdapter implements PrivilegedEiProp, EditableEiPropNature {
-	use EditableAdapter;
-
-//	private ?EditableAdapter $editConfig;
+	use EditConfigTrait;
 
 	function isPrivileged(): bool {
 		return true;
 	}
 
-//	/**
-//	 * @return EditableAdapter
-//	 */
-//	protected function getEditConfig() {
-//		if ($this->editConfig === null) {
-//			$this->editConfig = new EditableAdapter();
-//		}
-//
-//		return $this->editConfig;
-//	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature::createEifField()
-	 */
-	protected function createEifField(Eiu $eiu): EifField {
-		$eifField = parent::createEifField($eiu);
-		
-		if (!$this->isReadOnly()) {
-			$eifField->setWriter(function ($value) use ($eiu) {
-				$eiu->entry()->writeNativeValue($this, $value);
-			});
-		}
-		
-		$eifField->setCopier(function ($value) {
-			return $value;
-		});
-				
-		if ($this->isMandatory()) {
-			$eifField->val(Validators::mandatory());
-		}
-		
-		return $eifField;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature::buildGuiField()

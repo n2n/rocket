@@ -51,33 +51,7 @@ class GuiFactory {
 	public function __construct(EiMask $eiMask) {
 		$this->eiMask = $eiMask;
 	}
-	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\manage\gui\GuiDefinition
-	 */
-	function createGuiDefinition(N2nContext $n2nContext) {
-		$guiDefinition = new GuiDefinition($this->eiMask);
-		
-		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			$eiPropPath = $eiProp->getEiPropPath();
-			
-			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
-				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
-			}
-		}
-		
-		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
-			$eiCmdPath = $eiCmd->getEiCmdPath();
-			
-			if (null !== ($guiCommand = $eiCmd->getNature()
-							->buildGuiCommand(new Eiu($n2nContext, $this->eiMask, $eiCmdPath)))) {
-				$guiDefinition->putGuiCommand($eiCmdPath, $guiCommand);
-			}
-		}
-		
-		return $guiDefinition;
-	}
+
 	
 	
 	

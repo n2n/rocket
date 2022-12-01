@@ -25,18 +25,18 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\ei\manage\entry\EiField;
 use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\ViewMode;use rocket\ei\manage\gui\field\GuiField;
+use rocket\ei\manage\gui\field\GuiField;
 use rocket\ei\util\Eiu;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\util\factory\EifField;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\impl\ei\component\prop\adapter\PropertyAdapter;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 
 abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapter
-		implements DisplayableEiPropNature, PropertyEiPropNature, GuiFieldAssembler {
-	use DisplayableAdapter, PropertyAdapter;
+		implements PropertyEiPropNature, GuiFieldAssembler {
+	use DisplayConfigTrait, PropertyAdapter;
 
 	// EiField
 	
@@ -47,7 +47,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 	protected function createEifField(Eiu $eiu): EifField {
 		return $eiu->factory()
 				->newField($this->getEiFieldTypeConstraint(), function () use ($eiu) {
-					return $eiu->object()->readNativValue($eiu->prop()->getEiProp());
+					return $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
 				});
 	}	
 

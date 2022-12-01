@@ -43,35 +43,7 @@ class IdNameFactory {
 	}
 	
 	
-	/**
-	 * @param EiFrame $eiFrame
-	 * @param int $viewMode
-	 * @throws \InvalidArgumentException
-	 * @return IdNameDefinition
-	 */
-	public function createIdNameDefinition(N2nContext $n2nContext) {
-		$idNameDefinition = new IdNameDefinition($this->eiMask, $this->eiMask->getLabelLstr());
-		$idNameDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
-		
-		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
-			$eiPropPath = $eiProp->getEiPropPath();
-			$eiPropNature = $eiProp->getNature();
-			
-			if (null !== ($idNameProp = $eiPropNature->buildIdNameProp(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
-				$idNameDefinition->putIdNameProp($eiPropPath, $idNameProp, EiPropPath::from($eiProp));
-			}
-			
-			if (null !== ($idNamePropFork = $eiPropNature->buildIdNamePropFork(new Eiu($n2nContext, $this->eiMask, $eiPropPath)))) {
-				$idNameDefinition->putIdNamePropFork($eiPropPath, $idNamePropFork);
-			}
-		}
-		
-// 		foreach ($this->eiMask->getEiModCollection() as $eiModificator) {
-// 			$eiModificator->setupIdNameDefinition($eiu);
-// 		}
-		
-		return $idNameDefinition;
-	}
+
 	
 // 	/**
 // 	 * @param EiMask $eiMask

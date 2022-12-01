@@ -4,80 +4,29 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df213364502763f70c6f74e023b547b1",
+    "content-hash": "6069c8171393ef992b664898179944d9",
     "packages": [
         {
-            "name": "n2n/hangar-api",
-            "version": "v1.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/n2n/hangar-api.git",
-                "reference": "da1ce2697bf6af0a343decc9c21176c08ed1f54b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/n2n/hangar-api/zipball/da1ce2697bf6af0a343decc9c21176c08ed1f54b",
-                "reference": "da1ce2697bf6af0a343decc9c21176c08ed1f54b",
-                "shasum": ""
-            },
-            "require": {
-                "n2n/n2n-persistence": "^7.2.19",
-                "n2n/n2n-reflection": "^7.2.19",
-                "n2n/n2n-util": "^7.2.19",
-                "n2n/n2n-web": "^7.2.19",
-                "n2n/phpbob": "^1.0.7",
-                "php": ">=7.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "hangar\\api\\": "src/app/hangar/api"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Thomas Günther",
-                    "email": "guenther@hnm.ch",
-                    "homepage": "https://www.hnm.ch/"
-                }
-            ],
-            "description": "hangar api interfaces",
-            "homepage": "https://n2n.rocks/",
-            "keywords": [
-                "hangar",
-                "n2n"
-            ],
-            "support": {
-                "issues": "https://github.com/n2n/hangar-api/issues",
-                "source": "https://github.com/n2n/hangar-api/tree/v1.0.6"
-            },
-            "time": "2020-03-10T14:35:19+00:00"
-        },
-        {
             "name": "n2n/n2n",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n.git",
-                "reference": "5934312266bcfb2b05ca7af0286faca31b885085"
+                "reference": "b28faa99ea46b395238f7640c8aad9f7bd31d76d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n/zipball/5934312266bcfb2b05ca7af0286faca31b885085",
-                "reference": "5934312266bcfb2b05ca7af0286faca31b885085",
+                "url": "https://api.github.com/repos/n2n/n2n/zipball/b28faa99ea46b395238f7640c8aad9f7bd31d76d",
+                "reference": "b28faa99ea46b395238f7640c8aad9f7bd31d76d",
                 "shasum": ""
             },
             "require": {
-                "n2n/n2n-composer-module-installer": "^7.1",
+                "n2n/n2n-composer-module-installer": "^7.1.5",
                 "n2n/n2n-config": "^7.3",
                 "n2n/n2n-context": "^7.3",
                 "n2n/n2n-l10n": "^7.3",
-                "n2n/n2n-log4php": "^7.2.33",
-                "n2n/n2n-mail": "^7.2.33",
+                "n2n/n2n-log4php": "^7.3",
+                "n2n/n2n-mail": "^7.3",
                 "n2n/n2n-reflection": "^7.3",
                 "n2n/n2n-util": "^7.3",
                 "php": ">=8.0"
@@ -119,60 +68,9 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n/issues",
-                "source": "https://github.com/n2n/n2n/tree/develop"
+                "source": "https://github.com/n2n/n2n/tree/v7.3.0"
             },
-            "time": "2022-09-27T15:19:44+00:00"
-        },
-        {
-            "name": "n2n/n2n-batch",
-            "version": "7.3.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/n2n/n2n-batch.git",
-                "reference": "c3950cd66001ec8681745962322b771b483678d6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-batch/zipball/c3950cd66001ec8681745962322b771b483678d6",
-                "reference": "c3950cd66001ec8681745962322b771b483678d6",
-                "shasum": ""
-            },
-            "require": {
-                "n2n/n2n-reflection": "^7.2.33",
-                "n2n/n2n-util": "^7.2.33",
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "n2n\\batch\\": "src/app/n2n/batch"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Andreas von Burg",
-                    "email": "a@von-burg.net",
-                    "homepage": "https://andreas.von-burg.net/"
-                }
-            ],
-            "description": "batch job support for n2n framework",
-            "homepage": "http://n2n.rocks/",
-            "keywords": [
-                "batch job",
-                "n2n"
-            ],
-            "support": {
-                "issues": "https://github.com/n2n/n2n-batch/issues",
-                "source": "https://github.com/n2n/n2n-batch/tree/master"
-            },
-            "time": "2021-07-30T17:36:59+00:00"
+            "time": "2022-10-27T22:28:37+00:00"
         },
         {
             "name": "n2n/n2n-composer-module-installer",
@@ -229,16 +127,16 @@
         },
         {
             "name": "n2n/n2n-config",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-config.git",
-                "reference": "4d861a146a8121000089d3400c5c3c5657b37ac3"
+                "reference": "34e23403a0f27e91b5dd264eba60148c496f253e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-config/zipball/4d861a146a8121000089d3400c5c3c5657b37ac3",
-                "reference": "4d861a146a8121000089d3400c5c3c5657b37ac3",
+                "url": "https://api.github.com/repos/n2n/n2n-config/zipball/34e23403a0f27e91b5dd264eba60148c496f253e",
+                "reference": "34e23403a0f27e91b5dd264eba60148c496f253e",
                 "shasum": ""
             },
             "require": {
@@ -273,13 +171,13 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-config/issues",
-                "source": "https://github.com/n2n/n2n-config/tree/develop"
+                "source": "https://github.com/n2n/n2n-config/tree/v7.3.0"
             },
-            "time": "2021-11-30T13:25:31+00:00"
+            "time": "2022-10-07T14:09:56+00:00"
         },
         {
             "name": "n2n/n2n-context",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-context.git",
@@ -331,36 +229,36 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-context/issues",
-                "source": "https://github.com/n2n/n2n-context/tree/7.3.x"
+                "source": "https://github.com/n2n/n2n-context/tree/v7.3.0"
             },
             "time": "2022-09-27T14:35:53+00:00"
         },
         {
             "name": "n2n/n2n-impl-persistence-meta",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-impl-persistence-meta.git",
-                "reference": "888a41bb07eecd86d87c63762873af8739e23a43"
+                "reference": "3823131e8adf6795263af72b3fb7deebffb928d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-impl-persistence-meta/zipball/888a41bb07eecd86d87c63762873af8739e23a43",
-                "reference": "888a41bb07eecd86d87c63762873af8739e23a43",
+                "url": "https://api.github.com/repos/n2n/n2n-impl-persistence-meta/zipball/3823131e8adf6795263af72b3fb7deebffb928d8",
+                "reference": "3823131e8adf6795263af72b3fb7deebffb928d8",
                 "shasum": ""
             },
             "require": {
-                "n2n/n2n-io": "^7.2.33",
-                "n2n/n2n-l10n": "^7.2.33",
-                "n2n/n2n-persistence": "^7.2.33",
-                "n2n/n2n-reflection": "^7.2.33",
-                "n2n/n2n-util": "^7.2.33",
+                "n2n/n2n-io": "^7.3",
+                "n2n/n2n-l10n": "^7.3",
+                "n2n/n2n-persistence": "^7.3",
+                "n2n/n2n-reflection": "^7.3",
+                "n2n/n2n-util": "^7.3",
                 "php": ">=7.0"
             },
             "require-dev": {
-                "n2n/n2n": "^7.2.33",
-                "n2n/n2n-test": "^7.2.33",
-                "n2n/n2n-web": "^7.2.33",
+                "n2n/n2n": "^7.3",
+                "n2n/n2n-test": "^7.3",
+                "n2n/n2n-web": "^7.3",
                 "phpunit/phpunit": "^9.5"
             },
             "type": "library",
@@ -388,33 +286,31 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-impl-persistence-meta/issues",
-                "source": "https://github.com/n2n/n2n-impl-persistence-meta/tree/develop"
+                "source": "https://github.com/n2n/n2n-impl-persistence-meta/tree/v7.3.0"
             },
-            "time": "2022-05-30T15:24:34+00:00"
+            "time": "2022-10-24T19:56:30+00:00"
         },
         {
             "name": "n2n/n2n-impl-persistence-orm",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-impl-persistence-orm.git",
-                "reference": "8ea25573fbe51ca5db8b77ee3ba3b017db5ea486"
+                "reference": "77f011e6784e7b3de661985acd94ae69a88a0a0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-impl-persistence-orm/zipball/8ea25573fbe51ca5db8b77ee3ba3b017db5ea486",
-                "reference": "8ea25573fbe51ca5db8b77ee3ba3b017db5ea486",
+                "url": "https://api.github.com/repos/n2n/n2n-impl-persistence-orm/zipball/77f011e6784e7b3de661985acd94ae69a88a0a0d",
+                "reference": "77f011e6784e7b3de661985acd94ae69a88a0a0d",
                 "shasum": ""
             },
             "require": {
-                "n2n/hangar-api": "^1.0.6",
-                "n2n/n2n-composer-module-installer": "^7.1",
-                "n2n/n2n-io": "^7.2.33",
-                "n2n/n2n-l10n": "^7.2.33",
-                "n2n/n2n-persistence": "^7.2.33",
-                "n2n/n2n-reflection": "^7.2.33",
-                "n2n/n2n-util": "^7.2.33",
-                "php": ">=7.0"
+                "n2n/n2n-composer-module-installer": "^7.1.5",
+                "n2n/n2n-io": "^7.3",
+                "n2n/n2n-l10n": "^7.3",
+                "n2n/n2n-persistence": "^7.3",
+                "n2n/n2n-reflection": "^7.3",
+                "n2n/n2n-util": "^7.3"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
@@ -445,13 +341,13 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-impl-persistence-orm/issues",
-                "source": "https://github.com/n2n/n2n-impl-persistence-orm/tree/master"
+                "source": "https://github.com/n2n/n2n-impl-persistence-orm/tree/v7.3.0"
             },
-            "time": "2022-05-30T14:44:41+00:00"
+            "time": "2022-10-25T15:48:51+00:00"
         },
         {
             "name": "n2n/n2n-impl-web-dispatch",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-impl-web-dispatch.git",
@@ -501,13 +397,13 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-impl-web-dispatch/issues",
-                "source": "https://github.com/n2n/n2n-impl-web-dispatch/tree/7.3.x"
+                "source": "https://github.com/n2n/n2n-impl-web-dispatch/tree/v7.3.0"
             },
             "time": "2021-12-03T15:21:36+00:00"
         },
         {
             "name": "n2n/n2n-impl-web-ui",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-impl-web-ui.git",
@@ -556,22 +452,22 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-impl-web-ui/issues",
-                "source": "https://github.com/n2n/n2n-impl-web-ui/tree/develop"
+                "source": "https://github.com/n2n/n2n-impl-web-ui/tree/v7.3.0"
             },
             "time": "2022-05-31T13:53:32+00:00"
         },
         {
             "name": "n2n/n2n-io",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-io.git",
-                "reference": "d217d876a302b686ecb76a594d9c31ceaa77cce0"
+                "reference": "0ea2d8906abad91db9d20afca2b8f8eb1d4ccd3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-io/zipball/d217d876a302b686ecb76a594d9c31ceaa77cce0",
-                "reference": "d217d876a302b686ecb76a594d9c31ceaa77cce0",
+                "url": "https://api.github.com/repos/n2n/n2n-io/zipball/0ea2d8906abad91db9d20afca2b8f8eb1d4ccd3c",
+                "reference": "0ea2d8906abad91db9d20afca2b8f8eb1d4ccd3c",
                 "shasum": ""
             },
             "require": {
@@ -607,22 +503,22 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-io/issues",
-                "source": "https://github.com/n2n/n2n-io/tree/develop"
+                "source": "https://github.com/n2n/n2n-io/tree/v7.3.0"
             },
-            "time": "2022-09-27T10:42:59+00:00"
+            "time": "2022-10-28T14:58:39+00:00"
         },
         {
             "name": "n2n/n2n-l10n",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-l10n.git",
-                "reference": "e0a8dff387ef9f36672e7634300b27202fc630d5"
+                "reference": "d8c5611cc1bdfb7e59fa763abdbe78648b5334d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-l10n/zipball/e0a8dff387ef9f36672e7634300b27202fc630d5",
-                "reference": "e0a8dff387ef9f36672e7634300b27202fc630d5",
+                "url": "https://api.github.com/repos/n2n/n2n-l10n/zipball/d8c5611cc1bdfb7e59fa763abdbe78648b5334d3",
+                "reference": "d8c5611cc1bdfb7e59fa763abdbe78648b5334d3",
                 "shasum": ""
             },
             "require": {
@@ -657,26 +553,29 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-l10n/issues",
-                "source": "https://github.com/n2n/n2n-l10n/tree/develop"
+                "source": "https://github.com/n2n/n2n-l10n/tree/v7.3.0"
             },
-            "time": "2022-08-23T16:41:29+00:00"
+            "time": "2022-10-24T19:47:50+00:00"
         },
         {
             "name": "n2n/n2n-log4php",
-            "version": "v7.2.36",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-log4php.git",
-                "reference": "3c9a896419a55649576a5f5e64267b3a40b83b26"
+                "reference": "67f04d42edac81b4c2e2adf401457a73c9138f53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-log4php/zipball/3c9a896419a55649576a5f5e64267b3a40b83b26",
-                "reference": "3c9a896419a55649576a5f5e64267b3a40b83b26",
+                "url": "https://api.github.com/repos/n2n/n2n-log4php/zipball/67f04d42edac81b4c2e2adf401457a73c9138f53",
+                "reference": "67f04d42edac81b4c2e2adf401457a73c9138f53",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
@@ -693,27 +592,26 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-log4php/issues",
-                "source": "https://github.com/n2n/n2n-log4php/tree/v7.2.36"
+                "source": "https://github.com/n2n/n2n-log4php/tree/v7.3.0"
             },
-            "time": "2021-03-26T16:05:52+00:00"
+            "time": "2022-05-30T14:43:08+00:00"
         },
         {
             "name": "n2n/n2n-mail",
-            "version": "v7.2.37",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-mail.git",
-                "reference": "995cb099c9f61f08b32957f57678ed879c0e7190"
+                "reference": "6310fc1a1fc98758637dcc2d1b40ca964430abfc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-mail/zipball/995cb099c9f61f08b32957f57678ed879c0e7190",
-                "reference": "995cb099c9f61f08b32957f57678ed879c0e7190",
+                "url": "https://api.github.com/repos/n2n/n2n-mail/zipball/6310fc1a1fc98758637dcc2d1b40ca964430abfc",
+                "reference": "6310fc1a1fc98758637dcc2d1b40ca964430abfc",
                 "shasum": ""
             },
             "require": {
-                "n2n/n2n-reflection": "^7.2.33",
-                "n2n/n2n-util": "^7.2.33",
+                "n2n/n2n-util": "^7.2",
                 "php": ">=7.0"
             },
             "require-dev": {
@@ -744,29 +642,31 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-mail/issues",
-                "source": "https://github.com/n2n/n2n-mail/tree/v7.2.37"
+                "source": "https://github.com/n2n/n2n-mail/tree/v7.3.0"
             },
-            "time": "2022-04-27T16:17:57+00:00"
+            "time": "2022-10-31T16:33:35+00:00"
         },
         {
             "name": "n2n/n2n-persistence",
-            "version": "v7.2.36",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-persistence.git",
-                "reference": "937c178bec18952532bf34919af7f5dc5851ee6a"
+                "reference": "3855d8a2cc7e122cc8736b43676615524528370d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-persistence/zipball/937c178bec18952532bf34919af7f5dc5851ee6a",
-                "reference": "937c178bec18952532bf34919af7f5dc5851ee6a",
+                "url": "https://api.github.com/repos/n2n/n2n-persistence/zipball/3855d8a2cc7e122cc8736b43676615524528370d",
+                "reference": "3855d8a2cc7e122cc8736b43676615524528370d",
                 "shasum": ""
             },
             "require": {
-                "n2n/n2n-io": "^7.2.36",
-                "n2n/n2n-reflection": "^7.2.36",
-                "n2n/n2n-util": "^7.2.36",
-                "php": ">=7.0"
+                "n2n/n2n-io": "^7.3",
+                "n2n/n2n-reflection": "^7.3",
+                "n2n/n2n-util": "^7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
@@ -795,27 +695,26 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-persistence/issues",
-                "source": "https://github.com/n2n/n2n-persistence/tree/v7.2.36"
+                "source": "https://github.com/n2n/n2n-persistence/tree/v7.3.0"
             },
-            "time": "2021-03-26T16:05:49+00:00"
+            "time": "2022-11-03T17:20:46+00:00"
         },
         {
             "name": "n2n/n2n-reflection",
-            "version": "7.3.x-dev",
+            "version": "v7.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-reflection.git",
-                "reference": "b1f340c6b62536b3f6414be624a7dbbd2f70dce2"
+                "reference": "3bd7aba5985e52dd8dcfc21569968593cee59983"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-reflection/zipball/b1f340c6b62536b3f6414be624a7dbbd2f70dce2",
-                "reference": "b1f340c6b62536b3f6414be624a7dbbd2f70dce2",
+                "url": "https://api.github.com/repos/n2n/n2n-reflection/zipball/3bd7aba5985e52dd8dcfc21569968593cee59983",
+                "reference": "3bd7aba5985e52dd8dcfc21569968593cee59983",
                 "shasum": ""
             },
             "require": {
-                "n2n/n2n-util": "^7.3",
-                "php": ">=8.0"
+                "n2n/n2n-util": "~7.3"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
@@ -846,22 +745,22 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-reflection/issues",
-                "source": "https://github.com/n2n/n2n-reflection/tree/develop"
+                "source": "https://github.com/n2n/n2n-reflection/tree/v7.3.1"
             },
-            "time": "2022-10-12T16:19:23+00:00"
+            "time": "2022-12-01T11:32:00+00:00"
         },
         {
             "name": "n2n/n2n-util",
-            "version": "7.3.x-dev",
+            "version": "v7.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-util.git",
-                "reference": "3d3dd8e9dd37c926b037be9a19e23ee885f7efb1"
+                "reference": "93f57d9ace482a421da5544ce21bfd1e86f82b35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-util/zipball/3d3dd8e9dd37c926b037be9a19e23ee885f7efb1",
-                "reference": "3d3dd8e9dd37c926b037be9a19e23ee885f7efb1",
+                "url": "https://api.github.com/repos/n2n/n2n-util/zipball/93f57d9ace482a421da5544ce21bfd1e86f82b35",
+                "reference": "93f57d9ace482a421da5544ce21bfd1e86f82b35",
                 "shasum": ""
             },
             "require": {
@@ -897,13 +796,13 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-util/issues",
-                "source": "https://github.com/n2n/n2n-util/tree/develop"
+                "source": "https://github.com/n2n/n2n-util/tree/v7.3.1"
             },
-            "time": "2022-10-12T15:57:42+00:00"
+            "time": "2022-11-09T15:02:13+00:00"
         },
         {
             "name": "n2n/n2n-validation",
-            "version": "7.3.x-dev",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-validation.git",
@@ -949,22 +848,22 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-validation/issues",
-                "source": "https://github.com/n2n/n2n-validation/tree/develop"
+                "source": "https://github.com/n2n/n2n-validation/tree/v7.3.0"
             },
             "time": "2022-09-12T19:36:56+00:00"
         },
         {
             "name": "n2n/n2n-web",
-            "version": "7.3.x-dev",
+            "version": "v7.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-web.git",
-                "reference": "b561d1488ae2d4b65919996655c266eecf22f7dd"
+                "reference": "037f28cb834a2be23e18eb893d3ee0ddf4119e54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-web/zipball/b561d1488ae2d4b65919996655c266eecf22f7dd",
-                "reference": "b561d1488ae2d4b65919996655c266eecf22f7dd",
+                "url": "https://api.github.com/repos/n2n/n2n-web/zipball/037f28cb834a2be23e18eb893d3ee0ddf4119e54",
+                "reference": "037f28cb834a2be23e18eb893d3ee0ddf4119e54",
                 "shasum": ""
             },
             "require": {
@@ -1008,57 +907,9 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-web/issues",
-                "source": "https://github.com/n2n/n2n-web/tree/develop"
+                "source": "https://github.com/n2n/n2n-web/tree/v7.3.3"
             },
-            "time": "2022-10-04T15:11:28+00:00"
-        },
-        {
-            "name": "n2n/phpbob",
-            "version": "v1.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/n2n/phpbob.git",
-                "reference": "c0262eef1c8560dbd3951981d8ef749dd602997c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/n2n/phpbob/zipball/c0262eef1c8560dbd3951981d8ef749dd602997c",
-                "reference": "c0262eef1c8560dbd3951981d8ef749dd602997c",
-                "shasum": ""
-            },
-            "require": {
-                "n2n/n2n-reflection": "^7.2.19",
-                "n2n/n2n-util": "^7.2.19",
-                "php": ">=7.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "phpbob\\": "src/app/phpbob"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Thomas Günther",
-                    "email": "guenther@hnm.ch",
-                    "homepage": "https://www.hnm.ch/"
-                }
-            ],
-            "description": "n2n php representation builder",
-            "homepage": "https://n2n.rocks/",
-            "keywords": [
-                "n2n",
-                "phpbob"
-            ],
-            "support": {
-                "issues": "https://github.com/n2n/phpbob/issues",
-                "source": "https://github.com/n2n/phpbob/tree/v1.0.7"
-            },
-            "time": "2020-03-10T14:35:20+00:00"
+            "time": "2022-11-15T00:54:19+00:00"
         },
         {
             "name": "psr/container",
@@ -1353,17 +1204,69 @@
             "time": "2022-03-03T13:19:32+00:00"
         },
         {
-            "name": "nikic/php-parser",
-            "version": "v4.15.1",
+            "name": "n2n/n2n-test",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "0ef6c55a3f47f89d7a374e6f835197a0b5fcf900"
+                "url": "https://github.com/n2n/n2n-test.git",
+                "reference": "8c40426e5ecdbd9ae069ba2bd95e0f829e018348"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/0ef6c55a3f47f89d7a374e6f835197a0b5fcf900",
-                "reference": "0ef6c55a3f47f89d7a374e6f835197a0b5fcf900",
+                "url": "https://api.github.com/repos/n2n/n2n-test/zipball/8c40426e5ecdbd9ae069ba2bd95e0f829e018348",
+                "reference": "8c40426e5ecdbd9ae069ba2bd95e0f829e018348",
+                "shasum": ""
+            },
+            "require": {
+                "n2n/n2n-util": "^7.2.33",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "n2n\\test\\": "src/app/n2n/test"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas von Burg",
+                    "email": "a@von-burg.net",
+                    "homepage": "https://www.von-burg.net/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "n2n test utils",
+            "homepage": "http://n2n.rocks/",
+            "keywords": [
+                "n2n",
+                "test",
+                "utils"
+            ],
+            "support": {
+                "issues": "https://github.com/n2n/n2n-test/issues",
+                "source": "https://github.com/n2n/n2n-test/tree/v7.3.0"
+            },
+            "time": "2022-06-29T10:50:22+00:00"
+        },
+        {
+            "name": "nikic/php-parser",
+            "version": "v4.15.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/PHP-Parser.git",
+                "reference": "f59bbe44bf7d96f24f3e2b4ddc21cd52c1d2adbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/f59bbe44bf7d96f24f3e2b4ddc21cd52c1d2adbc",
+                "reference": "f59bbe44bf7d96f24f3e2b4ddc21cd52c1d2adbc",
                 "shasum": ""
             },
             "require": {
@@ -1404,9 +1307,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.1"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.2"
             },
-            "time": "2022-09-04T07:30:47+00:00"
+            "time": "2022-11-12T15:38:23+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -1521,16 +1424,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.17",
+            "version": "9.2.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "aa94dc41e8661fe90c7316849907cba3007b10d8"
+                "reference": "c77b56b63e3d2031bd8997fcec43c1925ae46559"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/aa94dc41e8661fe90c7316849907cba3007b10d8",
-                "reference": "aa94dc41e8661fe90c7316849907cba3007b10d8",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/c77b56b63e3d2031bd8997fcec43c1925ae46559",
+                "reference": "c77b56b63e3d2031bd8997fcec43c1925ae46559",
                 "shasum": ""
             },
             "require": {
@@ -1586,7 +1489,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.17"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.19"
             },
             "funding": [
                 {
@@ -1594,7 +1497,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-08-30T12:24:04+00:00"
+            "time": "2022-11-18T07:47:47+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1839,16 +1742,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.25",
+            "version": "9.5.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3e6f90ca7e3d02025b1d147bd8d4a89fd4ca8a1d"
+                "reference": "851867efcbb6a1b992ec515c71cdcf20d895e9d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3e6f90ca7e3d02025b1d147bd8d4a89fd4ca8a1d",
-                "reference": "3e6f90ca7e3d02025b1d147bd8d4a89fd4ca8a1d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/851867efcbb6a1b992ec515c71cdcf20d895e9d2",
+                "reference": "851867efcbb6a1b992ec515c71cdcf20d895e9d2",
                 "shasum": ""
             },
             "require": {
@@ -1921,7 +1824,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.25"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.26"
             },
             "funding": [
                 {
@@ -1937,7 +1840,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-09-25T03:44:45+00:00"
+            "time": "2022-10-28T06:00:21+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2959,9 +2862,7 @@
     "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": {
-        "php": ">=8.0"
-    },
+    "platform": [],
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
 }

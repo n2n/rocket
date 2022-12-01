@@ -6,10 +6,10 @@ use n2n\web\ui\Raw;
 use rocket\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\ei\util\Eiu;
 use rocket\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\DisplayableAdapter;
+use rocket\impl\ei\component\prop\adapter\DisplayConfigTrait;
 use rocket\si\content\impl\SiFields;
 
-class Iframe extends DisplayableAdapter {
+class Iframe extends DisplayConfigTrait {
 	private IframeConfig $iframeConfig;
 
 	function __construct() {

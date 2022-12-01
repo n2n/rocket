@@ -21,28 +21,14 @@
  */
 namespace rocket\spec\setup;
 
-use n2n\core\TypeNotFoundException;
-use n2n\reflection\ReflectionUtils;
 use rocket\ei\EiType;
-use n2n\util\type\attrs\DataSet;
 use n2n\persistence\orm\model\EntityModelManager;
-use n2n\util\type\ArgUtils;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
-use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\persistence\orm\OrmException;
 use rocket\ei\UnknownEiTypeException;
-use n2n\reflection\attribute\AttributeSet;
 use n2n\reflection\ReflectionContext;
-use n2n\reflection\property\PropertiesAnalyzer;
 use rocket\attribute\EiPreset;
-use n2n\web\dispatch\target\build\Prop;
-use n2n\reflection\ReflectionException;
 use n2n\util\ex\err\ConfigurationError;
-use n2n\util\type\TypeUtils;
-use n2n\reflection\attribute\Attribute;
 use n2n\persistence\orm\model\EntityModel;
-use n2n\reflection\property\AccessProxy;
 use rocket\ei\component\EiComponentCollection;
 use rocket\ei\component\EiComponentCollectionListener;
 use n2n\util\magic\MagicContext;
@@ -55,6 +41,8 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\attribute\EiDisplayScheme;
 use rocket\si\control\SiIconType;
+use rocket\attribute\EiDefaultSort;
+use rocket\ei\manage\critmod\sort\SortSettingGroup;
 
 class EiTypeFactory {
 
@@ -99,6 +87,7 @@ class EiTypeFactory {
 				},
 				function (EiType $eiType) {
 					$this->checkForNestedSet($eiType);
+					$this->checkForDefaultSort($eiType);
 					$this->checkForDisplayScheme($eiType);
 					$this->assemble($eiType);
 				});
@@ -120,6 +109,19 @@ class EiTypeFactory {
 			throw new UnknownEiTypeException('Could not lookup EntityModel of ' . $class->getName()
 					. '. Reason: ' . $e->getMessage(), 0, $e);
 		}
+	}
+
+
+	private function checkForDefaultSort(EiType $eiType): void {
+		$eiDefaultSortAttribute = ReflectionContext::getAttributeSet($eiType->getClass())
+				->getClassAttribute(EiDefaultSort::class);
+		if ($eiDefaultSortAttribute === null) {
+			return;
+		}
+
+		$eiDefaultSort = $eiDefaultSortAttribute->getInstance();
+		$eiType->getEiMask()->getDef()->setDefaultSortSettingGroup(
+				new SortSettingGroup($eiDefaultSort->getSortSettings()));
 	}
 
 	private function checkForNestedSet(EiType $eiType): void {
@@ -228,10 +230,9 @@ class EiTypeFactory {
 }
 
 
-
 class InitListener implements EiComponentCollectionListener {
 
-	function __construct(private MagicContext $magicContext) {
+	function __construct(private readonly MagicContext $magicContext) {
 	}
 
 	function eiComponentCollectionChanged(EiComponentCollection $collection) {

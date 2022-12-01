@@ -151,9 +151,11 @@ abstract class EiFieldAdapter implements EiField {
 	protected abstract function validateValue($value, EiFieldValidationResult $validationResult);
 	
 	public final function write() {
-		if (!$this->valueLoaded) return;
-		
 		IllegalStateException::assertTrue($this->isWritable());
+
+		if (!$this->valueLoaded || !$this->changed) {
+			return;
+		}
 		
 		$this->writeValue($this->value);
 		$this->changed = false;

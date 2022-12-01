@@ -23,13 +23,13 @@ namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\ei\util\Eiu;
 use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\impl\ei\component\prop\adapter\DisplayableAdapter;
+use rocket\impl\ei\component\prop\adapter\DisplayConfigTrait;
 use rocket\si\content\impl\SiFields;
 use rocket\ei\manage\idname\IdNameProp;
 use rocket\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\meta\SiCrumb;
 
-class Type extends DisplayableAdapter {
+class Type extends DisplayConfigTrait {
 	
 	protected function prepare() {
 	}

@@ -107,7 +107,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 		throw new IllegalStateException($this . ' is not a PropFork.');
 	}
 	
-	public function getPropertyAccessProxy(): ?AccessProxy {
+	public function getNativeAccessProxy(): ?AccessProxy {
 		return null;
 	}
 

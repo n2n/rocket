@@ -34,6 +34,7 @@ use rocket\ei\EiException;
 use rocket\ei\EiPropPath;
 use n2n\util\type\TypeUtils;
 use rocket\ei\manage\frame\EiForkLink;
+use rocket\ei\manage\EiLaunch;
 
 class EiFrameFactory {
 	private $eiEngine;
@@ -41,59 +42,35 @@ class EiFrameFactory {
 	public function __construct(EiEngine $eiEngine) {
 		$this->eiEngine = $eiEngine;		
 	}
-	
+
 	/**
-	 * @param ControllerContext $controllerContext
-	 * @param ManageState $manageState
-	 * @param EiFrame $parentEiFrame
-	 * @param EiCmdPath $eiCmdPath
-	 * @return \rocket\ei\manage\frame\EiFrame
-	 *@throws UnknownEiComponentException
-	 * @throws InaccessibleEiCmdPathException
+	 * @param EiLaunch $eiLaunch
+	 * @param EiForkLink|null $eiForkLink
+	 * @return EiFrame
 	 */
-	public function create(ManageState $manageState) {
-		$eiFrame = new EiFrame($this->eiEngine, $manageState);
-		
+	public function create(EiLaunch $eiLaunch, EiForkLink $eiForkLink = null): EiFrame {
+		$eiFrame = new EiFrame($this->eiEngine, $eiLaunch, $eiForkLink);
+
 		$eiMask = $this->eiEngine->getEiMask();
-		
+
 		if (null !== ($filterSettingGroup = $eiMask->getFilterSettingGroup())) {
 			$filterDefinition = $eiFrame->getFilterDefinition(); // $this->eiEngine->createFramedFilterDefinition($eiFrame);
-			if ($filterDefinition !== null) {
-				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_FILTER,
-						new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
-			}
+			$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_FILTER,
+					new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
 		}
-		
+
 		if (null !== ($sortSettingGroup = $eiMask->getSortSettingGroup())) {
 			$sortDefinition = $eiFrame->getSortDefinition(); //$this->eiEngine->createFramedSortDefinition($eiFrame);
-			if ($sortDefinition !== null) {
-				$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT, 
-						$sortDefinition->createCriteriaConstraint($sortSettingGroup));
-			}
+			$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
+					$sortDefinition->createCriteriaConstraint($sortSettingGroup));
 		}
-		
+
 		return $eiFrame;
 	}
 	
-	/**
-	 * @param ManageState $manageState
-	 * @return \rocket\ei\manage\frame\EiFrame
-	 */
-	public function createRoot(ManageState $manageState) {
-		$eiFrame = $this->create($manageState);
-		
-		$this->setupEiFrame($eiFrame);
-		
-		return $eiFrame;
-	}
+
 	
-	private function setupEiFrame($eiFrame) {
-		$eiu = new Eiu($eiFrame);
-		foreach ($eiFrame->getContextEiEngine()->getEiMask()->getEiModCollection()->toArray() as $eiModificator) {
-			$eiModificator->getNature()->setupEiFrame($eiu);
-		}
-	}
-	
+
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @param EiForkLink $eiForkLink

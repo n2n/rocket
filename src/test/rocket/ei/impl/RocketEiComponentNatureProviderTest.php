@@ -13,8 +13,13 @@ use testmdl\bo\TranslationTestObj;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
 use testmdl\bo\AnnotatedReadPresetTestObj;
+use rocket\test\GeneralTestEnv;
 
 class RocketEiComponentNatureProviderTest extends TestCase {
+
+	function setUp(): void {
+		GeneralTestEnv::teardown();
+	}
 
 	function testPrimitiveReadPreset() {
 		$spec = SpecTestEnv::setUpSpec([PrimitiveReadPresetTestObj::class]);

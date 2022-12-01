@@ -6,9 +6,13 @@ use rocket\test\SpecTestEnv;
 use testmdl\bo\BasicTestObj;
 use testmdl\bo\Basic2TestObj;
 use testmdl\bo\Basic3TestObj;
+use rocket\test\GeneralTestEnv;
 
 class SpecTest extends TestCase {
 
+	function setUp(): void {
+		GeneralTestEnv::teardown();
+	}
 
 	function testInit() {
 		$spec = SpecTestEnv::setUpSpec([BasicTestObj::class, Basic2TestObj::class, Basic3TestObj::class]);

@@ -138,7 +138,7 @@ class PathPartConfig extends PropConfigAdaption {
 	public function setup(Eiu $eiu, DataSet $dataSet) {
 		$this->entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
 		
-		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu, $dataSet) {
+		$eiu->mask()->whenSetUp(function (EiuEngine $eiuEngine) use ($eiu, $dataSet) {
 			$this->setupRef($eiu, $dataSet);
 		});
 		

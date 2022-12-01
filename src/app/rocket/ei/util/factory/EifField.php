@@ -72,14 +72,11 @@ class EifField {
 		
 		return $this;
 	}
-	
-	/**
-	 * @param \Closure $closure
-	 * @return EifField
-	 */
-	function setReadMapper(?\Closure $closure) {
+
+	function setReadMapper(?\Closure $closure): static {
 		if ($closure === null) {
 			$this->readMapperMmi = null;
+			return this;
 		}
 		
 		$this->readMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());
@@ -89,14 +86,11 @@ class EifField {
 		
 		return $this;
 	}
-	
-	/**
-	 * @param \Closure $closure
-	 * @return EifField
-	 */
-	function setWriter(\Closure $closure) {
+
+	function setWriter(?\Closure $closure): static {
 		if ($closure === null) {
 			$this->writerMmi = null;
+			return $this;
 		}
 		
 		$this->writerMmi = new MagicMethodInvoker($this->eiu->getN2nContext());

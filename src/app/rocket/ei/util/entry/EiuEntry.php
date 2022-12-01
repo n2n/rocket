@@ -314,7 +314,7 @@ class EiuEntry {
 			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
 		}
 		
-		$obtainer = $this->eiuAnalyst->getManageState()->getEiGuiModelCache();
+		$obtainer = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
 		$eiGui = new EiGui($obtainer->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths, 
 				$guiStructureDeclarationsRequired));
 		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
@@ -341,7 +341,7 @@ class EiuEntry {
 // 		$viewMode = $this->deterViewMode($bulky, $editable);
 // 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-// 		$eiGuiFrame = $eiFrame->getManageState()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+// 		$eiGuiFrame = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiEngine->getEiMask())
 // 				->createEiGuiFrame($eiFrame, $viewMode);
 		
 // 		return new EiuEntryGui($eiGuiFrame->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
@@ -732,7 +732,7 @@ class EiuEntry {
 		
 		$eiEntityObj = $this->eiEntry->getEiObject()->getEiEntityObj();
 		$nestedSetStrategy = $this->eiEntry->getEiType()->getNestedSetStrategy();
-		$em = $this->eiuAnalyst->getEiFrame(true)->getManageState()->getEntityManager();
+		$em = $this->eiuAnalyst->getEiFrame(true)->getEiLaunch()->getEntityManager();
 		if ($nestedSetStrategy === null) {
 			$em->persist($eiEntityObj->getEntityObj());
 			$em->flush();
@@ -753,7 +753,7 @@ class EiuEntry {
 	 * @return \n2n\persistence\orm\util\NestedSetUtils
 	 */
 	private function createNestedSetUtils(NestedSetStrategy $nestedSetStrategy) {
-		return new NestedSetUtils($this->eiuAnalyst->getManageState()->getEntityManager(), 
+		return new NestedSetUtils($this->eiuAnalyst->getEiLaunch()->getEntityManager(), 
 				$this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
 				$nestedSetStrategy);
 	}
@@ -784,7 +784,7 @@ class EiuEntry {
 		
 		$nsu = $this->valNestedInsertable();
 		$nsu->insertAfter($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
-		$this->eiuAnalyst->getManageState()->getEntityManager()->flush();
+		$this->eiuAnalyst->getEiLaunch()->getEntityManager()->flush();
 		return true;
 	}
 	
@@ -797,7 +797,7 @@ class EiuEntry {
 		
 		$nsu = $this->valNestedInsertable();
 		$nsu->insertBefore($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
-		$this->eiuAnalyst->getManageState()->getEntityManager()->flush();
+		$this->eiuAnalyst->getEiLaunch()->getEntityManager()->flush();
 		return true;
 	}
 	
@@ -810,7 +810,7 @@ class EiuEntry {
 		
 		$nsu = $this->valNestedInsertable();
 		$nsu->insert($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
-		$this->eiuAnalyst->getManageState()->getEntityManager()->flush();
+		$this->eiuAnalyst->getEiLaunch()->getEntityManager()->flush();
 		return true;
 	}
 	

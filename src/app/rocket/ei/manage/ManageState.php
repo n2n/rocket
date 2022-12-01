@@ -33,7 +33,7 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\EiGuiModelCache;
+use rocket\ei\manage\gui\CachedEiGuiModelFactory;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\ex\NotYetImplementedException;
 
@@ -47,13 +47,12 @@ class ManageState implements RequestScoped {
 	private $entityManager;
 	private $draftManager;
 	/**
-	 * @var EiGuiModelCache
+	 * @var CachedEiGuiModelFactory
 	 */
 	private $eiGuiModelCache;
 	private $eiLifecycleMonitor;
 	
 	function __construct() {
-		$this->def = new ManagedDef($this);
 	}
 	
 	private function _init(N2nContext $n2nContext, LoginContext $loginContext, Rocket $rocket) {
@@ -62,8 +61,6 @@ class ManageState implements RequestScoped {
 		if (null !== ($user = $loginContext->getCurrentUser())) {
 			$this->setUser($user);
 		}
-		
-		$this->eiGuiModelCache = new EiGuiModelCache($this);
 	}
 		
 	/**
@@ -71,13 +68,6 @@ class ManageState implements RequestScoped {
 	 */
 	public function getN2nContext() {
 		return $this->n2nContext;
-	}
-	
-	/**
-	 * @return \rocket\ei\manage\ManagedDef
-	 */
-	public function getDef() {
-		return $this->def;
 	}
 	
 	/**
@@ -163,8 +153,8 @@ class ManageState implements RequestScoped {
 	}
 	
 	/**
-	 * @throws IllegalStateException
-	 * @return \rocket\ei\manage\gui\EiGuiModelCache
+	 * @return \rocket\ei\manage\gui\CachedEiGuiModelFactory
+	 *@throws IllegalStateException
 	 */
 	function getEiGuiModelCache() {
 		if ($this->eiGuiModelCache === null) {

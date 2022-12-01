@@ -25,19 +25,15 @@ namespace rocket\impl\ei\component\prop\adapter;
 use rocket\ei\manage\gui\GuiProp;
 
 use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\field\GuiField;
-use rocket\core\model\Rocket;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ei\manage\gui\GuiFieldAssembler;
-use rocket\ei\component\prop\EiPropNature;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 
-abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implements DisplayableEiPropNature,
-		GuiFieldAssembler {
-	use DisplayableAdapter;
+abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implements GuiFieldAssembler {
+	use DisplayConfigTrait;
 
 	/**
 	 *
@@ -56,8 +52,9 @@ abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implem
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField ();
+		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField();
 	}
+
 	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
 		throw new UnsupportedOperationException ( get_class ( $this ) . ' must implement  either' . ' createOutEifGuiField(Eiu $eiu): EifGuiField or' . ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
 	}

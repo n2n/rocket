@@ -29,8 +29,8 @@ use n2n\util\col\GenericArrayObject;
 class SortSettingGroup {
 	private $sortItemDatas;
 
-	public function __construct() {
-		$this->sortItemDatas = new GenericArrayObject(null, SortSetting::class);
+	public function __construct(array $sortSettings = []) {
+		$this->sortItemDatas = new GenericArrayObject($sortSettings, SortSetting::class);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ class SortSettingGroup {
 		$attrs = array();
 		
 		foreach ($this->sortItemDatas as $sortItemData) {
-			$attrs[$sortItemData->getSortPropId()] = $sortItemData->getDirection();
+			$attrs[(string) $sortItemData->getEiPropPath()] = $sortItemData->getDirection();
 		}
 		
 		return $attrs;
@@ -69,29 +69,3 @@ class SortSettingGroup {
 	}
 }
 
-class SortSetting {
-	private $sortPropId;
-	private $direction;
-	
-	public function __construct(string $sortPropId, string $direction) {
-		$this->sortPropId = $sortPropId;
-		$this->setDirection($direction);
-	}
-	
-	public function getSortPropId(): string {
-		return $this->sortPropId;
-	}
-	
-	public function setSortPropId(string $sortPropId) {
-		$this->sortPropId = $sortPropId;
-	}
-	
-	public function getDirection(): string {
-		return $this->direction;
-	}
-		
-	public function setDirection(string $direction) {
-		ArgUtils::valEnum($direction, Criteria::getOrderDirections());
-		$this->direction = $direction;
-	}
-}

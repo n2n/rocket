@@ -59,9 +59,9 @@ interface EiPropNature extends EiComponentNature {
 	public function isPrivileged(): bool;
 	
 	/**
-	 * @return AccessProxy|NULL
+	 * @return AccessProxy|null
 	 */
-	public function getPropertyAccessProxy(): ?AccessProxy;
+	public function getNativeAccessProxy(): ?AccessProxy;
 	
 	/**
 	 * @return bool
