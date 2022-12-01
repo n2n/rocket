@@ -75,7 +75,7 @@ class SortDefinition {
 					
 		foreach ($sortData->getSortSettings() as $sortItemData) {
 			$sortConstraint = $this->buildSortCriteriaConstraint( 
-					EiPropPath::create($sortItemData->getSortPropId())->toArray(), $sortItemData->getDirection());
+					EiPropPath::create($sortItemData->getEiPropPath())->toArray(), $sortItemData->getDirection());
 			if ($sortConstraint !== null) {
 				$sortConstraints[] = $sortConstraint;
 			}

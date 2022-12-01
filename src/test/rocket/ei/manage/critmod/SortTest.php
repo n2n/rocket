@@ -28,21 +28,28 @@ class SortTest extends TestCase {
 
 	function testSort() {
 		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
-		$eiEngine = $this->spec->getEiTypeByClassName(SortTestObj::class)->getEiMask()->getEiEngine();
+		$eiMask = $this->spec->getEiTypeByClassName(SortTestObj::class)->getEiMask();;
 
-		$eiFrame = $eiLaunch->createRootEiFrame($eiEngine);
+		$sortSettings = $eiMask->getDef()->getDefaultSortSettingGroup()->getSortSettings();
+		$this->assertCount(2, $sortSettings);
 
-		$criteria = $eiFrame->createCriteria('sto');
+		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
+		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
+
+		$criteria = $eiFrame->createCriteria('sto')->select('sto');
 		$sortTestObjs = $criteria->toQuery()->fetchArray();
 
 		$this->assertCount(3, $sortTestObjs);
 
+		$this->assertInstanceOf(SortTestObj::class, $sortTestObjs[0]);
 		$this->assertEquals('stusch1', $sortTestObjs[0]->holeradio);
 		$this->assertEquals(1, $sortTestObjs[0]->num);
 
+		$this->assertInstanceOf(SortTestObj::class, $sortTestObjs[1]);
 		$this->assertEquals('stusch2', $sortTestObjs[1]->holeradio);
 		$this->assertEquals(3, $sortTestObjs[1]->num);
 
+		$this->assertInstanceOf(SortTestObj::class, $sortTestObjs[2]);
 		$this->assertEquals('stusch2', $sortTestObjs[2]->holeradio);
 		$this->assertEquals(2, $sortTestObjs[2]->num);
 	}

@@ -73,7 +73,7 @@ class EiLaunchPad implements LaunchPad {
 		$loginContext = $n2nContext->lookup(LoginContext::class);
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		
-		$overviewEiCommand = $this->getEiMask()->getEiCmdCollection()->determineGenericOverview(true)->getEiCommand();
+		$overviewEiCommand = $this->getEiMask()->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd();
 		
 		return $loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
 				->isEiCommandAccessible($this->getEiMask(), $overviewEiCommand);
@@ -90,7 +90,7 @@ class EiLaunchPad implements LaunchPad {
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		
 		if ($loginContext->getSecurityManager()->createEiPermissionManager($n2nContext->lookup(ManageState::class))
-				->isEiCommandAccessible($this->getEiMask(), $result->getEiCommand())) {
+				->isEiCommandAccessible($this->getEiMask(), $result->getEiCmd())) {
 			return EiFrameController::createCmdUrlExt($result->getEiCmdPath());
 		}
 		
