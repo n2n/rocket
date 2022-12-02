@@ -49,6 +49,7 @@ use rocket\ei\manage\gui\EiGui;
 use n2n\core\N2N;
 use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\ei\manage\critmod\filter\impl\CriteriaConstraints;
+use rocket\ei\manage\DefPropPath;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -213,13 +214,12 @@ class EiFrameUtil {
 // 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 // 		}
 	}
-	
+
 	/**
 	 * @param EiMask $eiMask
-	 * @param bool $bulky
-	 * @param bool $readOnly
-	 * @param array $defPropPaths
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 * @param int $viewMode
+	 * @param DefPropPath[] $defPropPaths
+	 * @return EiGuiFrame
 	 */
 	private function createEiGuiFrame(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
 		$guiDefinition = $eiMask->getEiEngine()->getGuiDefinition();
@@ -234,8 +234,8 @@ class EiFrameUtil {
 	/**
 	 * @param EiMask $eiMask
 	 * @param int $viewMode
-	 * @param array $defPropPaths
-	 * @return \rocket\ei\manage\gui\EiGuiModel
+	 * @param DefPropPath[] $defPropPaths
+	 * @return EiGuiModel
 	 */
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
 		return $this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths);
@@ -473,14 +473,14 @@ class EiEntryGuiResult {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 * @return EiGuiFrame
 	 */
 	function getEiGuiFrame() {
 		return $this->eiGuiFrame;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGuiModel|null
+	 * @return EiGuiModel|null
 	 */
 	function getEiGuiModel() {
 		return $this->eiGuiModel;
