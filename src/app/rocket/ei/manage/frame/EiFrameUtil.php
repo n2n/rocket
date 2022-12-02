@@ -311,7 +311,7 @@ class EiFrameUtil {
 				->select('COUNT(1)')->toQuery()->fetchSingle();
 	}
 
-	private function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null): Criteria {
+	function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null): Criteria {
 		$criteria = $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes);
 		
 		if ($quickSearchStr !== null) {

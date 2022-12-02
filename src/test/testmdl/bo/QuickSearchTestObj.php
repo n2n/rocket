@@ -8,10 +8,9 @@ use rocket\attribute\EiPreset;
 use rocket\spec\setup\EiPresetMode;
 
 #[EiType]
-#[EiDefaultSort(['holeradio' => 'ASC', 'num' => 'DESC'])]
 #[EiPreset(EiPresetMode::READ)]
 class QuickSearchTestObj {
-	public int $id;
-	public ?string $holeradio = 'dings';
-	public ?int $num = 0;
+	public $id;
+	public string $holeradio = 'dings';
+	public string $holeradio2 = 'dingsel';
 }
