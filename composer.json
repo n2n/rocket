@@ -39,7 +39,7 @@
         "n2n/n2n-util" : "^7.3.1",
         "n2n/n2n-reflection" : "^7.3.1",
 		"n2n/n2n-impl-persistence-meta" : "^7.3",
-		"n2n/n2n-impl-persistence-orm" : "^7.3.1",
+		"n2n/n2n-impl-persistence-orm" : "^7.3.2",
 		"n2n/n2n-impl-web-dispatch" : "^7.3",
 		"n2n/n2n-impl-web-ui" : "^7.3",
 		"n2n/n2n-validation" : "^7.3"
