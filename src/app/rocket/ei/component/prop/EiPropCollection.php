@@ -196,23 +196,23 @@ class EiPropCollection extends EiComponentCollection {
 //		return $filterDefinition;
 //	}
 //
-//	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
-//		$eiu = new Eiu($eiFrame);
-//		$sortDefinition = new SortDefinition();
-//
-//		foreach ($this as $eiPropPathStr => $eiProp) {
-//			if (null !== ($sortProp = $eiProp->getNature()->buildSortProp($eiu))) {
-//				$sortDefinition->putSortProp(EiPropPath::create($eiPropPathStr), $sortProp);
-//			}
-//
-//			if (null !== ($sortPropFork = $eiProp->buildSortPropFork($eiu))) {
-//				ArgUtils::valTypeReturn($sortPropFork, SortPropFork::class, $eiProp, 'buildSortPropFork', true);
-//				$sortDefinition->putSortPropFork(EiPropPath::create($eiPropPathStr), $sortPropFork);
-//			}
-//		}
-//
-//		return $sortDefinition;
-//	}
+	public function createFramedSortDefinition(EiFrame $eiFrame): SortDefinition {
+		$sortDefinition = new SortDefinition();
+
+		foreach ($this as $eiPropPathStr => $eiProp) {
+			$eiu = new Eiu($eiFrame, $eiProp);
+
+			if (null !== ($sortProp = $eiProp->getNature()->buildSortProp($eiu))) {
+				$sortDefinition->putSortProp(EiPropPath::create($eiPropPathStr), $sortProp);
+			}
+
+			if (null !== ($sortPropFork = $eiProp->getNature()->buildSortPropFork($eiu))) {
+				$sortDefinition->putSortPropFork(EiPropPath::create($eiPropPathStr), $sortPropFork);
+			}
+		}
+
+		return $sortDefinition;
+	}
 //
 //	public function createSortDefinition(N2nContext $n2nContext): SortDefinition {
 //		$eiu = new Eiu($n2nContext);

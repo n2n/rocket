@@ -222,7 +222,7 @@ class GenericResult {
 		$this->navPoint = $navPoint;
 	}
 	
-	function getEiCommand() {
+	function getEiCmd() {
 		return $this->eiCmd;	
 	}
 	

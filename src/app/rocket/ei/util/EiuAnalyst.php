@@ -72,6 +72,7 @@ use rocket\ei\component\command\EiCmd;
 use rocket\ei\component\modificator\EiMod;
 use rocket\ei\component\EiComponent;
 use rocket\ei\component\UnknownEiComponentException;
+use rocket\ei\manage\EiLaunch;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -1046,7 +1047,16 @@ class EiuAnalyst {
 
 		return $this->getN2nContext(true)->lookup(ManageState::class);
 	}
-	
+
+	/**
+	 * @return EiLaunch
+	 */
+	function getEiLaunch(bool $required) {
+		$this->ensureAppied();
+
+		return $this->getEiFrame($required)?->getEiLaunch();
+	}
+
 	public function getEiuContext(bool $required) {
 		$this->ensureAppied();
 
