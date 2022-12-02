@@ -79,16 +79,16 @@ class QuickSearchDefinition {
 	}
 	
 	const SEARCH_STR_WHITESPACS_SPLIT_LIMIT = 9;
-	
+
 	/**
-	 * 
+	 *
 	 * @param string $searchStr
-	 * @param DefPropPath[] $eiPropPaths
-	 * @return null|\rocket\ei\manage\critmod\filter\ComparatorConstraintGroup
+	 * @param DefPropPath[]|null $defPropPaths
+	 * @return null|ComparatorConstraintGroup
 	 */
-	public function buildCriteriaConstraint(string $searchStr, array $defPropPaths = null) {
+	public function buildCriteriaConstraint(string $searchStr, array $defPropPaths = null): ?ComparatorConstraintGroup {
 		if (!RecursionAsserters::unique(self::class)->tryPush((string) $this->eiMask->getEiTypePath())) {
-			return;
+			return null;
 		}
 		
 		$quickSearchProps = null;

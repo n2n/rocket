@@ -47,6 +47,9 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGui;
 use n2n\core\N2N;
+use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\ei\manage\critmod\filter\impl\CriteriaConstraints;
+use rocket\ei\manage\DefPropPath;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -211,17 +214,15 @@ class EiFrameUtil {
 // 					. ' because this type is abstract and doesn\'t have any sub EiTypes.');
 // 		}
 	}
-	
+
 	/**
 	 * @param EiMask $eiMask
-	 * @param bool $bulky
-	 * @param bool $readOnly
-	 * @param array $defPropPaths
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 * @param int $viewMode
+	 * @param DefPropPath[] $defPropPaths
+	 * @return EiGuiFrame
 	 */
 	private function createEiGuiFrame(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
-		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiMask);
-		
+		$guiDefinition = $eiMask->getEiEngine()->getGuiDefinition();
 		
 		if ($defPropPaths === null) {
 			return $guiDefinition->createEiGuiModel($this->eiFrame->getN2nContext(), $viewMode)->getEiGuiFrame();
@@ -233,8 +234,8 @@ class EiFrameUtil {
 	/**
 	 * @param EiMask $eiMask
 	 * @param int $viewMode
-	 * @param array $defPropPaths
-	 * @return \rocket\ei\manage\gui\EiGuiModel
+	 * @param DefPropPath[] $defPropPaths
+	 * @return EiGuiModel
 	 */
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
 		return $this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths);
@@ -309,33 +310,28 @@ class EiFrameUtil {
 		return $this->createCriteria('e', 0, $quickSearchStr)
 				->select('COUNT(1)')->toQuery()->fetchSingle();
 	}
-	
-	/**
-	 * @param string $entityAlias
-	 * @param int $ignoreConstraintTypes
-	 * @param string $quickSearchStr
-	 * @return \n2n\persistence\orm\criteria\Criteria
-	 */
-	private function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null) {
+
+	function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null): Criteria {
 		$criteria = $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes);
 		
-		if ($quickSearchStr !== null && null !== ($criteriaContraint = $this->eiFrame->getQuickSearchDefinition()
-				->buildCriteriaConstraint($quickSearchStr))) {
-			$criteriaContraint->applyToCriteria($criteria, CrIt::p($entityAlias));
+		if ($quickSearchStr !== null) {
+            $criteriaConstraint = $this->eiFrame->getQuickSearchDefinition()->buildCriteriaConstraint($quickSearchStr)
+                    ?? CriteriaConstraints::noResult();
+
+            $criteriaConstraint->applyToCriteria($criteria, CrIt::p($entityAlias));
 		}
 		
 		return $criteria;
 	}
-	
+
 	/**
 	 * @param mixed $id
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @param array $defPropPaths
-	 * @throws UnknownEiObjectException
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @param array|null $defPropPaths
+	 * @return EiGui
 	 */
-	function lookupEiGuiFromId($id, bool $bulky, bool $readOnly, ?array $defPropPaths) {
+	function lookupEiGuiFromId($id, bool $bulky, bool $readOnly, ?array $defPropPaths): EiGui {
 		$eiObject = $this->lookupEiObject($id);
 		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
@@ -446,8 +442,8 @@ class EiFrameUtil {
 		}
 		
 		$n2nContext = $this->eiFrame->getN2nContext();
-		return $this->eiFrame->getEiLaunch()->getDef()->getIdNameDefinition($eiMask)
-				->createIdentityString($eiObject, $n2nContext, $n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
+		return $eiMask->getEiEngine()->getIdNameDefinition()->createIdentityString($eiObject, $n2nContext,
+				$n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 }
 
@@ -477,14 +473,14 @@ class EiEntryGuiResult {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGuiFrame
+	 * @return EiGuiFrame
 	 */
 	function getEiGuiFrame() {
 		return $this->eiGuiFrame;
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\gui\EiGuiModel|null
+	 * @return EiGuiModel|null
 	 */
 	function getEiGuiModel() {
 		return $this->eiGuiModel;
