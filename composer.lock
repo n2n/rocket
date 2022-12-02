@@ -701,16 +701,16 @@
         },
         {
             "name": "n2n/n2n-reflection",
-            "version": "v7.3.1",
+            "version": "v7.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/n2n/n2n-reflection.git",
-                "reference": "3bd7aba5985e52dd8dcfc21569968593cee59983"
+                "reference": "83b4d3625ff2a19c1c6351de5b566632c70c3717"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/n2n/n2n-reflection/zipball/3bd7aba5985e52dd8dcfc21569968593cee59983",
-                "reference": "3bd7aba5985e52dd8dcfc21569968593cee59983",
+                "url": "https://api.github.com/repos/n2n/n2n-reflection/zipball/83b4d3625ff2a19c1c6351de5b566632c70c3717",
+                "reference": "83b4d3625ff2a19c1c6351de5b566632c70c3717",
                 "shasum": ""
             },
             "require": {
@@ -745,9 +745,9 @@
             ],
             "support": {
                 "issues": "https://github.com/n2n/n2n-reflection/issues",
-                "source": "https://github.com/n2n/n2n-reflection/tree/v7.3.1"
+                "source": "https://github.com/n2n/n2n-reflection/tree/v7.3.2"
             },
-            "time": "2022-12-01T11:32:00+00:00"
+            "time": "2022-12-01T14:03:32+00:00"
         },
         {
             "name": "n2n/n2n-util",

@@ -12,6 +12,7 @@ use rocket\spec\Spec;
 use rocket\test\GeneralTestEnv;
 use testmdl\bo\QuickSearchTestObj;
 use rocket\ei\manage\frame\EiFrameUtil;
+use rocket\ei\EiPropPath;
 
 class QuickSearchTest extends TestCase {
 	private Spec $spec;
@@ -52,5 +53,24 @@ class QuickSearchTest extends TestCase {
 		$this->assertEquals('find me', $quickSearchTestObjs[0]->holeradio);
 		$this->assertInstanceOf(QuickSearchTestObj::class, $quickSearchTestObjs[1]);
 		$this->assertEquals('find you', $quickSearchTestObjs[1]->holeradio);
+	}
+
+
+	function testQuickSearchDisabled() {
+		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiMask = $this->spec->getEiTypeByClassName(QuickSearchTestObj::class)->getEiMask();
+
+		$eiMask->getEiPropCollection()->getByPath(EiPropPath::create('holeradio'))->getNature()->setQuickSearchable(false);
+
+		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
+		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
+
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
+
+
+		$criteria = $eiFrameUtil->createCriteria('qsto', quickSearchStr: 'find')->select('qsto');
+		$quickSearchTestObjs = $criteria->toQuery()->fetchArray();
+
+		$this->assertCount(0, $quickSearchTestObjs);
 	}
 }
