@@ -47,6 +47,8 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\EiGui;
 use n2n\core\N2N;
+use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\ei\manage\critmod\filter\impl\CriteriaConstraints;
 
 class EiFrameUtil {
 	private $eiFrame;
@@ -220,8 +222,7 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
 	private function createEiGuiFrame(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
-		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiMask);
-		
+		$guiDefinition = $eiMask->getEiEngine()->getGuiDefinition();
 		
 		if ($defPropPaths === null) {
 			return $guiDefinition->createEiGuiModel($this->eiFrame->getN2nContext(), $viewMode)->getEiGuiFrame();
@@ -309,33 +310,28 @@ class EiFrameUtil {
 		return $this->createCriteria('e', 0, $quickSearchStr)
 				->select('COUNT(1)')->toQuery()->fetchSingle();
 	}
-	
-	/**
-	 * @param string $entityAlias
-	 * @param int $ignoreConstraintTypes
-	 * @param string $quickSearchStr
-	 * @return \n2n\persistence\orm\criteria\Criteria
-	 */
-	private function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null) {
+
+	private function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null): Criteria {
 		$criteria = $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes);
 		
-		if ($quickSearchStr !== null && null !== ($criteriaContraint = $this->eiFrame->getQuickSearchDefinition()
-				->buildCriteriaConstraint($quickSearchStr))) {
-			$criteriaContraint->applyToCriteria($criteria, CrIt::p($entityAlias));
+		if ($quickSearchStr !== null) {
+            $criteriaConstraint = $this->eiFrame->getQuickSearchDefinition()->buildCriteriaConstraint($quickSearchStr)
+                    ?? CriteriaConstraints::noResult();
+
+            $criteriaConstraint->applyToCriteria($criteria, CrIt::p($entityAlias));
 		}
 		
 		return $criteria;
 	}
-	
+
 	/**
 	 * @param mixed $id
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @param array $defPropPaths
-	 * @throws UnknownEiObjectException
-	 * @return \rocket\ei\manage\gui\EiGui
+	 * @param array|null $defPropPaths
+	 * @return EiGui
 	 */
-	function lookupEiGuiFromId($id, bool $bulky, bool $readOnly, ?array $defPropPaths) {
+	function lookupEiGuiFromId($id, bool $bulky, bool $readOnly, ?array $defPropPaths): EiGui {
 		$eiObject = $this->lookupEiObject($id);
 		
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
