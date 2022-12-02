@@ -442,8 +442,8 @@ class EiFrameUtil {
 		}
 		
 		$n2nContext = $this->eiFrame->getN2nContext();
-		return $this->eiFrame->getEiLaunch()->getDef()->getIdNameDefinition($eiMask)
-				->createIdentityString($eiObject, $n2nContext, $n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
+		return $eiMask->getEiEngine()->getIdNameDefinition()->createIdentityString($eiObject, $n2nContext,
+				$n2nLocale ?? $this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 }
 
