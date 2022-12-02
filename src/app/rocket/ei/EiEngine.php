@@ -158,7 +158,7 @@ class EiEngine {
 
 	private ?GuiDefinition $guiDefinition = null;
 
-	function getGuiDefinition(): ?GuiDefinition {
+	function getGuiDefinition(): GuiDefinition {
 		if ($this->guiDefinition !== null) {
 			return $this->guiDefinition;
 		}
