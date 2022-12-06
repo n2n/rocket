@@ -147,7 +147,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 // 						return ReflectionUtils::createObject($reflectionClass);
 // 					}
 // 				}
-// 			} catch (TypeNotFoundException $e) {}
+// 			} catch (\ReflectionException $e) {}
 // 		}
 		
 // 		return null;
