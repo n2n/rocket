@@ -161,7 +161,7 @@ class EiuObject {
 	public function writeNativeValue(mixed $value, EiProp|EiPropPath|string|null $eiProp = null): static {
 		$eiProp = $this->getEiProp($eiProp);
 
-		$this->getNativeAccessProxy($eiProp->getNature(), true)->setValue($this->getForkObject($eiProp), $value);
+		$this->getNativeAccessProxy($eiProp, true)->setValue($this->getForkObject($eiProp), $value);
 		return $this;
 	}
 	
