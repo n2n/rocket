@@ -155,7 +155,7 @@ class EiTypeFactory {
 		$displayScheme->setBulkyDisplayStructure($displaySchemeA->bulkyDisplayStructure);
 		$displayScheme->setDetailDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
 		$displayScheme->setEditDisplayStructure($displaySchemeA->bulkyEditDisplayStructure);
-		$displayScheme->setAddDisplayStructure($displaySchemeA->bulkyDetailDisplayStructure);
+		$displayScheme->setAddDisplayStructure($displaySchemeA->bulkyAddDisplayStructure);
 
 	}
 
