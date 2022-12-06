@@ -57,6 +57,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
 	private $duplicatingAllowed = true;
+	private ?string $controlLabel = null;
 	
 	protected function prepare() {
 	}
@@ -81,6 +82,15 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	public function getPrivilegeLabel(N2nLocale $n2nLocale) {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
 		return $dtc->translate('common_new_entry_label');
+	}
+
+	function setControlLabel(?string $controlLabel): static {
+		$this->controlLabel = $controlLabel;
+		return $this;
+	}
+
+	function getControlLabel(): ?string {
+		return $this->controlLabel;
 	}
 
 // 	/**
@@ -144,7 +154,8 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 		$nestedSet = null !== $eiu->cmd()->getEiCmd()->getEiCommandCollection()->getEiMask()->getEiType()->getNestedSetStrategy();
 		
 		$key = $nestedSet ? self::CONTROL_ADD_ROOT_BRANCH_KEY : self::CONTROL_ADD_KEY;
-		$siButton = SiButton::success($dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label'), SiIconType::ICON_PLUS_CIRCLE)
+		$label = $this->controlLabel ?? $dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label');
+		$siButton = SiButton::success($label, SiIconType::ICON_PLUS_CIRCLE)
 				->setImportant(true);
 		return $eiuControlFactory->newCmdRef($key, $siButton);
 	}
