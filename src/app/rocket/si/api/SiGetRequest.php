@@ -47,6 +47,7 @@ class SiGetRequest {
 	function setInstructions(array $instructions) {
 		ArgUtils::valArray($instructions, SiGetInstruction::class);
 		$this->instructions = $instructions;
+		return $this;
 	}
 	
 	function putInstruction(string $key, SiGetInstruction $instruction) {
