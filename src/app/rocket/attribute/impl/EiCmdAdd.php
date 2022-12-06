@@ -24,6 +24,6 @@ namespace rocket\attribute\impl;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class EiCmdAdd {
 
-	function __construct(public bool $duplicatingAllowed = true) {
+	function __construct(public bool $duplicatingAllowed = true, public ?string $controlLabel = null) {
 	}
 }

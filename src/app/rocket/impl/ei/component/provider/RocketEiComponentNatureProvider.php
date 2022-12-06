@@ -112,8 +112,10 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 
 		$eiCmdAddAttribute = $attributeSet->getClassAttribute(EiCmdAdd::class);
 		if ($eiCmdAddAttribute !== null) {
-			$duplicatingAllowed = $eiCmdAddAttribute->getInstance()->duplicatingAllowed;
-			$eiTypeSetup->addEiCmdNature((new AddEiCmdNature())->setDuplicatingAllowed($duplicatingAllowed));
+			$eiCmdAdd = $eiCmdAddAttribute->getInstance();
+			$eiTypeSetup->addEiCmdNature((new AddEiCmdNature())
+					->setDuplicatingAllowed($eiCmdAdd->duplicatingAllowed)
+					->setControlLabel($eiCmdAdd->controlLabel));
 		} else if ($editCmdsMode) {
 			$eiTypeSetup->addEiCmdNature(new AddEiCmdNature());
 		}
@@ -141,9 +143,4 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 			}
 		}
 	}
-
-
-
-
-
 }
