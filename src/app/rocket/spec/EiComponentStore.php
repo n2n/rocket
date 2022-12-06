@@ -78,7 +78,7 @@ class EiComponentStore {
 				
 				$this->eiPropClasses[$eiPropClassName] = $fieldClass;
 				$this->eiPropClassesByModule[$moduleNamespace][$eiPropClassName] = $fieldClass;
-			} catch (TypeNotFoundException $e) { }
+			} catch (\ReflectionException $e) { }
 		}
 		
 		// EiCommands
@@ -92,7 +92,7 @@ class EiComponentStore {
 				
 				$this->eiCmdClasses[$eiCmdClassName] = $eiCmdClass;
 				$this->eiCmdClassesByModule[$moduleNamespace][$eiCmdClassName] = $eiCmdClass;
-			} catch (TypeNotFoundException $e) { }
+			} catch (\ReflectionException $e) { }
 		}
 				
 		// EiCommandGroups
@@ -124,7 +124,7 @@ class EiComponentStore {
 		
 				$this->eiModificatorClasses[$eiModificatorClassName] = $constraintClass;
 				$this->eiModificatorClassesByModule[$moduleNamespace][$eiModificatorClassName] = $constraintClass;
-			} catch (TypeNotFoundException $e) { }
+			} catch (\ReflectionException $e) { }
 		}
 	}
 	
