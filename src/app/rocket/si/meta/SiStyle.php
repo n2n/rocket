@@ -29,7 +29,6 @@ class SiStyle implements \JsonSerializable {
 	private $readOnly;
 	
 	/**
-	 * @param bool $siref
 	 * @param Url $url
 	 * @param string $label
 	 */

@@ -130,7 +130,7 @@ class EiGuiModelFactory {
 		$contextEiType = $contextEiMask->getEiType();
 		
 		if ($this->testIfAllowed($contextEiType, $creatablesOnly, $allowedEiTypes)) {
-			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($contextEiType));
+			$guiDefinition = $contextEiMask->determineEiMask($contextEiType)->getEiEngine()->getGuiDefinition();
 			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $defPropPaths,
 					$guiStructureDeclarationsRequired);
 			$eiGuiModel->putEiGuiFrame($eiGuiFrame);
@@ -141,7 +141,7 @@ class EiGuiModelFactory {
 				continue;
 			}
 			
-			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($eiType));
+			$guiDefinition = $contextEiMask->determineEiMask($eiType)->getEiEngine()->getGuiDefinition();
 			$eiGuiFrame = $guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $defPropPaths,
 					$guiStructureDeclarationsRequired);
 			$eiGuiModel->putEiGuiFrame($eiGuiFrame);

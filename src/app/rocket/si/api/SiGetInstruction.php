@@ -204,10 +204,11 @@ class SiGetInstruction {
 
 
 class SiPartialContentInstruction {
-	private $from = 0;
-	private $num = 0;
-	private $quickSearchStr = null;
-	
+
+	function __construct(private int $from = 0, private int $num = 0, private ?string $quickSearchStr = null) {
+
+	}
+
 	/**
 	 * @return int
 	 */
