@@ -37,8 +37,8 @@ class CustomTypeFactory {
 		$constrollerClass = null;
 		try {
 			$controllerClass = ReflectionUtils::createReflectionClass($customTypeExtraction->getControllerLookupId());
-		} catch (TypeNotFoundException $e) {
-			throw $this->createControllerException($customTypeExtraction, null, $e);
+		} catch (\ReflectionException $e) {
+			throw self::createControllerException($customTypeExtraction, null, $e);
 		}
 		
 		if (!$controllerClass->implementsInterface(Controller::class)) {
