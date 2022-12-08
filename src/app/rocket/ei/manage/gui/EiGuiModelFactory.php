@@ -4,10 +4,11 @@ namespace rocket\ei\manage\gui;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
+use rocket\ei\manage\EiLaunch;
 
 class EiGuiModelFactory {
 
-	function __construct(private N2nContext $n2nContext) {
+	function __construct(private EiLaunch $eiLaunch) {
 	}
 	
 	/**
@@ -112,7 +113,7 @@ class EiGuiModelFactory {
 		}
 		
 		$guiDefinition = $contextEiMask->getEiEngine()->getGuiDefinition();
-		$guiDefinition->createEiGuiFrame($this->n2nContext, $eiGuiModel, $defPropPaths,
+		$guiDefinition->createEiGuiFrame($this->eiLaunch, $eiGuiModel, $defPropPaths,
 				$guiStructureDeclarationsRequired);
 	}
 	

@@ -88,6 +88,7 @@ class EiuAnalyst {
 	
 	protected $n2nContext;
 	protected $eiType;
+	protected $eiLaunch;
 	protected $eiFrame;
 	protected $eiObject;
 	protected $eiEntry;
@@ -149,6 +150,10 @@ class EiuAnalyst {
 			if ($eiArg instanceof N2nContext) {
 				$this->n2nContext = $eiArg;
 				continue;
+			}
+
+			if ($eiArg instanceof EiLaunch) {
+				$this->eiLaunch = $eiArg;
 			}
 			
 			if ($eiArg instanceof EiFrame) {
@@ -366,6 +371,9 @@ class EiuAnalyst {
 				}
 				if ($eiuAnalyst->eiType !== null) {
 					$this->eiType = $eiuAnalyst->eiType;
+				}
+				if ($eiuAnalyst->eiLaunch !== null) {
+					$this->eiLaunch = $eiuAnalyst->eiLaunch;
 				}
 				if ($eiuAnalyst->eiFrame !== null) {
 					$this->eiFrame = $eiuAnalyst->eiFrame;
@@ -1032,6 +1040,10 @@ class EiuAnalyst {
 	public function getN2nContext(bool $required) {
 		$this->ensureAppied();
 
+		if ($this->n2nContext === null && $this->eiLaunch !== null) {
+			return $this->n2nContext = $this->eiLaunch->getN2nContext();
+		}
+
 		if (!$required || $this->n2nContext !== null) {
 			return $this->n2nContext;
 		}
@@ -1048,13 +1060,14 @@ class EiuAnalyst {
 		return $this->getN2nContext(true)->lookup(ManageState::class);
 	}
 
-	/**
-	 * @return EiLaunch
-	 */
-	function getEiLaunch(bool $required) {
+	function getEiLaunch(bool $required): ?EiLaunch {
 		$this->ensureAppied();
 
-		return $this->getEiFrame($required)?->getEiLaunch();
+		if ($this->eiLaunch !== null) {
+			return $this->eiLaunch;
+		}
+
+		return $this->eiLaunch = $this->getEiFrame($required)?->getEiLaunch();
 	}
 
 	public function getEiuContext(bool $required) {

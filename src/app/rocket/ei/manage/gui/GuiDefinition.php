@@ -39,6 +39,7 @@ use rocket\ei\mask\model\DisplayItem;
 use rocket\ei\mask\model\DisplayStructure;
 use rocket\ei\util\Eiu;
 use rocket\si\meta\SiStructureType;
+use rocket\ei\manage\EiLaunch;
 
 class GuiDefinition {
 	/**
@@ -666,7 +667,7 @@ class GuiDefinition {
 	 * @param array $defPropPaths
 	 * @return \rocket\ei\manage\gui\EiGuiFrame
 	 */
-	function createEiGuiFrame(N2nContext $n2nContext, EiGuiModel $eiGuiModel, ?array $defPropPaths, 
+	function createEiGuiFrame(EiLaunch $eiLaunch, EiGuiModel $eiGuiModel, ?array $defPropPaths,
 			bool $guiStructureDeclarationsRequired) {
 		ArgUtils::assertTrue($this->eiMask->isA($eiGuiModel->getContextEiMask()));
 		
@@ -679,9 +680,9 @@ class GuiDefinition {
 			throw new \Exception();
 		}
 		if ($defPropPaths === null) {
-			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($n2nContext, $eiGuiFrame);
+			$guiStructureDeclarations = $this->initEiGuiFrameFromDisplayScheme($eiLaunch, $eiGuiFrame);
 		} else {
-			$guiStructureDeclarations = $this->semiAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $defPropPaths);
+			$guiStructureDeclarations = $this->semiAutoInitEiGuiFrame($eiLaunch, $eiGuiFrame, $defPropPaths);
 		}
 		
 		if (!$guiStructureDeclarationsRequired) {
@@ -724,7 +725,7 @@ class GuiDefinition {
 	 * @param EiGuiFrame $eiGuiFrame
 	 * @return GuiStructureDeclaration[]
 	 */
-	private function initEiGuiFrameFromDisplayScheme(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame) {
+	private function initEiGuiFrameFromDisplayScheme(EiLaunch $eiLaunch, EiGuiFrame $eiGuiFrame) {
 		$displayScheme = $this->eiMask->getDisplayScheme();
 		
 		$displayStructure = null;
@@ -746,10 +747,10 @@ class GuiDefinition {
 		}
 		
 		if ($displayStructure === null) {
-			return $this->autoInitEiGuiFrame($n2nContext, $eiGuiFrame);
+			return $this->autoInitEiGuiFrame($eiLaunch, $eiGuiFrame);
 		} 
 		
-		return $this->nonAutoInitEiGuiFrame($n2nContext, $eiGuiFrame, $displayStructure);
+		return $this->nonAutoInitEiGuiFrame($eiLaunch, $eiGuiFrame, $displayStructure);
 	}
 	
 	/**
@@ -919,16 +920,16 @@ class GuiDefinition {
 	}
 	
 	/**
-	 * @param N2nContext $n2nContext
+	 * @param EiLaunch $eiLaunch
 	 * @param EiGuiFrame $eiGuiFrame
 	 */
-	private function autoInitEiGuiFrame($n2nContext, $eiGuiFrame) {
+	private function autoInitEiGuiFrame($eiLaunch, $eiGuiFrame) {
 // 		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
 		
 		$guiStructureDeclarations = [];
 		foreach ($this->guiPropWrappers as $guiPropWrapper) {
 			$eiPropPath = $guiPropWrapper->getEiPropPath();
-			$guiPropSetup = $guiPropWrapper->buildGuiPropSetup($n2nContext, $eiGuiFrame, null);
+			$guiPropSetup = $guiPropWrapper->buildGuiPropSetup($eiLaunch, $eiGuiFrame, null);
 			
 			if ($guiPropSetup === null) {
 				continue;

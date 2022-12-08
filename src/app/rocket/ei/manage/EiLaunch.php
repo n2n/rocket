@@ -22,7 +22,7 @@ class EiLaunch {
 
 	function __construct(private N2nContext $n2nContext, private EiPermissionManager $eiPermissionManager,
 			private EntityManager $entityManager) {
-		$this->cachedEiGuiModelFactory = new CachedEiGuiModelFactory(new EiGuiModelFactory($this->n2nContext, $this));
+		$this->cachedEiGuiModelFactory = new CachedEiGuiModelFactory(new EiGuiModelFactory($this));
 	}
 
 	function getN2nContext(): N2nContext {
