@@ -26,6 +26,7 @@ use rocket\ei\util\Eiu;
 use rocket\ei\component\prop\EiPropNature;
 use rocket\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
+use rocket\ei\manage\EiLaunch;
 
 class GuiPropWrapper {
 	
@@ -110,11 +111,12 @@ class GuiPropWrapper {
 		
 		throw new UnresolvableDefPropPathException('GuiProp ' . $defPropPath . ' not found.');
 	}
-	
+
 	/**
+	 * @param N2nContext $n2nContext
 	 * @param EiGuiFrame $eiGuiFrame
-	 * @param array $fokredDefPropPaths
-	 * @return \rocket\ei\manage\gui\GuiPropSetup
+	 * @param array|null $forkedDefPropPaths
+	 * @return GuiPropSetup
 	 */
 	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, ?array $forkedDefPropPaths) {
 		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiFrame, $this->eiPropPath), $forkedDefPropPaths);

@@ -7,7 +7,7 @@ use rocket\ei\EiEngine;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\security\EiPermissionManager;
-use rocket\ei\manage\gui\CachedEiGuiModelFactory;
+use rocket\ei\manage\gui\LazyEiGuiModelStore;
 use rocket\ei\CachedEiDefFactory;
 use rocket\ei\manage\gui\EiGuiModelFactory;
 use n2n\persistence\orm\EntityManager;
@@ -18,11 +18,8 @@ class EiLaunch {
 	 */
 	private array $eiFrames = [];
 
-	private CachedEiGuiModelFactory $cachedEiGuiModelFactory;
-
 	function __construct(private N2nContext $n2nContext, private EiPermissionManager $eiPermissionManager,
 			private EntityManager $entityManager) {
-		$this->cachedEiGuiModelFactory = new CachedEiGuiModelFactory(new EiGuiModelFactory($this->n2nContext, $this));
 	}
 
 	function getN2nContext(): N2nContext {
@@ -41,10 +38,4 @@ class EiLaunch {
 		IllegalStateException::assertTrue(empty($this->eiFrames));
 		return $this->eiFrames[] = $eiEngine->createRootEiFrame($this);
 	}
-
-	function getEiGuiModelCache(): CachedEiGuiModelFactory {
-		return $this->cachedEiGuiModelFactory;
-	}
-
-
 }

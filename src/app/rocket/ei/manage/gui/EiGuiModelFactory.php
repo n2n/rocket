@@ -4,10 +4,11 @@ namespace rocket\ei\manage\gui;
 use n2n\core\container\N2nContext;
 use rocket\ei\EiType;
 use rocket\ei\mask\EiMask;
+use rocket\ei\manage\EiLaunch;
 
 class EiGuiModelFactory {
 
-	function __construct(private N2nContext $n2nContext) {
+	function __construct(private EiMask $contextEiMask, private N2nContext $n2nContext) {
 	}
 	
 	/**
@@ -17,9 +18,9 @@ class EiGuiModelFactory {
 	 * @param bool $guiStructureDeclarationsRequired
 	 * @return EiGuiModel
 	 */
-	function createEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $defPropPaths, 
+	function createEiGuiModel(int $viewMode, ?array $defPropPaths,
 			bool $guiStructureDeclarationsRequired) {
-		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($this->contextEiMask, $viewMode);
 		
 		$this->applyEiGuiFrame($eiGuiModel, false, $defPropPaths, $guiStructureDeclarationsRequired);
 		
@@ -34,9 +35,9 @@ class EiGuiModelFactory {
 	 * @return EiGuiModel
 	 * @throws GuiBuildFailedException
 	 */
-	function createForgeEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $defPropPaths, 
+	function createForgeEiGuiModel(int $viewMode, ?array $defPropPaths,
 			bool $guiStructureDeclarationsRequired) {
-		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($this->contextEiMask, $viewMode);
 		
 		$this->applyEiGuiFrame($eiGuiModel, true, $defPropPaths, $guiStructureDeclarationsRequired);
 		
@@ -57,9 +58,9 @@ class EiGuiModelFactory {
 	 * @return EiGuiModel
 	 * @throws GuiBuildFailedException
 	 */
-	function createMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes, 
+	function createMultiEiGuiModel(int $viewMode, ?array $allowedEiTypes,
 			?array $defPropPaths, bool $guiStructureDeclarationsRequired) {
-		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($this->contextEiMask, $viewMode);
 	
 		$this->applyPossibleEiGuiFrames($eiGuiModel, false, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired);
 		
@@ -81,9 +82,9 @@ class EiGuiModelFactory {
 	 * @return EiGuiModel
 	 *@throws GuiBuildFailedException
 	 */
-	function createForgeMultiEiGuiModel(EiMask $contextEiMask, int $viewMode, ?array $allowedEiTypes,
+	function createForgeMultiEiGuiModel(int $viewMode, ?array $allowedEiTypes,
 			?array $defPropPaths, bool $guiStructureDeclarationsRequired) {
-		$eiGuiModel = new EiGuiModel($contextEiMask, $viewMode);
+		$eiGuiModel = new EiGuiModel($this->contextEiMask, $viewMode);
 		
 		$this->applyPossibleEiGuiFrames($eiGuiModel, true, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired);
 		

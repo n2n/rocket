@@ -201,8 +201,8 @@ class EiFrameUtil {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		$allowedEiTypes = $this->determineEiTypes($allowedEiTypeIds);
 		
-		$eiGui = new EiGui($this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainForgeMultiEiGuiModel(
-				$this->eiFrame->getContextEiEngine()->getEiMask(), $viewMode, $allowedEiTypes, $defPropPaths));
+		$eiGui = new EiGui($this->eiFrame->getContextEiEngine()
+				->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths));
 		
 		$eiGui->appendNewEiEntryGui($this->eiFrame, 0);
 		
@@ -237,8 +237,8 @@ class EiFrameUtil {
 	 * @param DefPropPath[] $defPropPaths
 	 * @return EiGuiModel
 	 */
-	private function createEiGuiModel(EiMask $eiMask, int $viewMode, array $defPropPaths = null) {
-		return $this->eiFrame->getEiLaunch()->getEiGuiModelCache()->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths);
+	private function createEiGuiModel(EiMask $eiMask, int $viewMode, array $defPropPaths = null): EiGuiModel {
+		return $eiMask->getEiEngine()->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths);
 	}
 	
 	/**
@@ -272,8 +272,7 @@ class EiFrameUtil {
 					$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId));
 		}
 		
-		$eiGui = new EiGui($this->eiFrame->getEiLaunch()->getEiGuiModelCache()
-				->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths));
+		$eiGui = new EiGui($eiMask->getEiEngine()->obtainEiGuiModel($viewMode, $defPropPaths));
 		
 		$eiGui->appendEiEntryGui($this->eiFrame, [$eiEntry], $treeLevel);
 		
@@ -348,8 +347,7 @@ class EiFrameUtil {
 	 * @return \rocket\ei\manage\gui\EiGui
 	 */
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, array $defPropPaths = null, string $quickSearchStr = null) {
-		$eiGuiModelCache = $this->eiFrame->getEiLaunch()->getEiGuiModelCache();
-		$eiGuiModel = $eiGuiModelCache->obtainEiGuiModel($this->eiFrame->getContextEiEngine()->getEiMask(), 
+		$eiGuiModel = $this->eiFrame->getContextEiEngine()->obtainEiGuiModel(
 				ViewMode::determine($bulky, $readOnly, false), $defPropPaths, true);
 		$eiGui = new EiGui($eiGuiModel);
 			

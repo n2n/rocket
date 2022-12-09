@@ -43,6 +43,8 @@ use rocket\attribute\EiDisplayScheme;
 use rocket\si\control\SiIconType;
 use rocket\attribute\EiDefaultSort;
 use rocket\ei\manage\critmod\sort\SortSettingGroup;
+use rocket\ei\mask\EiMask;
+use n2n\core\container\N2nContext;
 
 class EiTypeFactory {
 
@@ -221,9 +223,7 @@ class EiTypeFactory {
 		$eiCmdCollection->setup($this->specConfigLoader->getN2NContext());
 		$eiCmdCollection->registerListener($this->initListener);
 
-		foreach ($eiType->getEiMask()->setupEiEngine() as $callback) {
-			$callback(new Eiu($eiType->getEiMask()->getEiEngine()));
-		};
+		$this->initListener->finalize($eiType->getEiMask());
 	}
 
 
@@ -232,10 +232,16 @@ class EiTypeFactory {
 
 class InitListener implements EiComponentCollectionListener {
 
-	function __construct(private readonly MagicContext $magicContext) {
+	function __construct(private readonly N2nContext $n2nContext) {
 	}
 
 	function eiComponentCollectionChanged(EiComponentCollection $collection) {
-		$collection->setup($this->magicContext);
+		$collection->setup($this->n2nContext);
+	}
+
+	function finalize(EiMask $eiMask) {
+		foreach ($eiMask->setupEiEngine($this->n2nContext) as $callback) {
+			$callback(new Eiu($eiMask->getEiEngine()));
+		};
 	}
 }

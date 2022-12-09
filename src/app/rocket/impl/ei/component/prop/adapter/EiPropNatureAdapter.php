@@ -44,9 +44,12 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\frame\EiForkLink;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\impl\ei\component\prop\adapter\config\LabelConfigTrait;
 
 
 abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements EiPropNature {
+	use LabelConfigTrait;
+
 	private $wrapper;
 	
 	/**
@@ -66,30 +69,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 				$obj->getWrapper()->getEiPropPath());
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::getLabelLstr()
-	 */
-	public function getLabelLstr(): Lstr {
-		return Lstr::create($this->getLabel());
-	}
 
-	function getLabel() {
-		return $this->label ?? $this->label = StringUtils::pretty((new \ReflectionClass($this))->getShortName());
-	}
-
-	function setLabel(string $label) {
-		$this->label = $label;
-		return $this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::getHelpTextLstr()
-	 */
-	public function getHelpTextLstr(): ?Lstr {
-		return null;
-	}
 	
 	/**
 	 * {@inheritDoc}
