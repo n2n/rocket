@@ -8,6 +8,7 @@ use rocket\spec\setup\EiPresetMode;
 use rocket\attribute\impl\EiModCallback;
 use rocket\attribute\impl\EiSetup;
 use rocket\ei\util\Eiu;
+use rocket\attribute\EiLabel;
 
 #[EiType]
 #[EiPreset(EiPresetMode::READ, readProps: ['stringGetTest'],
@@ -15,6 +16,7 @@ use rocket\ei\util\Eiu;
 class PrimitiveReadPresetTestObj {
 
 	public int $id;
+	#[EiLabel('Test Label', 'Test Help Text')]
 	public string $stringPriTest;
 	private ?string $stringNullPriTest = null;
 	private string $stringEditablePriTest;

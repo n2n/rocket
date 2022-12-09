@@ -33,17 +33,19 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$this->assertTrue($eiProps['id']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['id']->getNature()->isMandatory());
-		$this->assertEquals('Id', $eiProps['id']->getNature()->getLabel());
+		$this->assertEquals('Id', $eiProps['id']->getNature()->getLabelConfig()->getLabel());
 
 		$this->assertTrue($eiProps['stringPriTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringPriTest']->getNature()->isMandatory());
+		$this->assertEquals('Test Label', $eiProps['stringPriTest']->getNature()->getLabelConfig()->getLabel());
+		$this->assertEquals('Test Help Text', $eiProps['stringPriTest']->getNature()->getLabelConfig()->getHelpText());
 
 		$this->assertTrue($eiProps['stringNullPriTest']->getNature()->isReadOnly());
 		$this->assertFalse($eiProps['stringNullPriTest']->getNature()->isMandatory());
 
 		$this->assertFalse($eiProps['stringEditablePriTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringEditablePriTest']->getNature()->isMandatory());
-		$this->assertEquals('Super duper label', $eiProps['stringEditablePriTest']->getNature()->getLabel());
+		$this->assertEquals('Super duper label', $eiProps['stringEditablePriTest']->getNature()->getLabelConfig()->getLabel());
 
 		$this->assertFalse($eiProps['stringEditableNullNotNullTest']->getNature()->isReadOnly());
 		$this->assertTrue($eiProps['stringEditableNullNotNullTest']->getNature()->isMandatory());
