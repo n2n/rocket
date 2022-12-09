@@ -304,8 +304,8 @@ class EiuCtrl {
 		}
 		
 		$eiFrame = $this->eiuFrame->getEiFrame();
-		$obtainer = $eiFrame->getEiLaunch()->getEiGuiModelCache();
-		$eiGuiModel =  $obtainer->obtainEiGuiModel($eiFrame->getContextEiEngine()->getEiMask(), ViewMode::COMPACT_READ, null, true);
+		$eiGuiModel =  $eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()
+				->obtainEiGuiModel(ViewMode::COMPACT_READ, null, true);
 		$eiGui = new EiGui($eiGuiModel);
 		
 		$this->composeEiuGuiForList($eiGui, $pageSize);

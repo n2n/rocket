@@ -81,27 +81,26 @@ class EiuGuiModel {
 		return $this->eiuGuiFrames;
 	}
 	
-	/**
-	 * @return \rocket\ei\util\gui\EiuGui
-	 */
-	function copy(bool $bulky, bool $readOnly, array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
-		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($this->eiGuiModel->getViewMode()));
-		$cache = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
-		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		
-		$newEiGuiModel = $cache->createMultiEiGuiModel($this->eiGuiModel->getContextEiMask(), $viewMode, 
-				$this->eiGuiModel->getEiTypes(), $defPropPaths);
-		
-		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
-		foreach ($this->eiGuiModel->getEiEntryGuis() as $eiEntryGui) {
-			$newEiEntryGui = $newEiGuiModel->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
-			if ($eiEntryGui->isTypeDefSelected()) {
-				$newEiEntryGui->selectTypeDefByEiTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
-			}
-		}
-		
-		return new EiuGuiModel($newEiGuiModel, $this->eiuAnalyst);
-	}
+//	/**
+//	 * @return \rocket\ei\util\gui\EiuGui
+//	 */
+//	function copy(bool $bulky, bool $readOnly, array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+//		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($this->eiGuiModel->getViewMode()));
+//		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//
+//		$newEiGuiModel = $cache->createMultiEiGuiModel($this->eiGuiModel->getContextEiMask(), $viewMode,
+//				$this->eiGuiModel->getEiTypes(), $defPropPaths);
+//
+//		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
+//		foreach ($this->eiGuiModel->getEiEntryGuis() as $eiEntryGui) {
+//			$newEiEntryGui = $newEiGuiModel->appendEiEntryGui($eiFrame, $eiEntryGui->getEiEntries(), $eiEntryGui->getTreeLevel());
+//			if ($eiEntryGui->isTypeDefSelected()) {
+//				$newEiEntryGui->selectTypeDefByEiTypeId($eiEntryGui->getSelectedTypeDef()->getEiType()->getId());
+//			}
+//		}
+//
+//		return new EiuGuiModel($newEiGuiModel, $this->eiuAnalyst);
+//	}
 	
 	function newEntryGui($eiEntryArg = null) {
 		$eiGui = new EiGui($this->eiGuiModel);

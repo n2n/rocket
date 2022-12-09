@@ -154,6 +154,7 @@ class EiuAnalyst {
 
 			if ($eiArg instanceof EiLaunch) {
 				$this->eiLaunch = $eiArg;
+				continue;
 			}
 			
 			if ($eiArg instanceof EiFrame) {

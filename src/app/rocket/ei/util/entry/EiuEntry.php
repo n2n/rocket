@@ -314,8 +314,7 @@ class EiuEntry {
 			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
 		}
 		
-		$obtainer = $this->eiuAnalyst->getEiLaunch(true)->getEiGuiModelCache();
-		$eiGui = new EiGui($obtainer->obtainEiGuiModel($eiMask, $viewMode, $defPropPaths, 
+		$eiGui = new EiGui($eiMask->getEiEngine()->obtainEiGuiModel($viewMode, $defPropPaths,
 				$guiStructureDeclarationsRequired));
 		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
 		

@@ -729,10 +729,9 @@ class EiuFrame {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		
-		$obtainer = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
-		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
-		$eiGui =  new EiGui($obtainer->obtainForgeMultiEiGuiModel($eiMask, $viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
+
+		$eiGui =  new EiGui($this->eiFrame->getContextEiEngine()
+				->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
 		$eiGui->appendNewEiEntryGui($this->eiFrame);
 		
 		$eiuGui = new EiuGui($eiGui, null, $this->eiuAnalyst);

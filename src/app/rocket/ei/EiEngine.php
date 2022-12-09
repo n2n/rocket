@@ -45,9 +45,14 @@ use rocket\ei\manage\gui\GuiDefinition;
 use rocket\ei\manage\idname\IdNameDefinition;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\EiLaunch;
+use rocket\ei\manage\gui\LazyEiGuiModelStore;
+use rocket\ei\manage\gui\EiGuiModelFactory;
+use rocket\ei\manage\gui\EiGuiModel;
+use rocket\ei\manage\gui\GuiBuildFailedException;
 
 class EiEngine {
 
+	private EiGuiModelEngine $eiGuiModelEngine;
 
 	private ?GenericEiDefinition $genericEiDefinition = null;
 	private ?ScalarEiDefinition $scalarEiDefinition = null;
@@ -58,6 +63,7 @@ class EiEngine {
 	 * @param N2nContext $n2nContext
 	 */
 	function __construct(private EiMask $eiMask, private N2nContext $n2nContext) {
+		$this->eiGuiModelEngine = new EiGuiModelEngine(new EiGuiModelFactory($this->eiMask, $this->n2nContext));
 	}
 
 	/**
@@ -269,7 +275,7 @@ class EiEngine {
 // 	function createFramedEiGuiFrame(EiFrame $eiFrame, int $viewMode) {
 // 		$guiFactory = new GuiFactory($this->eiMask);
 // 		return $guiFactory->createEiGuiFrame($eiFrame, $viewMode);
-// 	}
+// 	}<
 
 // 	function createEiGuiFrame(int $viewMode, DisplayStructure $displayStructure) {
 // 		$eiMask = $this->eiMask;
@@ -304,6 +310,48 @@ class EiEngine {
 	 */
 	function createEiEntryGuiControls(EiEntryGui $eiEntryGui, HtmlView $view) {
 		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiEntryGui, $view);
+	}
+
+	function obtainEiGuiModel(int $viewMode, ?array $defPropPaths): EiGuiModel {
+		return $this->eiGuiModelEngine->obtainEiGuiModel($viewMode, $defPropPaths);
+	}
+
+	/**
+	 * @param EiMask $contextEiMask
+	 * @param int $viewMode
+	 * @param array|null $defPropPaths
+	 * @return EiGuiModel
+	 * @throws GuiBuildFailedException
+	 */
+	function obtainForgeEiGuiModel(int $viewMode, ?array $defPropPaths): EiGuiModel {
+		return $this->eiGuiModelEngine->obtainForgeEiGuiModel($viewMode, $defPropPaths);
+	}
+
+	/**
+	 * @param int $viewMode
+	 * @param array|null $allowedEiTypes
+	 * @param array|null $defPropPaths
+	 * @param bool $guiStructureDeclarationsRequired
+	 * @return EiGuiModel
+	 * @throws GuiBuildFailedException
+	 */
+	function obtainMultiEiGuiModel(int $viewMode, ?array $allowedEiTypes,
+			?array $defPropPaths, bool $guiStructureDeclarationsRequired): EiGuiModel {
+		return $this->eiGuiModelEngine->obtainMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths,
+				$guiStructureDeclarationsRequired);
+
+	}
+
+	/**
+	 * @param int $viewMode
+	 * @param array|null $allowedEiTypes
+	 * @param array|null $defPropPaths
+	 * @return EiGuiModel
+	 * @throws GuiBuildFailedException
+	 */
+	function obtainForgeMultiEiGuiModel(int $viewMode, ?array $allowedEiTypes,
+			?array $defPropPaths): EiGuiModel {
+		return $this->eiGuiModelEngine->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths);
 	}
 
 }

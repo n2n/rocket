@@ -33,7 +33,7 @@ use rocket\ei\manage\draft\DraftManager;
 use rocket\ei\manage\security\EiPermissionManager;
 use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\CachedEiGuiModelFactory;
+use rocket\ei\manage\gui\LazyEiGuiModelStore;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\ex\NotYetImplementedException;
 
@@ -47,7 +47,7 @@ class ManageState implements RequestScoped {
 	private $entityManager;
 	private $draftManager;
 	/**
-	 * @var CachedEiGuiModelFactory
+	 * @var LazyEiGuiModelStore
 	 */
 	private $eiGuiModelCache;
 	private $eiLifecycleMonitor;
@@ -151,18 +151,7 @@ class ManageState implements RequestScoped {
 	public function setEiLifecycleMonitor(EiLifecycleMonitor $eiLifecycleMonitor) {
 		$this->eiLifecycleMonitor = $eiLifecycleMonitor;
 	}
-	
-	/**
-	 * @return \rocket\ei\manage\gui\CachedEiGuiModelFactory
-	 *@throws IllegalStateException
-	 */
-	function getEiGuiModelCache() {
-		if ($this->eiGuiModelCache === null) {
-			throw new IllegalStateException('No EiGuiModelCache available.');
-		}
-		
-		return $this->eiGuiModelCache;
-	}
+
 	
 // 	public function createEiFrame(EiEngine $contextEiEngine, ControllerContext $controllerContext, EiCmdPath $eiCmdPath) {
 // 		$eiFrame = $contextEiEngine->createEiFrame($controllerContext, $this, $this->peakEiFrame(false), $eiCmdPath);

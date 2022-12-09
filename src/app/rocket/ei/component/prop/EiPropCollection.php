@@ -231,13 +231,14 @@ class EiPropCollection extends EiComponentCollection {
 //		return $sortDefinition;
 //	}
 
-	function createGuiDefinition(): GuiDefinition {
+	function createGuiDefinition(N2nContext $n2nContext): GuiDefinition {
 		$guiDefinition = new GuiDefinition($this->eiMask);
 
 		foreach ($this as $eiProp) {
 			$eiPropPath = $eiProp->getEiPropPath();
+			$eiu = new Eiu($n2nContext, $this->eiMask, $eiPropPath);
 
-			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp(new Eiu($this->eiMask, $eiPropPath)))) {
+			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp($eiu))) {
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 		}

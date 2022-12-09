@@ -414,9 +414,8 @@ class EiuEngine {
 	 */
 	function newGuiModel(int $viewMode, array $defPropPathsArg = null) {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		
-		$cache = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
-		$eiGuiModel =  $cache->obtainEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $defPropPaths);
+
+		$eiGuiModel =  $this->eiEngine->obtainEiGuiModel($viewMode, $defPropPaths);
 		
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
 	}
@@ -439,10 +438,10 @@ class EiuEngine {
 	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
 			array $defPropPathsArg = null) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
-		$cache = $this->eiuAnalyst->getEiLaunch()->getEiGuiModelCache();
+
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiGuiModel =  $cache->obtainForgeMultiEiGuiModel($this->eiEngine->getEiMask(), $viewMode, $allowedEiTypes, $defPropPaths);
+		$eiGuiModel =  $this->eiEngine->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths);
 		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
 	}
 }
