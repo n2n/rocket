@@ -110,7 +110,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 		if (!$prepend) {
 			$this->elements[$idPathStr] = $element;
 		} else {
-			$this->elements = array($idPathStr => $eiComponent) + $this->elements;
+			$this->elements = array($idPathStr => $element) + $this->elements;
 		}
 		
 		if (!$idPath->hasMultipleIds()) {
@@ -221,7 +221,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	/* (non-PHPdoc)
 	 * @see IteratorAggregate::getIterator()
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 		return new \ArrayIterator($this->toArray());
 	}
 
