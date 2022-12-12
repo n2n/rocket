@@ -86,7 +86,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @return string
 	 */
 	protected function makeId(?string $id, EiComponent $eiComponent) {
-		if (0 == mb_strlen($id)) {
+		if ($id === null || 0 == mb_strlen($id)) {
 			$id = $this->createUniqueId($eiComponent->getIdBase() 
 					?? TypeUtils::buildTypeAcronym(get_class($eiComponent)));
 		} else if (IdPath::constainsSpecialIdChars($id)) {
