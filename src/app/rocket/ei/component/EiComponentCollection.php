@@ -248,7 +248,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	/* (non-PHPdoc)
 	 * @see Countable::count()
 	 */
-	public function count() {
+	public function count(): int {
 		$num = count($this->elements);
 		if ($this->inheritedCollection !== null) {
 			$num += $this->inheritedCollection->count();
