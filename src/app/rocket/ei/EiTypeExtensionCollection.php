@@ -93,7 +93,7 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	/* (non-PHPdoc)
 	 * @see IteratorAggregate::getIterator()
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 		return new \ArrayIterator($this->toArray());
 	}
 	
@@ -106,7 +106,7 @@ class EiTypeExtensionCollection implements \IteratorAggregate, \Countable {
 	/* (non-PHPdoc)
 	 * @see Countable::count()
 	 */
-	public function count() {
+	public function count(): int {
 		return count($this->eiTypeExtensions);
 	}
 }
