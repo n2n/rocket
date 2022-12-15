@@ -13,11 +13,29 @@ trait LabelConfigTrait {
 		return $this->labelConfig ?? $this->labelConfig = new LabelConfig();
 	}
 
+	function setLabel(?string $label): static {
+		$this->getLabelConfig()->setLabel($label);
+		return $this;
+	}
+
+	function getLabel(): ?string {
+		return $this->getLabelConfig()->getLabel();
+	}
+
 	public function getLabelLstr(): Lstr {
 		$label = $this->getLabelConfig()->getLabel()
 				?? StringUtils::pretty((new \ReflectionClass($this))->getShortName());
 
 		return Lstr::create($label);
+	}
+
+	function getHelpText(): ?string {
+		return $this->getLabelConfig()->getHelpText();
+	}
+
+	function setHelpText(?string $helpText): static {
+		$this->getLabelConfig()->setHelpText($helpText);
+		return $this;
 	}
 
 	/**
