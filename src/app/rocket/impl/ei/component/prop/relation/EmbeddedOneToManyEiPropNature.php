@@ -63,7 +63,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$readOnly = $readOnly || $this->isReadOnly();
+		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
 		
 		if ($readOnly && $eiu->gui()->isCompact()) {
 			return $this->createCompactGuiField($eiu);

@@ -210,7 +210,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->field()->getValue();
-		$options = $this->enumConfig->getOptions();
+		$options = $this->getOptions();
 		
 		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$value] ?? $value));
 	}
