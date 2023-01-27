@@ -92,7 +92,7 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 	
 	private function createEiGuiModel(EiMask $eiMask, int $viewMode) {
 		try {
-			return $eiMask->getEiEngine()->obtainEiGuiModel($eiMask, $viewMode, null);
+			return $eiMask->getEiEngine()->obtainEiGuiModel($viewMode, null);
 		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
