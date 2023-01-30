@@ -28,11 +28,35 @@ use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 use Closure;
 use rocket\ei\manage\gui\control\GuiControl;
+use n2n\web\http\controller\Controller;
 
 class CallbackEiCmdNature extends EiCmdNatureAdapter {
+
+	private Closure|Controller|null $controllerCallback = null;
 	private array $entryCallbacks = [];
 	private array $selectionCallbacks = [];
 	private array $generalCallbacks = [];
+
+	function setController(Closure|Controller|null $controllerCallback): static {
+		$this->controllerCallback = $controllerCallback;
+		return $this;
+	}
+
+	public function lookupController(Eiu $eiu): ?Controller {
+		if ($this->controllerCallback === null) {
+			return null;
+		}
+
+		if (!is_callable($this->controllerCallback)) {
+			return $this->controllerCallback;
+		}
+
+		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+		$mmi->setClassParamObject(Eiu::class, $eiu);
+		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(Controller::class, true));
+		$mmi->setClosure($this->controllerCallback);
+		return $mmi->invoke();
+	}
 
 	function addGeneralGuiControl(Closure|GuiControl $callback): static {
 		$this->generalCallbacks[] = $callback;
