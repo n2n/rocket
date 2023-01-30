@@ -82,17 +82,20 @@ class EiTypeFactory {
 		$pluralLabel = $eiTypeA->pluralLabel ?? $label;
 		$icon = $eiTypeA->icon ?? SiIconType::ICON_ROCKET;
 
-		return new EiType($this->classNameToId($class->getName()), $this->specConfigLoader->moduleNamespaceOf($class), $class,
+		$eiType = new EiType($this->classNameToId($class->getName()), $this->specConfigLoader->moduleNamespaceOf($class), $class,
 				$label, $pluralLabel, $icon, $spec,
 				function () use ($class) {
 					return $this->getEntityModel($class);
 				},
 				function (EiType $eiType) {
+					$this->checkForInheritance($eiType);
 					$this->checkForNestedSet($eiType);
 					$this->checkForDefaultSort($eiType);
 					$this->checkForDisplayScheme($eiType);
 					$this->assemble($eiType);
 				});
+
+		return $eiType;
 	}
 
 	private function classNameToId(string $className) {

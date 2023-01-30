@@ -90,14 +90,14 @@ class EiGuiModelEngine {
 	function obtainMultiEiGuiModel(int $viewMode, ?array $allowedEiTypes,
 			?array $defPropPaths, bool $guiStructureDeclarationsRequired) {
 		ArgUtils::valArray($allowedEiTypes, EiType::class, true);
-		$key = $this->createCacheKey($contextEiMask, $viewMode, $allowedEiTypes, $defPropPaths);
+		$key = $this->createCacheKey($viewMode, $allowedEiTypes, $defPropPaths);
 		
 		if (isset($this->multiEiGuiModels[$key])) {
 			return $this->multiEiGuiModels[$key];
 		}
 				
 		return $this->multiEiGuiModels[$key] = $this->eiGuiModelFactory
-				->createMultiEiGuiModel($contextEiMask, $viewMode, $allowedEiTypes, $defPropPaths, true);
+				->createMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths, true);
 		
 	}
 	
