@@ -120,7 +120,7 @@ class ApiControlProcess {
 	 * @return EiEntry
 	 */
 	function determineEiEntry(string $pid) {
-		$eiObject = $this->eiFrameUtil->lookupEiObject($pid);
+		$eiObject = $this->eiFrameUtil->lookupEiObject($this->eiFrameUtil->pidToId($pid));
 		return $this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
 	
