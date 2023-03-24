@@ -35,14 +35,14 @@
 	},
 	"require" : {
 		"n2n/n2n-composer-module-installer" : "^7.1.5",
-        "n2n/n2n" : "^7.3",
-        "n2n/n2n-util" : "^7.3.1",
-        "n2n/n2n-reflection" : "^7.3.3",
-		"n2n/n2n-impl-persistence-meta" : "^7.3",
-		"n2n/n2n-impl-persistence-orm" : "^7.3.3",
-		"n2n/n2n-impl-web-dispatch" : "^7.3",
-		"n2n/n2n-impl-web-ui" : "^7.3",
-		"n2n/n2n-validation" : "^7.3"
+        "n2n/n2n" : "^7.4",
+        "n2n/n2n-util" : "^7.4",
+        "n2n/n2n-reflection" : "^7.4",
+		"n2n/n2n-impl-persistence-meta" : "^7.4",
+		"n2n/n2n-impl-persistence-orm" : "^7.4",
+		"n2n/n2n-impl-web-dispatch" : "^7.4",
+		"n2n/n2n-impl-web-ui" : "^7.4",
+		"n2n/n2n-validation" : "^7.4"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -56,7 +56,7 @@
 		}
 	},
 	"require-dev" : {
-        "n2n/n2n-test": "^7.3",
+        "n2n/n2n-test": "^7.4",
 		"phpunit/phpunit" : "^9.5.25"
 	}
 }

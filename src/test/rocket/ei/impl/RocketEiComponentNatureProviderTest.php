@@ -14,6 +14,9 @@ use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
 use testmdl\bo\AnnotatedReadPresetTestObj;
 use rocket\test\GeneralTestEnv;
+use testmdl\bo\CiContainerTestObj;
+use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
+use rocket\impl\ei\component\prop\ci\model\ContentItem;
 
 class RocketEiComponentNatureProviderTest extends TestCase {
 
@@ -100,5 +103,18 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$nature = $eiProps['translatableTestObjs']->getNature();
 		$this->assertInstanceOf(TranslationEiPropNature::class, $nature);
+	}
+
+	function testContentItems() {
+		$spec = SpecTestEnv::setUpSpec([CiContainerTestObj::class, ContentItem::class]);
+
+		$eiType = $spec->getEiTypeByClassName(CiContainerTestObj::class);
+
+		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
+
+		$this->assertCount(2, $eiProps);
+
+		$nature = $eiProps['contentItems']->getNature();
+		$this->assertInstanceOf(ContentItemsEiPropNature::class, $nature);
 	}
 }

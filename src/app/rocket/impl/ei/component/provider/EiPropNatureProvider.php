@@ -55,6 +55,8 @@ use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 use rocket\ei\component\prop\EiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\LabelConfig;
 use rocket\attribute\EiLabel;
+use rocket\impl\ei\component\prop\ci\model\ContentItem;
+use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
 
 class EiPropNatureProvider {
 
@@ -186,8 +188,13 @@ class EiPropNatureProvider {
 				$relationEiProp = new ManyToManySelectEiPropNature($entityProperty, $accessProxy);
 				break;
 			case RelationEntityProperty::TYPE_ONE_TO_MANY:
-				if ($entityProperty->getTargetEntityModel()->getClass()->implementsInterface(Translatable::class)) {
+				$targetClass = $entityProperty->getTargetEntityModel()->getClass();
+				if ($targetClass->implementsInterface(Translatable::class)) {
 					$relationEiProp = new TranslationEiPropNature($entityProperty, $accessProxy);
+					$this->checkCascadeAllAndOrphanRemoval($relationEiProp, $this->eiTypeSetup->getAttributeSet()
+							->getPropertyAttribute($eiPresetProp->getName(), OneToMany::class));
+				} else if ($targetClass->getName() === ContentItem::class) {
+					$relationEiProp = new ContentItemsEiPropNature($entityProperty, $accessProxy);
 					$this->checkCascadeAllAndOrphanRemoval($relationEiProp, $this->eiTypeSetup->getAttributeSet()
 							->getPropertyAttribute($eiPresetProp->getName(), OneToMany::class));
 				} else {

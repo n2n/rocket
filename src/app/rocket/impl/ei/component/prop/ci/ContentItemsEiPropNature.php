@@ -44,21 +44,33 @@ use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\SiCrumbGroup;
 use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
+use n2n\impl\persistence\orm\property\RelationEntityProperty;
+use n2n\reflection\property\PropertyAccessProxy;
+use rocket\si\meta\SiStructureType;
 
 class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
-	private $contentItemsConfig;
+//	private $contentItemsConfig;
+
+	/**
+ 	 * @var PanelDeclaration[]
+ 	 */
+	private $panelDeclarations = array();
 	
-	public function __construct() {
-		parent::__construct();
+	public function __construct(RelationEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		parent::__construct($entityProperty, $accessProxy,
+				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED));
+
+		$this->displayConfig = (new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false);
 		
-		$this->setup(
-				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
-				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED,
-						(new EditAdapter())->setMandatoryChoosable(false)->setMandatory(false)));
-		
-		$this->contentItemsConfig = new ContentItemsConfig();
-		
+//		$this->contentItemsConfig = new ContentItemsConfig();
+		$this->panelDeclarations = array(new PanelDeclaration('main', 'Main', null, 0));
+
+
+//		$this->setup(
+//				(new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false),
+//				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED,
+//						(new EditAdapter())->setMandatoryChoosable(false)->setMandatory(false)));
 		
 // 		$this->configurator = new ContentItemsEiPropConfigurator($this/*, $this->eiPropRelation*/);
 // 		$this->configurator->registerDisplayConfig($this->displayConfig);
@@ -66,14 +78,6 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 // 		$this->configurator->setRelationModel($this->getRelationModel());
 	}
 
-	/**
-	 * @var PanelDeclaration[]
-	 */
-	private $panelDeclarations = array();
-
-	function __construct() {
-		$this->panelDeclarations = array(new PanelDeclaration('main', 'Main', null, 0));
-	}
 
 	/**
 	 * @return bool
@@ -139,7 +143,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	 * @return \rocket\impl\ei\component\prop\ci\model\PanelDeclaration[]
 	 */
 	public function determinePanelDeclarations(Eiu $eiu) {
-		return $this->contentItemsConfig->getPanelDeclarations();
+		return $this->panelDeclarations;
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {

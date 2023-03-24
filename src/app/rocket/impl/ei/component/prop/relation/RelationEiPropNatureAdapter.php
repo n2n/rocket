@@ -55,7 +55,6 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 		}
 
 		$this->propertyAccessProxy = $accessProxy->createRestricted($getterTypeConstraint);
-
 	}
 
 	function isPrivileged(): bool {
