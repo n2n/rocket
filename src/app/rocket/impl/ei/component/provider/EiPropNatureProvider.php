@@ -14,7 +14,6 @@ use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\attribute\impl\Addon;
 use rocket\impl\ei\component\prop\meta\SiCrumbGroupFactory;
 use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\prop\adapter\EditableEiPropNature;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\reflection\attribute\PropertyAttribute;
 use n2n\persistence\orm\CascadeType;
@@ -163,7 +162,7 @@ class EiPropNatureProvider {
 			$nature->setUniquePerEiPropPath($eiPropPathPart->uniquePerEiPropPath);
 
 			$this->configureEditiable($eiPropPathPart->constant, $eiPropPathPart->readOnly, $eiPropPathPart->mandatory,
-					$propertyAccessProxy, $nature);
+					$propertyAccessProxy, $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
 			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
@@ -388,7 +387,7 @@ class EiPropNatureProvider {
 			EditConfig $nature) {
 		$nature->setConstant($constant ?? false);
 		$nature->setReadOnly($readOnly ?? !$accessProxy->isWritable());
-		$nature->setMandatory($mandatory ?? $accessProxy->getSetterConstraint()->allowsNull());
+		$nature->setMandatory($mandatory ?? !$accessProxy->getSetterConstraint()->allowsNull());
 	}
 
 	private function configureAddons(PropertyAccessProxy $propertyAccessProxy, AddonEiPropNature $nature): void {
