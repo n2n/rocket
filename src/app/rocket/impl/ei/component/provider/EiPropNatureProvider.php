@@ -57,6 +57,7 @@ use rocket\impl\ei\component\prop\adapter\config\LabelConfig;
 use rocket\attribute\EiLabel;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
+use rocket\attribute\impl\EiPropOrder;
 
 class EiPropNatureProvider {
 
@@ -94,6 +95,7 @@ class EiPropNatureProvider {
 					$this->eiTypeSetup->getPropertyLabel($propertyName));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
 			$nature->setOptions($eiPropEnum->options);
+			$nature->setEmptyLabel($eiPropEnum->emptyLabel);
 			$nature->setAssociatedDefPropPathMap($eiPropEnum->associatedDefPropPathMap);
 
 			$this->configureEditiable($eiPropEnum->constant, $eiPropEnum->readOnly, $eiPropEnum->mandatory,
