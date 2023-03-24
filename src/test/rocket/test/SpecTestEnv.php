@@ -7,11 +7,10 @@ use n2n\impl\persistence\orm\property\CommonEntityPropertyProvider;
 use rocket\spec\setup\SpecConfigLoader;
 use n2n\persistence\orm\model\EntityModelManager;
 use rocket\spec\Spec;
-use n2n\util\magic\SimpleMagicContext;
+use n2n\util\magic\impl\SimpleMagicContext;
 use rocket\impl\ei\component\provider\RocketEiComponentNatureProvider;
 use n2n\core\container\N2nContext;
 use n2n\core\util\N2nUtil;
-use n2n\core\container\AppCache;
 use ReflectionClass;
 use n2n\core\container\TransactionManager;
 use n2n\context\LookupManager;
@@ -26,6 +25,9 @@ use testmdl\bo\ModTestMod;
 use rocket\core\model\Rocket;
 use rocket\spec\SpecFactory;
 use n2n\test\TestEnv;
+use n2n\core\cache\AppCache;
+use n2n\core\ext\N2nMonitor;
+use n2n\core\ext\N2nHttp;
 
 class SpecTestEnv {
 
@@ -113,6 +115,18 @@ class N2nContextMock extends SimpleMagicContext implements N2nContext {
 	}
 
 	function finalize(): void {
+		throw new UnsupportedOperationException();
+	}
+
+	function isFinalized(): bool {
+		throw new UnsupportedOperationException();
+	}
+
+	function getHttp(): ?N2nHttp {
+		throw new UnsupportedOperationException();
+	}
+
+	function getMonitor(): ?N2nMonitor {
 		throw new UnsupportedOperationException();
 	}
 }
