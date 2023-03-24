@@ -35,40 +35,41 @@ use rocket\attribute\EiPreset;
 #[Table('rocket_content_item')]
 #[Inheritance(InheritanceType::JOINED)]
 #[EiType]
+#[EiPreset(readProps: ['panel', 'orderIndex'])]
 abstract class ContentItem extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_content_item'));
 		$ai->c(new AnnoInheritance(InheritanceType::JOINED));
 	}
-	
+
 	private $id;
-	private $panel;
-	private $orderIndex;
+	private string $panel;
+	private int $orderIndex;
 // 	private $online;
-	
+
 	public function getId() {
 		return $this->id;
 	}
-	
+
 	public function getPanel() {
-		return $this->panel;
+		return $this->panel ?? null;
 	}
-	
-	public function setPanel($panel) {
+
+	public function setPanel(string $panel) {
 		$this->panel = $panel;
 	}
-	
+
 	public function getOrderIndex() {
-		return $this->orderIndex;
+		return $this->orderIndex ?? null;
 	}
-	
-	public function setOrderIndex($orderIndex) {
+
+	public function setOrderIndex(int $orderIndex) {
 		$this->orderIndex = $orderIndex;
 	}
 
 	public function isOnline() {
 		return true;
 	}
-	
-	public abstract function createUiComponent(HtmlView $view);	
+
+	public abstract function createUiComponent(HtmlView $view);
 }
