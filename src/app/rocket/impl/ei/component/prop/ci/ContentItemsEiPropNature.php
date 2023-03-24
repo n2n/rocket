@@ -61,7 +61,9 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 		parent::__construct($entityProperty, $accessProxy,
 				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED));
 
-		$this->displayConfig = (new DisplayConfig(ViewMode::all()))->setListReadModeDefaultDisplayed(false);
+		$this->displayConfig = (new DisplayConfig(ViewMode::all()))
+				->setSiStructureType(SiStructureType::SIMPLE_GROUP)
+				->setListReadModeDefaultDisplayed(false);
 		
 //		$this->contentItemsConfig = new ContentItemsConfig();
 		$this->panelDeclarations = array(new PanelDeclaration('main', 'Main', null, 0));
@@ -147,7 +149,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiField {
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
@@ -158,18 +160,18 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
-		$readOnly = $readOnly || $this->isReadOnly();
-		
+		$readOnly = $readOnly || $this->relationModel->isReadOnly();
+
 		if ($readOnly && $eiu->gui()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
 		
 		$targetEiuFrame = null;
 		if ($readOnly){
-			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		} else {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
+			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		}
 			

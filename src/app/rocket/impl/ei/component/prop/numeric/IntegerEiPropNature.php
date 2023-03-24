@@ -52,7 +52,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
 	function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
-		return new CommonScalarEiProperty($this, null, function ($value) {
+		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr(), function ($value) {
 			ArgUtils::valScalar($value, true);
 			if ($value === null) return null;
 			return (int) $value;

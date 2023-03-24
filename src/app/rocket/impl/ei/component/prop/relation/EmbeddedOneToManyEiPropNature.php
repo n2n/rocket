@@ -51,7 +51,8 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 		parent::__construct($entityProperty, $accessProxy,
 				new RelationModel($this, false, true, RelationModel::MODE_EMBEDDED));
 
-		$this->displayConfig = (new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
+		$this->displayConfig = (new DisplayConfig(ViewMode::all()))
+				->setSiStructureType(SiStructureType::SIMPLE_GROUP)
 				->setDefaultDisplayedViewModes(ViewMode::bulky());
 	}
 	
