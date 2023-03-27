@@ -11,7 +11,7 @@ import { CallbackInputResetPoint } from '../../common/model/callback-si-input-re
 
 export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldModel {
 	public mandatory = false;
-	private asscoiatedFieldsMap = new Map<string, SiField[]>();
+	private associatedFieldsMap = new Map<string, SiField[]>();
 	public emptyLabel: string|null = null;
 
 	constructor(public label: string, public value: string|null, public options: Map<string, string>) {
@@ -94,12 +94,12 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 	}
 
 	setAssociatedFields(value: string, fields: SiField[]): void {
-		this.asscoiatedFieldsMap.set(value, fields);
+		this.associatedFieldsMap.set(value, fields);
 		fields.forEach(field => field.setDisabled(this.value !== value));
 	}
 
 	private updateAssociates(): void {
-		for (const [aKey, aFields] of this.asscoiatedFieldsMap) {
+		for (const [aKey, aFields] of this.associatedFieldsMap) {
 			const disabled = aKey !== this.value;
 			aFields.forEach(field => field.setDisabled(disabled));
 		}

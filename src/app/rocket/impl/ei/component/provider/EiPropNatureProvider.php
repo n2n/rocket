@@ -14,7 +14,6 @@ use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\attribute\impl\Addon;
 use rocket\impl\ei\component\prop\meta\SiCrumbGroupFactory;
 use n2n\reflection\property\AccessProxy;
-use rocket\impl\ei\component\prop\adapter\EditableEiPropNature;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\reflection\attribute\PropertyAttribute;
 use n2n\persistence\orm\CascadeType;
@@ -57,6 +56,7 @@ use rocket\impl\ei\component\prop\adapter\config\LabelConfig;
 use rocket\attribute\EiLabel;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
+use rocket\attribute\impl\EiPropOrder;
 
 class EiPropNatureProvider {
 
@@ -94,6 +94,7 @@ class EiPropNatureProvider {
 					$this->eiTypeSetup->getPropertyLabel($propertyName));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
 			$nature->setOptions($eiPropEnum->options);
+			$nature->setEmptyLabel($eiPropEnum->emptyLabel);
 			$nature->setAssociatedDefPropPathMap($eiPropEnum->associatedDefPropPathMap);
 
 			$this->configureEditiable($eiPropEnum->constant, $eiPropEnum->readOnly, $eiPropEnum->mandatory,
@@ -161,7 +162,7 @@ class EiPropNatureProvider {
 			$nature->setUniquePerEiPropPath($eiPropPathPart->uniquePerEiPropPath);
 
 			$this->configureEditiable($eiPropPathPart->constant, $eiPropPathPart->readOnly, $eiPropPathPart->mandatory,
-					$propertyAccessProxy, $nature);
+					$propertyAccessProxy, $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
 			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
@@ -386,7 +387,7 @@ class EiPropNatureProvider {
 			EditConfig $nature) {
 		$nature->setConstant($constant ?? false);
 		$nature->setReadOnly($readOnly ?? !$accessProxy->isWritable());
-		$nature->setMandatory($mandatory ?? $accessProxy->getSetterConstraint()->allowsNull());
+		$nature->setMandatory($mandatory ?? !$accessProxy->getSetterConstraint()->allowsNull());
 	}
 
 	private function configureAddons(PropertyAccessProxy $propertyAccessProxy, AddonEiPropNature $nature): void {
