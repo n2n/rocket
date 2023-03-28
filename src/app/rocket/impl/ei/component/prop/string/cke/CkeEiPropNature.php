@@ -37,46 +37,22 @@ use rocket\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
+use rocket\impl\ei\component\prop\string\cke\ui\Cke;
 
 class CkeEiPropNature extends AlphanumericEiPropNature {
-	/**
-	 * @var CkeEditorConfig
-	 */
-	private $ckeConfig;
+
+	private CkeConfig $ckeConfig;
 
 	function __construct(PropertyAccessProxy $propertyAccessProxy) {
 		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::string(true)));
 
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::bulky());
 		$this->setMandatory(false);
+		$this->ckeConfig = new CkeConfig();
 	}
 
-	private string $mode = self::MODE_SIMPLE;
-	private bool $tableEnabled = false;
-	private bool $bbcodeEnabled = false;
-
-	const MODE_SIMPLE = 'simple';
-	const MODE_NORMAL = 'normal';
-	const MODE_ADVANCED = 'advanced';
-
-	public function getMode() {
-		return $this->mode;
-	}
-
-	public function isTablesEnabled() {
-		return $this->tableEnabled;
-	}
-
-	public function isBbcodeEnabled() {
-		return $this->bbcodeEnabled;
-	}
-
-	public static function createDefault() {
-		return new CkeConfig(self::MODE_NORMAL, false, false);
-	}
-
-	static function getModes() {
-		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
+	function getCkeConfig(): CkeConfig {
+		return $this->ckeConfig;
 	}
 	
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
@@ -95,8 +71,8 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$ckeComposer = new CkeComposer();
-		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcode())
-				->table($this->ckeConfig->isTableSupported());
+		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcodeEnabled())
+				->table($this->ckeConfig->isTablesEnabled());
         $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
 				['composer' => $ckeComposer, 'config' => $this->ckeConfig]));
 
