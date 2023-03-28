@@ -31,6 +31,7 @@ use rocket\attribute\EiType;
 use n2n\persistence\orm\attribute\Inheritance;
 use n2n\persistence\orm\attribute\Table;
 use rocket\attribute\EiPreset;
+use rocket\attribute\EiDisplayScheme;
 
 #[Table('rocket_content_item')]
 #[Inheritance(InheritanceType::JOINED)]
