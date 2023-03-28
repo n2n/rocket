@@ -71,8 +71,6 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		return $this->bbcodeEnabled;
 	}
 
-
-
 	public static function createDefault() {
 		return new CkeConfig(self::MODE_NORMAL, false, false);
 	}
@@ -97,11 +95,10 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
 		$ckeComposer = new CkeComposer();
-		$ckeComposer->mode($this->getMode())->bbcode($this->isBbcodeEnabled())
-				->table($this->isTablesEnabled());
+		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcode())
+				->table($this->ckeConfig->isTableSupported());
         $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
-				['composer' => $ckeComposer, 'config' => $this->ckeConfig, 'ckeCssConfig' => null,
-						'ckeLinkProviders' => []]));
+				['composer' => $ckeComposer, 'config' => $this->ckeConfig]));
 
         $iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()])
         		->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
