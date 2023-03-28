@@ -8,9 +8,8 @@
     use rocket\impl\ei\component\prop\string\cke\ui\CkeComposer;
     use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
     use rocket\impl\ei\component\prop\string\cke\ui\CkeLibrary;
-	use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 
-	$view = HtmlView::view($this);
+    $view = HtmlView::view($this);
 	$html = htmlView::html($view);
 	$request = HtmlView::request($view);
 
@@ -25,12 +24,10 @@
     $view->assert($ckeComposer instanceof CkeComposer);
 
     /**
-     * @var CkeEditorConfig $ckeCssConfig
+     * @var CkeEditorConfig $config
      */
-	$ckeCssConfig = $view->getParam('ckeCssConfig');
-	$view->assert($ckeCssConfig === null || $ckeCssConfig instanceof CkeCssConfig);
-
-	$ckeLinkProviders = $view->getParam('ckeLinkProviders');
+    $config = $view->getParam('config');
+    $view->assert($config instanceof CkeEditorConfig);
 
     $html->meta()->addLibrary(new JQueryLibrary(3));
     $html->meta()->addLibrary(new CkeLibrary());
@@ -101,6 +98,7 @@
             });
         </script>
 
-        <?php $html->out($ckeHtml->getTextarea('', $ckeComposer, $ckeCssConfig, $ckeLinkProviders, $attrs)) ?>
+        <?php $html->out($ckeHtml->getTextarea('', $ckeComposer, $config->getCkeCssConfig(),
+            $config->getCkeLinkProviders()->getArrayCopy(), $attrs)) ?>
     <?php $html->bodyEnd() ?>
 </html>
