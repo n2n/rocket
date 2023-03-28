@@ -74,7 +74,8 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcodeEnabled())
 				->table($this->ckeConfig->isTablesEnabled());
         $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
-				['composer' => $ckeComposer, 'config' => $this->ckeConfig]));
+				['composer' => $ckeComposer, 'config' => $this->ckeConfig, 'ckeCssConfig' => null,
+						'ckeLinkProviders' => []]));
 
         $iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()])
         		->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());

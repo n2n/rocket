@@ -23,6 +23,10 @@ class CkeConfig {
 		return $this->bbcodeEnabled;
 	}
 
+	static function getModes(): array {
+		return [self::MODE_SIMPLE, self::MODE_NORMAL, self::MODE_ADVANCED];
+	}
+
 	public static function createDefault() {
 		return new CkeConfig(self::MODE_NORMAL, false, false);
 	}
