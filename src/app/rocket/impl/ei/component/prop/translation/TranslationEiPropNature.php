@@ -198,7 +198,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		$targetEiuFrame = $eiu->frame()->forkDiscover($this)
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		
 		return new TranslationQuickSearchProp(
