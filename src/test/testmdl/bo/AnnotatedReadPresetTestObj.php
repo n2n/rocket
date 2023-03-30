@@ -11,6 +11,7 @@ use rocket\ei\util\Eiu;
 use rocket\attribute\impl\EiPropBool;
 use rocket\attribute\impl\EiPropEnum;
 use rocket\attribute\impl\EiPropDecimal;
+use rocket\attribute\impl\EiPropString;
 
 #[EiType]
 #[EiPreset(EiPresetMode::READ, excludeProps: ['exclProp'])]
@@ -29,5 +30,8 @@ class AnnotatedReadPresetTestObj {
 
 	#[EiPropDecimal(decimalPlaces: 3)]
 	public float $pubDecimalTest = 0;
+
+	#[EiPropString(multiline: true)]
+	public string $pubStringTest = 'string';
 }
 

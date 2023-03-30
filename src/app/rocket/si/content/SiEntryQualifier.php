@@ -27,6 +27,8 @@ use rocket\si\meta\SiMaskQualifier;
 class SiEntryQualifier implements \JsonSerializable {
 	private $maskQualifier;
 	private $idName;
+
+	private SiEntryIdentifier $identifier;
 	
 	function __construct(SiMaskQualifier $maskQualifier, ?string $id, string $idName = null) {
 		$this->maskQualifier = $maskQualifier;

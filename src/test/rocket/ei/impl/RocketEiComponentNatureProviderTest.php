@@ -27,7 +27,6 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 	function testPrimitiveReadPreset() {
 		$spec = SpecTestEnv::setUpSpec([PrimitiveReadPresetTestObj::class]);
 
-
 		$eiType = $spec->getEiTypeByClassName(PrimitiveReadPresetTestObj::class);
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
@@ -67,9 +66,12 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
-		$this->assertCount(4, $eiProps);
+		$this->assertCount(5, $eiProps);
 
-		$this->assertEquals(['id', 'pubBoolTest', 'pubEnumTest', 'pubDecimalTest'], array_keys($eiProps));
+		$this->assertEquals(['id', 'pubBoolTest', 'pubEnumTest', 'pubDecimalTest', 'pubStringTest'], array_keys($eiProps));
+
+
+		$this->assertTrue($eiProps['pubStringTest']->getNature()->isMultiline());
 	}
 
 	function testMod() {
