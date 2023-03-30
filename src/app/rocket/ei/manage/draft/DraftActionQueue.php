@@ -33,10 +33,9 @@ class DraftActionQueue {
 	private $removeActions = array();
 	private $draftActions = array();
 	
-	public function __construct(DraftingContext $draftingContext, EntityManager $em, N2nContext $n2nContext) {
+	public function __construct(DraftingContext $draftingContext, EntityManager $em, private N2nContext $n2nContext) {
 		$this->draftingContext = $draftingContext;
 		$this->em = $em;
-		$this->n2nContext = $n2nContext;
 	}
 	
 	public function getDraftingContext() {

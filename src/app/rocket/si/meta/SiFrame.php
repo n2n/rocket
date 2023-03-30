@@ -35,8 +35,7 @@ class SiFrame implements \JsonSerializable {
 	 * @param Url $apiUrl
 	 * @param SiTypeContext $typeContext
 	 */
-	function __construct(array $apiUrlMap, SiTypeContext $typeContext) {
-		$this->apiUrlMap = $apiUrlMap;
+	function __construct(private array $apiUrlMap, SiTypeContext $typeContext) {
 		$this->typeContext = $typeContext;
 	}
 	
