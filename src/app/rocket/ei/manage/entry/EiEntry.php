@@ -55,6 +55,7 @@ class EiEntry {
 	private $validationResult;
 // 	private $accessible = true;
 	private $listeners = array();
+	private $listenerBindings = [];
 	private $constraintSet;
 	
 	public function __construct(EiObject $eiObject, EiMask $eiMask) {
