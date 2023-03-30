@@ -57,6 +57,7 @@ use rocket\attribute\EiLabel;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
 use rocket\attribute\impl\EiPropOrder;
+use rocket\attribute\impl\EiPropString;
 
 class EiPropNatureProvider {
 
@@ -162,6 +163,25 @@ class EiPropNatureProvider {
 			$nature->setUniquePerEiPropPath($eiPropPathPart->uniquePerEiPropPath);
 
 			$this->configureEditiable($eiPropPathPart->constant, $eiPropPathPart->readOnly, $eiPropPathPart->mandatory,
+					$propertyAccessProxy, $nature->getEditConfig());
+			$this->configureAddons($propertyAccessProxy, $nature);
+
+			$this->eiTypeSetup->addEiPropNature($propertyName, $nature);
+		}
+
+		foreach ($this->eiTypeSetup->getAttributeSet()->getPropertyAttributesByName(EiPropString::class)
+				 as $attribute) {
+			$eiPropString = $attribute->getInstance();
+			$propertyName = $attribute->getProperty()->getName();
+			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute, $eiPropString->readOnly);
+
+			$nature = new StringEiPropNature($propertyAccessProxy);
+			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName, false));
+			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
+					$this->eiTypeSetup->getPropertyLabel($propertyName));
+			$nature->setMultiline($eiPropString->multiline);
+
+			$this->configureEditiable($eiPropString->constant, $eiPropString->readOnly, $eiPropString->mandatory,
 					$propertyAccessProxy, $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
