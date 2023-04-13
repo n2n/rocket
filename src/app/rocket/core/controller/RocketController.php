@@ -61,7 +61,7 @@ class RocketController extends ControllerAdapter {
 				->ext('scr')->toUrl());
 		$rocket->setControllerContext($this->getControllerContext());
 
-		$this->getResponse()->setHeader("Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+		$this->getResponse()->setHeader("Content-Security-Policy: script-src-elem 'self' 'unsafe-inline' 'unsafe-eval'");
 	}
 	
 	public function doDevLogin($userId) {
@@ -126,12 +126,6 @@ class RocketController extends ControllerAdapter {
 	public function doManage(Rocket $rocket, RocketState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool,
 			MessageContainer $mc, $navItemId, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
-				
-		if (method_exists($this->getResponse(), 'setContentSecurityPolicyEnabled')) {
-			$this->getResponse()->setContentSecurityPolicyEnabled(false);			
-		} else {
-			$this->getResponse()->removeHeader('Content-Security-Policy');
-		}
 		
 		$launchPad = null;
 		try {
