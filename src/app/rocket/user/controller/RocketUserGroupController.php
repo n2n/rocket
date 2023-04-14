@@ -302,7 +302,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->applyBreadcrumbs();
 		$this->applyGrantsBc($rocketUserGroup);
 		
-		$label = $this->dtc->t('user_type_access_label', ['type' => $eiuEngine->getEiuMask()->getLabel()]);
+		$label = $this->dtc->t('user_type_access_label', ['type' => $eiuEngine->mask()->getLabel()]);
 		$this->rocketState->addBreadcrumb(new Breadcrumb($this->getUrlToPath(), $label));
 		
 		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm, 'label' => $label));
