@@ -9,12 +9,12 @@ export class SiDeclaration {
 	constructor(public style: SiStyle) {
 	}
 
-	constainsTypeId(typeId: string): boolean {
+	consainsTypeId(typeId: string): boolean {
 		return this.maskDeclarationMap.has(typeId);
 	}
 
 	addTypeDeclaration(maskDeclaration: SiMaskDeclaration): void {
-		this.maskDeclarationMap.set(maskDeclaration.type.qualifier.identifier.id, maskDeclaration);
+		this.maskDeclarationMap.set(maskDeclaration.mask.qualifier.identifier.id, maskDeclaration);
 	}
 
 	getBasicTypeDeclaration(): SiMaskDeclaration {

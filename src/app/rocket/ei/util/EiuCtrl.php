@@ -353,8 +353,8 @@ class EiuCtrl {
 		}
 	}
 	
-	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true,
-			array $generalGuiControls = []) {
+	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
+			bool $entrySiControlsIncluded = true, array $generalGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}

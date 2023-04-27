@@ -54,10 +54,10 @@ export class SiEntryFactory {
 		const extr = new Extractor(data);
 
 		const maskDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
-		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier, extr.nullaString('idName'));
+		const entryQualifier = new SiEntryQualifier(maskDeclaration.mask.qualifier, identifier, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundry, maskDeclaration.type, this.injector)
+		entryBuildup.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundry, maskDeclaration.mask, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entryBuildup.controls = new SiControlFactory(controlBoundry, this.injector)
 				.createControls(extr.reqArray('controls'));

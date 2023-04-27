@@ -45,7 +45,7 @@ export class SiMetaFactory {
 		let contextSiProps: SiProp[]|null = null;
 		let contextStructureDeclarations: SiStructureDeclaration[]|null = null;
 		if (contextTypeDeclaration) {
-			contextSiProps = contextTypeDeclaration.type.getProps();
+			contextSiProps = contextTypeDeclaration.mask.getProps();
 			contextStructureDeclarations = contextTypeDeclaration.structureDeclarations;
 		}
 

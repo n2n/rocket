@@ -9,6 +9,7 @@ use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\util\control\EiuGuiControlFactory;
+use rocket\ei\util\si\EiuSiFactory;
 
 class EiuFactory {
 	private $eiu;
@@ -48,8 +49,12 @@ class EiuFactory {
 	/**
 	 * @return EiuGuiControlFactory
 	 */
-	function gc() {
+	function gc(): EiuGuiControlFactory {
 		return $this->guiControl();
+	}
+
+	function si(): EiuSiFactory {
+		return new EiuSiFactory($this->eiuAnalyst);
 	}
 	
 	/**

@@ -181,7 +181,7 @@ class DefPropPath implements Hashable {
 	 * @return \rocket\ei\manage\DefPropPath
 	 * @throws \InvalidArgumentException
 	 */
-	public static function create($expression) {
+	public static function create(mixed $expression) {
 		if ($expression instanceof DefPropPath) {
 			return $expression;
 		}

@@ -36,7 +36,7 @@ class BulkyEntrySiGui implements SiGui {
 	private $controls = [];
 	private $entryControlsIncluded = true;
 	
-	function __construct(SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null) {
+	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null) {
 		$this->frame = $frame;
 		$this->declaration = $declaration;
 		$this->setEntry($entry);
@@ -49,18 +49,14 @@ class BulkyEntrySiGui implements SiGui {
 	function getTypeName(): string {
 		return 'bulky-entry';
 	}
-	
-	/**
-	 * @param SiEntry[] $siEntries
-	 * @return BulkyEntrySiGui
-	 */
-	function setEntry(?SiEntry $entry) {
+
+	function setEntry(?SiEntry $entry): static {
 		$this->entry = $entry;
 		return $this;
 	}
 	
 	/**
-	 * @return SiEntry[]
+	 * @return SiEntry|null
 	 */
 	function getEntry() {
 		return $this->entry;
@@ -70,7 +66,7 @@ class BulkyEntrySiGui implements SiGui {
 	 * @param SiControl[] $controls
 	 * @return BulkyEntrySiGui
 	 */
-	function setControls(array $controls) {
+	function setControls(array $controls): static {
 		ArgUtils::valArray($controls, SiControl::class);
 		$this->controls = $controls;
 		return $this;
