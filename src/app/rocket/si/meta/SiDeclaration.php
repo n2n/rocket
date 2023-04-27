@@ -38,14 +38,14 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function __construct(SiStyle $style, array $maskDeclarations = []) {
 		$this->style = $style;
-		$this->setTypeDeclarations($maskDeclarations);
+		$this->setMaskDeclarations($maskDeclarations);
 	}
 	
 	/**
 	 * @param SiMaskDeclaration[] $typedDeclarations
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	function setTypeDeclarations(array $maskDeclarations) {
+	function setMaskDeclarations(array $maskDeclarations) {
 		ArgUtils::valArray($maskDeclarations, SiMaskDeclaration::class);
 		$this->maskDeclarations = [];
 		
@@ -65,7 +65,7 @@ class SiDeclaration implements \JsonSerializable {
 // 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 // 		}
 		
-		if (empty($this->maskDeclarations) && !$maskDeclaration->getType()->hasProps()) {
+		if (empty($this->maskDeclarations) && !$maskDeclaration->getMask()->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		

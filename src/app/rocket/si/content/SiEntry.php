@@ -33,15 +33,14 @@ class SiEntry implements \JsonSerializable {
 	 * @var SiEntryIdentifier
 	 */
 	private $identifier;
-	private $selectedTypeId = null;
+	private $selectedMaskId = null;
 	private $buildups = [];
 	private $treeLevel;
 	private $style;
-	
+
 	/**
-	 * @param string $category
-	 * @param string|null $id
-	 * @param string $name
+	 * @param SiEntryIdentifier $identifier
+	 * @param SiStyle $style
 	 */
 	function __construct(SiEntryIdentifier $identifier, SiStyle $style) {
 		$this->identifier = $identifier;
@@ -49,15 +48,15 @@ class SiEntry implements \JsonSerializable {
 	}
 
 	/**
-	 * @return \rocket\si\content\SiEntryIdentifier
+	 * @return SiEntryIdentifier
 	 */
-	function getIdentifier() {
+	function getIdentifier(): SiEntryIdentifier {
 		return $this->identifier;
 	}
 	
 	/**
 	 * @param SiEntryIdentifier $identifier
-	 * @return \rocket\si\content\SiEntry
+	 * @return SiEntry
 	 */
 	function setIdentifier(SiEntryIdentifier $identifier) {
 		$this->identifier = $identifier;
@@ -71,12 +70,9 @@ class SiEntry implements \JsonSerializable {
 		return $this->treeLevel;
 	}
 
-	/**
-	 * @param int|null $treeLevel
-	 * @return SiEntry
-	 */
 	function setTreeLevel(?int $treeLevel) {
 		$this->treeLevel = $treeLevel;
+		return $this;
 	}
 
 	/**
@@ -93,14 +89,9 @@ class SiEntry implements \JsonSerializable {
 // 		$this->buildups = $buildups;
 // 		return $this;
 // 	}
-	
-	/**
-	 * @param string $id
-	 * @param SiField $field
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function putBuildup(string $id, SiEntryBuildup $buildup) {
-		$this->buildups[$id] = $buildup;
+
+	function putBuildup(string $maskId, SiEntryBuildup $buildup) {
+		$this->buildups[$maskId] = $buildup;
 		
 		return $this;
 	}
@@ -108,28 +99,27 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @return SiEntryBuildup
 	 */
-	function getSelectedBuildup() {
-		return $this->buildups[$this->getSelectTypeId()];
+	function getSelectedBuildup(): SiEntryBuildup {
+		return $this->buildups[$this->getSelectedMaskId()];
 	}
 	
 	/**
 	 * @param string $id
-	 * @return \rocket\si\content\SiEntry
+	 * @return SiEntry
 	 */
-	function setSelectedTypeId(string $id) {
+	function setSelectedMaskId(string $id): static {
 		ArgUtils::valEnum($id, array_keys($this->buildups));
-		$this->selectedTypeId = $id;
+		$this->selectedMaskId = $id;
 		return $this;
 	}
 	
 	/**
-	 * @return string
 	 * @throws IllegalStateException
 	 */
-	function getSelectTypeId() {
-		IllegalStateException::assertTrue($this->selectedTypeId !== null);
+	function getSelectedMaskId(): ?string {
+		IllegalStateException::assertTrue($this->selectedMaskId !== null);
 		
-		return $this->selectedTypeId;
+		return $this->selectedMaskId;
 	}
 	
 	function jsonSerialize(): mixed {
@@ -143,7 +133,7 @@ class SiEntry implements \JsonSerializable {
 			'treeLevel' => $this->treeLevel,
 			'style' => $this->style,
 			'buildups' => $buildups,
-			'selectedTypeId' => $this->selectedTypeId
+			'selectedMaskId' => $this->selectedMaskId
 		];
 	}
 
@@ -151,11 +141,11 @@ class SiEntry implements \JsonSerializable {
 	 * @param SiEntryInput $entryInput
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(SiEntryInput $entryInput) {
+	function handleInput(SiEntryInput $entryInput): void {
 		$typeId = $entryInput->getTypeId();
 		
 		try {
-			$this->setSelectedTypeId($typeId);
+			$this->setSelectedMaskId($typeId);
 		} catch (\InvalidArgumentException $e) {
 			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
 		}

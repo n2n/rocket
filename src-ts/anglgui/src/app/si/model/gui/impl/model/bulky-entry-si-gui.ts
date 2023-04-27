@@ -170,9 +170,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		super.unbind();
 
 		if (!this.siEntry.isNew()) {
-			this.siEntryMonitor.unregisterEntry(this.siEntry);
+			this.siEntryMonitor?.unregisterEntry(this.siEntry);
 		}
-		this.siEntryMonitor.stop();
+		this.siEntryMonitor?.stop();
 		this.uiContent = null;
 
 		this.clear();
@@ -207,7 +207,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.asideUiContents = this.siEntry.selectedEntryBuildup.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
 
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(this.siEntry!.selectedEntryBuildupId!);
+		const siMaskDeclaration = this.siDeclaration.getMaskDeclarationByMaskId(this.siEntry!.selectedMaskId!);
 		const toolbarResolver = new ToolbarResolver();
 
 		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration!.structureDeclarations!, toolbarResolver,
@@ -307,7 +307,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
 		if (this.siEntry.selectedEntryBuildup.containsPropId(siProp.id)) {
 			const siField = this.siEntry.selectedEntryBuildup.getFieldById(siProp.id);
-			return this.uiStructureModelCache.obtain(this.siEntry.selectedEntryBuildupId!, siProp.id, siField);
+			return this.uiStructureModelCache.obtain(this.siEntry.selectedMaskId!, siProp.id, siField);
 		}
 
 		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
@@ -340,7 +340,7 @@ class TypeSelectInModel implements SelectInFieldModel {
 
 	constructor(private siEntry: SiEntry) {
 		for (const mq of siEntry.maskQualifiers) {
-			this.options.set(mq.identifier.entryBuildupId, mq.name);
+			this.options.set(mq.identifier.id, mq.name);
 		}
 	}
 
@@ -353,11 +353,11 @@ class TypeSelectInModel implements SelectInFieldModel {
 	}
 
 	getValue(): string {
-		return this.siEntry.selectedEntryBuildupId!;
+		return this.siEntry.selectedMaskId!;
 	}
 
 	setValue(value: string): void {
-		this.siEntry.selectedEntryBuildupId = value;
+		this.siEntry.selectedMaskId = value;
 	}
 
 	getOptions(): Map<string, string> {

@@ -77,7 +77,7 @@ export class SiGuiFactory {
 
 			case SiGuiType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntrySiGui = new BulkyEntrySiGui(SiMetaFactory.createFrame(dataExtr.reqObject('frame')), declaration,
+				const bulkyEntrySiGui = new BulkyEntrySiGui(SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')), declaration,
 						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
 				bulkyEntrySiGui.entryControlsIncluded = dataExtr.reqBoolean('entryControlsIncluded');

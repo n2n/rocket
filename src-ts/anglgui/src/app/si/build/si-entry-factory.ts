@@ -41,19 +41,19 @@ export class SiEntryFactory {
 		siEntry.treeLevel = extr.nullaNumber('treeLevel');
 
 		const controlBoundry = new SimpleSiControlBoundry([siEntry], this.declaration);
-		for (const [, buildupData] of extr.reqMap('buildups')) {
-			siEntry.addEntryBuildup(this.createEntryBuildup(buildupData, siEntry.identifier, controlBoundry));
+		for (const [maskId, buildupData] of extr.reqMap('buildups')) {
+			siEntry.addEntryBuildup(this.createEntryBuildup(maskId, buildupData, siEntry.identifier, controlBoundry));
 		}
 
-		siEntry.selectedEntryBuildupId = extr.nullaString('selectedTypeId');
+		siEntry.selectedMaskId = extr.nullaString('selectedMaskId');
 
 		return siEntry;
 	}
 
-	private createEntryBuildup(data: any, identifier: SiEntryIdentifier, controlBoundry: SiControlBoundry): SiEntryBuildup {
+	private createEntryBuildup(maskId: string, data: any, identifier: SiEntryIdentifier, controlBoundry: SiControlBoundry): SiEntryBuildup {
 		const extr = new Extractor(data);
 
-		const maskDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
+		const maskDeclaration = this.declaration.getMaskDeclarationByMaskId(maskId);
 		const entryQualifier = new SiEntryQualifier(maskDeclaration.mask.qualifier, identifier, extr.nullaString('idName'));
 
 		const entryBuildup = new SiEntryBuildup(entryQualifier);

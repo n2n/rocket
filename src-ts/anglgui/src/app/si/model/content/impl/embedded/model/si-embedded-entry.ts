@@ -61,19 +61,19 @@ export class SiEmbeddedEntry {
 		return this.entry.maskQualifiers;
 	}
 
-	get selectedTypeId(): string|null {
-		return this.entry.selectedEntryBuildupId;
+	get selectedMaskId(): string|null {
+		return this.entry.selectedMaskId;
 	}
 
-	set selectedTypeId(typeId: string|null) {
-		this.comp.entry!.selectedEntryBuildupId = typeId;
+	set selectedMaskId(maskId: string|null) {
+		this.comp.entry!.selectedMaskId = maskId;
 		if (this.summaryComp && this.summaryComp.entry) {
-			this.summaryComp.entry.selectedEntryBuildupId = typeId;
+			this.summaryComp.entry.selectedMaskId = maskId;
 		}
 	}
 
-	containsTypeId(typeId: string): boolean {
-		return this.entry.containsTypeId(typeId);
+	containsMaskId(maskId: string): boolean {
+		return this.entry.containsMaskId(maskId);
 	}
 
 }

@@ -103,18 +103,18 @@ class EiGuiModel {
 	}
 	
 	
-	/**
-	 * @return DefPropPath[]
-	 */
-	function getDefPropPaths() {
-		$this->ensureInit();
-		
-		$defPropPaths = [];
-		foreach ($this->guiStructureDeclarations as $guiStructureDeclaration) {
-			$defPropPaths = array_merge($defPropPaths, $guiStructureDeclaration->getAllDefPropPaths());
-		}
-		return $defPropPaths;
-	}
+//	/**
+//	 * @return DefPropPath[]
+//	 */
+//	function getDefPropPaths() {
+//		$this->ensureInit();
+//
+//		$defPropPaths = [];
+//		foreach ($this->guiStructureDeclarations as $guiStructureDeclaration) {
+//			$defPropPaths = array_merge($defPropPaths, $guiStructureDeclaration->getAllDefPropPaths());
+//		}
+//		return $defPropPaths;
+//	}
 	
 	/**
 	 * @return \rocket\si\meta\SiDeclaration
@@ -147,12 +147,12 @@ class EiGuiModel {
 			ArgUtils::assertTrue(isset($typeDefs[$key]));
 			$eiEntryGuiTypeDef = $typeDefs[$key];
 			
-			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiMask()->getEiType()->getId(),
+			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiMask()->getEiTypePath(),
 					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
 		}
 		
 		if ($eiEntryGui->isTypeDefSelected()) {
-			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
+			$siEntry->setSelectedMaskId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
 		}
 		
 		return $siEntry;

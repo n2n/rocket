@@ -25,10 +25,7 @@ use rocket\si\control\SiControl;
 use rocket\si\SiPayloadFactory;
 
 class SiEntryBuildup implements \JsonSerializable {
-	/**
-	 * @var string
-	 */
-	private $typeId;
+
 	/**
 	 * @var string|null
 	 */
@@ -47,34 +44,29 @@ class SiEntryBuildup implements \JsonSerializable {
 	private $controls = [];
 	
 	/**
-	 * @param string $typeId
 	 * @param string|null $idName
 	 */
-	function __construct(string $typeId, ?string $idName) {
-		$this->typeId = $typeId;
+	function __construct(?string $idName) {
 		$this->idName = $idName;
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getTypeId() {
-		return $this->typeId;
+	function getMaskId() {
+		return $this->maskId;
 	}
 	
-	/**
-	 * @param string $name
-	 * @return SiEntry
-	 */
-	function setTypeId(string $typeId) {
-		$this->typeId = $typeId;
+
+	function setMaskId(string $maskId): static {
+		$this->maskId = $maskId;
 		return $this;
 	}
 	
 	/**
 	 * @return string|null
 	 */
-	function getIdName() {
+	function getIdName(): ?string {
 		return $this->idName;
 	}
 	
@@ -99,13 +91,8 @@ class SiEntryBuildup implements \JsonSerializable {
 		$this->fields = $fields;
 		return $this;
 	}
-	
-	/**
-	 * @param string $id
-	 * @param SiField $field
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function putField(string $id, SiField $field) {
+
+	function putField(string $id, SiField $field): static {
 		$this->fields[$id] = $field;
 		return $this;
 	}
@@ -135,19 +122,14 @@ class SiEntryBuildup implements \JsonSerializable {
 	
 	/**
 	 * @param SiControl[] $controls
-	 * @return \rocket\si\content\SiEntry
+	 * @return SiEntryBuildup
 	 */
-	function setControls(array $controls) {
+	function setControls(array $controls): static {
 		$this->controls = $controls;
 		return $this;
 	}
-	
-	/**
-	 * @param string $id
-	 * @param SiControl $control
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function putControl(string $id, SiControl $control) {
+
+	function putControl(string $id, SiControl $control): static {
 		$this->controls[$id] = $control;
 		return $this;
 	}
@@ -156,10 +138,8 @@ class SiEntryBuildup implements \JsonSerializable {
 		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
 		
 		return [
-			'typeId' => $this->typeId,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
-// 			'contextFieldMap' => $contextFieldsArr,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

@@ -25,7 +25,7 @@ export class SiMetaFactory {
 				contextTypeDeclaration = maskDeclaration;
 			}
 
-			declaration.addTypeDeclaration(maskDeclaration);
+			declaration.addMaskDeclaration(maskDeclaration);
 		}
 		return declaration;
 	}
@@ -91,7 +91,7 @@ export class SiMetaFactory {
 
 		const identifierExtr = extr.reqExtractor('identifier');
 		return new SiMaskQualifier(
-				new SiMaskIdentifier(identifierExtr.reqString('id'), identifierExtr.reqString('entryBuildupId'),
+				new SiMaskIdentifier(identifierExtr.reqString('id'),
 						identifierExtr.reqString('typeId')),
 				extr.reqString('name'), extr.reqString('iconClass'));
 	}
@@ -117,6 +117,14 @@ export class SiMetaFactory {
 		const siFrame = new SiFrame(extr.reqStringMap('apiUrlMap'), this.createTypeContext(extr.reqObject('typeContext')));
 		siFrame.sortable = extr.reqBoolean('sortable');
 		return siFrame;
+	}
+
+	static buildFrame(data: any): SiFrame|null {
+		if (data === null) {
+			return null;
+		}
+
+		return SiMetaFactory.createFrame(data);
 	}
 
 	static createTypeContext(data: any): SiTypeContext {

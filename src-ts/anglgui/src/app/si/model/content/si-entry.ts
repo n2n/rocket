@@ -8,7 +8,6 @@ import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SiGenericEntry } from '../generic/si-generic-entry';
 import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
-import { GenericMissmatchError } from '../generic/generic-missmatch-error';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
 import { SiStyle } from '../meta/si-view-mode';
@@ -31,29 +30,29 @@ export class SiEntry {
 	get selectedEntryBuildup(): SiEntryBuildup {
 		this.ensureBuildupSelected();
 
-		return this._entryBuildupsMap.get(this.selectedEntryBuildupId!) as SiEntryBuildup;
+		return this._entryBuildupsMap.get(this.selectedMaskId!) as SiEntryBuildup;
 	}
 
 	get entryBuildupSelected(): boolean {
-		return !!this.selectedEntryBuildupId;
+		return !!this.selectedMaskId;
 	}
 
-	get selectedEntryBuildupId(): string|null {
-		return this.selectedTypeIdSubject.getValue();
+	get selectedMaskId(): string|null {
+		return this.selectedMaskIdSubject.getValue();
 	}
 
-	set selectedEntryBuildupId(id: string|null) {
+	set selectedMaskId(id: string|null) {
 		if (id !== null && !this._entryBuildupsMap.has(id)) {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id + '; available buildup ids: '
 					+ Array.from(this._entryBuildupsMap.keys()).join(', '));
 		}
-		if (this.selectedEntryBuildupId !== id) {
-			this.selectedTypeIdSubject.next(id);
+		if (this.selectedMaskId !== id) {
+			this.selectedMaskIdSubject.next(id);
 		}
 	}
 
 	get selectedTypeId$(): Observable<string|null> {
-		return this.selectedTypeIdSubject.asObservable();
+		return this.selectedMaskIdSubject.asObservable();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
@@ -92,7 +91,7 @@ export class SiEntry {
 	}
 
 	public treeLevel: number|null = null;
-	private selectedTypeIdSubject = new BehaviorSubject<string|null>(null);
+	private selectedMaskIdSubject = new BehaviorSubject<string|null>(null);
 	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
 
 	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
@@ -101,14 +100,14 @@ export class SiEntry {
 	private _replacementEntry: SiEntry|null = null;
 
 	private ensureBuildupSelected() {
-		if (this.selectedEntryBuildupId !== null) {
+		if (this.selectedMaskId !== null) {
 			return;
 		}
 
 		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
 	}
 
-	containsTypeId(typeId: string): boolean {
+	containsMaskId(typeId: string): boolean {
 		return this._entryBuildupsMap.has(typeId);
 	}
 
@@ -117,7 +116,7 @@ export class SiEntry {
 	}
 
 	addEntryBuildup(buildup: SiEntryBuildup) {
-		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.entryBuildupId, buildup);
+		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.id, buildup);
 	}
 
 	containsEntryBuildupId(id: string): boolean {
@@ -155,7 +154,7 @@ export class SiEntry {
 		// 	throw new IllegalSiStateError('No input available.');
 		// }
 
-		return new SiEntryInput(this.qualifier.identifier, this.selectedEntryBuildupId!, this.style.bulky, fieldInputMap);
+		return new SiEntryInput(this.qualifier.identifier, this.selectedMaskId!, this.style.bulky, fieldInputMap);
 	}
 
 	// handleError(error: SiEntryError) {
@@ -183,7 +182,7 @@ export class SiEntry {
 	getMessages(): Message[] {
 		const messages: Message[] = [];
 
-		if (!this.selectedEntryBuildupId) {
+		if (!this.selectedMaskId) {
 			return messages;
 		}
 
@@ -231,7 +230,7 @@ export class SiEntry {
 		}
 
 		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId!)) {
-			this.selectedEntryBuildupId = genericEntry.selectedTypeId;
+			this.selectedMaskId = genericEntry.selectedTypeId;
 		}
 
 		const promises = new Array<Promise<boolean>>();
@@ -253,15 +252,15 @@ export class SiEntry {
 		const entryBuildupResetPoints = await promise;
 
 		return new CallbackInputResetPoint(
-				{ selectedEntryBuildupId: this.selectedEntryBuildupId, entryBuildupResetPoints},
+				{ selectedEntryBuildupId: this.selectedMaskId, entryBuildupResetPoints},
 				(data) => {
-					this.selectedEntryBuildupId = data.selectedEntryBuildupId;
+					this.selectedMaskId = data.selectedEntryBuildupId;
 					data.entryBuildupResetPoints.forEach(rp => { rp.rollbackTo(); });
 				});
 	}
 
 	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntryBuildup>): SiGenericEntry {
-		const genericEntry = new SiGenericEntry(this.identifier, this.selectedEntryBuildupId, genericBuildupsMap);
+		const genericEntry = new SiGenericEntry(this.identifier, this.selectedMaskId, genericBuildupsMap);
 		genericEntry.style = this.style;
 		return genericEntry;
 	}

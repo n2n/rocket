@@ -20,7 +20,7 @@ export class SiEntryBuildup {
 		this.fieldMap$ = new BehaviorSubject(fieldMap);
 	}
 
-	getTypeId(): string {
+	getMaskId(): string {
 		return this.entryQualifier.maskQualifier.identifier.id;
 	}
 

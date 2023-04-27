@@ -46,7 +46,7 @@ class SiMaskDeclaration implements \JsonSerializable {
 	 * @param SiMask $type
 	 * @return SiMaskDeclaration
 	 */
-	function setType(SiMask $type) {
+	function setMask(SiMask $type): static {
 		$this->mask = $type;
 		return $this;
 	}
@@ -54,7 +54,7 @@ class SiMaskDeclaration implements \JsonSerializable {
 	/**
 	 * @return SiMask
 	 */
-	function getType() {
+	function getMask(): SiMask {
 		return $this->mask;
 	}
 
@@ -67,18 +67,17 @@ class SiMaskDeclaration implements \JsonSerializable {
 		$this->structureDeclarations = $structureDeclarations;
 		return $this;
 	}
-	
+
 	/**
-	 * @param string $typeId
-	 * @param SiStructureDeclaration[] $structureDeclaration
+	 * @param SiStructureDeclaration $structureDeclaration
 	 * @return SiMaskDeclaration
 	 */
-	function addStructureDeclaration(SiStructureDeclaration $structureDeclaration) {
+	function addStructureDeclaration(SiStructureDeclaration $structureDeclaration): static {
 		$this->structureDeclarations[] = $structureDeclaration;
 		return $this;
 	}
 	
-	function hasStructureDeclarations() {
+	function hasStructureDeclarations(): bool {
 		return $this->structureDeclarations !== null;
 	}
 	

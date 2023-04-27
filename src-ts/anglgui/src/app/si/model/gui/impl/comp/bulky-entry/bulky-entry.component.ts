@@ -18,7 +18,7 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 	}
 
 	chooseSiMaskQualifier(siMaskQualifier: SiMaskQualifier) {
-		this.model.getSiEntry().selectedEntryBuildupId = siMaskQualifier.identifier.entryBuildupId;
+		this.model.getSiEntry().selectedMaskId = siMaskQualifier.identifier.id;
 	}
 
 	// constructor() { }

@@ -55,6 +55,9 @@ use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiBreadcrumb;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\api\SiCallResult;
+use rocket\si\content\SiGui;
+use rocket\ei\util\si\EifBulkyEntrySiGui;
+use rocket\ei\util\si\EifSiGui;
 
 class EiuCtrl {
 	private $eiu;
@@ -352,6 +355,20 @@ class EiuCtrl {
 			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
 		}
 	}
+
+	function forwardZone(SiGui|EifSiGui $gui, string $title = null): void {
+		if ($this->forwardHtml()) {
+			return;
+		}
+
+		if ($gui instanceof EifSiGui) {
+			$gui = $gui->toSiGui();
+		}
+
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($gui, $this->rocketState->getBreadcrumbs(), $title));
+
+	}
 	
 	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
 			bool $entrySiControlsIncluded = true, array $generalGuiControls = []): void {
@@ -560,7 +577,7 @@ class EiuCtrl {
 		}
 		
 		if ($label === null) {
-			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+			$label = (new DynamicTextCollection('rocket', $this->eiu->getN2nContext()->getN2nLocale()))
 					->t('common_edit_label');
 		}
 		
@@ -581,7 +598,7 @@ class EiuCtrl {
 		}
 		
 		if ($label === null) {
-			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+			$label = (new DynamicTextCollection('rocket', $this->eiu->getN2nContext()->getN2nLocale()))
 					->t('common_add_label');
 		}
 		
@@ -614,12 +631,12 @@ class EiuCtrl {
 		return new EiuCtrl($cu);
 	}
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @return \rocket\ei\util\entry\EiuEntry
-	 */
-	function toEiuEntry($eiObjectObj) {
-		return new EiuEntry($eiObjectObj, $this);
-	}
+//	/**
+//	 * @param object $eiObjectObj
+//	 * @return \rocket\ei\util\entry\EiuEntry
+//	 */
+//	function toEiuEntry($eiObjectObj): EiuEntry {
+//		return new EiuEntry($eiObjectObj, $this);
+//	}
 }
 
