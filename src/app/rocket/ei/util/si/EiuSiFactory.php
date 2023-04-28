@@ -9,8 +9,8 @@ class EiuSiFactory {
 	function __construct(private EiuAnalyst $eiuAnalyst) {
 	}
 
-	function newBulkyEntryEiGui(): EifBulkyEntrySiGui {
-		return new EifBulkyEntrySiGui($this->eiuAnalyst);
+	function newBulkyEntryEiGui(bool $readOnly = true): EifBulkyEntrySiGui {
+		return new EifBulkyEntrySiGui($this->eiuAnalyst, $readOnly);
 	}
 
 }

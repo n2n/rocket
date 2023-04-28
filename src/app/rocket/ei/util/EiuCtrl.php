@@ -356,13 +356,18 @@ class EiuCtrl {
 		}
 	}
 
-	function forwardZone(SiGui|EifSiGui $gui, string $title = null): void {
+	function forwardZone(SiGui|EifSiGui $gui, string $title): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
 		if ($gui instanceof EifSiGui) {
-			$gui = $gui->toSiGui();
+			$gui = $gui->toSiGui($this->httpContext->getRequest()->getPath()->toUrl());
+		}
+
+		if (null !== ($siResult = $this->handleSiCall($gui->getEiGui()->getEiEntryGui(), $generalGuiControls))) {
+			$this->cu->sendJson($siResult);
+			return;
 		}
 
 		$this->httpContext->getResponse()->send(
@@ -476,7 +481,8 @@ class EiuCtrl {
 			return SiCallResult::fromInputError($siInputError);
 		}
 		
-		return SiCallResult::fromCallResponse($process->callGuiControl(), isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null);
+		return SiCallResult::fromCallResponse($process->callGuiControl(),
+				(isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null));
 	}
 	
 	function forwardUrlIframeZone(Url $url, string $title = null) {

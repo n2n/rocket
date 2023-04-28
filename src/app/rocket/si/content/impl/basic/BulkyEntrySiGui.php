@@ -54,11 +54,8 @@ class BulkyEntrySiGui implements SiGui {
 		$this->entry = $entry;
 		return $this;
 	}
-	
-	/**
-	 * @return SiEntry|null
-	 */
-	function getEntry() {
+
+	function getEntry(): ?SiEntry {
 		return $this->entry;
 	}
 	
@@ -75,7 +72,7 @@ class BulkyEntrySiGui implements SiGui {
 	/**
 	 * @return SiControl[]
 	 */
-	function getControls() {
+	function getControls(): array {
 		return $this->controls;
 	}
 	

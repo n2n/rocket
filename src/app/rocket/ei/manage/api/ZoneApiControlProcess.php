@@ -47,7 +47,7 @@ use rocket\ei\manage\entry\EiEntry;
 
 class ZoneApiControlProcess /*extends IdPath*/ {
 	private $eiFrameUtil;
-	private $eiEntryGui;
+	private ?EiEntryGui $eiEntryGui = null;
 	private $guiControl;
 	
 	function __construct(EiFrame $eiFrame) {
@@ -77,7 +77,7 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 			
 			while (!empty($ids) && $guiControl !== null) {
 				$id = array_shift($ids);
-				$guiControl = $guiControl->getChilById($id);
+				$guiControl = $guiControl->getChildById($id);
 			}
 			
 			if ($guiControl !== null) {
@@ -112,13 +112,7 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 		
 		try {
 			return $this->applyInput($inputFactory->create($data));
-		} catch (AttributesException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (\InvalidArgumentException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (UnknownEiObjectException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (UnknownEiTypeException $e) {
+		} catch (AttributesException|\InvalidArgumentException|UnknownEiObjectException|UnknownEiTypeException $e) {
 			throw new BadRequestException(null, null, $e);
 		} catch (InaccessibleEiEntryException $e) {
 			throw new ForbiddenException(null, null, $e);

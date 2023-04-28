@@ -51,10 +51,6 @@ class EiEntryGuiTypeDef {
 	 */
 	private $eiEntryGuiListeners = array();
 	
-	/**
-	 * @param int $viewMode
-	 * @param int|null $treeLevel
-	 */
 	public function __construct(EiEntryGui $eiEntryGui, EiMask $eiMask, EiEntry $eiEntry) {
 		$this->eiEntryGui = $eiEntryGui;
 		$this->eiMask = $eiMask;
@@ -76,7 +72,7 @@ class EiEntryGuiTypeDef {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\entry\EiEntry
+	 * @return EiEntry
 	 */
 	function getEiEntry() {
 		return $this->eiEntry;

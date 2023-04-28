@@ -44,7 +44,7 @@ use rocket\ei\util\control\EiuControlResponse;
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
 
-	function __construct(private string $id, private Url $apiUrl, private \Closure $callback, private SiButton $siButton) {
+	function __construct(private string $id, private \Closure $callback, private SiButton $siButton) {
 
 	}
 	
@@ -73,25 +73,12 @@ class CallbackGuiControl implements GuiControl {
 		return $this;
 	}
 	
-	function getChilById(string $id): ?GuiControl {
+	function getChildById(string $id): ?GuiControl {
 		return null;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
-	 */
-	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($this->apiUrl,
-				$siApiCallId, $this->siButton, $this->inputHandled);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
-	 */
-	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		return new ApiCallSiControl($zoneUrl, $zoneControlCallId, $this->siButton, $this->inputHandled);
+
+	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+		return new ApiCallSiControl($apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	
 	/**

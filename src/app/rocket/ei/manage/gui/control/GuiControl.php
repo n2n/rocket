@@ -41,19 +41,10 @@ interface GuiControl {
 	
 	function isInputHandled(): bool;
 	
-	function getChilById(string $id): ?GuiControl;
-	
-	/**
-	 * @param EiGuiModel $eiGuiModel
-	 * @return SiCallResponse
-	 */
+	function getChildById(string $id): ?GuiControl;
+
 	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse;
 	
-	/**
-	 * @param EiGuiModel $eiGuiModel
-	 * @param EiEntry $eiEntry
-	 * @return SiCallResponse
-	 */
 	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse;
 	
 	
@@ -63,18 +54,7 @@ interface GuiControl {
 // 	 * @return SiCallResponse
 // 	 */
 // 	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse;
-	
-	/**
-	 * @param GuiControlPath $guiCmdPath
-	 * @param ApiControlCallId $siApiCallId
-	 * @return SiControl
-	 */
-	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl;
-	
-	/**
-	 * @param Url $zoneUrl
-	 * @param ZoneApiControlCallId $zoneControllCallId
-	 * @return SiControl
-	 */
-	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControllCallId): SiControl;
+
+	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl;
+
 }

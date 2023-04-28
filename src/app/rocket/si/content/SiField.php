@@ -44,7 +44,7 @@ interface SiField {
 	
 	/**
 	 * @param array $data
-	 * @throws IllegalStateException if readonly ({{@see self::isReadyOnly()}} returns true).
+	 * @throws IllegalStateException if readonly ({@see self::isReadyOnly()} returns true).
 	 * @throws \InvalidArgumentException if data is corrupt
 	 * @throws AttributesException if data is corrupt
 	 */

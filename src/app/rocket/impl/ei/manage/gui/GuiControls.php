@@ -50,12 +50,11 @@ class GuiControls {
 	/**
 	 * @param string $id
 	 * @param SiButton $siButton
-	 * @param Url $apiUrl
 	 * @param Closure $callback
 	 * @return CallbackGuiControl
 	 */
-	static function callback(string $id, Url $apiUrl, SiButton $siButton, Closure $callback) {
-		return new CallbackGuiControl($id, $apiUrl, $callback, $siButton);
+	static function callback(string $id, SiButton $siButton, Closure $callback) {
+		return new CallbackGuiControl($id, $callback, $siButton);
 	}
 
 	/**

@@ -83,7 +83,8 @@ class EiGuiUtil {
 		ArgUtils::valArray($zoneGuiControls, GuiControl::class);
 		
 		return array_map(function ($guiControl) {
-			return $guiControl->toZoneSiControl($this->eiFrame->getN2nContext()->getHttpContext()->getRequest()->getUrl(), new ZoneApiControlCallId([$guiControl->getId()]));
+			return $guiControl->toSiControl($this->eiFrame->getN2nContext()->getHttpContext()->getRequest()->getUrl(),
+					new ZoneApiControlCallId([$guiControl->getId()]));
 		}, $zoneGuiControls);
 	}
 	

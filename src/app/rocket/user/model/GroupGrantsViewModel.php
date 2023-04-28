@@ -24,7 +24,7 @@ namespace rocket\user\model;
 use rocket\user\bo\RocketUserGroup;
 use rocket\ei\EiType;
 use rocket\user\bo\EiGrant;
-use rocket\custom\CustomType;
+use rocket\cu\CustomType;
 use rocket\user\bo\CustomGrant;
 use rocket\user\bo\Grant;
 use rocket\spec\TypePath;

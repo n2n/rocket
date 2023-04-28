@@ -20,6 +20,11 @@ use rocket\si\meta\SiMaskIdentifier;
 use rocket\si\content\SiEntryBuildup;
 use rocket\ei\util\EiuAnalyst;
 use rocket\si\control\SiIconType;
+use rocket\ei\manage\gui\control\GuiControl;
+use rocket\si\control\SiControl;
+use rocket\ei\manage\api\ZoneApiControlCallId;
+use n2n\util\uri\Url;
+use n2n\util\ex\IllegalStateException;
 
 class EifBulkyEntrySiGui implements EifSiGui {
 
@@ -29,12 +34,17 @@ class EifBulkyEntrySiGui implements EifSiGui {
 
 	private SiStyle $style;
 
-	function __construct(private EiuAnalyst $eiuAnalyst) {
+	/**
+	 * @var array<GuiControl>
+	 */
+	private array $guiControls = [];
+
+	function __construct(private EiuAnalyst $eiuAnalyst, bool $readOnly = false) {
 
 		$maskId = 'mask-' . HashUtils::base36Uniqid(false);
 		$typeId = 'type-' . HashUtils::base36Uniqid(false);
 
-		$this->style = new SiStyle(true, true);
+		$this->style = new SiStyle(true, $readOnly);
 		$this->maskDeclaration = new SiMaskDeclaration(
 				new SiMask(new SiMaskQualifier(new SiMaskIdentifier($maskId, $typeId), 'Some Name', SiIconType::ICON_ROCKET)),
 				[]);
@@ -45,16 +55,26 @@ class EifBulkyEntrySiGui implements EifSiGui {
 		$this->eifSiStructure = new EifSiStructure($this->entry->getSelectedBuildup(), $this->maskDeclaration, null);
 	}
 
-	function siStructure(): EifSiStructure {
+	function structure(): EifSiStructure {
 		return $this->eifSiStructure;
 	}
 
-	function toSiGui(): SiGui {
-		return new BulkyEntrySiGui(null, new SiDeclaration($this->style, [$this->maskDeclaration]), $this->entry);
+	function addControl(GuiControl $control): static {
+		$this->guiControls[$control->getId()] = $control;
+		return $this;
 	}
 
+	function toSiGui(Url $zoneApiUrl = null): SiGui {
+		IllegalStateException::assertTrue(empty($this->guiControls) || $zoneApiUrl !== null,
+				'Zone api url not available, but controls of this gui requires one.');
 
+		$controls = array_map(
+				fn ($c) => $c->toSiControl($zoneApiUrl, ZoneApiControlCallId::create($c)),
+				$this->guiControls);
 
+		$siGui = new BulkyEntrySiGui(null, new SiDeclaration($this->style, [$this->maskDeclaration]), $this->entry);
+		$siGui->setControls($controls);
 
-
+		return $siGui;
+	}
 }

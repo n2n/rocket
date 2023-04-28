@@ -18,6 +18,7 @@ use rocket\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiMaskDeclaration;
 use rocket\si\meta\SiStructureDeclaration;
+use rocket\ei\manage\api\ApiController;
 
 /**
  * @author andreas
@@ -432,12 +433,14 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\control\SiControl[]
 	 */
-	function createSelectionSiControls(EiFrame $eiFrame) {
+	function createSelectionSiControls(EiFrame $eiFrame): array {
 		$siControls = [];
 		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $selectionGuiControl) {
-			$siControls[$guiControlPathStr] = $selectionGuiControl->toCmdSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
+					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), null));
 		}
@@ -447,12 +450,14 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\control\SiControl[]
 	 */
-	function createGeneralSiControls(EiFrame $eiFrame) {
+	function createGeneralSiControls(EiFrame $eiFrame): array {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $generalGuiControl) {
-			$siControls[$guiControlPathStr] = $generalGuiControl->toCmdSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
+					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), null, null));
 		}
@@ -527,8 +532,10 @@ class EiGuiFrame {
 		
 		foreach ($this->guiDefinition->createEntryGuiControls($eiFrame, $this, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
-			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toCmdSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
+			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
+					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(), $eiEntry->getPid(),
 							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
 		}
