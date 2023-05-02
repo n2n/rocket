@@ -10,21 +10,23 @@ class CuGuiEntry {
 	 * @var array
 	 */
 	private array $cuFields = [];
+	private SiEntry $siEntry;
+
+	function __construct() {
+		$this->siEntry = new SiEntry(null, null);
+	}
 
 	function containsCuField(string $id): bool {
 		return isset($this->cuFields[$id]);
 	}
 
 	function putCuField(string $id, CuField $cuField): static {
+		$this->siEntry->putField($id, $cuField->getSiField());
 		$this->cuFields[$id] = $cuField;
 		return $this;
 	}
 
-	function toSiEntry(): SiEntry {
-		$siEntry = new SiEntry();
-		foreach ($this->cuFields as $id => $cuField) {
-			$siEntry->putField($id, $cuField);
-		}
-		return $siEntry;
+	function getSiEntry(): SiEntry {
+		return $this->siEntry;
 	}
 }

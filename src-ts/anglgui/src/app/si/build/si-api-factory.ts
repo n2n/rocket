@@ -12,7 +12,7 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
-import { SimpleSiControlBoundry } from '../model//control/impl/model/simple-si-control-boundry';
+import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiBuildTypes } from './si-build-types';
 
 export class SiApiFactory {
@@ -44,7 +44,7 @@ export class SiApiFactory {
 		const result: SiGetResult = {
 			declaration: null,
 			generalControls: null,
-			entry: null,
+			valueBoundary: null,
 			partialContent: null
 		};
 
@@ -52,15 +52,15 @@ export class SiApiFactory {
 			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'));
 		}
 
-		let controlsData: any = null;
+		let controlsData: any;
 		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
 			const compEssentialsFactory = new SiBuildTypes.SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration), this.injector);
 			result.generalControls = compEssentialsFactory.createControls(controlsData);
 		}
 
-		let propData: any = null;
+		let propData: any;
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createEntry(propData);
+			result.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createValueBoundary(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('partialContent'))) {
@@ -111,17 +111,17 @@ export class SiApiFactory {
 
 		const result: SiValGetResult = {
 			declaration: null,
-			entry: null
+			valueBoundary: null
 		};
 
-		let propData: any = null;
+		let propData: any;
 
 		if (!declaration) {
 			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'));
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createEntry(propData);
+			result.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createValueBoundary(propData);
 		}
 
 		return result;

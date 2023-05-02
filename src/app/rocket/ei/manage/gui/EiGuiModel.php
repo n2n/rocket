@@ -124,7 +124,7 @@ class EiGuiModel {
 		$siDeclaration = new SiDeclaration(ViewMode::createSiStyle($this->viewMode));
 		
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
-			$siDeclaration->addTypeDeclaration($eiGuiFrame->createSiMaskDeclaration($n2nLocale));
+			$siDeclaration->addMaskDeclaration($eiGuiFrame->createSiMaskDeclaration($n2nLocale));
 		}
 		
 		return $siDeclaration;
@@ -137,7 +137,7 @@ class EiGuiModel {
 	 * @return \rocket\si\content\SiValueBoundary
 	 */
 	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded) {
-		$siValueBoundary = new SiValueBoundary($eiEntryGui->createSiEntryIdentifier(),
+		$siValueBoundary = new SiValueBoundary(/*$eiEntryGui->createSiEntryIdentifier(),*/
 				new SiStyle(ViewMode::isBulky($this->viewMode), ViewMode::isReadOnly($this->viewMode)));
 		$siValueBoundary->setTreeLevel($eiEntryGui->getTreeLevel());
 		

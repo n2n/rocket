@@ -21,6 +21,6 @@ class StringInCuField implements CuField {
 	}
 
 	function getSiField(): StringInSiField {
-
+		return $this->siField;
 	}
 }

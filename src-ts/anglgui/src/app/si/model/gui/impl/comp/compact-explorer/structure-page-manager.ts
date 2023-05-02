@@ -85,7 +85,7 @@ export class StructureEntry {
 		this.subscription = siValueBoundary.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.replacementCallback(siValueBoundary.replacementEntry!);
+					this.replacementCallback(siValueBoundary.replacementValueBoundary!);
 					this.clear();
 					break;
 				case SiEntryState.REMOVED:

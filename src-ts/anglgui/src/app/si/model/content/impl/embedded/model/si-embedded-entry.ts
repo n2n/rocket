@@ -20,20 +20,20 @@ export class SiEmbeddedEntry {
 	}
 
 	get entry(): SiValueBoundary {
-		return this.comp.entry!;
+		return this.comp.valueBoundary!;
 	}
 
 	set entry(entry: SiValueBoundary) {
-		this.comp.entry = entry;
+		this.comp.valueBoundary = entry;
 	}
 
 	async copy(): Promise<SiGenericEmbeddedEntry> {
-		return new SiGenericEmbeddedEntry(await this.comp.entry!.copy(),
+		return new SiGenericEmbeddedEntry(await this.comp.valueBoundary!.copy(),
 				(this.summaryComp ? await this.summaryComp.entry!.copy() : null));
 	}
 
 	async paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<boolean> {
-		const promise = this.comp.entry!.paste(genericEmbeddedEntry.genericEntry);
+		const promise = this.comp.valueBoundary!.paste(genericEmbeddedEntry.genericEntry);
 		if (!await promise) {
 			return false;
 		}
@@ -54,7 +54,7 @@ export class SiEmbeddedEntry {
 	}
 
 	async createResetPoint(): Promise<SiInputResetPoint> {
-		return this.comp.entry!.createInputResetPoint();
+		return this.comp.valueBoundary!.createInputResetPoint();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
@@ -66,7 +66,7 @@ export class SiEmbeddedEntry {
 	}
 
 	set selectedMaskId(maskId: string|null) {
-		this.comp.entry!.selectedMaskId = maskId;
+		this.comp.valueBoundary!.selectedMaskId = maskId;
 		if (this.summaryComp && this.summaryComp.entry) {
 			this.summaryComp.entry.selectedMaskId = maskId;
 		}

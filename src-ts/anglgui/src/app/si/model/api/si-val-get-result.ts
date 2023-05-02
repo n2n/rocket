@@ -5,5 +5,5 @@ export interface SiValGetResult {
 
 	declaration: SiDeclaration|null;
 
-	entry: SiValueBoundary|null;
+	valueBoundary: SiValueBoundary|null;
 }

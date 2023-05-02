@@ -205,7 +205,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 						this.siEntryMonitor.unregisterEntry(siValueBoundary);
 					}
 					this.subscription!.remove(sub);
-					this.rebuild(siValueBoundary.replacementEntry);
+					this.rebuild(siValueBoundary.replacementValueBoundary);
 					break;
 			}
 		});

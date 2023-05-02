@@ -2,9 +2,16 @@
 
 namespace rocket\cu\gui\control;
 
-class CuControl {
+use rocket\si\control\SiControl;
+use n2n\util\uri\Url;
+use rocket\ei\manage\api\ApiControlCallId;
+use rocket\ei\manage\api\ZoneApiControlCallId;
 
-	function handle(): void {
+interface CuControl {
 
-	}
+	function getId(): string;
+
+//	function handle(): void;
+
+	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl;
 }

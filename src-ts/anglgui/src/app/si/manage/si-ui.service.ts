@@ -8,7 +8,7 @@ import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiDirective, SiControlResult } from './si-control-result';
+import { SiControlResult, SiDirective } from './si-control-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 import { SiNavPoint } from '../model/control/si-nav-point';
@@ -42,8 +42,7 @@ export class SiUiService {
 
 	navigateByRouterUrl(url: string, layer: UiLayer|null): void {
 		if (layer && !layer.main) {
-			const zone = layer.pushRoute(null, url).zone;
-			this.loadZone(zone, true);
+			this.loadZone(layer.pushRoute(null, url).zone, true);
 			return;
 		}
 
@@ -151,7 +150,7 @@ export class SiUiService {
 		}
 
 		if (result.inputResult) {
-			this.replaceEntries(result.inputResult.entries, inputEntries);
+			this.replaceEntries(result.inputResult.valueBoundaries, inputEntries);
 		}
 
 

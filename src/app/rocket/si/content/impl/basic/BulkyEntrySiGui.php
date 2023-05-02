@@ -36,10 +36,10 @@ class BulkyEntrySiGui implements SiGui {
 	private $controls = [];
 	private $entryControlsIncluded = true;
 	
-	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $entry = null) {
+	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $valueBoundary = null) {
 		$this->frame = $frame;
 		$this->declaration = $declaration;
-		$this->setEntry($entry);
+		$this->setValueBoundary($valueBoundary);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ class BulkyEntrySiGui implements SiGui {
 		return 'bulky-entry';
 	}
 
-	function setEntry(?SiValueBoundary $entry): static {
+	function setValueBoundary(?SiValueBoundary $entry): static {
 		$this->entry = $entry;
 		return $this;
 	}

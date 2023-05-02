@@ -1,6 +1,8 @@
 import { EmbeddedEntriesInModel } from '../comp/embedded-entries-in-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { EmbeddedEntriesSummaryInComponent } from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
+import {
+	EmbeddedEntriesSummaryInComponent
+} from '../comp/embedded-entries-summary-in/embedded-entries-summary-in.component';
 import { EmbeddedEntriesInComponent } from '../comp/embedded-entries-in/embedded-entries-in.component';
 import { EmbeddedAddPasteObtainer } from './embedded-add-paste-obtainer';
 import { AddPasteObtainer } from '../comp/add-paste-obtainer';
@@ -13,7 +15,6 @@ import { TranslationService } from 'src/app/util/i18n/translation.service';
 
 import { PopupUiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
-import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { Observable, Subscription } from 'rxjs';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
@@ -22,7 +23,7 @@ import { EmbeInCollection } from './embe/embe-collection';
 import { Embe } from './embe/embe';
 import { EmbeddedEntriesInConfig } from './embe/embedded-entries-config';
 import { SiEmbeddedEntry } from './si-embedded-entry';
-import { EmbeStructureCollection, EmbeStructure } from './embe/embe-structure';
+import { EmbeStructure, EmbeStructureCollection } from './embe/embe-structure';
 import { BehaviorCollection } from 'src/app/util/collection/behavior-collection';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { Message } from 'src/app/util/i18n/message';
@@ -32,7 +33,7 @@ import { UiContainer } from 'src/app/ui/structure/model/ui-container';
 import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { ButtonControlUiContent } from 'src/app/si/model/control/impl/comp/button-control-ui-content';
-import { UiStructureModelMode, UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter implements EmbeddedEntriesInModel {
@@ -378,7 +379,7 @@ class EmbeInUiZoneManager {
 		zone.mainCommandContents = this.createPopupControls(() => { bakEntry = null; })
 					.map(siControl => siControl.createUiContent(() => zone));
 
-		const promise = new Promise<boolean>((resolve) => {
+		return new Promise<boolean>((resolve) => {
 			this.popupUiLayer!.onDispose(() => {
 				this.popupUiLayer = null;
 
@@ -391,8 +392,6 @@ class EmbeInUiZoneManager {
 				}
 			});
 		});
-
-		return promise;
 	}
 
 	async openAll(): Promise<boolean> {

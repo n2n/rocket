@@ -33,7 +33,7 @@ class CuMaskedEntry {
 	 */
 	private array $guiControls = [];
 
-	function __construct(string $maskId, string $typeId, string $name,
+	function __construct(private string $maskId, string $typeId, string $name,
 			$iconClass = SiIconType::ICON_ROCKET) {
 
 		$this->siMaskDeclaration = new SiMaskDeclaration(
@@ -44,10 +44,21 @@ class CuMaskedEntry {
 		$this->eifSiStructure = new CuStructure($this->cuGuiEntry, $this->siMaskDeclaration, null);
 	}
 
+	function getMaskId(): string {
+		return $this->maskId;
+	}
+
 	function structure(): CuStructure {
 		return $this->eifSiStructure;
 	}
 
+	function getSiMaskDeclaration(): SiMaskDeclaration {
+		return $this->siMaskDeclaration;
+	}
+
+	function getSiEntry(): SiEntry {
+		return $this->cuGuiEntry->getSiEntry();
+	}
 
 
 

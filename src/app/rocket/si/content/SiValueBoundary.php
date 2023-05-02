@@ -42,8 +42,8 @@ class SiValueBoundary implements \JsonSerializable {
 	 * @param SiEntryIdentifier $identifier
 	 * @param SiStyle $style
 	 */
-	function __construct(SiEntryIdentifier $identifier, SiStyle $style) {
-		$this->identifier = $identifier;
+	function __construct(/*SiEntryIdentifier $identifier, */SiStyle $style) {
+//		$this->identifier = $identifier;
 		$this->style = $style;
 	}
 
@@ -107,8 +107,8 @@ class SiValueBoundary implements \JsonSerializable {
 	 * @param string $id
 	 * @return SiValueBoundary
 	 */
-	function setSelectedMaskId(string $id): static {
-		ArgUtils::valEnum($id, array_keys($this->entries));
+	function setSelectedMaskId(?string $id): static {
+		ArgUtils::valEnum($id, array_keys($this->entries), nullAllowed: true);
 		$this->selectedMaskId = $id;
 		return $this;
 	}
@@ -123,16 +123,16 @@ class SiValueBoundary implements \JsonSerializable {
 	}
 	
 	function jsonSerialize(): mixed {
-		$buildups = array();
+		$entries = array();
 		foreach ($this->entries as $id => $buildup) {
-			$buildups[$id] = $buildup;
+			$entries[$id] = $buildup;
 		}
 				
 		return [
-			'identifier' => $this->identifier,
+//			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
 			'style' => $this->style,
-			'buildups' => $buildups,
+			'entries' => $entries,
 			'selectedMaskId' => $this->selectedMaskId
 		];
 	}

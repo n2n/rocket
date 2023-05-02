@@ -145,7 +145,7 @@ class RelationSelectorForm implements Dispatchable {
 			foreach ($entryPids as $entryPid) { 
 				if (!$that->entryUtils->containsId($that->entryUtils->pidToId($entryPid))) continue;
 				
-				$be->addErrorCode('entryPid', 'ei_impl_relation_unkown_entry_err', 
+				$be->addErrorCode('entryPid', 'ei_impl_relation_unknown_entry_err', 
 						array('id_rep' => $entryPid), Rocket::NS);
 			}
 		});

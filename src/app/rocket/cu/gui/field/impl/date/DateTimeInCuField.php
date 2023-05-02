@@ -10,12 +10,12 @@ class DateTimeInCuField implements CuField {
 	function __construct(private readonly DateTimeInSiField $siField) {
 	}
 
-	function setValue(?string $value): static {
+	function setValue(?\DateTime $value): static {
 		$this->siField->setValue($value);
 		return $this;
 	}
 
-	function getValue(): ?string {
+	function getValue(): ?\DateTime {
 		return $this->getValue();
 	}
 

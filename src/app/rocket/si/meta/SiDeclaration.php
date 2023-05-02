@@ -50,7 +50,7 @@ class SiDeclaration implements \JsonSerializable {
 		$this->maskDeclarations = [];
 		
 		foreach ($maskDeclarations as $maskDeclaration) {
-			$this->addTypeDeclaration($maskDeclaration);
+			$this->addMaskDeclaration($maskDeclaration);
 		}
 		return $this;
 	}
@@ -60,7 +60,7 @@ class SiDeclaration implements \JsonSerializable {
 	 * @param SiMaskDeclaration $maskDeclaration
 	 * @return SiDeclaration
 	 */
-	function addTypeDeclaration(SiMaskDeclaration $maskDeclaration) {
+	function addMaskDeclaration(SiMaskDeclaration $maskDeclaration) {
 // 		if (empty($this->maskDeclarations) && !$maskDeclaration->hasStructureDeclarations()) {
 // 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 // 		}

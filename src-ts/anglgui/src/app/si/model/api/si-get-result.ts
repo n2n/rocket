@@ -9,7 +9,7 @@ export interface SiGetResult {
 
 	generalControls: SiControl[]|null;
 
-	entry: SiValueBoundary|null;
+	valueBoundary: SiValueBoundary|null;
 
 	partialContent: SiPartialContent|null;
 }

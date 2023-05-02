@@ -16,7 +16,7 @@ export class SiInputError {
 }
 
 export class SiInputResult {
-	public entries = new Map<string, SiValueBoundary>();
+	public valueBoundaries = new Map<string, SiValueBoundary>();
 }
 
 export class SiCallResponse {

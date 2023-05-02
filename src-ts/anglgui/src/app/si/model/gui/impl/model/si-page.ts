@@ -181,7 +181,7 @@ export class SiPage {
 
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.placeEntry(curI, newEntry.replacementEntry!);
+					this.placeEntry(curI, newEntry.replacementValueBoundary!);
 					break;
 				case SiEntryState.REMOVED:
 					this.recalcSize();

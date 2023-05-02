@@ -27,7 +27,7 @@ import { SelectInFieldModel } from '../../../content/impl/enum/comp/select-in-fi
 import { Message } from 'src/app/util/i18n/message';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
-	private _entry: SiValueBoundary|null = null;
+	private _valueBoundary: SiValueBoundary|null = null;
 	public entryControlsIncluded = true;
 	public controls: Array<SiControl> = [];
 
@@ -36,7 +36,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	getBoundEntries(): SiValueBoundary[] {
-		return [this.entry!];
+		return [this.valueBoundary!];
 	}
 
 	getBoundDeclaration(): SiDeclaration {
@@ -49,25 +49,25 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	// 	return this;
 	// }
 
-	get entry(): SiValueBoundary|null {
-		while (this._entry!.replacementEntry) {
-			this._entry = this._entry!.replacementEntry;
+	get valueBoundary(): SiValueBoundary|null {
+		while (this._valueBoundary!.replacementValueBoundary) {
+			this._valueBoundary = this._valueBoundary!.replacementValueBoundary;
 		}
-		return this._entry;
+		return this._valueBoundary;
 	}
 
-	set entry(entry: SiValueBoundary|null) {
-		this._entry = entry;
+	set valueBoundary(entry: SiValueBoundary|null) {
+		this._valueBoundary = entry;
 	}
 
 	createUiStructureModel(): UiStructureModel {
 		let entryMonitor: SiEntryMonitor|null = null;
 		if (this.frame) {
 			entryMonitor = new SiEntryMonitor(this.frame.getApiUrl(SiFrameApiSection.GET), this.siService,
-				this.siModStateService, this.entryControlsIncluded);
+					this.siModStateService, this.entryControlsIncluded);
 		}
 
-		return new BulkyUiStructureModel(this.entry!, this.declaration, this.getControls(), entryMonitor);
+		return new BulkyUiStructureModel(this.valueBoundary!, this.declaration, this.getControls(), entryMonitor);
 	}
 
 	private getControls(): SiControl[] {
@@ -83,7 +83,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private uiStructureSubject = new BehaviorSubject<UiStructure[]>([]);
 
 	constructor(private siValueBoundary: SiValueBoundary, private siDeclaration: SiDeclaration, private controls: SiControl[],
-				private siEntryMonitor: SiEntryMonitor|null) {
+			private siEntryMonitor: SiEntryMonitor|null) {
 		super();
 	}
 
@@ -106,19 +106,19 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		while (this.siValueBoundary.replacementEntry) {
-			this.siValueBoundary = this.siValueBoundary.replacementEntry;
+		while (this.siValueBoundary.replacementValueBoundary) {
+			this.siValueBoundary = this.siValueBoundary.replacementValueBoundary;
 		}
 
 		this.subscription = new Subscription();
 
 		if (!this.siValueBoundary.isMultiType()) {
 			this.rebuildStructures();
-		} else {
-			this.subscription.add(this.siValueBoundary.selectedTypeId$.subscribe(() => {
-				this.rebuildStructures();
-			}));
 		}
+
+		this.subscription.add(this.siValueBoundary.selectedMaskId$.subscribe(() => {
+			this.rebuildStructures();
+		}));
 
 		this.subscription.add(uiStructure.getZone$().subscribe(() => {
 			this.rebuildStructures();
@@ -149,7 +149,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 					if (!this.siValueBoundary.isNew()) {
 						this.siEntryMonitor!.unregisterEntry(this.siValueBoundary);
 					}
-					this.siValueBoundary = this.siValueBoundary.replacementEntry!;
+					this.siValueBoundary = this.siValueBoundary.replacementValueBoundary!;
 					this.subscription!.remove(sub);
 					this.monitorEntry();
 					this.rebuildStructures();

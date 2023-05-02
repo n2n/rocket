@@ -46,7 +46,8 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @param string|null $idName
 	 */
-	function __construct(?string $idName) {
+	function __construct(?string $id, ?string $idName) {
+		$this->id = $id;
 		$this->idName = $idName;
 	}
 	
@@ -138,6 +139,7 @@ class SiEntry implements \JsonSerializable {
 		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
 		
 		return [
+			'id' => $this->id,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)

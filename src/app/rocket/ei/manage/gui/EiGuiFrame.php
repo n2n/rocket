@@ -516,7 +516,7 @@ class EiGuiFrame {
 					$eiFrame->getN2nContext(), $n2nLocale);
 		}
 		
-		$siEntry = new SiEntry($typeId, $idName);
+		$siEntry = new SiEntry($typeId, $eiEntry->getPid(), $idName);
 		
 		foreach ($eiEntryGuiTypeDef->getGuiFieldMap()->getAllGuiFields() as $defPropPathStr => $guiField) {
 			if (null !== ($siField = $guiField->getSiField())) {

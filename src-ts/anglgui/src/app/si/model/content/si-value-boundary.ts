@@ -6,9 +6,8 @@ import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
 import { SiEntry } from './si-entry';
 import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SiGenericEntry } from '../generic/si-generic-entry';
+import { SiGenericValueBoundary } from '../generic/si-generic-value-boundary';
 import { SiGenericEntry } from '../generic/si-generic-entry-buildup';
-import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { skip } from 'rxjs/operators';
 import { SiStyle } from '../meta/si-view-mode';
 import { SiInputResetPoint } from './si-input-reset-point';
@@ -16,7 +15,7 @@ import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-r
 
 export class SiValueBoundary {
 
-	constructor(identifier: SiEntryIdentifier, public style: SiStyle) {
+	constructor(/*identifier: SiEntryIdentifier,*/ public style: SiStyle) {
 	}
 
 	isNew(): boolean {
@@ -32,9 +31,9 @@ export class SiValueBoundary {
 	}
 
 	get selectedEntry(): SiEntry {
-		this.ensureBuildupSelected();
+		this.ensureEntrySelected();
 
-		return this._entrysMap.get(this.selectedMaskId!) as SiEntry;
+		return this._entriesMap.get(this.selectedMaskId!) as SiEntry;
 	}
 
 	get entrySelected(): boolean {
@@ -46,34 +45,35 @@ export class SiValueBoundary {
 	}
 
 	set selectedMaskId(id: string|null) {
-		if (id !== null && !this._entrysMap.has(id)) {
+		if (id !== null && !this._entriesMap.has(id)) {
 			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id + '; available buildup ids: '
-					+ Array.from(this._entrysMap.keys()).join(', '));
+					+ Array.from(this._entriesMap.keys()).join(', '));
 		}
+
 		if (this.selectedMaskId !== id) {
 			this.selectedMaskIdSubject.next(id);
 		}
 	}
 
-	get selectedTypeId$(): Observable<string|null> {
+	get selectedMaskId$(): Observable<string|null> {
 		return this.selectedMaskIdSubject.asObservable();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
-		return Array.from(this._entrysMap.values())
+		return Array.from(this._entriesMap.values())
 				.map(buildup => buildup.entryQualifier.maskQualifier);
 	}
 
 	get entryQualifiers(): SiEntryQualifier[] {
 		const qualifiers: SiEntryQualifier[] = [];
-		for (const buildup of this._entrysMap.values()) {
+		for (const buildup of this._entriesMap.values()) {
 			qualifiers.push(buildup.entryQualifier);
 		}
 		return qualifiers;
 	}
 
-	get replacementEntry(): SiValueBoundary|null {
-		return this._replacementEntry;
+	get replacementValueBoundary(): SiValueBoundary|null {
+		return this._replacementValueBoundary;
 	}
 
 	// markAsClean() {
@@ -82,7 +82,7 @@ export class SiValueBoundary {
 	// }
 
 	// protected markAsConsumed() {
-	// 	this._entrysMap.clear();
+	// 	this._entriessMap.clear();
 	// 	this._state = SiEntryState.CONSUMED;
 	// }
 
@@ -96,51 +96,52 @@ export class SiValueBoundary {
 
 	public treeLevel: number|null = null;
 	private selectedMaskIdSubject = new BehaviorSubject<string|null>(null);
-	private _entrysMap = new Map<string, SiEntry>();
+	private _entriesMap = new Map<string, SiEntry>();
 
 	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
 
 	private lock: SiEntryLock|null = null;
-	private _replacementEntry: SiValueBoundary|null = null;
+	private _replacementValueBoundary: SiValueBoundary|null = null;
 
-	private ensureBuildupSelected() {
+	private ensureEntrySelected() {
 		if (this.selectedMaskId !== null) {
 			return;
 		}
 
-		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
+		throw new IllegalSiStateError('No entry selected for value boundary: '
+				+ this.entryQualifiers.map((q) => q.toString()).join(','));
 	}
 
 	containsMaskId(typeId: string): boolean {
-		return this._entrysMap.has(typeId);
+		return this._entriesMap.has(typeId);
 	}
 
 	isMultiType(): boolean {
-		return this._entrysMap.size > 1;
+		return this._entriesMap.size > 1;
 	}
 
-	addEntry(buildup: SiEntry) {
-		this._entrysMap.set(buildup.entryQualifier.maskQualifier.identifier.id, buildup);
+	addEntry(entry: SiEntry) {
+		this._entriesMap.set(entry.entryQualifier.maskQualifier.identifier.id, entry);
 	}
 
 	containsEntryId(id: string): boolean {
-		return this._entrysMap.has(id);
+		return this._entriesMap.has(id);
 	}
 
-	getEntryById(id: string): SiEntry {
-		if (this.containsEntryId(id)) {
-			return this._entrysMap.get(id)!;
-		}
-
-		throw new UnknownSiElementError('Unkown SiEntry id ' + id);
-	}
+	// getEntryById(id: string): SiEntry {
+	// 	if (this.containsEntryId(id)) {
+	// 		return this._entriessMap.get(id)!;
+	// 	}
+	//
+	// 	throw new UnknownSiElementError('Unkown SiEntry id ' + id);
+	// }
 
 // 	getFieldById(id: string): SiField|null {
 // 		return this.selectedEntry.getFieldById(id);
 // 	}
 
 	readInput(): SiEntryInput {
-		if (this.replacementEntry) {
+		if (this.replacementValueBoundary) {
 			throw new IllegalSiStateError('SiEntry already replaced!');
 		}
 		
@@ -174,7 +175,7 @@ export class SiValueBoundary {
 	// }
 
 	// resetError() {
-	// 	for (const [, buildup] of this._entrysMap) {
+	// 	for (const [, buildup] of this._entriessMap) {
 	// 		buildup.messages = [];
 
 	// 		for (const [, field] of this.selectedEntry.getFieldMap()) {
@@ -205,7 +206,7 @@ export class SiValueBoundary {
 	// 	const entry = new SiEntry(this.identifier);
 	// 	entry.treeLevel = this.treeLevel;
 
-	// 	for (const buildup of this._entrysMap.values()) {
+	// 	for (const buildup of this._entriessMap.values()) {
 	// 		entry.addEntry(buildup.copy());
 	// 	}
 
@@ -213,34 +214,34 @@ export class SiValueBoundary {
 	// 	return entry;
 	// }
 
-	async copy(): Promise<SiGenericEntry> {
+	async copy(): Promise<SiGenericValueBoundary> {
 		const promises: Promise<void>[] = [];
 
-		const genericBuildupsMap = new Map<string, SiGenericEntry>();
-		for (const [typeId, entry] of this._entrysMap) {
-			entry.copy().then(genericBuildup => {
-				genericBuildupsMap.set(typeId, genericBuildup);
+		const genericEntriesMap = new Map<string, SiGenericEntry>();
+		for (const [maskId, entry] of this._entriesMap) {
+			entry.copy().then(genericEntry => {
+				genericEntriesMap.set(maskId, genericEntry);
 			});
 		}
 
 		await Promise.all(promises);
 
-		return this.createGenericEntry(genericBuildupsMap);
+		return this.createGenericValueBoundary(genericEntriesMap);
 	}
 
-	async paste(genericEntry: SiGenericEntry): Promise<boolean> {
-		if (!this.valGenericEntry(genericEntry)) {
+	async paste(genericValueBoundary: SiGenericValueBoundary): Promise<boolean> {
+		if (!this.valGenericEntry(genericValueBoundary)) {
 			return false;
 		}
 
-		if (this._entrysMap.has(genericEntry.selectedTypeId!)) {
-			this.selectedMaskId = genericEntry.selectedTypeId;
+		if (this._entriesMap.has(genericValueBoundary.selectedTypeId!)) {
+			this.selectedMaskId = genericValueBoundary.selectedTypeId;
 		}
 
 		const promises = new Array<Promise<boolean>>();
-		for (const [typeId, genericEntry] of genericEntry.entrysMap) {
-			if (this._entrysMap.has(typeId)) {
-				promises.push(this._entrysMap.get(typeId)!.paste(genericEntry));
+		for (const [typeId, genericEntry] of genericValueBoundary.entriesMap) {
+			if (this._entriesMap.has(typeId)) {
+				promises.push(this._entriesMap.get(typeId)!.paste(genericEntry));
 			}
 		}
 		await Promise.all(promises);
@@ -250,7 +251,7 @@ export class SiValueBoundary {
 
 	async createInputResetPoint(): Promise<SiInputResetPoint> {
 		const promise = Promise.all(Array
-				.from(this._entrysMap.values())
+				.from(this._entriesMap.values())
 				.map(entry => entry.createInputResetPoint()));
 
 		const entryResetPoints = await promise;
@@ -263,21 +264,21 @@ export class SiValueBoundary {
 				});
 	}
 
-	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntry>): SiGenericEntry {
-		const genericEntry = new SiGenericEntry(this.identifier, this.selectedMaskId, genericBuildupsMap);
+	private createGenericValueBoundary(genericEntriesMap: Map<string, SiGenericEntry>): SiGenericValueBoundary {
+		const genericEntry = new SiGenericValueBoundary(this.identifier, this.selectedMaskId, genericEntriesMap);
 		genericEntry.style = this.style;
 		return genericEntry;
 	}
 
 
-	private valGenericEntry(genericEntry: SiGenericEntry): boolean {
-		if (genericEntry.identifier.typeId !== this.identifier.typeId) {
+	private valGenericEntry(genericValueBoundary: SiGenericValueBoundary): boolean {
+		if (genericValueBoundary.identifier.typeId !== this.identifier.typeId) {
 			return false;
 			// throw new GenericMissmatchError('SiEntry missmatch: '
 			// 		+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
 		}
 
-		if (genericEntry.style.bulky !== this.style.bulky || genericEntry.style.readOnly !== this.style.readOnly) {
+		if (genericValueBoundary.style.bulky !== this.style.bulky || genericValueBoundary.style.readOnly !== this.style.readOnly) {
 			return false;
 			// throw new GenericMissmatchError('SiEntry missmatch.');
 		}
@@ -302,7 +303,7 @@ export class SiValueBoundary {
 	// 	IllegalArgumentError.assertTrue(entry.state === SiEntryState.CLEAN);
 	// 	IllegalSiStateError.assertTrue(this.isAvlive());
 
-	// 	for (const [entryId, entry] of this._entrysMap) {
+	// 	for (const [entryId, entry] of this._entriessMap) {
 	// 		entry.consume(entry.getEntryById(entryId));
 	// 	}
 
@@ -356,7 +357,7 @@ export class SiValueBoundary {
 	replace(replacementEntry: SiValueBoundary): void {
 		IllegalSiStateError.assertTrue(this.isAlive());
 
-		this._replacementEntry = replacementEntry;
+		this._replacementValueBoundary = replacementEntry;
 		this.stateSubject.next(SiEntryState.REPLACED);
 		this.stateSubject.complete();
 	}
@@ -396,8 +397,8 @@ export class SiValueBoundary {
 	getFinalReplacementEntry(): SiValueBoundary {
 		let siValueBoundary: SiValueBoundary = this;
 
-		while (siValueBoundary.replacementEntry) {
-			siValueBoundary = siValueBoundary.replacementEntry;
+		while (siValueBoundary.replacementValueBoundary) {
+			siValueBoundary = siValueBoundary.replacementValueBoundary;
 		}
 
 		return siValueBoundary;

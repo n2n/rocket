@@ -95,7 +95,7 @@ export class SplitContent implements SplitOption {
 			return this.entry$;
 		}
 
-		let instruction: SiGetInstruction|null = null;
+		let instruction: SiGetInstruction|null;
 		if (this.lazyDef!.entryId) {
 			instruction = SiGetInstruction.entry(this.lazyDef!.style, this.lazyDef!.entryId);
 		} else {
@@ -106,7 +106,7 @@ export class SplitContent implements SplitOption {
 		return this.entry$ = this.lazyDef!.siService
 				.apiGet(this.lazyDef!.apiGetUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
-					return this.loadedEntry = response.results[0].entry as any;
+					return this.loadedEntry = response.results[0].valueBoundary as any;
 				}))
 				.toPromise();
 	}

@@ -181,7 +181,7 @@ class ReloadJob {
 	private handleResults(results: SiGetResult[], entries: SiValueBoundary[]): void {
 		for (const i of results.keys()) {
 			if (entries[i].isAlive()) {
-				entries[i].replace(results[i].entry!);
+				entries[i].replace(results[i].valueBoundary!);
 			}
 		}
 	}
