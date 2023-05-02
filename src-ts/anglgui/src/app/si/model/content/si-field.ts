@@ -32,7 +32,7 @@ export interface SiField {
 
 	getDisabled$(): Observable<boolean>;
 
-	// copy(entryBuildUp: SiEntryBuildup): SiField;
+	// copy(entryBuildUp: SiEntry): SiField;
 
 
 

@@ -1,5 +1,5 @@
 import { SiModStateService, SiModEvent } from './si-mod-state.service';
-import { SiEntry, SiEntryState } from '../../content/si-entry';
+import { SiValueBoundary, SiEntryState } from '../../content/si-value-boundary';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGetRequest } from '../../api/si-get-request';
 import { SiGetInstruction } from '../../api/si-get-instruction';
@@ -11,7 +11,7 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class SiEntryMonitor {
-	private entriesMap = new Map<string, SiEntry[]>();
+	private entriesMap = new Map<string, SiValueBoundary[]>();
 	private nextReloadJob: ReloadJob;
 
 	constructor(private apiGetUrl: string, private siService: SiService, private modStateService: SiModStateService,
@@ -21,7 +21,7 @@ export class SiEntryMonitor {
 
 	private subscription: Subscription|null = null;
 
-	registerEntry(entry: SiEntry): void {
+	registerEntry(entry: SiValueBoundary): void {
 		const id = entry.identifier.id;
 		if (!id) {
 			throw new IllegalArgumentError('New entry can not be monitored.');
@@ -40,7 +40,7 @@ export class SiEntryMonitor {
 		entries.push(entry);
 	}
 
-	unregisterEntry(entry: SiEntry): void {
+	unregisterEntry(entry: SiValueBoundary): void {
 		const id = entry.identifier.id!;
 		if (!this.entriesMap.has(id)) {
 			throw new IllegalStateError('Entry not registed.');
@@ -77,8 +77,8 @@ export class SiEntryMonitor {
 			}
 		});
 
-		this.subscription.add(this.modStateService.shownEntry$.subscribe((siEntry) => {
-			if (this.nextReloadJob.containsSiEntry(siEntry)) {
+		this.subscription.add(this.modStateService.shownEntry$.subscribe((siValueBoundary) => {
+			if (this.nextReloadJob.containsSiEntry(siValueBoundary)) {
 				this.executeNextReloadJob();
 			}
 		}));
@@ -100,8 +100,8 @@ export class SiEntryMonitor {
 				continue;
 			}
 
-			for (const siEntry of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
-				siEntry.markAsRemoved();
+			for (const siValueBoundary of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
+				siValueBoundary.markAsRemoved();
 			}
 		}
 
@@ -114,10 +114,10 @@ export class SiEntryMonitor {
 				continue;
 			}
 
-			for (const siEntry of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
-				siEntry.markAsOutdated();
-				this.nextReloadJob.addSiEntry(siEntry);
-				if (!shownEntryUpdated && this.modStateService.isEntryShown(siEntry)) {
+			for (const siValueBoundary of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
+				siValueBoundary.markAsOutdated();
+				this.nextReloadJob.addSiEntry(siValueBoundary);
+				if (!shownEntryUpdated && this.modStateService.isEntryShown(siValueBoundary)) {
 					shownEntryUpdated = true;
 				}
 			}
@@ -136,21 +136,21 @@ export class SiEntryMonitor {
 }
 
 class ReloadJob {
-	private siEntriesMap = new Map<SiEntry, SiEntry>();
+	private siEntriesMap = new Map<SiValueBoundary, SiValueBoundary>();
 
 	constructor(private apiGetUrl: string, private siService: SiService, private controlsIncluded: boolean) {
 	}
 
-	containsSiEntry(entry: SiEntry): boolean {
+	containsSiEntry(entry: SiValueBoundary): boolean {
 		return this.siEntriesMap.has(entry);
 	}
 
-	addSiEntry(siEntry: SiEntry): void {
-		this.siEntriesMap.set(siEntry, siEntry);
+	addSiEntry(siValueBoundary: SiValueBoundary): void {
+		this.siEntriesMap.set(siValueBoundary, siValueBoundary);
 	}
 
-	removeSiEntry(siEntry: SiEntry): void {
-		this.siEntriesMap.delete(siEntry);
+	removeSiEntry(siValueBoundary: SiValueBoundary): void {
+		this.siEntriesMap.delete(siValueBoundary);
 	}
 
 	clear(): void {
@@ -159,7 +159,7 @@ class ReloadJob {
 
 	execute(): void {
 		const getInstructions: SiGetInstruction[] = [];
-		const entries: SiEntry[] = [];
+		const entries: SiValueBoundary[] = [];
 		for (const [, entry] of this.siEntriesMap) {
 			if (entry.state !== SiEntryState.OUTDATED) {
 				continue;
@@ -178,7 +178,7 @@ class ReloadJob {
 				});
 	}
 
-	private handleResults(results: SiGetResult[], entries: SiEntry[]): void {
+	private handleResults(results: SiGetResult[], entries: SiValueBoundary[]): void {
 		for (const i of results.keys()) {
 			if (entries[i].isAlive()) {
 				entries[i].replace(results[i].entry!);

@@ -23,7 +23,7 @@ namespace rocket\si\input;
 
 use rocket\si\content\SiEntryIdentifier;
 use n2n\util\type\attrs\DataSet;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use n2n\util\type\ArgUtils;
 
 class SiEntryInput {
@@ -160,37 +160,33 @@ class SiFieldInput {
 
 
 class SiInputError implements \JsonSerializable {
-	private $entryErrors;
 	
 	/**
-	 * @param SiEntry[] $entries
+	 * @param SiValueBoundary[] $valueBoundaries
 	 */
-	function __construct(array $entries) {
-		ArgUtils::valArray($entries, SiEntry::class);
-		$this->entries = $entries;
+	function __construct(private readonly array $valueBoundaries) {
+		ArgUtils::valArray($valueBoundaries, SiValueBoundary::class);
 	}
 	
 	function jsonSerialize(): mixed {
 		return [
-			'entries' => $this->entries
+			'siValueBoundary' => $this->valueBoundaries
 		];
 	}
 }
 
 class SiInputResult implements \JsonSerializable {
-	private $entries;
-	
+
 	/**
-	 * @param SiEntry[] $entries
+	 * @param SiValueBoundary[] $valueBoundaries
 	 */
-	function __construct(array $entries) {
-		ArgUtils::valArray($entries, SiEntry::class);
-		$this->entries = $entries;
+	function __construct(private array $valueBoundaries) {
+		ArgUtils::valArray($valueBoundaries, SiValueBoundary::class);
 	}
 	
 	function jsonSerialize(): mixed {
 		return [
-			'entries' => $this->entries
+			'siValueBoundary' => $this->valueBoundaries
 		];
 	}
 }

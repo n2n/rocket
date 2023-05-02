@@ -2,35 +2,31 @@
 
 namespace rocket\ei\util\si;
 
-use rocket\ei\util\Eiu;
 use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\si\meta\SiDeclaration;
-use rocket\si\content\SiField;
 use rocket\si\meta\SiMaskDeclaration;
-use rocket\si\meta\SiStructureType;
-use rocket\si\meta\SiStructureDeclaration;
 use rocket\si\content\SiGui;
 use rocket\si\meta\SiStyle;
 use rocket\si\meta\SiMask;
 use rocket\si\meta\SiMaskQualifier;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\content\SiEntryIdentifier;
 use n2n\util\HashUtils;
 use rocket\si\meta\SiMaskIdentifier;
-use rocket\si\content\SiEntryBuildup;
+use rocket\si\content\SiEntry;
 use rocket\ei\util\EiuAnalyst;
 use rocket\si\control\SiIconType;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\si\control\SiControl;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
 use n2n\util\ex\IllegalStateException;
+use rocket\cu\gui\CuStructure;
 
 class EifBulkyEntrySiGui implements EifSiGui {
 
 	private SiMaskDeclaration $maskDeclaration;
-	private EifSiStructure $eifSiStructure;
-	private SiEntry $entry;
+	private CuStructure $eifSiStructure;
+	private SiValueBoundary $entry;
 
 	private SiStyle $style;
 
@@ -48,14 +44,14 @@ class EifBulkyEntrySiGui implements EifSiGui {
 		$this->maskDeclaration = new SiMaskDeclaration(
 				new SiMask(new SiMaskQualifier(new SiMaskIdentifier($maskId, $typeId), 'Some Name', SiIconType::ICON_ROCKET)),
 				[]);
-		$this->entry = new SiEntry(new SiEntryIdentifier($typeId, null, null), $this->style);
-		$this->entry->putBuildup($maskId, new SiEntryBuildup($maskId, null));
+		$this->entry = new SiValueBoundary(new SiEntryIdentifier($typeId, null, null), $this->style);
+		$this->entry->putEntry($maskId, new SiEntry($maskId, null));
 		$this->entry->setSelectedMaskId($maskId);
 
-		$this->eifSiStructure = new EifSiStructure($this->entry->getSelectedBuildup(), $this->maskDeclaration, null);
+		$this->eifSiStructure = new CuStructure($this->entry->getSelectedEntry(), $this->maskDeclaration, null);
 	}
 
-	function structure(): EifSiStructure {
+	function structure(): CuStructure {
 		return $this->eifSiStructure;
 	}
 

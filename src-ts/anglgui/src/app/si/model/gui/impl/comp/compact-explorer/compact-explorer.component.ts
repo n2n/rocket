@@ -9,7 +9,7 @@ import { LayerComponent } from 'src/app/ui/structure/comp/layer/layer.component'
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { NgSafeScrollListener } from 'src/app/util/zone/ng-safe-scroll-listener';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
@@ -293,16 +293,16 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return !this.sortModeEnabled;
 	}
 
-	isSiEntrySortSelected(siEntry: SiEntry): boolean {
-		return this.sortSelectedMap.has(siEntry.identifier.toString());
+	isSiEntrySortSelected(siValueBoundary: SiValueBoundary): boolean {
+		return this.sortSelectedMap.has(siValueBoundary.identifier.toString());
 	}
 
-	isSiEntrySortDecendant(siEntry: SiEntry): boolean {
-		if (this.isSiEntrySortSelected(siEntry)) {
+	isSiEntrySortDecendant(siValueBoundary: SiValueBoundary): boolean {
+		if (this.isSiEntrySortSelected(siValueBoundary)) {
 			return false;
 		}
 
-		const idStr = siEntry.identifier.toString();
+		const idStr = siValueBoundary.identifier.toString();
 		for (const [, v] of this.sortSelectedMap) {
 			if (-1 < v.decendantIdStrs.indexOf(idStr)) {
 				return true;
@@ -312,15 +312,15 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return false;
 	}
 
-	setSiEntrySortSelected(siEntry: SiEntry, value: boolean): void {
+	setSiEntrySortSelected(siValueBoundary: SiValueBoundary, value: boolean): void {
 		if (!value) {
-			this.sortSelectedMap.delete(siEntry.identifier.toString());
+			this.sortSelectedMap.delete(siValueBoundary.identifier.toString());
 			return;
 		}
 
-		this.sortSelectedMap.set(siEntry.identifier.toString(), {
-			identifier: siEntry.identifier,
-			decendantIdStrs: this.spm.determineDecendantSiEntries(siEntry).map(e => e.identifier.toString())
+		this.sortSelectedMap.set(siValueBoundary.identifier.toString(), {
+			identifier: siValueBoundary.identifier,
+			decendantIdStrs: this.spm.determineDecendantSiEntries(siValueBoundary).map(e => e.identifier.toString())
 		});
 	}
 
@@ -328,18 +328,18 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		return this.sortSelectedMap.size > 0;
 	}
 
-	moveBefore(siEntry: SiEntry): void {
-		this.spm.moveBefore(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
+	moveBefore(siValueBoundary: SiValueBoundary): void {
+		this.spm.moveBefore(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siValueBoundary.identifier);
 		this.sortSelectedMap.clear();
 	}
 
-	moveAfter(siEntry: SiEntry): void {
-		this.spm.moveAfter(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
+	moveAfter(siValueBoundary: SiValueBoundary): void {
+		this.spm.moveAfter(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siValueBoundary.identifier);
 		this.sortSelectedMap.clear();
 	}
 
-	moveToParent(siEntry: SiEntry): void {
-		this.spm.moveToParent(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siEntry.identifier);
+	moveToParent(siValueBoundary: SiValueBoundary): void {
+		this.spm.moveToParent(Array.from(this.sortSelectedMap.values()).map(v => v.identifier), siValueBoundary.identifier);
 		this.sortSelectedMap.clear();
 	}
 }

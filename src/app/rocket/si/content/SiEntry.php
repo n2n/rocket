@@ -21,150 +21,127 @@
  */
 namespace rocket\si\content;
 
-use rocket\si\input\SiEntryInput;
-use rocket\si\input\CorruptedSiInputDataException;
-use n2n\util\ex\IllegalStateException;
-use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\AttributesException;
-use rocket\si\meta\SiStyle;
+use rocket\si\control\SiControl;
+use rocket\si\SiPayloadFactory;
 
 class SiEntry implements \JsonSerializable {
-	/**
-	 * @var SiEntryIdentifier
-	 */
-	private $identifier;
-	private $selectedMaskId = null;
-	private $buildups = [];
-	private $treeLevel;
-	private $style;
 
 	/**
-	 * @param SiEntryIdentifier $identifier
-	 * @param SiStyle $style
+	 * @var string|null
 	 */
-	function __construct(SiEntryIdentifier $identifier, SiStyle $style) {
-		$this->identifier = $identifier;
-		$this->style = $style;
-	}
-
+	private $idName;
 	/**
-	 * @return SiEntryIdentifier
+	 * @var SiField[] $fields
 	 */
-	function getIdentifier(): SiEntryIdentifier {
-		return $this->identifier;
-	}
-	
-	/**
-	 * @param SiEntryIdentifier $identifier
-	 * @return SiEntry
-	 */
-	function setIdentifier(SiEntryIdentifier $identifier) {
-		$this->identifier = $identifier;
-		return $this;
-	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getTreeLevel() {
-		return $this->treeLevel;
-	}
-
-	function setTreeLevel(?int $treeLevel) {
-		$this->treeLevel = $treeLevel;
-		return $this;
-	}
-
-	/**
-	 * @return SiEntryBuildup[]
-	 */
-	function getBuildups() {
-		return $this->buildups;
-	}
-
+	private $fields = [];
 // 	/**
-// 	 * @param SiEntryBuildup[] $buildups 
+// 	 * @var SiField[] $contextFields
 // 	 */
-// 	function setBuildups(array $buildups) {
-// 		$this->buildups = $buildups;
+// 	private $contextFields = [];
+	/**
+	 * @var SiControl[] $controls
+	 */	
+	private $controls = [];
+	
+	/**
+	 * @param string|null $idName
+	 */
+	function __construct(?string $idName) {
+		$this->idName = $idName;
+	}
+	
+	/**
+	 * @return string
+	 */
+	function getMaskId() {
+		return $this->maskId;
+	}
+	
+
+	function setMaskId(string $maskId): static {
+		$this->maskId = $maskId;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getIdName(): ?string {
+		return $this->idName;
+	}
+	
+	/**
+	 * @param string|null $idName
+	 */
+	function setIdName(?string $idName) {
+		$this->idName = $idName;
+	}
+
+	/**
+	 * @return SiField[]
+	 */
+	function getFields() {
+		return $this->fields;
+	}
+
+	/**
+	 * @param SiField[] $fields key is propId 
+	 */
+	function setFields(array $fields) {
+		$this->fields = $fields;
+		return $this;
+	}
+
+	function putField(string $id, SiField $field): static {
+		$this->fields[$id] = $field;
+		return $this;
+	}
+	
+// 	/**
+// 	 * @param string $id
+// 	 * @param SiField[] $contextSiFields
+// 	 * @return \rocket\si\content\SiEntry
+// 	 */
+// 	function putContextFields(string $id, array $contextSiFields) {
+// 		if (empty($contextSiFields)) {
+// 			unset($this->contextFields[$id]);
+// 			return;
+// 		}
+		
+// 		ArgUtils::valArray($contextSiFields, SiField::class);
+// 		$this->contextFields[$id] = $contextSiFields;
 // 		return $this;
 // 	}
-
-	function putBuildup(string $maskId, SiEntryBuildup $buildup) {
-		$this->buildups[$maskId] = $buildup;
-		
-		return $this;
-	}
 	
 	/**
-	 * @return SiEntryBuildup
+	 * @return SiControl[] 
 	 */
-	function getSelectedBuildup(): SiEntryBuildup {
-		return $this->buildups[$this->getSelectedMaskId()];
+	function getControls() {
+		return $this->controls;
 	}
 	
 	/**
-	 * @param string $id
+	 * @param SiControl[] $controls
 	 * @return SiEntry
 	 */
-	function setSelectedMaskId(string $id): static {
-		ArgUtils::valEnum($id, array_keys($this->buildups));
-		$this->selectedMaskId = $id;
+	function setControls(array $controls): static {
+		$this->controls = $controls;
 		return $this;
 	}
-	
-	/**
-	 * @throws IllegalStateException
-	 */
-	function getSelectedMaskId(): ?string {
-		IllegalStateException::assertTrue($this->selectedMaskId !== null);
-		
-		return $this->selectedMaskId;
+
+	function putControl(string $id, SiControl $control): static {
+		$this->controls[$id] = $control;
+		return $this;
 	}
 	
 	function jsonSerialize(): mixed {
-		$buildups = array();
-		foreach ($this->buildups as $id => $buildup) {
-			$buildups[$id] = $buildup;
-		}
-				
+		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
+		
 		return [
-			'identifier' => $this->identifier,
-			'treeLevel' => $this->treeLevel,
-			'style' => $this->style,
-			'buildups' => $buildups,
-			'selectedMaskId' => $this->selectedMaskId
+			'idName' => $this->idName,
+			'fieldMap' => $fieldsArr,
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}
 
-	/**
-	 * @param SiEntryInput $entryInput
-	 * @throws CorruptedSiInputDataException
-	 */
-	function handleInput(SiEntryInput $entryInput): void {
-		$typeId = $entryInput->getTypeId();
-		
-		try {
-			$this->setSelectedMaskId($typeId);
-		} catch (\InvalidArgumentException $e) {
-			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
-		}
-		
-		$buildup = $this->getSelectedBuildup();
-		
-		foreach ($buildup->getFields() as $propId => $field) {
-			if ($field->isReadOnly() || !$entryInput->containsFieldName($propId)) {
-				continue;
-			}
-			
-			try {
-				$field->handleInput($entryInput->getFieldInput($propId)->getData());
-			} catch (\InvalidArgumentException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			} catch (AttributesException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			}
-		}
-	}
-	
 }

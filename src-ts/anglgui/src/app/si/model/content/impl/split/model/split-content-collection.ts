@@ -1,5 +1,5 @@
 import {SplitOption} from './split-option';
-import {SiEntry} from '../../../si-entry';
+import {SiValueBoundary} from '../../../si-value-boundary';
 import {SiStyle} from '../../../../meta/si-view-mode';
 import {SiService} from '../../../../../manage/si.service';
 import {SiControlBoundry} from '../../../../control/si-control-bountry';
@@ -28,7 +28,7 @@ export class SplitContentCollection {
 		return this.splitContentMap.has(key);
 	}
 
-	getEntry$(key: string): Promise<SiEntry|null> {
+	getEntry$(key: string): Promise<SiValueBoundary|null> {
 		if (this.splitContentMap.has(key)) {
 			return this.splitContentMap.get(key)!.getSiEntry$();
 		}
@@ -50,10 +50,10 @@ export class SplitContentCollection {
 }
 
 export class SplitContent implements SplitOption {
-	private entry$: Promise<SiEntry|null>|null = null;
+	private entry$: Promise<SiValueBoundary|null>|null = null;
 	private lazyDef: LazyDef|null = null;
-	private loadedEntry: SiEntry|null = null;
-	private loadedEntrySubject: Subject<SiEntry>|null = null;
+	private loadedEntry: SiValueBoundary|null = null;
+	private loadedEntrySubject: Subject<SiValueBoundary>|null = null;
 
 	constructor(readonly key: string, public label: string, public shortLabel: string) {
 	}
@@ -71,18 +71,18 @@ export class SplitContent implements SplitOption {
 		return splitContent;
 	}
 
-	static createEntry(key: string, label: string, shortLabel: string, entry: SiEntry): SplitContent {
+	static createEntry(key: string, label: string, shortLabel: string, entry: SiValueBoundary): SplitContent {
 		const splitContent = new SplitContent(key, label, shortLabel);
 		splitContent.entry$ = Promise.resolve(entry);
 		splitContent.loadedEntry = entry;
 		return splitContent;
 	}
 
-	getLoadedSiEntry(): SiEntry|null {
+	getLoadedSiEntry(): SiValueBoundary|null {
 		return this.loadedEntry;
 	}
 
-	getLoadedSiEntry$(): Observable<SiEntry|null> {
+	getLoadedSiEntry$(): Observable<SiValueBoundary|null> {
 		if (this.loadedEntrySubject) {
 			return this.loadedEntrySubject.asObservable();
 		}
@@ -90,7 +90,7 @@ export class SplitContent implements SplitOption {
 		return of(this.loadedEntry);
 	}
 
-	getSiEntry$(): Promise<SiEntry|null> {
+	getSiEntry$(): Promise<SiValueBoundary|null> {
 		if (this.entry$) {
 			return this.entry$;
 		}

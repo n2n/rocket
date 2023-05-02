@@ -1,18 +1,18 @@
-import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary, SiEntryState } from 'src/app/si/model/content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { Subscription, Subject, Observable, BehaviorSubject } from 'rxjs';
 
 export class SiPage {
-	private _entrySubPairs: Array<{entry: SiEntry, subscription: Subscription}>|null = null;
+	private _entrySubPairs: Array<{entry: SiValueBoundary, subscription: Subscription}>|null = null;
 	private _size: number|null = null;
 	private _ghostSize: number|null = null;
-	private entriesSubject = new BehaviorSubject<SiEntry[]|null>(null);
+	private entriesSubject = new BehaviorSubject<SiValueBoundary[]|null>(null);
 	private disposedSubject = new Subject<void>();
-	private entryRemovedSubject = new Subject<SiEntry>();
+	private entryRemovedSubject = new Subject<SiValueBoundary>();
 
 	constructor(private entryMonitor: SiEntryMonitor, readonly no: number,
-			public offset: number, entries: SiEntry[]|null) {
+			public offset: number, entries: SiValueBoundary[]|null) {
 		if (no < 1) {
 			throw new IllegalSiStateError('Illegal page no: ' + no);
 		}
@@ -31,7 +31,7 @@ export class SiPage {
 		return !!this._entrySubPairs;
 	}
 
-	get entries(): SiEntry[]|null {
+	get entries(): SiValueBoundary[]|null {
 		this.ensureNotDisposed();
 
 		if (this._entrySubPairs) {
@@ -41,7 +41,7 @@ export class SiPage {
 		return null;
 	}
 
-	set entries(entries: SiEntry[]|null) {
+	set entries(entries: SiValueBoundary[]|null) {
 		this.ensureNotDisposed();
 
 		this.applyEntries(entries);
@@ -94,7 +94,7 @@ export class SiPage {
 		}
 	}
 
-	get entries$(): Observable<SiEntry[]|null> {
+	get entries$(): Observable<SiValueBoundary[]|null> {
 		this.ensureNotDisposed();
 
 		return this.entriesSubject.asObservable();
@@ -117,7 +117,7 @@ export class SiPage {
 		this.recalcSize();
 	}
 
-	private applyEntries(newEntries: SiEntry[]|null) {
+	private applyEntries(newEntries: SiValueBoundary[]|null) {
 		this.removeEntries();
 
 		if (!newEntries) {
@@ -134,13 +134,13 @@ export class SiPage {
 		this.recalcSize();
 	}
 
-	removeEntry(siEntry: SiEntry) {
+	removeEntry(siValueBoundary: SiValueBoundary) {
 		this.ensureLoaded();
 
-		const i = this.entries!.indexOf(siEntry);
+		const i = this.entries!.indexOf(siValueBoundary);
 
 		if (i < 0) {
-			throw new IllegalSiStateError('SiEntry does not exist: ' + siEntry.identifier.toString());
+			throw new IllegalSiStateError('SiEntry does not exist: ' + siValueBoundary.identifier.toString());
 		}
 
 		this.removeEntryByIndex(i);
@@ -159,19 +159,19 @@ export class SiPage {
 		this.triggerEntriesSubject();
 	}
 
-	private releaseEntrySubPair(v: { entry: SiEntry, subscription: Subscription }) {
+	private releaseEntrySubPair(v: { entry: SiValueBoundary, subscription: Subscription }) {
 		this.entryMonitor.unregisterEntry(v.entry);
 		v.subscription.unsubscribe();
 	}
 
-	insertEntry(i: number, newEntry: SiEntry) {
+	insertEntry(i: number, newEntry: SiValueBoundary) {
 		this._entrySubPairs!.splice(i, 0, null as any);
 
 		this.placeEntry(i, newEntry);
 		this.triggerEntriesSubject();
 	}
 
-	private placeEntry(i: number, newEntry: SiEntry) {
+	private placeEntry(i: number, newEntry: SiValueBoundary) {
 		if (this._entrySubPairs![i]) {
 			this.releaseEntrySubPair(this._entrySubPairs![i]);
 		}
@@ -198,7 +198,7 @@ export class SiPage {
 		this.entryMonitor.registerEntry(newEntry);
 	}
 
-	get entryRemoved$(): Observable<SiEntry> {
+	get entryRemoved$(): Observable<SiValueBoundary> {
 		return this.entryRemovedSubject.asObservable();
 	}
 

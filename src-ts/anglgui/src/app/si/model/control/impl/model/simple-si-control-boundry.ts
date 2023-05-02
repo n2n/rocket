@@ -1,13 +1,13 @@
 import { SiControlBoundry } from '../../si-control-bountry';
-import { SiEntry } from '../../../content/si-entry';
+import { SiValueBoundary } from '../../../content/si-value-boundary';
 import { SiDeclaration } from '../../../meta/si-declaration';
 
 export class SimpleSiControlBoundry implements SiControlBoundry {
 
-	constructor(public entries: SiEntry[], public declaration: SiDeclaration) {
+	constructor(public entries: SiValueBoundary[], public declaration: SiDeclaration) {
 	}
 
-	getBoundEntries(): SiEntry[] {
+	getBoundEntries(): SiValueBoundary[] {
 		return this.entries;
 	}
 

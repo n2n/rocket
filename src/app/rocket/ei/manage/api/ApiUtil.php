@@ -87,7 +87,7 @@ class ApiUtil {
 // 	 * @return \rocket\si\content\SiEntry
 // 	 */
 // 	function createSiEntry(EiObject $eiObject, array $eiEntryGuis) {
-// 		$siEntry = new SiEntry($eiObject->createSiEntryQualifier($eiObject), 
+// 		$siValueBoundary = new SiEntry($eiObject->createSiEntryQualifier($eiObject), 
 // 				ViewMode::isReadOnly($this->eiGuiFrame->getViewMode()));
 		
 // 		foreach ($eiEntryGuis as $eiEntryGui) {
@@ -97,7 +97,7 @@ class ApiUtil {
 // 					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclarations());
 // 		}
 		
-// 		return $siEntry;
+// 		return $siValueBoundary;
 // 	}
 	
 	/**

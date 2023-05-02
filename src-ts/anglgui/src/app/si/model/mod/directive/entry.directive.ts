@@ -1,5 +1,5 @@
-import { Directive, Input, ElementRef, DoCheck, OnInit, OnDestroy, HostBinding } from '@angular/core';
-import { SiEntry, SiEntryState } from '../../content/si-entry';
+import { Directive, Input, ElementRef, DoCheck, OnInit, OnDestroy } from '@angular/core';
+import { SiValueBoundary, SiEntryState } from '../../content/si-value-boundary';
 import { SiModStateService } from '../model/si-mod-state.service';
 
 @Directive({
@@ -7,7 +7,7 @@ import { SiModStateService } from '../model/si-mod-state.service';
 })
 export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 
-	private _siEntry?: SiEntry;
+	private _siValueBoundary?: SiValueBoundary;
 
 	private currentlyHighlighted = false;
 	private currentState?: SiEntryState;
@@ -18,27 +18,27 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.modState.unregisterShownEntry(this.siEntry, this);
+		this.modState.unregisterShownEntry(this.siValueBoundary, this);
 	}
 
 	@Input()
-	set siEntry(siEntry: SiEntry) {
-		if (this._siEntry) {
-			this.modState.unregisterShownEntry(this._siEntry, this);
+	set siValueBoundary(siValueBoundary: SiValueBoundary) {
+		if (this._siValueBoundary) {
+			this.modState.unregisterShownEntry(this._siValueBoundary, this);
 		}
 
-		this._siEntry = siEntry;
-		this.modState.registerShownEntry(siEntry, this);
+		this._siValueBoundary = siValueBoundary;
+		this.modState.registerShownEntry(siValueBoundary, this);
 	}
 
-	get siEntry(): SiEntry {
-		return this._siEntry!;
+	get siValueBoundary(): SiValueBoundary {
+		return this._siValueBoundary!;
 	}
 
 	ngDoCheck() {
 		this.chHighlightedClass(this.modState.lastModEvent !== null
-				&& this.modState.lastModEvent.containsModEntryIdentifier(this.siEntry.identifier));
-		this.chStateClass(this.siEntry.state);
+				&& this.modState.lastModEvent.containsModEntryIdentifier(this.siValueBoundary.identifier));
+		this.chStateClass(this.siValueBoundary.state);
 	}
 
 

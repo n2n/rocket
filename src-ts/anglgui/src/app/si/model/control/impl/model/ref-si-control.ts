@@ -14,7 +14,7 @@ export class RefSiControl implements SiControl {
 
 
 	isDisabled(): boolean {
-		return !!this.controlBoundry.getBoundEntries().find(siEntry => siEntry.isClaimed());
+		return !!this.controlBoundry.getBoundEntries().find(siValueBoundary => siValueBoundary.isClaimed());
 	}
 
 	exec(uiZone: UiZone): void {

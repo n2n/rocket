@@ -5,7 +5,7 @@ import { OutSiFieldAdapter} from '../../common/model/out-si-field-adapter';
 import { SplitContentCollection } from './split-content-collection';
 import { SplitContext, SplitStyle } from './split-context';
 import { SplitOption } from './split-option';
-import { SiEntry } from '../../../si-entry';
+import { SiValueBoundary } from '../../../si-value-boundary';
 
 export class SplitContextOutSiField extends OutSiFieldAdapter implements SplitContext {
 	public style: SplitStyle = { iconClass: null, tooltip: null };
@@ -27,7 +27,7 @@ export class SplitContextOutSiField extends OutSiFieldAdapter implements SplitCo
 		return this.collection.getSplitContents();
 	}
 
-	getEntry$(key: string): Promise<SiEntry|null> {
+	getEntry$(key: string): Promise<SiValueBoundary|null> {
 		return this.collection.getEntry$(key);
 	}
 }

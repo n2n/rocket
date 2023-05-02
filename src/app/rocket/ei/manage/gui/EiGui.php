@@ -91,8 +91,8 @@ class EiGui {
 	
 	/**
 	 * @param bool $siControlsIncluded
-	 * @throws IllegalStateException
-	 * @return \rocket\si\content\SiEntry
+	 * @return \rocket\si\content\SiValueBoundary
+	 *@throws IllegalStateException
 	 */
 	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		if ($this->hasSingleEiEntryGui()) {
@@ -103,12 +103,12 @@ class EiGui {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiEntry[]
+	 * @return \rocket\si\content\SiValueBoundary[]
 	 */
 	function createSiEntries(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		$siEntries = [];
 		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siEntry = $siEntries[] = $this->eiGuiModel->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
+			$siValueBoundary = $siEntries[] = $this->eiGuiModel->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
 		}
 		return $siEntries;
 	}

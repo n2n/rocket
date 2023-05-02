@@ -21,17 +21,17 @@
 		<tbody cdkDropList (cdkDropListDropped)="drop($event)">
 			<ng-container *ngFor="let structurePage of getVisibleStructurePages()">
 				<tr *ngFor="let structureEntry of structurePage.structureEntries" 
-						cdkDrag [cdkDragDisabled]="!structureEntry.siEntry.isClean()" rocketSiEntry [siEntry]="structureEntry.siEntry"
-						class="rocket-tree-level-{{ structureEntry.siEntry.treeLevel }} rocket-draggable">
-					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siEntry.qualifier)">
+						cdkDrag [cdkDragDisabled]="!structureEntry.siValueBoundary.isClean()" rocketSiEntry [siValueBoundary]="structureEntry.siValueBoundary"
+						class="rocket-tree-level-{{ structureEntry.siValueBoundary.treeLevel }} rocket-draggable">
+					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siValueBoundary.qualifier)">
 						<ng-container *ngIf="singleSelect">
-							<input type="radio" [value]="structureEntry.siEntry.qualifier.identifier.toString()" 
-									[ngModel]="isSelected(structureEntry.siEntry.qualifier) ? structureEntry.siEntry.qualifier.identifier.toString() : null" />
+							<input type="radio" [value]="structureEntry.siValueBoundary.qualifier.identifier.toString()"
+									[ngModel]="isSelected(structureEntry.siValueBoundary.qualifier) ? structureEntry.siValueBoundary.qualifier.identifier.toString() : null" />
 						</ng-container>
 						<ng-container *ngIf="!singleSelect">
 							<input type="checkbox" 
-									[ngModel]="isSelected(structureEntry.siEntry.qualifier)"
-									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siEntry.qualifier)" />
+									[ngModel]="isSelected(structureEntry.siValueBoundary.qualifier)"
+									[disabled]="!areMoreSelectable() && !isSelected(structureEntry.siValueBoundary.qualifier)" />
 						</ng-container>
 					</td>
 					<td class="rocket-entry-selector" [class.invisible]="!sortable">
@@ -41,10 +41,10 @@
 					</td>
 					<td *ngFor="let fieldUiStructure of structureEntry.fieldUiStructures"
 							rocketUiStructure [uiStructure]="fieldUiStructure" [compact]="true"
-							(click)="toggleSelection(structureEntry.siEntry.qualifier)">
+							(click)="toggleSelection(structureEntry.siValueBoundary.qualifier)">
 					</td>
 					<td class="rocket-table-commands">
-						<div *ngIf="structureEntry.siEntry.isAlive()" class="rocket-simple-commands">
+						<div *ngIf="structureEntry.siValueBoundary.isAlive()" class="rocket-simple-commands">
 							<ng-container *ngIf="isEntryControModeEnabled()">
 								<ng-container *ngFor="let controlUiContent of structureEntry.controlUiContents">
 									<ng-template rocketUiContent [uiContent]="controlUiContent"></ng-template>
@@ -52,32 +52,32 @@
 							</ng-container>
 
 							<ng-container *ngIf="isSortModeEnabled()">
-								<rocket-ui-toggler [enabled]="isSiEntrySortSelected(structureEntry.siEntry)" 
-										(enabledChange)="setSiEntrySortSelected(structureEntry.siEntry, $event)"
+								<rocket-ui-toggler [enabled]="isSiEntrySortSelected(structureEntry.siValueBoundary)"
+										(enabledChange)="setSiEntrySortSelected(structureEntry.siValueBoundary, $event)"
 										[labeled]="false" [mode]="'checkbox'"></rocket-ui-toggler>
 									
-								<button class="btn btn-link" (click)="moveBefore(structureEntry.siEntry)" 
+								<button class="btn btn-link" (click)="moveBefore(structureEntry.siValueBoundary)"
 										[disabled]="!hasSiEntrySortSelections()"
-										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">
+										[class.invisible]="isSiEntrySortSelected(structureEntry.siValueBoundary) || isSiEntrySortDecendant(structureEntry.siValueBoundary)">
 									<i class="fa fa-arrow-up"></i>
 								</button>
 
-								<button class="btn btn-link" (click)="moveAfter(structureEntry.siEntry)" 
+								<button class="btn btn-link" (click)="moveAfter(structureEntry.siValueBoundary)"
 										[disabled]="!hasSiEntrySortSelections()"
-										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">
+										[class.invisible]="isSiEntrySortSelected(structureEntry.siValueBoundary) || isSiEntrySortDecendant(structureEntry.siValueBoundary)">
 									<i class="fa fa-arrow-down"></i>
 								</button>
 
-								<button class="btn btn-link" *ngIf="isTree()" (click)="moveToParent(structureEntry.siEntry)" 
+								<button class="btn btn-link" *ngIf="isTree()" (click)="moveToParent(structureEntry.siValueBoundary)"
 										[disabled]="!hasSiEntrySortSelections()"
-										[class.invisible]="isSiEntrySortSelected(structureEntry.siEntry) || isSiEntrySortDecendant(structureEntry.siEntry)">
+										[class.invisible]="isSiEntrySortSelected(structureEntry.siValueBoundary) || isSiEntrySortDecendant(structureEntry.siValueBoundary)">
 									<i class="fa fa-arrow-right"></i>
 								</button>
 							</ng-container>
 						</div>
 					</td>
 					<td *cdkDragPreview>
-						{{structureEntry.siEntry.qualifier.getBestName()}}
+						{{structureEntry.siValueBoundary.qualifier.getBestName()}}
 					</td>
 				</tr>
 			</ng-container>

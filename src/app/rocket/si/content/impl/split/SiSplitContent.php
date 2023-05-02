@@ -22,7 +22,7 @@
 namespace rocket\si\content\impl\split;
 
 use n2n\util\uri\Url;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\meta\SiStyle;
 
 class SiSplitContent implements \JsonSerializable {
@@ -38,7 +38,7 @@ class SiSplitContent implements \JsonSerializable {
 // 	 */
 // 	private $declaration;
 	/**
-	 * @var SiEntry
+	 * @var SiValueBoundary
 	 */
 	private $entry;
 	
@@ -85,7 +85,7 @@ class SiSplitContent implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiEntry|null
+	 * @return \rocket\si\content\SiValueBoundary|null
 	 */
 	function getEntry() {
 		return $this->entry;
@@ -133,10 +133,10 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string $label
-	 * @param SiEntry $entry
+	 * @param SiValueBoundary $entry
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	static function createEntry(string $label, SiEntry $entry) {
+	static function createEntry(string $label, SiValueBoundary $entry) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->entry = $entry;

@@ -28,7 +28,7 @@ use rocket\si\api\SiGetResult;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\api\SiPartialContentInstruction;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
 
@@ -133,13 +133,13 @@ class GetInstructionProcess {
 	}
 	
 	/**
-	 * @param SiEntry $siEntry
+	 * @param SiValueBoundary $siEntry
 	 * @param EiEntryGui[] $eiEntryGuis
 	 * @return \rocket\si\api\SiGetResult
 	 */
-	private function createEntryResult(SiEntry $siEntry, array $eiEntryGuis) {
+	private function createEntryResult(SiValueBoundary $siValueBoundary, array $eiEntryGuis) {
 		$result = new SiGetResult();
-		$result->setEntry($siEntry);
+		$result->setEntry($siValueBoundary);
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;

@@ -26,7 +26,7 @@ export class ApiCallSiControl implements SiControl {
 	}
 
 	isDisabled(): boolean {
-		return !!this.controlBoundry.getBoundEntries().find(siEntry => siEntry.isClaimed());
+		return !!this.controlBoundry.getBoundEntries().find(siValueBoundary => siValueBoundary.isClaimed());
 	}
 
 	// set entryBound(entryBound: boolean) {

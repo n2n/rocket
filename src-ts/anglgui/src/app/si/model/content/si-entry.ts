@@ -1,416 +1,129 @@
 
-import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
-import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
+import { SiControl } from 'src/app/si/model/control/si-control';
 import { Message } from 'src/app/util/i18n/message';
-import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
-import { SiEntryBuildup } from './si-entry-buildup';
-import { SiMaskQualifier } from '../meta/si-mask-qualifier';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { SiGenericEntry } from '../generic/si-generic-entry';
-import { SiGenericEntryBuildup } from '../generic/si-generic-entry-buildup';
+import { SiField } from './si-field';
+import { BehaviorSubject } from 'rxjs';
+import { SiEntryQualifier } from './si-entry-qualifier';
+import { SiGenericEntry } from '../generic/si-generic-entry-buildup';
+import { GenericMissmatchError } from '../generic/generic-missmatch-error';
+import { SiGenericValue } from '../generic/si-generic-value';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
-import { skip } from 'rxjs/operators';
-import { SiStyle } from '../meta/si-view-mode';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
 
 export class SiEntry {
+	public messages: Message[] = [];
+	private fieldMap$: BehaviorSubject<Map<string, SiField>>;
 
-	constructor(readonly identifier: SiEntryIdentifier, public style: SiStyle) {
+	constructor(readonly entryQualifier: SiEntryQualifier,
+			fieldMap = new Map<string, SiField>(), public controls = new Array<SiControl>()) {
+		this.fieldMap$ = new BehaviorSubject(fieldMap);
 	}
 
-	isNew(): boolean {
-		return this.identifier.id === null || this.identifier.id === undefined;
+	getMaskId(): string {
+		return this.entryQualifier.maskQualifier.identifier.id;
 	}
 
-	get qualifier(): SiEntryQualifier {
-		return this.selectedEntryBuildup.entryQualifier;
+	set fieldMap(fieldMap: Map<string, SiField>) {
+		this.fieldMap$.next(fieldMap);
 	}
 
-	get selectedEntryBuildup(): SiEntryBuildup {
-		this.ensureBuildupSelected();
-
-		return this._entryBuildupsMap.get(this.selectedMaskId!) as SiEntryBuildup;
+	containsPropId(id: string) {
+		return this.fieldMap$.getValue().has(id);
 	}
 
-	get entryBuildupSelected(): boolean {
-		return !!this.selectedMaskId;
-	}
-
-	get selectedMaskId(): string|null {
-		return this.selectedMaskIdSubject.getValue();
-	}
-
-	set selectedMaskId(id: string|null) {
-		if (id !== null && !this._entryBuildupsMap.has(id)) {
-			throw new IllegalSiStateError('Buildup id does not exist on entry: ' + id + '; available buildup ids: '
-					+ Array.from(this._entryBuildupsMap.keys()).join(', '));
-		}
-		if (this.selectedMaskId !== id) {
-			this.selectedMaskIdSubject.next(id);
-		}
-	}
-
-	get selectedTypeId$(): Observable<string|null> {
-		return this.selectedMaskIdSubject.asObservable();
-	}
-
-	get maskQualifiers(): SiMaskQualifier[] {
-		return Array.from(this._entryBuildupsMap.values())
-				.map(buildup => buildup.entryQualifier.maskQualifier);
-	}
-
-	get entryQualifiers(): SiEntryQualifier[] {
-		const qualifiers: SiEntryQualifier[] = [];
-		for (const buildup of this._entryBuildupsMap.values()) {
-			qualifiers.push(buildup.entryQualifier);
-		}
-		return qualifiers;
-	}
-
-	get replacementEntry(): SiEntry|null {
-		return this._replacementEntry;
-	}
-
-	// markAsClean() {
-	// 	IllegalSiStateError.assertTrue(this.isAvlive());
-	// 	this._state = SiEntryState.CLEAN;
-	// }
-
-	// protected markAsConsumed() {
-	// 	this._entryBuildupsMap.clear();
-	// 	this._state = SiEntryState.CONSUMED;
-	// }
-
-	get state(): SiEntryState {
-		return this.stateSubject.getValue();
-	}
-
-	get state$(): Observable<SiEntryState> {
-		return this.stateSubject.pipe(skip(1));
-	}
-
-	public treeLevel: number|null = null;
-	private selectedMaskIdSubject = new BehaviorSubject<string|null>(null);
-	private _entryBuildupsMap = new Map<string, SiEntryBuildup>();
-
-	private stateSubject = new BehaviorSubject<SiEntryState>(SiEntryState.CLEAN);
-
-	private lock: SiEntryLock|null = null;
-	private _replacementEntry: SiEntry|null = null;
-
-	private ensureBuildupSelected() {
-		if (this.selectedMaskId !== null) {
-			return;
+	getFieldById(id: string): SiField {
+		if (this.containsPropId(id)) {
+			return this.fieldMap$.getValue().get(id)!;
 		}
 
-		throw new IllegalSiStateError('No buildup selected for entry: ' + this.toString());
+		throw new UnknownSiElementError('Unkown SiField id ' + id);
 	}
 
-	containsMaskId(typeId: string): boolean {
-		return this._entryBuildupsMap.has(typeId);
+	getFields() {
+		return Array.from(this.fieldMap$.getValue().values());
 	}
 
-	isMultiType(): boolean {
-		return this._entryBuildupsMap.size > 1;
-	}
-
-	addEntryBuildup(buildup: SiEntryBuildup) {
-		this._entryBuildupsMap.set(buildup.entryQualifier.maskQualifier.identifier.id, buildup);
-	}
-
-	containsEntryBuildupId(id: string): boolean {
-		return this._entryBuildupsMap.has(id);
-	}
-
-	getEntryBuildupById(id: string): SiEntryBuildup {
-		if (this.containsEntryBuildupId(id)) {
-			return this._entryBuildupsMap.get(id)!;
-		}
-
-		throw new UnknownSiElementError('Unkown SiEntryBuildup id ' + id);
-	}
-
-// 	getFieldById(id: string): SiField|null {
-// 		return this.selectedEntryBuildup.getFieldById(id);
-// 	}
-
-	readInput(): SiEntryInput {
-		if (this.replacementEntry) {
-			throw new IllegalSiStateError('SiEntry already replaced!');
-		}
-		
-		const fieldInputMap = new Map<string, object>();
-
-		for (const [id, field] of this.selectedEntryBuildup.getFieldMap()) {
-			if (!field.hasInput() || field.isDisabled()) {
-				continue;
-			}
-
-			fieldInputMap.set(id, field.readInput());
-		}
-
-		// if (fieldInputMap.size === 0) {
-		// 	throw new IllegalSiStateError('No input available.');
-		// }
-
-		return new SiEntryInput(this.qualifier.identifier, this.selectedMaskId!, this.style.bulky, fieldInputMap);
-	}
-
-	// handleError(error: SiEntryError) {
-	// 	for (const [propId, fieldError] of error.fieldErrors) {
-	// 		if (!this.selectedEntryBuildup.containsPropId(propId)) {
-	// 			this.selectedEntryBuildup.messages.push(...fieldError.getAllMessages());
-	// 			continue;
-	// 		}
-
-	// 		const field = this.selectedEntryBuildup.getFieldById(propId);
-	// 		field.handleError(fieldError);
-	// 	}
-	// }
-
-	// resetError() {
-	// 	for (const [, buildup] of this._entryBuildupsMap) {
-	// 		buildup.messages = [];
-
-	// 		for (const [, field] of this.selectedEntryBuildup.getFieldMap()) {
-	// 			field.resetError();
-	// 		}
-	// 	}
-	// }
-
-	getMessages(): Message[] {
-		const messages: Message[] = [];
-
-		if (!this.selectedMaskId) {
-			return messages;
-		}
-
-		for (const siField of this.selectedEntryBuildup.getFields()) {
-			messages.push(...siField.getMessages());
-		}
-
-		return messages;
-	}
-
-	toString() {
-		return this.identifier.toString();
+	getFieldMap(): Map<string, SiField> {
+		return new Map(this.fieldMap$.getValue());
 	}
 
 	// copy(): SiEntry {
-	// 	const entry = new SiEntry(this.identifier);
-	// 	entry.treeLevel = this.treeLevel;
+	// 	const copy = new SiEntry(this.entryQualifier);
 
-	// 	for (const buildup of this._entryBuildupsMap.values()) {
-	// 		entry.addEntryBuildup(buildup.copy());
+	// 	const fieldMapCopy = new Map<string, SiField>();
+	// 	for (const [key, value] of this.fieldMap$.getValue()) {
+	// 		fieldMapCopy.set(key, value.copy(copy));
+	// 	}
+	// 	copy.fieldMap = fieldMapCopy;
+
+	// 	const controlsCopy = new Array<SiControl>();
+	// 	for (const value of this.controls) {
+	// 		controlsCopy.push(value);
 	// 	}
 
-	// 	entry.selectedTypeId = this.selectedTypeId;
-	// 	return entry;
+	// 	copy.controls = controlsCopy;
+	// 	copy.messages = this.messages;
+
+	// 	return copy;
 	// }
 
 	async copy(): Promise<SiGenericEntry> {
-		const promises: Promise<void>[] = [];
+		const fieldValuesMap = new Map<string, SiGenericValue>();
 
-		const genericBuildupsMap = new Map<string, SiGenericEntryBuildup>();
-		for (const [typeId, entryBuildup] of this._entryBuildupsMap) {
-			entryBuildup.copy().then(genericBuildup => {
-				genericBuildupsMap.set(typeId, genericBuildup);
-			});
+		const promises: Promise<void>[] = [];
+		for (const [fieldId, field] of this.fieldMap$.getValue()) {
+			if (!field.copyValue) {
+				continue;
+			}
+
+			promises.push(field.copyValue().then((genericValue) => {
+				fieldValuesMap.set(fieldId, genericValue);
+			}));
 		}
 
 		await Promise.all(promises);
-
-		return this.createGenericEntry(genericBuildupsMap);
+		return new SiGenericEntry(this.entryQualifier, fieldValuesMap);
 	}
 
-	async paste(genericEntry: SiGenericEntry): Promise<boolean> {
-		if (!this.valGenericEntry(genericEntry)) {
-			return false;
-		}
-
-		if (this._entryBuildupsMap.has(genericEntry.selectedTypeId!)) {
-			this.selectedMaskId = genericEntry.selectedTypeId;
-		}
+	paste(genericEntry: SiGenericEntry): Promise<boolean> {
+		this.valGenericEntry(genericEntry);
 
 		const promises = new Array<Promise<boolean>>();
-		for (const [typeId, genericEntryBuildup] of genericEntry.entryBuildupsMap) {
-			if (this._entryBuildupsMap.has(typeId)) {
-				promises.push(this._entryBuildupsMap.get(typeId)!.paste(genericEntryBuildup));
+		for (const [fieldId, genericValue] of genericEntry.fieldValuesMap) {
+			if (!this.containsPropId(fieldId)) {
+				continue;
 			}
-		}
-		await Promise.all(promises);
 
-		return true;
+			promises.push(this.getFieldById(fieldId).pasteValue!(genericValue));
+		}
+
+		return Promise.all(promises).then((results) => !!results.indexOf(true));
 	}
 
 	async createInputResetPoint(): Promise<SiInputResetPoint> {
-		const promise = Promise.all(Array
-				.from(this._entryBuildupsMap.values())
-				.map(entryBuildup => entryBuildup.createInputResetPoint()));
+		const rps = await Promise.all(Array
+				.from(this.fieldMap$.getValue().values())
+				.filter(field => field.hasInput())
+				.map(field => field.createInputResetPoint()));
 
-		const entryBuildupResetPoints = await promise;
-
-		return new CallbackInputResetPoint(
-				{ selectedEntryBuildupId: this.selectedMaskId, entryBuildupResetPoints},
-				(data) => {
-					this.selectedMaskId = data.selectedEntryBuildupId;
-					data.entryBuildupResetPoints.forEach(rp => { rp.rollbackTo(); });
-				});
+		return new CallbackInputResetPoint(rps, (resetPoints) => {
+			resetPoints.forEach(rp => rp.rollbackTo());
+		});
 	}
 
-	private createGenericEntry(genericBuildupsMap: Map<string, SiGenericEntryBuildup>): SiGenericEntry {
-		const genericEntry = new SiGenericEntry(this.identifier, this.selectedMaskId, genericBuildupsMap);
-		genericEntry.style = this.style;
-		return genericEntry;
-	}
-
-
-	private valGenericEntry(genericEntry: SiGenericEntry): boolean {
-		if (genericEntry.identifier.typeId !== this.identifier.typeId) {
-			return false;
-			// throw new GenericMissmatchError('SiEntry missmatch: '
-			// 		+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
+	private valGenericEntry(genericEntry: SiGenericEntry): void {
+		if (!genericEntry.entryQualifier.equals(this.entryQualifier)) {
+			throw new GenericMissmatchError('SiEntry missmatch: '
+					+ genericEntry.entryQualifier.toString() + ' != ' + this.entryQualifier.toString());
 		}
-
-		if (genericEntry.style.bulky !== this.style.bulky || genericEntry.style.readOnly !== this.style.readOnly) {
-			return false;
-			// throw new GenericMissmatchError('SiEntry missmatch.');
-		}
-
-		return true;
-	}
-
-	isClean(): boolean {
-		return this.state === SiEntryState.CLEAN;
-	}
-
-	isAlive(): boolean {
-		return this.state !== SiEntryState.REPLACED && this.state !== SiEntryState.REMOVED;
-	}
-
-	isClaimed(): boolean {
-		return this.state === SiEntryState.LOCKED || this.state === SiEntryState.RELOADING
-				|| this.state === SiEntryState.OUTDATED;
 	}
 
 	// consume(entry: SiEntry) {
-	// 	IllegalArgumentError.assertTrue(entry.state === SiEntryState.CLEAN);
-	// 	IllegalSiStateError.assertTrue(this.isAvlive());
-
-	// 	for (const [entryBuildupId, entryBuildup] of this._entryBuildupsMap) {
-	// 		entryBuildup.consume(entry.getEntryBuildupById(entryBuildupId));
+	// 	for (const [key, field] of this.fieldMap) {
+	// 		this.fieldMap.set(key, field.consume(entry.getFieldById(key)));
 	// 	}
 
-	// 	entry.markAsConsumed();
+	// 	this.controls = entry.controls;
 	// }
-
-
-	markAsOutdated(): void {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN || this.state === SiEntryState.LOCKED
-				|| this.state === SiEntryState.OUTDATED, 'SiEntry not outdated, clean or locked: ' + this.state);
-		this.stateSubject.next(SiEntryState.OUTDATED);
-	}
-
-	markAsReloading(): void {
-		IllegalSiStateError.assertTrue(this.isAlive());
-		this.stateSubject.next(SiEntryState.RELOADING);
-	}
-
-	markAsRemoved(): void {
-		IllegalSiStateError.assertTrue(this.isAlive());
-		this.stateSubject.next(SiEntryState.REMOVED);
-		this.stateSubject.complete();
-	}
-
-	createLock(): SiEntryLock {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN,
-				'SiEntry not clean: ' + this.state);
-
-		this.stateSubject.next(SiEntryState.LOCKED);
-		const lock = this.lock = {
-			release: () => {
-				if (this.lock !== lock) {
-					throw new IllegalSiStateError('Lock already released.');
-				}
-
-				this.lock = null;
-
-				if (!this.isAlive() || this.state === SiEntryState.RELOADING || this.state === SiEntryState.OUTDATED) {
-					return;
-				}
-
-				IllegalSiStateError.assertTrue(this.state === SiEntryState.LOCKED,
-						'SiEntry not locked, loading, outdated nor dead: ' + this.state);
-				this.stateSubject.next(SiEntryState.CLEAN);
-			}
-		};
-
-		return this.lock;
-	}
-
-	replace(replacementEntry: SiEntry): void {
-		IllegalSiStateError.assertTrue(this.isAlive());
-
-		this._replacementEntry = replacementEntry;
-		this.stateSubject.next(SiEntryState.REPLACED);
-		this.stateSubject.complete();
-	}
-
-	// private uiClaimedSubject = new BehaviorSubject<boolean>(false);
-	// private uiClaims = 0;
-
-	// uiClaim() {
-	// 	this.uiClaims++;
-	// }
-
-	// uiUnclaim() {
-	// 	if (this.uiClaims <= 0) {
-	// 		throw new IllegalStateError();
-	// 	}
-
-	// 	this.uiClaims--;
-	// 	this.updateClaimedSubject();
-	// }
-
-	// private updateClaimedSubject() {
-	// 	var uiClaimed = this.uiClaims > 0;
-
-	// 	if (this.uiClaimed !== claimed) {
-	// 		this.uiClaimedSubject.next(claimed);
-	// 	}
-	// }
-
-	// get uiClaimed$(): Observable<boolean> {
-	// 	return this.uiClaimedSubject.asObservable();
-	// }
-
-	// get uiClaimed(): boolean {
-	// 	return this.uiClaimedSubject.getValue();
-	// }
-
-	getFinalReplacementEntry(): SiEntry {
-		let siEntry: SiEntry = this;
-
-		while (siEntry.replacementEntry) {
-			siEntry = siEntry.replacementEntry;
-		}
-
-		return siEntry;
-	}
-}
-
-export interface SiEntryLock {
-	release(): void;
-}
-
-
-
-export enum SiEntryState {
-	CLEAN = 'CLEAN',
-	OUTDATED = 'OUTDATED',
-	LOCKED = 'LOCKED',
-	RELOADING = 'RELOADING',
-	REMOVED = 'REMOVED',
-	REPLACED = 'REPLACED'
 }

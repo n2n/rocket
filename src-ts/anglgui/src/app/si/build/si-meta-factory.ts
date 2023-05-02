@@ -130,7 +130,7 @@ export class SiMetaFactory {
 	static createTypeContext(data: any): SiTypeContext {
 		const extr = new Extractor(data);
 
-		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryBuildupIds'),
+		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryIds'),
 				extr.reqBoolean('treeMode'));
 	}
 

@@ -1,5 +1,5 @@
 import { SiInputResetPoint } from '../../../si-input-reset-point';
-import { SiEntry } from '../../../si-entry';
+import { SiValueBoundary } from '../../../si-value-boundary';
 import { SplitContent } from './split-content-collection';
 import { ManagableSplitContext } from './split-context';
 
@@ -20,7 +20,7 @@ export class SplitContextInputResetPoint implements SiInputResetPoint {
 
 			scrp.activeKeys.push(key);
 
-			splitContent.getLoadedSiEntry$().subscribe(async (entry: SiEntry|null) => {
+			splitContent.getLoadedSiEntry$().subscribe(async (entry: SiValueBoundary|null) => {
 				if (entry) {
 					scrp.inputResetPointsMap.set(key, await entry.createInputResetPoint());
 				}

@@ -28,9 +28,9 @@ export class SplitContextCopy {
 		const promises = new Array<Promise<boolean>>();
 
 		for (const [key, genericEntry] of this.genericMap) {
-			const siEntry = splitContentMap.get(key)?.getLoadedSiEntry();
-			if (siEntry) {
-				promises.push(siEntry.paste(genericEntry));
+			const siValueBoundary = splitContentMap.get(key)?.getLoadedSiEntry();
+			if (siValueBoundary) {
+				promises.push(siValueBoundary.paste(genericEntry));
 			}
 		}
 

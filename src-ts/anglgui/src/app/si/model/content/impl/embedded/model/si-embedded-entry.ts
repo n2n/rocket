@@ -1,5 +1,5 @@
 
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
@@ -11,7 +11,7 @@ export class SiEmbeddedEntry {
 	constructor(public comp: BulkyEntrySiGui, public summaryComp: CompactEntrySiGui|null) {
 	}
 
-	get summaryEntry(): SiEntry|null {
+	get summaryEntry(): SiValueBoundary|null {
 		if (this.summaryComp) {
 			return this.summaryComp.entry;
 		}
@@ -19,11 +19,11 @@ export class SiEmbeddedEntry {
 		return null;
 	}
 
-	get entry(): SiEntry {
+	get entry(): SiValueBoundary {
 		return this.comp.entry!;
 	}
 
-	set entry(entry: SiEntry) {
+	set entry(entry: SiValueBoundary) {
 		this.comp.entry = entry;
 	}
 

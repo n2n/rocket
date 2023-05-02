@@ -10,7 +10,7 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 	public model!: BulkyEntryModel;
 
 	get typeSelected(): boolean {
-		return this.model.getSiEntry().entryBuildupSelected;
+		return this.model.getSiEntry().entrySelected;
 	}
 
 	get choosableSiMaskQualifiers(): SiMaskQualifier[] {
@@ -36,28 +36,28 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 	// }
 
 	// // private sync() {
-	// // 	const siEntry = this.model.getSiEntry();
-	// // 	if (this.siEntry === siEntry) {
+	// // 	const siValueBoundary = this.model.getSiEntry();
+	// // 	if (this.siValueBoundary === siValueBoundary) {
 	// // 		return;
 	// // 	}
 
 	// // 	this.clear();
-	// // 	this.siEntry = siEntry;
+	// // 	this.siValueBoundary = siValueBoundary;
 
-	// // 	if (siEntry === null) {
+	// // 	if (siValueBoundary === null) {
 	// // 		return;
 	// // 	}
 
-	// // 	// new TypeSelect(siEntry.maskQualifiers);
+	// // 	// new TypeSelect(siValueBoundary.maskQualifiers);
 
-	// // 	const siMaskDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siEntry.selectedTypeId);
+	// // 	const siMaskDeclaration = this.model.getSiDeclaration().getTypeDeclarationByTypeId(siValueBoundary.selectedTypeId);
 	// // 	const toolbarResolver = new ToolbarResolver();
 
 	// // 	this.contentUiStructures = this.createStructures(this.uiStructure, siMaskDeclaration.structureDeclarations, toolbarResolver);
 
 	// // 	for (const prop of siMaskDeclaration.type.getProps()) {
-	// // 		if (prop.dependantPropIds.length > 0 && siEntry.selectedEntryBuildup.containsPropId(prop.id)) {
-	// // 			toolbarResolver.fillContext(prop, siEntry.selectedEntryBuildup.getFieldById(prop.id));
+	// // 		if (prop.dependantPropIds.length > 0 && siValueBoundary.selectedEntry.containsPropId(prop.id)) {
+	// // 			toolbarResolver.fillContext(prop, siValueBoundary.selectedEntry.getFieldById(prop.id));
 	// // 		}
 	// // 	}
 	// // }
@@ -89,7 +89,7 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 
 	// // 	if (ssd.prop) {
 	// // 		uiStructure.label = ssd.prop.label;
-	// // 		const siField = this.model.getSiEntry().selectedEntryBuildup.getFieldById(ssd.prop.id);
+	// // 		const siField = this.model.getSiEntry().selectedEntry.getFieldById(ssd.prop.id);
 	// // 		uiStructure.model = siField.createUiStructureModel();
 	// // 		toolbarResolver.register(ssd.prop.id, uiStructure);
 	// // 		return uiStructure;

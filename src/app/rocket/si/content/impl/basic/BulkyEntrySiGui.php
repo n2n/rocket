@@ -23,7 +23,7 @@ namespace rocket\si\content\impl\basic;
 
 use rocket\si\content\SiGui;
 use rocket\si\meta\SiDeclaration;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\si\SiPayloadFactory;
@@ -36,7 +36,7 @@ class BulkyEntrySiGui implements SiGui {
 	private $controls = [];
 	private $entryControlsIncluded = true;
 	
-	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null) {
+	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $entry = null) {
 		$this->frame = $frame;
 		$this->declaration = $declaration;
 		$this->setEntry($entry);
@@ -50,12 +50,12 @@ class BulkyEntrySiGui implements SiGui {
 		return 'bulky-entry';
 	}
 
-	function setEntry(?SiEntry $entry): static {
+	function setEntry(?SiValueBoundary $entry): static {
 		$this->entry = $entry;
 		return $this;
 	}
 
-	function getEntry(): ?SiEntry {
+	function getEntry(): ?SiValueBoundary {
 		return $this->entry;
 	}
 	

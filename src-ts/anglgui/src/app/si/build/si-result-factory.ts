@@ -34,7 +34,7 @@ export class SiResultFactory {
 	createInputError(data: any, declaration: SiDeclaration): SiInputError {
 		const inputError = new SiInputError();
 		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
-		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
 			inputError.errorEntries.set(eeKey, entryFactory.createEntry(eeData));
 		}
 		return inputError;
@@ -47,7 +47,7 @@ export class SiResultFactory {
 
 		const inputResult = new SiInputResult();
 		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
-		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
 			inputResult.entries.set(eeKey, entryFactory.createEntry(eeData));
 		}
 		return inputResult;
