@@ -103,7 +103,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putUnavailable(string $key, string $label) {
-		return $this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
+		return $this->splitContents[$key] = SiSplitContent::createUnavailable($label);
 	}
 
 	/**

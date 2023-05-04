@@ -14,6 +14,8 @@ use rocket\cu\gui\control\CuControl;
 use rocket\si\content\SiValueBoundary;
 use rocket\si\meta\SiStyle;
 use rocket\cu\gui\CuGui;
+use rocket\si\input\SiInput;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class BulkyCuGui implements CuGui {
 
@@ -45,6 +47,23 @@ class BulkyCuGui implements CuGui {
 	function addCuControl(CuControl $cuControl): static {
 		$this->cuControls[$cuControl->getId()] = $cuControl;
 		return $this;
+	}
+
+
+	function handleSiInput(SiInput $siInput): void {
+		$entryInputs = $siInput->getEntryInputs();
+		if (count($entryInputs) > 1) {
+			throw new CorruptedSiInputDataException('BulkyEntrySiGui can not handle multiple SiEntryInputs.');
+		}
+
+		foreach ($entryInputs as $entryInput) {
+			$maskId = $entryInput->getTypeId();
+			if (!isset($this->cuMaskedEntries[$maskId])) {
+				throw new CorruptedSiInputDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
+			}
+
+			$this->cuMaskedEntries[$maskId]->getSiEntry()->handleEntryInput($entryInput);
+		}
 	}
 
 	function toSiGui(Url $zoneApiUrl = null): SiGui {

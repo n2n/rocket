@@ -21,6 +21,9 @@
  */
 namespace rocket\si\content;
 
+use rocket\si\input\SiInput;
+use rocket\si\input\CorruptedSiInputDataException;
+
 interface SiGui {
 	
 	/**
@@ -33,4 +36,5 @@ interface SiGui {
 	 * @return array
 	 */
 	function getData(): array;
+
 }

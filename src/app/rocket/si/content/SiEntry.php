@@ -23,6 +23,9 @@ namespace rocket\si\content;
 
 use rocket\si\control\SiControl;
 use rocket\si\SiPayloadFactory;
+use n2n\util\type\attrs\AttributesException;
+use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\input\SiEntryInput;
 
 class SiEntry implements \JsonSerializable {
 
@@ -133,6 +136,23 @@ class SiEntry implements \JsonSerializable {
 	function putControl(string $id, SiControl $control): static {
 		$this->controls[$id] = $control;
 		return $this;
+	}
+
+	/**
+	 * @throws CorruptedSiInputDataException
+	 */
+	function handleEntryInput(SiEntryInput $entryInput): void {
+		foreach ($this->fields as $propId => $field) {
+			if ($field->isReadOnly() || !$entryInput->containsFieldName($propId)) {
+				continue;
+			}
+
+			try {
+				$field->handleInput($entryInput->getFieldInput($propId)->getData());
+			} catch (\InvalidArgumentException|AttributesException $e) {
+				throw new CorruptedSiInputDataException(null, 0, $e);
+			}
+		}
 	}
 	
 	function jsonSerialize(): mixed {

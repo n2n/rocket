@@ -195,7 +195,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
 	function putUnavailable(string $key, string $label) {
-		return $this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
+		return $this->splitContents[$key] = SiSplitContent::createUnavailable($label);
 	}
 
 	/**
@@ -249,7 +249,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 				throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);	
 			}
 			
-			$siValueBoundary->handleInput(SiEntryInput::parse($entryInputData));
+			$siValueBoundary->handleEntryInput(SiEntryInput::parse($entryInputData));
 			if ($lazy) {
 				$preSplitContent = $this->splitContents[$key];
 				$this->splitContents[$key] = SiSplitContent::createEntry($preSplitContent->getLabel(), $siValueBoundary)

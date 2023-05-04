@@ -141,7 +141,7 @@ class SiValueBoundary implements \JsonSerializable {
 	 * @param SiEntryInput $entryInput
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(SiEntryInput $entryInput): void {
+	function handleEntryInput(SiEntryInput $entryInput): void {
 		$typeId = $entryInput->getTypeId();
 		
 		try {
@@ -150,21 +150,8 @@ class SiValueBoundary implements \JsonSerializable {
 			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
 		}
 		
-		$buildup = $this->getSelectedEntry();
-		
-		foreach ($buildup->getFields() as $propId => $field) {
-			if ($field->isReadOnly() || !$entryInput->containsFieldName($propId)) {
-				continue;
-			}
-			
-			try {
-				$field->handleInput($entryInput->getFieldInput($propId)->getData());
-			} catch (\InvalidArgumentException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			} catch (AttributesException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			}
-		}
+		$this->getSelectedEntry()->handleEntryInput($entryInput);
+
 	}
 	
 }

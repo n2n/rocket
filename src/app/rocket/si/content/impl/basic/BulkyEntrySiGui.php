@@ -28,11 +28,13 @@ use rocket\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\si\SiPayloadFactory;
 use rocket\si\meta\SiFrame;
+use rocket\si\input\SiInput;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class BulkyEntrySiGui implements SiGui {
 	private $frame;
 	private $declaration;
-	private $entry;
+	private $valueBoundary;
 	private $controls = [];
 	private $entryControlsIncluded = true;
 	
@@ -51,12 +53,12 @@ class BulkyEntrySiGui implements SiGui {
 	}
 
 	function setValueBoundary(?SiValueBoundary $entry): static {
-		$this->entry = $entry;
+		$this->valueBoundary = $entry;
 		return $this;
 	}
 
-	function getEntry(): ?SiValueBoundary {
-		return $this->entry;
+	function getValueBoundary(): ?SiValueBoundary {
+		return $this->valueBoundary;
 	}
 	
 	/**
@@ -102,7 +104,7 @@ class BulkyEntrySiGui implements SiGui {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'entry' => $this->entry,
+			'entry' => $this->valueBoundary,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'entryControlsIncluded' => $this->entryControlsIncluded
 		];

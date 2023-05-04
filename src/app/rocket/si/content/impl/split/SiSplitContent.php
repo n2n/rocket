@@ -61,7 +61,7 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string $shortLabel
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	function setShortLabel(?string $shortLabel) {
 		$this->shortLabel = $shortLabel;
@@ -77,7 +77,7 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string[] $propIds
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	function setPropIds(array $propIds) {
 		$this->propIds = array_values($propIds);
@@ -109,7 +109,7 @@ class SiSplitContent implements \JsonSerializable {
 		return $data;
 	}
 	
-	static function createUnavaialble(string $label) {
+	static function createUnavailable(string $label): SiSplitContent {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		return $split;
@@ -120,7 +120,7 @@ class SiSplitContent implements \JsonSerializable {
 	 * @param Url $apiGetUrl
 	 * @param string $entryId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	static function createLazy(string $label, Url $apiGetUrl, ?string $entryId, SiStyle $style) {
 		$split = new SiSplitContent();
@@ -134,7 +134,7 @@ class SiSplitContent implements \JsonSerializable {
 	/**
 	 * @param string $label
 	 * @param SiValueBoundary $entry
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	static function createEntry(string $label, SiValueBoundary $entry) {
 		$split = new SiSplitContent();
