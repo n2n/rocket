@@ -2,7 +2,7 @@
 namespace rocket\ei\util\factory;
 
 use rocket\ei\util\privilege\EiuCommandPrivilege;
-use rocket\ei\util\control\EiuControlResponse;
+use rocket\common\util\RfControlResponse;
 use rocket\ei\util\EiuAnalyst;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
@@ -33,10 +33,10 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function newControlResponse() {
-		return new EiuControlResponse($this->eiuAnalyst);
+		return new RfControlResponse($this->eiuAnalyst);
 	}
 	
 	/**

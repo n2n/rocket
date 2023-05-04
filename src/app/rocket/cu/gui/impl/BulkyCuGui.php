@@ -16,6 +16,8 @@ use rocket\si\meta\SiStyle;
 use rocket\cu\gui\CuGui;
 use rocket\si\input\SiInput;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\cu\gui\control\CuControlCallId;
+use rocket\si\control\SiCallResponse;
 
 class BulkyCuGui implements CuGui {
 
@@ -24,6 +26,9 @@ class BulkyCuGui implements CuGui {
 	 * @var array<CuMaskedEntry>
 	 */
 	private array $cuMaskedEntries = [];
+	/**
+	 * @var array<CuControl>
+	 */
 	private array $cuControls = [];
 
 	function __construct(private bool $readOnly) {
@@ -62,8 +67,19 @@ class BulkyCuGui implements CuGui {
 				throw new CorruptedSiInputDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
 			}
 
-			$this->cuMaskedEntries[$maskId]->getSiEntry()->handleEntryInput($entryInput);
+			$this->cuMaskedEntries[$maskId]->handleEntryInput($entryInput);
+
 		}
+	}
+
+	function handleCall(CuControlCallId $cuControlCallId): SiCallResponse {
+		$controlId = $cuControlCallId->getControlId();
+
+		if (isset($this->cuControls[$controlId])) {
+			return $this->cuControls[$controlId]->handle();
+		}
+
+		throw new CorruptedSiInputDataException('Unknown control id: ' . $controlId);
 	}
 
 	function toSiGui(Url $zoneApiUrl = null): SiGui {
@@ -81,11 +97,12 @@ class BulkyCuGui implements CuGui {
 
 		$siGui = new BulkyEntrySiGui(null, $siDeclaration, $siValueBoundary);
 
-		$controls = array_map(
-				fn ($c) => $c->toSiControl($zoneApiUrl, ZoneApiControlCallId::create([$c->getId()])),
-				$this->cuControls);
+		$siControls = [];
+		foreach ($this->cuControls as $cuControl) {
+			$siControls[] = $cuControl->toSiControl($zoneApiUrl, new CuControlCallId($cuControl->getId()));
+		}
 
-		$siGui->setControls($controls);
+		$siGui->setControls($siControls);
 
 		return $siGui;
 	}

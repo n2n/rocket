@@ -19,6 +19,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\si\meta\SiDeclaration;
+use rocket\si\input\SiEntryInput;
 
 class CuMaskedEntry {
 
@@ -58,6 +59,11 @@ class CuMaskedEntry {
 
 	function getSiEntry(): SiEntry {
 		return $this->cuGuiEntry->getSiEntry();
+	}
+
+	function handleSiEntryInput(SiEntryInput $siEntryInput) {
+		$this->cuGuiEntry->getSiEntry()->handleEntryInput($siEntryInput);
+		$this->cuGuiEntry->validate();
 	}
 
 

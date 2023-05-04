@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ei\util\control;
+namespace rocket\common\util;
 
 use rocket\si\control\SiCallResponse;
 use rocket\ei\util\EiuAnalyst;
@@ -30,7 +30,7 @@ use rocket\ei\manage\veto\EiLifecycleMonitor;
 use rocket\ei\manage\EiObject;
 use rocket\si\control\SiNavPoint;
 
-class EiuControlResponse {
+class RfControlResponse {
 	private $eiuAnalyst;
 	/**
 	 * @var SiCallResponse
@@ -73,7 +73,7 @@ class EiuControlResponse {
 	 * @param Url $url
 	 * @return \rocket\ei\util\control\EiuControlResponse
 	 */
-	function redirectBackOrRef(Url $url) {
+	function redirectBackOrRef(Url $url): static {
 		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		$this->siResult->setRef($url);
 		return $this;
@@ -101,7 +101,7 @@ class EiuControlResponse {
 
 	/**
 	 * @param Url|string $url
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function redirectToHref(Url|string $url) {
 		$url = Url::create($url);
@@ -154,7 +154,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param bool $noAutoEvents
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function noAutoEvents(bool $noAutoEvents = true) {
 		$this->noAutoEvents = true;
@@ -163,7 +163,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function entryAdded(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -174,7 +174,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function entryChanged(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -185,7 +185,7 @@ class EiuControlResponse {
 	
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function entryRemoved(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -217,9 +217,9 @@ class EiuControlResponse {
 	
 	/**
 	 * @param EiLifecycleMonitor $elm
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return SiCallResponse
 	 */
-	function toSiCallResponse(EiLifecycleMonitor $elm) {
+	function toSiCallResponse(EiLifecycleMonitor $elm): SiCallResponse {
 		if ($this->noAutoEvents) {
 			return $this->siResult;
 		}

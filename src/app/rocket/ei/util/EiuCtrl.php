@@ -123,9 +123,7 @@ class EiuCtrl {
 	function lookupObject(string $pid, int $ignoreConstraintTypes = 0) {
 		try {
 			return $this->eiuFrame->lookupObject($this->eiuFrame->pidToId($pid), $ignoreConstraintTypes, true);
-		} catch (UnknownEiObjectException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
+		} catch (UnknownEiObjectException|\InvalidArgumentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} /*catch (InaccessibleEiEntryException $e) {
 		throw new ForbiddenException(null, 0, $e);
@@ -398,7 +396,7 @@ class EiuCtrl {
 	}
 	
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
-			array $generalGuiControls = []) {
+			array $generalGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}

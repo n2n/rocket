@@ -28,6 +28,8 @@ use rocket\ei\manage\api\ApiControlCallId;
 use n2n\util\uri\Url;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\cu\gui\control\CuControl;
+use rocket\cu\gui\control\CuControlCallId;
+use rocket\si\control\SiCallResponse;
 
 class CallbackCuControl implements CuControl {
 	private bool $inputHandled = false;
@@ -58,10 +60,12 @@ class CallbackCuControl implements CuControl {
 	}
 	
 
-	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
+	function toSiControl(Url $apiUrl, CuControlCallId $cuControlCallId): SiControl {
+		return new ApiCallSiControl($apiUrl, $cuControlCallId, $this->siButton, $this->inputHandled);
 	}
 
-	
+	function handle(): SiCallResponse {
+
+	}
 
 }

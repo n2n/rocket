@@ -14,17 +14,25 @@ use n2n\web\http\controller\ParamPost;
 use rocket\ei\manage\api\SiCallResult;
 use rocket\si\input\SiInputFactory;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ei\util\Eiu;
+use rocket\ei\util\EiuAnalyst;
+use rocket\ei\manage\ManageState;
+use rocket\cu\gui\control\CuControlCallId;
 
 class CuuCtrl {
 
-	private Cuu $cuf;
+	private Cuu $cuu;
 
 	function __construct(private ControllingUtils $cu) {
-		$this->cuf = new Cuu($cu->getN2nContext());
+		$eiuAnalyst = new EiuAnalyst();
+		$eiuAnalyst->applyEiArgs($cu->getN2nContext(),
+				$cu->getN2nContext()->lookup(ManageState::class)->peakEiFrame());
+
+		$this->cuu = new Cuu($eiuAnalyst);
 	}
 
 	function cuu(): Cuu {
-		return $this->cuf;
+		return $this->cuu;
 	}
 
 	private function forwardHtml(): bool {
@@ -52,23 +60,12 @@ class CuuCtrl {
 			$cuGui->handleSiInput($siInput);
 		}
 
-		$apiCallId = $this->cu->getRequest()->getPostQuery()->get('apiCallId');
-		if (isset($apiCallId)) {
-			$zoneCallId = ZoneApiControlCallId::parse((new ParamPost($apiCallId))->parseJson());
-			$cuGui->handleCall();
+		$apiCallIdData = $this->cu->getRequest()->getPostQuery()->get('apiCallId');
+		if (!isset($apiCallIdData)) {
+			return null;
 		}
 
-
-		$process = new ZoneApiControlProcess($this->eiFrame);
-		$process->provideEiEntryGui($eiEntryGui);
-		$process->determineGuiControl(), $generalGuiControls);
-
-		if (isset($_POST['entryInputMaps'])
-				&& null !== ($siInputError = $process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson()))) {
-			return SiCallResult::fromInputError($siInputError);
-		}
-
-		return SiCallResult::fromCallResponse($process->callGuiControl(),
+		return SiCallResult::fromCallResponse($cuGui->handleCall(),
 				(isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null));
 	}
 

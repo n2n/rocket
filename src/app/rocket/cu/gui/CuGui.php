@@ -17,4 +17,10 @@ interface CuGui {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleSiInput(SiInput $siInput): void;
+
+	/**
+	 * @return void
+	 * @throws CorruptedSiInputDataException
+	 */
+	function handleCall(): void;
 }

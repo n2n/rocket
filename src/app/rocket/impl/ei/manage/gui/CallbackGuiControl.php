@@ -34,12 +34,8 @@ use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ZoneApiControlCallId;
-use rocket\ei\manage\api\ApiController;
-use rocket\ei\util\control\EiuControlResponse;
+use rocket\common\util\RfControlResponse;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
@@ -93,7 +89,7 @@ class CallbackGuiControl implements GuiControl {
 		} else {
 			$sifControlResponse = $callback($eiu, $inputEius);
 		}
-		ArgUtils::valTypeReturn($sifControlResponse, EiuControlResponse::class, null, $callback, true);
+		ArgUtils::valTypeReturn($sifControlResponse, RfControlResponse::class, null, $callback, true);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));
