@@ -69,8 +69,23 @@ class BulkyCuGui implements CuGui {
 				throw new CorruptedSiInputDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
 			}
 
-			$this->cuMaskedEntries[$maskId]->handleEntryInput($entryInput, $n2nContext);
+			$this->setSelectedMaskId($maskId);
+
+			if ($this->cuMaskedEntries[$maskId]->handleSiEntryInput($entryInput, $n2nContext)) {
+				return null;
+			}
+
+			return new SiInputError([$this->createSiValueBoundary()]);
 		}
+	}
+
+	private function createSiValueBoundary(): SiValueBoundary {
+		$siStyle = new SiStyle(true, $this->readOnly);
+		$siValueBoundary = new SiValueBoundary($siStyle);
+		foreach ($this->cuMaskedEntries as $id => $cuMaskedEntry) {
+			$siValueBoundary->putEntry($id, $cuMaskedEntry->getSiEntry());
+		}
+		return $siValueBoundary;
 	}
 
 	function handleCall(CuControlCallId $cuControlCallId): SiCallResponse {

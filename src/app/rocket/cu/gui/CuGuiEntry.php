@@ -7,6 +7,7 @@ use rocket\si\content\SiEntry;
 use phpbob\representation\ex\UnknownElementException;
 use rocket\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
+use rocket\si\input\SiInputError;
 
 class CuGuiEntry {
 	/**
@@ -41,11 +42,17 @@ class CuGuiEntry {
 		return $this->siEntry;
 	}
 
-	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2nContext) {
+	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2nContext): bool {
 		$this->siEntry->handleEntryInput($siEntryInput);
 
+		$failed = false;
+
 		foreach ($this->cuFields as $cuField) {
-			$cuField->readSi($siEntryInput, $n2nContext);
+			if (!$cuField->readSi($siEntryInput, $n2nContext)) {
+				$failed = true;
+			}
 		}
+
+		return $failed;
 	}
 }

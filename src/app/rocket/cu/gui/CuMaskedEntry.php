@@ -21,6 +21,7 @@ use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
+use rocket\si\input\SiInputError;
 
 class CuMaskedEntry {
 
@@ -62,12 +63,7 @@ class CuMaskedEntry {
 		return $this->cuGuiEntry->getSiEntry();
 	}
 
-	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2NContext) {
-		$this->cuGuiEntry->handleSiEntryInput($siEntryInput);
+	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2NContext): ?SiEntryInput {
+		return $this->cuGuiEntry->handleSiEntryInput($siEntryInput);
 	}
-
-
-
-
-
 }
