@@ -25,14 +25,16 @@ use n2n\l10n\Message;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\reflection\magic\MagicMethodInvoker;
+use Closure;
 
 trait SiFieldErrorTrait {
 	private $messagesCallback = null;
-	
+
 	/**
+	 * @param Closure|null $messagesCallback
 	 * @return self
 	 */
-	function setMessagesCallback(?\Closure $messagesCallback) {
+	function setMessagesCallback(?Closure $messagesCallback): static {
 		$this->messagesCallback = $messagesCallback;
 		return $this;
 	}
@@ -40,7 +42,7 @@ trait SiFieldErrorTrait {
 	/**
 	 * @return string[]
 	 */
-	function getMessageStrs() {
+	function getMessageStrs(): array {
 		if ($this->messagesCallback === null) {
 			return [];
 		}
