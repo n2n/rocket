@@ -155,7 +155,7 @@ class ZoneApiControlProcess /*extends IdPath*/ {
 				if (null !== $entryInput->getIdentifier()->getId()) {
 					$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
 				} else {
-					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getTypeId());
+					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getMaskId());
 				}
 				
 				$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($eiObject);

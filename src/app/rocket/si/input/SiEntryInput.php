@@ -35,7 +35,7 @@ class SiEntryInput {
 	/**
 	 * @var string
 	 */
-	private $typeId;
+	private $maskId;
 	/**
 	 * @var bool
 	 */
@@ -47,12 +47,12 @@ class SiEntryInput {
 	
 	/**
 	 * @param SiEntryIdentifier $identifier
-	 * @param string $typeId
+	 * @param string $maskId
 	 * @param bool $bulky
 	 */
-	function __construct(SiEntryIdentifier $identifier, string $typeId, bool $bulky) {
+	function __construct(SiEntryIdentifier $identifier, string $maskId, bool $bulky) {
 		$this->identifier = $identifier;
-		$this->typeId = $typeId;
+		$this->maskId = $maskId;
 		$this->bulky = $bulky;
 	}
 	
@@ -70,8 +70,8 @@ class SiEntryInput {
 	/**
 	 * @return string
 	 */
-	function getTypeId() {
-		return $this->typeId;
+	function getMaskId(): string {
+		return $this->maskId;
 	}
 	
 	/**

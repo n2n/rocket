@@ -20,6 +20,7 @@ use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
+use n2n\core\container\N2nContext;
 
 class CuMaskedEntry {
 
@@ -61,9 +62,8 @@ class CuMaskedEntry {
 		return $this->cuGuiEntry->getSiEntry();
 	}
 
-	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		$this->cuGuiEntry->getSiEntry()->handleEntryInput($siEntryInput);
-		$this->cuGuiEntry->validate();
+	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2NContext) {
+		$this->cuGuiEntry->handleSiEntryInput($siEntryInput);
 	}
 
 

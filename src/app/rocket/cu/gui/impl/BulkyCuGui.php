@@ -18,6 +18,8 @@ use rocket\si\input\SiInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\cu\gui\control\CuControlCallId;
 use rocket\si\control\SiCallResponse;
+use rocket\si\input\SiInputError;
+use n2n\core\container\N2nContext;
 
 class BulkyCuGui implements CuGui {
 
@@ -55,20 +57,19 @@ class BulkyCuGui implements CuGui {
 	}
 
 
-	function handleSiInput(SiInput $siInput): void {
+	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
 		$entryInputs = $siInput->getEntryInputs();
 		if (count($entryInputs) > 1) {
 			throw new CorruptedSiInputDataException('BulkyEntrySiGui can not handle multiple SiEntryInputs.');
 		}
 
 		foreach ($entryInputs as $entryInput) {
-			$maskId = $entryInput->getTypeId();
+			$maskId = $entryInput->getMaskId();
 			if (!isset($this->cuMaskedEntries[$maskId])) {
 				throw new CorruptedSiInputDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
 			}
 
-			$this->cuMaskedEntries[$maskId]->handleEntryInput($entryInput);
-
+			$this->cuMaskedEntries[$maskId]->handleEntryInput($entryInput, $n2nContext);
 		}
 	}
 

@@ -6,6 +6,8 @@ use rocket\si\content\SiGui;
 use n2n\util\uri\Url;
 use rocket\si\input\SiInput;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\input\SiInputError;
+use rocket\cu\gui\control\CuControlCallId;
 
 interface CuGui {
 
@@ -13,14 +15,15 @@ interface CuGui {
 
 	/**
 	 * @param SiInput $siInput
-	 * @return void
+	 * @return SiInputError|null
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleSiInput(SiInput $siInput): void;
+	function handleSiInput(SiInput $siInput): ?SiInputError;
 
 	/**
+	 * @param CuControlCallId $cuControlCallId
 	 * @return void
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleCall(): void;
+	function handleCall(CuControlCallId $cuControlCallId): void;
 }

@@ -129,7 +129,7 @@ class EiEntryGui {
 	 * @param SiEntryInput $siEntryInput
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		$eiTypeId = $siEntryInput->getTypeId();
+		$eiTypeId = $siEntryInput->getMaskId();
 		
 		if (!isset($this->typeDefs[$eiTypeId])) {
 			throw new CorruptedSiInputDataException('EiType not available: ' . $eiTypeId);

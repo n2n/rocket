@@ -4,6 +4,9 @@ namespace rocket\cu\gui;
 
 use rocket\cu\gui\field\CuField;
 use rocket\si\content\SiEntry;
+use phpbob\representation\ex\UnknownElementException;
+use rocket\si\input\SiEntryInput;
+use n2n\core\container\N2nContext;
 
 class CuGuiEntry {
 	/**
@@ -26,7 +29,23 @@ class CuGuiEntry {
 		return $this;
 	}
 
+	function getCuField(string $id): CuField {
+		if (isset($this->cuFields[$id])) {
+			return $this->cuFields[$id];
+		}
+
+		throw new UnknownElementException('Unknown CuField id: ' . $id);
+	}
+
 	function getSiEntry(): SiEntry {
 		return $this->siEntry;
+	}
+
+	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2nContext) {
+		$this->siEntry->handleEntryInput($siEntryInput);
+
+		foreach ($this->cuFields as $cuField) {
+			$cuField->readSi($siEntryInput, $n2nContext);
+		}
 	}
 }

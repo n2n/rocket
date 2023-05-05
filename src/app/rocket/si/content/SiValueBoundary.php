@@ -142,7 +142,7 @@ class SiValueBoundary implements \JsonSerializable {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleEntryInput(SiEntryInput $entryInput): void {
-		$typeId = $entryInput->getTypeId();
+		$typeId = $entryInput->getMaskId();
 		
 		try {
 			$this->setSelectedMaskId($typeId);

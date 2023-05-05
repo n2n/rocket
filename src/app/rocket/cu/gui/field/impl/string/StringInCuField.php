@@ -7,6 +7,7 @@ use rocket\si\content\impl\StringInSiField;
 use n2n\bind\build\impl\Bind;
 use n2n\bind\mapper\impl\Mappers;
 use n2n\validation\validator\impl\Validators;
+use n2n\util\magic\MagicContext;
 
 class StringInCuField implements CuField {
 
@@ -29,9 +30,15 @@ class StringInCuField implements CuField {
 		return $this->siField;
 	}
 
-	function validate(): void {
-		Bind::values($this->getValue())->toValue($this->value)
+	function readSi(MagicContext $magicContext): bool {
+		$validationResult = Bind::values($this->getValue())->toValue($this->value)
 				->map(Mappers::cleanString($this->siField->isMandatory(), $this->siField->getMinlength(),
-						$this->siField->getMaxlength()));
+						$this->siField->getMaxlength()))
+				->exec($magicContext);
+
+		$this->siField->setMessagesCallback(fn () => )
+
+		return $validationResult->hasErrors();
 	}
+
 }
