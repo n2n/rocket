@@ -36,6 +36,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\common\util\RfControlResponse;
+use n2n\util\ex\NotYetImplementedException;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
@@ -59,12 +60,8 @@ class CallbackGuiControl implements GuiControl {
 	function isInputHandled(): bool {
 		return $this->inputHandled;
 	}
-	
-	/**
-	 * @param bool $inputHandled
-	 * @return \rocket\ei\util\control\CallbackGuiControl
-	 */
-	function setInputHandled(bool $inputHandled) {
+
+	function setInputHandled(bool $inputHandled): static {
 		$this->inputHandled = $inputHandled;
 		return $this;
 	}
@@ -95,7 +92,7 @@ class CallbackGuiControl implements GuiControl {
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));
 // 		$mmi->setClassParamObject(Eiu::class, $eiu);
 // 		$mmi->setClassParamObject($className, $obj)
-// 		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
+// 		$mmi->setReturnTypeConstraint(TypeConstraints::type(RfControlResponse::class, true));
 		
 // 		$eiuControlResponse = $mmi->invoke();
 		if ($sifControlResponse === null) {
@@ -132,5 +129,6 @@ class CallbackGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::handleEntries()
 	 */
 	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
+		throw new NotYetImplementedException();
 	}
 }
