@@ -60,9 +60,9 @@ class RfControlResponse {
 	function redirectBack(): static {
 		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		
-		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
+		$eiFrame = $this->eiuAnalyst->getEiFrame(false);
 		
-		if (null !== ($overviewNavPoint = $eiFrame->getOverviewNavPoint(false))) {
+		if (null !== ($overviewNavPoint = $eiFrame?->getOverviewNavPoint(false))) {
 			$this->siCallResponse->setNavPoint($overviewNavPoint);
 		}
 		
@@ -103,7 +103,7 @@ class RfControlResponse {
 	 * @param Url|string $url
 	 * @return RfControlResponse
 	 */
-	function redirectToHref(Url|string $url) {
+	function redirectToHref(Url|string $url): static {
 		$url = Url::create($url);
 		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
 		$this->siCallResponse->setNavPoint(SiNavPoint::href($url));

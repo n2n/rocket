@@ -21,66 +21,14 @@
  */
 namespace rocket\cu\util;
 
-use rocket\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\ManageException;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\EiObject;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\EiEntityObj;
-use rocket\ei\manage\LiveEiObject;
-use rocket\ei\manage\draft\Draft;
-use rocket\ei\manage\DraftEiObject;
-use rocket\ei\manage\ManageState;
-use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\EiPropPath;
-use rocket\ei\EiType;
-use rocket\ei\mask\EiMask;
-use rocket\ei\manage\gui\EiGuiFrame;
-use rocket\ei\manage\gui\EiEntryGuiAssembler;
-use rocket\ei\EiEngine;
-use rocket\spec\Spec;
-use rocket\ei\EiTypeExtension;
-use rocket\core\model\Rocket;
-use rocket\ei\EiCmdPath;
-use rocket\ei\util\spec\EiuContext;
-use rocket\ei\util\spec\EiuEngine;
-use rocket\ei\util\spec\EiuMask;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\gui\EiuGuiFrame;
-use rocket\ei\util\entry\EiuField;
-use rocket\ei\util\spec\EiuCmd;
-use rocket\ei\util\spec\EiuProp;
-use rocket\ei\manage\entry\EiFieldMap;
-use rocket\ei\util\entry\EiuFieldMap;
-use rocket\ei\util\entry\EiuObject;
 use n2n\util\type\TypeUtils;
-use rocket\ei\manage\DefPropPath;
-use rocket\spec\UnknownTypeException;
-use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\gui\EiuGuiField;
-use rocket\ei\util\gui\EiuGui;
-use rocket\ei\manage\gui\EiGui;
-use rocket\ei\manage\gui\EiEntryGuiTypeDef;
-use rocket\ei\util\gui\EiuEntryGuiTypeDef;
-use rocket\ei\manage\gui\EiGuiModel;
-use rocket\ei\util\gui\EiuGuiModel;
-use rocket\ei\component\prop\EiProp;
-use rocket\ei\component\command\EiCmd;
-use rocket\ei\component\modificator\EiMod;
-use rocket\ei\component\EiComponent;
-use rocket\ei\component\UnknownEiComponentException;
-use rocket\ei\manage\EiLaunch;
 use rocket\ei\util\EiuPerimeterException;
 use rocket\ei\util\Eiu;
-use rocket\ei\util\EiuCtrl;
 use rocket\cu\gui\CuGuiEntry;
-use rocket\cu\gui\CuGui;
 use rocket\cu\util\gui\CuuGuiEntry;
 use InvalidArgumentException;
-use n2n\reflection\ReflectionUtils;
 
 class CuuAnalyst {
 
@@ -103,7 +51,6 @@ class CuuAnalyst {
 
 		$eiArgs = $this->unappliedEiArgs;
 		$this->unappliedEiArgs = null;
-
 		
 		foreach ($eiArgs as $eiArg) {
 			if ($eiArg === null) {
