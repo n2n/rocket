@@ -8,7 +8,7 @@ use rocket\ei\util\EiuAnalyst;
 
 class CuuFactory {
 
-	function __construct(private readonly EiuAnalyst $eiuAnalyst) {
+	function __construct(private readonly CuuAnalyst $cuuAnalyst) {
 
 	}
 
@@ -17,6 +17,6 @@ class CuuFactory {
 	}
 
 	function newControlResponse() {
-		return new RfControlResponse($this->eiuAnalyst);
+		return new RfControlResponse($this->cuuAnalyst->getEiu(true)->getEiuAnalyst());
 	}
 }

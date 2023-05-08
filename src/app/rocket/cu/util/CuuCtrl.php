@@ -26,11 +26,8 @@ class CuuCtrl {
 	private Cuu $cuu;
 
 	function __construct(private ControllingUtils $cu) {
-		$eiuAnalyst = new EiuAnalyst();
-		$eiuAnalyst->applyEiArgs($cu->getN2nContext(),
-				$cu->getN2nContext()->lookup(ManageState::class)->peakEiFrame());
-
-		$this->cuu = new Cuu($eiuAnalyst);
+		$this->cuu = new Cuu($cu->getN2nContext(),
+				new Eiu($cu->getN2nContext()->lookup(ManageState::class)->peakEiFrame()));
 	}
 
 	function cuu(): Cuu {

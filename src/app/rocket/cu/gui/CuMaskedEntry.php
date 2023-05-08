@@ -61,6 +61,10 @@ class CuMaskedEntry {
 		return $this->siMaskDeclaration;
 	}
 
+	function getCuEntry(): CuGuiEntry {
+		return $this->cuGuiEntry;
+	}
+
 	function getSiEntry(): SiEntry {
 		return $this->cuGuiEntry->getSiEntry();
 	}

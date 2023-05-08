@@ -108,7 +108,7 @@ class BulkyCuGui implements CuGui {
 		$controlId = $cuControlCallId->getControlId();
 
 		if (isset($this->cuControls[$controlId])) {
-			return $this->cuControls[$controlId]->handle($cuu);
+			return $this->cuControls[$controlId]->handle(new Cuu($cuu, $this->cuMaskedEntries[$this->selectedMaskId]?->getCuEntry()));
 		}
 
 		throw new CorruptedSiInputDataException('Unknown control id: ' . $controlId);
