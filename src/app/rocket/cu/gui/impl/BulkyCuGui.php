@@ -20,6 +20,7 @@ use rocket\cu\gui\control\CuControlCallId;
 use rocket\si\control\SiCallResponse;
 use rocket\si\input\SiInputError;
 use n2n\core\container\N2nContext;
+use rocket\cu\util\Cuu;
 
 class BulkyCuGui implements CuGui {
 
@@ -32,6 +33,11 @@ class BulkyCuGui implements CuGui {
 	 * @var array<CuControl>
 	 */
 	private array $cuControls = [];
+
+	/**
+	 * @var array<SiValueBoundary>
+	 */
+	private array $inputSiValueBoundaries = [];
 
 	function __construct(private bool $readOnly) {
 
@@ -56,6 +62,12 @@ class BulkyCuGui implements CuGui {
 		return $this;
 	}
 
+	/**
+	 * @return SiValueBoundary[]
+	 */
+	function getInputSiValueBoundaries(): array {
+		return $this->inputSiValueBoundaries;
+	}
 
 	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
 		$entryInputs = $siInput->getEntryInputs();
@@ -72,11 +84,14 @@ class BulkyCuGui implements CuGui {
 			$this->setSelectedMaskId($maskId);
 
 			if ($this->cuMaskedEntries[$maskId]->handleSiEntryInput($entryInput, $n2nContext)) {
+				$this->inputSiValueBoundaries = [$this->createSiValueBoundary()];
 				return null;
 			}
 
 			return new SiInputError([$this->createSiValueBoundary()]);
 		}
+
+		throw new IllegalStateException();
 	}
 
 	private function createSiValueBoundary(): SiValueBoundary {
@@ -85,14 +100,15 @@ class BulkyCuGui implements CuGui {
 		foreach ($this->cuMaskedEntries as $id => $cuMaskedEntry) {
 			$siValueBoundary->putEntry($id, $cuMaskedEntry->getSiEntry());
 		}
+		$siValueBoundary->setSelectedMaskId($this->selectedMaskId);
 		return $siValueBoundary;
 	}
 
-	function handleCall(CuControlCallId $cuControlCallId): SiCallResponse {
+	function handleCall(CuControlCallId $cuControlCallId, Cuu $cuu): SiCallResponse {
 		$controlId = $cuControlCallId->getControlId();
 
 		if (isset($this->cuControls[$controlId])) {
-			return $this->cuControls[$controlId]->handle();
+			return $this->cuControls[$controlId]->handle($cuu);
 		}
 
 		throw new CorruptedSiInputDataException('Unknown control id: ' . $controlId);

@@ -35,7 +35,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 				public siModStateService: SiModStateService) {
 	}
 
-	getBoundEntries(): SiValueBoundary[] {
+	getBoundValueBoundaries(): SiValueBoundary[] {
 		return [this.valueBoundary!];
 	}
 
@@ -126,8 +126,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 		if (this.siEntryMonitor) {
 			this.siEntryMonitor.start();
-			this.monitorEntry();
 		}
+
+		this.monitorEntry();
 
 		this.mainControlUiContents = this.controls.map((control) => {
 			return control.createUiContent(() => uiStructure.getZone()!);
@@ -140,14 +141,14 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 	private monitorEntry() {
 		if (!this.siValueBoundary.isNew()) {
-			this.siEntryMonitor!.registerEntry(this.siValueBoundary);
+			this.siEntryMonitor?.registerEntry(this.siValueBoundary);
 		}
 
 		const sub = this.siValueBoundary.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
 					if (!this.siValueBoundary.isNew()) {
-						this.siEntryMonitor!.unregisterEntry(this.siValueBoundary);
+						this.siEntryMonitor?.unregisterEntry(this.siValueBoundary);
 					}
 					this.siValueBoundary = this.siValueBoundary.replacementValueBoundary!;
 					this.subscription!.remove(sub);

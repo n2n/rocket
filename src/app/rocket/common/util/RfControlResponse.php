@@ -35,7 +35,7 @@ class RfControlResponse {
 	/**
 	 * @var SiCallResponse
 	 */
-	private $siResult;
+	private $siCallResponse;
 	/**
 	 * @var bool
 	 */
@@ -51,19 +51,19 @@ class RfControlResponse {
 	 */
 	function __construct(EiuAnalyst $eiuAnalyst) {
 		$this->eiuAnalyst = $eiuAnalyst;
-		$this->siResult = new SiCallResponse();
+		$this->siCallResponse = new SiCallResponse();
 	}
 	
 	/**
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return RfControlResponse
 	 */
-	function redirectBack() {
-		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
+	function redirectBack(): static {
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
 		
 		if (null !== ($overviewNavPoint = $eiFrame->getOverviewNavPoint(false))) {
-			$this->siResult->setNavPoint($overviewNavPoint);
+			$this->siCallResponse->setNavPoint($overviewNavPoint);
 		}
 		
 		return $this;
@@ -71,31 +71,31 @@ class RfControlResponse {
 	
 	/**
 	 * @param Url $url
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function redirectBackOrRef(Url $url): static {
-		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
-		$this->siResult->setRef($url);
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
+		$this->siCallResponse->setNavPoint(SiNavPoint::siref($url));
 		return $this;
 	}
 	
 	/**
 	 * @param Url $url
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return RfControlResponse
 	 */
-	function redirectBackOrHref(Url $url) {
-		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
-		$this->siResult->setHref($url);
+	function redirectBackOrHref(Url $url): static {
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
+		$this->siCallResponse->setNavPoint(SiNavPoint::href($url));
 		return $this;
 	}
 	
 	/**
 	 * @param Url $url
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return RfControlResponse
 	 */
-	function redirectToRef(Url $url) {
-		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
-		$this->siResult->setNavPoint(SiNavPoint::siref($url));
+	function redirectToRef(Url $url): static {
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
+		$this->siCallResponse->setNavPoint(SiNavPoint::siref($url));
 		return $this;
 	}
 
@@ -105,24 +105,24 @@ class RfControlResponse {
 	 */
 	function redirectToHref(Url|string $url) {
 		$url = Url::create($url);
-		$this->siResult->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
-		$this->siResult->setNavPoint(SiNavPoint::href($url));
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
+		$this->siCallResponse->setNavPoint(SiNavPoint::href($url));
 		return $this;
 	}
 	
 	/**
 	 * @param Message|string $message
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function message($message) {
-		$this->siResult->addMessage(Message::create($message), 
+		$this->siCallResponse->addMessage(Message::create($message),
 				$this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 		return $this;
 	}
 	
 // 	/**
 // 	 * @param mixed ...$eiTypeArgs
-// 	 * @return EiuControlResponse
+// 	 * @return RfControlResponse
 // 	 */
 // 	public function eiTypeChanged(...$eiTypeArgs) {
 // 		foreach ($eiTypeArgs as $eiTypeArg) {
@@ -133,7 +133,7 @@ class RfControlResponse {
 
 	/**
 	 * @param mixed ...$eiObjectArgs
-	 * @return \rocket\ei\util\control\EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function highlight(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
@@ -144,7 +144,7 @@ class RfControlResponse {
 				continue;
 			}
 			
-			$this->siResult->addHighlight(
+			$this->siCallResponse->addHighlight(
 					self::buildCategory($eiObject->getEiEntityObj()->getEiType()), 
 					$eiObject->getEiEntityObj()->getPid());
 		}
@@ -204,7 +204,7 @@ class RfControlResponse {
 			$pid = $eiObject->getEiEntityObj()->getPid();
 		}
 		
-		$this->siResult->addEvent($eiObject->createSiEntryIdentifier(), $modType);
+		$this->siCallResponse->addEvent($eiObject->createSiEntryIdentifier(), $modType);
 	}
 	
 	/**
@@ -221,14 +221,14 @@ class RfControlResponse {
 	 */
 	function toSiCallResponse(EiLifecycleMonitor $elm): SiCallResponse {
 		if ($this->noAutoEvents) {
-			return $this->siResult;
+			return $this->siCallResponse;
 		}
 		
 		$taa = $elm->approve();
 		
 		if (!$taa->isSuccessful()) {
 			$this->message(...$taa->getReasonMessages());
-			return;
+			return $this->siCallResponse;
 		}
 		
 		foreach ($this->pendingHighlightEiObjects as $eiObject) {
@@ -250,6 +250,6 @@ class RfControlResponse {
 			$this->eiObjectMod($action->getEiObject(), SiCallResponse::EVENT_TYPE_REMOVED);
 		}
 		
-		return $this->siResult;
+		return $this->siCallResponse;
 	}
 }

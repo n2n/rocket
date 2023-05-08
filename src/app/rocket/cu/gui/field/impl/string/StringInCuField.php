@@ -6,39 +6,42 @@ use rocket\cu\gui\field\CuField;
 use rocket\si\content\impl\StringInSiField;
 use n2n\bind\build\impl\Bind;
 use n2n\bind\mapper\impl\Mappers;
-use n2n\validation\validator\impl\Validators;
-use n2n\util\magic\MagicContext;
+use n2n\core\container\N2nContext;
 
 class StringInCuField implements CuField {
 
+	private array $messageStrs = [];
 
 	function __construct(private StringInSiField $siField) {
-
+		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
 	}
 
 	function setValue(?string $value): static {
-		$this->value = $value;
+		$this->messageStrs = [];
 		$this->siField->setValue($value);
 		return $this;
 	}
 
 	function getValue(): ?string {
-		return $this->getValue();
+		return $this->siField->getValue();
 	}
 
 	function getSiField(): StringInSiField {
 		return $this->siField;
 	}
 
-	function readSi(MagicContext $magicContext): bool {
-		$validationResult = Bind::values($this->getValue())->toValue($this->value)
+	function validate(N2nContext $n2nContext): bool {
+		$validationResult = Bind::values($this->getValue())->toClosure(fn ($v) => $this->setValue($v))
 				->map(Mappers::cleanString($this->siField->isMandatory(), $this->siField->getMinlength(),
 						$this->siField->getMaxlength()))
-				->exec($magicContext);
+				->exec($n2nContext);
 
-		$this->siField->setMessagesCallback(fn () => )
+		if ($validationResult->hasErrors()) {
+			$this->messageStrs = $validationResult->getErrorMap()->tAllMessages($n2nContext->getN2nLocale());
+			return false;
+		}
 
-		return $validationResult->hasErrors();
+		return true;
 	}
 
 }

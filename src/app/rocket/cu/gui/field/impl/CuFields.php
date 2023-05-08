@@ -12,7 +12,7 @@ class CuFields {
 
 	static function stringIn(bool $mandatory, bool $multiline = false, int $minlength = 0, int $maxlength = 255): StringInCuField {
 		return new StringInCuField(SiFields::stringIn(null)
-				->setMaxlength($mandatory)
+				->setMandatory($mandatory)
 				->setMultiline($multiline)
 				->setMinlength($minlength)
 				->setMaxlength($maxlength));

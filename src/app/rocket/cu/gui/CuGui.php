@@ -9,6 +9,9 @@ use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\input\SiInputError;
 use rocket\cu\gui\control\CuControlCallId;
 use n2n\core\container\N2nContext;
+use rocket\si\control\SiCallResponse;
+use rocket\cu\util\Cuu;
+use rocket\si\content\SiValueBoundary;
 
 interface CuGui {
 
@@ -19,12 +22,18 @@ interface CuGui {
 	 * @return SiInputError|null
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleSiInput(SiInput $siInput, N2nContext $n2NContext): ?SiInputError;
+	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError;
+
+	/**
+	 * @return SiValueBoundary[]
+	 */
+	function getInputSiValueBoundaries(): array;
 
 	/**
 	 * @param CuControlCallId $cuControlCallId
-	 * @return void
+	 * @param Cuu $cuu
+	 * @return SiCallResponse
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleCall(CuControlCallId $cuControlCallId): void;
+	function handleCall(CuControlCallId $cuControlCallId, Cuu $cuu): SiCallResponse;
 }

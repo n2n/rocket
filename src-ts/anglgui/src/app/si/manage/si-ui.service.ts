@@ -119,16 +119,16 @@ export class SiUiService {
 			uiLayer: UiLayer): Observable<void> {
 		let input: SiInput|null = null;
 
-		const entries: SiValueBoundary[] = [];
+		const valueBoundaries: SiValueBoundary[] = [];
 		if (includeInput) {
 			input = new SiInput(controlBoundry.getBoundDeclaration());
-			for (const entry of controlBoundry.getBoundEntries()) {
-				if (entry.style.readOnly) {
+			for (const valueBoundary of controlBoundry.getBoundValueBoundaries()) {
+				if (valueBoundary.style.readOnly) {
 					continue;
 				}
 
-				entries.push(entry);
-				input.entryInputs.push(entry.readInput());
+				valueBoundaries.push(valueBoundary);
+				input.entryInputs.push(valueBoundary.readInput());
 			}
 		}
 
@@ -136,7 +136,7 @@ export class SiUiService {
 
 		const subject =	new Subject<void>();
 		obs.subscribe((result) => {
-			this.handleControlResult(result, entries, uiLayer);
+			this.handleControlResult(result, valueBoundaries, uiLayer);
 			subject.next();
 			subject.complete();
 		});

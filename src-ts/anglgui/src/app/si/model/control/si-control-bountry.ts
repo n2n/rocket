@@ -3,7 +3,7 @@ import { SiDeclaration } from '../meta/si-declaration';
 
 export interface SiControlBoundry {
 
-	getBoundEntries(): SiValueBoundary[];
+	getBoundValueBoundaries(): SiValueBoundary[];
 
 	getBoundDeclaration(): SiDeclaration;
 }

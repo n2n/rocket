@@ -41,7 +41,7 @@ export class SiPageCollection implements SiControlBoundry {
 		return entries;
 	}
 
-	getBoundEntries(): SiValueBoundary[] {
+	getBoundValueBoundaries(): SiValueBoundary[] {
 		return [];
 	}
 
@@ -180,10 +180,10 @@ export class SiPageCollection implements SiControlBoundry {
 			offset = prevPage!.offset + prevPage!.size;
 		}
 
-		let num = this.pageSize;
-		if (this.pagesMap.has(no + 1)) {
-			num = this.pagesMap.get(no + 1)!.offset - offset;
-		}
+		// let num = this.pageSize;
+		// if (this.pagesMap.has(no + 1)) {
+		// 	num = this.pagesMap.get(no + 1)!.offset - offset;
+		// }
 
 		const entryMonitory = new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, this.siModState, true);
 		const page = new SiPage(entryMonitory, no, offset, entries);
@@ -564,9 +564,9 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 }
 
-class MovingProcess {
-
-}
+// class MovingProcess {
+//
+// }
 
 export interface SiEntryPosition {
 	 entry: SiValueBoundary;

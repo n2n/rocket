@@ -20,8 +20,8 @@ class CufBulkyGui implements CufGui {
 	private BulkyCuGui $bulkyCuGui;
 
 	function __construct(bool $readOnly) {
-		$maskId = 'mask-' . HashUtils::base36Uniqid(false);
-		$typeId = 'type-' . HashUtils::base36Uniqid(false);
+		$maskId = 'mask-cuf-bulky-gui';
+		$typeId = 'type-cuf-bulky-gui';
 
 		$this->cuMaskedEntry = new CuMaskedEntry($maskId, $typeId, 'Unnamed Boundary');
 		$this->bulkyCuGui = new BulkyCuGui($readOnly);

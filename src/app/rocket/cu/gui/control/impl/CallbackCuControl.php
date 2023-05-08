@@ -30,6 +30,14 @@ use rocket\ei\manage\api\ZoneApiControlCallId;
 use rocket\cu\gui\control\CuControl;
 use rocket\cu\gui\control\CuControlCallId;
 use rocket\si\control\SiCallResponse;
+use n2n\core\container\N2nContext;
+use n2n\util\type\ArgUtils;
+use rocket\common\util\RfControlResponse;
+use rocket\ei\manage\ManageState;
+use n2n\reflection\magic\MagicMethodInvoker;
+use n2n\util\type\TypeConstraints;
+use rocket\cu\util\Cuu;
+use rocket\ei\util\EiuAnalyst;
 
 class CallbackCuControl implements CuControl {
 	private bool $inputHandled = false;
@@ -64,8 +72,18 @@ class CallbackCuControl implements CuControl {
 		return new ApiCallSiControl($apiUrl, $cuControlCallId, $this->siButton, $this->inputHandled);
 	}
 
-	function handle(): SiCallResponse {
+	function handle(Cuu $cuu): SiCallResponse {
+		$invoker = new MagicMethodInvoker($cuu->getN2nContext());
+		$invoker->setClassParamObject(Cuu::class, $cuu);
+		$invoker->setReturnTypeConstraint(TypeConstraints::namedType(RfControlResponse::class, true));
+		$invoker->setClosure($this->callback);
+		$sifControlResponse = $invoker->invoke();
 
+		if ($sifControlResponse === null) {
+			$sifControlResponse = $cuu->f()->newControlResponse();
+		}
+
+		return $sifControlResponse->toSiCallResponse($cuu->lookup(ManageState::class)->getEiLifecycleMonitor());
 	}
 
 }

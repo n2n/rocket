@@ -8,7 +8,7 @@ use rocket\ei\util\EiuAnalyst;
 
 class CuuFactory {
 
-	function __construct(EiuAnalyst $eiuAnalyst) {
+	function __construct(private readonly EiuAnalyst $eiuAnalyst) {
 
 	}
 

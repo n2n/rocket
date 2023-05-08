@@ -7,7 +7,7 @@ export class SimpleSiControlBoundry implements SiControlBoundry {
 	constructor(public entries: SiValueBoundary[], public declaration: SiDeclaration) {
 	}
 
-	getBoundEntries(): SiValueBoundary[] {
+	getBoundValueBoundaries(): SiValueBoundary[] {
 		return this.entries;
 	}
 

@@ -30,7 +30,7 @@ class SiInputFactory {
 	 * @return SiInput
 	 * @throws CorruptedSiInputDataException
 	 */
-	function create(array $data) {
+	function create(array $data): SiInput {
 		$input = new SiInput();
 		
 		foreach ($data as $key => $entryData) {

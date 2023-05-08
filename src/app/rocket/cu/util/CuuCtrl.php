@@ -18,6 +18,8 @@ use rocket\ei\util\Eiu;
 use rocket\ei\util\EiuAnalyst;
 use rocket\ei\manage\ManageState;
 use rocket\cu\gui\control\CuControlCallId;
+use n2n\web\http\BadRequestException;
+use rocket\si\input\SiInputResult;
 
 class CuuCtrl {
 
@@ -48,34 +50,43 @@ class CuuCtrl {
 	/**
 	 * @throws CorruptedSiInputDataException
 	 */
-	private function handleSiCall(?CuGui $cuGui, array $generalGuiControls): ?SiCallResult {
-		if (!($this->cu->getRequest()->getMethod() === Method::POST && isset($_POST['apiCallId']))) {
+	private function handleSiCall(?CuGui $cuGui): ?SiCallResult {
+		$apiCallIdParam = $this->cu->getParamPost('apiCallId');
+		if (!($this->cu->getRequest()->getMethod() === Method::POST && null !== $apiCallIdParam)) {
 			return null;
 		}
 
-		$entryInputMaps = $this->cu->getRequest()->getPostQuery()->get('entryInputMaps');
-		if (isset($entryInputMaps)) {
-			$entryInputMapsParam = new ParamPost($entryInputMaps);
+		$siInputResult = null;
+		if (null !== ($entryInputMapsParam = $this->cu->getParamPost('entryInputMaps'))) {
 			$siInput = (new SiInputFactory())->create($entryInputMapsParam->parseJson());
-			$cuGui->handleSiInput($siInput);
+			if (null !== ($siInputError = $cuGui->handleSiInput($siInput, $this->cu->getN2nContext()))) {
+				return SiCallResult::fromInputError($siInputError);
+			}
+
+			$siInputResult = new SiInputResult($cuGui->getInputSiValueBoundaries());
 		}
 
-		$apiCallIdData = $this->cu->getRequest()->getPostQuery()->get('apiCallId');
-		if (!isset($apiCallIdData)) {
-			return null;
-		}
-
-		return SiCallResult::fromCallResponse($cuGui->handleCall(),
-				(isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null));
+		return SiCallResult::fromCallResponse(
+				$cuGui->handleCall(CuControlCallId::parse($apiCallIdParam->parseJson()), $this->cuu),
+				$siInputResult);
 	}
 
-	function forwardZone(CufGui|CuGui|SiGui $gui, string $title): void {
+	function forwardZone(CufGui|CuGui $gui, string $title): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
 		if ($gui instanceof CufGui) {
 			$gui = $gui->getCuGui();
+		}
+
+		try {
+			if (null !== ($siResult = $this->handleSiCall($gui))) {
+				$this->cu->sendJson($siResult);
+				return;
+			}
+		} catch (CorruptedSiInputDataException $e) {
+			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
 		}
 
 		if ($gui instanceof CuGui) {

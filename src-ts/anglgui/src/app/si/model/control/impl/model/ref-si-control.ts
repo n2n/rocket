@@ -14,7 +14,7 @@ export class RefSiControl implements SiControl {
 
 
 	isDisabled(): boolean {
-		return !!this.controlBoundry.getBoundEntries().find(siValueBoundary => siValueBoundary.isClaimed());
+		return !!this.controlBoundry.getBoundValueBoundaries().find(siValueBoundary => siValueBoundary.isClaimed());
 	}
 
 	exec(uiZone: UiZone): void {
@@ -23,8 +23,7 @@ export class RefSiControl implements SiControl {
 			return;
 		}
 
-		const popUpZone = uiZone.layer.container.createLayer().pushRoute(null, this.url).zone;
-		this.siUiService.loadZone(popUpZone, true);
+		this.siUiService.loadZone(uiZone.layer.container.createLayer().pushRoute(null, this.url).zone, true);
 	}
 
 	createUiContent(getUiZone: () => UiZone): UiContent {

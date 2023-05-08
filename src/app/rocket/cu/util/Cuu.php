@@ -12,6 +12,19 @@ class Cuu {
 
 	}
 
+	function getN2nContext(): N2nContext {
+		return $this->eiuAnalyst->getN2nContext(true);
+	}
+
+	/**
+	 * @template T
+	 * @param class-string<T> $className
+	 * @return T|null
+	 */
+	function lookup(string $className): mixed {
+		return $this->getN2nContext()->lookup($className);
+	}
+
 	function f(): CuuFactory {
 		return $this->cuuFactory ?? $this->cuuFactory = new CuuFactory($this->eiuAnalyst);
 	}

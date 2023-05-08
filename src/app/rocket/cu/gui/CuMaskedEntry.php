@@ -22,6 +22,8 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
 use rocket\si\input\SiInputError;
+use rocket\cu\util\Cuu;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class CuMaskedEntry {
 
@@ -63,7 +65,10 @@ class CuMaskedEntry {
 		return $this->cuGuiEntry->getSiEntry();
 	}
 
-	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2NContext): ?SiEntryInput {
-		return $this->cuGuiEntry->handleSiEntryInput($siEntryInput);
+	/**
+	 * @throws CorruptedSiInputDataException
+	 */
+	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2nContext): bool {
+		return $this->cuGuiEntry->handleSiEntryInput($siEntryInput, $n2nContext);
 	}
 }

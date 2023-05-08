@@ -26,7 +26,7 @@ export class ApiCallSiControl implements SiControl {
 	}
 
 	isDisabled(): boolean {
-		return !!this.controlBoundry.getBoundEntries().find(siValueBoundary => siValueBoundary.isClaimed());
+		return !!this.controlBoundry.getBoundValueBoundaries().find(siValueBoundary => siValueBoundary.isClaimed());
 	}
 
 	// set entryBound(entryBound: boolean) {
@@ -42,7 +42,7 @@ export class ApiCallSiControl implements SiControl {
 	// }
 
 	exec(uiZone: UiZone): void {
-		const locks = this.controlBoundry.getBoundEntries().map(entry => entry.createLock());
+		const locks = this.controlBoundry.getBoundValueBoundaries().map(entry => entry.createLock());
 
 		const obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry,
 				this.inputSent, uiZone.layer);
