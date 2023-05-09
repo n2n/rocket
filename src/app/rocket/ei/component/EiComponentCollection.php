@@ -98,12 +98,14 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 * @return string
 	 * @throws InvalidEiConfigurationException
 	 */
-	protected function makeId(?string $id, EiComponentNature $eiComponent) {
+	protected function makeId(?string $id, EiComponentNature $eiComponent, array $forkIds = []): ?string {
 		if ($id === null) {
 			$baseId = $id = TypeUtils::buildTypeAcronym(get_class($eiComponent));
-			for ($i = 1; isset($this->eiComponents[$id]) && $this->eiComponents[$id] !== $eiComponent; $i++) {
-				$id = $baseId . '-' . $i;
-			}
+			$i = 0;
+			do {
+				$id = $baseId . '-' . $i++;
+				$idPathStr = IdPath::implodeIds([...$forkIds, $id]);
+			} while (isset($this->eiComponents[$idPathStr]) && $this->eiComponents[$idPathStr] !== $eiComponent);
 		}
 
 		if ($id === '' || IdPath::constainsSpecialIdChars($id)) {
