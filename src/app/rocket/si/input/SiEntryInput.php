@@ -129,7 +129,7 @@ class SiEntryInput {
 		
 		try {
 			$siEntryInput = new SiEntryInput(SiEntryIdentifier::parse($dataSet->reqArray('identifier')),
-					$dataSet->reqString('typeId'), $dataSet->reqBool('bulky'));
+					$dataSet->reqString('maskId'), $dataSet->reqBool('bulky'));
 			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $propId => $fielData) {
 				$siEntryInput->putFieldInput($propId, new SiFieldInput($fielData));
 			}

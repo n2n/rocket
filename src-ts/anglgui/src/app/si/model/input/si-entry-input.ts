@@ -3,7 +3,7 @@ import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 
 export class SiEntryInput {
 
-	constructor(public identifier: SiEntryIdentifier, public typeId: string,
+	constructor(public identifier: SiEntryIdentifier, public maskId: string,
 			public bulky: boolean, readonly fieldInputMap: Map<string, object>) {
 
 	}
@@ -16,7 +16,7 @@ export class SiEntryInput {
 
 		return {
 			identifier: this.identifier,
-			typeId: this.typeId,
+			maskId: this.maskId,
 			bulky: this.bulky,
 			fieldInputMap: fieldInputObj,
 		};
