@@ -68,16 +68,13 @@ class EiuObject {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\EiObject
+	 * @return EiObject
 	 */
 	public function getEiObject() {
 		return $this->eiObject;
 	}
-	
-	/**
-	 * @return object
-	 */
-	public function getEntityObj() {
+
+	public function getEntityObj(): mixed {
 		return $this->eiObject->getEiEntityObj()->getEntityObj();
 	}
 	
