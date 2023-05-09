@@ -20,7 +20,7 @@ class NumberInCuField implements CuField {
 	}
 
 	function getValue(): ?string {
-		return $this->getValue();
+		return $this->siField->getValue();
 	}
 
 	function getSiField(): NumberInSiField {
