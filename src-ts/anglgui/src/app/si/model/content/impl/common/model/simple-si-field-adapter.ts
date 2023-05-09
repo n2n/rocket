@@ -15,7 +15,7 @@ export abstract class SimpleSiFieldAdapter extends SiFieldAdapter {
 		throw new IllegalSiStateError('no input');
 	}
 
-	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntry): SiField;
 
 	createUiStructureModel(): UiStructureModel {
 		const model = new SimpleUiStructureModel(null);

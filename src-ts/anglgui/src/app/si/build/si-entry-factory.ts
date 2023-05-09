@@ -1,8 +1,8 @@
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiPartialContent } from '../model/content/si-partial-content';
-import { SiEntry } from '../model/content/si-entry';
+import { SiValueBoundary } from '../model/content/si-value-boundary';
 import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
-import { SiEntryBuildup } from '../model/content/si-entry-buildup';
+import { SiEntry } from '../model/content/si-entry';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
@@ -18,50 +18,53 @@ export class SiEntryFactory {
 	createPartialContent(data: any): SiPartialContent {
 		const extr = new Extractor(data);
 		return {
-			entries: this.createEntries(extr.reqArray('entries')),
+			entries: this.createEntries(extr.reqArray('siValueBoundary')),
 			count: extr.reqNumber('count'),
 			offset: extr.reqNumber('offset')
 		};
 	}
 
-	createEntries(data: Array<any>): SiEntry[] {
-		const entries: Array<SiEntry> = [];
+	createEntries(data: Array<any>): SiValueBoundary[] {
+		const entries: Array<SiValueBoundary> = [];
 		for (const entryData of data) {
-			entries.push(this.createEntry(entryData));
+			entries.push(this.createValueBoundary(entryData));
 		}
 
 		return entries;
 	}
 
-	createEntry(entryData: any): SiEntry {
+	createValueBoundary(entryData: any): SiValueBoundary {
 		const extr = new Extractor(entryData);
 
-		const siEntry = new SiEntry(SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
+		const siValueBoundary = new SiValueBoundary(
+				// SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
 				SiMetaFactory.createStyle(extr.reqObject('style')));
-		siEntry.treeLevel = extr.nullaNumber('treeLevel');
+		siValueBoundary.treeLevel = extr.nullaNumber('treeLevel');
 
-		const controlBoundry = new SimpleSiControlBoundry([siEntry], this.declaration);
-		for (const [, buildupData] of extr.reqMap('buildups')) {
-			siEntry.addEntryBuildup(this.createEntryBuildup(buildupData, siEntry.identifier, controlBoundry));
+		const controlBoundry = new SimpleSiControlBoundry([siValueBoundary], this.declaration);
+		for (const [maskId, entryData] of extr.reqMap('entries')) {
+			siValueBoundary.addEntry(this.createEntry(maskId, entryData, controlBoundry));
 		}
 
-		siEntry.selectedEntryBuildupId = extr.nullaString('selectedTypeId');
+		siValueBoundary.selectedMaskId = extr.nullaString('selectedMaskId');
 
-		return siEntry;
+		return siValueBoundary;
 	}
 
-	private createEntryBuildup(data: any, identifier: SiEntryIdentifier, controlBoundry: SiControlBoundry): SiEntryBuildup {
+	private createEntry(maskId: string, data: any, controlBoundary: SiControlBoundry): SiEntry {
 		const extr = new Extractor(data);
 
-		const maskDeclaration = this.declaration.getTypeDeclarationByTypeId(extr.reqString('typeId'));
-		const entryQualifier = new SiEntryQualifier(maskDeclaration.type.qualifier, identifier, extr.nullaString('idName'));
+		const maskDeclaration = this.declaration.getMaskDeclarationByMaskId(maskId);
+		const entryQualifier = new SiEntryQualifier(maskDeclaration.mask.qualifier,
+				new SiEntryIdentifier(maskDeclaration.mask.qualifier.identifier.typeId, extr.nullaString('id')),
+				extr.nullaString('idName'));
 
-		const entryBuildup = new SiEntryBuildup(entryQualifier);
-		entryBuildup.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundry, maskDeclaration.type, this.injector)
+		const entry = new SiEntry(entryQualifier);
+		entry.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundary, maskDeclaration.mask, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
-		entryBuildup.controls = new SiControlFactory(controlBoundry, this.injector)
+		entry.controls = new SiControlFactory(controlBoundary, this.injector)
 				.createControls(extr.reqArray('controls'));
 
-		return entryBuildup;
+		return entry;
 	}
 }

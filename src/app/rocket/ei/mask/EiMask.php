@@ -559,27 +559,27 @@ class EiMask {
 		return $eiType->getEiMask();
 	}
 
-	/**
-	 * @param string $eiTypeId
-	 * @throws \InvalidArgumentException
-	 * @return EiMask
-	 */
-	public function getSubEiMaskByEiTypeId(string $eiTypeId): EiMask {
-		$subMaskIds = $this->getSubEiMaskIds();
-
-		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
-			if ($subEiType->getId() != $eiTypeId) continue;
-
-			if (isset($subMaskIds[$eiTypeId])) {
-				return $subEiType->getEiTypeExtensionCollection()->getById($subMaskIds[$eiTypeId]);
-			} else {
-				return $subEiType->getEiMask();
-			}
-		}
-
-		throw new \InvalidArgumentException('EiType ' . $eiTypeId . ' is no SubEiType of '
-				. $this->eiType->getId());
-	}
+//	/**
+//	 * @param string $eiTypeId
+//	 * @throws \InvalidArgumentException
+//	 * @return EiMask
+//	 */
+//	public function getSubEiMaskByEiTypeId(string $eiTypeId): EiMask {
+//		$subMaskIds = $this->getSubEiMaskIds();
+//
+//		foreach ($this->eiType->getSubEiTypes() as $subEiType) {
+//			if ($subEiType->getId() != $eiTypeId) continue;
+//
+//			if (isset($subMaskIds[$eiTypeId])) {
+//				return $subEiType->getEiTypeExtensionCollection()->getById($subMaskIds[$eiTypeId]);
+//			} else {
+//				return $subEiType->getEiMask();
+//			}
+//		}
+//
+//		throw new \InvalidArgumentException('EiType ' . $eiTypeId . ' is no SubEiType of '
+//				. $this->eiType->getId());
+//	}
 
 	/**
 	 * @return bool
@@ -647,7 +647,8 @@ class EiMask {
 	 * @return \rocket\si\meta\SiMaskQualifier
 	 */
 	public function createSiMaskQualifier(N2nLocale $n2nLocale) {
-		return new SiMaskQualifier(new SiMaskIdentifier((string) $this->getEiTypePath(), $this->getEiType()->getId(),
+		return new SiMaskQualifier(new SiMaskIdentifier(
+				(string) $this->getEiTypePath(), $this->getEiType()->getId(),
 				$this->getEiType()->getSupremeEiType()->getId()),
 				$this->getLabelLstr()->t($n2nLocale), $this->getIconType());
 	}

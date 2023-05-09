@@ -204,21 +204,21 @@ class EiuGuiFrame {
 	/**
 	 * @return bool
 	 */
-	public function isBulky() {
+	public function isBulky(): bool {
 		return (bool) ($this->getViewMode() & ViewMode::bulky());	
 	}
 	
 	/**
 	 * @return bool
 	 */
-	public function isCompact() {
+	public function isCompact(): bool {
 		return (bool) ($this->getViewMode() & ViewMode::compact());
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	public function isReadOnly() {
+	public function isReadOnly(): bool {
 		return (bool) ($this->getViewMode() & ViewMode::read());
 	}
 	

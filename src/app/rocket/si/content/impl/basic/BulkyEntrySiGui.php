@@ -23,23 +23,25 @@ namespace rocket\si\content\impl\basic;
 
 use rocket\si\content\SiGui;
 use rocket\si\meta\SiDeclaration;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\si\SiPayloadFactory;
 use rocket\si\meta\SiFrame;
+use rocket\si\input\SiInput;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class BulkyEntrySiGui implements SiGui {
 	private $frame;
 	private $declaration;
-	private $entry;
+	private $valueBoundary;
 	private $controls = [];
 	private $entryControlsIncluded = true;
 	
-	function __construct(SiFrame $frame, SiDeclaration $declaration, SiEntry $entry = null) {
+	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $valueBoundary = null) {
 		$this->frame = $frame;
 		$this->declaration = $declaration;
-		$this->setEntry($entry);
+		$this->setValueBoundary($valueBoundary);
 	}
 	
 	/**
@@ -49,28 +51,21 @@ class BulkyEntrySiGui implements SiGui {
 	function getTypeName(): string {
 		return 'bulky-entry';
 	}
-	
-	/**
-	 * @param SiEntry[] $siEntries
-	 * @return BulkyEntrySiGui
-	 */
-	function setEntry(?SiEntry $entry) {
-		$this->entry = $entry;
+
+	function setValueBoundary(?SiValueBoundary $entry): static {
+		$this->valueBoundary = $entry;
 		return $this;
 	}
-	
-	/**
-	 * @return SiEntry[]
-	 */
-	function getEntry() {
-		return $this->entry;
+
+	function getValueBoundary(): ?SiValueBoundary {
+		return $this->valueBoundary;
 	}
 	
 	/**
 	 * @param SiControl[] $controls
 	 * @return BulkyEntrySiGui
 	 */
-	function setControls(array $controls) {
+	function setControls(array $controls): static {
 		ArgUtils::valArray($controls, SiControl::class);
 		$this->controls = $controls;
 		return $this;
@@ -79,7 +74,7 @@ class BulkyEntrySiGui implements SiGui {
 	/**
 	 * @return SiControl[]
 	 */
-	function getControls() {
+	function getControls(): array {
 		return $this->controls;
 	}
 	
@@ -109,7 +104,7 @@ class BulkyEntrySiGui implements SiGui {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'entry' => $this->entry,
+			'entry' => $this->valueBoundary,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'entryControlsIncluded' => $this->entryControlsIncluded
 		];

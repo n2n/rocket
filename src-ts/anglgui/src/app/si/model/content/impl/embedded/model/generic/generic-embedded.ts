@@ -1,4 +1,4 @@
-import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
+import { SiGenericValueBoundary } from 'src/app/si/model/generic/si-generic-value-boundary';
 import { SiEntryQualifier } from '../../../../si-entry-qualifier';
 import { SiField } from '../../../../si-field';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
@@ -9,7 +9,7 @@ export class SiGenericEmbeddedEntryCollection {
 }
 
 export class SiGenericEmbeddedEntry {
-	constructor(public genericEntry: SiGenericEntry, public summaryGenericEntry: SiGenericEntry|null = null) {
+	constructor(public genericEntry: SiGenericValueBoundary, public summaryGenericEntry: SiGenericValueBoundary|null = null) {
 	}
 
 	get selectedTypeId(): string|null {

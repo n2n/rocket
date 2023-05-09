@@ -8,7 +8,7 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\security\InaccessibleEiEntryException;
 use rocket\ei\manage\entry\EiEntry;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\ei\EiType;
 use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
@@ -103,18 +103,18 @@ class EiGuiModel {
 	}
 	
 	
-	/**
-	 * @return DefPropPath[]
-	 */
-	function getDefPropPaths() {
-		$this->ensureInit();
-		
-		$defPropPaths = [];
-		foreach ($this->guiStructureDeclarations as $guiStructureDeclaration) {
-			$defPropPaths = array_merge($defPropPaths, $guiStructureDeclaration->getAllDefPropPaths());
-		}
-		return $defPropPaths;
-	}
+//	/**
+//	 * @return DefPropPath[]
+//	 */
+//	function getDefPropPaths() {
+//		$this->ensureInit();
+//
+//		$defPropPaths = [];
+//		foreach ($this->guiStructureDeclarations as $guiStructureDeclaration) {
+//			$defPropPaths = array_merge($defPropPaths, $guiStructureDeclaration->getAllDefPropPaths());
+//		}
+//		return $defPropPaths;
+//	}
 	
 	/**
 	 * @return \rocket\si\meta\SiDeclaration
@@ -124,7 +124,7 @@ class EiGuiModel {
 		$siDeclaration = new SiDeclaration(ViewMode::createSiStyle($this->viewMode));
 		
 		foreach ($this->eiGuiFrames as $eiGuiFrame) {
-			$siDeclaration->addTypeDeclaration($eiGuiFrame->createSiMaskDeclaration($n2nLocale));
+			$siDeclaration->addMaskDeclaration($eiGuiFrame->createSiMaskDeclaration($n2nLocale));
 		}
 		
 		return $siDeclaration;
@@ -134,12 +134,12 @@ class EiGuiModel {
 	 * @param EiFrame $eiFrame
 	 * @param EiEntryGui $eiEntryGui
 	 * @param bool $siControlsIncluded
-	 * @return \rocket\si\content\SiEntry
+	 * @return \rocket\si\content\SiValueBoundary
 	 */
 	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded) {
-		$siEntry = new SiEntry($eiEntryGui->createSiEntryIdentifier(), 
+		$siValueBoundary = new SiValueBoundary(/*$eiEntryGui->createSiEntryIdentifier(),*/
 				new SiStyle(ViewMode::isBulky($this->viewMode), ViewMode::isReadOnly($this->viewMode)));
-		$siEntry->setTreeLevel($eiEntryGui->getTreeLevel());
+		$siValueBoundary->setTreeLevel($eiEntryGui->getTreeLevel());
 		
 		$typeDefs = $eiEntryGui->getTypeDefs();
 		
@@ -147,15 +147,15 @@ class EiGuiModel {
 			ArgUtils::assertTrue(isset($typeDefs[$key]));
 			$eiEntryGuiTypeDef = $typeDefs[$key];
 			
-			$siEntry->putBuildup($eiEntryGuiTypeDef->getEiMask()->getEiType()->getId(),
-					$eiGuiFrame->createSiEntryBuildup($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
+			$siValueBoundary->putEntry($eiEntryGuiTypeDef->getEiMask()->getEiTypePath(),
+					$eiGuiFrame->createSiEntry($eiFrame, $eiEntryGuiTypeDef, $siControlsIncluded));
 		}
 		
 		if ($eiEntryGui->isTypeDefSelected()) {
-			$siEntry->setSelectedTypeId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
+			$siValueBoundary->setSelectedMaskId($eiEntryGui->getSelectedTypeDef()->getEiMask()->getEiType()->getId());
 		}
 		
-		return $siEntry;
+		return $siValueBoundary;
 	}
 	
 // 	/**

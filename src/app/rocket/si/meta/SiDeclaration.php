@@ -38,19 +38,19 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function __construct(SiStyle $style, array $maskDeclarations = []) {
 		$this->style = $style;
-		$this->setTypeDeclarations($maskDeclarations);
+		$this->setMaskDeclarations($maskDeclarations);
 	}
 	
 	/**
 	 * @param SiMaskDeclaration[] $typedDeclarations
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
-	function setTypeDeclarations(array $maskDeclarations) {
+	function setMaskDeclarations(array $maskDeclarations) {
 		ArgUtils::valArray($maskDeclarations, SiMaskDeclaration::class);
 		$this->maskDeclarations = [];
 		
 		foreach ($maskDeclarations as $maskDeclaration) {
-			$this->addTypeDeclaration($maskDeclaration);
+			$this->addMaskDeclaration($maskDeclaration);
 		}
 		return $this;
 	}
@@ -60,12 +60,12 @@ class SiDeclaration implements \JsonSerializable {
 	 * @param SiMaskDeclaration $maskDeclaration
 	 * @return SiDeclaration
 	 */
-	function addTypeDeclaration(SiMaskDeclaration $maskDeclaration) {
+	function addMaskDeclaration(SiMaskDeclaration $maskDeclaration) {
 // 		if (empty($this->maskDeclarations) && !$maskDeclaration->hasStructureDeclarations()) {
 // 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 // 		}
 		
-		if (empty($this->maskDeclarations) && !$maskDeclaration->getType()->hasProps()) {
+		if (empty($this->maskDeclarations) && !$maskDeclaration->getMask()->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		

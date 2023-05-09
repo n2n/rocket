@@ -1,4 +1,4 @@
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
@@ -44,10 +44,10 @@ export class Embe {
 	}
 
 	isTypeSelected(): boolean {
-		return !!this._siEmbeddedEntry?.entry.selectedEntryBuildupId;
+		return !!this._siEmbeddedEntry?.entry.selectedMaskId;
 	}
 
-	get siEntry(): SiEntry {
+	get siValueBoundary(): SiValueBoundary {
 		IllegalSiStateError.assertTrue(!!this._siEmbeddedEntry);
 		return this._siEmbeddedEntry!.entry;
 	}

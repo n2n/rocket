@@ -9,15 +9,13 @@ export class SiDeclaration {
 	constructor(public style: SiStyle) {
 	}
 
-	constainsTypeId(typeId: string): boolean {
-		return this.maskDeclarationMap.has(typeId);
+
+
+	addMaskDeclaration(maskDeclaration: SiMaskDeclaration): void {
+		this.maskDeclarationMap.set(maskDeclaration.mask.qualifier.identifier.id, maskDeclaration);
 	}
 
-	addTypeDeclaration(maskDeclaration: SiMaskDeclaration): void {
-		this.maskDeclarationMap.set(maskDeclaration.type.qualifier.identifier.id, maskDeclaration);
-	}
-
-	getBasicTypeDeclaration(): SiMaskDeclaration {
+	getBasicMaskDeclaration(): SiMaskDeclaration {
 		// if (this.basicSiMaskDeclaration) {
 		// 	return this.basicSiMaskDeclaration;
 		// }
@@ -30,15 +28,15 @@ export class SiDeclaration {
 		throw new IllegalSiStateError('SiDeclaration contains no SiMaskDeclaration.');
 	}
 
-	containsTypeId(typeId: string): boolean {
+	containsMaskId(typeId: string): boolean {
 		return this.maskDeclarationMap.has(typeId);
 	}
 
-	getTypeDeclarationByTypeId(typeId: string): SiMaskDeclaration {
-		if (this.maskDeclarationMap.has(typeId)) {
-			return this.maskDeclarationMap.get(typeId)!;
+	getMaskDeclarationByMaskId(maskId: string): SiMaskDeclaration {
+		if (this.maskDeclarationMap.has(maskId)) {
+			return this.maskDeclarationMap.get(maskId)!;
 		}
 
-		throw new IllegalSiStateError('Unkown typeId: ' + typeId);
+		throw new IllegalSiStateError('Unkown maskId: ' + maskId);
 	}
 }

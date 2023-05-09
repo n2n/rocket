@@ -1,5 +1,5 @@
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiEntry } from '../../../si-entry';
+import { SiValueBoundary } from '../../../si-value-boundary';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitManagerComponent } from '../comp/split-manager/split-manager.component';
 import { SplitManagerModel } from '../comp/split-manager-model';
@@ -28,7 +28,7 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 	readInput(): object {
 		const entryInputObj: { [key: string]: SiEntryInput } = {};
 		for (const splitContent of this.collection.getSplitContents()) {
-			let entry: SiEntry|null;
+			let entry: SiValueBoundary|null;
 			if (entry = splitContent.getLoadedSiEntry()) {
 				entryInputObj[splitContent.key] = entry.readInput();
 			}
@@ -120,7 +120,7 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 		return this.collection.getSplitContents();
 	}
 	
-	getEntry$(key: string): Promise<SiEntry|null> {
+	getEntry$(key: string): Promise<SiValueBoundary|null> {
 		return this.collection.getEntry$(key);
 	}
 

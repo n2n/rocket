@@ -3,7 +3,7 @@ import { SiButton } from 'src/app/si/model/control/impl/model/si-button';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 import { Message } from 'src/app/util/i18n/message';
 import { SiNavPoint } from '../model/control/si-nav-point';
-import { SiEntry } from '../model/content/si-entry';
+import { SiValueBoundary } from '../model/content/si-value-boundary';
 
 export interface SiControlResult {
 	inputError?: SiInputError;
@@ -12,11 +12,11 @@ export interface SiControlResult {
 }
 
 export class SiInputError {
-	public errorEntries = new Map<string, SiEntry>();
+	public errorEntries = new Map<string, SiValueBoundary>();
 }
 
 export class SiInputResult {
-	public entries = new Map<string, SiEntry>();
+	public valueBoundaries = new Map<string, SiValueBoundary>();
 }
 
 export class SiCallResponse {

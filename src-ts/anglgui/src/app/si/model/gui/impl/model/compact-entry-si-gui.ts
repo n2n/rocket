@@ -1,7 +1,7 @@
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { Message } from 'src/app/util/i18n/message';
 import { SiGui } from '../../si-gui';
-import { SiEntry, SiEntryState } from '../../../content/si-entry';
+import { SiValueBoundary, SiEntryState } from '../../../content/si-value-boundary';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { CompactEntryComponent } from '../comp/compact-entry/compact-entry.component';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
@@ -18,7 +18,7 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
-	private entrySubject = new BehaviorSubject<SiEntry|null>(null);
+	private entrySubject = new BehaviorSubject<SiValueBoundary|null>(null);
 	public entryControlsIncluded = true;
 	public controls: SiControl[] = [];
 
@@ -26,11 +26,11 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 			public siModStateService: SiModStateService) {
 	}
 
-	get entry(): SiEntry|null {
+	get entry(): SiValueBoundary|null {
 		return this.entrySubject.getValue();
 	}
 
-	set entry(entry: SiEntry|null) {
+	set entry(entry: SiValueBoundary|null) {
 		this.entrySubject.next(entry);
 	}
 
@@ -38,7 +38,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	// 	return this.entrySubject.asObservable();
 	// }
 
-	getBoundEntries(): SiEntry[] {
+	getBoundValueBoundaries(): SiValueBoundary[] {
 		return [this.entry!];
 	}
 
@@ -54,7 +54,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 		return this.entry.getMessages();
 	}
 
-	getSiEntry(): SiEntry|null {
+	getSiEntry(): SiValueBoundary|null {
 		return this.entry;
 	}
 
@@ -78,10 +78,10 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 	private fieldUiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
 	private subscription: Subscription|null = null;
-	private currentSiEntry: SiEntry|null = null;
+	private currentSiEntry: SiValueBoundary|null = null;
 
-	constructor(private siEntry$: Observable<SiEntry|null>, private siDeclaration: SiDeclaration, private controls: SiControl[],
-			private siEntryMonitor: SiEntryMonitor) {
+	constructor(private siEntry$: Observable<SiValueBoundary|null>, private siDeclaration: SiDeclaration, private controls: SiControl[],
+				private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
 
@@ -140,8 +140,8 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 		this.subscription = new Subscription();
 
-		this.subscription.add(this.siEntry$.subscribe((siEntry) => {
-			this.rebuild(siEntry ? siEntry.getFinalReplacementEntry() : null);
+		this.subscription.add(this.siEntry$.subscribe((siValueBoundary) => {
+			this.rebuild(siValueBoundary ? siValueBoundary.getFinalReplacementEntry() : null);
 		}));
 
 		this.uiContent = new TypeUiContent(CompactEntryComponent, (ref) => {
@@ -154,58 +154,58 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 
-	private rebuild(siEntry: SiEntry|null) {
+	private rebuild(siValueBoundary: SiValueBoundary|null) {
 		this.clear();
 
-		if (!siEntry || !siEntry.entryBuildupSelected) {
+		if (!siValueBoundary || !siValueBoundary.entrySelected) {
 			return;
 		}
 
-		this.currentSiEntry = siEntry;
+		this.currentSiEntry = siValueBoundary;
 
-		this.buildStructures(siEntry);
+		this.buildStructures(siValueBoundary);
 
-// 		if (!siEntry.isMultiType()) {
-// 			this.rebuild(siEntry);
+// 		if (!siValueBoundary.isMultiType()) {
+// 			this.rebuild(siValueBoundary);
 // 		} else {
-// 			this.subscription.add(siEntry.selectedTypeId$.subscribe(() => {
-// 				this.rebuild(siEntry);
+// 			this.subscription.add(siValueBoundary.selectedTypeId$.subscribe(() => {
+// 				this.rebuild(siValueBoundary);
 // 			}));
 // 		}
 
-		this.monitorEntry(siEntry);
+		this.monitorEntry(siValueBoundary);
 	}
 
-	private buildStructures(siEntry: SiEntry) {
-		const siEntryBuildup = siEntry.selectedEntryBuildup;
-		const siMaskDeclaration = this.siDeclaration.getTypeDeclarationByTypeId(siEntry.selectedEntryBuildupId!);
+	private buildStructures(siValueBoundary: SiValueBoundary) {
+		const siEntry = siValueBoundary.selectedEntry;
+		const siMaskDeclaration = this.siDeclaration.getMaskDeclarationByMaskId(siValueBoundary.selectedMaskId!);
 
-		this.asideUiContents = siEntryBuildup.controls
+		this.asideUiContents = siEntry.controls
 					.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
 
 		const fieldUiStructures = new Array<UiStructure>();
 		for (const siProp of siMaskDeclaration.getSiProps()) {
 			const structure = new UiStructure(null);
-			structure.model = siEntryBuildup.getFieldById(siProp.id).createUiStructureModel(true);
+			structure.model = siEntry.getFieldById(siProp.id).createUiStructureModel(true);
 			// structure.compact = true;
 			fieldUiStructures.push(structure);
 		}
 		this.fieldUiStructuresSubject.next(fieldUiStructures);
 	}
 
-	private monitorEntry(siEntry: SiEntry) {
-		if (!siEntry.isNew()) {
-			this.siEntryMonitor.registerEntry(siEntry);
+	private monitorEntry(siValueBoundary: SiValueBoundary) {
+		if (!siValueBoundary.isNew()) {
+			this.siEntryMonitor.registerEntry(siValueBoundary);
 		}
 
-		const sub = siEntry.state$.subscribe((state) => {
+		const sub = siValueBoundary.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					if (!siEntry.isNew()) {
-						this.siEntryMonitor.unregisterEntry(siEntry);
+					if (!siValueBoundary.isNew()) {
+						this.siEntryMonitor.unregisterEntry(siValueBoundary);
 					}
 					this.subscription!.remove(sub);
-					this.rebuild(siEntry.replacementEntry);
+					this.rebuild(siValueBoundary.replacementValueBoundary);
 					break;
 			}
 		});

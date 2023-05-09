@@ -61,18 +61,12 @@ class SiStructureDeclaration implements \JsonSerializable {
 		return new SiStructureDeclaration($structureType, null, $label, $helpText);
 	}
 	
-	/**
-	 * @return SiProp
-	 */
-	public function getPropId() {
+
+	public function getPropId(): ?string {
 		return $this->propId;
 	}
 
-	/**
-	 * @param string $propId
-	 * @return \rocket\si\meta\SiProp
-	 */
-	public function setPropId(?string $propId) {
+	public function setPropId(?string $propId): static {
 		$this->propId = $propId;
 		return $this;
 	}
@@ -84,11 +78,7 @@ class SiStructureDeclaration implements \JsonSerializable {
 		return $this->structureType;
 	}
 
-	/**
-	 * @param string $displayType
-	 * @return \rocket\si\meta\SiProp
-	 */
-	public function setStructureType(?string $structureType) {
+	public function setStructureType(?string $structureType): static {
 		ArgUtils::valEnum($structureType, SiStructureType::all(), null, true);
 		$this->structureType = $structureType;
 		return $this;
@@ -108,6 +98,11 @@ class SiStructureDeclaration implements \JsonSerializable {
 	public function setChildren(array $children) {
 		ArgUtils::valArray($children, SiStructureDeclaration::class);
 		$this->children = $children;
+		return $this;
+	}
+
+	function addChild(SiStructureDeclaration $child): static {
+		$this->children[] = $child;
 		return $this;
 	}
 	

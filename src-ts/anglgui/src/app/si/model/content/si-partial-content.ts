@@ -1,7 +1,7 @@
-import { SiEntry } from './si-entry';
+import { SiValueBoundary } from './si-value-boundary';
 
 export interface SiPartialContent {
-	entries: SiEntry[];
+	entries: SiValueBoundary[];
 	count: number;
 	offset: number;
 }

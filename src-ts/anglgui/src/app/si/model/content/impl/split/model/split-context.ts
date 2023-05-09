@@ -1,5 +1,5 @@
 import { SplitOption } from './split-option';
-import { SiEntry } from '../../../si-entry';
+import { SiValueBoundary } from '../../../si-value-boundary';
 import { Observable } from 'rxjs';
 
 export interface SplitContext {
@@ -13,7 +13,7 @@ export interface SplitContext {
 
 	getSplitOptions(): SplitOption[];
 
-	getEntry$(key: string): Promise<SiEntry|null>;
+	getEntry$(key: string): Promise<SiValueBoundary|null>;
 
 }
 

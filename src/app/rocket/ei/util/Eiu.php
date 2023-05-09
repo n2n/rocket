@@ -48,7 +48,7 @@ class Eiu implements Lookupable {
 	/**
 	 * @return EiuContext|null
 	 */
-	public function context(bool $required = true) {
+	public function context(bool $required = true): ?EiuContext {
 		if ($this->eiuContext !== null) {
 			return $this->eiuContext;
 		}
@@ -245,7 +245,7 @@ class Eiu implements Lookupable {
 	/**
 	 * @return EiuFactory
 	 */
-	function f() {
+	function f(): EiuFactory {
 		return $this->factory();
 	}
 	

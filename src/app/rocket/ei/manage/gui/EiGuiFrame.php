@@ -11,13 +11,14 @@ use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\api\ApiControlCallId;
-use rocket\si\content\SiEntryBuildup;
+use rocket\si\content\SiEntry;
 use rocket\ei\EiPropPath;
 use rocket\si\meta\SiProp;
 use rocket\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiMaskDeclaration;
 use rocket\si\meta\SiStructureDeclaration;
+use rocket\ei\manage\api\ApiController;
 
 /**
  * @author andreas
@@ -432,12 +433,14 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\control\SiControl[]
 	 */
-	function createSelectionSiControls(EiFrame $eiFrame) {
+	function createSelectionSiControls(EiFrame $eiFrame): array {
 		$siControls = [];
 		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $selectionGuiControl) {
-			$siControls[$guiControlPathStr] = $selectionGuiControl->toCmdSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
+					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), null));
 		}
@@ -447,12 +450,14 @@ class EiGuiFrame {
 	/**
 	 * @return \rocket\si\control\SiControl[]
 	 */
-	function createGeneralSiControls(EiFrame $eiFrame) {
+	function createGeneralSiControls(EiFrame $eiFrame): array {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $generalGuiControl) {
-			$siControls[$guiControlPathStr] = $generalGuiControl->toCmdSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr), 
+			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
+					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
 							$this->eiGuiModel->getViewMode(), null, null));
 		}
@@ -489,17 +494,17 @@ class EiGuiFrame {
 // 		$siIdentifier = $eiEntry->getEiObject()->createSiEntryIdentifier();
 // 		$viewMode = $this->getViewMode();
 		
-// 		$siEntry = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
-// 		$siEntry->putBuildup($eiType->getId(), $this->createSiEntryBuildup($eiFrame, $eiEntryGui, $siControlsIncluded));
-// 		$siEntry->setSelectedTypeId($eiType->getId());
+// 		$siValueBoundary = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
+// 		$siValueBoundary->putBuildup($eiType->getId(), $this->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded));
+// 		$siValueBoundary->setSelectedTypeId($eiType->getId());
 		
-// 		return $siEntry;
+// 		return $siValueBoundary;
 // 	}
 	
 	/**
-	 * @return SiEntryBuildup
+	 * @return SiEntry
 	 */
-	function createSiEntryBuildup(EiFrame $eiFrame, EiEntryGuiTypeDef $eiEntryGuiTypeDef, bool $siControlsIncluded = true) {
+	function createSiEntry(EiFrame $eiFrame, EiEntryGuiTypeDef $eiEntryGuiTypeDef, bool $siControlsIncluded = true) {
 		$eiEntry = $eiEntryGuiTypeDef->getEiEntry();
 		
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
@@ -511,29 +516,31 @@ class EiGuiFrame {
 					$eiFrame->getN2nContext(), $n2nLocale);
 		}
 		
-		$siEntryBuildup = new SiEntryBuildup($typeId, $idName);
+		$siEntry = new SiEntry($typeId, $eiEntry->getPid(), $idName);
 		
 		foreach ($eiEntryGuiTypeDef->getGuiFieldMap()->getAllGuiFields() as $defPropPathStr => $guiField) {
 			if (null !== ($siField = $guiField->getSiField())) {
-				$siEntryBuildup->putField($defPropPathStr, $siField);
+				$siEntry->putField($defPropPathStr, $siField);
 			}
 			
-// 			$siEntry->putContextFields($defPropPathStr, $guiField->getContextSiFields());
+// 			$siValueBoundary->putContextFields($defPropPathStr, $guiField->getContextSiFields());
 		}
 		
 		if (!$siControlsIncluded) {
-			return $siEntryBuildup;
+			return $siEntry;
 		}
 		
 		foreach ($this->guiDefinition->createEntryGuiControls($eiFrame, $this, $eiEntry)
 				as $guiControlPathStr => $entryGuiControl) {
-			$siEntryBuildup->putControl($guiControlPathStr, $entryGuiControl->toCmdSiControl(
-					new ApiControlCallId(GuiControlPath::create($guiControlPathStr),
+			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
+					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(), $eiEntry->getPid(),
 							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
 		}
 		
-		return $siEntryBuildup;
+		return $siEntry;
 	}
 	
 	

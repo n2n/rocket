@@ -27,7 +27,7 @@ use rocket\si\api\SiValResult;
 use rocket\ei\manage\frame\EiFrameUtil;
 use rocket\ei\manage\gui\EiEntryGui;
 use rocket\si\api\SiPartialContentInstruction;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\api\SiValInstruction;
 use rocket\si\input\SiEntryInput;
 use n2n\util\ex\IllegalStateException;
@@ -86,7 +86,7 @@ class ValInstructionProcess {
 	 * @return SiValGetResult
 	 */
 	private function handleGetInstruction($getInstruction) {
-		$eiGui = $this->util->determineEiGuiOfEiEntry($this->eiEntry, $this->instruction->getEntryInput()->getTypeId(), 
+		$eiGui = $this->util->determineEiGuiOfEiEntry($this->eiEntry, $this->instruction->getEntryInput()->getMaskId(),
 					$getInstruction->getStyle()->isBulky(), $getInstruction->getStyle()->isReadOnly());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
@@ -142,13 +142,13 @@ class ValInstructionProcess {
 	}
 	
 	/**
-	 * @param SiEntry $siEntry
+	 * @param SiValueBoundary $siEntry
 	 * @param EiEntryGui[] $eiEntryGuis
 	 * @return \rocket\si\api\SiValResult
 	 */
-	private function createEntryResult(SiEntry $siEntry, array $eiEntryGuis) {
+	private function createEntryResult(SiValueBoundary $siValueBoundary, array $eiEntryGuis) {
 		$result = new SiValResult();
-		$result->setEntry($siEntry);
+		$result->setEntry($siValueBoundary);
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;

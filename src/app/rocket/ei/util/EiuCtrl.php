@@ -55,6 +55,9 @@ use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiBreadcrumb;
 use rocket\ei\manage\gui\control\GuiControl;
 use rocket\ei\manage\api\SiCallResult;
+use rocket\si\content\SiGui;
+use rocket\ei\util\si\EifBulkyEntrySiGui;
+use rocket\ei\util\si\EifSiGui;
 
 class EiuCtrl {
 	private $eiu;
@@ -120,9 +123,7 @@ class EiuCtrl {
 	function lookupObject(string $pid, int $ignoreConstraintTypes = 0) {
 		try {
 			return $this->eiuFrame->lookupObject($this->eiuFrame->pidToId($pid), $ignoreConstraintTypes, true);
-		} catch (UnknownEiObjectException $e) {
-			throw new PageNotFoundException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
+		} catch (UnknownEiObjectException|\InvalidArgumentException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		} /*catch (InaccessibleEiEntryException $e) {
 		throw new ForbiddenException(null, 0, $e);
@@ -352,9 +353,28 @@ class EiuCtrl {
 			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
 		}
 	}
+
+	function forwardZone(SiGui|EifSiGui $gui, string $title): void {
+		if ($this->forwardHtml()) {
+			return;
+		}
+
+		if ($gui instanceof EifSiGui) {
+			$gui = $gui->toSiGui($this->httpContext->getRequest()->getPath()->toUrl());
+		}
+
+		if (null !== ($siResult = $this->handleSiCall($gui->getEiGui()->getEiEntryGui(), $generalGuiControls))) {
+			$this->cu->sendJson($siResult);
+			return;
+		}
+
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($gui, $this->rocketState->getBreadcrumbs(), $title));
+
+	}
 	
-	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded, bool $entrySiControlsIncluded = true,
-			array $generalGuiControls = []) {
+	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
+			bool $entrySiControlsIncluded = true, array $generalGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -376,7 +396,7 @@ class EiuCtrl {
 	}
 	
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
-			array $generalGuiControls = []) {
+			array $generalGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -459,7 +479,8 @@ class EiuCtrl {
 			return SiCallResult::fromInputError($siInputError);
 		}
 		
-		return SiCallResult::fromCallResponse($process->callGuiControl(), isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null);
+		return SiCallResult::fromCallResponse($process->callGuiControl(),
+				(isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null));
 	}
 	
 	function forwardUrlIframeZone(Url $url, string $title = null) {
@@ -560,7 +581,7 @@ class EiuCtrl {
 		}
 		
 		if ($label === null) {
-			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+			$label = (new DynamicTextCollection('rocket', $this->eiu->getN2nContext()->getN2nLocale()))
 					->t('common_edit_label');
 		}
 		
@@ -581,7 +602,7 @@ class EiuCtrl {
 		}
 		
 		if ($label === null) {
-			$label = (new DynamicTextCollection('rocket', $this->getN2nContext()->getN2nLocale()))
+			$label = (new DynamicTextCollection('rocket', $this->eiu->getN2nContext()->getN2nLocale()))
 					->t('common_add_label');
 		}
 		
@@ -614,12 +635,12 @@ class EiuCtrl {
 		return new EiuCtrl($cu);
 	}
 	
-	/**
-	 * @param object $eiObjectObj
-	 * @return \rocket\ei\util\entry\EiuEntry
-	 */
-	function toEiuEntry($eiObjectObj) {
-		return new EiuEntry($eiObjectObj, $this);
-	}
+//	/**
+//	 * @param object $eiObjectObj
+//	 * @return \rocket\ei\util\entry\EiuEntry
+//	 */
+//	function toEiuEntry($eiObjectObj): EiuEntry {
+//		return new EiuEntry($eiObjectObj, $this);
+//	}
 }
 

@@ -304,7 +304,7 @@ export class SiFieldFactory {
 			if (entryData) {
 				const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
 				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,
-						entryFactory.createEntry(entryData)));
+						entryFactory.createValueBoundary(entryData)));
 				continue;
 			}
 
@@ -343,13 +343,13 @@ export class SiFieldFactory {
 		let field: SiField|undefined;
 
 		for (const propId of onAssociatedPropIds) {
-			if (field = fieldMap.get(propId)) {
+			if (undefined !== (field = fieldMap.get(propId))) {
 				booleanInSiField.addOnAssociatedField(field);
 			}
 		}
 
 		for (const propId of offAssociatedPropIds) {
-			if (field = fieldMap.get(propId)) {
+			if (undefined !== (field = fieldMap.get(propId))) {
 				booleanInSiField.addOffAssociatedField(field);
 			}
 		}

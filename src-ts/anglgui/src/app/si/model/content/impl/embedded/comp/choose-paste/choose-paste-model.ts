@@ -42,7 +42,7 @@ export class ChoosePasteModel {
 				continue;
 			}
 
-			if (this.siEmbeddedEntry.containsTypeId(siGenericEmbeddedEntry.selectedTypeId)) {
+			if (this.siEmbeddedEntry.containsMaskId(siGenericEmbeddedEntry.selectedTypeId)) {
 				this.pastables.push(siGenericEmbeddedEntry.entryQualifier);
 			} else {
 				this.illegalPastables.push(siGenericEmbeddedEntry.entryQualifier);
@@ -51,7 +51,7 @@ export class ChoosePasteModel {
 	}
 
 	chooseAddable(siMaskQualifier: SiMaskQualifier) {
-		this.siEmbeddedEntry.selectedTypeId = siMaskQualifier.identifier.entryBuildupId;
+		this.siEmbeddedEntry.selectedMaskId = siMaskQualifier.identifier.id;
 		this.done$.next(this.siEmbeddedEntry);
 		this.done$.complete();
 	}

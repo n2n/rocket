@@ -5,7 +5,7 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 
 export class SiTypeEssentialsFactory {
 
-	constructor(private type: SiMask) {
+	constructor(private mask: SiMask) {
 	}
 
 	createStructureDeclarations(data: Array<any>): SiStructureDeclaration[] {
@@ -24,7 +24,7 @@ export class SiTypeEssentialsFactory {
 		const children = this.createStructureDeclarations(extr.reqArray('children'));
 
 		if (propId !== null) {
-			return new SiStructureDeclaration(this.type.getPropById(propId), null, type, children);
+			return new SiStructureDeclaration(this.mask.getPropById(propId), null, type, children);
 		}
 
 		return new SiStructureDeclaration(null, extr.nullaString('label'), type, children);

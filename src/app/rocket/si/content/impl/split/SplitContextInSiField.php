@@ -24,7 +24,7 @@ namespace rocket\si\content\impl\split;
 use n2n\util\type\attrs\DataSet;
 use rocket\si\content\impl\InSiFieldAdapter;
 use n2n\util\uri\Url;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use n2n\util\ex\IllegalStateException;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\input\SiEntryInput;
@@ -167,10 +167,10 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @param SiEntry $entry
+	 * @param SiValueBoundary $entry
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	function putEntry(string $key, string $label, SiEntry $entry) {
+	function putEntry(string $key, string $label, SiValueBoundary $entry) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
 		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
 	}
@@ -195,7 +195,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 * @return \rocket\si\content\impl\split\SplitContextInSiField
 	 */
 	function putUnavailable(string $key, string $label) {
-		return $this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
+		return $this->splitContents[$key] = SiSplitContent::createUnavailable($label);
 	}
 
 	/**
@@ -237,22 +237,22 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			}
 			
 			$lazy = false;
-			$siEntry = $this->splitContents[$key]->getEntry(); 
-			if ($siEntry === null && isset($this->siEntryCallbacks[$key])) {
-				$siEntry = $this->siEntryCallbacks[$key]();
-				ArgUtils::valTypeReturn($siEntry, SiEntry::class, null, $this->siEntryCallbacks[$key]);
+			$siValueBoundary = $this->splitContents[$key]->getEntry(); 
+			if ($siValueBoundary === null && isset($this->siEntryCallbacks[$key])) {
+				$siValueBoundary = $this->siEntryCallbacks[$key]();
+				ArgUtils::valTypeReturn($siValueBoundary, SiValueBoundary::class, null, $this->siEntryCallbacks[$key]);
 				unset($this->siEntryCallbacks[$key]);
 				$lazy = true;
 			}
 			
-			if ($siEntry === null) {
+			if ($siValueBoundary === null) {
 				throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);	
 			}
 			
-			$siEntry->handleInput(SiEntryInput::parse($entryInputData));
+			$siValueBoundary->handleEntryInput(SiEntryInput::parse($entryInputData));
 			if ($lazy) {
 				$preSplitContent = $this->splitContents[$key];
-				$this->splitContents[$key] = SiSplitContent::createEntry($preSplitContent->getLabel(), $siEntry)
+				$this->splitContents[$key] = SiSplitContent::createEntry($preSplitContent->getLabel(), $siValueBoundary)
 						->setShortLabel($preSplitContent->getShortLabel());
 			}
 		}

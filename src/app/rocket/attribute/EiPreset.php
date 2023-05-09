@@ -23,7 +23,7 @@ namespace rocket\attribute;
 
 use rocket\spec\setup\EiPresetMode;
 use n2n\util\type\ArgUtils;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use n2n\util\ex\IllegalStateException;
 
 /**

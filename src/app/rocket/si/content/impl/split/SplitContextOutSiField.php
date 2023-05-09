@@ -22,7 +22,7 @@
 namespace rocket\si\content\impl\split;
 
 use n2n\util\uri\Url;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\content\impl\OutSiFieldAdapter;
 use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
@@ -76,10 +76,10 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @param SiEntry $entry
+	 * @param SiValueBoundary $entry
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
-	function putEntry(string $key, string $label, SiEntry $entry) {
+	function putEntry(string $key, string $label, SiValueBoundary $entry) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
 		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
 	}
@@ -103,7 +103,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @return \rocket\si\content\impl\split\SiSplitContent
 	 */
 	function putUnavailable(string $key, string $label) {
-		return $this->splitContents[$key] = SiSplitContent::createUnavaialble($label);
+		return $this->splitContents[$key] = SiSplitContent::createUnavailable($label);
 	}
 
 	/**

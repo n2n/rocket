@@ -48,14 +48,14 @@ use n2n\web\http\HttpContext;
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
 	
-	private $loginContext;
+	private LoginContext $loginContext;
 	
-	private function _init(LoginContext $loginContext) {
+	private function _init(LoginContext $loginContext): void {
 		$this->loginContext = $loginContext;
 	}
 	
 	public function prepare(N2nLocaleConfig $localeConfig, ScrRegistry $scrRegistry,
-			Rocket $rocket) {
+			Rocket $rocket): void {
 		$this->getN2nContext()->setN2nLocale($localeConfig->getAdminN2nLocale());
 		$this->getControllerContext()->setName(self::NAME);
 		$scrRegistry->setBaseUrl($this->getHttpContext()->getControllerContextPath($this->getControllerContext())

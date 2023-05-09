@@ -1,9 +1,9 @@
-import { SiEntry } from '../../../content/si-entry';
+import { SiValueBoundary } from '../../../content/si-value-boundary';
 import { StructureBranchModel } from 'src/app/ui/structure/comp/structure-branch-model';
 
 export interface BulkyEntryModel {
 
-	getSiEntry(): SiEntry;
+	getSiEntry(): SiValueBoundary;
 
 	getContentStructureBranchModel(): StructureBranchModel;
 }

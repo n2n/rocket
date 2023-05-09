@@ -34,8 +34,8 @@ export class SiResultFactory {
 	createInputError(data: any, declaration: SiDeclaration): SiInputError {
 		const inputError = new SiInputError();
 		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
-		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
-			inputError.errorEntries.set(eeKey, entryFactory.createEntry(eeData));
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
+			inputError.errorEntries.set(eeKey, entryFactory.createValueBoundary(eeData));
 		}
 		return inputError;
 	}
@@ -47,8 +47,8 @@ export class SiResultFactory {
 
 		const inputResult = new SiInputResult();
 		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
-		for (const [eeKey, eeData] of new Extractor(data).reqMap('entries')) {
-			inputResult.entries.set(eeKey, entryFactory.createEntry(eeData));
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
+			inputResult.valueBoundaries.set(eeKey, entryFactory.createValueBoundary(eeData));
 		}
 		return inputResult;
 	}
@@ -60,7 +60,7 @@ export class SiResultFactory {
 
 		result.directive = extr.nullaString('directive') as SiDirective;
 		let navPointData: object|null;
-		if (navPointData = extr.nullaObject('navPoint')) {
+		if (null !== (navPointData = extr.nullaObject('navPoint'))) {
 			result.navPoint = SiEssentialsFactory.createNavPoint(navPointData);
 		}
 

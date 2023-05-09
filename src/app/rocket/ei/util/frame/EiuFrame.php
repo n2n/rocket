@@ -26,7 +26,6 @@ use rocket\ei\manage\frame\EiFrame;
 use rocket\ei\manage\EiObject;
 use rocket\ei\EiType;
 use rocket\ei\manage\EiEntityObj;
-use rocket\core\model\Rocket;
 use n2n\persistence\orm\EntityManager;
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
@@ -73,10 +72,9 @@ use rocket\ei\manage\gui\ViewMode;
 use rocket\ei\manage\gui\EiGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\ei\manage\frame\SortAbility;
-use rocket\ei\util\control\EiuControlResponse;
+use rocket\common\util\RfControlResponse;
 use n2n\util\type\TypeConstraints;
 use rocket\ei\manage\api\ApiController;
-use rocket\ei\manage\api\ApiControlCallId;
 use rocket\ei\util\spec\EiuCmd;
 use rocket\ei\component\command\EiCmd;
 
@@ -1218,7 +1216,7 @@ class EiuCallbackSortAbility implements SortAbility {
 	private function callClosure(\Closure $closure, array $eiObjects, EiObject $targetEiObject) {
 		$mmi = new MagicMethodInvoker($this->eiuAnalyst->getN2nContext(true));
 		$mmi->setMethod(new \ReflectionFunction($closure));
-		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(EiuControlResponse::class, true));
+		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(RfControlResponse::class, true));
 		
 		$eiuObjects = array_map(function ($eiObject) { return new EiuObject($eiObject, $this->eiuAnalyst); }, $eiObjects);
 		$targetEiuObject = new EiuObject($targetEiObject, $this->eiuAnalyst);
@@ -1226,7 +1224,7 @@ class EiuCallbackSortAbility implements SortAbility {
 		$eiuControlResponse = $mmi->invoke(null, null, [$eiuObjects, $targetEiuObject]);
 		
 		if ($eiuControlResponse === null) {
-			$eiuControlResponse = new EiuControlResponse($this->eiuAnalyst);
+			$eiuControlResponse = new RfControlResponse($this->eiuAnalyst);
 		}
 		
 		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getEiLaunch()->getEiLifecycleMonitor());

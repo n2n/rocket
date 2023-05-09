@@ -22,7 +22,7 @@
 namespace rocket\si\api;
 
 use rocket\si\meta\SiDeclaration;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use n2n\util\type\ArgUtils;
 
 class SiValResult implements \JsonSerializable {
@@ -80,7 +80,7 @@ class SiValGetResult implements \JsonSerializable {
 	 */
 	private $declaration = null;
 	/**
-	 * @var SiEntry|null
+	 * @var SiValueBoundary|null
 	 */
 	private $entry = null;
 	
@@ -102,16 +102,16 @@ class SiValGetResult implements \JsonSerializable {
 	}
 
 	/**
-	 * @return \rocket\si\content\SiEntry
+	 * @return \rocket\si\content\SiValueBoundary
 	 */
 	public function getEntry() {
 		return $this->entry;
 	}
 
 	/**
-	 * @param \rocket\si\content\SiEntry|null $entries
+	 * @param \rocket\si\content\SiValueBoundary|null $entries
 	 */
-	public function setEntry(?SiEntry $entry) {
+	public function setEntry(?SiValueBoundary $entry) {
 		$this->entry = $entry;
 	}
 

@@ -1,10 +1,10 @@
 export class SiMaskIdentifier {
-	constructor(readonly id: string, readonly entryBuildupId: string, readonly typeId: string) {
+	constructor(readonly id: string, readonly typeId: string) {
 
 	}
 
 	matches(arg: SiMaskIdentifier): boolean {
-		return arg instanceof SiMaskIdentifier && this.id === arg.id;
+		return this.id === arg.id;
 	}
 }
 

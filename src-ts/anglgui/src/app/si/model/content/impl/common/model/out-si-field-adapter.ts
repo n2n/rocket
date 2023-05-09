@@ -16,6 +16,6 @@ export abstract class OutSiFieldAdapter extends SimpleSiFieldAdapter {
 		throw new IllegalSiStateError('no input');
 	}
 
-	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntry): SiField;
 
 }

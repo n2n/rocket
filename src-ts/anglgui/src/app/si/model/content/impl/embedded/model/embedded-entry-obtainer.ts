@@ -12,11 +12,10 @@ import { SiValResult } from 'src/app/si/model/api/si-val-result';
 import { SiService } from 'src/app/si/manage/si.service';
 import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
-import { SiEmbeddedEntry } from '../model/si-embedded-entry';
+import { SiEmbeddedEntry } from './si-embedded-entry';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 import { SiFrame, SiFrameApiSection } from 'src/app/si/model/meta/si-frame';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
-import { SiApiFactory } from 'src/app/si/build/si-api-factory';
 
 export class EmbeddedEntryObtainer	{
 
@@ -81,13 +80,13 @@ export class EmbeddedEntryObtainer	{
 		let result: SiGetResult|undefined;
 		while (result = response.results.shift()) {
 			const siComp = new BulkyEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
-			siComp.entry = result.entry;
+			siComp.valueBoundary = result.valueBoundary;
 
 			let summarySiGui: CompactEntrySiGui|null = null;
 			if (this.obtainSummary) {
 				result = response.results.shift()!;
 				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
-				summarySiGui.entry = result.entry;
+				summarySiGui.entry = result.valueBoundary;
 			}
 
 			siEmbeddedEntries.push(new SiEmbeddedEntry(siComp, summarySiGui));
@@ -113,10 +112,10 @@ export class EmbeddedEntryObtainer	{
 	}
 
 	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult): void {
-		siEmbeddedEntry.entry.replace(siValResult.getResults[0].entry!);
+		siEmbeddedEntry.entry.replace(siValResult.getResults[0].valueBoundary!);
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[1].entry;
+			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[1].valueBoundary;
 		}
 	}
 

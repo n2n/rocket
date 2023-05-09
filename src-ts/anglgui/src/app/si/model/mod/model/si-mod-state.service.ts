@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SiEntryIdentifier } from '../../content/si-entry-qualifier';
-import { SiEntry } from '../../content/si-entry';
+import { SiValueBoundary } from '../../content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -14,8 +14,8 @@ export class SiModStateService {
 	private lastModEventSubject = new BehaviorSubject<SiModEvent|null>(null);
 	private lastMessagesSubject = new BehaviorSubject<Message[]>([]);
 
-	private shownEntriesMap = new Map<SiEntry, object[]>();
-	private shownEntrySubject = new Subject<SiEntry>();
+	private shownEntriesMap = new Map<SiValueBoundary, object[]>();
+	private shownEntrySubject = new Subject<SiValueBoundary>();
 
 	constructor() {
 	}
@@ -40,11 +40,11 @@ export class SiModStateService {
 	// 	return this.lastModEvent && this.lastModEvent.containsModEntryIdentifier(ei);
 	// }
 
-	isEntryShown(entry: SiEntry): boolean {
+	isEntryShown(entry: SiValueBoundary): boolean {
 		return this.shownEntriesMap.has(entry);
 	}
 
-	get shownEntry$(): Observable<SiEntry> {
+	get shownEntry$(): Observable<SiValueBoundary> {
 		return this.shownEntrySubject.asObservable();
 	}
 
@@ -56,7 +56,7 @@ export class SiModStateService {
 		return this.lastMessagesSubject.asObservable();
 	}
 
-	registerShownEntry(entry: SiEntry, refObj: object): void {
+	registerShownEntry(entry: SiValueBoundary, refObj: object): void {
 		if (!this.shownEntriesMap.has(entry)) {
 			this.shownEntriesMap.set(entry, []);
 		}
@@ -70,7 +70,7 @@ export class SiModStateService {
 		this.shownEntrySubject.next(entry);
 	}
 
-	unregisterShownEntry(entry: SiEntry, refObj: object): void {
+	unregisterShownEntry(entry: SiValueBoundary, refObj: object): void {
 		if (!this.shownEntriesMap.has(entry)) {
 			throw new IllegalSiStateError('Entry not shown.');
 		}

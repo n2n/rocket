@@ -41,7 +41,7 @@ use rocket\ei\manage\gui\EiGuiModel;
 use n2n\l10n\N2nLocale;
 use rocket\ei\mask\EiMask;
 use rocket\ei\manage\gui\EiEntryGui;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
@@ -486,7 +486,7 @@ class EiEntryGuiResult {
 	
 	/**
 	 * @param bool $controlsIncluded
-	 * @return SiEntry
+	 * @return SiValueBoundary
 	 */
 	function createSiEntry(bool $controlsIncluded) {
 		return $this->eiGuiFrame->createSiEntry($this->eiFrame, $this->eiEntryGui);

@@ -104,7 +104,7 @@ class ProcessUtil {
 			return $this->lookupEiObject($pid);
 		}
 		
-		return $this->createEiObject($siEntryInput->getTypeId());
+		return $this->createEiObject($siEntryInput->getMaskId());
 	}
 	
 	/**
@@ -133,7 +133,7 @@ class ProcessUtil {
 // 			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
 			$defPropPaths = null;
 			
-			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getTypeId(), $defPropPaths, true);
+			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getMaskId(), $defPropPaths, true);
 		} catch (SecurityException $e) {
 			throw new BadRequestException(null, 0, $e);
 		} catch (EiException $e) {

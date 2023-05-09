@@ -54,15 +54,15 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * @param \DateTime|null $value
 	 * @return \rocket\si\content\impl\date\DateTimeInSiField
 	 */
-	function setValue(?int $value) {
+	function setValue(?\DateTime $value) {
 		$this->value = $value;
 		return $this;
 	}
 	
 	/**
-	 * @return int|null
+	 * @return \DateTime|null
 	 */
-	function getValue() {
+	function getValue(): ?\DateTime {
 		return $this->value;
 	}
 	

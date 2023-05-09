@@ -22,12 +22,12 @@
 namespace rocket\si\content\impl\relation;
 
 use rocket\si\input\SiEntryInput;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 
 interface EmbeddedEntryInputHandler {
 	/**
 	 * @param SiEntryInput[] $siEntryInputs
-	 * @return SiEntry[]
+	 * @return SiValueBoundary[]
 	 */
 	function handleInput(array $siEntryInputs): array;
 }

@@ -1,5 +1,4 @@
 import { Embe } from './embe';
-import { SiGenericEntry } from 'src/app/si/model/generic/si-generic-entry';
 import { EmbeddedEntriesInConfig } from './embedded-entries-config';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
 import {IllegalSiStateError} from '../../../../../../util/illegal-si-state-error';
@@ -66,7 +65,7 @@ export class EmbeInCollection extends EmbeOutCollection {
 	async createEntriesResetPoints(): Promise<SiInputResetPoint[]> {
 		const entries: Array<Promise<SiInputResetPoint>> = [];
 		for (const embe of this.embes) {
-			entries.push(embe.siEntry.createInputResetPoint());
+			entries.push(embe.siValueBoundary.createInputResetPoint());
 		}
 		return await Promise.all(entries);
 	}

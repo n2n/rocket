@@ -34,17 +34,14 @@ use rocket\ei\manage\gui\EiGuiModel;
 use rocket\ei\manage\frame\EiFrame;
 use n2n\util\type\ArgUtils;
 use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\manage\gui\control\GuiControlPath;
 use rocket\ei\manage\api\ZoneApiControlCallId;
-use rocket\ei\manage\api\ApiController;
-use rocket\ei\util\control\EiuControlResponse;
+use rocket\common\util\RfControlResponse;
+use n2n\util\ex\NotYetImplementedException;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
 
-	function __construct(private string $id, private Url $apiUrl, private \Closure $callback, private SiButton $siButton) {
+	function __construct(private string $id, private \Closure $callback, private SiButton $siButton) {
 
 	}
 	
@@ -63,35 +60,18 @@ class CallbackGuiControl implements GuiControl {
 	function isInputHandled(): bool {
 		return $this->inputHandled;
 	}
-	
-	/**
-	 * @param bool $inputHandled
-	 * @return \rocket\ei\util\control\CallbackGuiControl
-	 */
-	function setInputHandled(bool $inputHandled) {
+
+	function setInputHandled(bool $inputHandled): static {
 		$this->inputHandled = $inputHandled;
 		return $this;
 	}
 	
-	function getChilById(string $id): ?GuiControl {
+	function getChildById(string $id): ?GuiControl {
 		return null;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
-	 */
-	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($this->apiUrl,
-				$siApiCallId, $this->siButton, $this->inputHandled);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
-	 */
-	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		return new ApiCallSiControl($zoneUrl, $zoneControlCallId, $this->siButton, $this->inputHandled);
+
+	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+		return new ApiCallSiControl($apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	
 	/**
@@ -106,13 +86,13 @@ class CallbackGuiControl implements GuiControl {
 		} else {
 			$sifControlResponse = $callback($eiu, $inputEius);
 		}
-		ArgUtils::valTypeReturn($sifControlResponse, EiuControlResponse::class, null, $callback, true);
+		ArgUtils::valTypeReturn($sifControlResponse, RfControlResponse::class, null, $callback, true);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));
 // 		$mmi->setClassParamObject(Eiu::class, $eiu);
 // 		$mmi->setClassParamObject($className, $obj)
-// 		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiuControlResponse::class, true));
+// 		$mmi->setReturnTypeConstraint(TypeConstraints::type(RfControlResponse::class, true));
 		
 // 		$eiuControlResponse = $mmi->invoke();
 		if ($sifControlResponse === null) {
@@ -149,5 +129,6 @@ class CallbackGuiControl implements GuiControl {
 	 * @see \rocket\ei\manage\gui\control\GuiControl::handleEntries()
 	 */
 	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
+		throw new NotYetImplementedException();
 	}
 }

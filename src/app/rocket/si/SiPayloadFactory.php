@@ -76,7 +76,7 @@ class SiPayloadFactory extends JsonPayload {
 	}
 	
 	/**
-	 * @param SiControl[] $fields
+	 * @param SiField[] $fields
 	 * @return array
 	 */
 	static function createDataFromFields(array $fields) {

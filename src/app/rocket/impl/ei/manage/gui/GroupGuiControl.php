@@ -57,41 +57,22 @@ class GroupGuiControl implements GuiControl {
 	public function isInputHandled(): bool {
 		return false;
 	}
-	
-	/**
-	 * @param GuiControl $guiControl
-	 * @return \rocket\ei\util\control\GroupGuiControl
-	 */
-	function add(GuiControl ...$guiControls) {
+
+	function add(GuiControl ...$guiControls): static {
 		foreach ($guiControls as $guiControl) {
 			$this->childrean[$guiControl->getId()] = $guiControl;
 		}
 		return $this;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
-	 */
-	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
+
+	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
 		return new GroupSiControl($this->siButton, 
-				array_map(function ($child) use ($siApiCallId) {
-					return $child->toCmdSiControl($siApiCallId->guiControlPathExt($child->getId()));
+				array_map(function ($child) use ($apiUrl, $siApiCallId) {
+					return $child->toSiControl($apiUrl, $siApiCallId->guiControlPathExt($child->getId()));
 				}, $this->childrean));;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
-	 */
-	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
-		return new GroupSiControl($this->siButton,
-				array_map(function ($child) use ($zoneUrl, $zoneControlCallId) {
-					return $child->toZoneSiControl($zoneUrl, $zoneControlCallId->guiControlPathExt($child->getId()));
-				}, $this->childrean));
-	}
-	
-	function getChilById(string $id): ?GuiControl {
+	function getChildById(string $id): ?GuiControl {
 		return $this->childrean[$id] ?? null;
 	}
 	

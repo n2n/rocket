@@ -2,7 +2,7 @@ import { SiField } from '../../../si-field';
 import { SplitModel } from '../comp/split-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { SplitOption } from './split-option';
-import { SiEntry } from '../../../si-entry';
+import { SiValueBoundary } from '../../../si-value-boundary';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { UiStructureModelMode, UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
@@ -50,7 +50,7 @@ export class SplitSiField extends SiFieldAdapter {
 		throw new IllegalSiStateError('no input');
 	}
 
-	// abstract copy(entryBuildUp: SiEntryBuildup): SiField;
+	// abstract copy(entryBuildUp: SiEntry): SiField;
 
 	createUiStructureModel(compactMode: boolean): UiStructureModel {
 		const uism = new SplitUiStructureModel(this.refPropId, this.splitContext, this.copyStyle, this.viewStateService,
@@ -125,12 +125,12 @@ class SplitUiStructureModel extends SimpleUiStructureModel implements SplitModel
 			throw new Error('No SplitContext assigned.');
 		}
 
-		return this.splitContext.getEntry$(key).then((entry: SiEntry|null) => {
+		return this.splitContext.getEntry$(key).then((entry: SiValueBoundary|null) => {
 			if (entry === null) {
 				return null;
 			}
 
-			return entry.selectedEntryBuildup.getFieldById(this.refPropId);
+			return entry.selectedEntry.getFieldById(this.refPropId);
 		});
 	}
 

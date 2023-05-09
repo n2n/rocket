@@ -1,8 +1,8 @@
-import {SiGenericEntry} from '../../../../generic/si-generic-entry';
+import {SiGenericValueBoundary} from '../../../../generic/si-generic-value-boundary';
 import { SplitContent } from './split-content-collection';
 
 export class SplitContextCopy {
-	private genericMap = new Map<string, SiGenericEntry>();
+	private genericMap = new Map<string, SiGenericValueBoundary>();
 
 	static async fromMap(map: Map<string, SplitContent>): Promise<SplitContextCopy> {
 		const gsc = new SplitContextCopy();
@@ -28,9 +28,9 @@ export class SplitContextCopy {
 		const promises = new Array<Promise<boolean>>();
 
 		for (const [key, genericEntry] of this.genericMap) {
-			const siEntry = splitContentMap.get(key)?.getLoadedSiEntry();
-			if (siEntry) {
-				promises.push(siEntry.paste(genericEntry));
+			const siValueBoundary = splitContentMap.get(key)?.getLoadedSiEntry();
+			if (siValueBoundary) {
+				promises.push(siValueBoundary.paste(genericEntry));
 			}
 		}
 

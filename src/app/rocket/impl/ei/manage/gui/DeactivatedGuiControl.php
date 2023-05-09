@@ -57,23 +57,11 @@ class DeactivatedGuiControl implements GuiControl {
 		return false;
 	}
 	
-	function getChilById(string $id): ?GuiControl {
+	function getChildById(string $id): ?GuiControl {
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toCmdSiControl()
-	 */
-	function toCmdSiControl(ApiControlCallId $siApiCallId): SiControl {
-		return new DeactivatedSiControl($this->siButton);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::toZoneSiControl()
-	 */
-	function toZoneSiControl(Url $zoneUrl, ZoneApiControlCallId $zoneControlCallId): SiControl {
+	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
 		return new DeactivatedSiControl($this->siButton);
 	}
 	

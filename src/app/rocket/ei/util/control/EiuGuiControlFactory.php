@@ -53,7 +53,7 @@ class EiuGuiControlFactory {
 	 * @param mixed|null $urlExt
 	 * @return RefGuiControl
 	 */
-	public function newCmdHref(string $id, SiButton $siButton, $urlExt = null) {
+	public function newCmdHref(string $id, SiButton $siButton, Url $urlExt = null): RefGuiControl {
 		return GuiControls::href($id, $this->eiuAnalyst->getEiuFrame(true)->getCmdUrl()->ext($urlExt), $siButton);
 	}
 	
@@ -63,9 +63,8 @@ class EiuGuiControlFactory {
 	 * @param \Closure $callback
 	 * @return CallbackGuiControl
 	 */
-	public function newCallback(string $id, SiButton $siButton, \Closure $callback) {
-		return GuiControls::callback($id, $this->eiuAnalyst->getEiuFrame(true)->getApiControlUrl(),
-				$siButton, $callback);
+	public function newCallback(string $id, SiButton $siButton, \Closure $callback): CallbackGuiControl {
+		return GuiControls::callback($id, $siButton, $callback);
 	}
 	
 	/**

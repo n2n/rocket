@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiInput } from 'src/app/si/model/input/si-input';
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 import { Observable, Subject } from 'rxjs';
 import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiDirective, SiControlResult } from './si-control-result';
+import { SiControlResult, SiDirective } from './si-control-result';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 import { SiNavPoint } from '../model/control/si-nav-point';
@@ -42,8 +42,7 @@ export class SiUiService {
 
 	navigateByRouterUrl(url: string, layer: UiLayer|null): void {
 		if (layer && !layer.main) {
-			const zone = layer.pushRoute(null, url).zone;
-			this.loadZone(zone, true);
+			this.loadZone(layer.pushRoute(null, url).zone, true);
 			return;
 		}
 
@@ -120,16 +119,16 @@ export class SiUiService {
 			uiLayer: UiLayer): Observable<void> {
 		let input: SiInput|null = null;
 
-		const entries: SiEntry[] = [];
+		const valueBoundaries: SiValueBoundary[] = [];
 		if (includeInput) {
 			input = new SiInput(controlBoundry.getBoundDeclaration());
-			for (const entry of controlBoundry.getBoundEntries()) {
-				if (entry.style.readOnly) {
+			for (const valueBoundary of controlBoundry.getBoundValueBoundaries()) {
+				if (valueBoundary.style.readOnly) {
 					continue;
 				}
 
-				entries.push(entry);
-				input.entryInputs.push(entry.readInput());
+				valueBoundaries.push(valueBoundary);
+				input.entryInputs.push(valueBoundary.readInput());
 			}
 		}
 
@@ -137,7 +136,7 @@ export class SiUiService {
 
 		const subject =	new Subject<void>();
 		obs.subscribe((result) => {
-			this.handleControlResult(result, entries, uiLayer);
+			this.handleControlResult(result, valueBoundaries, uiLayer);
 			subject.next();
 			subject.complete();
 		});
@@ -145,13 +144,13 @@ export class SiUiService {
 		return subject;
 	}
 
-	private handleControlResult(result: SiControlResult, inputEntries: SiEntry[], uiLayer: UiLayer): void {
+	private handleControlResult(result: SiControlResult, inputEntries: SiValueBoundary[], uiLayer: UiLayer): void {
 		if (result.inputError) {
 			this.replaceEntries(result.inputError.errorEntries, inputEntries);
 		}
 
 		if (result.inputResult) {
-			this.replaceEntries(result.inputResult.entries, inputEntries);
+			this.replaceEntries(result.inputResult.valueBoundaries, inputEntries);
 		}
 
 
@@ -173,7 +172,7 @@ export class SiUiService {
 		}
 	}
 
-	private replaceEntries(errorEntries: Map<string, SiEntry>, entries: SiEntry[]): void {
+	private replaceEntries(errorEntries: Map<string, SiValueBoundary>, entries: SiValueBoundary[]): void {
 		if (entries.length === 0) {
 			return;
 		}

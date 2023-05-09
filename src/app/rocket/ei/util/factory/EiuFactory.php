@@ -2,13 +2,14 @@
 namespace rocket\ei\util\factory;
 
 use rocket\ei\util\privilege\EiuCommandPrivilege;
-use rocket\ei\util\control\EiuControlResponse;
+use rocket\common\util\RfControlResponse;
 use rocket\ei\util\EiuAnalyst;
 use n2n\util\type\TypeConstraint;
 use rocket\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\ei\manage\gui\GuiFieldAssembler;
 use rocket\ei\util\control\EiuGuiControlFactory;
+use rocket\ei\util\si\EiuSiFactory;
 
 class EiuFactory {
 	private $eiu;
@@ -32,10 +33,10 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @return EiuControlResponse
+	 * @return RfControlResponse
 	 */
 	function newControlResponse() {
-		return new EiuControlResponse($this->eiuAnalyst);
+		return new RfControlResponse($this->eiuAnalyst);
 	}
 	
 	/**
@@ -48,8 +49,12 @@ class EiuFactory {
 	/**
 	 * @return EiuGuiControlFactory
 	 */
-	function gc() {
+	function gc(): EiuGuiControlFactory {
 		return $this->guiControl();
+	}
+
+	function si(): EiuSiFactory {
+		return new EiuSiFactory($this->eiuAnalyst);
 	}
 	
 	/**

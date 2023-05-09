@@ -25,6 +25,7 @@ use rocket\ei\IdPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\attrs\DataSet;
+use rocket\ei\manage\gui\control\GuiControl;
 
 class ZoneApiControlCallId extends IdPath implements  \JsonSerializable {
 	
@@ -51,9 +52,13 @@ class ZoneApiControlCallId extends IdPath implements  \JsonSerializable {
 	 * @throws IllegalStateException
 	 * @return \rocket\ei\manage\api\ZoneApiControlCallId
 	 */
-	public static function create(/*PHP8 string|array|ZoneApiControlCallId*/ $expression) {
+	public static function create(string|array|ZoneApiControlCallId|GuiControl $expression) {
 		if ($expression instanceof ZoneApiControlCallId) {
 			return $expression;
+		}
+
+		if ($expression instanceof GuiControl) {
+			return new ZoneApiControlCallId([$expression->getId()]);
 		}
 		
 		if (is_array($expression)) {

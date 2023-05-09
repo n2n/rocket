@@ -90,7 +90,7 @@ class CompactExplorerSiGui implements SiGui {
 	
 	/**
 	 * @param int $pageSize
-	 * @return \rocket\si\content\impl\basic\CompactExplorerSiGui
+	 * @return CompactExplorerSiGui
 	 */
 	public function setPageSize(int $pageSize) {
 		$this->pageSize = $pageSize;
@@ -99,7 +99,7 @@ class CompactExplorerSiGui implements SiGui {
 	
 	/**
 	 * @param SiPartialContent|null $partialContent
-	 * @return \rocket\si\content\impl\basic\CompactExplorerSiGui
+	 * @return CompactExplorerSiGui
 	 */
 	public function setPartialContent(?SiPartialContent $partialContent) {
 		$this->partialContent = $partialContent;

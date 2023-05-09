@@ -31,7 +31,7 @@ class SiPartialContent implements \JsonSerializable {
 
 	/**
 	 * @param int $count
-	 * @param SiEntry[] $entries
+	 * @param SiValueBoundary[] $entries
 	 */
 	function __construct(int $count, array $entries = []) {
 		$this->count = $count;
@@ -70,17 +70,17 @@ class SiPartialContent implements \JsonSerializable {
 	}
 
 	/**
-	 * @param SiEntry[] $siEntries
+	 * @param SiValueBoundary[] $siEntries
 	 * @return \rocket\si\meta\SiDeclaration
 	 */
 	function setEntries(array $entries) {
-		ArgUtils::valArray($entries, SiEntry::class);
+		ArgUtils::valArray($entries, SiValueBoundary::class);
 		$this->entries = $entries;
 		return $this;
 	}
 	
 	/**
-	 * @return SiEntry[]
+	 * @return SiValueBoundary[]
 	 */
 	function getEntries() {
 		return $this->entries;
@@ -92,7 +92,7 @@ class SiPartialContent implements \JsonSerializable {
 	 */
 	function jsonSerialize(): mixed {
 		return [
-			'entries' => $this->entries,
+			'siValueBoundary' => $this->entries,
 			'count' => $this->count,
 			'offset' => $this->offset
 		];

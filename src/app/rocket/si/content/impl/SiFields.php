@@ -99,9 +99,9 @@ class SiFields {
 	
 	/**
 	 * @param \DateTime $value
-	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 * @return DateTimeInSiField
 	 */
-	static function dateTimeIn(?\DateTime $value) {
+	static function dateTimeIn(?\DateTime $value): DateTimeInSiField {
 		return new DateTimeInSiField($value);
 	}
 	

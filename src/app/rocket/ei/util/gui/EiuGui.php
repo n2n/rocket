@@ -108,7 +108,7 @@ class EiuGui {
 	
 	/**
 	 * @param bool $entrySiControlsIncluded
-	 * @return \rocket\si\content\SiEntry
+	 * @return \rocket\si\content\SiValueBoundary
 	 */
 	function createSiEntry(bool $entrySiControlsIncluded = true) {
 		return $this->eiGui->createSiEntry($this->eiuAnalyst->getEiFrame(true), $entrySiControlsIncluded);

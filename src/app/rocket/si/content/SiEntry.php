@@ -21,160 +21,149 @@
  */
 namespace rocket\si\content;
 
-use rocket\si\input\SiEntryInput;
-use rocket\si\input\CorruptedSiInputDataException;
-use n2n\util\ex\IllegalStateException;
-use n2n\util\type\ArgUtils;
+use rocket\si\control\SiControl;
+use rocket\si\SiPayloadFactory;
 use n2n\util\type\attrs\AttributesException;
-use rocket\si\meta\SiStyle;
+use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\input\SiEntryInput;
 
 class SiEntry implements \JsonSerializable {
-	/**
-	 * @var SiEntryIdentifier
-	 */
-	private $identifier;
-	private $selectedTypeId = null;
-	private $buildups = [];
-	private $treeLevel;
-	private $style;
-	
-	/**
-	 * @param string $category
-	 * @param string|null $id
-	 * @param string $name
-	 */
-	function __construct(SiEntryIdentifier $identifier, SiStyle $style) {
-		$this->identifier = $identifier;
-		$this->style = $style;
-	}
 
 	/**
-	 * @return \rocket\si\content\SiEntryIdentifier
+	 * @var string|null
 	 */
-	function getIdentifier() {
-		return $this->identifier;
-	}
-	
+	private $idName;
 	/**
-	 * @param SiEntryIdentifier $identifier
-	 * @return \rocket\si\content\SiEntry
+	 * @var SiField[] $fields
 	 */
-	function setIdentifier(SiEntryIdentifier $identifier) {
-		$this->identifier = $identifier;
-		return $this;
-	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getTreeLevel() {
-		return $this->treeLevel;
-	}
-
-	/**
-	 * @param int|null $treeLevel
-	 * @return SiEntry
-	 */
-	function setTreeLevel(?int $treeLevel) {
-		$this->treeLevel = $treeLevel;
-	}
-
-	/**
-	 * @return SiEntryBuildup[]
-	 */
-	function getBuildups() {
-		return $this->buildups;
-	}
-
+	private $fields = [];
 // 	/**
-// 	 * @param SiEntryBuildup[] $buildups 
+// 	 * @var SiField[] $contextFields
 // 	 */
-// 	function setBuildups(array $buildups) {
-// 		$this->buildups = $buildups;
-// 		return $this;
-// 	}
+// 	private $contextFields = [];
+	/**
+	 * @var SiControl[] $controls
+	 */	
+	private $controls = [];
 	
 	/**
-	 * @param string $id
-	 * @param SiField $field
-	 * @return \rocket\si\content\SiEntry
+	 * @param string|null $idName
 	 */
-	function putBuildup(string $id, SiEntryBuildup $buildup) {
-		$this->buildups[$id] = $buildup;
-		
-		return $this;
-	}
-	
-	/**
-	 * @return SiEntryBuildup
-	 */
-	function getSelectedBuildup() {
-		return $this->buildups[$this->getSelectTypeId()];
-	}
-	
-	/**
-	 * @param string $id
-	 * @return \rocket\si\content\SiEntry
-	 */
-	function setSelectedTypeId(string $id) {
-		ArgUtils::valEnum($id, array_keys($this->buildups));
-		$this->selectedTypeId = $id;
-		return $this;
+	function __construct(?string $id, ?string $idName) {
+		$this->id = $id;
+		$this->idName = $idName;
 	}
 	
 	/**
 	 * @return string
-	 * @throws IllegalStateException
 	 */
-	function getSelectTypeId() {
-		IllegalStateException::assertTrue($this->selectedTypeId !== null);
-		
-		return $this->selectedTypeId;
+	function getMaskId() {
+		return $this->maskId;
 	}
 	
-	function jsonSerialize(): mixed {
-		$buildups = array();
-		foreach ($this->buildups as $id => $buildup) {
-			$buildups[$id] = $buildup;
-		}
-				
-		return [
-			'identifier' => $this->identifier,
-			'treeLevel' => $this->treeLevel,
-			'style' => $this->style,
-			'buildups' => $buildups,
-			'selectedTypeId' => $this->selectedTypeId
-		];
+
+	function setMaskId(string $maskId): static {
+		$this->maskId = $maskId;
+		return $this;
+	}
+	
+	/**
+	 * @return string|null
+	 */
+	function getIdName(): ?string {
+		return $this->idName;
+	}
+	
+	/**
+	 * @param string|null $idName
+	 */
+	function setIdName(?string $idName) {
+		$this->idName = $idName;
 	}
 
 	/**
-	 * @param SiEntryInput $entryInput
+	 * @return SiField[]
+	 */
+	function getFields() {
+		return $this->fields;
+	}
+
+	/**
+	 * @param SiField[] $fields key is propId 
+	 */
+	function setFields(array $fields) {
+		$this->fields = $fields;
+		return $this;
+	}
+
+	function putField(string $id, SiField $field): static {
+		$this->fields[$id] = $field;
+		return $this;
+	}
+	
+// 	/**
+// 	 * @param string $id
+// 	 * @param SiField[] $contextSiFields
+// 	 * @return \rocket\si\content\SiEntry
+// 	 */
+// 	function putContextFields(string $id, array $contextSiFields) {
+// 		if (empty($contextSiFields)) {
+// 			unset($this->contextFields[$id]);
+// 			return;
+// 		}
+		
+// 		ArgUtils::valArray($contextSiFields, SiField::class);
+// 		$this->contextFields[$id] = $contextSiFields;
+// 		return $this;
+// 	}
+	
+	/**
+	 * @return SiControl[] 
+	 */
+	function getControls() {
+		return $this->controls;
+	}
+	
+	/**
+	 * @param SiControl[] $controls
+	 * @return SiEntry
+	 */
+	function setControls(array $controls): static {
+		$this->controls = $controls;
+		return $this;
+	}
+
+	function putControl(string $id, SiControl $control): static {
+		$this->controls[$id] = $control;
+		return $this;
+	}
+
+	/**
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(SiEntryInput $entryInput) {
-		$typeId = $entryInput->getTypeId();
-		
-		try {
-			$this->setSelectedTypeId($typeId);
-		} catch (\InvalidArgumentException $e) {
-			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
-		}
-		
-		$buildup = $this->getSelectedBuildup();
-		
-		foreach ($buildup->getFields() as $propId => $field) {
+	function handleEntryInput(SiEntryInput $entryInput): void {
+		foreach ($this->fields as $propId => $field) {
 			if ($field->isReadOnly() || !$entryInput->containsFieldName($propId)) {
 				continue;
 			}
-			
+
 			try {
 				$field->handleInput($entryInput->getFieldInput($propId)->getData());
-			} catch (\InvalidArgumentException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			} catch (AttributesException $e) {
+			} catch (\InvalidArgumentException|AttributesException $e) {
 				throw new CorruptedSiInputDataException(null, 0, $e);
 			}
 		}
 	}
 	
+	function jsonSerialize(): mixed {
+		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
+		
+		return [
+			'id' => $this->id,
+			'idName' => $this->idName,
+			'fieldMap' => $fieldsArr,
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
+		];
+	}
+
 }

@@ -1,5 +1,5 @@
 
-import { SiEntry } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-gui';
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
@@ -11,7 +11,7 @@ export class SiEmbeddedEntry {
 	constructor(public comp: BulkyEntrySiGui, public summaryComp: CompactEntrySiGui|null) {
 	}
 
-	get summaryEntry(): SiEntry|null {
+	get summaryEntry(): SiValueBoundary|null {
 		if (this.summaryComp) {
 			return this.summaryComp.entry;
 		}
@@ -19,21 +19,21 @@ export class SiEmbeddedEntry {
 		return null;
 	}
 
-	get entry(): SiEntry {
-		return this.comp.entry!;
+	get entry(): SiValueBoundary {
+		return this.comp.valueBoundary!;
 	}
 
-	set entry(entry: SiEntry) {
-		this.comp.entry = entry;
+	set entry(entry: SiValueBoundary) {
+		this.comp.valueBoundary = entry;
 	}
 
 	async copy(): Promise<SiGenericEmbeddedEntry> {
-		return new SiGenericEmbeddedEntry(await this.comp.entry!.copy(),
+		return new SiGenericEmbeddedEntry(await this.comp.valueBoundary!.copy(),
 				(this.summaryComp ? await this.summaryComp.entry!.copy() : null));
 	}
 
 	async paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<boolean> {
-		const promise = this.comp.entry!.paste(genericEmbeddedEntry.genericEntry);
+		const promise = this.comp.valueBoundary!.paste(genericEmbeddedEntry.genericEntry);
 		if (!await promise) {
 			return false;
 		}
@@ -54,26 +54,26 @@ export class SiEmbeddedEntry {
 	}
 
 	async createResetPoint(): Promise<SiInputResetPoint> {
-		return this.comp.entry!.createInputResetPoint();
+		return this.comp.valueBoundary!.createInputResetPoint();
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
 		return this.entry.maskQualifiers;
 	}
 
-	get selectedTypeId(): string|null {
-		return this.entry.selectedEntryBuildupId;
+	get selectedMaskId(): string|null {
+		return this.entry.selectedMaskId;
 	}
 
-	set selectedTypeId(typeId: string|null) {
-		this.comp.entry!.selectedEntryBuildupId = typeId;
+	set selectedMaskId(maskId: string|null) {
+		this.comp.valueBoundary!.selectedMaskId = maskId;
 		if (this.summaryComp && this.summaryComp.entry) {
-			this.summaryComp.entry.selectedEntryBuildupId = typeId;
+			this.summaryComp.entry.selectedMaskId = maskId;
 		}
 	}
 
-	containsTypeId(typeId: string): boolean {
-		return this.entry.containsTypeId(typeId);
+	containsMaskId(maskId: string): boolean {
+		return this.entry.containsMaskId(maskId);
 	}
 
 }

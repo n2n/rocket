@@ -115,7 +115,7 @@ export class AddPasteComponent implements OnInit, OnDestroy {
 	private handleAddResponse(siEmbeddedEntry: SiEmbeddedEntry): void {
 		this.choosePasteModel = new ChoosePasteModel(siEmbeddedEntry, this.clipboardService);
 
-		if (siEmbeddedEntry.selectedTypeId && this.choosePasteModel.pastables.length === 0
+		if (siEmbeddedEntry.selectedMaskId && this.choosePasteModel.pastables.length === 0
 				&& this.choosePasteModel.illegalPastables.length === 0) {
 			// this.siEmbeddedEntry.selectedTypeId = siMaskQualifier.identifier.typeId;
 			this.choose(siEmbeddedEntry);

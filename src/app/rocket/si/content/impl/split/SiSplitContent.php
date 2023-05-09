@@ -22,7 +22,7 @@
 namespace rocket\si\content\impl\split;
 
 use n2n\util\uri\Url;
-use rocket\si\content\SiEntry;
+use rocket\si\content\SiValueBoundary;
 use rocket\si\meta\SiStyle;
 
 class SiSplitContent implements \JsonSerializable {
@@ -38,7 +38,7 @@ class SiSplitContent implements \JsonSerializable {
 // 	 */
 // 	private $declaration;
 	/**
-	 * @var SiEntry
+	 * @var SiValueBoundary
 	 */
 	private $entry;
 	
@@ -61,7 +61,7 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string $shortLabel
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	function setShortLabel(?string $shortLabel) {
 		$this->shortLabel = $shortLabel;
@@ -77,7 +77,7 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string[] $propIds
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	function setPropIds(array $propIds) {
 		$this->propIds = array_values($propIds);
@@ -85,7 +85,7 @@ class SiSplitContent implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiEntry|null
+	 * @return \rocket\si\content\SiValueBoundary|null
 	 */
 	function getEntry() {
 		return $this->entry;
@@ -109,7 +109,7 @@ class SiSplitContent implements \JsonSerializable {
 		return $data;
 	}
 	
-	static function createUnavaialble(string $label) {
+	static function createUnavailable(string $label): SiSplitContent {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		return $split;
@@ -120,7 +120,7 @@ class SiSplitContent implements \JsonSerializable {
 	 * @param Url $apiGetUrl
 	 * @param string $entryId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	static function createLazy(string $label, Url $apiGetUrl, ?string $entryId, SiStyle $style) {
 		$split = new SiSplitContent();
@@ -133,10 +133,10 @@ class SiSplitContent implements \JsonSerializable {
 	
 	/**
 	 * @param string $label
-	 * @param SiEntry $entry
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @param SiValueBoundary $entry
+	 * @return SiSplitContent
 	 */
-	static function createEntry(string $label, SiEntry $entry) {
+	static function createEntry(string $label, SiValueBoundary $entry) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->entry = $entry;

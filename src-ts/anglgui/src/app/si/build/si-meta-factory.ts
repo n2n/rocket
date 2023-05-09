@@ -25,7 +25,7 @@ export class SiMetaFactory {
 				contextTypeDeclaration = maskDeclaration;
 			}
 
-			declaration.addTypeDeclaration(maskDeclaration);
+			declaration.addMaskDeclaration(maskDeclaration);
 		}
 		return declaration;
 	}
@@ -45,7 +45,7 @@ export class SiMetaFactory {
 		let contextSiProps: SiProp[]|null = null;
 		let contextStructureDeclarations: SiStructureDeclaration[]|null = null;
 		if (contextTypeDeclaration) {
-			contextSiProps = contextTypeDeclaration.type.getProps();
+			contextSiProps = contextTypeDeclaration.mask.getProps();
 			contextStructureDeclarations = contextTypeDeclaration.structureDeclarations;
 		}
 
@@ -91,7 +91,7 @@ export class SiMetaFactory {
 
 		const identifierExtr = extr.reqExtractor('identifier');
 		return new SiMaskQualifier(
-				new SiMaskIdentifier(identifierExtr.reqString('id'), identifierExtr.reqString('entryBuildupId'),
+				new SiMaskIdentifier(identifierExtr.reqString('id'),
 						identifierExtr.reqString('typeId')),
 				extr.reqString('name'), extr.reqString('iconClass'));
 	}
@@ -119,10 +119,18 @@ export class SiMetaFactory {
 		return siFrame;
 	}
 
+	static buildFrame(data: any): SiFrame|null {
+		if (data === null) {
+			return null;
+		}
+
+		return SiMetaFactory.createFrame(data);
+	}
+
 	static createTypeContext(data: any): SiTypeContext {
 		const extr = new Extractor(data);
 
-		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryBuildupIds'),
+		return new SiTypeContext(extr.reqString('typeId'), extr.reqStringArray('entryIds'),
 				extr.reqBoolean('treeMode'));
 	}
 

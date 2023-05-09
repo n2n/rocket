@@ -1,7 +1,7 @@
 import { SiPage } from './si-page';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiEntry } from '../../../content/si-entry';
+import { SiValueBoundary } from '../../../content/si-value-boundary';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { SiModStateService, SiModEvent } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
@@ -31,7 +31,7 @@ export class SiPageCollection implements SiControlBoundry {
 		this.pQuickSearchStr = quickSearchstr;
 	}
 
-	getEntries(): SiEntry[] {
+	getEntries(): SiValueBoundary[] {
 		const entries = [];
 		for (const page of this.pages) {
 			if (page.entries) {
@@ -41,7 +41,7 @@ export class SiPageCollection implements SiControlBoundry {
 		return entries;
 	}
 
-	getBoundEntries(): SiEntry[] {
+	getBoundValueBoundaries(): SiValueBoundary[] {
 		return [];
 	}
 
@@ -167,7 +167,7 @@ export class SiPageCollection implements SiControlBoundry {
 	// 	}
 	// }
 
-	createPage(no: number, entries: SiEntry[]|null): SiPage {
+	createPage(no: number, entries: SiValueBoundary[]|null): SiPage {
 		if (no < 1 || (this.declared && no > this.pagesNum)) {
 			throw new IllegalSiStateError('Page num to high: ' + no);
 		}
@@ -180,10 +180,10 @@ export class SiPageCollection implements SiControlBoundry {
 			offset = prevPage!.offset + prevPage!.size;
 		}
 
-		let num = this.pageSize;
-		if (this.pagesMap.has(no + 1)) {
-			num = this.pagesMap.get(no + 1)!.offset - offset;
-		}
+		// let num = this.pageSize;
+		// if (this.pagesMap.has(no + 1)) {
+		// 	num = this.pagesMap.get(no + 1)!.offset - offset;
+		// }
 
 		const entryMonitory = new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, this.siModState, true);
 		const page = new SiPage(entryMonitory, no, offset, entries);
@@ -293,7 +293,7 @@ export class SiPageCollection implements SiControlBoundry {
 		return null;
 	}
 
-	getEntryByIdentifier(identifier: SiEntryIdentifier): SiEntry|null {
+	getEntryByIdentifier(identifier: SiEntryIdentifier): SiValueBoundary|null {
 		for (const page of this.pages) {
 			const entry = page.entries!.find(e => e.identifier.equals(identifier));
 			if (entry) {
@@ -330,7 +330,7 @@ export class SiPageCollection implements SiControlBoundry {
 		return true;
 	}
 
-	moveAfter(entries: SiEntry[], afterEntry: SiEntry) {
+	moveAfter(entries: SiValueBoundary[], afterEntry: SiValueBoundary) {
 		this.ensureSortable();
 
 		this.apiSortAfter(entries, afterEntry);
@@ -340,7 +340,7 @@ export class SiPageCollection implements SiControlBoundry {
 		this.recalcPagesOffset();
 	}
 
-	moveBefore(entries: SiEntry[], beforeEntry: SiEntry) {
+	moveBefore(entries: SiValueBoundary[], beforeEntry: SiValueBoundary) {
 		this.ensureSortable();
 
 		this.apiSortBefore(entries, beforeEntry);
@@ -350,7 +350,7 @@ export class SiPageCollection implements SiControlBoundry {
 		this.recalcPagesOffset();
 	}
 
-	moveToParent(entries: SiEntry[], parentEntry: SiEntry) {
+	moveToParent(entries: SiValueBoundary[], parentEntry: SiValueBoundary) {
 		this.ensureSortable();
 
 		this.apiSortParent(entries, parentEntry);
@@ -360,7 +360,7 @@ export class SiPageCollection implements SiControlBoundry {
 		this.recalcPagesOffset();
 	}
 
-	private apiSortByIndex(entries: SiEntry[], nextIndex: number, nextResult_: SiEntryPosition, after: boolean): boolean {
+	private apiSortByIndex(entries: SiValueBoundary[], nextIndex: number, nextResult_: SiEntryPosition, after: boolean): boolean {
 		if (nextResult_.entry.isAlive()) {
 			if (!nextResult_.entry.isClean()) {
 				return false;
@@ -417,7 +417,7 @@ export class SiPageCollection implements SiControlBoundry {
 		return false;
 	}
 
-	private apiSortAfter(entries: SiEntry[], afterEntry: SiEntry) {
+	private apiSortAfter(entries: SiValueBoundary[], afterEntry: SiValueBoundary) {
 		const locks = entries.map(entry => entry.createLock());
 		locks.push(afterEntry.createLock());
 
@@ -431,7 +431,7 @@ export class SiPageCollection implements SiControlBoundry {
 				});
 	}
 
-	private apiSortBefore(entries: SiEntry[], beforeEntry: SiEntry) {
+	private apiSortBefore(entries: SiValueBoundary[], beforeEntry: SiValueBoundary) {
 		const locks = entries.map(entry => entry.createLock());
 		locks.push(beforeEntry.createLock());
 
@@ -445,7 +445,7 @@ export class SiPageCollection implements SiControlBoundry {
 				});
 	}
 
-	private apiSortParent(entries: SiEntry[], parentEntry: SiEntry) {
+	private apiSortParent(entries: SiValueBoundary[], parentEntry: SiValueBoundary) {
 		const locks = entries.map(entry => entry.createLock());
 		locks.push(parentEntry.createLock());
 
@@ -459,11 +459,11 @@ export class SiPageCollection implements SiControlBoundry {
 				});
 	}
 
-	getSiEntryPosition(entry: SiEntry): SiEntryPosition {
+	getSiEntryPosition(entry: SiValueBoundary): SiEntryPosition {
 		return this.deterPositionOfEntry(entry);
 	}
 
-	private deterPositionOfEntry(entry: SiEntry): SiEntryPosition {
+	private deterPositionOfEntry(entry: SiValueBoundary): SiEntryPosition {
 		let globalIndex = 0;
 		for (const page of this.pages) {
 			if (!page.loaded) {
@@ -504,7 +504,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 
-	private moveByEntries(entries: SiEntry[], targetEntry: SiEntry, after: boolean, treeLevel: number) {
+	private moveByEntries(entries: SiValueBoundary[], targetEntry: SiValueBoundary, after: boolean, treeLevel: number) {
 		let targetPosition = this.deterPositionOfEntry(targetEntry);
 
 		if (after) {
@@ -564,12 +564,12 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 }
 
-class MovingProcess {
-
-}
+// class MovingProcess {
+//
+// }
 
 export interface SiEntryPosition {
-	 entry: SiEntry;
+	 entry: SiValueBoundary;
 	 page: SiPage;
 	 pageRelativIndex: number;
 	 childEntryPositions: SiEntryPosition[];

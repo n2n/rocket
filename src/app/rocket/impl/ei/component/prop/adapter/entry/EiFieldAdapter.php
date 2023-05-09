@@ -29,9 +29,9 @@ use n2n\util\ex\IllegalStateException;
 
 abstract class EiFieldAdapter implements EiField {
 // 	protected $typeConstraint;
-	protected $valueLoaded = false;
-	protected $value;
-	private $changed = false;
+	protected bool $valueLoaded = false;
+	protected mixed $value;
+	private bool $changed = false;
 
 	public function __construct(/*TypeConstraint $typeConstraint = null*/) {
 // 		$this->typeConstraint = $typeConstraint;
@@ -45,12 +45,10 @@ abstract class EiFieldAdapter implements EiField {
 	private function assetConstraints($value) {
 		try {
 			$this->checkValue($value);
-		} catch (\InvalidArgumentException $e) {
-			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
-		} catch (ValueIncompatibleWithConstraintsException $e) {
+		} catch (\InvalidArgumentException|ValueIncompatibleWithConstraintsException $e) {
 			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
 		}
-		
+
 // 		throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.');
 	}
 	
@@ -65,7 +63,7 @@ abstract class EiFieldAdapter implements EiField {
 	/**
 	 * @return bool
 	 */
-	public final function isValueLoaded() {
+	public final function isValueLoaded(): bool {
 		return $this->valueLoaded;
 	}
 

@@ -1,9 +1,9 @@
-import { SiEntry } from '../content/si-entry';
+import { SiValueBoundary } from '../content/si-value-boundary';
 import { SiDeclaration } from '../meta/si-declaration';
 
 export interface SiControlBoundry {
 
-	getBoundEntries(): SiEntry[];
+	getBoundValueBoundaries(): SiValueBoundary[];
 
 	getBoundDeclaration(): SiDeclaration;
 }

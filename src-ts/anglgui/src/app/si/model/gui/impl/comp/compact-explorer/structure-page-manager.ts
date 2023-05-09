@@ -1,6 +1,6 @@
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
-import { SiEntry, SiEntryState } from 'src/app/si/model/content/si-entry';
+import { SiValueBoundary, SiEntryState } from 'src/app/si/model/content/si-value-boundary';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
@@ -62,30 +62,30 @@ export class StructurePage {
 	}
 
 
-	// putStructureEntry(siEntry: SiEntry, structureEntry: StructureEntry) {
-	// 	this.structureEntriesMap.set(siEntry, structureEntry);
+	// putStructureEntry(siValueBoundary: SiEntry, structureEntry: StructureEntry) {
+	// 	this.structureEntriesMap.set(siValueBoundary, structureEntry);
 	// }
 
-	// getStructureEntryOf(siEntry: SiEntry) {
-	// 	if (this.structureEntriesMap.has(siEntry)) {
-	// 		return this.structureEntriesMap.get(siEntry);
+	// getStructureEntryOf(siValueBoundary: SiEntry) {
+	// 	if (this.structureEntriesMap.has(siValueBoundary)) {
+	// 		return this.structureEntriesMap.get(siValueBoundary);
 	// 	}
 
-	// 	throw new IllegalStateError('No StructureEntry available for ' + siEntry.identifier.toString());
+	// 	throw new IllegalStateError('No StructureEntry available for ' + siValueBoundary.identifier.toString());
 	// }
 }
 
 export class StructureEntry {
 	private subscription?: Subscription;
 
-	constructor(readonly siEntry: SiEntry, public fieldUiStructures: Array<UiStructure>,
-			public controlUiContents: Array<UiContent>,
-			private replacementCallback: (replacementEntry: SiEntry) => any) {
+	constructor(readonly siValueBoundary: SiValueBoundary, public fieldUiStructures: Array<UiStructure>,
+				public controlUiContents: Array<UiContent>,
+				private replacementCallback: (replacementEntry: SiValueBoundary) => any) {
 
-		this.subscription = siEntry.state$.subscribe((state) => {
+		this.subscription = siValueBoundary.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					this.replacementCallback(siEntry.replacementEntry!);
+					this.replacementCallback(siValueBoundary.replacementValueBoundary!);
 					this.clear();
 					break;
 				case SiEntryState.REMOVED:
@@ -143,7 +143,7 @@ export class StructurePageManager {
 	getSiProps(): SiProp[] {
 		this.ensureDeclared();
 
-		return this.siPageCollection.declaration!.getBasicTypeDeclaration().getSiProps();
+		return this.siPageCollection.declaration!.getBasicMaskDeclaration().getSiProps();
 	}
 
 	get declarationRequired(): boolean {
@@ -311,8 +311,8 @@ export class StructurePageManager {
 				return;
 			}
 
-			for (const siEntry of entries) {
-				this.applyNewStructureEntry(sp, siEntry, null, null);
+			for (const siValueBoundary of entries) {
+				this.applyNewStructureEntry(sp, siValueBoundary, null, null);
 			}
 
 			this.combineUiStructures();
@@ -332,13 +332,13 @@ export class StructurePageManager {
 		return sp;
 	}
 
-	private applyNewStructureEntry(structurePage: StructurePage, siEntry: SiEntry, oldStructureEntry: StructureEntry|null,
-			insertIndex: number|null) {
-		const fieldUiStructures = this.createFieldUiStructures(siEntry);
-		const controlUiContents = siEntry.selectedEntryBuildup.controls
+	private applyNewStructureEntry(structurePage: StructurePage, siValueBoundary: SiValueBoundary, oldStructureEntry: StructureEntry|null,
+								   insertIndex: number|null) {
+		const fieldUiStructures = this.createFieldUiStructures(siValueBoundary);
+		const controlUiContents = siValueBoundary.selectedEntry.controls
 				.map(siControl => siControl.createUiContent(() => this.uiStructure.getZone()!));
 
-		const structureEntry = new StructureEntry(siEntry, fieldUiStructures, controlUiContents,
+		const structureEntry = new StructureEntry(siValueBoundary, fieldUiStructures, controlUiContents,
 				(replacementEntry) => {
 					this.applyNewStructureEntry(structurePage, replacementEntry, structureEntry, null);
 					this.combineUiStructures();
@@ -360,28 +360,28 @@ export class StructurePageManager {
 		structurePage.appendStructureEntry(structureEntry);
 	}
 
-	private createFieldUiStructures(siEntry: SiEntry): UiStructure[] {
+	private createFieldUiStructures(siValueBoundary: SiValueBoundary): UiStructure[] {
 		const uiStructures = new Array<UiStructure>();
 
 		for (const siProp of this.getSiProps()) {
 			const uiStructure = new UiStructure(null);
 			// uiStructure.compact = true;
-			uiStructure.model = siEntry.selectedEntryBuildup.getFieldById(siProp.id).createUiStructureModel(true);
+			uiStructure.model = siValueBoundary.selectedEntry.getFieldById(siProp.id).createUiStructureModel(true);
 			uiStructures.push(uiStructure);
 		}
 
 		return uiStructures;
 	}
 
-	determineDecendantSiEntries(entry: SiEntry): SiEntry[] {
+	determineDecendantSiEntries(entry: SiValueBoundary): SiValueBoundary[] {
 		const entryPosition = this.siPageCollection.getSiEntryPosition(entry);
 
-		const entries: SiEntry[] = [];
+		const entries: SiValueBoundary[] = [];
 		this.fillDecendantEntries(entryPosition, entries);
 		return entries;
 	}
 
-	private fillDecendantEntries(position: SiEntryPosition, entries: SiEntry[]): void {
+	private fillDecendantEntries(position: SiEntryPosition, entries: SiValueBoundary[]): void {
 		entries.push(...position.childEntryPositions.map(p => p.entry));
 
 		position.childEntryPositions.forEach(p => this.fillDecendantEntries(p, entries));
