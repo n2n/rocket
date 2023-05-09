@@ -23,21 +23,18 @@ namespace rocket\si\content;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\si\meta\SiMaskQualifier;
+use InvalidArgumentException;
+use n2n\util\type\attrs\AttributesException;
 
 class SiEntryIdentifier implements \JsonSerializable {
-	private $typeId;
-	private $entryId;
-	private $id;
 	
-	function __construct(string $typeId, ?string $id) {
-		$this->typeId = $typeId;
-		$this->id = $id;
+	function __construct(private string $typeId, private ?string $id) {
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getTypeId() {
+	function getTypeId(): string {
 		return $this->typeId;
 	}
 
@@ -49,7 +46,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 	/**
 	 * @return string|null
 	 */
-	function getId() {
+	function getId(): ?string {
 		return $this->id;
 	}
 
@@ -75,16 +72,16 @@ class SiEntryIdentifier implements \JsonSerializable {
 	
 	/**
 	 * @param array $data
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\si\content\SiEntryIdentifier
+	 * @throws InvalidArgumentException
+	 * @return SiEntryIdentifier
 	 */
-	static function parse(array $data) {
+	static function parse(array $data): SiEntryIdentifier {
 		$ds = new DataSet($data);
 		
 		try {
 			return new SiEntryIdentifier($ds->reqString('typeId'), $ds->optString('id'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
-			throw new \InvalidArgumentException(null, null, $e);
+		} catch (AttributesException $e) {
+			throw new InvalidArgumentException(null, null, $e);
 		}
 	}
 }
