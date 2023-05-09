@@ -42,8 +42,9 @@
 		"n2n/n2n-impl-persistence-orm" : "^7.4",
 		"n2n/n2n-impl-web-dispatch" : "^7.4",
 		"n2n/n2n-impl-web-ui" : "^7.4",
-		"n2n/n2n-validation" : "^7.4"
-	},
+		"n2n/n2n-validation" : "^7.4",
+        "ext-mbstring": "*"
+    },
 	"autoload" : {
 		"psr-4" : {
 			"rocket\\" : "src/app/rocket"

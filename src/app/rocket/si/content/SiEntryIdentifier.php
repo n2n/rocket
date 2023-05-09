@@ -29,9 +29,8 @@ class SiEntryIdentifier implements \JsonSerializable {
 	private $entryId;
 	private $id;
 	
-	function __construct(string $typeId, ?string $entryId, ?string $id) {
+	function __construct(string $typeId, ?string $id) {
 		$this->typeId = $typeId;
-		$this->entryId = $entryId;
 		$this->id = $id;
 	}
 	
@@ -41,29 +40,9 @@ class SiEntryIdentifier implements \JsonSerializable {
 	function getTypeId() {
 		return $this->typeId;
 	}
-	
-	/**
-	 * @param string $category
-	 * @return SiEntryQualifier
-	 */
-	function setTypeId(string $typeId) {
+
+	function setTypeId(string $typeId): static {
 		$this->typeId = $typeId;
-		return $this;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	function getEntryId() {
-		return $this->entryId;
-	}
-	
-	/**
-	 * @param string|null $entryId
-	 * @return SiEntryQualifier
-	 */
-	function setEntryId(?string $entryId) {
-		$this->entryId = $entryId;
 		return $this;
 	}
 	
@@ -73,12 +52,8 @@ class SiEntryIdentifier implements \JsonSerializable {
 	function getId() {
 		return $this->id;
 	}
-	
-	/**
-	 * @param string|null $id
-	 * @return SiEntryQualifier
-	 */
-	function setId(?string $id) {
+
+	function setId(?string $id): static {
 		$this->id = $id;
 		return $this;
 	}
@@ -94,7 +69,6 @@ class SiEntryIdentifier implements \JsonSerializable {
 	function jsonSerialize(): mixed {
 		return [
 			'typeId' => $this->typeId,
-			'entry' => $this->entryId,
 			'id' => $this->id,
 		];
 	}
@@ -108,7 +82,7 @@ class SiEntryIdentifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 		
 		try {
-			return new SiEntryIdentifier($ds->reqString('typeId'), $ds->optString('entryId'), $ds->optString('id'));
+			return new SiEntryIdentifier($ds->reqString('typeId'), $ds->optString('id'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}

@@ -24,7 +24,7 @@ class CallbackFinder {
 	function find(string $attributeName, Eiu $eiu) {
 		$invokers = [];
 
-		foreach ($this->attributeSet->getMethodAttributes($attributeName) as $methodAttribute) {
+		foreach ($this->attributeSet->getMethodAttributesByName($attributeName) as $methodAttribute) {
 			$method = $methodAttribute->getMethod();
 
 			if ($this->static && !$method->isStatic()) {

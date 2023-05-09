@@ -33,7 +33,7 @@ use n2n\util\col\ArrayUtils;
 
 abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
-	private $genericType;
+//	private $genericType;
 
 	protected $eiMask;
 	private $idPaths = array();
@@ -48,9 +48,9 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 */
 	private $uninitializedEiComponents = [];
 
-	public function __construct($elementName, $genericType) {
+	public function __construct($elementName/*, $genericType*/) {
 		$this->elementName = $elementName;
-		$this->genericType = $genericType;
+//		$this->genericType = $genericType;
 	}
 
 	protected function setEiMask(EiMask $eiMask) {
@@ -100,7 +100,10 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 */
 	protected function makeId(?string $id, EiComponentNature $eiComponent) {
 		if ($id === null) {
-			$id = TypeUtils::buildTypeAcronym(get_class($eiComponent));
+			$baseId = $id = TypeUtils::buildTypeAcronym(get_class($eiComponent));
+			for ($i = 1; isset($this->eiComponents[$id]) && $this->eiComponents[$id] !== $eiComponent; $i++) {
+				$id = $baseId . '-' . $i;
+			}
 		}
 
 		if ($id === '' || IdPath::constainsSpecialIdChars($id)) {
@@ -130,6 +133,15 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 
 	protected function addEiComponent(IdPath $idPath, EiComponent $eiComponent): void {
 		$idPathStr = (string) $idPath;
+
+		if (isset($this->eiComponents[$idPathStr])) {
+			if ($this->eiComponents[$idPathStr] === $eiComponent) {
+				return;
+			}
+
+			throw new InvalidEiConfigurationException($this->elementName . ' with id "' . $idPathStr
+					. '" already exists.');
+		}
 
 		$this->idPaths[$idPathStr] = $idPath;
 		$this->eiComponents[$idPathStr] = $eiComponent;
