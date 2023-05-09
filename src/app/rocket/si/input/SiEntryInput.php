@@ -134,8 +134,8 @@ class SiEntryInput {
 				$siEntryInput->putFieldInput($propId, new SiFieldInput($fielData));
 			}
 			return $siEntryInput;
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
-			throw new CorruptedSiInputDataException(null, 0, $e);
+		} catch (AttributesException $e) {
+			throw new CorruptedSiInputDataException($e->getMessage(), 0, $e);
 		}
 	}
 }
