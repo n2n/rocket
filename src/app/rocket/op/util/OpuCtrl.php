@@ -37,7 +37,6 @@ use rocket\op\ei\manage\api\SiCallResult;
 use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiBreadcrumb;
 use n2n\l10n\DynamicTextCollection;
-use rocket\op\ei\util\EiuCtrl;
 use rocket\op\cu\util\Cuu;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\entry\EiuEntry;

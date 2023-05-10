@@ -4,7 +4,7 @@ namespace rocket\impl\ei\component\cmd\iframe\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\ui\Raw;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 use rocket\impl\ei\component\cmd\iframe\config\IframeConfig;
 use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\util\magic\MagicObjectUnavailableException;
@@ -25,38 +25,38 @@ class IframeController extends ControllerAdapter {
 	}
 
 	function index(int $pid = null) {
-		$eiuCtrl = EiuCtrl::from($this->cu());
+		$opuCtrl = OpuCtrl::from($this->cu());
 
 		$this->verifyPid($pid);
 
 		if (null !== ($url = $this->iframeConfig->getUrl())) {
 			$url = $url->ext($pid);
-			$eiuCtrl->forwardUrlIframeZone($url, $this->iframeConfig->getWindowTitle());
+			$opuCtrl->forwardUrlIframeZone($url, $this->iframeConfig->getWindowTitle());
 		} else if (null !== ($controllerLookupId = $this->iframeConfig->getControllerLookupId())) {
-			$eiuCtrl->forwardUrlIframeZone($this->getUrlToController(['src', $pid]),
+			$opuCtrl->forwardUrlIframeZone($this->getUrlToController(['src', $pid]),
 					$this->iframeConfig->getWindowTitle());
 		} else if (null !== ($viewName = $this->iframeConfig->getViewName())) {
-			$uiComponent = $eiuCtrl->eiu()->createView($viewName, [$this->iframeConfig->getEntryIdParamName() => $pid]);
-			$eiuCtrl->forwardIframeZone($uiComponent, $this->iframeConfig->isUseTemplate(),
+			$uiComponent = $opuCtrl->eiu()->createView($viewName, [$this->iframeConfig->getEntryIdParamName() => $pid]);
+			$opuCtrl->forwardIframeZone($uiComponent, $this->iframeConfig->isUseTemplate(),
 					$this->iframeConfig->getWindowTitle());
 		} else {
-			$eiuCtrl->forwardIframeZone(new Raw($this->iframeConfig->getSrcDoc()), $this->iframeConfig->isUseTemplate(),
+			$opuCtrl->forwardIframeZone(new Raw($this->iframeConfig->getSrcDoc()), $this->iframeConfig->isUseTemplate(),
 					$this->iframeConfig->getWindowTitle());
 		}
 	}
 
  	function doSrc(array $params = []) {
- 		$eiuCtrl = EiuCtrl::from($this->cu());
+ 		$opuCtrl = OpuCtrl::from($this->cu());
  		$controller = null;
  		try {
- 			$controller = $eiuCtrl->eiu()->lookup($this->iframeConfig->getControllerLookupId());
+ 			$controller = $opuCtrl->eiu()->lookup($this->iframeConfig->getControllerLookupId());
  		} catch (MagicObjectUnavailableException $e) {
- 			throw new InvalidEiConfigurationException($this->eiCmd . ' invalid configured.', 0, $e);
+ 			throw new InvalidEiConfigurationException('IframeEiCmd invalid configured.', 0, $e);
  		}
 		
  		if (!($controller instanceof Controller)) {
- 			throw new InvalidEiConfigurationException($this->eiCmd . ' invalid configured. '
- 					. get_class($controller) . ' does not implement ' . Controller::class, 0, $e);
+ 			throw new InvalidEiConfigurationException('IframeEiCmd invalid configured. '
+ 					. get_class($controller) . ' does not implement ' . Controller::class);
  		}
 		
  		$this->delegate($controller);
@@ -66,7 +66,7 @@ class IframeController extends ControllerAdapter {
 		if ($this->iframeConfig->isEntryCommand()) {
 			if ($pid !== null) {
 				// throws PageNotFound if pid invalid
-				EiuCtrl::from($this->cu())->lookupObject($pid);
+				OpuCtrl::from($this->cu())->lookupObject($pid);
 			} else {
 				throw new PageNotFoundException();
 			}

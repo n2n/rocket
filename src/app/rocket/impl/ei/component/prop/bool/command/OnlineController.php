@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\bool\command;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 use rocket\ajah\JhtmlEvent;
 use rocket\op\ei\util\Eiu;
 use n2n\l10n\MessageContainer;
@@ -31,11 +31,11 @@ use n2n\l10n\MessageContainer;
 class OnlineController extends ControllerAdapter {
 	private $onlineEiProp;
 	private $onlineEiCommand;
-	private $eiuCtrl;
+	private $opuCtrl;
 	private $mc;
 	
-	public function prepare(EiuCtrl $eiCtrl, MessageContainer $mc) {
-		$this->eiuCtrl = $eiCtrl;
+	public function prepare(OpuCtrl $eiCtrl, MessageContainer $mc) {
+		$this->opuCtrl = $eiCtrl;
 		$this->mc = $mc;
 	}
 	
@@ -56,7 +56,7 @@ class OnlineController extends ControllerAdapter {
 	}
 	
 	private function setStatus($status, $pid) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		$eiuEntry->setValue($this->onlineEiProp, $status);		
 		
 		$jhtmlEvent = null; 
@@ -66,6 +66,6 @@ class OnlineController extends ControllerAdapter {
 			$jhtmlEvent = JhtmlEvent::ei()->noAutoEvents()->controlSwaped($this->onlineEiCommand->createEntryGuiControl(new Eiu($eiuEntry)));
 		}
 		
-		$this->eiuCtrl->redirectToReferer($this->eiuCtrl->buildRedirectUrl($eiuEntry), $jhtmlEvent);
+		$this->opuCtrl->redirectToReferer($this->opuCtrl->buildRedirectUrl($eiuEntry), $jhtmlEvent);
 	}
 }

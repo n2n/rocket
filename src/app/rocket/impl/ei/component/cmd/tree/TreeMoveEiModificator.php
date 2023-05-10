@@ -53,7 +53,7 @@ class TreeMoveEiModificator extends EiModNatureAdapter {
 // 	private $eiCtrl;
 
 // 	public function prepare(ManageState $manageState) {
-// 		$this->eiCtrl = EiuCtrl::from($this->cu());
+// 		$this->eiCtrl = OpuCtrl::from($this->cu());
 // 	}
 
 // 	public function doChild($targetPid, ParamGet $pids, ParamGet $refPath) {

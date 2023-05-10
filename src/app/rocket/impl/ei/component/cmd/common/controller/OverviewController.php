@@ -25,7 +25,7 @@ use n2n\web\http\controller\ControllerAdapter;
 use rocket\op\ei\manage\critmod\save\CritmodSaveDao;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\ParamQuery;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;
@@ -33,7 +33,7 @@ class OverviewController extends ControllerAdapter {
 // 	private $rocketState;
 	private $scrRegistry;
 	
-	private $eiuCtrl;
+	private $opuCtrl;
 	
 	public function __construct(int $listSize) {
 		$this->listSize = $listSize;
@@ -43,15 +43,15 @@ class OverviewController extends ControllerAdapter {
 // 		$this->manageState = $manageState;
 // 		$this->rocketState = $rocketState;
 		$this->scrRegistry = $scrRegistry;
-		$this->eiuCtrl = EiuCtrl::from($this->cu());
+		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
 	
 	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
-		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->eiuCtrl->eiu()->frame()->mask()->getPluralLabel());
+		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->opuCtrl->eiu()->frame()->mask()->getPluralLabel());
 		
-		$this->eiuCtrl->forwardCompactExplorerZone($this->listSize);
+		$this->opuCtrl->forwardCompactExplorerZone($this->listSize);
 		
-// 		$eiuFrame = $this->eiuCtrl->frame();
+// 		$eiuFrame = $this->opuCtrl->frame();
 // 		$eiFrame = $eiuFrame->getEiFrame();
 // 		if ($stateKey !== null) {
 //             $stateKey = $stateKey->__toString();
@@ -77,9 +77,9 @@ class OverviewController extends ControllerAdapter {
 // 		}
 		
 		
-// 		$this->eiuCtrl->applyCommonBreadcrumbs();
+// 		$this->opuCtrl->applyCommonBreadcrumbs();
 		
-// 		$this->eiuCtrl->forwardView(
+// 		$this->opuCtrl->forwardView(
 // 				$this->createView('..\view\overview.html', array('listModel' => $listModel, 
 // 						'critmodForm' => $critmodForm,
 // 						'quickSearchForm' => $quickSearchForm, 'overviewAjahHook' => $overviewAjahHook/*, 
@@ -95,7 +95,7 @@ class OverviewController extends ControllerAdapter {
 // 			ParamQuery $pageNo = null) {
 // 		if ($pageNo !== null) {
 // 			$pageNo = $pageNo->toNumericOrReject();
-// 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
+// 			$this->opuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
 // 					$this->getControllerContext()->getCmdContextPath()->ext($pageNo > 1 ? $pageNo : null)->toUrl());
 // 		}
 				
@@ -108,7 +108,7 @@ class OverviewController extends ControllerAdapter {
 // 	}
 	
 // 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
-// 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+// 		$eiFrame = $this->opuCtrl->frame()->getEiFrame();
 // 		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		
 // 		if ($pageNo === null) {
@@ -123,7 +123,7 @@ class OverviewController extends ControllerAdapter {
 		
 // 		$listView = $eiFrame->getContextEiEngine()->getEiMask()->createListView($eiFrame, $draftListModel->getEntryGuis());
 		
-// 		$this->eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
+// 		$this->opuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_drafts_title'));
 		
 // 		$stateKey = OverviewDraftJhtmlController::genStateKey();
 // 		$overviewDraftAjahHook = OverviewDraftJhtmlController::buildAjahHook($this->getHttpContext()->getControllerContextPath(
@@ -136,7 +136,7 @@ class OverviewController extends ControllerAdapter {
 // 	public function doDraftAjah(array $delegateCmds = array(), OverviewDraftJhtmlController $overviewDraftJhtmlController,
 // 			ParamQuery $pageNo = null) {
 // 		if ($pageNo !== null) {
-// 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
+// 			$this->opuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
 // 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
 // 		}
 

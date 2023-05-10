@@ -24,10 +24,8 @@ namespace rocket\impl\ei\component\cmd\common\controller;
 use rocket\op\OpState;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\impl\ei\component\cmd\common\model\AddModel;
-use rocket\impl\ei\component\cmd\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 use rocket\si\control\SiIconType;
 use rocket\si\control\SiButton;
 use rocket\op\ei\util\Eiu;
@@ -39,7 +37,7 @@ class AddController extends ControllerAdapter {
 	const CONTROL_CANCEL_KEY = 'canel';
 	
 	private $dtc;
-	private EiuCtrl $eiuCtrl;
+	private OpuCtrl $opuCtrl;
 	
 	private $parentEiuObject;
 	private $beforeEiuObject;
@@ -47,7 +45,7 @@ class AddController extends ControllerAdapter {
 	
 	public function prepare(DynamicTextCollection $dtc, OpState $rocketState) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = EiuCtrl::from($this->cu());
+		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
 		
 	public function index($copyPid = null, ParamGet $refPath = null) {	
@@ -55,31 +53,31 @@ class AddController extends ControllerAdapter {
 	}
 	
 	public function doChild($parentPid, $copyPid = null, ParamGet $refPath = null) {
-		$this->parentEiuObject = $this->eiuCtrl->lookupObject($parentPid);	
+		$this->parentEiuObject = $this->opuCtrl->lookupObject($parentPid);	
 		$this->live($copyPid);	
 	}
 	
 	public function doBefore($beforePid, $copyPid = null, ParamGet $refPath = null) {
-		$this->beforeEiuObject = $this->eiuCtrl->lookupObject($beforePid);	
+		$this->beforeEiuObject = $this->opuCtrl->lookupObject($beforePid);	
 		$this->live($copyPid);
 	}
 	
 	public function doAfter($afterPid, $copyPid = null, ParamGet $refPath = null) {
-		$this->afterEiuObject = $this->eiuCtrl->lookupObject($afterPid);	
+		$this->afterEiuObject = $this->opuCtrl->lookupObject($afterPid);	
 		$this->live($copyPid);
 	}
 	
 	private function live($copyPid = null) {
 
-		$this->eiuCtrl->pushOverviewBreadcrumb()
+		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
 		
-		$this->eiuCtrl->forwardNewBulkyEntryZone(true, true, true, $this->createControls());
+		$this->opuCtrl->forwardNewBulkyEntryZone(true, true, true, $this->createControls());
 	}
 	
 	private function createControls() {
-		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->guiControl();
-		$dtc = $this->eiuCtrl->eiu()->dtc(Rocket::NS);
+		$eiuControlFactory = $this->opuCtrl->eiu()->factory()->guiControl();
+		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [
 				$eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY,
@@ -117,27 +115,27 @@ class AddController extends ControllerAdapter {
 		}		
 	}
 	
-	public function doDraft(ParamGet $refPath = null) {
-		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
-			
-		$eiuEntryForm = $this->eiuCtrl->frame()->newEntryForm(true);
-		
-		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
-		$addModel = new AddModel($eiFrame, $eiuEntryForm);
-		
-		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
-			$this->redirect($this->eiuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
-			return;
-		}
-		
-		$viewModel = new EntryCommandViewModel($this->eiuCtrl->frame(), null, $redirectUrl);
-		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title', 
-				array('type' => $this->eiuCtrl->frame()->getGenericLabel())));
-		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
-	}
+//	public function doDraft(ParamGet $refPath = null) {
+//		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
+//
+//		$eiuEntryForm = $this->opuCtrl->frame()->newEntryForm(true);
+//
+//		$eiFrame = $this->opuCtrl->frame()->getEiFrame();
+//		$addModel = new AddModel($eiFrame, $eiuEntryForm);
+//
+//		if (is_object($eiObject = $this->dispatch($addModel, 'create'))) {
+//			$this->redirect($this->opuCtrl->buildRefRedirectUrl($redirectUrl, $eiObject));
+//			return;
+//		}
+//
+//		$viewModel = new EntryCommandViewModel($this->opuCtrl->frame(), null, $redirectUrl);
+//		$viewModel->setTitle($this->dtc->translate('ei_impl_add_draft_title',
+//				array('type' => $this->opuCtrl->frame()->getGenericLabel())));
+//		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
+//	}
 	
 	private function getBreadcrumbLabel() {
-		$eiFrameUtils = $this->eiuCtrl->frame();
+		$eiFrameUtils = $this->opuCtrl->frame();
 		
 		if (null === $eiFrameUtils->getNestedSetStrategy()) {
 			return $this->dtc->translate('ei_impl_add_breadcrumb');

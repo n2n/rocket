@@ -73,6 +73,7 @@ use rocket\op\ei\component\modificator\EiMod;
 use rocket\op\ei\component\EiComponent;
 use rocket\op\ei\component\UnknownEiComponentException;
 use rocket\op\ei\manage\EiLaunch;
+use n2n\util\ex\NotYetImplementedException;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -235,7 +236,8 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiuGuiField) {
-				$this->assignEiuGuiField($eiArg);
+				throw new NotYetImplementedException();
+//				$this->assignEiuGuiField($eiArg);
 				continue;
 			}
 			
@@ -359,7 +361,7 @@ class EiuAnalyst {
 // 				continue;
 // 			}
 			
-			if ($eiArg instanceof EiuCtrl) {
+			if ($eiArg instanceof OpuCtrl) {
 				$eiArg = $eiArg->eiu();
 			}
 			
@@ -1451,7 +1453,7 @@ class EiuAnalyst {
 			}
 		}
 		
-		if ($eiArg instanceof EiuCtrl) {
+		if ($eiArg instanceof OpuCtrl) {
 			return $eiArg->frame();
 		}
 		
