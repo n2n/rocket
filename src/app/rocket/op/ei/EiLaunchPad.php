@@ -37,11 +37,14 @@ use rocket\op\ei\manage\frame\EiFrameController;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\EiLaunch;
+use n2n\persistence\ext\EmPool;
 
 class EiLaunchPad implements LaunchPad {
 	private EiMask $eiMask;
 
-	public function __construct(private string $id, private ?\Closure $eiMaskCallback, private ?string $label = null) {
+	public function __construct(private readonly string $id, private ?\Closure $eiMaskCallback,
+			private readonly ?string $label = null,
+			private readonly bool $transactionalEmEnabled = true, private readonly ?string $persistenceUnitName = null) {
 	}
 	
 	/**
@@ -54,6 +57,14 @@ class EiLaunchPad implements LaunchPad {
 
 	public function getLabel(): string {
 		return $this->label ?? $this->getEiMask()->getPluralLabelLstr();
+	}
+
+	function isTransactionalEmEnabled(): bool {
+		return $this->transactionalEmEnabled;
+	}
+
+	function getPersistenceUnitName(): ?string {
+		return $this->persistenceUnitName;
 	}
 
 	function getEiMask() {
@@ -116,8 +127,14 @@ class EiLaunchPad implements LaunchPad {
 		CastUtils::assertTrue($loginContext instanceof LoginContext);
 		$rocket = $n2nContext->lookup(Rocket::class);
 		CastUtils::assertTrue($rocket instanceof Rocket);
-		
-		$em = $this->getEiMask()->getEiType()->lookupEntityManager($n2nContext->lookup(PdoPool::class));
+
+		$emf = $n2nContext->lookup(EmPool::class)->getEntityManagerFactory($this->persistenceUnitName);
+		if ($this->transactionalEmEnabled) {
+			$em = $emf->getTransactional();
+		} else {
+			$em = $emf->getExtended();
+		}
+
 		$manageState->setEntityManager($em);
 		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->createEiPermissionManager($manageState));

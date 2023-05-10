@@ -7,7 +7,7 @@ use n2n\persistence\orm\model\EntityModelManager;
 use rocket\op\spec\setup\EiTypeFactory;
 use rocket\op\ei\EiType;
 use n2n\reflection\ReflectionContext;
-use rocket\attribute\MenuItem;
+use rocket\attribute\EiMenuItem;
 use rocket\op\ei\EiLaunchPad;
 use rocket\op\launch\MenuGroup;
 use n2n\util\StringUtils;
@@ -53,7 +53,7 @@ class SpecFactory {
 
 	private function checkForMenuItem(EiType $eiType) {
 		$menuItemAttribute = ReflectionContext::getAttributeSet($eiType->getClass())
-				->getClassAttribute(MenuItem::class);
+				->getClassAttribute(EiMenuItem::class);
 
 		if ($menuItemAttribute === null) {
 			return null;
@@ -62,10 +62,11 @@ class SpecFactory {
 		$spec = $eiType->getSpec();
 
 		/**
-		 * @var MenuItem $menuItem
+		 * @var EiMenuItem $menuItem
 		 */
 		$menuItem = $menuItemAttribute->getInstance();
-		$launchPad = new EiLaunchPad($eiType->getId(), fn() => $eiType->getEiMask(), $menuItem->name);
+		$launchPad = new EiLaunchPad($eiType->getId(), fn() => $eiType->getEiMask(), $menuItem->name,
+				$menuItem->transactionalEmEnabled, $menuItem->persistenceUnitName);
 
 		$groupKey = $menuItem->groupKey;
 		$groupName = $menuItem->groupName;

@@ -428,25 +428,25 @@ class EiType extends Type {
 		$this->nestedSetStrategy = $nestedSetStrategy;
 	}
 	
-	/**
-	 * @param \n2n\core\container\PdoPool $dbhPool
-	 * @return \n2n\persistence\orm\EntityManager
-	 */
-	public function lookupEntityManager(PdoPool $dbhPool, $transactional = false): EntityManager {
-		$emf = $this->lookupEntityManagerFactory($dbhPool);
-		if ($transactional) {
-			return $emf->getTransactional();
-		} else {
-			return $emf->getExtended();
-		}
-	}
-	/**
-	 * @param PdoPool $dbhPool
-	 * @return \n2n\persistence\orm\EntityManagerFactory
-	 */
-	public function lookupEntityManagerFactory(PdoPool $dbhPool) {
-		return $dbhPool->getEntityManagerFactory($this->getDataSourceName());
-	}
+//	/**
+//	 * @param \n2n\core\container\PdoPool $dbhPool
+//	 * @return \n2n\persistence\orm\EntityManager
+//	 */
+//	public function lookupEntityManager(PdoPool $dbhPool, $transactional = false): EntityManager {
+//		$emf = $this->lookupEntityManagerFactory($dbhPool);
+//		if ($transactional) {
+//			return $emf->getTransactional();
+//		} else {
+//			return $emf->getExtended();
+//		}
+//	}
+//	/**
+//	 * @param PdoPool $dbhPool
+//	 * @return \n2n\persistence\orm\EntityManagerFactory
+//	 */
+//	public function lookupEntityManagerFactory(PdoPool $dbhPool) {
+//		return $dbhPool->getEntityManagerFactory($this->getDataSourceName());
+//	}
 	/**
 	 * @param object $entityObj
 	 * @return mixed

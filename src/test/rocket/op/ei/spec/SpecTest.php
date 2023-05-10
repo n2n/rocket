@@ -1,5 +1,5 @@
 <?php
-namespace rocket\op\ei\util\spec;
+namespace rocket\op\ei\spec;
 
 use PHPUnit\Framework\TestCase;
 use rocket\test\SpecTestEnv;
@@ -7,6 +7,7 @@ use testmdl\bo\BasicTestObj;
 use testmdl\bo\Basic2TestObj;
 use testmdl\bo\Basic3TestObj;
 use rocket\test\GeneralTestEnv;
+use rocket\op\ei\EiLaunchPad;
 
 class SpecTest extends TestCase {
 
@@ -30,6 +31,17 @@ class SpecTest extends TestCase {
 		$this->assertEquals('Not Super Duper Gruper', $menuGroups['not-super-duper']->getLabel());
 		$launchPads = $menuGroups['not-super-duper']->getLaunchPads();
 		$this->assertCount(1, $launchPads);
+
+		$this->assertArrayHasKey('testmdl-bo-Basic3TestObj', $launchPads);
+
+		$eiLaunchPad = $launchPads['testmdl-bo-Basic3TestObj'];
+		$this->assertInstanceOf(EiLaunchPad::class, $eiLaunchPad);
+		assert($eiLaunchPad instanceof EiLaunchPad);
+		$this->assertFalse($eiLaunchPad->isTransactionalEmEnabled());
+		$this->assertEquals('holeradio-pu', $eiLaunchPad->getPersistenceUnitName());
+
+
+
 
 	}
 }

@@ -3,10 +3,10 @@
 namespace testmdl\bo;
 
 use rocket\attribute\EiType;
-use rocket\attribute\MenuItem;
+use rocket\attribute\EiMenuItem;
 
 #[EiType]
-#[MenuItem('Holeradio', groupKey: 'super-duper')]
+#[EiMenuItem('Holeradio', groupKey: 'super-duper')]
 class BasicTestObj {
 
 	public int $id;
