@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ajah;
 
-use rocket\ei\util\EiJhtmlEventInfo;
+use rocket\op\ei\util\EiJhtmlEventInfo;
 
 class JhtmlEvent {
 
@@ -10,7 +10,7 @@ class JhtmlEvent {
 	}
 
 	/**
-	 * @return \rocket\ei\util\EiJhtmlEventInfo
+	 * @return \rocket\op\ei\util\EiJhtmlEventInfo
 	 */
 	public static function ei() {
 		return new EiJhtmlEventInfo();

@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\EiPropPath;
-use rocket\ei\manage\frame\EiFrameListener;
-use rocket\ei\manage\security\EiExecution;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\manage\frame\EiFrameListener;
+use rocket\op\ei\manage\security\EiExecution;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 
 class MappedRelationEiModificator implements EiFrameListener {
 	private $targetEiFrame;

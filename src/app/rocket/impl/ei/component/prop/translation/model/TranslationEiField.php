@@ -21,14 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiField;
 
 class TranslationEiField extends ToManyEiField {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::copyEiField($eiObject)
+	 * @see \rocket\op\ei\manage\entry\EiField::copyEiField($eiObject)
 	 */
 	public function copyEiField(Eiu $copyEiu): ?EiField {
 		$copy = parent::copyEiField($copyEiu);

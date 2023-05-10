@@ -26,12 +26,12 @@ use rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\util\type\ArgUtils;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\GuiFieldMap;
-use rocket\ei\manage\gui\GuiPropSetup;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\gui\DisplayDefinition;
+use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\op\ei\manage\gui\GuiFieldMap;
+use rocket\op\ei\manage\gui\GuiPropSetup;
+use rocket\op\ei\util\Eiu;
 
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\mag\Mag;
@@ -39,9 +39,9 @@ use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\field\GuiField;
 
-use rocket\ei\manage\gui\GuiProp;
+use rocket\op\ei\manage\gui\GuiProp;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\meta\SiStructureType;
 
@@ -129,7 +129,7 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\FieldEiProp::buildEiField()
+	 * @see \rocket\op\ei\component\prop\FieldEiProp::buildEiField()
 	 */
 	public function buildEiField(Eiu $eiu): ?EiField {
 		return new EmbeddedEiField($eiu, $this);

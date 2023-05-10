@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\EiObject;
-use rocket\ei\EiType;
-use rocket\ei\mask\EiMask;
-use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\EiObject;
+use rocket\op\ei\EiType;
+use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\component\InvalidEiConfigurationException;
 use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use n2n\util\uri\Url;
 use n2n\web\http\HttpContext;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 
 class SelectEiPropRelation extends EiPropRelation {
 	private $embeddedAddEnabled = false;

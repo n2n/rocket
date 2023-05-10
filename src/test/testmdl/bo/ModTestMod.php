@@ -3,7 +3,7 @@
 namespace testmdl\bo;
 
 use n2n\context\attribute\ThreadScoped;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\attribute\impl\EiSetup;
 use rocket\si\control\SiButton;
 use rocket\impl\ei\component\cmd\EiCmdNatures;

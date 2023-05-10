@@ -22,11 +22,11 @@
 // namespace rocket\impl\ei\component\cmd\common\model;
 
 // use n2n\web\dispatch\Dispatchable;
-// use rocket\ei\manage\frame\EiFrame;
+// use rocket\op\ei\manage\frame\EiFrame;
 // use n2n\util\ex\IllegalStateException;
-// use rocket\ei\manage\DraftEiObject;
-// use rocket\ei\manage\gui\EiEntryGui;
-// use rocket\ei\util\frame\EiuFrame;
+// use rocket\op\ei\manage\DraftEiObject;
+// use rocket\op\ei\manage\gui\EiEntryGui;
+// use rocket\op\ei\util\frame\EiuFrame;
 
 // class DraftListModel implements Dispatchable {	
 // 	private $utils;

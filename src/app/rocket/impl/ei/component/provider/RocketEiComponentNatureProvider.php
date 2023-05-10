@@ -2,9 +2,9 @@
 
 namespace rocket\impl\ei\component\provider;
 
-use rocket\spec\setup\EiSetupPhase;
-use rocket\spec\setup\EiTypeSetup;
-use rocket\spec\setup\EiPresetProp;
+use rocket\op\spec\setup\EiSetupPhase;
+use rocket\op\spec\setup\EiTypeSetup;
+use rocket\op\spec\setup\EiPresetProp;
 use rocket\impl\ei\component\prop\string\StringEiPropNature;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
 use rocket\impl\ei\component\cmd\common\OverviewEiCmdNature;
@@ -17,7 +17,7 @@ use rocket\attribute\impl\EiCmdDetail;
 use rocket\impl\ei\component\cmd\common\DeleteEiCmdNature;
 use rocket\impl\ei\component\cmd\common\AddEiCmdNature;
 use rocket\attribute\impl\EiCmdDelete;
-use rocket\spec\setup\EiComponentNatureProvider;
+use rocket\op\spec\setup\EiComponentNatureProvider;
 use rocket\impl\ei\component\prop\numeric\IntegerEiPropNature;
 use rocket\impl\ei\component\mod\callback\CallbackEiModNature;
 use n2n\util\ex\err\ConfigurationError;
@@ -49,14 +49,14 @@ use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use n2n\persistence\orm\attribute\OneToMany;
 use n2n\reflection\attribute\Attribute;
 use n2n\persistence\orm\CascadeType;
-use rocket\ei\component\prop\EiProp;
+use rocket\op\ei\component\prop\EiProp;
 use n2n\reflection\attribute\PropertyAttribute;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\attribute\impl\EiPropBool;
 use rocket\impl\ei\component\prop\enum\EnumEiPropNature;
 use rocket\attribute\impl\EiPropEnum;
 use rocket\impl\ei\component\prop\adapter\EditableEiPropNature;
-use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\reflection\property\AccessProxy;
 
 #[ThreadScoped]

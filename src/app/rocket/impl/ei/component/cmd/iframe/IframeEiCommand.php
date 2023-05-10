@@ -3,7 +3,7 @@ namespace rocket\impl\ei\component\cmd\iframe;
 
 use n2n\util\uri\Path;
 use n2n\web\http\controller\Controller;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\impl\ei\component\cmd\iframe\config\IframeConfig;
 use rocket\impl\ei\component\cmd\iframe\controller\IframeController;

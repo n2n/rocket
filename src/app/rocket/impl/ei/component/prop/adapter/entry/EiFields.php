@@ -21,7 +21,7 @@
 //  */
 // namespace rocket\impl\ei\component\prop\adapter\entry;
 
-// use rocket\ei\util\Eiu;
+// use rocket\op\ei\util\Eiu;
 // use n2n\util\type\TypeConstraint;
 
 // class EiFields {

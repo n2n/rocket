@@ -22,10 +22,10 @@
 namespace rocket\impl\ei\component\cmd\common\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\ei\manage\critmod\save\CritmodSaveDao;
+use rocket\op\ei\manage\critmod\save\CritmodSaveDao;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\util\EiuCtrl;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;

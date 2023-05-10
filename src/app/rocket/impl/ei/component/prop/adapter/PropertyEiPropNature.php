@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\component\prop\EiPropNature;
+use rocket\op\ei\component\prop\EiPropNature;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 

@@ -25,25 +25,21 @@ use rocket\tool\controller\ToolController;
 use n2n\web\http\ForbiddenException;
 use rocket\user\model\LoginContext;
 use rocket\user\controller\RocketUserController;
-use rocket\core\model\RocketState;
+use rocket\op\OpState;
 use n2n\web\http\PageNotFoundException;
 use n2n\l10n\N2nLocale;
-use n2n\web\http\Request;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\core\model\DeleteLoginModel;
 use rocket\core\model\Rocket;
 use n2n\core\container\PdoPool;
 use rocket\user\controller\RocketUserGroupController;
 use n2n\web\http\Response;
-use rocket\core\model\launch\UnknownLaunchPadException ;
+use rocket\op\launch\UnknownLaunchPadException;
 use n2n\core\config\N2nLocaleConfig;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\impl\ScrBaseController;
 use n2n\l10n\MessageContainer;
-use n2n\impl\web\ui\view\jhtml\JhtmlResponse;
 use n2n\core\N2N;
 use n2n\web\http\NoHttpRefererGivenException;
-use n2n\web\http\HttpContext;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
@@ -131,7 +127,7 @@ class RocketController extends ControllerAdapter {
 		$this->delegate($delegateController);
 	}
 	
-	public function doManage(Rocket $rocket, RocketState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool, 
+	public function doManage(Rocket $rocket, OpState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool,
 			MessageContainer $mc, $navItemId, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
 		

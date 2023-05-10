@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\entry\EiFieldValidationResult;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiFieldValidationResult;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\type\TypeConstraints;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 use n2n\validation\lang\ValidationMessages;
 use n2n\util\type\ArgUtils;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\frame\EiuFrame;
 
 class ToManyEiField extends EiFieldAdapter {
 	/**
@@ -155,7 +155,7 @@ class ToManyEiField extends EiFieldAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::isWritable()
+	 * @see \rocket\op\ei\manage\entry\EiField::isWritable()
 	 */
 	public function isWritable(): bool {
 		return $this->eiu->object()->isNativeWritable($this->eiu->prop()->getEiProp());
@@ -183,7 +183,7 @@ class ToManyEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::isCopyable()
+	 * @see \rocket\op\ei\manage\entry\EiField::isCopyable()
 	 */
 	public function isCopyable(): bool {
 		return true;
@@ -191,7 +191,7 @@ class ToManyEiField extends EiFieldAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::copyValue()
+	 * @see \rocket\op\ei\manage\entry\EiField::copyValue()
 	 */
 	public function copyValue(Eiu $copyEiu) {
 		$targetEiuEntries = $this->getValue();

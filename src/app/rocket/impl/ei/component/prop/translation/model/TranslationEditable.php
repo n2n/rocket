@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\gui\field\GuiFieldEditable;
+use rocket\op\ei\manage\gui\field\GuiFieldEditable;
 use n2n\web\dispatch\mag\Mag;
 
 class TranslationEditable implements GuiFieldEditable {

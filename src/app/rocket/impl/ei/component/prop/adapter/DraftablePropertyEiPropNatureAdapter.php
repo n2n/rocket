@@ -23,19 +23,19 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 use n2n\util\ex\IllegalStateException;
 
-use rocket\ei\manage\draft\DraftProperty;
-use rocket\ei\manage\draft\stmt\FetchDraftStmtBuilder;
+use rocket\op\ei\manage\draft\DraftProperty;
+use rocket\op\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use n2n\core\container\N2nContext;
-use rocket\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use rocket\ei\manage\draft\SimpleDraftValueSelection;
-use rocket\ei\manage\draft\DraftManager;
-use rocket\ei\manage\draft\DraftValueSelection;
-use rocket\ei\manage\draft\PersistDraftAction;
-use rocket\ei\manage\draft\RemoveDraftAction;
-use rocket\ei\EiPropPath;
-use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\op\ei\manage\draft\stmt\PersistDraftStmtBuilder;
+use rocket\op\ei\manage\draft\SimpleDraftValueSelection;
+use rocket\op\ei\manage\draft\DraftManager;
+use rocket\op\ei\manage\draft\DraftValueSelection;
+use rocket\op\ei\manage\draft\PersistDraftAction;
+use rocket\op\ei\manage\draft\RemoveDraftAction;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
 use rocket\impl\ei\component\prop\adapter\config\DraftConfigurable;
-use rocket\ei\manage\draft\Draft;
+use rocket\op\ei\manage\draft\Draft;
 
 abstract class DraftablePropertyEiPropNatureAdapter extends EditablePropertyEiPropNatureAdapter implements DraftConfigurable, DraftProperty {
 	protected $draftable = false;

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\file\conf;
 
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\FileEiPropNature;
 
 class FileModel {
@@ -43,7 +43,7 @@ class FileModel {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiPropPath
+	 * @return \rocket\op\ei\EiPropPath
 	 */
 	function getEiPropPath() {
 		return EiPropPath::from($this->fileEiProp);
@@ -57,7 +57,7 @@ class FileModel {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiPropPath|null
+	 * @return \rocket\op\ei\EiPropPath|null
 	 */
 	function getNamingEiPropPath() {
 		return $this->namingEiPropPath;

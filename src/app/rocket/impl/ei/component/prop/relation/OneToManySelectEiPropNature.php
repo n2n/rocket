@@ -27,14 +27,14 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiField;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\field\GuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 
 

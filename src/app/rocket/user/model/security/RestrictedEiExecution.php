@@ -21,16 +21,16 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\ei\manage\security\EiEntryAccess;
-use rocket\ei\manage\security\EiExecution;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\manage\security\filter\SecurityFilterDefinition;
-use rocket\ei\EiCmdPath;
-use rocket\ei\manage\security\privilege\PrivilegeDefinition;
-use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\entry\EiEntryConstraint;
-use rocket\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\op\ei\manage\security\EiEntryAccess;
+use rocket\op\ei\manage\security\EiExecution;
+use rocket\op\ei\component\command\EiCmdNature;
+use rocket\op\ei\manage\security\filter\SecurityFilterDefinition;
+use rocket\op\ei\EiCmdPath;
+use rocket\op\ei\manage\security\privilege\PrivilegeDefinition;
+use rocket\op\ei\manage\frame\CriteriaConstraint;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\op\ei\manage\entry\EiEntryConstraint;
+use rocket\op\ei\manage\critmod\filter\ComparatorConstraint;
 
 class RestrictedEiExecution implements EiExecution {
 	private $eiCmd;
@@ -55,7 +55,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getEiCmd()
+	 * @see \rocket\op\ei\manage\security\EiExecution::getEiCmd()
 	 */
 	function getEiCmd(): EiCmdNature {
 		return $this->eiCmd;
@@ -63,7 +63,7 @@ class RestrictedEiExecution implements EiExecution {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::getCriteriaConstraint()
+	 * @see \rocket\op\ei\manage\security\EiExecution::getCriteriaConstraint()
 	 */
 	function getCriteriaConstraint(): ?CriteriaConstraint {
 		return $this->comparatorConstraint;
@@ -71,7 +71,7 @@ class RestrictedEiExecution implements EiExecution {
 
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\manage\security\EiExecution::getEiEntryConstraint()
+// 	 * @see \rocket\op\ei\manage\security\EiExecution::getEiEntryConstraint()
 // 	 */
 // 	function getEiEntryConstraint(): ?EiEntryConstraint {
 // 		return $this->eiEntryConstraint;
@@ -79,7 +79,7 @@ class RestrictedEiExecution implements EiExecution {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiExecution::createEiEntryAccess()
+	 * @see \rocket\op\ei\manage\security\EiExecution::createEiEntryAccess()
 	 */
 	function createEiEntryAccess(EiEntry $eiEntry): EiEntryAccess {
 		return $this->restrictedEiEntryAccessFactory->createEiEntryAccess($this->eiEntryConstraint, $eiEntry);

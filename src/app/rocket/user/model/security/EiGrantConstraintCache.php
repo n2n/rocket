@@ -21,19 +21,19 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\ei\manage\security\filter\SecurityFilterDefinition;
+use rocket\op\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\user\bo\EiGrantPrivilege;
-use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\op\ei\manage\frame\CriteriaConstraint;
+use rocket\op\ei\manage\entry\EiEntryConstraint;
 use n2n\util\type\ArgUtils;
 use rocket\user\bo\EiGrant;
-use rocket\ei\manage\security\privilege\PrivilegeDefinition;
-use rocket\ei\EiCmdPath;
+use rocket\op\ei\manage\security\privilege\PrivilegeDefinition;
+use rocket\op\ei\EiCmdPath;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\mask\EiMask;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\component\command\EiCmdNature;
+use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\op\ei\EiPropPath;
 
 class EiGrantConstraintCache {
 	/**
@@ -170,7 +170,7 @@ class EiGrantConstraintCache {
 // 	}
 	
 // 	/**
-// 	 * @return \rocket\ei\manage\security\filter\SecurityFilterDefinition
+// 	 * @return \rocket\op\ei\manage\security\filter\SecurityFilterDefinition
 // 	 */
 // 	function getSecurityFilterDefinition() {
 // 		return $this->securityFilterDefinition;
@@ -196,7 +196,7 @@ class EiGrantConstraintCache {
 	
 	/**
 	 * @param EiGrantPrivilege $eiGrantPrivilege
-	 * @return \rocket\ei\manage\entry\EiEntryConstraint
+	 * @return \rocket\op\ei\manage\entry\EiEntryConstraint
 	 */
 	private function getEiEntryConstraint(EiGrantPrivilege $eiGrantPrivilege) {
 		ArgUtils::assertTrue($eiGrantPrivilege->isRestricted());
@@ -259,14 +259,14 @@ class EiEntryAccessResult {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiPropPath[]
+	 * @return \rocket\op\ei\EiPropPath[]
 	 */
 	function getWritableEiPropPaths() {
 		return $this->writableEiPropPaths;
 	}
 	
 	/**
-	 * @return \rocket\ei\EiCmdPath[]
+	 * @return \rocket\op\ei\EiCmdPath[]
 	 */
 	function getExecutableEiCmdPaths() {
 		return $this->executableEiCmdPaths;

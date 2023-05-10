@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\cmd\tree;
 
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 
 class TreeMoveEiCommand extends IndependentEiCommandAdapter {
@@ -80,7 +80,7 @@ class TreeMoveEiCommand extends IndependentEiCommandAdapter {
 // 								true, SiButton::TYPE_INFO, SiIconType::CARET_RIGHT, array('class' => 'rocket-impl-insert-as-child'), false, false)));
 // 	}
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\component\cmd\control\\GuiControlComponent::getEntryGuiControlOptions()
+// 	 * @see \rocket\op\ei\component\cmd\control\\GuiControlComponent::getEntryGuiControlOptions()
 // 	 */
 // 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 // 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);

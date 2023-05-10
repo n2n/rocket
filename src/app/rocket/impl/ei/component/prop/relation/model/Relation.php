@@ -21,21 +21,21 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\util\Eiu;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\util\entry\EiuObject;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\entry\EiuObject;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedOneToCriteriaFactory;
 use rocket\impl\ei\component\prop\relation\model\relation\RelationCriteriaFactory;
 use rocket\impl\ei\component\prop\relation\model\relation\MappedRelationEiModificator;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 use rocket\impl\ei\component\prop\relation\model\relation\PlainMappedRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\model\relation\MasterRelationEiModificator;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\manage\frame\EiForkLink;
+use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\impl\ei\component\prop\relation\model\relation\OneToManySelectCriteriaConstraint;
 use rocket\impl\ei\component\prop\relation\model\relation\OneToOneSelectCriteriaConstraint;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\frame\EiFrame;
 
 class Relation {
 	private $eiProp;

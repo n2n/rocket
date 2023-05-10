@@ -2,7 +2,7 @@
 
 namespace rocket\impl\ei\component\provider;
 
-use rocket\spec\setup\EiTypeSetup;
+use rocket\op\spec\setup\EiTypeSetup;
 use rocket\attribute\impl\EiPropBool;
 use rocket\impl\ei\component\prop\bool\BooleanEiPropNature;
 use rocket\attribute\impl\EiPropEnum;
@@ -18,8 +18,8 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\reflection\attribute\PropertyAttribute;
 use n2n\persistence\orm\CascadeType;
 use n2n\util\ex\err\ConfigurationError;
-use rocket\ei\component\InvalidEiConfigurationException;
-use rocket\spec\setup\EiPresetProp;
+use rocket\op\ei\component\InvalidEiConfigurationException;
+use rocket\op\spec\setup\EiPresetProp;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\impl\ei\component\prop\relation\ManyToManySelectEiPropNature;
 use rocket\impl\ei\component\prop\translation\Translatable;
@@ -51,13 +51,15 @@ use rocket\impl\ei\component\prop\relation\EmbeddedOneToManyEiPropNature;
 use rocket\impl\ei\component\prop\relation\EmbeddedOneToOneEiPropNature;
 use rocket\impl\ei\component\prop\numeric\OrderEiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
-use rocket\ei\component\prop\EiPropNature;
+use rocket\op\ei\component\prop\EiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\LabelConfig;
 use rocket\attribute\EiLabel;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
 use rocket\attribute\impl\EiPropOrder;
 use rocket\attribute\impl\EiPropString;
+use n2n\util\type\CastUtils;
+use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 
 class EiPropNatureProvider {
 
@@ -209,6 +211,7 @@ class EiPropNatureProvider {
 				$relationEiProp = new ManyToManySelectEiPropNature($entityProperty, $accessProxy);
 				break;
 			case RelationEntityProperty::TYPE_ONE_TO_MANY:
+				assert($entityProperty instanceof ToManyEntityProperty);
 				$targetClass = $entityProperty->getTargetEntityModel()->getClass();
 				if ($targetClass->implementsInterface(Translatable::class)) {
 					$relationEiProp = new TranslationEiPropNature($entityProperty, $accessProxy);

@@ -24,10 +24,10 @@ namespace rocket\impl\ei\component\cmd\common\controller;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\util\EiuCtrl;
 use rocket\core\model\Rocket;
 use rocket\si\control\SiButton;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\si\control\SiIconType;
 use n2n\util\ex\IllegalStateException;
 

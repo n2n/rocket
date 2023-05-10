@@ -22,23 +22,23 @@
 namespace rocket\impl\ei\component\prop\relation\conf;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
-use rocket\ei\util\spec\EiuEngine;
-use rocket\ei\mask\EiMask;
+use rocket\op\ei\util\spec\EiuEngine;
+use rocket\op\ei\mask\EiMask;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\ReflectionException;
-use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\util\type\CastUtils;
 use n2n\persistence\orm\CascadeType;
 use n2n\util\type\TypeUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\EiCmdPath;
+use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\relation\model\relation\TargetMasterRelationEiModificator;
-use rocket\ei\util\spec\EiuMask;
+use rocket\op\ei\util\spec\EiuMask;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use n2n\config\InvalidConfigurationException;
 
@@ -360,7 +360,7 @@ class RelationModel {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiCmdPath
+	 * @return \rocket\op\ei\EiCmdPath
 	 *@throws IllegalStateException
 	 */
 	function getTargetReadEiCmdPath() {
@@ -378,7 +378,7 @@ class RelationModel {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiCmdPath
+	 * @return \rocket\op\ei\EiCmdPath
 	 *@throws IllegalStateException
 	 */
 	function getTargetEditEiCmdPath() {
@@ -438,7 +438,7 @@ class RelationModel {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\spec\EiuEngine
+	 * @return \rocket\op\ei\util\spec\EiuEngine
 	 */
 	function getTargetEiuEngine() {
 		IllegalStateException::assertTrue($this->targetEiuEngine !== null);

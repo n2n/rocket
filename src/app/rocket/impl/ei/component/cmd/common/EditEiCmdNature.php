@@ -27,11 +27,11 @@ use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\cmd\common\controller\EditController;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
-use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\op\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
 use n2n\util\uri\Path;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
@@ -53,7 +53,7 @@ class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand 
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::lookupController()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::lookupController()
 	 */
 	public function lookupController(Eiu $eiu): Controller {
 		return $eiu->lookup(EditController::class);
@@ -93,7 +93,7 @@ class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand 
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\PrivilegedEiCommand::createEiCommandPrivilege()
+// 	 * @see \rocket\op\ei\component\cmd\PrivilegedEiCommand::createEiCommandPrivilege()
 // 	 */
 // 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
 // 		$dtc = $eiu->dtc(Rocket::NS);

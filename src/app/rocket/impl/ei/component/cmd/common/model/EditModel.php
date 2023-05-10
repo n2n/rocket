@@ -22,7 +22,7 @@
 // namespace rocket\impl\ei\component\cmd\common\model;
 
 // use n2n\reflection\annotation\AnnoInit;
-// use rocket\ei\util\entry\form\EiuEntryForm;
+// use rocket\op\ei\util\entry\form\EiuEntryForm;
 // use n2n\web\dispatch\Dispatchable;
 // use n2n\l10n\MessageContainer;
 // use n2n\web\dispatch\annotation\AnnoDispProperties;
@@ -30,8 +30,8 @@
 // use n2n\util\ex\IllegalStateException;
 // use rocket\core\model\Rocket;
 // use n2n\web\dispatch\map\PropertyPath;
-// use rocket\ei\util\entry\EiuEntry;
-// use rocket\ei\util\frame\EiuFrame;
+// use rocket\op\ei\util\entry\EiuEntry;
+// use rocket\op\ei\util\frame\EiuFrame;
 
 // class EditModel implements Dispatchable {
 // 	private static function _annos(AnnoInit $ai) {

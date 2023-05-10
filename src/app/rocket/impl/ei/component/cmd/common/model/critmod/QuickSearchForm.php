@@ -22,12 +22,12 @@
 //namespace rocket\impl\ei\component\cmd\common\model\critmod;
 //
 //use n2n\web\dispatch\Dispatchable;
-//use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
-//use rocket\ei\manage\frame\EiFrame;
-//use rocket\ei\manage\critmod\save\CritmodSaveDao;
-//use rocket\ei\util\frame\EiuFrame;
-//use rocket\spec\TypePath;
-//use rocket\ei\manage\frame\Boundry;
+//use rocket\op\ei\manage\critmod\quick\QuickSearchDefinition;
+//use rocket\op\ei\manage\frame\EiFrame;
+//use rocket\op\ei\manage\critmod\save\CritmodSaveDao;
+//use rocket\op\ei\util\frame\EiuFrame;
+//use rocket\op\spec\TypePath;
+//use rocket\op\ei\manage\frame\Boundry;
 //
 //class QuickSearchForm implements Dispatchable {
 //	private $quickSearchDefinition;

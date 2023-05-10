@@ -2,11 +2,11 @@
 
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\component\prop\EiPropNature;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\component\prop\EiPropNature;
 use n2n\reflection\property\AccessProxy;
-use rocket\ei\util\factory\EifField;
+use rocket\op\ei\util\factory\EifField;
 
 trait ReadableEiFieldTrait {
 

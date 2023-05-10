@@ -22,13 +22,13 @@
 namespace rocket\user\model;
 
 use rocket\user\bo\RocketUserGroup;
-use rocket\ei\EiType;
+use rocket\op\ei\EiType;
 use rocket\user\bo\EiGrant;
-use rocket\cu\CustomType;
+use rocket\op\cu\CustomType;
 use rocket\user\bo\CustomGrant;
 use rocket\user\bo\Grant;
-use rocket\spec\TypePath;
-use rocket\ei\EiTypeExtensionCollection;
+use rocket\op\spec\TypePath;
+use rocket\op\ei\EiTypeExtensionCollection;
 
 class GroupGrantsViewModel {
 	private $userGroup;

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 
 class LabelConfig {
 	protected ?string $label = null;

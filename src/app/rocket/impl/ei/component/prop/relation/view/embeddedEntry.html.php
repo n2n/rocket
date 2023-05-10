@@ -1,6 +1,6 @@
 <?php
-	use rocket\ei\util\entry\EiuEntry;
-	use rocket\ei\util\gui\EiuHtmlBuilder;
+	use rocket\op\ei\util\entry\EiuEntry;
+	use rocket\op\ei\util\gui\EiuHtmlBuilder;
 	use n2n\impl\web\ui\view\html\HtmlView;
 
 	$view = HtmlView::view($this);

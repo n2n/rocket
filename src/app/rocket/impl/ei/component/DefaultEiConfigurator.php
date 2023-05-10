@@ -22,23 +22,23 @@
 namespace rocket\impl\ei\component;
 
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\core\container\N2nContext;
 use rocket\impl\ei\component\config\EiConfiguratorAdapter;
 
 class DefaultEiConfigurator extends EiConfiguratorAdapter {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
 	 */
 	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::getAssignedEntityProperty()
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::getAssignedEntityProperty()
 	 */
 	public function getAssignedEntityProperty() {
 		return null;
@@ -46,7 +46,7 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::getAssignedPropertyAccessProxy()
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::getAssignedPropertyAccessProxy()
 	 */
 	public function getAssignedPropertyAccessProxy() {
 		return null;
@@ -54,7 +54,7 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::isAssignableToEntityProperty()
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::isAssignableToEntityProperty()
 	 */
 	public function isAssignableToEntityProperty(): bool {
 		return false;
@@ -62,7 +62,7 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::isAssignableToObjectProperty()
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::isAssignableToObjectProperty()
 	 */
 	public function isAssignableToObjectProperty(): bool {
 		return false;
@@ -70,7 +70,7 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
 	 */
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return CompatibilityLevel::NOT_COMPATIBLE;
@@ -78,14 +78,14 @@ class DefaultEiConfigurator extends EiConfiguratorAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::assignProperty($propertyAssignation)
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::assignProperty($propertyAssignation)
 	 */
 	public function assignProperty(PropertyAssignation $propertyAssignation) {
 		throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::getPropertyAssignation()
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::getPropertyAssignation()
 	 */
 	public function getPropertyAssignation(): PropertyAssignation {
 		return new PropertyAssignation();

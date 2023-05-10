@@ -55,7 +55,7 @@ class SiValInstruction {
 	}
 
 	/**
-	 * @return \rocket\si\api\SiValGetInstruction[] 
+	 * @return \rocket\si\api\SiValGetInstruction[]
 	 */
 	public function getGetInstructions() {
 		return $this->getInstructions;

@@ -27,17 +27,17 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\reflection\property\AccessProxy;
 use n2n\web\dispatch\Dispatchable;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\frame\EiuFrame;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use rocket\core\model\Rocket;
 use n2n\impl\web\dispatch\property\ObjectProperty;
-use rocket\ei\manage\LiveEiObject;
+use rocket\op\ei\manage\LiveEiObject;
 use n2n\util\type\ArgUtils;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\property\ManagedProperty;
 use rocket\impl\ei\component\prop\relation\model\mag\EntryLabeler;
 use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\ei\manage\entry\UnknownEiObjectException;
+use rocket\op\ei\manage\entry\UnknownEiObjectException;
 
 class RelationSelectorMag extends MagAdapter  {
 	private $targetEiuFrame;

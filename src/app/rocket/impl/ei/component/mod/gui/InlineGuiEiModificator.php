@@ -2,7 +2,7 @@
 namespace rocket\impl\ei\component\mod\constraint;
 
 use rocket\impl\ei\component\mod\adapter\IndependentEiModificatorAdapter;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 
 class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	

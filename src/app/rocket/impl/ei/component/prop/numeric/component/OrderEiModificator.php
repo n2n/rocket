@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\numeric\component;
 
 use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
-use rocket\ei\manage\entry\OnWriteMappingListener;
+use rocket\op\ei\manage\entry\OnWriteMappingListener;
 use rocket\impl\ei\component\prop\numeric\OrderEiPropNature;
-use rocket\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
-use rocket\ei\manage\critmod\sort\SimpleSortConstraint;
+use rocket\op\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
+use rocket\op\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\frame\Boundry;
-use rocket\ei\EiPropPath;
-use rocket\ei\util\entry\EiuObject;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\util\entry\EiuObject;
 
 class OrderEiModificator extends EiModNatureAdapter {
 	private $eiProp;

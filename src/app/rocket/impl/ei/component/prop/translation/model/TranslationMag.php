@@ -24,18 +24,18 @@ namespace rocket\impl\ei\component\prop\translation\model;
 use n2n\reflection\property\AccessProxy;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use n2n\impl\web\dispatch\property\ScalarProperty;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\field\GuiField;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPathPart;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use n2n\web\dispatch\property\ManagedProperty;
 use n2n\web\ui\UiComponent;
-use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use n2n\web\dispatch\map\bind\BindingErrors;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\web\dispatch\map\bind\MappingDefinition;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 
 class TranslationMag extends MagAdapter {
 	private $markClassKey;
@@ -127,7 +127,7 @@ class TranslationMag extends MagAdapter {
 			$srcLoadConfig = $this->srcLoadConfig->toAttrs();
 		}
 
-		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html', 
+		return $view->getImport('\rocket\impl\ei\component\prop\translation\view\mag.html',
 				array('propertyPath' => $propertyPath, 'propertyPaths' => $propertyPaths, 'validationResults' => $this->validationResults, 
 						'label' => $this->getLabel($view->getN2nLocale()),
 						'srcLoadConfig' => $srcLoadConfig, 'eiuEntries' => $this->eiuEntries,

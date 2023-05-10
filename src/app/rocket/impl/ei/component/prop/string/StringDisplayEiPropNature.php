@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use n2n\util\StringUtils;
-use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\util\Eiu;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\manage\idname\IdNameProp;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureAdapter;
 

@@ -21,23 +21,23 @@
  */
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\util\Eiu;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
-use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\util\gui\EiuEntryGui;
+use rocket\op\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\gui\EiuEntryGui;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\relation\SiPanelInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\SiPanel;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
-use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\op\ei\manage\gui\GuiFieldMap;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;

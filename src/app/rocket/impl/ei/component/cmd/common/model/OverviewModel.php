@@ -23,7 +23,7 @@
 
 // use n2n\web\dispatch\Dispatchable;
 // use n2n\persistence\orm\util\NestedSetUtils;
-// use rocket\ei\util\frame\EiuFrame;
+// use rocket\op\ei\util\frame\EiuFrame;
 // use rocket\impl\ei\component\cmd\common\model\critmod\CritmodForm;
 // use rocket\impl\ei\component\cmd\common\model\critmod\QuickSearchForm;
 // use n2n\persistence\orm\criteria\item\CrIt;
@@ -150,7 +150,7 @@
 		
 // 	/**
 // 	 * 
-// 	 * @return \rocket\ei\util\gui\EiuGuiFrame
+// 	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
 // 	 */
 // 	public function getEiuGuiFrame() {
 // 		return $this->eiuGuiFrame;

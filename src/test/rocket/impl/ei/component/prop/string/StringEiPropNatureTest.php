@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use rocket\test\SpecTestEnv;
 use testmdl\bo\PrimitiveReadPresetTestObj;
 use testmdl\string\bo\StringTestObj;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\test\TestEnv;
 use rocket\test\GeneralTestEnv;
 

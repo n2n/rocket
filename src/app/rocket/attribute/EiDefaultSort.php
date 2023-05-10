@@ -2,8 +2,8 @@
 
 namespace rocket\attribute;
 
-use rocket\ei\manage\critmod\sort\SortSetting;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\manage\critmod\sort\SortSetting;
+use rocket\op\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\criteria\Criteria;
 

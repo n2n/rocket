@@ -5,13 +5,13 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use n2n\util\type\TypeConstraint;
-use rocket\ei\manage\DefPropPath;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\manage\DefPropPath;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\util\StringUtils;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\ArgUtils;
 

@@ -4,9 +4,9 @@ namespace rocket\impl\ei\component\cmd\iframe\controller;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\ui\Raw;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\util\EiuCtrl;
 use rocket\impl\ei\component\cmd\iframe\config\IframeConfig;
-use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\util\magic\MagicObjectUnavailableException;
 use n2n\web\http\controller\Controller;
 

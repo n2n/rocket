@@ -28,14 +28,14 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 
-use rocket\ei\manage\generic\CommonScalarEiProperty;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\generic\CommonScalarEiProperty;
+use rocket\op\ei\manage\generic\ScalarEiProperty;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
 use rocket\si\content\impl\SiFields;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\util\factory\EifGuiField;
 use n2n\validation\validator\impl\Validators;
-use rocket\ei\util\factory\EifField;
+use rocket\op\ei\util\factory\EifField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 
@@ -49,7 +49,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
+	 * @see \rocket\op\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
 	function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr(), function ($value) {

@@ -22,27 +22,27 @@
 namespace rocket\user\model\security;
 
 use rocket\user\bo\RocketUser;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\EiCmdPath;
-use rocket\ei\EiPropPath;
-use rocket\ei\manage\security\EiPermissionManager;
-use rocket\spec\TypePath;
+use rocket\op\ei\component\command\EiCmdNature;
+use rocket\op\ei\EiCmdPath;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\manage\security\EiPermissionManager;
+use rocket\op\spec\TypePath;
 use rocket\user\bo\EiGrant;
-use rocket\ei\manage\frame\Boundry;
-use rocket\ei\manage\security\EiEntryAccess;
-use rocket\ei\manage\ManageState;
-use rocket\ei\manage\security\EiExecution;
-use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
-use rocket\ei\mask\EiMask;
-use rocket\ei\manage\security\InaccessibleEiCmdPathException;
-use rocket\ei\manage\entry\EiEntryConstraint;
-use rocket\ei\component\command\EiCmd;
+use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\security\EiEntryAccess;
+use rocket\op\ei\manage\ManageState;
+use rocket\op\ei\manage\security\EiExecution;
+use rocket\op\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\manage\security\InaccessibleEiCmdPathException;
+use rocket\op\ei\manage\entry\EiEntryConstraint;
+use rocket\op\ei\component\command\EiCmd;
 
 class FullEiPermissionManager implements EiPermissionManager {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiPermissionManager::isEiCommandAccessible()
+	 * @see \rocket\op\ei\manage\security\EiPermissionManager::isEiCommandAccessible()
 	 */
 	function isEiCommandAccessible(EiMask $contextEiMask, EiCmd $eiCmd): bool {
 		return true;

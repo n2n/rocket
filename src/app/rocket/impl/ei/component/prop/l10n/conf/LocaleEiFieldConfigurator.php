@@ -23,7 +23,7 @@
 
 // use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 // use rocket\impl\ei\component\prop\l10n\N2nLocaleEiProp;
-// use rocket\ei\component\EiSetup;
+// use rocket\op\ei\component\EiSetup;
 // use n2n\util\ex\IllegalStateException;
 // use rocket\impl\ei\component\mod\l10n\N2nLocaleEiModificator;
 // use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;

@@ -21,9 +21,9 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\core\model\launch\LaunchPad;
-use rocket\ei\manage\security\EiPermissionManager;
-use rocket\ei\manage\ManageState;
+use rocket\op\launch\LaunchPad;
+use rocket\op\ei\manage\security\EiPermissionManager;
+use rocket\op\ei\manage\ManageState;
 
 interface SecurityManager {
 	

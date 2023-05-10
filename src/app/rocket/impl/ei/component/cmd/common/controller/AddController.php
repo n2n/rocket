@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\cmd\common\controller;
 
-use rocket\core\model\RocketState;
+use rocket\op\OpState;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\impl\ei\component\cmd\common\model\AddModel;
 use rocket\impl\ei\component\cmd\common\model\EntryCommandViewModel;
 use n2n\web\http\controller\ParamGet;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\util\EiuCtrl;
 use rocket\si\control\SiIconType;
 use rocket\si\control\SiButton;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 
@@ -45,7 +45,7 @@ class AddController extends ControllerAdapter {
 	private $beforeEiuObject;
 	private $afterEiuObject;
 	
-	public function prepare(DynamicTextCollection $dtc, RocketState $rocketState) {
+	public function prepare(DynamicTextCollection $dtc, OpState $rocketState) {
 		$this->dtc = $dtc;
 		$this->eiuCtrl = EiuCtrl::from($this->cu());
 	}

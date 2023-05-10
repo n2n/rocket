@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\config;
 
-use rocket\ei\component\EiConfigurator;
+use rocket\op\ei\component\EiConfigurator;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\core\container\N2nContext;
-use rocket\ei\component\EiSetup;
+use rocket\op\ei\component\EiSetup;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\ei\component\EiComponentNature;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\component\EiComponentNature;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\TypeUtils;
 
 abstract class EiConfiguratorAdapter implements EiConfigurator {
@@ -43,7 +43,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\component\EiConfigurator::getComponentClass()
+// 	 * @see \rocket\op\ei\component\EiConfigurator::getComponentClass()
 // 	 */
 // 	public function getComponentClass() {
 // 		return new \ReflectionClass($this->eiComponent);
@@ -54,7 +54,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\EiConfigurator::getDataSet()
+	 * @see \rocket\op\ei\component\EiConfigurator::getDataSet()
 	 */
 	public function getDataSet(): DataSet {
 		return $this->dataSet;
@@ -65,7 +65,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\EiConfigurator::getTypeName()
+	 * @see \rocket\op\ei\component\EiConfigurator::getTypeName()
 	 */
 	public function getTypeName(): string {
         return TypeUtils::prettyName((new \ReflectionClass($this->getEiComponent()))->getShortName());
@@ -102,7 +102,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	
 	/**
 	 * @param N2nContext $n2nContext
-	 * @return \rocket\ei\util\Eiu
+	 * @return \rocket\op\ei\util\Eiu
 	 */
 	protected function eiu(N2nContext $n2nContext) {
 		return new Eiu($this->eiComponent, $n2nContext);
@@ -110,7 +110,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiConfigurator::createMagDispatchable($n2nContext)
+	 * @see \rocket\op\ei\component\EiConfigurator::createMagDispatchable($n2nContext)
 	 */
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		return new MagForm(new MagCollection());
@@ -122,7 +122,7 @@ abstract class EiConfiguratorAdapter implements EiConfigurator {
 	 * <p>Overwrite this method if you have custom dataSet to save. If you call this method it will overwrite 
 	 * the current dataSet Properties with a new empty {@see DataSet} object</p
 	 * 
-	 * @see \rocket\ei\component\EiConfigurator::saveMagDispatchable()
+	 * @see \rocket\op\ei\component\EiConfigurator::saveMagDispatchable()
 	 */
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		$this->dataSet = new DataSet();

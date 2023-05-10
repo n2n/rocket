@@ -22,16 +22,16 @@
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\util\Eiu;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\util\frame\EiuFrame;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\si\content\impl\SiFields;
 use rocket\si\input\SiEntryInput;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
-use rocket\ei\manage\gui\GuiFieldMap;
+use rocket\op\ei\manage\gui\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\ArrayUtils;
 

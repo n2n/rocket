@@ -21,14 +21,14 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\entry\EiEntryConstraint;
-use rocket\ei\manage\frame\CriteriaConstraint;
-use rocket\ei\manage\security\EiEntryAccess;
-use rocket\ei\manage\security\EiExecution;
-use rocket\ei\EiCmdPath;
-use rocket\ei\EiPropPath;
-use rocket\ei\component\command\EiCmd;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\op\ei\manage\entry\EiEntryConstraint;
+use rocket\op\ei\manage\frame\CriteriaConstraint;
+use rocket\op\ei\manage\security\EiEntryAccess;
+use rocket\op\ei\manage\security\EiExecution;
+use rocket\op\ei\EiCmdPath;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\component\command\EiCmd;
 
 class FullyGrantedEiExecution implements EiExecution {
 // 	private $commandPath;

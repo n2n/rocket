@@ -26,8 +26,8 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DateTimeFormat;
 use n2n\web\http\PageNotFoundException;
 use rocket\impl\ei\component\cmd\common\model\EntryCommandViewModel;
-use rocket\ei\manage\EiObject;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\manage\EiObject;
+use rocket\op\ei\util\EiuCtrl;
 use gallery\core\model\Breadcrumb;
 
 class DetailController extends ControllerAdapter {

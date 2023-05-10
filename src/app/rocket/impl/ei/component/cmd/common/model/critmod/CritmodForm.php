@@ -21,20 +21,20 @@
  */
 namespace rocket\impl\ei\component\cmd\common\model\critmod;
 
-use rocket\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\frame\EiFrame;
 use n2n\web\dispatch\Dispatchable;
 use n2n\web\dispatch\map\bind\BindingDefinition;
-use rocket\ei\manage\critmod\filter\ComparatorConstraintGroup;
+use rocket\op\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use n2n\web\dispatch\map\bind\MappingDefinition;
 use n2n\l10n\DynamicTextCollection;
-use rocket\ei\manage\critmod\save\CritmodSaveDao;
-use rocket\spec\TypePath;
-use rocket\ei\manage\critmod\save\CritmodSave;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\ei\util\filter\EiuFilterForm;
-use rocket\ei\util\sort\EiuSortForm;
-use rocket\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\critmod\save\CritmodSaveDao;
+use rocket\op\spec\TypePath;
+use rocket\op\ei\manage\critmod\save\CritmodSave;
+use rocket\op\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\filter\controller\FilterJhtmlHook;
+use rocket\op\ei\util\filter\EiuFilterForm;
+use rocket\op\ei\util\sort\EiuSortForm;
+use rocket\op\ei\manage\frame\Boundry;
 
 class CritmodForm implements Dispatchable {	
 	private $critmodSaveDao;

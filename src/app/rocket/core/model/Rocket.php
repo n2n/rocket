@@ -22,21 +22,18 @@
 namespace rocket\core\model;
 
 use n2n\persistence\orm\EntityManager;
-use rocket\spec\Spec;
+use rocket\op\spec\Spec;
 use n2n\context\RequestScoped;
-use rocket\spec\EiComponentStore;
+use rocket\op\spec\EiComponentStore;
 use n2n\core\container\PdoPool;
 use n2n\core\container\N2nContext;
-use rocket\spec\source\N2nContextRocketConfigSource;
-use rocket\ei\manage\draft\DraftManager;
-use rocket\spec\extr\SpecExtractionManager;
-use rocket\core\model\launch\LayoutExtractionManager;
-use rocket\core\model\launch\Layout;
+use rocket\op\spec\source\N2nContextRocketConfigSource;
+use rocket\op\ei\manage\draft\DraftManager;
 use n2n\l10n\Lstr;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerContext;
-use rocket\spec\setup\SpecConfigLoader;
-use rocket\spec\SpecFactory;
+use rocket\op\spec\setup\SpecConfigLoader;
+use rocket\op\spec\SpecFactory;
 
 class Rocket implements RequestScoped {
 	const VERSION = '3.1.0';
@@ -97,7 +94,7 @@ class Rocket implements RequestScoped {
 	}
 
 	/**
-	 * @return \rocket\spec\Spec
+	 * @return \rocket\op\spec\Spec
 	 */
 	public function getSpec(): Spec {
 		if ($this->spec !== null) {
@@ -116,7 +113,7 @@ class Rocket implements RequestScoped {
 	}
 	
 	/**
-	 * @return \rocket\spec\EiComponentStore
+	 * @return \rocket\op\spec\EiComponentStore
 	 */
 	public function getEiComponentStore() {
 		if ($this->eiComponentStore === null) {

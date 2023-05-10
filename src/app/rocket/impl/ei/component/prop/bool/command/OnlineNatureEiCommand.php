@@ -27,10 +27,10 @@ use n2n\l10n\N2nLocale;
 use rocket\si\control\SiIconType;
 use rocket\si\control\SiButton;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use n2n\core\container\N2nContext;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 
 class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 	const CONTROL_KEY = 'online';

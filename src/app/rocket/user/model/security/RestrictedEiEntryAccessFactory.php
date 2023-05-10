@@ -1,9 +1,9 @@
 <?php
 namespace rocket\user\model\security;
 
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\manage\security\EiEntryAccess;
-use rocket\ei\manage\entry\EiEntryConstraint;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\op\ei\manage\security\EiEntryAccess;
+use rocket\op\ei\manage\entry\EiEntryConstraint;
 
 class RestrictedEiEntryAccessFactory {
 	/**

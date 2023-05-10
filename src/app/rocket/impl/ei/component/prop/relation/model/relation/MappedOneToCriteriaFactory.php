@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\ei\manage\frame\CriteriaFactory;
+use rocket\op\ei\manage\frame\CriteriaFactory;
 
 use n2n\persistence\orm\EntityManager;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
@@ -41,7 +41,7 @@ class MappedOneToCriteriaFactory implements CriteriaFactory {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\frame\CriteriaFactory::create()
+	 * @see \rocket\op\ei\manage\frame\CriteriaFactory::create()
 	 */
 	public function create(EntityManager $em, $entityAlias) {
 		$criteria = $em->createCriteria();

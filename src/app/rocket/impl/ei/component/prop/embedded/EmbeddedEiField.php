@@ -25,13 +25,13 @@ use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\type\CastUtils;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiFieldMap;
-use rocket\ei\util\entry\EiuFieldMap;
-use rocket\ei\manage\entry\EiFieldValidationResult;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiFieldMap;
+use rocket\op\ei\util\entry\EiuFieldMap;
+use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use n2n\util\type\ArgUtils;
 use n2n\l10n\Message;
-use rocket\ei\manage\entry\EiEntryValidationResult;
+use rocket\op\ei\manage\entry\EiEntryValidationResult;
 
 class EmbeddedEiField extends EiFieldAdapter {
 	private $eiu;
@@ -58,7 +58,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	/**
 	 * @param object $targetObject
-	 * @return \rocket\ei\util\entry\EiuFieldMap
+	 * @return \rocket\op\ei\util\entry\EiuFieldMap
 	 */
 	private function buildEiFieldMap($targetObject) {
 		$entityProperty = $this->eiProp->getEntityProperty(true);
@@ -75,7 +75,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\entry\EiuFieldMap|null
+	 * @return \rocket\op\ei\util\entry\EiuFieldMap|null
 	 */
 	protected function readValue() {
 		$targetLiveObject = $this->eiu->entry()->readNativValue($this->eiProp);

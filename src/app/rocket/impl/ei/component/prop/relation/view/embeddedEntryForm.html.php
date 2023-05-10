@@ -1,8 +1,8 @@
 <?php
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\util\gui\EiuHtmlBuilder;
-use rocket\ei\mask\model\DisplayItem;
+	use rocket\op\ei\util\gui\EiuHtmlBuilder;
+use rocket\op\ei\mask\model\DisplayItem;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

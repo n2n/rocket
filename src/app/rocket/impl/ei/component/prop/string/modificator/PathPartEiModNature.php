@@ -22,20 +22,20 @@
 namespace rocket\impl\ei\component\prop\string\modificator;
 
 use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\entry\EiEntry;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\col\ArrayUtils;
 use n2n\util\io\IoUtils;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\BasicEntityProperty;
-use rocket\ei\util\Eiu;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
 use rocket\impl\ei\component\prop\string\PathPartEiPropNature;
-use rocket\ei\util\spec\EiuMask;
+use rocket\op\ei\util\spec\EiuMask;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\manage\generic\GenericEiProperty;
+use rocket\op\ei\manage\generic\ScalarEiProperty;
+use rocket\op\ei\manage\generic\GenericEiProperty;
 use n2n\persistence\orm\property\EntityProperty;
 
 class PathPartEiModNature extends EiModNatureAdapter {

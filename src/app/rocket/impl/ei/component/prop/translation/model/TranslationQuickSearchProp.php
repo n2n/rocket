@@ -1,9 +1,9 @@
 <?php
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\manage\critmod\filter\ComparatorConstraint;
-use rocket\ei\manage\critmod\quick\QuickSearchDefinition;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\critmod\filter\ComparatorConstraint;
+use rocket\op\ei\manage\critmod\quick\QuickSearchDefinition;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\criteria\compare\ComparatorCriteria;
@@ -26,7 +26,7 @@ class TranslationQuickSearchProp implements QuickSearchProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\critmod\quick\QuickSearchProp::createComparatorConstraint()
+	 * @see \rocket\op\ei\manage\critmod\quick\QuickSearchProp::createComparatorConstraint()
 	 */
 	public function buildComparatorConstraint(string $queryStr): ComparatorConstraint {
 		return new TranslationComparatorConstraint($this->entityProperty, $this->targetEntityClass, 
@@ -47,7 +47,7 @@ class TranslationComparatorConstraint implements ComparatorConstraint {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
+	 * @see \rocket\op\ei\manage\critmod\filter\ComparatorConstraint::applyToCriteriaComparator()
 	 */
 	public function applyToCriteriaComparator(CriteriaComparator $criteriaComparator, CriteriaProperty $alias) {
 		if ($this->targetComparatorConstraint === null) return;

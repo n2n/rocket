@@ -26,20 +26,20 @@ use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
-use rocket\ei\EiPropPath;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 
-use rocket\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiField;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\ci\conf\ContentItemsConfig;
 use rocket\si\content\impl\SiFields;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\meta\SiCrumbGroup;
@@ -114,14 +114,14 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	/**
-	 * @return \rocket\ei\EiPropPath
+	 * @return \rocket\op\ei\EiPropPath
 	 */
 	public static function getPanelEiPropPath(): EiPropPath {
 		return new EiPropPath(array('panel'));
 	}
 	
 	/**
-	 * @return \rocket\ei\EiPropPath
+	 * @return \rocket\op\ei\EiPropPath
 	 */
 	public static function getOrderIndexEiPropPath(): EiPropPath {
 		return new EiPropPath(array('orderIndex'));
@@ -157,7 +157,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
 		$readOnly = $readOnly || $this->relationModel->isReadOnly();

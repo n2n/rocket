@@ -2,7 +2,7 @@
 
 namespace rocket\impl\ei\component\prop\meta;
 
-use rocket\ei\component\prop\EiPropNature;
+use rocket\op\ei\component\prop\EiPropNature;
 use rocket\si\content\impl\meta\SiCrumbGroup;
 use n2n\util\type\ArgUtils;
 
