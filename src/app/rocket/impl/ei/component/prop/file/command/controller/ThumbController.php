@@ -31,7 +31,7 @@ use n2n\web\http\BadRequestException;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 use rocket\impl\ei\component\prop\file\FileEiPropNature;
 use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
@@ -42,11 +42,11 @@ class ThumbController extends ControllerAdapter {
 // 	 */
 // 	private $thumbResolver;
 	private $fileEiProp;
-	private $eiuCtrl;
+	private $opuCtrl;
 	private $dtc;
 	
 	public function prepare(DynamicTextCollection $dtc) {
-		$this->eiuCtrl = EiuCtrl::from($this->cu());
+		$this->opuCtrl = OpuCtrl::from($this->cu());
 		$this->dtc = $dtc;
 	}
 	
@@ -59,8 +59,8 @@ class ThumbController extends ControllerAdapter {
 // 	}
 	
 // 	public function index($pid, ParamQuery $refPath, ParamQuery $selected = null) {
-// 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
-// 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+// 		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
+// 		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		
 		
 // 		// because ThumbEiCommand gets added always on a supreme EiEngine
@@ -129,7 +129,7 @@ class ThumbController extends ControllerAdapter {
 // 	}
 	
 	function doFile($pid) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		
 		$file = $eiuEntry->getValue($this->fileEiProp);
 		if ($file === null) {
@@ -140,7 +140,7 @@ class ThumbController extends ControllerAdapter {
 	}
 	
 	function doThumb($pid, ParamQuery $imgDim) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		$file = $eiuEntry->getValue($this->fileEiProp);
 		
 		if ($file === null) {

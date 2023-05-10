@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\cmd\common\controller;
 use n2n\l10n\DynamicTextCollection;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 use rocket\core\model\Rocket;
 use rocket\si\control\SiButton;
 use rocket\op\ei\util\Eiu;
@@ -37,29 +37,29 @@ class EditController extends ControllerAdapter {
 	const CONTROL_CANCEL_KEY = 'canel';
 	
 	private $dtc;
-	private EiuCtrl $eiuCtrl;
+	private OpuCtrl $opuCtrl;
 	
 	public function prepare(DynamicTextCollection $dtc) {
 		$this->dtc = $dtc;
-		$this->eiuCtrl = EiuCtrl::from($this->cu());
+		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
 	
 	public function index($pid) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
+		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		
-		$this->eiuCtrl->pushOverviewBreadcrumb()
+		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushDetailBreadcrumb($eiuEntry)
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_edit_label'));
 		
-// 		$this->eiuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
+// 		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 		
-		$this->eiuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false,
+		$this->opuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false,
 				$this->createControls());
 	}
 	
 	private function createControls() {
-		$eiuControlFactory = $this->eiuCtrl->eiu()->factory()->guiControl();
-		$dtc = $this->eiuCtrl->eiu()->dtc(Rocket::NS);
+		$eiuControlFactory = $this->opuCtrl->eiu()->factory()->guiControl();
+		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [
 			$eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY,
@@ -101,36 +101,36 @@ class EditController extends ControllerAdapter {
 	}
 	
 	public function doPreview($pid, $previewType, ParamQuery $refPath) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
-		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
+		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 		
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
+		$previewController = $this->opuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
 		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
 		
-		$this->eiuCtrl->applyCommonBreadcrumbs($eiuEntry);
+		$this->opuCtrl->applyCommonBreadcrumbs($eiuEntry);
 		
 		$view = $this->createView('..\view\editPreview.html', array(
 				'iframeSrc' => $this->getHttpContext()->getControllerContextPath($this->getControllerContext())
 						->ext('livepreviewsrc', $pid, $previewType),
 				'currentPreviewType' => $previewType,
 				'previewTypeOptions' => $previewTypeOptions,
-				'entryCommandViewModel' => new EntryCommandViewModel($this->eiuCtrl->frame(), $redirectUrl, $eiuEntry)));
-		$this->eiuCtrl->forwardView($view);
+				'entryCommandViewModel' => new EntryCommandViewModel($this->opuCtrl->frame(), $redirectUrl, $eiuEntry)));
+		$this->opuCtrl->forwardView($view);
 	}
 	
 	public function doPreviewSrc($pid, $previewType, array $delegateCmds = array()) {
-		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
-		$previewController = $this->eiuCtrl->lookupPreviewController($previewType, $eiuEntry);
+		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
+		$previewController = $this->opuCtrl->lookupPreviewController($previewType, $eiuEntry);
 		
 		$this->delegate($previewController);
 	}
 	
 // 	public function doLatestDraft($pid, ParamQuery $refPath) {
-// 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+// 		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 		
-// 		$eiObject = $this->eiuCtrl->lookupEiObject($pid);
-// 		$drafts = $this->eiuCtrl->frame()->toEiuEntry($eiObject)->lookupDrafts(0, 1);
+// 		$eiObject = $this->opuCtrl->lookupEiObject($pid);
+// 		$drafts = $this->opuCtrl->frame()->toEiuEntry($eiObject)->lookupDrafts(0, 1);
 // 		$draft = ArrayUtils::first($drafts);
 // 		if ($draft === null || $draft->isPublished()) {
 // 			$this->redirectToController(array('newdraft', $pid), array('refPath' => $refPath));
@@ -141,17 +141,17 @@ class EditController extends ControllerAdapter {
 // 	}
 		
 // 	public function doNewDraft($pid, ParamQuery $refPath) {
-// 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+// 		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 		
-// 		$eiEntry = $this->eiuCtrl->lookupEiEntry($pid);
-// 		$entryEiuFrame = $this->eiuCtrl->toEiuEntry($eiEntry);
+// 		$eiEntry = $this->opuCtrl->lookupEiEntry($pid);
+// 		$entryEiuFrame = $this->opuCtrl->toEiuEntry($eiEntry);
 		
-// 		$eiUtils = $this->eiuCtrl->frame();
+// 		$eiUtils = $this->opuCtrl->frame();
 // 		$draftEiObject = $eiUtils->createEiObjectFromDraft(
 // 				$eiUtils->createNewDraftFromEiEntityObj($eiEntry->getEiObject()->getEiEntityObj()));
-// 		$draftEiEntry = $this->eiuCtrl->frame()->createEiEntryCopy($eiEntry, $draftEiObject);
+// 		$draftEiEntry = $this->opuCtrl->frame()->createEiEntryCopy($eiEntry, $draftEiObject);
 		
-// 		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
+// 		$editModel = new EditModel($this->opuCtrl->frame(), true, true);
 // 		$editModel->initialize($draftEiEntry);
 		
 // 		if ($this->dispatch($editModel, 'save')) {
@@ -159,7 +159,7 @@ class EditController extends ControllerAdapter {
 // 			return;
 // 		}
 		
-// 		$this->eiuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(),
+// 		$this->opuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(),
 // 				$this->dtc->translate('ei_impl_edit_new_draft_breadcrumb'));
 		
 // 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -168,16 +168,16 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 // 	public function doDraft($draftId, ParamQuery $refPath) {
-// 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+// 		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 		
-// 		$eiEntry = $this->eiuCtrl->lookupEiEntryByDraftId($draftId);
-// 		$entryEiuFrame = $this->eiuCtrl->toEiuEntry($eiEntry);
+// 		$eiEntry = $this->opuCtrl->lookupEiEntryByDraftId($draftId);
+// 		$entryEiuFrame = $this->opuCtrl->toEiuEntry($eiEntry);
 // 		if ($entryEiuFrame->getDraft()->isPublished()) {
 // 			$eiObject = $entryEiuFrame->getEiuFrame()->createNewEiObject(true, $entryEiuFrame->getEiType());
-// 			$eiEntry = $this->eiuCtrl->frame()->createEiEntryCopy($eiEntry, $eiObject);
+// 			$eiEntry = $this->opuCtrl->frame()->createEiEntryCopy($eiEntry, $eiObject);
 // 		}
 		
-// 		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
+// 		$editModel = new EditModel($this->opuCtrl->frame(), true, true);
 // 		$editModel->initialize($eiEntry);
 	
 // 		if ($this->dispatch($editModel, 'save')) {
@@ -185,7 +185,7 @@ class EditController extends ControllerAdapter {
 // 			return;
 // 		}
 
-// 		$this->eiuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(), 
+// 		$this->opuCtrl->applyCommonBreadcrumbs($eiEntry->getEiObject(), 
 // 				$this->dtc->translate('ei_impl_edit_draft_breadcrumb'));
 	
 // 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -194,11 +194,11 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 // 	public function doPublish($draftId, ParamQuery $refPath) {
-// 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
+// 		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 		
-// 		$draftEiEntry = $this->eiuCtrl->lookupEiEntryByDraftId($draftId);
+// 		$draftEiEntry = $this->opuCtrl->lookupEiEntryByDraftId($draftId);
 		
-// 		$eiUtils = $this->eiuCtrl->frame();
+// 		$eiUtils = $this->opuCtrl->frame();
 // 		$eiObject = $eiUtils->createEiObjectFromEiEntityObj($draftEiEntry->getEiObject()->getEiEntityObj());
 // 		$eiEntry = $eiUtils->createEiEntryCopy($draftEiEntry, $eiObject);
 		
@@ -208,11 +208,11 @@ class EditController extends ControllerAdapter {
 // 			$draft->setType(Draft::TYPE_PUBLISHED);
 // 			$eiUtils->persist($draft);
 			
-// 			$this->redirect($this->eiuCtrl->buildRedirectUrl($eiEntry->getEiObject()));
+// 			$this->redirect($this->opuCtrl->buildRedirectUrl($eiEntry->getEiObject()));
 // 			return;
 // 		}
 		
-// 		$editModel = new EditModel($this->eiuCtrl->frame(), true, true);
+// 		$editModel = new EditModel($this->opuCtrl->frame(), true, true);
 // 		$editModel->initialize($eiEntry);
 		
 // 		if ($this->dispatch($editModel, 'save')) {
@@ -220,7 +220,7 @@ class EditController extends ControllerAdapter {
 // 			return;
 // 		}
 		
-// 		$this->eiuCtrl->applyCommonBreadcrumbs($draftEiEntry->getEiObject(),
+// 		$this->opuCtrl->applyCommonBreadcrumbs($draftEiEntry->getEiObject(),
 // 				$this->dtc->translate('ei_impl_publish_entry_breadcrumb'));
 		
 // 		$this->forward('..\view\edit.html', array('editModel' => $editModel,
@@ -290,7 +290,7 @@ class EditController extends ControllerAdapter {
 // 	}
 	
 // 	private function applyBreadcrumbs(EiObject $eiObject) {
-// 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();
+// 		$eiFrame = $this->opuCtrl->frame()->getEiFrame();
 // 		$httpContext = $this->getHttpContext();
 				
 // 		if (!$eiFrame->isOverviewDisabled()) {

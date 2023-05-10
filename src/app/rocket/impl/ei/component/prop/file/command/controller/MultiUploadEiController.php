@@ -23,9 +23,8 @@ namespace rocket\impl\ei\component\prop\file\command\controller;
 
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\l10n\DynamicTextCollection;
-use rocket\core\model\Breadcrumb;
 use rocket\impl\ei\component\prop\file\FileEiPropNature;
-use rocket\op\ei\util\EiuCtrl;
+use rocket\op\util\OpuCtrl;
 use n2n\io\managed\impl\FileFactory;
 use n2n\web\http\BadRequestException;
 use n2n\util\type\ArgUtils;
@@ -50,13 +49,13 @@ class MultiUploadEiController extends ControllerAdapter {
 		$this->order = $order;
 	}
 	
-	public function index(EiuCtrl $eiuCtrl, DynamicTextCollection $dtc) {
-		$eiuCtrl->applyCommonBreadcrumbs(null, $dtc->translate('ei_impl_multi_upload_label'));
+	public function index(OpuCtrl $opuCtrl, DynamicTextCollection $dtc) {
+		$opuCtrl->pushCurrentAsSirefBreadcrumb($dtc->translate('ei_impl_multi_upload_label'), true);
 	
-		$this->forward('..\view\multiupload.html', array('eiuFrame' => $eiuCtrl->frame(), 'order' => $this->order));
+		$this->forward('..\view\multiupload.html', array('eiuFrame' => $opuCtrl->frame(), 'order' => $this->order));
 	}
 	
-	public function doUpload(EiuCtrl $eiuCtrl) {
+	public function doUpload(OpuCtrl $opuCtrl) {
 		$file = null;
 		foreach ($this->getRequest()->getUploadDefinitions() as $uploadDefinition) {
 			$file = FileFactory::createFromUploadDefinition($uploadDefinition);
@@ -65,7 +64,7 @@ class MultiUploadEiController extends ControllerAdapter {
 		
 		if (null === $file) return;
 		
-		$eiuFrame = $eiuCtrl->frame();
+		$eiuFrame = $opuCtrl->frame();
 		$eiuEntry = $eiuFrame->entry($eiuFrame->createNewEiObject());
 
 		$eiuEntry->setValue($this->fileModel, $file);
@@ -84,13 +83,13 @@ class MultiUploadEiController extends ControllerAdapter {
 		$eiuFrame->em()->persist($eiuEntry->getEiEntityObj()->getEntityObj());
 	}
 	
-	private function applyBreadCrumbs() {
-		$dtc = new DynamicTextCollection('rocket');
-		$this->rocketState->addBreadcrumb(
-				$this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
-		$this->rocketState->addBreadcrumb(new Breadcrumb($this->getRequest()->getCurrentControllerContextPath(), 
-				$dtc->translate('ei_impl_multi_upload_label')));
-	}
+//	private function applyBreadCrumbs() {
+//		$dtc = new DynamicTextCollection('rocket');
+//		$this->rocketState->addBreadcrumb(
+//				$this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
+//		$this->rocketState->addBreadcrumb(new Breadcrumb($this->getRequest()->getCurrentControllerContextPath(),
+//				$dtc->translate('ei_impl_multi_upload_label')));
+//	}
 	
 	public static function getOrders() {
 		return [self::ORDER_NONE, self::ORDER_FILE_NAME_ASC, self::ORDER_FILE_NAME_DESC];
