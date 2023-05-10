@@ -34,9 +34,9 @@ trait AddonsSiFieldTrait {
 	private $suffixAddons = [];
 	
 	/**
-	 * @return \rocket\si\content\impl\meta\SiCrumbGroup[]
+	 * @return SiCrumbGroup[]
 	 */
-	function getPrefixAddons() {
+	function getPrefixAddons(): array {
 		return $this->prefixAddons;
 	}
 	
@@ -44,16 +44,16 @@ trait AddonsSiFieldTrait {
 	 * @param SiCrumbGroup[] $prefixAddons
 	 * @return self
 	 */
-	function setPrefixAddons($prefixAddons) {
+	function setPrefixAddons(array $prefixAddons): static {
 		ArgUtils::valArray($prefixAddons, SiCrumbGroup::class);
 		$this->prefixAddons = $prefixAddons;
 		return $this;
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\meta\SiCrumbGroup[]
+	 * @return SiCrumbGroup[]
 	 */
-	function getSuffixAddons() {
+	function getSuffixAddons(): array {
 		return $this->suffixAddons;
 	}
 	
@@ -61,7 +61,7 @@ trait AddonsSiFieldTrait {
 	 * @param SiCrumbGroup[] $suffixAddons
 	 * @return self
 	 */
-	function setSuffixAddons($suffixAddons) {
+	function setSuffixAddons(array $suffixAddons): static {
 		ArgUtils::valArray($suffixAddons, SiCrumbGroup::class);
 		$this->suffixAddons = $suffixAddons;
 		return $this;

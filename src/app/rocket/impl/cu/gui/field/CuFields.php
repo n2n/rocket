@@ -9,12 +9,15 @@ use rocket\impl\cu\gui\field\number\NumberInCuField;
 
 class CuFields {
 
-	static function stringIn(bool $mandatory, bool $multiline = false, int $minlength = 0, int $maxlength = 255): StringInCuField {
+	static function stringIn(bool $mandatory, bool $multiline = false, int $minlength = 0, int $maxlength = 255,
+			array $prefixAddons = [], array $suffixAddons = []): StringInCuField {
 		return new StringInCuField(SiFields::stringIn(null)
 				->setMandatory($mandatory)
 				->setMultiline($multiline)
 				->setMinlength($minlength)
-				->setMaxlength($maxlength));
+				->setMaxlength($maxlength)
+				->setPrefixAddons($prefixAddons)
+				->setSuffixAddons($suffixAddons));
 	}
 
 	static function dateTimeIn(bool $mandatory, bool $dateChoosable = true, bool $timeChoosable = true): DateTimeInCuField {
@@ -25,13 +28,15 @@ class CuFields {
 	}
 
 	static function numberIn(bool $mandatory = false, float $min = null, float $max = null, float $step = 1, bool $fixed = false,
-			float $arrowStep = 1): NumberInCuField {
+			float $arrowStep = 1, array $prefixAddons = [], array $suffixAddons = []): NumberInCuField {
 		return new NumberInCuField(SiFields::numberIn(null)
 				->setMandatory($mandatory)
 				->setMin($min)
 				->setMax($max)
 				->setStep($step)
 				->setFixed($fixed)
-				->setArrowStep($arrowStep));
+				->setArrowStep($arrowStep)
+				->setPrefixAddons($prefixAddons)
+				->setSuffixAddons($suffixAddons));
 	}
 }
