@@ -70,10 +70,11 @@ use rocket\op\ei\util\gui\EiuGuiModel;
 use rocket\op\ei\component\prop\EiProp;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\component\modificator\EiMod;
-use rocket\op\ei\component\EiComponent;
-use rocket\op\ei\component\UnknownEiComponentException;
 use rocket\op\ei\manage\EiLaunch;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\op\ei\UnknownEiTypeException;
+use InvalidArgumentException;
+use rocket\op\util\OpuCtrl;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -238,7 +239,7 @@ class EiuAnalyst {
 			if ($eiArg instanceof EiuGuiField) {
 				throw new NotYetImplementedException();
 //				$this->assignEiuGuiField($eiArg);
-				continue;
+//				continue;
 			}
 			
 			if ($eiArg instanceof EiEntryGuiAssembler) {
@@ -292,8 +293,9 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiuField) {
-				$this->assignEiuField($eiArg);
-				continue;
+				throw new NotYetImplementedException();
+//				$this->assignEiuField($eiArg);
+//				continue;
 			}
 			
 			if ($eiArg instanceof EiuMask) {
@@ -312,7 +314,7 @@ class EiuAnalyst {
 			}
 			
 			if ($eiArg instanceof EiuGuiModel) {
-				$this->assignEiGuiFrame($eiArg->getEiGuiModel());
+				$this->assignEiGuiModel($eiArg->getEiGuiModel());
 				continue;
 			}
 			
@@ -634,8 +636,7 @@ class EiuAnalyst {
 		if ($this->eiGuiModel === $eiGuiModel) {
 			return;
 		}
-		
-		$this->eiGuiModel = null;
+
 		$this->eiGuiModel = $eiGuiModel;
 		
 		
@@ -1321,7 +1322,7 @@ class EiuAnalyst {
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
+	 * @return EiuGui
 	 */
 	public function getEiuGui(bool $required) {
 		$this->ensureAppied();
@@ -1725,7 +1726,7 @@ class EiuAnalyst {
 				. TypeUtils::getTypeInfo($eiGuiFrameArg) . ' given.');
 	}
 	
-	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiType $eiType = null, 
+	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiType|Spec $eiTypeOrSpec = null,
 			bool $required = true, &$eiEntry = null, &$eiGuiFrameArg = null) {
 		if (!$required && $eiObjectObj === null) {
 			return null;
@@ -1737,11 +1738,20 @@ class EiuAnalyst {
 		}
 		
 		$eiObjectTypes = self::EI_ENTRY_TYPES;
-		
-		if ($eiType !== null) {
-			$eiObjectTypes[] = $eiType->getClass()->getName();
+
+		if ($eiTypeOrSpec instanceof Spec) {
 			try {
-				return LiveEiObject::create($eiType, $eiObjectObj);
+				$eiTypeOrSpec = $eiTypeOrSpec->getEiTypeOfObject($eiObjectObj);
+			} catch (UnknownEiTypeException $e) {
+				throw new InvalidArgumentException('Argument of type ' . get_class($eiObjectObj)
+						. ' could not narrated to a EiObject.');
+			}
+		}
+
+		if ($eiTypeOrSpec !== null) {
+			$eiObjectTypes[] = $eiTypeOrSpec->getClass()->getName();
+			try {
+				return LiveEiObject::create($eiTypeOrSpec, $eiObjectObj);
 			} catch (\InvalidArgumentException $e) {
 			}
 		}

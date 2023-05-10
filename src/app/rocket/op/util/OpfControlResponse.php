@@ -137,7 +137,8 @@ class OpfControlResponse {
 	 */
 	function highlight(...$eiObjectArgs) {
 		foreach ($eiObjectArgs as $eiObjectArg) {
-			$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
+			$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg',
+					$this->eiuAnalyst->getSpec(false), true);
 			
 			if (!$eiObject->getEiEntityObj()->hasId()) {
 				$this->pendingHighlightEiObjects[] = $eiObject;
