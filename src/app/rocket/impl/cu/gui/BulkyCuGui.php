@@ -1,12 +1,10 @@
 <?php
 
-namespace rocket\op\cu\gui\impl;
+namespace rocket\impl\cu\gui;
 
-use rocket\op\ei\manage\gui\control\GuiControl;
 use n2n\util\uri\Url;
 use rocket\si\content\SiGui;
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\si\meta\SiDeclaration;
 use rocket\op\cu\gui\CuMaskedEntry;

@@ -1,6 +1,6 @@
 <?php
 
-namespace rocket\op\cu\gui\impl;
+namespace rocket\impl\cu\gui;
 
 class CuiGuis {
 

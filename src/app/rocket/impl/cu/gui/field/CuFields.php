@@ -1,12 +1,11 @@
 <?php
 
-namespace rocket\op\cu\gui\field\impl;
+namespace rocket\impl\cu\gui\field;
 
 use rocket\si\content\impl\SiFields;
-use rocket\op\cu\gui\field\impl\string\StringInCuField;
-use rocket\si\content\impl\date\DateTimeInSiField;
-use rocket\op\cu\gui\field\impl\date\DateTimeInCuField;
-use rocket\op\cu\gui\field\impl\number\NumberInCuField;
+use rocket\impl\cu\gui\field\string\StringInCuField;
+use rocket\impl\cu\gui\field\date\DateTimeInCuField;
+use rocket\impl\cu\gui\field\number\NumberInCuField;
 
 class CuFields {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace rocket\op\cu\gui\field\impl\string;
+namespace rocket\impl\cu\gui\field\string;
 
 use rocket\op\cu\gui\field\CuField;
 use rocket\si\content\impl\StringInSiField;
