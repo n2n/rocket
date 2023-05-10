@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\relation\command;
 
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
-use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\op\ei\component\command\PrivilegedEiCommand;
 use n2n\l10n\Lstr;
 
 class TargetReadEiCommandNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {

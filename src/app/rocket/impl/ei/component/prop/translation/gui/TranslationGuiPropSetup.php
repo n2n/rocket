@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\ei\manage\gui\GuiPropSetup;
-use rocket\ei\manage\gui\GuiFieldAssembler;
-use rocket\ei\util\gui\EiuGuiFrame;
+use rocket\op\ei\manage\gui\GuiPropSetup;
+use rocket\op\ei\manage\gui\GuiFieldAssembler;
+use rocket\op\ei\util\gui\EiuGuiFrame;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
-use rocket\ei\manage\gui\DisplayDefinition;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\manage\DefPropPath;
-use rocket\ei\EiCmdPath;
+use rocket\op\ei\manage\gui\DisplayDefinition;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\DefPropPath;
+use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
@@ -54,7 +54,7 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiPropSetup::getForkedDisplayDefinition()
+	 * @see \rocket\op\ei\manage\gui\GuiPropSetup::getForkedDisplayDefinition()
 	 */
 	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition {
 		return $this->targetEiuGuiFrame->getDisplayDefinition($defPropPath);

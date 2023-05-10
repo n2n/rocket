@@ -1,8 +1,8 @@
 <?php 
 	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\ei\util\gui\EiuEntryGui;
+	use rocket\op\ei\util\gui\EiuEntryGui;
 	use n2n\web\dispatch\map\PropertyPath;
-	use rocket\ei\util\gui\EiuHtmlBuilder;
+	use rocket\op\ei\util\gui\EiuHtmlBuilder;
 	use n2n\l10n\N2nLocale;
 
 	$view = HtmlView::view($this);

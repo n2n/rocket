@@ -5,7 +5,7 @@ namespace testmdl\bo;
 use rocket\attribute\EiType;
 use rocket\attribute\EiDefaultSort;
 use rocket\attribute\EiPreset;
-use rocket\spec\setup\EiPresetMode;
+use rocket\op\spec\setup\EiPresetMode;
 
 #[EiType]
 #[EiDefaultSort(['holeradio' => 'ASC', 'num' => 'DESC'])]

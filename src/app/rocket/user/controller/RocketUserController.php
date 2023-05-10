@@ -21,7 +21,7 @@
  */
 namespace rocket\user\controller;
 
-use rocket\core\model\RocketState;
+use rocket\op\OpState;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\MessageContainer;
 use rocket\user\model\RocketUserForm;
@@ -42,7 +42,7 @@ class RocketUserController extends ControllerAdapter {
 	private $rocketUserDao;
 	private $loginContext;
 	
-	private function _init(RocketUserDao $rocketUserDao, LoginContext $loginContext, RocketState $rocketState,
+	private function _init(RocketUserDao $rocketUserDao, LoginContext $loginContext, OpState $rocketState,
 			DynamicTextCollection $dtc) {
 		$this->rocketUserDao = $rocketUserDao;
 		$this->loginContext = $loginContext;

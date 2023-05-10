@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\ei\manage\gui\GuiDefinition;
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\op\ei\manage\gui\GuiProp;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
-use rocket\ei\manage\gui\GuiPropSetup;
+use rocket\op\ei\manage\gui\GuiPropSetup;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class TranslationGuiProp implements GuiProp {
@@ -56,7 +56,7 @@ class TranslationGuiProp implements GuiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::buildGuiPropSetup()
+	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiPropSetup()
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $forkedDefPropPaths): ?GuiPropSetup {
 		$targetEiuGuiFrame = $this->relationModel->getTargetEiuEngine()->newGuiFrame($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
@@ -72,7 +72,7 @@ class TranslationGuiProp implements GuiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\GuiProp::getForkGuiDefinition()
+	 * @see \rocket\op\ei\manage\gui\GuiProp::getForkGuiDefinition()
 	 */
 	function getForkGuiDefinition(): ?GuiDefinition {
 		return $this->forkGuiDefinition;

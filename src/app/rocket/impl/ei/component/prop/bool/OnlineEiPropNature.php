@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\bool;
 
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\bool\command\OnlineNatureEiCommand;
 use n2n\reflection\property\PropertyAccessProxy;
 

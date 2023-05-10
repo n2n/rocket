@@ -22,8 +22,8 @@
 namespace rocket\impl\ei\component\prop\adapter\idname;
 
 use n2n\l10n\N2nLocale;
-use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\idname\IdNameProp;
+use rocket\op\ei\util\Eiu;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 

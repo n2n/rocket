@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\relation;
 
-use rocket\ei\manage\EiObject;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\EiObject;
+use rocket\op\ei\manage\frame\EiFrame;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\ei\manage\entry\EiEntry;
-use rocket\ei\EiType;
-use rocket\ei\mask\EiMask;
-use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\op\ei\EiType;
+use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\component\InvalidEiConfigurationException;
 use rocket\impl\ei\component\prop\relation\conf\RelationConfig;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\TypeUtils;
 
 class EmbeddedEiPropRelation extends EiPropRelation {

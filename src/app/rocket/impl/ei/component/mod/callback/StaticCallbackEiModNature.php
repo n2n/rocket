@@ -3,7 +3,7 @@
 namespace rocket\impl\ei\component\mod\callback;
 
 use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\attribute\impl\EiSetup;
 use rocket\attribute\impl\EiEntrySetup;
 

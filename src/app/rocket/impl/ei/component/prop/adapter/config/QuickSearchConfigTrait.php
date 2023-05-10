@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\adapter\config;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 
 trait QuickSearchConfigTrait {

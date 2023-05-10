@@ -25,14 +25,14 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\util\StringUtils;
 use n2n\persistence\meta\structure\Column;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 
 class StringConfig extends PropConfigAdaption {
 	const ATTR_MULTILINE_KEY = 'multiline';

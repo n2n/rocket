@@ -23,10 +23,10 @@ namespace rocket\impl\ei\component\prop\bool\conf;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use rocket\impl\ei\component\prop\bool\command\OnlineNatureEiCommand;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;

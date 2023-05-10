@@ -21,8 +21,8 @@
  */
 namespace rocket\attribute;
 
-use rocket\ei\mask\model\DisplayStructure;
-use rocket\ei\manage\DefPropPath;
+use rocket\op\ei\mask\model\DisplayStructure;
+use rocket\op\ei\manage\DefPropPath;
 use rocket\si\meta\SiStructureType;
 use n2n\util\StringUtils;
 

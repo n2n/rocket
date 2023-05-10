@@ -26,19 +26,19 @@ use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;

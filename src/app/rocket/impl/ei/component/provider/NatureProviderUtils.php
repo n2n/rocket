@@ -2,7 +2,7 @@
 
 namespace rocket\impl\ei\component\provider;
 
-use rocket\spec\setup\EiPresetProp;
+use rocket\op\spec\setup\EiPresetProp;
 use n2n\util\type\TypeConstraints;
 use n2n\util\type\NamedTypeConstraint;
 

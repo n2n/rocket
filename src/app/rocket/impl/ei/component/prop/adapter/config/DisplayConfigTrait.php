@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\GuiProp;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\core\model\Rocket;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\op\ei\manage\gui\GuiFieldAssembler;
 
 trait DisplayConfigTrait {
 	protected DisplayConfig $displayConfig;
@@ -50,7 +50,7 @@ trait DisplayConfigTrait {
 	/**
 	 *
 	 * {@inheritdoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::isPrivileged()
+	 * @see \rocket\op\ei\component\prop\EiPropNature::isPrivileged()
 	 */
 	public function isPrivileged(): bool {
 		return false;

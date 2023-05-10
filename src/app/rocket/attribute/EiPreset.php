@@ -21,7 +21,7 @@
  */
 namespace rocket\attribute;
 
-use rocket\spec\setup\EiPresetMode;
+use rocket\op\spec\setup\EiPresetMode;
 use n2n\util\type\ArgUtils;
 use InvalidArgumentException;
 use n2n\util\ex\IllegalStateException;

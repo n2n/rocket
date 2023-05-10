@@ -21,7 +21,7 @@
  */
 namespace rocket\user\model\security;
 
-use rocket\ei\manage\security\EiFieldAccess;
+use rocket\op\ei\manage\security\EiFieldAccess;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
 
@@ -34,7 +34,7 @@ class RestrictedEiFieldAccess implements EiFieldAccess {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiFieldAccess::isFullyGranted()
+	 * @see \rocket\op\ei\manage\security\EiFieldAccess::isFullyGranted()
 	 */
 	public function isFullyGranted(): bool {
 		return false;
@@ -42,7 +42,7 @@ class RestrictedEiFieldAccess implements EiFieldAccess {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\security\EiFieldAccess::getDataSet()
+	 * @see \rocket\op\ei\manage\security\EiFieldAccess::getDataSet()
 	 */
 	public function getDataSet(): array {
 		return $this->dataSet;

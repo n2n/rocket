@@ -30,15 +30,15 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
-use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
-use rocket\ei\util\spec\EiuEngine;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\op\ei\util\spec\EiuEngine;
+use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommandNature;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 use n2n\io\img\impl\ImageSourceFactory;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use n2n\config\InvalidConfigurationException;
@@ -48,7 +48,7 @@ use n2n\io\orm\ManagedFileEntityProperty;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\ei\util\spec\EiuMask;
+use rocket\op\ei\util\spec\EiuMask;
 
 class FileConfig extends PropConfigAdaption {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';

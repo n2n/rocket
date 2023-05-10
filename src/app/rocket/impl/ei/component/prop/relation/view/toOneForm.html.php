@@ -25,7 +25,7 @@
 	use n2n\util\uri\Url;
 	use rocket\impl\ei\component\prop\relation\model\mag\ToOneForm;
 	use rocket\impl\ei\component\prop\relation\model\mag\MappingForm;
-use rocket\ei\util\gui\EiuHtmlBuilder;
+use rocket\op\ei\util\gui\EiuHtmlBuilder;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($this);

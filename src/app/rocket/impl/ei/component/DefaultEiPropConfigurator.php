@@ -21,17 +21,17 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\ei\component\prop\indepenent\EiPropConfigurator;
+use rocket\op\ei\component\prop\indepenent\EiPropConfigurator;
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\ei\component\prop\indepenent\IncompatiblePropertyException;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\component\prop\indepenent\IncompatiblePropertyException;
 use n2n\core\container\N2nContext;
 
 class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropConfigurator {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
 	 */
 	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
 	}
@@ -42,7 +42,7 @@ class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropC
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::testCompatibility($propertyAssignation)
 	 */
 	public function testCompatibility(PropertyAssignation $propertyAssignation): ?int {
 		return CompatibilityLevel::NOT_COMPATIBLE;
@@ -50,7 +50,7 @@ class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropC
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\indepenent\EiPropConfigurator::assignProperty($propertyAssignation)
+	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::assignProperty($propertyAssignation)
 	 */
 	public function assignProperty(PropertyAssignation $propertyAssignation) {
 		throw new IncompatiblePropertyException('EiProp can not be assigned to a property.');

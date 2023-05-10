@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\string\conf\StringConfig;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\util\factory\EifGuiField;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 
 class StringEiPropNature extends AlphanumericEiPropNature {

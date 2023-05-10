@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model\relation;
 
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
-use rocket\ei\manage\frame\CriteriaConstraint;
+use rocket\op\ei\manage\frame\CriteriaConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 

@@ -21,37 +21,37 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use rocket\ei\util\filter\prop\StringFilterProp;
+use rocket\op\ei\util\filter\prop\StringFilterProp;
  
 
-use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
+use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 
 
-use rocket\ei\manage\generic\CommonGenericEiProperty;
-use rocket\ei\manage\generic\CommonScalarEiProperty;
-use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\manage\generic\GenericEiProperty;
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\manage\idname\IdNameProp;
+use rocket\op\ei\manage\generic\CommonGenericEiProperty;
+use rocket\op\ei\manage\generic\CommonScalarEiProperty;
+use rocket\op\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
+use rocket\op\ei\manage\critmod\filter\FilterProp;
+use rocket\op\ei\manage\critmod\sort\SortProp;
+use rocket\op\ei\manage\generic\GenericEiProperty;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\generic\ScalarEiProperty;
+use rocket\op\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
-use rocket\ei\manage\critmod\quick\impl\QuickSearchProps;
+use rocket\op\ei\manage\critmod\quick\impl\QuickSearchProps;
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
 	use AddonAdapter, QuickSearchConfigTrait;
@@ -149,7 +149,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	}
 	/**
 	 * {}
-	 * @see \rocket\ei\component\prop\ScalarEiProp::buildScalarValue()
+	 * @see \rocket\op\ei\component\prop\ScalarEiProp::buildScalarValue()
 	 */
 	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr());

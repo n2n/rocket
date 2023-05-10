@@ -21,28 +21,28 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\component\prop\EiPropNature;
+use rocket\op\ei\component\prop\EiPropNature;
 use n2n\l10n\Lstr;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\ei\component\prop\EiProp;
+use rocket\op\ei\component\prop\EiProp;
 use n2n\util\StringUtils;
 use n2n\reflection\property\AccessProxy;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\idname\IdNameProp;
-use rocket\ei\manage\idname\IdNamePropFork;
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\generic\GenericEiProperty;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\manage\draft\DraftProperty;
-use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\manage\critmod\sort\SortPropFork;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
-use rocket\ei\manage\frame\EiForkLink;
-use rocket\ei\manage\frame\EiFrame;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\idname\IdNameProp;
+use rocket\op\ei\manage\idname\IdNamePropFork;
+use rocket\op\ei\manage\gui\GuiProp;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\generic\GenericEiProperty;
+use rocket\op\ei\manage\generic\ScalarEiProperty;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\draft\DraftProperty;
+use rocket\op\ei\manage\critmod\filter\FilterProp;
+use rocket\op\ei\manage\critmod\sort\SortProp;
+use rocket\op\ei\manage\critmod\sort\SortPropFork;
+use rocket\op\ei\manage\security\filter\SecurityFilterProp;
+use rocket\op\ei\manage\frame\EiForkLink;
+use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\impl\ei\component\prop\adapter\config\LabelConfigTrait;
 
@@ -54,7 +54,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::isPrivileged()
+	 * @see \rocket\op\ei\component\prop\EiPropNature::isPrivileged()
 	 */
 	public function isPrivileged(): bool {
 		return true;
@@ -62,7 +62,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::equals()
+	 * @see \rocket\op\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {
 		return $obj instanceof EiPropNature && $this->getWrapper()->getEiPropPath()->equals(
@@ -73,7 +73,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::isPropFork()
+	 * @see \rocket\op\ei\component\prop\EiPropNature::isPropFork()
 	 */
 	public function isPropFork(): bool {
 		return false;
@@ -81,7 +81,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::getPropForkObject()
+	 * @see \rocket\op\ei\component\prop\EiPropNature::getPropForkObject()
 	 */
 	public function getPropForkObject(object $object): object {
 		throw new IllegalStateException($this . ' is not a PropFork.');

@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\numeric;
 
 
-use rocket\ei\util\filter\prop\StringFilterProp;
+use rocket\op\ei\util\filter\prop\StringFilterProp;
  
 
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
@@ -33,16 +33,16 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use n2n\core\container\N2nContext;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\ei\manage\critmod\sort\SortProp;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
-use rocket\ei\manage\critmod\filter\FilterProp;
-use rocket\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\critmod\sort\SortProp;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
+use rocket\op\ei\manage\critmod\filter\FilterProp;
+use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\numeric\conf\NumericAdapter;
-use rocket\ei\manage\idname\IdNameProp;
+use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\config\AddonConfig;
@@ -89,7 +89,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
+	 * @see \rocket\op\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		if ($this->isQuickSearchable()) {

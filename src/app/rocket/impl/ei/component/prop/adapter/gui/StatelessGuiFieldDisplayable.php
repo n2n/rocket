@@ -21,7 +21,7 @@
 //  */
 // namespace rocket\impl\ei\component\prop\adapter\gui;
 
-// use rocket\ei\util\Eiu;
+// use rocket\op\ei\util\Eiu;
 // use rocket\si\content\SiField;
 
 // interface StatelessGuiFieldDisplayable {

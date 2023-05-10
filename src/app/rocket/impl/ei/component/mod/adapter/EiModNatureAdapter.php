@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\mod\adapter;
 
-use rocket\ei\component\modificator\EiModNature;
+use rocket\op\ei\component\modificator\EiModNature;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\ei\manage\gui\EiEntryGui;
-use rocket\ei\manage\draft\DraftDefinition;
-use rocket\ei\util\Eiu;
-use rocket\ei\component\modificator\EiMod;
+use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\draft\DraftDefinition;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\component\modificator\EiMod;
 use n2n\util\ex\IllegalStateException;
 
 abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements EiModNature {
@@ -50,7 +50,7 @@ abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::equals()
+	 * @see \rocket\op\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {
 		return $obj instanceof EiModNature && $this->getWrapper()->getEiModPath()->equals(
@@ -60,37 +60,37 @@ abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements Ei
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\modificator\EiModNature::setupEiFrame()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiFrame()
 	 */
 	public function setupEiFrame(Eiu $eiu) {}
 		
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\modificator\EiModNature::setupEiEntry()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiEntry()
 	 */
 	public function setupEiEntry(Eiu $eiu) {}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\modificator\EiModNature::setupGuiDefinition()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupGuiDefinition()
 	 */
 	public function setupGuiDefinition(Eiu $eiu) { }
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\modificator\EiModNature::setupEiGuiFrame()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiFrame()
 	 */
 	public function setupEiGuiFrame(Eiu $eiu) { }
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\modificator\EiModNature::setupEiEntryGui()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiEntryGui()
 	 */
 	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\modificator\EiModNature::setupDraftDefinition()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupDraftDefinition()
 	 */
 	public function setupDraftDefinition(DraftDefinition $draftDefinition) {}
 }

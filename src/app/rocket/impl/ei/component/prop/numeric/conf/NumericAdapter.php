@@ -27,7 +27,7 @@ use n2n\persistence\meta\structure\IntegerColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\util\type\attrs\DataSet;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;

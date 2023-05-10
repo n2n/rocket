@@ -22,10 +22,10 @@
 // namespace rocket\impl\ei\component\prop\relation\model\gui;
 
 // use n2n\l10n\N2nLocale;
-// use rocket\ei\manage\gui\DisplayDefinition;
-// use rocket\ei\manage\gui\GuiProp;
-// use rocket\ei\manage\gui\field\GuiField;
-// use rocket\ei\util\Eiu;
+// use rocket\op\ei\manage\gui\DisplayDefinition;
+// use rocket\op\ei\manage\gui\GuiProp;
+// use rocket\op\ei\manage\gui\field\GuiField;
+// use rocket\op\ei\util\Eiu;
 // use rocket\impl\ei\component\prop\relation\model\Relation;
 
 // class RelationGuiProp implements GuiProp {

@@ -21,11 +21,11 @@
  */
 namespace rocket\impl\ei\component\config;
 
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\util\ex\IllegalStateException;
 
 abstract class ConfigAdaption implements EiConfiguratorAdaption {

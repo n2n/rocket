@@ -23,10 +23,10 @@ namespace rocket\impl\ei\component\prop\file\command;
 
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use rocket\impl\ei\component\prop\file\command\controller\ThumbController;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 
 class ThumbNatureEiCommand extends EiCmdNatureAdapter {
 	const ID_BASE = 'thumb';

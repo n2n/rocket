@@ -22,9 +22,9 @@
 // namespace rocket\impl\ei\component\mod\l10n;
 
 // use rocket\impl\ei\component\mod\adapter\EiModificatorAdapter;
-// use rocket\ei\manage\frame\EiFrame;
-// use rocket\ei\manage\entry\EiEntry;
-// use rocket\ei\manage\entry\OnWriteMappingListener;
+// use rocket\op\ei\manage\frame\EiFrame;
+// use rocket\op\ei\manage\entry\EiEntry;
+// use rocket\op\ei\manage\entry\OnWriteMappingListener;
 // use rocket\impl\ei\component\prop\l10n\N2nLocaleEiProp;
 // use n2n\l10n\N2nLocale;
 

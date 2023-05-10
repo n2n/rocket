@@ -23,9 +23,9 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;

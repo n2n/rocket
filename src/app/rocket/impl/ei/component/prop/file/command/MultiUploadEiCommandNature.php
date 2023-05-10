@@ -28,9 +28,9 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\conf\FileModel;
 
 class MultiUploadEiCommandNature extends EiCmdNatureAdapter {

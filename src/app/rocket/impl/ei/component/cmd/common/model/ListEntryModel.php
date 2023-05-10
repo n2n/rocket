@@ -21,11 +21,11 @@
  */
 // namespace rocket\impl\ei\component\cmd\common\model;
 
-// use rocket\ei\manage\model\EntryModel;
-// use rocket\ei\manage\gui\GuiDefinition;
-// use rocket\ei\manage\entry\EiEntry;
-// use rocket\ei\manage\gui\EiEntryGui;
-// use rocket\ei\mask\EiMask;
+// use rocket\op\ei\manage\model\EntryModel;
+// use rocket\op\ei\manage\gui\GuiDefinition;
+// use rocket\op\ei\manage\entry\EiEntry;
+// use rocket\op\ei\manage\gui\EiEntryGui;
+// use rocket\op\ei\mask\EiMask;
 
 // class ListEntryModel implements EntryModel {
 // 	private $eiMask;
@@ -44,28 +44,28 @@
 // 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\model\ManageModel::getEiMask()
+// 	 * @see \rocket\op\ei\manage\model\ManageModel::getEiMask()
 // 	 */
 // 	public function getEiMask() {
 // 		return $this->eiMask;
 // 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\model\EntryModel::getEiEntry()
+// 	 * @see \rocket\op\ei\manage\model\EntryModel::getEiEntry()
 // 	 */
 // 	public function getEiEntry() {
 // 		return $this->eiEntry;
 // 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\model\ManageModel::getGuiDefinition()
+// 	 * @see \rocket\op\ei\manage\model\ManageModel::getGuiDefinition()
 // 	 */
 // 	public function getGuiDefinition() {
 // 		return $this->guiDefinition;	
 // 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\model\EntryModel::getEiEntryGui()
+// 	 * @see \rocket\op\ei\manage\model\EntryModel::getEiEntryGui()
 // 	 */
 // 	public function getEiEntryGui() {
 // 		return $this->eiEntryGui;

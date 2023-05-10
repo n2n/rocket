@@ -27,14 +27,14 @@ use rocket\impl\ei\component\cmd\common\controller\DetailController;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
-use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\op\ei\component\command\PrivilegedEiCommand;
 use n2n\util\uri\Path;
 use n2n\core\container\N2nContext;
 use rocket\si\control\SiNavPoint;
 use rocket\core\model\Rocket;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\ei\component\command\GenericDetailEiCommand;
+use rocket\op\ei\component\command\GenericDetailEiCommand;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
@@ -58,7 +58,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 	}
 	
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\cmd\control\\GuiControlComponent::getEntryGuiControlOptions()
+	 * @see \rocket\op\ei\component\cmd\control\\GuiControlComponent::getEntryGuiControlOptions()
 	 */
 	public function getEntryGuiControlOptions(N2nContext $n2nContext, N2nLocale $n2nLocale): array {
 		$dtc = new DynamicTextCollection('rocket', $n2nLocale);
@@ -66,7 +66,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 				self::CONTROL_PREVIEW_KEY => $dtc->translate('ei_impl_preview_label'));
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\cmd\control\\GuiControlComponent::createEntryGuiControls()
+	 * @see \rocket\op\ei\component\cmd\control\\GuiControlComponent::createEntryGuiControls()
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
 		$eiuFrame = $eiu->frame();
@@ -147,7 +147,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
+// 	 * @see \rocket\op\ei\component\cmd\GenericDetailEiCommand::isDetailAvailable($entryNavPoint)
 // 	 */
 // 	public function isDetailAvailable(EntryNavPoint $entryNavPoint): bool {
 // 		return true;
@@ -155,7 +155,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
+// 	 * @see \rocket\op\ei\component\cmd\GenericDetailEiCommand::buildDetailPathExt($entryNavPoint)
 // 	 */
 // 	public function getDetailPathExt(EntryNavPoint $entryNavPoint): Path {
 // 		return PathUtils::createPathExtFromEntryNavPoint($this, $entryNavPoint);

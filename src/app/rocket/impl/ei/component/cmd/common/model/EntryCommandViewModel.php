@@ -23,8 +23,8 @@
 
 // use n2n\util\uri\Url;
 // use n2n\web\http\HttpContext;
-// use rocket\ei\util\frame\EiuFrame;
-// use rocket\ei\util\entry\EiuEntry;
+// use rocket\op\ei\util\frame\EiuFrame;
+// use rocket\op\ei\util\entry\EiuEntry;
 
 // class EntryCommandViewModel {
 // 	private $title;
@@ -49,7 +49,7 @@
 // 	}
 	
 // 	/**
-// 	 * @return \rocket\ei\util\frame\EiuFrame
+// 	 * @return \rocket\op\ei\util\frame\EiuFrame
 // 	 */
 // 	public function getEiuFrame() {
 // 		return $this->eiuFrame;

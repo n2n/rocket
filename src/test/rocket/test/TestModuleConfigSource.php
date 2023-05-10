@@ -2,10 +2,10 @@
 
 namespace rocket\test;
 
-use rocket\spec\source\ModularConfigSource;
+use rocket\op\spec\source\ModularConfigSource;
 use n2n\config\source\WritableConfigSource;
 use n2n\config\source\impl\SimpleConfigSource;
-use rocket\spec\setup\SpecConfigLoader;
+use rocket\op\spec\setup\SpecConfigLoader;
 use rocket\impl\ei\component\provider\RocketEiComponentNatureProvider;
 use n2n\util\ex\IllegalStateException;
 use n2n\config\source\ConfigSource;

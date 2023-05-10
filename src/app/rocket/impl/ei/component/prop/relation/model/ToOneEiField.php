@@ -21,17 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model;
 
-use rocket\ei\manage\entry\EiFieldValidationResult;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiFieldValidationResult;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\type\TypeConstraints;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 use n2n\validation\lang\ValidationMessages;
 use n2n\util\type\CastUtils;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
 class ToOneEiField extends EiFieldAdapter {

@@ -25,7 +25,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneSecurityFilterProp;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
@@ -33,18 +33,18 @@ use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\gui\ViewMode;
 
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
-use rocket\ei\manage\security\filter\SecurityFilterProp;
+use rocket\op\ei\manage\security\filter\SecurityFilterProp;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
 
@@ -122,7 +122,7 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 // 	}
 
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\ei\manage\draft\DraftValueSelection::buildDraftValue()
+// 	 * @see \rocket\op\ei\manage\draft\DraftValueSelection::buildDraftValue()
 // 	 */
 // 	public function buildDraftValue() {
 // 		if ($this->rawValue === null) return null;

@@ -22,14 +22,14 @@
 // namespace rocket\impl\ei\component\prop\adapter\gui;
 
 // use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-// use rocket\ei\manage\gui\GuiProp;
-// use rocket\ei\manage\gui\GuiFieldAssembler;
+// use rocket\op\ei\manage\gui\GuiProp;
+// use rocket\op\ei\manage\gui\GuiFieldAssembler;
 
 // class GuiProps {
     
 //     /**
 //      * @param GuiProp $guiProp
-//      * @return \rocket\ei\manage\gui\GuiProp
+//      * @return \rocket\op\ei\manage\gui\GuiProp
 //      */
 //     static function statless(GuiProp $guiProp)  {
 //         return $guiProp;
@@ -38,7 +38,7 @@
 //     /**
 //      * @param DisplayConfig $displayConfig
 //      * @param GuiFieldFactory $guiFieldFactory
-//      * @return \rocket\ei\manage\gui\GuiProp
+//      * @return \rocket\op\ei\manage\gui\GuiProp
 //      */
 //     static function configAndAssembler(DisplayConfig $displayConfig, GuiFieldAssembler $guiFieldAssembler) {
 //     	return new GuiPropProxy($displayConfig, $guiFieldAssembler, null);
@@ -47,7 +47,7 @@
 //     /**
 //      * @param DisplayConfig $displayConfig
 //      * @param \Closure $closure
-//      * @return \rocket\ei\manage\gui\GuiProp
+//      * @return \rocket\op\ei\manage\gui\GuiProp
 //      */
 //     static function configAndCallback(DisplayConfig $displayConfig, \Closure $closure) {
 //     	return new GuiPropProxy($displayConfig, null, $closure);

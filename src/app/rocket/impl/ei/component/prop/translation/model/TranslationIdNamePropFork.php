@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ei\manage\EiObject;
-use rocket\ei\manage\idname\IdNameDefinition;
-use rocket\ei\manage\idname\IdNamePropFork;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\EiObject;
+use rocket\op\ei\manage\idname\IdNameDefinition;
+use rocket\op\ei\manage\idname\IdNamePropFork;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use n2n\util\col\ArrayUtils;
-use rocket\ei\manage\LiveEiObject;
+use rocket\op\ei\manage\LiveEiObject;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use n2n\reflection\ReflectionUtils;
 
@@ -48,7 +48,7 @@ class TranslationIdNamePropFork implements IdNamePropFork {
 		
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\idname\IdNamePropFork::determineForkedEiObject()
+	 * @see \rocket\op\ei\manage\idname\IdNamePropFork::determineForkedEiObject()
 	 */
 	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
 		// @todo access locale and use EiObject with admin locale.

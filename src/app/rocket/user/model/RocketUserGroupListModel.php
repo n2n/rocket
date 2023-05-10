@@ -21,7 +21,7 @@
  */
 namespace rocket\user\model;
 
-use rocket\spec\Spec;
+use rocket\op\spec\Spec;
 use rocket\user\bo\EiGrant;
 
 class RocketUserGroupListModel {

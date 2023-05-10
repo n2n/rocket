@@ -21,10 +21,10 @@
 // */
 //namespace rocket\impl\ei\component\prop\meta;
 //
-//use rocket\ei\util\Eiu;
+//use rocket\op\ei\util\Eiu;
 //use rocket\impl\ei\component\prop\adapter\DisplayConfigTrait;
 //use rocket\si\content\impl\SiFields;
-//use rocket\ei\util\factory\EifGuiField;
+//use rocket\op\ei\util\factory\EifGuiField;
 //
 //class IdentityString extends DisplayConfigTrait {
 //

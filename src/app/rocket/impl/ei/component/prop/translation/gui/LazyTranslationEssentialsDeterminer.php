@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
-use rocket\ei\util\gui\EiuEntryGui;
+use rocket\op\ei\util\gui\EiuEntryGui;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
 class LazyTranslationEssentialsDeterminer {
@@ -133,14 +133,14 @@ class LazyTranslationEssentialsDeterminer {
 	}
 	
 	/**
-	 * @return \rocket\ei\util\gui\EiuGuiFrame
+	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
 	 */
 	function getTargetEiuGuiFrame() {
 		return $this->targetEiuGuiFrame;
 	}
 	
 	/**
-	 * @return \rocket\ei\util\frame\EiuFrame
+	 * @return \rocket\op\ei\util\frame\EiuFrame
 	 */
 	function getTargetEiuFrame() {
 		return $this->targetEiuFrame;
@@ -233,7 +233,7 @@ class LazyTranslationEssentialsDeterminer {
 	
 	/**
 	 * @param string $n2nLocaleId
-	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 * @return \rocket\op\ei\util\gui\EiuEntryGui
 	 */
 	function getTargetEiuEntryGui(string $n2nLocaleId) {
 		$this->ensureActiveTargetEiuEntries();

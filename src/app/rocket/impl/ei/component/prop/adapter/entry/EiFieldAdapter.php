@@ -21,9 +21,9 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\entry\EiFieldValidationResult;
-use rocket\ei\manage\entry\EiFieldMap;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldValidationResult;
+use rocket\op\ei\manage\entry\EiFieldMap;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use n2n\util\ex\IllegalStateException;
 
@@ -69,7 +69,7 @@ abstract class EiFieldAdapter implements EiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::getValue()
+	 * @see \rocket\op\ei\manage\entry\EiField::getValue()
 	 */
 	public final function getValue() {
 		if ($this->valueLoaded) {
@@ -88,7 +88,7 @@ abstract class EiFieldAdapter implements EiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\EiField::setValue()
+	 * @see \rocket\op\ei\manage\entry\EiField::setValue()
 	 */
 	public final function setValue($value) {
 		$this->assetConstraints($value);

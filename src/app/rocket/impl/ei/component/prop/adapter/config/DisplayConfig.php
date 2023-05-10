@@ -23,17 +23,17 @@ namespace rocket\impl\ei\component\prop\adapter\config;
 
 use n2n\persistence\meta\structure\Column;
 use n2n\util\type\ArgUtils;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\manage\gui\ViewMode;
 use rocket\si\meta\SiStructureType;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\ei\manage\gui\GuiPropSetup;
-use rocket\ei\manage\gui\GuiFieldAssembler;
+use rocket\op\ei\manage\gui\GuiPropSetup;
+use rocket\op\ei\manage\gui\GuiFieldAssembler;
 
 class DisplayConfig {
 	private $compatibleViewModes;

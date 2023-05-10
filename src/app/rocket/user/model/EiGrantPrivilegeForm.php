@@ -25,10 +25,10 @@ use n2n\web\dispatch\Dispatchable;
 use rocket\user\bo\EiGrantPrivilege;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObject;
-use rocket\ei\util\spec\EiuEngine;
-use rocket\ei\util\privilege\EiuPrivilegeForm;
-use rocket\ei\util\filter\EiuFilterForm;
-use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
+use rocket\op\ei\util\spec\EiuEngine;
+use rocket\op\ei\util\privilege\EiuPrivilegeForm;
+use rocket\op\ei\util\filter\EiuFilterForm;
+use rocket\op\ei\manage\security\privilege\data\PrivilegeSetting;
 
 class EiGrantPrivilegeForm implements Dispatchable {
 	private static function _annos(AnnoInit $ai) {

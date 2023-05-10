@@ -22,9 +22,9 @@
 namespace rocket\impl\ei\component\prop\string\cke;
 
 use rocket\impl\ei\component\prop\string\AlphanumericEiPropNature;
-use rocket\ei\EiPropPath;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeComposer;
@@ -33,7 +33,7 @@ use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\StringInSiField;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
@@ -92,7 +92,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 
 	
 // 	/**
-// 	 * @return \rocket\ei\component\prop\WysiwygLinkConfig
+// 	 * @return \rocket\op\ei\component\prop\WysiwygLinkConfig
 // 	 */
 // 	private function obtainLinkConfigurations(EiEntry $eiEntry, Eiu $eiu) {
 // 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();

@@ -4,10 +4,10 @@ namespace testmdl\bo;
 
 use rocket\attribute\EiType;
 use rocket\attribute\EiPreset;
-use rocket\spec\setup\EiPresetMode;
+use rocket\op\spec\setup\EiPresetMode;
 use rocket\attribute\impl\EiModCallback;
 use rocket\attribute\impl\EiSetup;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\persistence\orm\attribute\ManyToOne;
 use n2n\impl\persistence\orm\property\relation\Relation;
 

@@ -21,7 +21,7 @@
  */
 namespace rocket\core\model;
 
-use rocket\ei\manage\ManageException;
+use rocket\op\ei\manage\ManageException;
 
 class IncompleteNavPointException extends ManageException {
 	

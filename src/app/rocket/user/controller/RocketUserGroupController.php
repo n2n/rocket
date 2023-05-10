@@ -27,20 +27,20 @@ use rocket\core\model\Breadcrumb;
 use rocket\user\model\RocketUserGroupListModel;
 use rocket\core\model\Rocket;
 use rocket\user\model\RocketUserGroupForm;
-use rocket\core\model\RocketState;
+use rocket\op\OpState;
 use rocket\user\model\RocketUserDao;
 use n2n\l10n\MessageContainer;
 use n2n\web\http\PageNotFoundException;
 use rocket\user\bo\RocketUserGroup;
 use rocket\user\model\GroupGrantsViewModel;
-use rocket\spec\UnknownTypeException;
-use rocket\ei\UnknownEiTypeExtensionException;
+use rocket\op\spec\UnknownTypeException;
+use rocket\op\ei\UnknownEiTypeExtensionException;
 use rocket\user\bo\EiGrant;
 use rocket\user\model\EiGrantForm;
 use n2n\web\http\controller\impl\ScrRegistry;
-use rocket\ei\EiEngine;
-use rocket\spec\TypePath;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\EiEngine;
+use rocket\op\spec\TypePath;
+use rocket\op\ei\util\Eiu;
 use rocket\ajah\RocketJhtmlResponse;
 
 class RocketUserGroupController extends ControllerAdapter {
@@ -49,7 +49,7 @@ class RocketUserGroupController extends ControllerAdapter {
 	private $rocket;
 	private $dtc;
 	
-	private function _init(RocketState $rocketState, RocketUserDao $userDao, Rocket $rocket, DynamicTextCollection $dtc) {
+	private function _init(OpState $rocketState, RocketUserDao $userDao, Rocket $rocket, DynamicTextCollection $dtc) {
 		$this->rocketState = $rocketState;
 		$this->userDao = $userDao;
 		$this->rocket = $rocket;

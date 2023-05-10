@@ -27,8 +27,8 @@ use n2n\persistence\orm\CascadeType;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
-use rocket\spec\TypePath;
-use rocket\ei\EiCmdPath;
+use rocket\op\spec\TypePath;
+use rocket\op\ei\EiCmdPath;
 
 class EiGrant extends ObjectAdapter implements Grant {
 	private static function _annos(AnnoInit $ai) {

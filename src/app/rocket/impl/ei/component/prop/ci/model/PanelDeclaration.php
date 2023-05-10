@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\ci\model;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\spec\EiuMask;
+use rocket\op\ei\util\spec\EiuMask;
 
 class PanelDeclaration {
 	private $name;

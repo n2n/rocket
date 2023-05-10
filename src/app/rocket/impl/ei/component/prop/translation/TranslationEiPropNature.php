@@ -31,18 +31,18 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\col\ArrayUtils;
 use n2n\util\type\ArgUtils;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 
 
-use rocket\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\ei\manage\critmod\sort\CriteriaAssemblyState;
-use rocket\ei\manage\critmod\sort\SortConstraint;
-use rocket\ei\manage\critmod\sort\SortDefinition;
-use rocket\ei\manage\critmod\sort\SortPropFork;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\ViewMode;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
+use rocket\op\ei\manage\critmod\sort\CriteriaAssemblyState;
+use rocket\op\ei\manage\critmod\sort\SortConstraint;
+use rocket\op\ei\manage\critmod\sort\SortDefinition;
+use rocket\op\ei\manage\critmod\sort\SortPropFork;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\gui\GuiProp;
+use rocket\op\ei\manage\gui\ViewMode;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
@@ -50,7 +50,7 @@ use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 use rocket\impl\ei\component\prop\translation\gui\TranslationGuiProp;
 use rocket\impl\ei\component\prop\translation\model\TranslationQuickSearchProp;
-use rocket\ei\manage\idname\IdNamePropFork;
+use rocket\op\ei\manage\idname\IdNamePropFork;
 use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
@@ -154,7 +154,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
+// 	 * @see \rocket\op\ei\manage\gui\GuiPropFork::determineEiFieldWrapper()
 // 	 */
 // 	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
 // 		$eiEntry = $eiu->entry()->getEiEntry();
@@ -195,7 +195,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
+	 * @see \rocket\op\ei\component\prop\QuickSearchableEiProp::buildQuickSearchProp()
 	 */
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop())

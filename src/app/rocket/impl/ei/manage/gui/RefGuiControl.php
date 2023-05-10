@@ -21,21 +21,21 @@
  */
 namespace rocket\impl\ei\manage\gui;
 
-use rocket\ei\manage\entry\EiEntry;
+use rocket\op\ei\manage\entry\EiEntry;
 use rocket\si\control\SiControl;
 use rocket\si\control\SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\si\control\SiButton;
 use rocket\si\control\impl\RefSiControl;
-use rocket\ei\manage\api\ApiControlCallId;
-use rocket\ei\manage\gui\EiGuiModel;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\control\GuiControl;
-use rocket\ei\component\command\EiCmdNature;
-use rocket\ei\util\frame\EiuFrame;
-use rocket\ei\manage\api\ZoneApiControlCallId;
-use rocket\ei\EiCmdPath;
+use rocket\op\ei\manage\api\ApiControlCallId;
+use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\gui\control\GuiControl;
+use rocket\op\ei\component\command\EiCmdNature;
+use rocket\op\ei\util\frame\EiuFrame;
+use rocket\op\ei\manage\api\ZoneApiControlCallId;
+use rocket\op\ei\EiCmdPath;
 
 class RefGuiControl implements GuiControl {
 	private $newWindow = false;
@@ -49,7 +49,7 @@ class RefGuiControl implements GuiControl {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\gui\control\GuiControl::isInputHandled()
+	 * @see \rocket\op\ei\manage\gui\control\GuiControl::isInputHandled()
 	 */
 	public function isInputHandled(): bool {
 		return false;

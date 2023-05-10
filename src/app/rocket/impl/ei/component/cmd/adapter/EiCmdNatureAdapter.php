@@ -21,14 +21,14 @@
  */
 namespace rocket\impl\ei\component\cmd\adapter;
 
-use rocket\ei\component\command\EiCmdNature;
+use rocket\op\ei\component\command\EiCmdNature;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\ei\component\command\EiCmd;
+use rocket\op\ei\component\command\EiCmd;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 
-use rocket\ei\manage\gui\GuiCommand;
+use rocket\op\ei\manage\gui\GuiCommand;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
 use rocket\si\control\SiNavPoint;
@@ -44,7 +44,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::lookupController()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::lookupController()
 	 */
 	public function lookupController(Eiu $eiu): ?Controller {
 		return null;
@@ -52,7 +52,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::equals()
+	 * @see \rocket\op\ei\component\EiComponentNature::equals()
 	 */
 	public function equals($obj) {
 		return $obj instanceof EiCmdNature && parent::equals($obj);
@@ -80,7 +80,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::createSelectionGuiControls()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::createSelectionGuiControls()
 	 */
 	public function createSelectionGuiControls(Eiu $eiu): array {
 		return [];
@@ -88,7 +88,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::createEntryGuiControls()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::createEntryGuiControls()
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
 		return [];
@@ -96,7 +96,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::createOverallControls()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::createOverallControls()
 	 */
 	public function createGeneralGuiControls(Eiu $eiu): array {
 		return [];
@@ -115,7 +115,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\EiCommand::createSelectionGuiControls()
+// 	 * @see \rocket\op\ei\component\cmd\EiCommand::createSelectionGuiControls()
 // 	 */
 // 	public function createSelectionGuiControls(): array {
 // 		return $this->adapter->createSelectionGuiControls($this->eiu);
@@ -123,7 +123,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\EiCommand::createEntryGuiControls()
+// 	 * @see \rocket\op\ei\component\cmd\EiCommand::createEntryGuiControls()
 // 	 */
 // 	public function createEntryGuiControls(Eiu $eiu): array {
 // 		return $this->adapter->createEntryGuiControls($eiu);
@@ -131,7 +131,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\EiCommand::createOverallControls()
+// 	 * @see \rocket\op\ei\component\cmd\EiCommand::createOverallControls()
 // 	 */
 // 	public function createGeneralGuiControls(): array {
 // 		return $this->adapter->createGeneralGuiControls($this->eiu);

@@ -22,15 +22,15 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\manage\frame\EiForkLink;
-use rocket\ei\manage\frame\EiFrame;
-use rocket\ei\manage\gui\GuiProp;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\manage\frame\EiForkLink;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\gui\GuiProp;
+use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
-use rocket\ei\manage\gui\GuiFieldAssembler;
-use rocket\ei\manage\idname\IdNameProp;
+use rocket\op\ei\manage\gui\GuiFieldAssembler;
+use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommandNature;
@@ -183,7 +183,7 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\GuiEiProp::buildGuiProp()
+	 * @see \rocket\op\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {

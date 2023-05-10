@@ -22,10 +22,10 @@
 namespace rocket\impl\ei\component\cmd\tree;
 
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\ei\manage\entry\UnknownEiObjectException;
-use rocket\ei\util\Eiu;
-use rocket\ei\util\entry\EiuObject;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\manage\entry\UnknownEiObjectException;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\util\entry\EiuObject;
+use rocket\op\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
 
 class TreeMoveEiModificator extends EiModNatureAdapter {

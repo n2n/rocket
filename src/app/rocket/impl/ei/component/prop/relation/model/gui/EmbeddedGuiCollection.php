@@ -21,16 +21,16 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use rocket\ei\util\gui\EiuEntryGui;
-use rocket\ei\util\entry\EiuEntry;
-use rocket\ei\EiPropPath;
-use rocket\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\gui\EiuEntryGui;
+use rocket\op\ei\util\entry\EiuEntry;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\util\frame\EiuFrame;
 use rocket\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\util\ex\IllegalStateException;
-use rocket\ei\manage\entry\EiEntry;
+use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\CastUtils;
 use rocket\si\input\SiEntryInput;
-use rocket\ei\util\spec\EiuType;
+use rocket\op\ei\util\spec\EiuType;
 
 class EmbeddedGuiCollection {
 	/**
@@ -84,7 +84,7 @@ class EmbeddedGuiCollection {
 
 	/**
 	 * @param EiuEntry $eiuEntry
-	 * @return \rocket\ei\util\gui\EiuEntryGui
+	 * @return \rocket\op\ei\util\gui\EiuEntryGui
 	 */
 	function add(EiuEntry $eiuEntry) {
 		return $this->eiuEntryGuis[] = $eiuEntry->newGui(true, $this->readOnly)->entryGui();
@@ -164,7 +164,7 @@ class EmbeddedGuiCollection {
 	
 	/**
 	 * @param string $id
-	 * @return \rocket\ei\util\gui\EiuEntryGui|NULL
+	 * @return \rocket\op\ei\util\gui\EiuEntryGui|NULL
 	 */
 	function find(string $id) {
 		foreach ($this->eiuEntryGuis as $eiuEntryGui) {

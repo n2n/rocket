@@ -21,13 +21,13 @@
  */
 namespace rocket\impl\ei\component;
 
-use rocket\ei\component\EiComponentNature;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\component\EiComponentNature;
+use rocket\op\ei\util\Eiu;
 
 abstract class EiComponentNatureAdapter implements EiComponentNature {
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\EiComponentNature::getIdBase()
+	 * @see \rocket\op\ei\component\EiComponentNature::getIdBase()
 	 */
 	public function getIdBase(): ?string {
 		return null;

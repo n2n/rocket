@@ -26,20 +26,20 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\meta\SiStructureType;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\ei\component\prop\EiModCollection;
+use rocket\op\ei\component\prop\EiModCollection;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\entry\EiField;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToOneGuiField;
 use n2n\util\type\CastUtils;
 use rocket\si\content\impl\meta\SiCrumb;
 use rocket\si\content\impl\SiFields;
-use rocket\ei\util\entry\EiuEntry;
+use rocket\op\ei\util\entry\EiuEntry;
 use n2n\reflection\property\PropertyAccessProxy;
 
 class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {

@@ -23,9 +23,9 @@ namespace rocket\impl\ei\component\prop\bool\command;
 
 use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use n2n\web\http\controller\ControllerAdapter;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\util\EiuCtrl;
 use rocket\ajah\JhtmlEvent;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\l10n\MessageContainer;
 
 class OnlineController extends ControllerAdapter {

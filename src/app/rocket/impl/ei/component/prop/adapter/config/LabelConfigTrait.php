@@ -40,7 +40,7 @@ trait LabelConfigTrait {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\prop\EiPropNature::getHelpTextLstr()
+	 * @see \rocket\op\ei\component\prop\EiPropNature::getHelpTextLstr()
 	 */
 	public function getHelpTextLstr(): ?Lstr {
 		$helpText = $this->getLabelConfig()->getHelpText();

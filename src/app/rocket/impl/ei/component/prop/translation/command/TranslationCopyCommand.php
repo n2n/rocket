@@ -3,7 +3,7 @@ namespace rocket\impl\ei\component\prop\translation\command;
 
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 
 class TranslationCopyCommand extends EiCmdNatureAdapter {
 	public function lookupController(Eiu $eiu): Controller {

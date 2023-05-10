@@ -21,12 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ei\component\prop\PrivilegedEiProp;
-use rocket\ei\util\Eiu;
-use rocket\ei\manage\gui\field\GuiField;
-use rocket\ei\util\factory\EifField;
+use rocket\op\ei\component\prop\PrivilegedEiProp;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\op\ei\util\factory\EifField;
 use n2n\validation\validator\impl\Validators;
-use rocket\ei\util\factory\EifGuiField;
+use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 
 abstract class EditableEiPropNatureAdapter extends DisplayableEiPropNatureAdapter implements PrivilegedEiProp, EditableEiPropNature {

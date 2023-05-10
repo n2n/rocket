@@ -6,7 +6,7 @@ use n2n\reflection\ReflectionContext;
 use n2n\reflection\attribute\AttributeSet;
 use n2n\util\ex\err\ConfigurationError;
 use n2n\reflection\magic\MagicMethodInvoker;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 
 class CallbackFinder {
 	private AttributeSet $attributeSet;

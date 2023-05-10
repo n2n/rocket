@@ -27,10 +27,10 @@ namespace rocket\impl\ei\component\prop\numeric;
 // use n2n\reflection\property\AccessProxy;
 // use n2n\util\type\ArgUtils;
 // use n2n\util\type\TypeConstraint;
-// use rocket\ei\util\Eiu;
+// use rocket\op\ei\util\Eiu;
 // use rocket\impl\ei\component\prop\numeric\conf\FloatConfig;
 // use rocket\si\content\SiField;
-// use rocket\ei\util\factory\EifGuiField;
+// use rocket\op\ei\util\factory\EifGuiField;
 
 // class FloatEiProp extends NumericEiPropAdapter {
 //     private $floatConfig;

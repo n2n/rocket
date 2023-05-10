@@ -25,10 +25,10 @@ use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiIconType;
-use rocket\ei\component\command\PrivilegedEiCommand;
+use rocket\op\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\cmd\common\controller\AddController;
 use n2n\web\dispatch\mag\MagDispatchable;
@@ -36,10 +36,10 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\ex\IllegalStateException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\ei\component\EiSetup;
+use rocket\op\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\config\EiConfiguratorAdapter;
-use rocket\ei\component\EiConfigurator;
+use rocket\op\ei\component\EiConfigurator;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
@@ -95,7 +95,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\PrivilegedEiCommand::createEiCommandPrivilege()
+// 	 * @see \rocket\op\ei\component\cmd\PrivilegedEiCommand::createEiCommandPrivilege()
 // 	 */
 // 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
 // 		$dtc = $eiu->dtc(Rocket::NS);
@@ -145,7 +145,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\ei\util\control\RefGuiControl
+	 * @return \rocket\op\ei\util\control\RefGuiControl
 	 */
 	private function createAddControl(Eiu $eiu) {
 		$eiuControlFactory = $eiu->factory()->guiControl();
@@ -162,7 +162,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	
 // 	/**
 // 	 * @param Eiu $eiu
-// 	 * @return \rocket\ei\util\control\EiuCallbackGuiControl
+// 	 * @return \rocket\op\ei\util\control\EiuCallbackGuiControl
 // 	 */
 // 	private function createSaveControl(Eiu $eiu) {
 // 		$eiuControlFactory = $eiu->factory()->controls();

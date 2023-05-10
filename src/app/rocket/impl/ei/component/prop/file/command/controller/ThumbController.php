@@ -31,9 +31,9 @@ use n2n\web\http\BadRequestException;
 use n2n\web\http\PageNotFoundException;
 use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
-use rocket\ei\util\EiuCtrl;
+use rocket\op\ei\util\EiuCtrl;
 use rocket\impl\ei\component\prop\file\FileEiPropNature;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
 
 class ThumbController extends ControllerAdapter {	

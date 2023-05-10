@@ -34,8 +34,8 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\ei\EiPropPath;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\si\content\SiField;
 
@@ -123,7 +123,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 				$this->getMin(), $this->getMax());
 	}
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\component\prop\EiProp::getTypeName()
+	 * @see \rocket\op\ei\component\prop\EiProp::getTypeName()
 	 */
 	public function getTypeName(): string {
 		return 'MultiSelect';
@@ -131,7 +131,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 
 	/* (non-PHPdoc)
-	 * @see \rocket\ei\manage\gui\field\GuiField::createUiComponent()
+	 * @see \rocket\op\ei\manage\gui\field\GuiField::createUiComponent()
 	 */
 	public function createUiComponent(HtmlView $view,
 			Eiu $eiu) {

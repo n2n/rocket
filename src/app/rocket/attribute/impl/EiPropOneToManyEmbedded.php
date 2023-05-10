@@ -2,7 +2,7 @@
 
 namespace rocket\attribute\impl;
 
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class EiPropOneToManyEmbedded {

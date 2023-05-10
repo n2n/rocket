@@ -31,7 +31,7 @@ use n2n\persistence\orm\annotation\AnnoManyToMany;
 use n2n\persistence\orm\annotation\AnnoOneToMany;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\annotation\AnnoTransient;
-use rocket\spec\TypePath;
+use rocket\op\spec\TypePath;
 
 class RocketUserGroup extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {

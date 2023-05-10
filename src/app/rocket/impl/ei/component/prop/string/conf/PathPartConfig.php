@@ -29,20 +29,20 @@ use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\StringUtils;
-use rocket\ei\component\prop\indepenent\CompatibilityLevel;
+use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\persistence\meta\structure\Column;
-use rocket\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\ei\manage\generic\UnknownScalarEiPropertyException;
-use rocket\ei\manage\generic\UnknownGenericEiPropertyException;
+use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use rocket\op\ei\manage\generic\UnknownScalarEiPropertyException;
+use rocket\op\ei\manage\generic\UnknownGenericEiPropertyException;
 use n2n\util\type\CastUtils;
-use rocket\ei\manage\generic\ScalarEiProperty;
-use rocket\ei\manage\generic\GenericEiProperty;
-use rocket\ei\util\spec\EiuEngine;
+use rocket\op\ei\manage\generic\ScalarEiProperty;
+use rocket\op\ei\manage\generic\GenericEiProperty;
+use rocket\op\ei\util\spec\EiuEngine;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\ei\EiPropPath;
+use rocket\op\ei\EiPropPath;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 
 class PathPartConfig extends PropConfigAdaption {
@@ -87,7 +87,7 @@ class PathPartConfig extends PropConfigAdaption {
 	}
 	
 	/**
-	 * @return \rocket\ei\manage\generic\GenericEiProperty
+	 * @return \rocket\op\ei\manage\generic\GenericEiProperty
 	 */
 	public function getUniquePerGenericEiProperty() {
 		return $this->uniquePerGenericEiProperty;

@@ -21,8 +21,8 @@
  */
 namespace rocket\impl\ei\component\cmd\common;
 
-use rocket\ei\component\command\PrivilegedEiCommand;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\component\command\PrivilegedEiCommand;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\si\control\SiButton;
 use rocket\si\control\SiConfirm;
@@ -142,7 +142,7 @@ class DeleteEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 // 	}
 	
 // 	public function processEntries(EiFrame $eiFrame, array $entries) {
-// 		$spec = N2N::getModelContext()->lookup('rocket\spec\Spec');
+// 		$spec = N2N::getModelContext()->lookup('rocket\op\spec\Spec');
 // 		$eiType = $this->getEiType();
 // 		$em = $eiFrame->getEntityManager();
 		
@@ -155,7 +155,7 @@ class DeleteEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 
 // 	/**
 // 	 * {@inheritDoc}
-// 	 * @see \rocket\ei\component\cmd\PrivilegedEiCommand::createEiCommandPrivilege()
+// 	 * @see \rocket\op\ei\component\cmd\PrivilegedEiCommand::createEiCommandPrivilege()
 // 	 */
 // 	public function createEiCommandPrivilege(Eiu $eiu): EiCommandPrivilege {
 // 		$dtc = $eiu->dtc(Rocket::NS);

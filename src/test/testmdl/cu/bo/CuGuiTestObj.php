@@ -5,7 +5,7 @@ namespace testmdl\cu\bo;
 use rocket\attribute\EiType;
 use rocket\attribute\MenuItem;
 use rocket\attribute\impl\EiSetup;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\EiCmdNatures;
 use rocket\impl\ei\manage\gui\GuiControls;
 use rocket\si\control\SiButton;

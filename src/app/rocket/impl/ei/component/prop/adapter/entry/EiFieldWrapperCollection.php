@@ -2,8 +2,8 @@
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
 use n2n\l10n\Message;
-use rocket\ei\manage\gui\EiFieldAbstraction;
-use rocket\ei\manage\entry\ValidationResult;
+use rocket\op\ei\manage\gui\EiFieldAbstraction;
+use rocket\op\ei\manage\entry\ValidationResult;
 
 class EiFieldWrapperCollection implements EiFieldAbstraction {
 	private $eiFieldWrappers = array();
@@ -51,7 +51,7 @@ class ValidationResultCollection implements ValidationResult {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\ValidationResult::processMessage()
+	 * @see \rocket\op\ei\manage\entry\ValidationResult::processMessage()
 	 */
 	public function processMessage(bool $recursive): ?Message {
 		if (!$recursive) return false;
@@ -67,7 +67,7 @@ class ValidationResultCollection implements ValidationResult {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\ValidationResult::isValid()
+	 * @see \rocket\op\ei\manage\entry\ValidationResult::isValid()
 	 */
 	public function isValid(bool $checkRecursive = true): bool {
 		if (!$checkRecursive) return true;
@@ -83,7 +83,7 @@ class ValidationResultCollection implements ValidationResult {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\manage\entry\ValidationResult::getMessages()
+	 * @see \rocket\op\ei\manage\entry\ValidationResult::getMessages()
 	 */
 	public function getMessages(bool $recursive = true): array {
 		if (!$recursive) return [];

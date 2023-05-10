@@ -22,12 +22,12 @@
 namespace rocket\impl\ei\component\cmd\callback;
 
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\si\control\SiButton;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 use Closure;
-use rocket\ei\manage\gui\control\GuiControl;
+use rocket\op\ei\manage\gui\control\GuiControl;
 use n2n\web\http\controller\Controller;
 
 class CallbackEiCmdNature extends EiCmdNatureAdapter {
@@ -102,7 +102,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::createSelectionGuiControls()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::createSelectionGuiControls()
 	 */
 	public function createSelectionGuiControls(Eiu $eiu): array {
 		return $this->createGuiControls($this->selectionCallbacks, $eiu);
@@ -110,7 +110,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::createEntryGuiControls()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::createEntryGuiControls()
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array {
 		return $this->createGuiControls($this->entryCallbacks, $eiu);
@@ -118,7 +118,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ei\component\command\EiCmdNature::createOverallControls()
+	 * @see \rocket\op\ei\component\command\EiCmdNature::createOverallControls()
 	 */
 	public function createGeneralGuiControls(Eiu $eiu): array {
 		return $this->createGuiControls($this->generalCallbacks, $eiu);

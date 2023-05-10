@@ -26,10 +26,10 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\util\StringUtils;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
-use rocket\ei\manage\critmod\filter\data\FilterSettingGroup;
+use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ei\manage\security\privilege\data\PrivilegeSetting;
+use rocket\op\ei\manage\security\privilege\data\PrivilegeSetting;
 use n2n\persistence\orm\annotation\AnnoTransient;
 
 class EiGrantPrivilege extends ObjectAdapter {

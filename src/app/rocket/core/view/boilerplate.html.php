@@ -45,7 +45,7 @@
 	// 	$rocketState = $view->lookup('rocket\core\model\RocketState');
 	// 	$view->assert($rocketState instanceof RocketState);
 	
-	// 	$manageState = $view->lookup('rocket\ei\manage\ManageState');
+	// 	$manageState = $view->lookup('rocket\op\ei\manage\ManageState');
 	// 	$view->assert($manageState instanceof ManageState);
 	
 	$htmlMeta = $html->meta();

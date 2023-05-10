@@ -21,7 +21,7 @@
  */
 namespace rocket\attribute\impl;
 
-use rocket\ei\manage\DefPropPath;
+use rocket\op\ei\manage\DefPropPath;
 use n2n\util\type\ArgUtils;
 use Attribute;
 

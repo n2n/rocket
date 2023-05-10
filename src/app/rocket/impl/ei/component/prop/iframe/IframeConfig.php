@@ -7,7 +7,7 @@ use n2n\persistence\meta\structure\Column;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\ei\util\Eiu;
+use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
 class IframeConfig extends PropConfigAdaption {

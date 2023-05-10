@@ -52,7 +52,7 @@ class GlobalRelationJhtmlController extends ControllerAdapter implements ScrCont
 // 	 * @param string $eiTypeId
 // 	 * @param string $eiMaskId
 // 	 * @throws PageNotFoundException
-// 	 * @return \rocket\ei\EiThing
+// 	 * @return \rocket\op\ei\EiThing
 // 	 */
 // 	private function lookupEiThing(string $eiTypeId, string $eiMaskId) {
 // 		try {

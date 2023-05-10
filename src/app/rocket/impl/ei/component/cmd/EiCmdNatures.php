@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\cmd;
 
 use rocket\si\control\SiButton;
 use rocket\impl\ei\component\cmd\callback\CallbackEiCmdNature;
-use rocket\ei\manage\gui\control\GuiControl;
+use rocket\op\ei\manage\gui\control\GuiControl;
 use Closure;
 
 class EiCmdNatures {

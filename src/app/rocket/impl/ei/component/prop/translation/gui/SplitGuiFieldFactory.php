@@ -21,10 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\ei\manage\DefPropPath;
+use rocket\op\ei\manage\DefPropPath;
 use rocket\si\content\impl\SiFields;
-use rocket\ei\manage\gui\GuiFieldMap;
-use rocket\ei\manage\gui\field\GuiField;
+use rocket\op\ei\manage\gui\GuiFieldMap;
+use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\si\content\impl\split\SplitStyle;
 use rocket\si\control\SiIconType;
 
@@ -144,7 +144,7 @@ class SplitGuiFieldFactory {
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @return \rocket\ei\manage\gui\GuiFieldMap|null
+	 * @return \rocket\op\ei\manage\gui\GuiFieldMap|null
 	 */
 	private function buildPlaceholderGuiFieldMap($forkDefPropPath) {
 		$eiPropPaths = [];
@@ -202,7 +202,7 @@ class SplitGuiFieldFactory {
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @return \rocket\ei\manage\gui\GuiFieldMap
+	 * @return \rocket\op\ei\manage\gui\GuiFieldMap
 	 */
 	private function createReadOnlyForkGuiFieldMap($defPropPath) {
 		$guiFieldMap = new GuiFieldMap();
