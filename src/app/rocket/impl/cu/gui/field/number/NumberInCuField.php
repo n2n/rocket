@@ -1,12 +1,10 @@
 <?php
 
-namespace rocket\op\cu\gui\field\impl\number;
+namespace rocket\impl\cu\gui\field\number;
 
 use rocket\op\cu\gui\field\CuField;
 use rocket\si\content\impl\NumberInSiField;
 use n2n\core\container\N2nContext;
-use n2n\bind\build\impl\Bind;
-use n2n\bind\mapper\impl\Mappers;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
 

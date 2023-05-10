@@ -1,6 +1,6 @@
 <?php
 
-namespace rocket\op\cu\gui\field\impl\date;
+namespace rocket\impl\cu\gui\field\date;
 
 use rocket\op\cu\gui\field\CuField;
 use rocket\si\content\impl\date\DateTimeInSiField;
@@ -9,7 +9,7 @@ use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
 
 class DateTimeInCuField implements CuField {
-	private $messageStrs = [];
+	private array $messageStrs = [];
 
 	function __construct(private readonly DateTimeInSiField $siField) {
 		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
