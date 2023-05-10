@@ -1161,11 +1161,13 @@ class EiuAnalyst {
 		
 		throw new EiuPerimeterException('EiuMask not avaialble');
 	}
+
 	/**
+	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\frame\EiuFrame
+	 * @return EiuFrame|null
 	 */
-	public function getEiuFrame(bool $required) {
+	public function getEiuFrame(bool $required): ?EiuFrame {
 		$this->ensureAppied();
 
 		if ($this->eiuFrame !== null) {

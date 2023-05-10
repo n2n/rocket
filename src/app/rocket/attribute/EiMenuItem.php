@@ -24,9 +24,10 @@ namespace rocket\attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class MenuItem {
+class EiMenuItem {
 
 	function __construct(public ?string $name = null, public ?string $groupName = null,
-			public ?string $groupKey = null) {
+			public ?string $groupKey = null, public bool $transactionalEmEnabled = true,
+			public ?string $persistenceUnitName = null) {
 	}
 }

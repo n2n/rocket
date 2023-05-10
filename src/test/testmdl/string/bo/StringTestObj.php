@@ -3,7 +3,7 @@
 namespace testmdl\string\bo;
 
 use rocket\attribute\EiType;
-use rocket\attribute\MenuItem;
+use rocket\attribute\EiMenuItem;
 
 #[EiType]
 

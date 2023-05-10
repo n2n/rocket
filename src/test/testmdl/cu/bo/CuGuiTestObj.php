@@ -3,7 +3,7 @@
 namespace testmdl\cu\bo;
 
 use rocket\attribute\EiType;
-use rocket\attribute\MenuItem;
+use rocket\attribute\EiMenuItem;
 use rocket\attribute\impl\EiSetup;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\EiCmdNatures;
@@ -13,7 +13,7 @@ use rocket\si\control\SiIconType;
 use testmdl\cu\controller\CuGuiTestController;
 
 #[EiType]
-#[MenuItem('Holeradio', groupName: 'Super Duper Guper', groupKey: 'super-duper')]
+#[EiMenuItem('Holeradio', groupName: 'Super Duper Guper', groupKey: 'super-duper')]
 class CuGuiTestObj {
 	private int $id;
 
