@@ -31,7 +31,9 @@ class CustomLaunchPad implements LaunchPad {
 	private $id;
 	private $customSpec;
 	private $label;
-	
+
+	private int $orderIndex = 99999;
+
 	public function __construct(string $id, CustomType $customSpec, string $label = null) {
 		$this->id = $id;
 		$this->customSpec = $customSpec;
@@ -51,7 +53,16 @@ class CustomLaunchPad implements LaunchPad {
 		}
 		return $this->label;
 	}
-	
+
+	function getOrderIndex(): int {
+		return $this->orderIndex;
+	}
+
+	function setOrderIndex(int $orderIndex): static {
+		$this->orderIndex = $orderIndex;
+		return $this;
+	}
+
 	public function isAccessible(N2nContext $n2nContext): bool {
 		return true;
 	}

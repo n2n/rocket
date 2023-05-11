@@ -44,7 +44,8 @@ class EiLaunchPad implements LaunchPad {
 
 	public function __construct(private readonly string $id, private ?\Closure $eiMaskCallback,
 			private readonly ?string $label = null,
-			private readonly bool $transactionalEmEnabled = true, private readonly ?string $persistenceUnitName = null) {
+			private readonly bool $transactionalEmEnabled = true, private readonly ?string $persistenceUnitName = null,
+			private int $orderIndex = 99999) {
 	}
 	
 	/**
@@ -154,5 +155,14 @@ class EiLaunchPad implements LaunchPad {
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		
 		return $manageState->getEiLifecycleMonitor()->approve($n2nContext);
+	}
+
+	function getOrderIndex(): int {
+		return $this->orderIndex;
+	}
+
+	function setOrderIndex(int $orderIndex): static {
+		$this->orderIndex = $orderIndex;
+		return $this;
 	}
 }

@@ -28,6 +28,7 @@ class EiMenuItem {
 
 	function __construct(public ?string $name = null, public ?string $groupName = null,
 			public ?string $groupKey = null, public bool $transactionalEmEnabled = true,
-			public ?string $persistenceUnitName = null) {
+			public ?string $persistenceUnitName = null, public ?int $groupOrderIndex = null,
+			public ?int $orderIndex = null) {
 	}
 }

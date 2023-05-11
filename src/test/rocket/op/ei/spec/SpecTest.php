@@ -24,9 +24,13 @@ class SpecTest extends TestCase {
 		$menuGroups = $spec->getMenuGroups();
 		$this->assertCount(2, $menuGroups);
 
+		$this->assertEquals(['not-super-duper', 'super-duper'], array_keys($menuGroups));
+
 		$this->assertEquals('Super Duper Guper', $menuGroups['super-duper']->getLabel());
 		$launchPads = $menuGroups['super-duper']->getLaunchPads();
 		$this->assertCount(2, $launchPads);
+
+		$this->assertEquals(['testmdl-bo-BasicTestObj', 'testmdl-bo-Basic2TestObj'], array_keys($launchPads));
 
 		$this->assertEquals('Not Super Duper Gruper', $menuGroups['not-super-duper']->getLabel());
 		$launchPads = $menuGroups['not-super-duper']->getLaunchPads();

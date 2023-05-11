@@ -21,12 +21,12 @@
  */
 namespace rocket\op\launch;
 
-use rocket\op\launch\LaunchPad;
-
 class MenuGroup {
 	private $label;
 	private $launchPads = array();
 	private $labels = array();
+
+	private int $orderIndex = 99999;
 	
 	public function __construct(string $label) {
 		$this->label = $label;
@@ -39,14 +39,35 @@ class MenuGroup {
 		return $this->label;
 	}
 
-	function setLabel(string $label) {
+	function setLabel(string $label): static {
 		$this->label = $label;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getOrderIndex(): int {
+		return $this->orderIndex;
+	}
+
+	/**
+	 * @param int $orderIndex
+	 * @return MenuGroup
+	 */
+	public function setOrderIndex(int $orderIndex): MenuGroup {
+		$this->orderIndex = $orderIndex;
+		return $this;
 	}
 	
 	/**
 	 * @return LaunchPad[] 
 	 */
 	public function getLaunchPads() {
+		uasort($this->launchPads, function(LaunchPad $first, LaunchPad $second){
+			return $first->getOrderIndex() < $second->getOrderIndex() ? -1 : 1;
+		});
+
 		return $this->launchPads;
 	}
 	

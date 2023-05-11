@@ -37,7 +37,9 @@ interface LaunchPad {
 	
 	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller;
 	
-	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt; 
+	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt;
+
+	function getOrderIndex(): int;
 }
 
 class TransactionApproveAttempt {
