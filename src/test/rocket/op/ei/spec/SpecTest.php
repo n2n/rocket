@@ -21,6 +21,9 @@ class SpecTest extends TestCase {
 		$eiTypes = $spec->getEiTypes();
 		$this->assertCount(3, $eiTypes);
 
+		$this->assertEquals('holeradio-pattern', $spec->getEiTypeByClassName(Basic3TestObj::class)
+				->getEiMask()->getDef()->getIdentityStringPattern());
+
 		$menuGroups = $spec->getMenuGroups();
 		$this->assertCount(2, $menuGroups);
 
@@ -43,6 +46,7 @@ class SpecTest extends TestCase {
 		assert($eiLaunchPad instanceof EiLaunchPad);
 		$this->assertFalse($eiLaunchPad->isTransactionalEmEnabled());
 		$this->assertEquals('holeradio-pu', $eiLaunchPad->getPersistenceUnitName());
+
 
 
 

@@ -35,7 +35,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $elementName;
 //	private $genericType;
 
-	protected $eiMask;
+	protected EiMask $eiMask;
 	private $idPaths = array();
 	private $eiComponents = array();
 	private $rootElements = array();
