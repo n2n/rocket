@@ -64,11 +64,12 @@ class EiType extends Type {
 	private array $eiLifecycleListeners = array();
 
 	public function __construct(string $id, string $moduleNamespace, private ReflectionClass $class,
-			string $label, string $pluralLabel, string $iconType, private Spec $spec,
+			string $label, string $pluralLabel, string $iconType, private Spec $spec, ?string $identityStringPattern,
 			private ?\Closure $entityModelCallback, private ?\Closure $initializeCallback) {
 		parent::__construct($id, $moduleNamespace);
 
 		$this->eiMask = new EiMask($this, $label, $pluralLabel, $iconType);
+		$this->eiMask->getDef()->setIdentityStringPattern($identityStringPattern);
 		$this->eiTypeExtensionCollection = new EiTypeExtensionCollection($this);
 	}
 
@@ -304,6 +305,8 @@ class EiType extends Type {
 				return $subEiType;
 			}
 		}
+
+		return null;
 	}
 	/**
 	 * @param EntityModel $entityModel

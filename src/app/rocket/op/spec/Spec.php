@@ -92,7 +92,11 @@ class Spec {
 	/**
 	 * @return MenuGroup[]
 	 */
-	function getMenuGroups() {
+	function getMenuGroups(): array {
+		uasort($this->menuGroups, function(MenuGroup $first, MenuGroup $second){
+			return $first->getOrderIndex() < $second->getOrderIndex() ? -1 : 1;
+		});
+
 		return $this->menuGroups;
 	}
 
@@ -104,7 +108,7 @@ class Spec {
 		return isset($this->menuGroups[$groupkey]);
 	}
 
-	function getMenuGroup(string $groupKey) {
+	function getMenuGroup(string $groupKey): MenuGroup {
 		if (isset($this->menuGroups[$groupKey])) {
 			return $this->menuGroups[$groupKey];
 		}

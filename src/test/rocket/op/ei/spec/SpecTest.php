@@ -21,12 +21,19 @@ class SpecTest extends TestCase {
 		$eiTypes = $spec->getEiTypes();
 		$this->assertCount(3, $eiTypes);
 
+		$this->assertEquals('holeradio-pattern', $spec->getEiTypeByClassName(Basic3TestObj::class)
+				->getEiMask()->getDef()->getIdentityStringPattern());
+
 		$menuGroups = $spec->getMenuGroups();
 		$this->assertCount(2, $menuGroups);
+
+		$this->assertEquals(['not-super-duper', 'super-duper'], array_keys($menuGroups));
 
 		$this->assertEquals('Super Duper Guper', $menuGroups['super-duper']->getLabel());
 		$launchPads = $menuGroups['super-duper']->getLaunchPads();
 		$this->assertCount(2, $launchPads);
+
+		$this->assertEquals(['testmdl-bo-BasicTestObj', 'testmdl-bo-Basic2TestObj'], array_keys($launchPads));
 
 		$this->assertEquals('Not Super Duper Gruper', $menuGroups['not-super-duper']->getLabel());
 		$launchPads = $menuGroups['not-super-duper']->getLaunchPads();
@@ -39,6 +46,7 @@ class SpecTest extends TestCase {
 		assert($eiLaunchPad instanceof EiLaunchPad);
 		$this->assertFalse($eiLaunchPad->isTransactionalEmEnabled());
 		$this->assertEquals('holeradio-pu', $eiLaunchPad->getPersistenceUnitName());
+
 
 
 

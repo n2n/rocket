@@ -68,14 +68,19 @@ class OpfControlResponse {
 		
 		return $this;
 	}
-	
+
+	function redirectBackOr(SiNavPoint $siNavPoint): static {
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
+		$this->siCallResponse->setNavPoint($siNavPoint);
+		return $this;
+	}
+
 	/**
 	 * @param Url $url
 	 * @return OpfControlResponse
 	 */
 	function redirectBackOrRef(Url $url): static {
-		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
-		$this->siCallResponse->setNavPoint(SiNavPoint::siref($url));
+		$this->redirectBackOr(SiNavPoint::siref($url));
 		return $this;
 	}
 	
@@ -84,18 +89,22 @@ class OpfControlResponse {
 	 * @return OpfControlResponse
 	 */
 	function redirectBackOrHref(Url $url): static {
-		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT_BACK);
-		$this->siCallResponse->setNavPoint(SiNavPoint::href($url));
+		$this->redirectBackOr(SiNavPoint::href($url));
 		return $this;
 	}
-	
+
+	function redirectTo(SiNavPoint $siNavPoint): static {
+		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
+		$this->siCallResponse->setNavPoint($siNavPoint);
+		return $this;
+	}
+
 	/**
 	 * @param Url $url
 	 * @return OpfControlResponse
 	 */
 	function redirectToRef(Url $url): static {
-		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
-		$this->siCallResponse->setNavPoint(SiNavPoint::siref($url));
+		$this->redirectTo(SiNavPoint::siref($url));
 		return $this;
 	}
 
@@ -104,9 +113,7 @@ class OpfControlResponse {
 	 * @return OpfControlResponse
 	 */
 	function redirectToHref(Url|string $url): static {
-		$url = Url::create($url);
-		$this->siCallResponse->setDirective(SiCallResponse::DIRECTIVE_REDIRECT);
-		$this->siCallResponse->setNavPoint(SiNavPoint::href($url));
+		$this->redirectTo(SiNavPoint::href($url));
 		return $this;
 	}
 	

@@ -43,7 +43,7 @@ class SpecFactory {
 
 	private function getOrCreateMenuGroup(Spec $spec, string $groupKey, string $groupName) {
 		if ($spec->containsMenuGroupKey($groupKey)) {
-			return $spec->getMenuGroup($groupKey);
+			return $spec->getMenuGroup($groupKey)->setLabel($groupName);
 		}
 
 		$menuGroup = new MenuGroup($groupName);
@@ -67,27 +67,22 @@ class SpecFactory {
 		$menuItem = $menuItemAttribute->getInstance();
 		$launchPad = new EiLaunchPad($eiType->getId(), fn() => $eiType->getEiMask(), $menuItem->name,
 				$menuItem->transactionalEmEnabled, $menuItem->persistenceUnitName);
+		$launchPad->setOrderIndex($menuItem->orderIndex ?? $launchPad->getOrderIndex());
 
 		$groupKey = $menuItem->groupKey;
 		$groupName = $menuItem->groupName;
 
 		if ($groupKey !== null) {
 			$menuGroup = $this->getOrCreateMenuGroup($spec, $groupKey, $groupName ?? StringUtils::pretty($groupKey));
-
-			if ($groupName !== null) {
-				$menuGroup->setLabel($groupName);
+		} else {
+			if ($groupName === null) {
+				$groupName = 'Content';
 			}
 
-			$menuGroup->addLaunchPad($launchPad);
-			$spec->addLaunchPad($launchPad);
-			return;
+			$menuGroup = $this->getOrCreateMenuGroup($spec, $groupName, $groupName);
 		}
 
-		if ($groupName === null) {
-			$groupName = 'Content';
-		}
-
-		$menuGroup = $this->getOrCreateMenuGroup($spec, $groupName, $groupName);
+		$menuGroup->setOrderIndex($menuItem->groupOrderIndex ?? $menuGroup->getOrderIndex());
 		$menuGroup->addLaunchPad($launchPad);
 		$spec->addLaunchPad($launchPad);
 	}
