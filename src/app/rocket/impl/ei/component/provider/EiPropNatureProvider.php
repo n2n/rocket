@@ -60,6 +60,7 @@ use rocket\attribute\impl\EiPropOrder;
 use rocket\attribute\impl\EiPropString;
 use n2n\util\type\CastUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
+use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 
 class EiPropNatureProvider {
 
@@ -203,7 +204,9 @@ class EiPropNatureProvider {
 		 */
 		$entityProperty = $eiPresetProp->getEntityProperty();
 		$accessProxy = $eiPresetProp->getPropertyAccessProxy();
-		$nullAllowed = $accessProxy->getSetterConstraint()->allowsNull();
+		$nullAllowed = $accessProxy->isWritable()
+				? $accessProxy->getSetterConstraint()->allowsNull()
+				: $accessProxy->getGetterConstraint()->allowsNull();
 		$propertyName = $eiPresetProp->getName();
 
 		switch ($entityProperty->getType()) {
@@ -213,6 +216,7 @@ class EiPropNatureProvider {
 			case RelationEntityProperty::TYPE_ONE_TO_MANY:
 				assert($entityProperty instanceof ToManyEntityProperty);
 				$targetClass = $entityProperty->getTargetEntityModel()->getClass();
+
 				if ($targetClass->implementsInterface(Translatable::class)) {
 					$relationEiProp = new TranslationEiPropNature($entityProperty, $accessProxy);
 					$this->checkCascadeAllAndOrphanRemoval($relationEiProp, $this->eiTypeSetup->getAttributeSet()
@@ -239,6 +243,8 @@ class EiPropNatureProvider {
 				$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
 				break;
 			case RelationEntityProperty::TYPE_ONE_TO_ONE:
+				assert($entityProperty instanceof ToOneEntityProperty);
+
 				$relationEiProp = new OneToOneSelectEiPropNature($entityProperty, $accessProxy);
 				$relationEiProp->getRelationModel()->setMandatory(!$nullAllowed);
 
