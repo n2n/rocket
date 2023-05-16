@@ -119,7 +119,7 @@ class OpuCtrl {
 	}
 
 
-	private function forwardHtml() {
+	private function forwardHtml(): bool {
 		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
 						->bestMatch(['text/html', 'application/json'])) {
 			$this->cu->forward('\rocket\core\view\anglTemplate.html');
@@ -249,7 +249,7 @@ class OpuCtrl {
 						$title ?? 'Iframe'));
 	}
 
-	function forwardIframeUrlZone(Url $url, string $title = null) {
+	function forwardIframeUrlZone(Url $url, string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}

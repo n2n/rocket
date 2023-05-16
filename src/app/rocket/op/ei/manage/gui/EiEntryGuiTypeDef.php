@@ -170,7 +170,7 @@ class EiEntryGuiTypeDef {
 		}
 	}
 	
-	public function save() {
+	public function save(): void {
 		$this->ensureInitialized();
 		
 		foreach ($this->eiEntryGuiListeners as $eiEntryGuiListener) {

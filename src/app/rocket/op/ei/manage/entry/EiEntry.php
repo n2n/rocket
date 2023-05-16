@@ -415,9 +415,9 @@ class EiEntry {
 				&& $this->eiObject->equals($obj->getEiObject());
 	}
 	
-	public function toEntryNavPoint() {
-		return $this->eiObject->toEntryNavPoint($this->contextEiType);
-	}
+//	public function toEntryNavPoint() {
+//		return $this->eiObject->toEntryNavPoint($this->contextEiType);
+//	}
 	
 	public function __toString() {
 		if ($this->eiObject->isDraft()) {
