@@ -3,15 +3,15 @@ namespace rocket\op\ei\manage\gui;
 
 interface GuiDefinitionListener {
 	/**
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 */
-	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame);
+	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration);
 	
 	
 // 	/**
-// 	 * @param EiEntryGui $eiEntryGui
+// 	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 // 	 */
-// 	public function onNewEiEntryGui(EiEntryGui $eiEntryGui);
+// 	public function onNewEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary);
 	
 // 	/**
 // 	 * @param HtmlView $view

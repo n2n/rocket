@@ -27,24 +27,24 @@ use rocket\op\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 
 class GuiFieldMap {
-// 	private $eiEntryGui;
+// 	private $eiGuiValueBoundary;
 // 	private $forkDefPropPath;
 	/**
 	 * @var GuiField[]
 	 */
 	private $guiFields = array();
 	
-	function __construct(/*EiEntryGui $eiEntryGui, DefPropPath $forkDefPropPath*/) {
-// 		$this->eiEntryGui = $eiEntryGui;
+	function __construct(/*EiGuiValueBoundary $eiGuiValueBoundary, DefPropPath $forkDefPropPath*/) {
+// 		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
 // 		$this->forkDefPropPath = $forkDefPropPath;
 	}
 	
 	private function ensureNotInitialized() {
-// 		if (!$this->eiEntryGui->isInitialized()) {
+// 		if (!$this->eiGuiValueBoundary->isInitialized()) {
 // 			return;
 // 		}
 		
-// 		throw new IllegalStateException('EiEntryGui already initialized.');
+// 		throw new IllegalStateException('EiGuiValueBoundary already initialized.');
 	}
 	
 	/**

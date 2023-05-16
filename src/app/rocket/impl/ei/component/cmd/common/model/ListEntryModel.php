@@ -24,12 +24,12 @@
 // use rocket\op\ei\manage\model\EntryModel;
 // use rocket\op\ei\manage\gui\GuiDefinition;
 // use rocket\op\ei\manage\entry\EiEntry;
-// use rocket\op\ei\manage\gui\EiEntryGui;
+// use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 // use rocket\op\ei\mask\EiMask;
 
 // class ListEntryModel implements EntryModel {
 // 	private $eiMask;
-// 	private $eiEntryGui;
+// 	private $eiGuiValueBoundary;
 	
 // 	private $eiEntry;
 	
@@ -37,9 +37,9 @@
 // 	 * @param GuiDefinition $guiDefinition
 // 	 * @param EiEntry $eiEntry
 // 	 */
-// 	public function __construct(EiMask $eiMask, EiEntryGui $eiEntryGui,	EiEntry $eiEntry) {
+// 	public function __construct(EiMask $eiMask, EiGuiValueBoundary $eiGuiValueBoundary,	EiEntry $eiEntry) {
 // 		$this->eiMask = $eiMask;
-// 		$this->eiEntryGui = $eiEntryGui;
+// 		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
 // 		$this->eiEntry = $eiEntry;
 // 	}
 	
@@ -65,9 +65,9 @@
 // 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\op\ei\manage\model\EntryModel::getEiEntryGui()
+// 	 * @see \rocket\op\ei\manage\model\EntryModel::getEiGuiValueBoundary()
 // 	 */
-// 	public function getEiEntryGui() {
-// 		return $this->eiEntryGui;
+// 	public function getEiGuiValueBoundary() {
+// 		return $this->eiGuiValueBoundary;
 // 	}
 // }

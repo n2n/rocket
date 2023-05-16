@@ -528,7 +528,7 @@ class EiuFrame {
 // 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
 // 		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getGuiDefinition($contextEiMask);
-// 		$eiGuiFrame = $contextEiMask->createEiGuiFrame($this->eiFrame, ViewMode::BULKY_ADD, true);
+// 		$eiGuiMaskDeclaration = $contextEiMask->createEiGuiMaskDeclaration($this->eiFrame, ViewMode::BULKY_ADD, true);
 		
 // 		ArgUtils::valArray($eiEntries, EiEntry::class);
 // 		foreach ($eiEntries as $eiEntry) {
@@ -610,18 +610,18 @@ class EiuFrame {
 	
 // 	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
 // 		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
-// 		$eiGuiFrame = $eiMask->createEiGuiFrame($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
+// 		$eiGuiMaskDeclaration = $eiMask->createEiGuiMaskDeclaration($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
 		
-// 		$eiEntryGui = $eiGuiFrame->createEiEntryGui($eiEntry);
+// 		$eiGuiValueBoundary = $eiGuiMaskDeclaration->createEiGuiValueBoundary($eiEntry);
 		
 // 		if ($contextPropertyPath === null) {
 // 			$contextPropertyPath = new PropertyPath(array());
 // 		}
 		
-// 		$eiEntryGui->setContextPropertyPath($contextPropertyPath->ext(
+// 		$eiGuiValueBoundary->setContextPropertyPath($contextPropertyPath->ext(
 // 				new PropertyPathPart('eiuEntryTypeForms', true, $eiType->getId()))->ext('dispatchable'));
 		
-// 		return new EiuEntryTypeForm(new EiuEntryGui($eiEntryGui, null, $this->eiuAnalyst));
+// 		return new EiuEntryTypeForm(new EiuEntryGui($eiGuiValueBoundary, null, $this->eiuAnalyst));
 // 	}
 	
 
@@ -722,15 +722,15 @@ class EiuFrame {
 	/**
 	 * @return EiuEntryGui 
 	 */
-	function newForgeMultiEntryGui(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, array $defPropPathsArg = null, 
+	function newForgeMultiGuiValueBoundary(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, array $defPropPathsArg = null, 
 			bool $guiStructureDeclarationsRequired = true) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 
 		$eiGui =  new EiGui($this->eiFrame->getContextEiEngine()
-				->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
-		$eiGui->appendNewEiEntryGui($this->eiFrame);
+				->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
+		$eiGui->appendNewEiGuiValueBoundary($this->eiFrame);
 		
 		$eiuGui = new EiuGui($eiGui, null, $this->eiuAnalyst);
 		return $eiuGui->entryGui();
@@ -743,9 +743,9 @@ class EiuFrame {
 // 	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
 // 	 */
 // 	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $defPropPaths) {
-// 		$eiGuiFrame = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiFrame($this->eiFrame, $viewMode, false);
+// 		$eiGuiMaskDeclaration = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiMaskDeclaration($this->eiFrame, $viewMode, false);
 		
-// 		$eiuGuiFrame = new EiuGuiFrame($eiGuiFrame, $this, $this->eiuAnalyst);
+// 		$eiuGuiFrame = new EiuGuiFrame($eiGuiMaskDeclaration, $this, $this->eiuAnalyst);
 // 		$eiuGuiFrame->initWithUiCallback($uiFactory, $defPropPaths);
 // 		return $eiuGuiFrame;
 // 	}

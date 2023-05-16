@@ -5,7 +5,7 @@ use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\EiGuiSiFactory;
 use rocket\op\ei\manage\gui\GuiException;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\EiuAnalyst;
 use n2n\l10n\N2nLocale;
@@ -15,26 +15,26 @@ use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiMaskDeclaration;
 
 class EiuGuiFrame {
-	private $eiGuiFrame;
+	private $eiGuiMaskDeclaration;
 	private $eiuGuiModel;
 	private $eiuAnalyst;
 	
 	/**
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @param EiuFrame $eiuFrame
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiGuiFrame $eiGuiFrame, ?EiuGuiModel $eiuGuiModel, EiuAnalyst $eiuAnalyst) {
-		$this->eiGuiFrame = $eiGuiFrame;
+	public function __construct(EiGuiMaskDeclaration $eiGuiMaskDeclaration, ?EiuGuiModel $eiuGuiModel, EiuAnalyst $eiuAnalyst) {
+		$this->eiGuiMaskDeclaration = $eiGuiMaskDeclaration;
 		$this->eiuGuiModel = $eiuGuiModel;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
-	 * @return \rocket\op\ei\manage\gui\EiGuiFrame
+	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
 	 */
-	function getEiGuiFrame() {
-		return $this->eiGuiFrame;
+	function getEiGuiMaskDeclaration() {
+		return $this->eiGuiMaskDeclaration;
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class EiuGuiFrame {
 	 */
 	function guiModel() {
 		if ($this->eiuGuiModel === null) {
-			$this->eiuGuiModel = new EiuGuiModel($this->eiGuiFrame->getEiGuiModel(), $this->eiuAnalyst);
+			$this->eiuGuiModel = new EiuGuiModel($this->eiGuiMaskDeclaration->getEiGuiDeclaration(), $this->eiuAnalyst);
 		}
 		
 		return $this->eiuGuiModel;
@@ -61,7 +61,7 @@ class EiuGuiFrame {
 // 		}
 		
 // 		if ($this->eiuFrame === null) {
-// 			$this->eiuFrame = new EiuFrame($this->eiGuiFrame->getEiFrame(), $this->eiuAnalyst);
+// 			$this->eiuFrame = new EiuFrame($this->eiGuiMaskDeclaration->getEiFrame(), $this->eiuAnalyst);
 // 		}
 		
 // 		return $this->eiuFrame;
@@ -71,7 +71,7 @@ class EiuGuiFrame {
 	 * @return number
 	 */
 	public function getViewMode() {
-		return $this->eiGuiFrame->getEiGuiModel()->getViewMode();
+		return $this->eiGuiMaskDeclaration->getEiGuiDeclaration()->getViewMode();
 	}
 	
 	/**
@@ -109,19 +109,19 @@ class EiuGuiFrame {
 	 * @return \rocket\op\ei\EiPropPath[]
 	 */
 	function getEiPropPaths() {
-		return $this->eiGuiFrame->getEiPropPaths();
+		return $this->eiGuiMaskDeclaration->getEiPropPaths();
 	}
 	
 	function getDefPropPaths() {
-		return $this->eiGuiFrame->getDefPropPaths();
+		return $this->eiGuiMaskDeclaration->getDefPropPaths();
 	}
 	
 // 	function newEntryGui($eiEntryArg) {
 // 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
-// 		$eiEntryGui = $this->eiGuiFrame->createEiEntryGuiVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
+// 		$eiGuiValueBoundary = $this->eiGuiMaskDeclaration->createEiGuiValueBoundaryVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
 		
-// 		return new EiuEntryGui($eiEntryGui, null, $this, $this->eiuAnalyst);
+// 		return new EiuEntryGui($eiGuiValueBoundary, null, $this, $this->eiuAnalyst);
 // 	}
 	
 	/**
@@ -133,7 +133,7 @@ class EiuGuiFrame {
 		$size = $prefixDefPropPath->size();
 		
 		$forkedDefPropPaths = [];
-		foreach ($this->eiGuiFrame->filterDefPropPaths($prefixDefPropPath) as $defPropPath) {
+		foreach ($this->eiGuiMaskDeclaration->filterDefPropPaths($prefixDefPropPath) as $defPropPath) {
 			$forkedDefPropPaths[] = $defPropPath->subDefPropPath($size);
 		}
 		return $forkedDefPropPaths;
@@ -164,7 +164,7 @@ class EiuGuiFrame {
 		$defPropPath = DefPropPath::create($defPropPath);
 		
 		try {
-			return $this->eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
+			return $this->eiGuiMaskDeclaration->getGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
 		} catch (GuiException $e) {
 			if (!$required) return null;
 			throw $e;
@@ -178,11 +178,11 @@ class EiuGuiFrame {
 	function getDisplayDefinition($defPropPath, bool $required = false) {
 		$defPropPath = DefPropPath::create($defPropPath);
 		
-		if (!$required && !$this->eiGuiFrame->containsDisplayDefintion($defPropPath)) {
+		if (!$required && !$this->eiGuiMaskDeclaration->containsDisplayDefintion($defPropPath)) {
 			return null;
 		}
 		
-		return $this->eiGuiFrame->getDisplayDefintion($defPropPath);
+		return $this->eiGuiMaskDeclaration->getDisplayDefintion($defPropPath);
 	}
 		
 // 	/**
@@ -194,7 +194,7 @@ class EiuGuiFrame {
 // 	public function getDisplayItemByDefPropPath($eiPropPath) {
 // 		$eiPropPath = DefPropPath::create($eiPropPath);
 		
-// 		$displayStructure = $this->eiGuiFrame->getEiGuiSiFactory()->getDisplayStructure();
+// 		$displayStructure = $this->eiGuiMaskDeclaration->getEiGuiSiFactory()->getDisplayStructure();
 // 		if ($displayStructure !== null) {
 // 			return $displayStructure->getDisplayItemByDefPropPath($eiPropPath);
 // 		}
@@ -225,7 +225,7 @@ class EiuGuiFrame {
 // 	public function initWithUiCallback(\Closure $viewFactory, array $defPropPaths) {
 // 		$defPropPaths = DefPropPath::createArray($defPropPaths);
 		
-// 		$this->eiGuiFrame->init(new CustomGuiViewFactory($viewFactory), $defPropPaths);
+// 		$this->eiGuiMaskDeclaration->init(new CustomGuiViewFactory($viewFactory), $defPropPaths);
 // 	}
 
 	/**
@@ -233,7 +233,7 @@ class EiuGuiFrame {
 	 */
 	function createSiDeclaration() {
 		return new SiDeclaration(ViewMode::createSiStyle($this->getViewMode()), [new SiMaskDeclaration(
-				$this->eiGuiFrame->createSiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
+				$this->eiGuiMaskDeclaration->createSiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
 				null)]);
 	}
 }
@@ -245,8 +245,8 @@ class CustomGuiViewFactory implements EiGuiSiFactory {
 		$this->factory = $factory;
 	}
 	
-// 	public function createUiComponent(array $eiEntryGuis, ?HtmlView $contextView): UiComponent {
-// 		$uiComponent = $this->factory->call(null, $eiEntryGuis, $contextView);
+// 	public function createUiComponent(array $eiGuiValueBoundaries, ?HtmlView $contextView): UiComponent {
+// 		$uiComponent = $this->factory->call(null, $eiGuiValueBoundaries, $contextView);
 // 		ArgUtils::valTypeReturn($uiComponent, [UiComponent::class, 'scalar'], null, $this->factory);
 		
 // 		if (is_scalar($uiComponent)) {

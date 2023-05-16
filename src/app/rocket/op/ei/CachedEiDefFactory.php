@@ -33,16 +33,16 @@
 //use rocket\op\ei\component\EiComponentCollectionListener;
 //use n2n\context\attribute\ThreadScoped;
 //use n2n\core\container\N2nContext;
-//use rocket\op\ei\manage\gui\CachedEiGuiModelFactory;
-//use rocket\op\ei\manage\gui\EiGuiModelFactory;
+//use rocket\op\ei\manage\gui\CachedEiGuiDeclarationFactory;
+//use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 //
 //#[ThreadScoped]
 //class CachedEiDefFactory /*implements EiComponentCollectionListener*/ {
 //
-//	private CachedEiGuiModelFactory $eiModelCache;
+//	private CachedEiGuiDeclarationFactory $eiModelCache;
 //
 //	function __construct(private N2nContext $n2nContext) {
-//		$this->eiModelCache = new CachedEiGuiModelFactory(new EiGuiModelFactory($this->n2nContext, $this));
+//		$this->eiModelCache = new CachedEiGuiDeclarationFactory(new EiGuiDeclarationFactory($this->n2nContext, $this));
 //	}
 //
 //	/**

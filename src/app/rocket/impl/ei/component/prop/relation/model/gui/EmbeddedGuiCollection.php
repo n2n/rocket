@@ -98,7 +98,7 @@ class EmbeddedGuiCollection {
 		}
 		
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
-		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiModel(true, $this->readOnly, $this->allowedEiuTypes);
+		$eiuGuiModel = $this->eiuFrame->contextEngine()->newForgeMultiGuiDeclaration(true, $this->readOnly, $this->allowedEiuTypes);
 		for ($i = 0; $i < $num; $i++) {
 			$this->eiuEntryGuis[] = $eiuGuiModel->newEntryGui();
 		}
@@ -106,7 +106,7 @@ class EmbeddedGuiCollection {
 	
 	function addNew() {
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
-		return $this->eiuEntryGuis[] = $this->eiuFrame->newForgeMultiEntryGui(true, $this->readOnly);
+		return $this->eiuEntryGuis[] = $this->eiuFrame->newForgeMultiGuiValueBoundary(true, $this->readOnly);
 	}
 	
 	function sort(EiPropPath $orderEiPropPath) {

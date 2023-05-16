@@ -42,7 +42,7 @@ class OpfControlResponse {
 	private $noAutoEvents = false;
 	
 	/**
-	 * @var EiObject
+	 * @var EiObject[]
 	 */
 	private $pendingHighlightEiObjects = [];
 	

@@ -314,9 +314,9 @@ class EiuEntry {
 			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
 		}
 		
-		$eiGui = new EiGui($eiMask->getEiEngine()->obtainEiGuiModel($viewMode, $defPropPaths,
+		$eiGui = new EiGui($eiMask->getEiEngine()->obtainEiGuiDeclaration($viewMode, $defPropPaths,
 				$guiStructureDeclarationsRequired));
-		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
+		$eiGui->appendEiGuiValueBoundary($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
 		
 		return new EiuGui($eiGui, null, $this->eiuAnalyst);
 	}
@@ -340,10 +340,10 @@ class EiuEntry {
 // 		$viewMode = $this->deterViewMode($bulky, $editable);
 // 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-// 		$eiGuiFrame = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiEngine->getEiMask())
-// 				->createEiGuiFrame($eiFrame, $viewMode);
+// 		$eiGuiMaskDeclaration = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+// 				->createEiGuiMaskDeclaration($eiFrame, $viewMode);
 		
-// 		return new EiuEntryGui($eiGuiFrame->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
+// 		return new EiuEntryGui($eiGuiMaskDeclaration->createEiGuiValueBoundary($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 // 	}
 	
 	public function newCustomEntryGui(\Closure $uiFactory, array $defPropPaths, bool $bulky = true, 
@@ -374,18 +374,18 @@ class EiuEntry {
 // 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		}
 		
-// 		$eiGuiFrame = $eiMask->createEiGuiFrame($eiFrame, $viewMode, false);
-// 		$eiGuiFrame->init(new DummyEiGuiSiFactory(), $eiGuiFrame->getGuiDefinition()->getDefPropPaths());
+// 		$eiGuiMaskDeclaration = $eiMask->createEiGuiMaskDeclaration($eiFrame, $viewMode, false);
+// 		$eiGuiMaskDeclaration->init(new DummyEiGuiSiFactory(), $eiGuiMaskDeclaration->getGuiDefinition()->getDefPropPaths());
 		
-// 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGuiFrame, $this->eiEntry));
+// 		$eiGuiValueBoundaryAssembler = new EiGuiValueBoundaryAssembler(new EiGuiValueBoundary($eiGuiMaskDeclaration, $this->eiEntry));
 		
-// // 		if ($parentEiEntryGui->isInitialized()) {
-// // 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// // 		if ($parentEiGuiValueBoundary->isInitialized()) {
+// // 			throw new \InvalidArgumentException('Parent EiGuiValueBoundary already initialized.');
 // // 		}
 		
-// // 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
+// // 		$parentEiGuiValueBoundary->registerEiGuiValueBoundaryListener(new InitListener($eiGuiValueBoundaryAssembler));
 		
-// 		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
+// 		return new EiuEntryGuiAssembler($eiGuiValueBoundaryAssembler, null, $this->eiuAnalyst);
 // 	}
 	
 // 	/**
@@ -860,23 +860,23 @@ class EiuEntry {
 	}
 }  
 
-// class InitListener implements EiEntryGuiListener {
-// 	private $eiEntryGuiAssembler;
+// class InitListener implements EiGuiValueBoundaryListener {
+// 	private $eiGuiValueBoundaryAssembler;
 	
-// 	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler) {
-// 		$this->eiEntryGuiAssembler = $eiEntryGuiAssembler;
+// 	public function __construct(EiGuiValueBoundaryAssembler $eiGuiValueBoundaryAssembler) {
+// 		$this->eiGuiValueBoundaryAssembler = $eiGuiValueBoundaryAssembler;
 // 	}
 	
-// 	public function finalized(EiEntryGui $eiEntryGui) {
-// 		$eiEntryGui->unregisterEiEntryGuiListener($this);
+// 	public function finalized(EiGuiValueBoundary $eiGuiValueBoundary) {
+// 		$eiGuiValueBoundary->unregisterEiGuiValueBoundaryListener($this);
 		
-// 		$this->eiEntryGuiAssembler->finalize();
+// 		$this->eiGuiValueBoundaryAssembler->finalize();
 // 	}
 
-// 	public function onSave(EiEntryGui $eiEntryGui) {
+// 	public function onSave(EiGuiValueBoundary $eiGuiValueBoundary) {
 // 	}
 
-// 	public function saved(EiEntryGui $eiEntryGui) {
+// 	public function saved(EiGuiValueBoundary $eiGuiValueBoundary) {
 // 	}
 // }
 

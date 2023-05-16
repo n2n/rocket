@@ -33,7 +33,7 @@ use rocket\op\ei\manage\draft\DraftManager;
 use rocket\op\ei\manage\security\EiPermissionManager;
 use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\LazyEiGuiModelStore;
+use rocket\op\ei\manage\gui\LazyEiGuiDeclarationStore;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\ex\NotYetImplementedException;
 
@@ -47,9 +47,9 @@ class ManageState implements RequestScoped {
 	private $entityManager;
 	private $draftManager;
 	/**
-	 * @var LazyEiGuiModelStore
+	 * @var LazyEiGuiDeclarationStore
 	 */
-	private $eiGuiModelCache;
+	private $eiGuiDeclarationCache;
 	private $eiLifecycleMonitor;
 	
 	function __construct() {

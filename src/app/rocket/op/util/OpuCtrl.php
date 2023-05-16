@@ -27,7 +27,7 @@ use n2n\web\ui\UiComponent;
 use rocket\si\content\impl\iframe\IframeSiGui;
 use rocket\si\content\impl\iframe\IframeData;
 use n2n\util\uri\Url;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\gui\control\GuiControl;
 use n2n\web\http\Method;
 use rocket\op\ei\manage\api\ZoneApiControlProcess;
@@ -135,9 +135,9 @@ class OpuCtrl {
 		}
 
 		$eiFrame = $this->frame()->getEiFrame();
-		$eiGuiModel =  $eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()
-				->obtainEiGuiModel(ViewMode::COMPACT_READ, null, true);
-		$eiGui = new EiGui($eiGuiModel);
+		$eiGuiDeclaration =  $eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()
+				->obtainEiGuiDeclaration(ViewMode::COMPACT_READ, null, true);
+		$eiGui = new EiGui($eiGuiDeclaration);
 
 		$this->composeEiuGuiForList($eiGui, $pageSize);
 
@@ -169,7 +169,7 @@ class OpuCtrl {
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
 			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
-			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)]);
+			$eiGui->appendEiGuiValueBoundary($eiFrame, [$eiFrame->createEiEntry($eiObject)]);
 		}
 	}
 
@@ -180,7 +180,7 @@ class OpuCtrl {
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
 			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
-			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
+			$eiGui->appendEiGuiValueBoundary($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
 		}
 	}
 
@@ -193,7 +193,7 @@ class OpuCtrl {
 		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->frame(), 'eiEntryArg', true);
 		$eiuGui = $eiuEntry->newGui(true, $readOnly);
 
-		if (null !== ($siResult = $this->handleEiSiCall($eiuGui->getEiGui()->getEiEntryGui(), $generalGuiControls))) {
+		if (null !== ($siResult = $this->handleEiSiCall($eiuGui->getEiGui()->getEiGuiValueBoundary(), $generalGuiControls))) {
 			$this->cu->sendJson($siResult);
 			return;
 		}
@@ -218,7 +218,7 @@ class OpuCtrl {
 		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
 		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
 
-		if (null !== ($siResult = $this->handleEiSiCall($eiGui->getEiEntryGui(), $generalGuiControls))) {
+		if (null !== ($siResult = $this->handleEiSiCall($eiGui->getEiGuiValueBoundary(), $generalGuiControls))) {
 			$this->cu->sendJson($siResult);
 			return;
 		}
@@ -263,17 +263,17 @@ class OpuCtrl {
 	}
 
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 * @param GuiControl[] $guiControls
 	 * @return null|\rocket\si\control\SiCallResponse
 	 */
-	private function handleEiSiCall(?EiEntryGui $eiEntryGui, array $generalGuiControls) {
+	private function handleEiSiCall(?EiGuiValueBoundary $eiGuiValueBoundary, array $generalGuiControls) {
 		if (!($this->cu->getRequest()->getMethod() === Method::POST && isset($_POST['apiCallId']))) {
 			return null;
 		}
 
 		$process = new ZoneApiControlProcess($this->frame()->getEiFrame());
-		$process->provideEiEntryGui($eiEntryGui);
+		$process->provideEiGuiValueBoundary($eiGuiValueBoundary);
 		$process->determineGuiControl(ZoneApiControlCallId::parse((new ParamPost($_POST['apiCallId']))->parseJson()), $generalGuiControls);
 
 		if (isset($_POST['entryInputMaps'])

@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use rocket\op\ei\manage\gui\GuiPropFork;
 use rocket\op\ei\manage\gui\field\GuiFieldFork;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiEntryGuiAssembler;
+use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
 use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\op\ei\manage\LiveEiObject;
@@ -181,7 +181,7 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 	
 	/**
 	 * @param ToOneEiField $toOneEiField
-	 * @param EiEntryGuiAssembler $targetEiEntryGuiAssembler
+	 * @param EiGuiValueBoundaryAssembler $targetEiGuiValueBoundaryAssembler
 	 */
 	public function __construct(ToOneEiField $toOneEiField, EiuEntryGuiAssembler $targetEiuEntryGuiAssembler,
 			RelationEntry $targetRelationEntry) {
@@ -220,7 +220,7 @@ class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
 	 * 
 	 */
 	public function save() {
-// 		$this->targetEiEntryGuiAssembler->save();
+// 		$this->targetEiGuiValueBoundaryAssembler->save();
 		$this->toOneEiField->setValue($this->targetRelationEntry);
 	}
 }

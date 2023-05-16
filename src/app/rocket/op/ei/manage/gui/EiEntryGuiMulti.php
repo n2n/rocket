@@ -28,15 +28,15 @@ use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\EiType;
 use rocket\si\content\impl\basic\BulkyEntrySiGui;
 
-class EiEntryGuiMulti {
+class EiGuiValueBoundaryMulti {
 	
 	/**
-	 * @param EiEntryGui[]
+	 * @param EiGuiValueBoundary[]
 	 */
-	function __construct(EiType $contextEiType, int $viewMode, array $eiEntryGuis) {
+	function __construct(EiType $contextEiType, int $viewMode, array $eiGuiValueBoundaries) {
 		$this->contextEiType = $contextEiType;
 		$this->viewMode = $viewMode;
-		$this->setEiEntryGuis($eiEntryGuis);
+		$this->setEiGuiValueBoundaries($eiGuiValueBoundaries);
 	}
 	
 	/**

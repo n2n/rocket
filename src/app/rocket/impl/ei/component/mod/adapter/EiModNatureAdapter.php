@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\mod\adapter;
 
 use rocket\op\ei\component\modificator\EiModNature;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\draft\DraftDefinition;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\component\modificator\EiMod;
@@ -78,15 +78,15 @@ abstract class EiModNatureAdapter extends EiComponentNatureAdapter implements Ei
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiFrame()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiMaskDeclaration()
 	 */
-	public function setupEiGuiFrame(Eiu $eiu) { }
+	public function setupEiGuiMaskDeclaration(Eiu $eiu) { }
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiEntryGui()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiValueBoundary()
 	 */
-	public function setupEiEntryGui(EiEntryGui $eiEntryGui) {}
+	public function setupEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary) {}
 	
 	/**
 	 * {@inheritDoc}

@@ -27,7 +27,7 @@ use rocket\si\control\SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\control\impl\DeactivatedSiControl;
 use rocket\op\ei\manage\gui\control\GuiControl;
@@ -65,15 +65,15 @@ class DeactivatedGuiControl implements GuiControl {
 		return new DeactivatedSiControl($this->siButton);
 	}
 	
-	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
+	public function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
+	public function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 
-	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
+	public function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 }

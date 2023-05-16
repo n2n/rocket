@@ -21,20 +21,20 @@
  */
 namespace rocket\op\ei\manage\gui;
 
-interface EiEntryGuiListener {
+interface EiGuiValueBoundaryListener {
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 */
-	public function finalized(EiEntryGui $eiEntryGui);
+	public function finalized(EiGuiValueBoundary $eiGuiValueBoundary);
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 */
-	public function onSave(EiEntryGui $eiEntryGui);
+	public function onSave(EiGuiValueBoundary $eiGuiValueBoundary);
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 */
-	public function saved(EiEntryGui $eiEntryGui);
+	public function saved(EiGuiValueBoundary $eiGuiValueBoundary);
 }

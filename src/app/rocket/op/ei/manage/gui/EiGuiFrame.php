@@ -24,11 +24,11 @@ use rocket\op\ei\manage\api\ApiController;
  * @author andreas
  *
  */
-class EiGuiFrame {
+class EiGuiMaskDeclaration {
 	/**
-	 * @var EiGuiModel
+	 * @var EiGuiDeclaration
 	 */
-	private $eiGuiModel;
+	private $eiGuiDeclaration;
 	/**
 	 * @var GuiDefinition
 	 */
@@ -56,7 +56,7 @@ class EiGuiFrame {
 	/**
 	 * @var EiGuiListener[]
 	 */
-	private $eiGuiFrameListeners = array();
+	private $eiGuiMaskDeclarationListeners = array();
 	/**
 	 * @var bool
 	 */
@@ -67,8 +67,8 @@ class EiGuiFrame {
 	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
 	 */
-	function __construct(EiGuiModel $eiGuiModel, GuiDefinition $guiDefinition, ?array $guiStructureDeclarations) {
-		$this->eiGuiModel = $eiGuiModel;
+	function __construct(EiGuiDeclaration $eiGuiDeclaration, GuiDefinition $guiDefinition, ?array $guiStructureDeclarations) {
+		$this->eiGuiDeclaration = $eiGuiDeclaration;
 		$this->guiDefinition = $guiDefinition;
 		
 		$this->setGuiStructureDeclarations($guiStructureDeclarations);
@@ -86,17 +86,17 @@ class EiGuiFrame {
 // 	}
 	
 	/**
-	 * @return \rocket\op\ei\manage\gui\GuiDefinition
+	 * @return GuiDefinition
 	 */
-	function getGuiDefinition() {
+	function getGuiDefinition(): GuiDefinition {
 		return $this->guiDefinition;
 	}
 	
 	/**
-	 * @return EiGuiModel
+	 * @return EiGuiDeclaration
 	 */
-	function getEiGuiModel() {
-		return $this->eiGuiModel;
+	function getEiGuiDeclaration(): EiGuiDeclaration {
+		return $this->eiGuiDeclaration;
 	}
 	
 	/**
@@ -202,7 +202,7 @@ class EiGuiFrame {
 	 */
 	function createSiMaskDeclaration(N2nLocale $n2nLocale) {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
-				'EiGuiFrame has no GuiStructureDeclarations.');
+				'EiGuiMaskDeclaration has no GuiStructureDeclarations.');
 
 		return new SiMaskDeclaration(
 				$this->createSiMask($n2nLocale),
@@ -296,12 +296,12 @@ class EiGuiFrame {
 	 */
 	function markInitialized() {
 		if ($this->isInit()) {
-			throw new IllegalStateException('EiGuiFrame already initialized.');
+			throw new IllegalStateException('EiGuiMaskDeclaration already initialized.');
 		}
 		
 		$this->init = true;
 		
-		foreach ($this->eiGuiFrameListeners as $listener) {
+		foreach ($this->eiGuiMaskDeclarationListeners as $listener) {
 			$listener->onInitialized($this);
 		}
 	}
@@ -319,7 +319,7 @@ class EiGuiFrame {
 	private function ensureInit() {
 		if ($this->init) return;
 		
-		throw new IllegalStateException('EiGuiFrame not yet initialized.');
+		throw new IllegalStateException('EiGuiMaskDeclaration not yet initialized.');
 	}
 	
 	/**
@@ -328,7 +328,7 @@ class EiGuiFrame {
 	private function ensureNotInit() {
 		if (!$this->init) return;
 		
-		throw new IllegalStateException('EiGuiFrame is already initialized.');
+		throw new IllegalStateException('EiGuiMaskDeclaration is already initialized.');
 	}
 	
 // 	/**
@@ -394,40 +394,40 @@ class EiGuiFrame {
 	 * @param bool $makeEditable
 	 * @param int $treeLevel
 	 * @param bool $append
-	 * @return EiEntryGuiTypeDef
+	 * @return EiGuiEntry
 	 */
-	function applyEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui, EiEntry $eiEntry) {
+	function applyEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry) {
 		$this->ensureInit();
 		
-		$eiEntryGuiTypeDef = GuiFactory::createEiEntryGuiTypeDef($eiFrame, $this, $eiEntryGui, $eiEntry);
-		$eiEntryGui->putTypeDef($eiEntryGuiTypeDef);
+		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry);
+		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
 		
-		foreach ($this->eiGuiFrameListeners as $eiGuiFrameListener) {
-			$eiGuiFrameListener->onNewEiEntryGui($eiEntryGuiTypeDef);
+		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
+			$eiGuiMaskDeclarationListener->onNewEiGuiValueBoundary($eiGuiEntry);
 		}
 		
-		return $eiEntryGuiTypeDef;
+		return $eiGuiEntry;
 	}
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @param EiEntryGui $eiEntryGui
-	 * @return \rocket\op\ei\manage\gui\EiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
+	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundary
 	 */
-	function applyNewEiEntryGuiTypeDef(EiFrame $eiFrame, EiEntryGui $eiEntryGui) {
+	function applyNewEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary) {
 		$this->ensureInit();
 		
 		$eiObject = $this->getGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 		
-		$eiEntryGuiTypeDef = GuiFactory::createEiEntryGuiTypeDef($eiFrame, $this, $eiEntryGui, $eiEntry);
-		$eiEntryGui->putTypeDef($eiEntryGuiTypeDef);
+		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry);
+		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
 		
-		foreach ($this->eiGuiFrameListeners as $eiGuiFrameListener) {
-			$eiGuiFrameListener->onNewEiEntryGui($eiEntryGuiTypeDef);
+		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
+			$eiGuiMaskDeclarationListener->onNewEiGuiValueBoundary($eiGuiEntry);
 		}
 		
-		return $eiEntryGuiTypeDef;
+		return $eiGuiEntry;
 	}
 	
 	/**
@@ -442,7 +442,7 @@ class EiGuiFrame {
 					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
 					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGuiModel->getViewMode(), null));
+							$this->eiGuiDeclaration->getViewMode(), null));
 		}
 		return $siControls;
 	}
@@ -459,7 +459,7 @@ class EiGuiFrame {
 					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
 					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGuiModel->getViewMode(), null, null));
+							$this->eiGuiDeclaration->getViewMode(), null, null));
 		}
 		return $siControls;
 	}
@@ -488,14 +488,14 @@ class EiGuiFrame {
 // 	/**
 // 	 * @return \rocket\si\content\SiEntry
 // 	 */
-// 	function createSiEntry(EiFrame $eiFrame, EiEntryGui $eiEntryGui, bool $siControlsIncluded = true) {
-// 		$eiEntry = $eiEntryGui->getEiEntry();
+// 	function createSiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary, bool $siControlsIncluded = true) {
+// 		$eiEntry = $eiGuiValueBoundary->getEiEntry();
 // 		$eiType = $eiEntry->getEiType();
 // 		$siIdentifier = $eiEntry->getEiObject()->createSiEntryIdentifier();
 // 		$viewMode = $this->getViewMode();
 		
 // 		$siValueBoundary = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
-// 		$siValueBoundary->putBuildup($eiType->getId(), $this->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded));
+// 		$siValueBoundary->putBuildup($eiType->getId(), $this->createSiEntry($eiFrame, $eiGuiValueBoundary, $siControlsIncluded));
 // 		$siValueBoundary->setSelectedTypeId($eiType->getId());
 		
 // 		return $siValueBoundary;
@@ -504,44 +504,7 @@ class EiGuiFrame {
 	/**
 	 * @return SiEntry
 	 */
-	function createSiEntry(EiFrame $eiFrame, EiEntryGuiTypeDef $eiEntryGuiTypeDef, bool $siControlsIncluded = true) {
-		$eiEntry = $eiEntryGuiTypeDef->getEiEntry();
-		
-		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$typeId = $eiEntryGuiTypeDef->getEiMask()->getEiType()->getId();
-		$idName = null;
-		if (!$eiEntry->isNew()) {
-			$deterIdNameDefinition = $eiEntry->getEiMask()->getEiEngine()->getIdNameDefinition();
-			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(), 
-					$eiFrame->getN2nContext(), $n2nLocale);
-		}
-		
-		$siEntry = new SiEntry($eiEntry->getPid(), $idName);
-		
-		foreach ($eiEntryGuiTypeDef->getGuiFieldMap()->getAllGuiFields() as $defPropPathStr => $guiField) {
-			if (null !== ($siField = $guiField->getSiField())) {
-				$siEntry->putField($defPropPathStr, $siField);
-			}
-			
-// 			$siValueBoundary->putContextFields($defPropPathStr, $guiField->getContextSiFields());
-		}
-		
-		if (!$siControlsIncluded) {
-			return $siEntry;
-		}
-		
-		foreach ($this->guiDefinition->createEntryGuiControls($eiFrame, $this, $eiEntry)
-				as $guiControlPathStr => $entryGuiControl) {
-			$guiControlPath = GuiControlPath::create($guiControlPathStr);
-			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
-					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
-					new ApiControlCallId($guiControlPath,
-							$this->guiDefinition->getEiMask()->getEiTypePath(), $eiEntry->getPid(),
-							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
-		}
-		
-		return $siEntry;
-	}
+
 	
 	
 	
@@ -566,17 +529,17 @@ class EiGuiFrame {
 	}
 	
 	/**
-	 * @param EiGuiListener $eiGuiFrameListener
+	 * @param EiGuiListener $eiGuiMaskDeclarationListener
 	 */
-	function registerEiGuiListener(EiGuiListener $eiGuiFrameListener) {
-		$this->eiGuiFrameListeners[spl_object_hash($eiGuiFrameListener)] = $eiGuiFrameListener;
+	function registerEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener) {
+		$this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)] = $eiGuiMaskDeclarationListener;
 	}
 	
 	/**
-	 * @param EiGuiListener $eiGuiFrameListener
+	 * @param EiGuiListener $eiGuiMaskDeclarationListener
 	 */
-	function unregisterEiGuiListener(EiGuiListener $eiGuiFrameListener) {
-		unset($this->eiGuiFrameListeners[spl_object_hash($eiGuiFrameListener)]);
+	function unregisterEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener) {
+		unset($this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)]);
 	}
 }
 
@@ -627,12 +590,12 @@ class ContextSiFieldDeterminer {
 	/**
 	 * @return SiProp[]
 	 */
-	function createContextSiProps(N2nLocale $n2nLocale, EiGuiFrame $eiGuiFrame) {
+	function createContextSiProps(N2nLocale $n2nLocale, EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		
 		$siProps = [];
 		
 		foreach ($this->forkDefPropPaths as $forkDefPropPath) {
-			$eiProp = $eiGuiFrame->getGuiDefinition()->getGuiPropWrapperByDefPropPath($forkDefPropPath)->getEiProp();
+			$eiProp = $eiGuiMaskDeclaration->getGuiDefinition()->getGuiPropWrapperByDefPropPath($forkDefPropPath)->getEiProp();
 			
 			$siProp = (new SiProp((string) $forkDefPropPath, $eiProp->getNature()->getLabelLstr()->t($n2nLocale)))
 					->setDescendantPropIds(array_map(

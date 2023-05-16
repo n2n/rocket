@@ -28,8 +28,8 @@ use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\gui\EiGuiFrame;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\si\input\SiEntryInput;
 use rocket\op\ei\manage\security\SecurityException;
 use rocket\op\ei\manage\gui\EiGui;
@@ -166,20 +166,20 @@ class ProcessUtil {
 	
 	/**
 	 * @param SiEntryInput $siEntryInput
-	 * @param EiEntryGui $eiEntryGui
-	 * @throws BadRequestException
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 * @return bool
+	 *@throws BadRequestException
 	 */
-	function handleEntryInput(SiEntryInput $siEntryInput, EiEntryGui $eiEntryGui) {
+	function handleEntryInput(SiEntryInput $siEntryInput, EiGuiValueBoundary $eiGuiValueBoundary) {
 		try {
-			$eiEntryGui->handleSiEntryInput($siEntryInput);
+			$eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 		
-		$eiEntryGui->save();
+		$eiGuiValueBoundary->save();
 		
-		$eiEntry = $eiEntryGui->getSelectedEiEntry();
+		$eiEntry = $eiGuiValueBoundary->getSelectedEiEntry();
 		
 		return $eiEntry->validate();
 	}
@@ -196,18 +196,18 @@ class ProcessUtil {
 	/**
 	 * @param EiMask $eiMask
 	 * @param int $viewMode
-	 * @return \rocket\op\ei\manage\gui\EiGuiFrame
+	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
 	 */
-	function createEiGuiFrame(EiMask $eiMask, int $viewMode) {
-		return $eiMask->getEiEngine()->createFramedEiGuiFrame($this->eiFrame, $viewMode);
+	function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode) {
+		return $eiMask->getEiEngine()->createFramedEiGuiMaskDeclaration($this->eiFrame, $viewMode);
 	}
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @param EiGuiFrame $eiGuiFrame
-	 * @return EiEntryGui
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
+	 * @return EiGuiValueBoundary
 	 */
-	function createEiEntryGui(EiObject $eiObject, EiGuiFrame $eiGuiFrame) {
-		return $eiGuiFrame->createEiEntryGuiVariation($this->eiFrame->createEiEntry($eiObject));
+	function createEiGuiValueBoundary(EiObject $eiObject, EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
+		return $eiGuiMaskDeclaration->createEiGuiValueBoundaryVariation($this->eiFrame->createEiEntry($eiObject));
 	}
 }

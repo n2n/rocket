@@ -24,7 +24,7 @@ namespace rocket\op\ei\manage\gui\control;
 use rocket\si\control\SiControl;
 use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\si\control\SiCallResponse;
 use rocket\op\ei\component\command\EiCmdNature;
@@ -43,17 +43,17 @@ interface GuiControl {
 	
 	function getChildById(string $id): ?GuiControl;
 
-	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse;
+	function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse;
 	
-	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse;
+	function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse;
 	
 	
 // 	/**
-// 	 * @param EiGuiModel $eiGuiModel
+// 	 * @param EiGuiDeclaration $eiGuiDeclaration
 // 	 * @param EiEntry[] $eiEntries
 // 	 * @return SiCallResponse
 // 	 */
-// 	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse;
+// 	function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse;
 
 	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl;
 

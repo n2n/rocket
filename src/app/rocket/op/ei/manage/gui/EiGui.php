@@ -9,75 +9,75 @@ use n2n\util\ex\IllegalStateException;
 
 class EiGui {
 	/**
-	 * @var EiGuiModel
+	 * @var EiGuiDeclaration
 	 */
-	private $eiGuiModel;
+	private $eiGuiDeclaration;
 	/**
-	 * @var EiEntryGui[]
+	 * @var EiGuiValueBoundary[]
 	 */
-	private $eiEntryGuis = [];
+	private $eiGuiValueBoundaries = [];
 	
 	/**
 	 * @param EiMask $eiMask
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 */
-	function __construct(EiGuiModel $eiGuiModel) {
-		$this->eiGuiModel = $eiGuiModel;
+	function __construct(EiGuiDeclaration $eiGuiDeclaration) {
+		$this->eiGuiDeclaration = $eiGuiDeclaration;
 	}
 	
 	/**
-	 * @return EiGuiModel
+	 * @return EiGuiDeclaration
 	 */
-	function getEiGuiModel() {
-		return $this->eiGuiModel;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	function hasMultipleEiEntryGuis() {
-		return count($this->eiEntryGuis) > 1;
+	function getEiGuiDeclaration() {
+		return $this->eiGuiDeclaration;
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	function hasSingleEiEntryGui() {
-		return count($this->eiEntryGuis) === 1;
+	function hasMultipleEiGuiValueBoundaries() {
+		return count($this->eiGuiValueBoundaries) > 1;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	function hasSingleEiGuiValueBoundary() {
+		return count($this->eiGuiValueBoundaries) === 1;
 	}
 	
 	function isEmpty() {
-		return empty($this->eiEntryGuis);
+		return empty($this->eiGuiValueBoundaries);
 	}
 	
 	/**
-	 * @return null|EiEntryGui
+	 * @return null|EiGuiValueBoundary
 	 */
-	function getEiEntryGui() {
+	function getEiGuiValueBoundary() {
 		if ($this->isEmpty()) {
 			return null;
 		}
 		
-		if ($this->hasSingleEiEntryGui()) {
-			return current($this->eiEntryGuis);
+		if ($this->hasSingleEiGuiValueBoundary()) {
+			return current($this->eiGuiValueBoundaries);
 		}
 		
-		throw new IllegalStateException('EiGui contains multiple EiEntryGuis.');
+		throw new IllegalStateException('EiGui contains multiple EiGuiValueBoundaries.');
 	}
 	
-	function getEiEntryGuis() {
-		return $this->eiEntryGuis;
+	function getEiGuiValueBoundaries() {
+		return $this->eiGuiValueBoundaries;
 	}
 	
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry[] $eiEntries
 	 * @param int $treeLevel
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\op\ei\manage\gui\EiEntryGui
+	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundary
+	 *@throws \InvalidArgumentException
 	 */
-	function appendEiEntryGui(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
-		return $this->eiEntryGuis[] = $this->eiGuiModel->createEiEntryGui($eiFrame, $eiEntries, $this, $treeLevel);
+	function appendEiGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
+		return $this->eiGuiValueBoundaries[] = $this->eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, $eiEntries, $this, $treeLevel);
 	}
 	
 	/**
@@ -85,8 +85,8 @@ class EiGui {
 	 * @param int $treeLevel
 	 * @throws InaccessibleEiEntryException
 	 */
-	function appendNewEiEntryGui(EiFrame $eiFrame, int $treeLevel = null) {
-		return $this->eiEntryGuis[] = $this->eiGuiModel->createNewEiEntryGui($eiFrame, $this, $treeLevel);
+	function appendNewEiGuiValueBoundary(EiFrame $eiFrame, int $treeLevel = null) {
+		return $this->eiGuiValueBoundaries[] = $this->eiGuiDeclaration->createNewEiGuiValueBoundary($eiFrame, $this, $treeLevel);
 	}
 	
 	/**
@@ -95,11 +95,11 @@ class EiGui {
 	 *@throws IllegalStateException
 	 */
 	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded = true) {
-		if ($this->hasSingleEiEntryGui()) {
-			return $this->eiGuiModel->createSiEntry($eiFrame, current($this->eiEntryGuis), $siControlsIncluded);
+		if ($this->hasSingleEiGuiValueBoundary()) {
+			return $this->eiGuiDeclaration->createSiEntry($eiFrame, current($this->eiGuiValueBoundaries), $siControlsIncluded);
 		}
 		
-		throw new IllegalStateException('EiGuiModel has none or multiple EiEntryGuis');
+		throw new IllegalStateException('EiGuiDeclaration has none or multiple EiGuiValueBoundaries');
 	}
 	
 	/**
@@ -107,8 +107,8 @@ class EiGui {
 	 */
 	function createSiEntries(EiFrame $eiFrame, bool $siControlsIncluded = true) {
 		$siEntries = [];
-		foreach ($this->eiEntryGuis as $eiEntryGui) {
-			$siValueBoundary = $siEntries[] = $this->eiGuiModel->createSiEntry($eiFrame, $eiEntryGui, $siControlsIncluded);
+		foreach ($this->eiGuiValueBoundaries as $eiGuiValueBoundary) {
+			$siValueBoundary = $siEntries[] = $this->eiGuiDeclaration->createSiEntry($eiFrame, $eiGuiValueBoundary, $siControlsIncluded);
 		}
 		return $siEntries;
 	}

@@ -132,7 +132,7 @@
 	
 // 	public function getPreviewTypOptions() {
 // 		return $this->eiMask->getPreviewTypeOptions($this->eiFrame, 
-// 				$this->entryGuiModel->getEiEntryGui()->getViewMode());
+// 				$this->entryGuiModel->getEiGuiValueBoundary()->getViewMode());
 // 	}
 	
 // 	public function getEiEntityObjUrl(HttpContext $httpContext) {

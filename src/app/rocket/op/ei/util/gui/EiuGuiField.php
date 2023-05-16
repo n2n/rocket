@@ -29,11 +29,11 @@ class EiuGuiField {
 	}
 	
 	function createCallId() {
-		$eiEntryGuiTypeDef = $this->eiuEntryGuiTypeDef->getEiEntryGuiTypeDef();
+		$eiGuiEntry = $this->eiuEntryGuiTypeDef->getEiGuiEntry();
 		
 		return new ApiFieldCallId($this->defPropPath, 
-				$eiEntryGuiTypeDef->getEiEntry()->getEiMask()->getEiTypePath(),
+				$eiGuiEntry->getEiEntry()->getEiMask()->getEiTypePath(),
 				$this->eiuAnalyst->getEiuGuiFrame(true)->getViewMode(),
-				$eiEntryGuiTypeDef->getEiEntry()->getPid());
+				$eiGuiEntry->getEiEntry()->getPid());
 	}
 }

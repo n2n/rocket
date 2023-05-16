@@ -22,13 +22,13 @@
 namespace rocket\op\ei\component;
 
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\gui\EiEntryGuiAssembler;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\frame\EiFrame;
@@ -50,14 +50,14 @@ class IdNameFactory {
 // 	 * @param EiuEntry $eiuEntry
 // 	 * @param int $viewMode
 // 	 * @param array $eiPropPaths
-// 	 * @return EiEntryGui
+// 	 * @return EiGuiValueBoundary
 // 	 */
-// 	public static function createEiEntryGui(EiGuiFrame $eiGuiFrame, EiEntry $eiEntry, array $defPropPaths, int $treeLevel = null) {
+// 	public static function createEiGuiValueBoundary(EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry, array $defPropPaths, int $treeLevel = null) {
 // 		ArgUtils::valArrayLike($defPropPaths, DefPropPath::class);
 		
-// 		$eiEntryGui = new EiEntryGui($eiGuiFrame, $eiEntry, $treeLevel);
+// 		$eiGuiValueBoundary = new EiGuiValueBoundary($eiGuiMaskDeclaration, $eiEntry, $treeLevel);
 		
-// 		$guiFieldAssembler = new EiEntryGuiAssembler($eiEntryGui);
+// 		$guiFieldAssembler = new EiGuiValueBoundaryAssembler($eiGuiValueBoundary);
 		
 // 		foreach ($defPropPaths as $defPropPath) {
 // 			$guiFieldAssembler->assembleGuiField($defPropPath);
@@ -65,7 +65,7 @@ class IdNameFactory {
 		
 // 		$guiFieldAssembler->finalize();
 		
-// 		return $eiEntryGui;
+// 		return $eiGuiValueBoundary;
 // 	}
 }
 
@@ -77,15 +77,15 @@ class IdNameFactory {
 // 		$this->eiModificatorCollection = $eiModificatorCollection;
 // 	}
 
-// 	public function onInitialized(EiGuiFrame $eiGuiFrame) {
+// 	public function onInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 // 		foreach ($this->eiModificatorCollection as $eiModificator) {
-// 			$eiModificator->onEiGuiFrameInitialized($eiGuiFrame);
+// 			$eiModificator->onEiGuiMaskDeclarationInitialized($eiGuiMaskDeclaration);
 // 		}
 // 	}
 
-// 	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
+// 	public function onNewEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary) {
 // 		foreach ($this->eiModificatorCollection as $eiModificator) {
-// 			$eiModificator->onNewEiEntryGui($eiEntryGui);
+// 			$eiModificator->onNewEiGuiValueBoundary($eiGuiValueBoundary);
 // 		}
 // 	}
 

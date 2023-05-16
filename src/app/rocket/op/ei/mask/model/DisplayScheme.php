@@ -21,7 +21,7 @@
  */
 namespace rocket\op\ei\mask\model;
 
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\manage\gui\GuiDefinition;
 use rocket\op\ei\manage\gui\ViewMode;
 
@@ -154,12 +154,12 @@ class DisplayScheme {
 	}
 	
 	/**
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @return GuiDefinition $guiDefinition
 	 */
-	public function initEiGuiFrame(EiGuiFrame $eiGuiFrame, GuiDefinition $guiDefinition) {
+	public function initEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration, GuiDefinition $guiDefinition) {
 		$displayStructure = null;
-		switch ($eiGuiFrame->getViewMode()) {
+		switch ($eiGuiMaskDeclaration->getViewMode()) {
 			case ViewMode::BULKY_READ:
 				$displayStructure = $this->getDetailDisplayStructure() ?? $this->getBulkyDisplayStructure();
 				break;
@@ -176,16 +176,16 @@ class DisplayScheme {
 				break;
 		}
 		
-		$commonEiGuiSiFactory = new CommonEiGuiSiFactory($eiGuiFrame);
+		$commonEiGuiSiFactory = new CommonEiGuiSiFactory($eiGuiMaskDeclaration);
 		
 		if ($displayStructure === null) {
-			$eiGuiFrame->init($commonEiGuiSiFactory);
+			$eiGuiMaskDeclaration->init($commonEiGuiSiFactory);
 			
-			$displayStructure = DisplayStructure::fromEiGuiFrame($eiGuiFrame);
+			$displayStructure = DisplayStructure::fromEiGuiMaskDeclaration($eiGuiMaskDeclaration);
 		} else {
-			$eiGuiFrame->init($commonEiGuiSiFactory, 
+			$eiGuiMaskDeclaration->init($commonEiGuiSiFactory, 
 					$guiDefinition->filterDefPropPaths($displayStructure->getAllDefPropPaths()));
-			$displayStructure = $displayStructure->purified($eiGuiFrame);
+			$displayStructure = $displayStructure->purified($eiGuiMaskDeclaration);
 		}
 		
 		$commonEiGuiSiFactory->setDisplayStructure($displayStructure->groupedItems());

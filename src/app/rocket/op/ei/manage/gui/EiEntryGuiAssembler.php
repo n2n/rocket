@@ -29,9 +29,9 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\field\GuiField;
 
-class EiEntryGuiAssembler {
+class EiGuiValueBoundaryAssembler {
 	private $guiDefinition;
-	private $eiEntryGui;
+	private $eiGuiValueBoundary;
 	
 	private $eiu;
 	private $eiObjectForm;
@@ -41,17 +41,17 @@ class EiEntryGuiAssembler {
 	private $guiFieldForks = array();
 	private $forkedPropertyPaths = array();
 	
-	public function __construct(EiEntryGui $eiEntryGui) {
-		$this->guiDefinition = $eiEntryGui->getEiGuiFrame()->getGuiDefinition();
-		$this->eiEntryGui = $eiEntryGui;
-		$this->eiu = new Eiu($eiEntryGui);
+	public function __construct(EiGuiValueBoundary $eiGuiValueBoundary) {
+		$this->guiDefinition = $eiGuiValueBoundary->getEiGuiMaskDeclaration()->getGuiDefinition();
+		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
+		$this->eiu = new Eiu($eiGuiValueBoundary);
 	}
 	
 	/**
-	 * @return EiEntryGui
+	 * @return EiGuiValueBoundary
 	 */
-	public function getEiEntryGui() {
-		return $this->eiEntryGui;
+	public function getEiGuiValueBoundary() {
+		return $this->eiGuiValueBoundary;
 	}
 	
 	/**
@@ -60,7 +60,7 @@ class EiEntryGuiAssembler {
 	private function getOrCreateDispatchable() {
 		if ($this->eiObjectForm === null) {
 			$this->eiObjectForm = new MagForm(new MagCollection());
-			$this->eiEntryGui->setDispatchable($this->eiObjectForm);
+			$this->eiGuiValueBoundary->setDispatchable($this->eiObjectForm);
 		}
 		
 		return $this->eiObjectForm;
@@ -84,7 +84,7 @@ class EiEntryGuiAssembler {
 	 * @return NULL|\rocket\op\ei\manage\gui\field\GuiField
 	 */
 	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, DefPropPath $defPropPath) {
-		$guiField = $guiPropWrapper->buildGuiField($this->eiEntryGui);
+		$guiField = $guiPropWrapper->buildGuiField($this->eiGuiValueBoundary);
 		
 		return $guiField;
 	}
@@ -116,8 +116,8 @@ class EiEntryGuiAssembler {
 	 * @return \rocket\op\ei\manage\gui\field\GuiField
 	 */
 	public function assembleGuiField(DefPropPath $defPropPath) {
-		if ($this->eiEntryGui->containsGuiFieldDefPropPath($defPropPath)) {
-			return $this->eiEntryGui->getGuiFieldAssembly($defPropPath);
+		if ($this->eiGuiValueBoundary->containsGuiFieldDefPropPath($defPropPath)) {
+			return $this->eiGuiValueBoundary->getGuiFieldAssembly($defPropPath);
 		}
 		
 		$guiField = null;
@@ -131,7 +131,7 @@ class EiEntryGuiAssembler {
 		}
 		
 		if ($guiField !== null) {
-			$this->eiEntryGui->putGuiField($defPropPath, $guiField);
+			$this->eiGuiValueBoundary->putGuiField($defPropPath, $guiField);
 		}
 		
 		return $guiField;
@@ -143,9 +143,9 @@ class EiEntryGuiAssembler {
 	
 	public function finalize() {
 		foreach ($this->guiFieldForks as $id => $guiFieldFork) {
-			$this->eiEntryGui->putGuiFieldFork(new DefPropPath([EiPropPath::create($id)]), $guiFieldFork);
+			$this->eiGuiValueBoundary->putGuiFieldFork(new DefPropPath([EiPropPath::create($id)]), $guiFieldFork);
 		}
 		
-		$this->eiEntryGui->markInitialized();
+		$this->eiGuiValueBoundary->markInitialized();
 	}
 }

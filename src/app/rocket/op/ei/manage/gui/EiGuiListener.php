@@ -4,17 +4,17 @@ namespace rocket\op\ei\manage\gui;
 interface EiGuiListener {
 	
 	/**
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 */
-	public function onInitialized(EiGuiFrame $eiGuiFrame);
+	public function onInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration);
 
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 */
-	public function onNewEiEntryGui(EiEntryGui $eiEntryGui);
+	public function onNewEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary);
 
 	/**
 	 * 
 	 */
-	public function onGiBuild(EiGuiFrame $eiGuiFrame);
+	public function onGiBuild(EiGuiMaskDeclaration $eiGuiMaskDeclaration);
 }

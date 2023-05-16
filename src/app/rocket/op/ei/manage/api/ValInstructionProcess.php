@@ -25,7 +25,7 @@ use rocket\si\api\SiValResponse;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\api\SiValResult;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\si\api\SiPartialContentInstruction;
 use rocket\si\content\SiValueBoundary;
 use rocket\si\api\SiValInstruction;
@@ -34,7 +34,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\si\api\SiValGetResult;
 use rocket\si\api\SiValGetInstruction;
-use rocket\op\ei\manage\frame\EiEntryGuiResult;
+use rocket\op\ei\manage\frame\EiGuiValueBoundaryResult;
 use rocket\op\ei\manage\gui\EiGui;
 
 class ValInstructionProcess {
@@ -44,7 +44,7 @@ class ValInstructionProcess {
 	private $eiFrameUtil;
 	
 	private $eiEntry = null;
-	private $eiEntryGuiResults = null;
+	private $eiGuiValueBoundaryResults = null;
 	
 	function __construct(SiValInstruction $instruction, EiFrame $eiFrame) {
 		$this->instruction = $instruction;
@@ -55,7 +55,7 @@ class ValInstructionProcess {
 	
 	function clear() {
 		$this->eiEntry = null;
-		$this->eiEntryGuiResults = [];
+		$this->eiGuiValueBoundaryResults = [];
 	}
 	
 	/**
@@ -67,9 +67,9 @@ class ValInstructionProcess {
 		$entryInput = $this->instruction->getEntryInput();
 		
 		$eiGui = $this->util->determineEiGuiOfInput($entryInput);
-		$this->eiEntry = $eiGui->getEiEntryGui()->getSelectedTypeDef()->getEiEntry();
+		$this->eiEntry = $eiGui->getEiGuiValueBoundary()->getSelectedEiGuiEntry()->getEiEntry();
 
-		$result = new SiValResult($this->util->handleEntryInput($entryInput, $eiGui->getEiEntryGui()));
+		$result = new SiValResult($this->util->handleEntryInput($entryInput, $eiGui->getEiGuiValueBoundary()));
 // 		$result->setEntryError();
 		
 		foreach ($this->instruction->getGetInstructions() as $key => $getInstruction) {
@@ -94,7 +94,7 @@ class ValInstructionProcess {
 		$result->setEntry($eiGui->createSiEntry($eiFrame, $getInstruction->areControlsIncluded()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
-			$result->setDeclaration($eiGui->getEiGuiModel()->createSiDeclaration($eiFrame));
+			$result->setDeclaration($eiGui->getEiGuiDeclaration()->createSiDeclaration($eiFrame));
 		}
 		
 		return $result;
@@ -104,23 +104,23 @@ class ValInstructionProcess {
 	 * @param EiGui $eiGui
 	 */
 	private function registerEiGui($eiGui) {
-		$this->eiEntryGuiResults[$eiGui->getEiGuiModel()->getViewMode()] = $eiGui;
+		$this->eiGuiValueBoundaryResults[$eiGui->getEiGuiDeclaration()->getViewMode()] = $eiGui;
 	}
 	
 	/**
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @return EiEntryGuiResult
+	 * @return EiGuiValueBoundaryResult
 	 */
-	private function obtainEiEntryGuiResult(bool $bulky, bool $readOnly) {
+	private function obtainEiGuiValueBoundaryResult(bool $bulky, bool $readOnly) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $this->eiEntry->isNew());
-		if (isset($this->eiEntryGuiResults[$viewMode])) {
-			return $this->eiEntryGuiResults[$viewMode];
+		if (isset($this->eiGuiValueBoundaryResults[$viewMode])) {
+			return $this->eiGuiValueBoundaryResults[$viewMode];
 		}
 		
-		$eiEntryGuiResult = $this->eiFrameUtil->createEiEntryGui($this->eiEntry, $bulky, $readOnly, null, true);
-		$this->registerEiGui($eiEntryGuiResult);
-		return $eiEntryGuiResult;
+		$eiGuiValueBoundaryResult = $this->eiFrameUtil->createEiGuiValueBoundary($this->eiEntry, $bulky, $readOnly, null, true);
+		$this->registerEiGui($eiGuiValueBoundaryResult);
+		return $eiGuiValueBoundaryResult;
 	}
 	
 	/**
@@ -135,18 +135,18 @@ class ValInstructionProcess {
 	 * @return \rocket\si\api\SiValResult
 	 */
 	private function handleNewEntry() {
-		$eiEntryGuiMulti = $this->eiFrameUtil->createNewEiEntryGuiMulti(
+		$eiGuiValueBoundaryMulti = $this->eiFrameUtil->createNewEiGuiValueBoundaryMulti(
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 				
-		return $this->createEntryResult($eiEntryGuiMulti->createSiEntry(), $eiEntryGuiMulti->getEiEntryGuis());	
+		return $this->createEntryResult($eiGuiValueBoundaryMulti->createSiEntry(), $eiGuiValueBoundaryMulti->getEiGuiValueBoundaries());	
 	}
 	
 	/**
 	 * @param SiValueBoundary $siEntry
-	 * @param EiEntryGui[] $eiEntryGuis
+	 * @param EiGuiValueBoundary[] $eiGuiValueBoundaries
 	 * @return \rocket\si\api\SiValResult
 	 */
-	private function createEntryResult(SiValueBoundary $siValueBoundary, array $eiEntryGuis) {
+	private function createEntryResult(SiValueBoundary $siValueBoundary, array $eiGuiValueBoundaries) {
 		$result = new SiValResult();
 		$result->setEntry($siValueBoundary);
 		
@@ -155,9 +155,9 @@ class ValInstructionProcess {
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiEntryGuis));
+			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiGuiValueBoundaries));
 		} else {
-			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiEntryGuis));
+			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiGuiValueBoundaries));
 		}
 		
 		return $result;
@@ -165,20 +165,20 @@ class ValInstructionProcess {
 	
 	private function handlePartialContent(SiPartialContentInstruction $spci) {
 		$num = $this->eiFrameUtil->count();
-		$eiGuiFrame = $this->eiFrameUtil->lookupEiGuiFrameFromRange($spci->getFrom(), $spci->getNum(),
+		$eiGuiMaskDeclaration = $this->eiFrameUtil->lookupEiGuiMaskDeclarationFromRange($spci->getFrom(), $spci->getNum(),
 				$this->instruction->isBulky(), $this->instruction->isReadOnly());
 		
 		$result = new SiValResult();
-		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGuiFrame));
+		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGuiMaskDeclaration));
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;
 		}
 		
 		if ($this->instruction->isBulky()) {
-			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGuiFrame));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGuiMaskDeclaration));
 		} else {
-			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGuiFrame));
+			$result->setDeclaration($this->apiUtil->createSiDeclaration($eiGuiMaskDeclaration));
 		}
 		
 		return $result;

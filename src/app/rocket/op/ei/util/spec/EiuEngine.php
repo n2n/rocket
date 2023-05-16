@@ -19,8 +19,8 @@ use rocket\op\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\op\ei\util\sort\EiuSortForm;
 use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\op\ei\manage\ManageState;
-use rocket\op\ei\manage\gui\EiEntryGui;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\GuiException;
 use rocket\op\ei\util\EiuAnalyst;
@@ -415,9 +415,9 @@ class EiuEngine {
 	function newGuiModel(int $viewMode, array $defPropPathsArg = null) {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 
-		$eiGuiModel =  $this->eiEngine->obtainEiGuiModel($viewMode, $defPropPaths);
+		$eiGuiDeclaration =  $this->eiEngine->obtainEiGuiDeclaration($viewMode, $defPropPaths);
 		
-		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
+		return new EiuGuiModel($eiGuiDeclaration, $this->eiuAnalyst);
 	}
 	
 	/**
@@ -435,14 +435,14 @@ class EiuEngine {
 	/**
 	 * @return EiuGuiModel 
 	 */
-	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
+	function newForgeMultiGuiDeclaration(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
 			array $defPropPathsArg = null) {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiGuiModel =  $this->eiEngine->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths);
-		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
+		$eiGuiDeclaration =  $this->eiEngine->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths);
+		return new EiuGuiModel($eiGuiDeclaration, $this->eiuAnalyst);
 	}
 }
 
@@ -453,37 +453,37 @@ class ClosureGuiDefinitionListener implements GuiDefinitionListener {
 		$this->callback = $callback;
 	}
 	
-	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		$c = $this->callback;
-		$c(new Eiu($eiGuiFrame));
+		$c(new Eiu($eiGuiMaskDeclaration));
 	}
 	
-	public function onEiGuiFrameInitialized(EiGuiFrame $eiGuiFrame) {
+	public function onEiGuiMaskDeclarationInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 	}
 
 }
 
 class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
-	private $eiEntryGuiCallback;
+	private $eiGuiValueBoundaryCallback;
 	
-	public function __construct(\Closure $eiEntryGuiCallback) {
-		$this->eiEntryGuiCallback = $eiEntryGuiCallback;
+	public function __construct(\Closure $eiGuiValueBoundaryCallback) {
+		$this->eiGuiValueBoundaryCallback = $eiGuiValueBoundaryCallback;
 	}
 	
-	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
-		$c = $this->eiEntryGuiCallback;
-		$c(new Eiu($eiEntryGui));
+	public function onNewEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary) {
+		$c = $this->eiGuiValueBoundaryCallback;
+		$c(new Eiu($eiGuiValueBoundary));
 	}
 	
-	public function onInitialized(EiGuiFrame $eiGuiFrame) {
+	public function onInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		
 	}
 
-	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame) {
-		$eiGuiFrame->registerEiGuiListener($this);
+	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
+		$eiGuiMaskDeclaration->registerEiGuiListener($this);
 	}
 	
-	public function onGiBuild(EiGuiFrame $eiGuiFrame) {
+	public function onGiBuild(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		
 	}
 
