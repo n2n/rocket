@@ -8,7 +8,7 @@ use rocket\op\ei\manage\EiLaunch;
 
 class EiGuiDeclarationFactory {
 
-	function __construct(private EiMask $contextEiMask, private N2nContext $n2nContext) {
+	function __construct(private readonly EiMask $contextEiMask, private N2nContext $n2nContext) {
 	}
 	
 	/**
@@ -101,11 +101,9 @@ class EiGuiDeclarationFactory {
 	 * @param EiGuiDeclaration $eiGuiDeclaration
 	 * @param bool $nonAbstractOnly
 	 * @param array|null $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
-	 * @return EiGuiMaskDeclaration
+	 * @return void
 	 */
-	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, array $defPropPaths = null,
-			bool $guiStructureDeclarationsRequired = true) {
+	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, array $defPropPaths = null): void {
 		$contextEiMask = $eiGuiDeclaration->getContextEiMask();
 				
 		if (!$this->testIfAllowed($contextEiMask->getEiType(), $nonAbstractOnly, null)) {
@@ -113,27 +111,17 @@ class EiGuiDeclarationFactory {
 		}
 		
 		$guiDefinition = $contextEiMask->getEiEngine()->getGuiDefinition();
-		$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths,
-				$guiStructureDeclarationsRequired);
+		$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths);
 	}
-	
-	/**
-	 * @param N2nContext $n2nContext
-	 * @param EiGuiDeclaration $eiGuiDeclaration
-	 * @param array $allowedTypeIds
-	 * @param array $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
-	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration[]
-	 */
+
 	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $creatablesOnly, array $allowedEiTypes = null,
-			array $defPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
+			array $defPropPaths = null): void {
 		$contextEiMask = $eiGuiDeclaration->getContextEiMask();
 		$contextEiType = $contextEiMask->getEiType();
 		
 		if ($this->testIfAllowed($contextEiType, $creatablesOnly, $allowedEiTypes)) {
 			$guiDefinition = $contextEiMask->determineEiMask($contextEiType)->getEiEngine()->getGuiDefinition();
-			$eiGuiMaskDeclaration = $guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths,
-					$guiStructureDeclarationsRequired);
+			$eiGuiMaskDeclaration = $guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths);
 			$eiGuiDeclaration->putEiGuiMaskDeclaration($eiGuiMaskDeclaration);
 		}
 
@@ -143,8 +131,7 @@ class EiGuiDeclarationFactory {
 			}
 			
 			$guiDefinition = $contextEiMask->determineEiMask($eiType)->getEiEngine()->getGuiDefinition();
-			$eiGuiMaskDeclaration = $guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths,
-					$guiStructureDeclarationsRequired);
+			$eiGuiMaskDeclaration = $guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths);
 			$eiGuiDeclaration->putEiGuiMaskDeclaration($eiGuiMaskDeclaration);
 		}
 	}

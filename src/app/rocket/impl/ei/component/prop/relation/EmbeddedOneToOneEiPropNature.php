@@ -23,14 +23,11 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\meta\SiStructureType;
-use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\op\ei\component\prop\EiModCollection;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiField;
@@ -50,7 +47,8 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		parent::__construct($entityProperty, $accessProxy,
 				new RelationModel($this, false, false, RelationModel::MODE_EMBEDDED));
 
-		$this->displayConfig = (new DisplayConfig(ViewMode::all()))->setSiStructureType(SiStructureType::SIMPLE_GROUP)
+		$this->displayConfig = (new DisplayConfig(ViewMode::all()))
+				->setSiStructureType(SiStructureType::SIMPLE_GROUP)
 				->setDefaultDisplayedViewModes(ViewMode::bulky());
 	}
 
@@ -79,12 +77,12 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		}
 		
 		$targetEiuFrame = null;
-		if ($readOnly){
+		if ($readOnly) {
 			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		} else {
 			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+					->exec($this->getRelationModel()->getTargetEditEiCmdPath());
 		}
 
 		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);

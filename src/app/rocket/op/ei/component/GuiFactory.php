@@ -47,12 +47,13 @@ use rocket\op\ei\manage\gui\GuiBuildFailedException;
 use rocket\op\ei\manage\gui\control\GuiControlPath;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\manage\api\ApiControlCallId;
+use rocket\op\ei\manage\gui\control\GuiControlMap;
 
 class GuiFactory {
-	private $eiMask;
+//	private $eiMask;
 	
 	public function __construct(EiMask $eiMask) {
-		$this->eiMask = $eiMask;
+//		$this->eiMask = $eiMask;
 	}
 
 	
@@ -140,17 +141,20 @@ class GuiFactory {
 		
 // 		return $this->eiMask->getDisplayScheme()->getEntryGuiControlOrder()->sort($controls);
 // 	}
-	
-	/**
-	 * @param EiMask $eiMask
-	 * @param EiuEntry $eiuEntry
-	 * @param int $viewMode
-	 * @param array $eiPropPaths
-	 * @return EiGuiValueBoundary
-	 */
-	public static function createEiGuiEntry(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry) {
+
+	public static function createEiGuiEntry(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration,
+			EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry, bool $entryGuiControlsIncluded): EiGuiEntry {
+
+		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+		$idName = null;
+		if (!$eiEntry->isNew()) {
+			$deterIdNameDefinition = $eiEntry->getEiMask()->getEiEngine()->getIdNameDefinition();
+			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(),
+					$eiFrame->getN2nContext(), $n2nLocale);
+		}
+
 		$eiGuiEntry = new EiGuiEntry($eiGuiValueBoundary, $eiGuiMaskDeclaration->getGuiDefinition()->getEiMask(),
-				$eiEntry);
+				$eiEntry, $idName, $n2nLocale);
 		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
 		
 		$guiFieldMap = new GuiFieldMap();
@@ -161,12 +165,13 @@ class GuiFactory {
 				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
 			}
 		}
-		$eiGuiEntry->init($guiFieldMap);
 
-		foreach ($eiGuiMaskDeclaration->getGuiDefinition()->createEntryGuiControls($eiFrame, $eiGuiEntry, $eiEntry)
-				 as $guiControlPathStr => $entryGuiControl) {
-			$eiGuiEntry->putGuiControl(GuiControlPath::create($guiControlPathStr), $entryGuiControl);
+		$guiControlMap = null;
+		if ($entryGuiControlsIncluded) {
+			$guiControlMap = $eiGuiMaskDeclaration->createEntryGuiControlsMap($eiFrame, $eiEntry);
 		}
+
+		$eiGuiEntry->init($guiFieldMap, $guiControlMap);
 				
 		return $eiGuiEntry;
 	}

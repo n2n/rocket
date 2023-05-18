@@ -45,10 +45,10 @@ use rocket\op\ei\manage\gui\GuiDefinition;
 use rocket\op\ei\manage\idname\IdNameDefinition;
 use rocket\op\ei\manage\gui\control\GuiControl;
 use rocket\op\ei\manage\EiLaunch;
-use rocket\op\ei\manage\gui\LazyEiGuiDeclarationStore;
 use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\gui\GuiBuildFailedException;
+use n2n\util\ex\NotYetImplementedException;
 
 class EiEngine {
 
@@ -63,7 +63,8 @@ class EiEngine {
 	 * @param N2nContext $n2nContext
 	 */
 	function __construct(private EiMask $eiMask, private N2nContext $n2nContext) {
-		$this->eiGuiDeclarationEngine = new EiGuiDeclarationEngine(new EiGuiDeclarationFactory($this->eiMask, $this->n2nContext));
+		$this->eiGuiDeclarationEngine = new EiGuiDeclarationEngine(
+				new EiGuiDeclarationFactory($this->eiMask, $this->n2nContext));
 	}
 
 	/**
@@ -187,7 +188,8 @@ class EiEngine {
 //	}
 
 	function createFramedFilterDefinition(EiFrame $eiFrame): FilterDefinition {
-		return $this->eiMask->getEiPropCollection()->createFramedFilterDefinition($eiFrame);
+		throw new NotYetImplementedException();
+//		return $this->eiMask->getEiPropCollection()->createFramedFilterDefinition($eiFrame);
 	}
 
 //	function createFilterDefinition(N2nContext $n2nContext): FilterDefinition {
@@ -303,14 +305,14 @@ class EiEngine {
 //	}
 
 
-	/**
-	 * @param EiGuiValueBoundary $eiGuiValueBoundary
-	 * @param HtmlView $view
-	 * @return GuiControl[]
-	 */
-	function createEiGuiValueBoundaryControls(EiGuiValueBoundary $eiGuiValueBoundary, HtmlView $view) {
-		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiGuiValueBoundary, $view);
-	}
+//	/**
+//	 * @param EiGuiValueBoundary $eiGuiValueBoundary
+//	 * @param HtmlView $view
+//	 * @return GuiControl[]
+//	 */
+//	function createEiGuiValueBoundaryControls(EiGuiValueBoundary $eiGuiValueBoundary, HtmlView $view) {
+//		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiGuiValueBoundary, $view);
+//	}
 
 	function obtainEiGuiDeclaration(int $viewMode, ?array $defPropPaths): EiGuiDeclaration {
 		return $this->eiGuiDeclarationEngine->obtainEiGuiDeclaration($viewMode, $defPropPaths);

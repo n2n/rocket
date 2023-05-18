@@ -34,12 +34,15 @@ use rocket\si\content\SiEntry;
 use rocket\op\ei\manage\gui\control\GuiControlPath;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\manage\api\ApiControlCallId;
+use rocket\op\ei\manage\gui\control\GuiControlMap;
+use n2n\l10n\Message;
+use n2n\l10n\N2nLocale;
 
 class EiGuiEntry {
 	/**
 	 * @var EiGuiValueBoundary
 	 */
-	private $eiGuiValueBoundary;
+	private EiGuiValueBoundary $eiGuiValueBoundary;
 	/**
 	 * @var EiMask
 	 */
@@ -51,16 +54,15 @@ class EiGuiEntry {
 
 	private ?GuiFieldMap $guiFieldMap = null;
 
+	private ?GuiControlMap $guiControlMap = null;
+
 	/**
-	 * @var array<GuiControl>
+	 * @var EiGuiEntryListener[]
 	 */
-	private array $guiControls = [];
-	/**
-	 * @var EiGuiValueBoundaryListener[]
-	 */
-	private array $eiGuiValueBoundaryListeners = array();
+	private array $eiGuiEntryListeners = array();
 	
-	public function __construct(EiGuiValueBoundary $eiGuiValueBoundary, EiMask $eiMask, EiEntry $eiEntry) {
+	public function __construct(EiGuiValueBoundary $eiGuiValueBoundary, EiMask $eiMask, EiEntry $eiEntry,
+			private readonly ?string $idName, private readonly N2nLocale $n2nLocale) {
 		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
 		$this->eiMask = $eiMask;
 		$this->eiEntry = $eiEntry;
@@ -78,6 +80,10 @@ class EiGuiEntry {
 	 */
 	function getEiGuiValueBoundary(): EiGuiValueBoundary {
 		return $this->eiGuiValueBoundary;
+	}
+
+	function getIdName(): ?string {
+		return $this->idName;
 	}
 	
 	/**
@@ -119,12 +125,13 @@ class EiGuiEntry {
 		throw new GuiException('No GuiField with EiPropPath \'' . $defPropPath . '\' for \'' . $this . '\' registered');
 	}
 	
-	function init(GuiFieldMap $guiFieldMap) {
+	function init(GuiFieldMap $guiFieldMap, ?GuiControlMap $guiControlMap): void {
 		$this->ensureNotInitialized();
 		
 		$this->guiFieldMap = $guiFieldMap;
+		$this->guiControlMap = $guiControlMap;
 		
-		foreach ($this->eiGuiValueBoundaryListeners as $eiGuiValueBoundaryListener) {
+		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
 			$eiGuiValueBoundaryListener->finalized($this);
 		}
 	}
@@ -149,19 +156,10 @@ class EiGuiEntry {
 		throw new IllegalStateException('EiGuiValueBoundary already initialized.');
 	}
 
-	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded = true): SiEntry {
+	function createSiEntry(): SiEntry {
 		$eiEntry = $this->getEiEntry();
 
-		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
-		$typeId = $this->getEiMask()->getEiType()->getId();
-		$idName = null;
-		if (!$eiEntry->isNew()) {
-			$deterIdNameDefinition = $eiEntry->getEiMask()->getEiEngine()->getIdNameDefinition();
-			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(),
-					$eiFrame->getN2nContext(), $n2nLocale);
-		}
-
-		$siEntry = new SiEntry($eiEntry->getPid(), $idName);
+		$siEntry = new SiEntry($eiEntry->getPid(), $this->idName);
 
 		foreach ($this->getGuiFieldMap()->getAllGuiFields() as $defPropPathStr => $guiField) {
 			if (null !== ($siField = $guiField->getSiField())) {
@@ -171,20 +169,31 @@ class EiGuiEntry {
 // 			$siValueBoundary->putContextFields($defPropPathStr, $guiField->getContextSiFields());
 		}
 
-		if (!$siControlsIncluded) {
-			return $siEntry;
-		}
+		$siEntry->setMessages(array_map(fn (Message $m) => $m->t($this->n2nLocale), $this->getGeneralMessages()));
 
-		foreach ($this->guiControls as $guiControlPathStr => $entryGuiControl) {
-			$guiControlPath = GuiControlPath::create($guiControlPathStr);
-			$siEntry->putControl($guiControlPathStr, $entryGuiControl->toSiControl(
-					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
-					new ApiControlCallId($guiControlPath,
-							$this->getEiMask()->getEiTypePath(), $eiEntry->getPid(),
-							($eiEntry->isNew() ? $eiEntry->getEiType()->getId() : null))));
+		foreach ($this->guiControlMap->createSiControls() as $guiControlPathStr => $siControl) {
+			$siEntry->putControl($guiControlPathStr, $siControl);
 		}
 
 		return $siEntry;
+	}
+
+	/**
+	 * @return Message[]
+	 */
+	function getGeneralMessages(): array {
+		if (!$this->eiEntry->hasValidationResult()) {
+			return [];
+		}
+
+		$eiPropPaths = $this->guiFieldMap->getEiPropPaths();
+
+		$messages = [];
+		foreach ($this->eiEntry->getValidationResult()
+						 ->getInvalidEiFieldValidationResults(false, exceptEiPropPaths: $eiPropPaths) as $validationResult) {
+			array_push($messages, ...$validationResult->getMessages(false));
+		}
+		return $messages;
 	}
 
 	/**
@@ -192,7 +201,7 @@ class EiGuiEntry {
 	 * @throws IllegalStateException
 	 * @throws \InvalidArgumentException
 	 */
-	function handleSiEntryInput(SiEntryInput $siEntryInput) {
+	function handleSiEntryInput(SiEntryInput $siEntryInput): void {
 		if ($this->eiMask->getEiType()->getId() != $siEntryInput->getMaskId()) {
 			throw new \InvalidArgumentException('EiType missmatch.');
 		}
@@ -220,24 +229,23 @@ class EiGuiEntry {
 	public function save(): void {
 		$this->ensureInitialized();
 		
-		foreach ($this->eiGuiValueBoundaryListeners as $eiGuiValueBoundaryListener) {
+		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
 			$eiGuiValueBoundaryListener->onSave($this);
 		}
 		
 		$this->getGuiFieldMap()->save();
 		
-		foreach ($this->eiGuiValueBoundaryListeners as $eiGuiValueBoundaryListener) {
+		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
 			$eiGuiValueBoundaryListener->saved($this);
 		}
 	}
 	
-	
-	public function registerEiGuiValueBoundaryListener(EiGuiValueBoundaryListener $eiGuiValueBoundaryListener) {
-		$this->eiGuiValueBoundaryListeners[spl_object_hash($eiGuiValueBoundaryListener)] = $eiGuiValueBoundaryListener;
+	public function registerEiGuiEntryListener(EiGuiEntryListener $eiGuiEntryListener): void {
+		$this->eiGuiEntryListeners[spl_object_hash($eiGuiEntryListener)] = $eiGuiEntryListener;
 	}
 	
-	public function unregisterEiGuiValueBoundaryListener(EiGuiValueBoundaryListener $eiGuiValueBoundaryListener) {
-		unset($this->eiGuiValueBoundaryListeners[spl_object_hash($eiGuiValueBoundaryListener)]);
+	public function unregisterEiGuiEntryListener(EiGuiEntryListener $eiGuiEntryListener): void {
+		unset($this->eiGuiEntryListeners[spl_object_hash($eiGuiEntryListener)]);
 	}
 	
 	public function __toString() {

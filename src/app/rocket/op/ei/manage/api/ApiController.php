@@ -130,7 +130,7 @@ class ApiController extends ControllerAdapter {
 		$this->sendJson($siValResponse);
 	}
 	
-	function doExecControl(ParamPost $style, ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
+	function doExecControl(ParamPost $style, ParamPost $apiCallId, ParamPost $entryInputMaps = null): void {
 		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
@@ -144,6 +144,7 @@ class ApiController extends ControllerAdapter {
 			$viewMode = $this->parseViewMode($style, true);
 			$callProcess->determineEiGuiMaskDeclaration($viewMode, $newEiTypeType);
 		} else {
+			$viewMode = $this->parseViewMode($style, false);
 			$callProcess->determineEiGuiMaskDeclaration($viewMode, $siApiCallId->getEiTypeId());
 		}
 		
@@ -159,7 +160,7 @@ class ApiController extends ControllerAdapter {
 				($entryInputMaps !== null ? $callProcess->createSiInputResult() : null)));
 	}
 	
-	function doCallField(ParamPost $style, ParamPost $apiCallId, ParamPost $data) {
+	function doCallField(ParamPost $style, ParamPost $apiCallId, ParamPost $data): void {
 		$siApiCallId = $this->parseApiFieldCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);

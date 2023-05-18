@@ -19,6 +19,7 @@ use n2n\l10n\N2nLocale;
 use rocket\si\meta\SiMaskDeclaration;
 use rocket\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
+use rocket\op\ei\manage\gui\control\GuiControlMap;
 
 /**
  * @author andreas
@@ -265,6 +266,14 @@ class EiGuiMaskDeclaration {
 				
 		return array_merge($deter->createContextSiProps($n2nLocale, $this), $siProps);
 	}
+
+	function createEntryGuiControlsMap(EiFrame $eiFrame, EiEntry $eiEntry): GuiControlMap {
+		return $this->guiDefinition->createEntryGuiControlsMap($eiFrame, $this, $eiEntry);
+	}
+
+	function createGeneralGuiControlsMap(EiFrame $eiFrame): GuiControlMap {
+		return $this->guiDefinition->createGeneralGuiControlsMap($eiFrame, $this);
+	}
 	
 	
 // 	function getRootEiPropPaths() {
@@ -389,63 +398,59 @@ class EiGuiMaskDeclaration {
 // 		return $forkDefPropPaths;
 // 	}
 
-	/**
-	 * @param EiEntry $eiEntry
-	 * @param bool $makeEditable
-	 * @param int $treeLevel
-	 * @param bool $append
-	 * @return EiGuiEntry
-	 */
-	function applyEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry) {
+	function applyEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry,
+			bool $entryGuiControlsIncluded): EiGuiValueBoundary|EiGuiEntry {
 		$this->ensureInit();
 		
-		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry);
+		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry, $entryGuiControlsIncluded);
 		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
 		
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
-			$eiGuiMaskDeclarationListener->onNewEiGuiValueBoundary($eiGuiEntry);
+			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
 		}
 		
 		return $eiGuiEntry;
 	}
-	
+
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiGuiValueBoundary $eiGuiValueBoundary
-	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundary
+	 * @param bool $entryGuiControlsIncluded
+	 * @return EiGuiEntry
 	 */
-	function applyNewEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary) {
+	function applyNewEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary,
+			bool $entryGuiControlsIncluded): EiGuiEntry {
 		$this->ensureInit();
 		
 		$eiObject = $this->getGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 		
-		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry);
+		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry, $entryGuiControlsIncluded);
 		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
 		
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
-			$eiGuiMaskDeclarationListener->onNewEiGuiValueBoundary($eiGuiEntry);
+			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
 		}
 		
 		return $eiGuiEntry;
 	}
 	
-	/**
-	 * @return \rocket\si\control\SiControl[]
-	 */
-	function createSelectionSiControls(EiFrame $eiFrame): array {
-		$siControls = [];
-		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
-				as $guiControlPathStr => $selectionGuiControl) {
-			$guiControlPath = GuiControlPath::create($guiControlPathStr);
-			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
-					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
-					new ApiControlCallId($guiControlPath,
-							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGuiDeclaration->getViewMode(), null));
-		}
-		return $siControls;
-	}
+//	/**
+//	 * @return \rocket\si\control\SiControl[]
+//	 */
+//	function createSelectionSiControls(EiFrame $eiFrame): array {
+//		$siControls = [];
+//		foreach ($this->guiDefinition->createSelectionGuiControls($eiFrame, $this)
+//				as $guiControlPathStr => $selectionGuiControl) {
+//			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+//			$siControls[$guiControlPathStr] = $selectionGuiControl->toSiControl(
+//					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+//					new ApiControlCallId($guiControlPath,
+//							$this->guiDefinition->getEiMask()->getEiTypePath(),
+//							$this->eiGuiDeclaration->getViewMode(), null));
+//		}
+//		return $siControls;
+//	}
 	
 	/**
 	 * @return \rocket\si\control\SiControl[]
@@ -500,17 +505,12 @@ class EiGuiMaskDeclaration {
 		
 // 		return $siValueBoundary;
 // 	}
-	
-	/**
-	 * @return SiEntry
-	 */
 
-	
 	
 	
 	/**
 	 * @param DefPropPath $prefixDefPropPath
-	 * @return \rocket\op\ei\manage\DefPropPath[]
+	 * @return DefPropPath[]
 	 */
 	function filterDefPropPaths(DefPropPath $prefixDefPropPath) {
 		$defPropPaths = [];
@@ -538,7 +538,7 @@ class EiGuiMaskDeclaration {
 	/**
 	 * @param EiGuiListener $eiGuiMaskDeclarationListener
 	 */
-	function unregisterEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener) {
+	function unregisterEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener): void {
 		unset($this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)]);
 	}
 }
@@ -590,7 +590,7 @@ class ContextSiFieldDeterminer {
 	/**
 	 * @return SiProp[]
 	 */
-	function createContextSiProps(N2nLocale $n2nLocale, EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
+	function createContextSiProps(N2nLocale $n2nLocale, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
 		
 		$siProps = [];
 		

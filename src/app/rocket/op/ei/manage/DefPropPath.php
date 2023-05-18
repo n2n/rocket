@@ -235,4 +235,19 @@ class DefPropPath implements Hashable {
 		
 		return self::createArray($expressions);
 	}
+
+	/**
+	 * @param DefPropPath[] $defPropPaths
+	 * @return EiPropPath[]
+	 */
+	static function extractFirstEiPropPaths(array $defPropPaths): array {
+		ArgUtils::valArray($defPropPaths, DefPropPath::class);
+
+		$eiPropPaths = [];
+		foreach ($defPropPaths as $defPropPath) {
+			$eiPropPath = $defPropPath->getFirstEiPropPath();
+			$eiPropPaths[(string) $eiPropPath] = $eiPropPath;
+		}
+		return $eiPropPaths;
+	}
 }

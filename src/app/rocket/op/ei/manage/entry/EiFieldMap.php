@@ -2,6 +2,8 @@
 namespace rocket\op\ei\manage\entry;
 
 use rocket\op\ei\EiPropPath;
+use n2n\util\type\ArgUtils;
+use rocket\op\ei\manage\DefPropPath;
 
 class EiFieldMap {
 	private $eiEntry;
@@ -96,7 +98,7 @@ class EiFieldMap {
 	function getWrappers() {
 		return $this->eiFieldWrappers;
 	}
-	
+
 	/**
 	 * @return boolean
 	 */

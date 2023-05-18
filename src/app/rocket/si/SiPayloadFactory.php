@@ -33,16 +33,16 @@ class SiPayloadFactory extends JsonPayload {
 	/**
 	 * @param SiGui $comp
 	 * @param SiControl[] $controls
-	 * @return \n2n\web\http\payload\impl\JsonPayload
+	 * @return JsonPayload
 	 */
-	static function create(SiGui $comp, array $breadcrumbs, string $title, array $controls = []) {
+	static function create(SiGui $comp, array $breadcrumbs, string $title, array $controls = []): JsonPayload {
 		ArgUtils::valArray($breadcrumbs, SiBreadcrumb::class);
 		
 		return new JsonPayload([
 			'title' => $title,
 			'breadcrumbs' => $breadcrumbs,
 			'comp' => self::buildDataFromComp($comp),
-			'controls' => self::createDataFromControls($controls)
+//			'controls' => self::createDataFromControls($controls)
 		]);
 	}
 	

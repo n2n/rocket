@@ -45,10 +45,8 @@ class GetInstructionProcess {
 		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
 	}
 	
-	/**
-	 * @return SiGetResponse 
-	 */
-	function exec() {
+
+	function exec(): SiGetResult {
 		if (null !== ($entryId = $this->instruction->getEntryId())) {
 			return $this->handleEntryId($entryId);
 		}
@@ -78,100 +76,93 @@ class GetInstructionProcess {
 			return DefPropPath::create($propId);
 		}, $propIds);
 	}
-	
-	/**
-	 * @param string $entryId
-	 * @return \rocket\si\api\SiGetResult
-	 */
-	private function handleEntryId(string $entryId) {
+
+	private function handleEntryId(string $entryId): SiGetResult {
 		$defPropPaths = $this->parseDefPropPaths();
 		
-		$eiGui = $this->util->lookupEiGuiByPid($entryId, $this->instruction->getStyle()->isBulky(), 
-				$this->instruction->getStyle()->isReadOnly(), $defPropPaths);
-// 		$eiGui = $this->eiFrameUtil->createEiGuiFromEiObject($eiObject, 
-// 				, null, $defPropPaths,
-// 				$this->instruction->isDeclarationRequested());
+		$eiGuiValueBoundary = $this->util->lookupEiGuiByPid($entryId, $this->instruction->getStyle()->isBulky(),
+				$this->instruction->getStyle()->isReadOnly(), $this->instruction->areEntryControlsIncluded(), $defPropPaths);
+
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();
-		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areEntryControlsIncluded()));
+		$getResult->setValueBoundary($eiGuiValueBoundary->createSiValueBoundary());
 		
 		if ($this->instruction->areGeneralControlsIncluded()) {
-			$getResult->setGeneralControls($eiGui->getEiGuiDeclaration()->createGeneralSiControls($eiFrame));
+			$getResult->setGeneralControls($eiGuiValueBoundary->getEiGuiDeclaration()->createGeneralSiControls($eiFrame));
 		}
 		
 		if ($this->instruction->isDeclarationRequested()) {
-			$getResult->setDeclaration($eiGui->getEiGuiDeclaration()->createSiDeclaration($eiFrame));
+			$getResult->setDeclaration($eiGuiValueBoundary->getEiGuiDeclaration()->createSiDeclaration($eiFrame));
 		}
 		
 		return $getResult;
 	}
 	
 	/**
-	 * @return \rocket\si\api\SiGetResult
+	 * @return SiGetResult
 	 */
 	private function handleNewEntry() {
 		$defPropPaths = $this->parseDefPropPaths();
-		
-		$eiGui = $this->eiFrameUtil->createNewEiGui(
+
+		$eiGuiDeclaration = $this->eiFrameUtil->createNewEiGuiDeclaration(
 				$this->instruction->getStyle()->isBulky(), $this->instruction->getStyle()->isReadOnly(), $defPropPaths,
-				$this->instruction->getTypeIds(), $this->instruction->isDeclarationRequested());
+				$this->instruction->getTypeIds());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();
-		$getResult->setEntry($eiGui->createSiEntry($eiFrame, $this->instruction->areEntryControlsIncluded()));
+		$getResult->setValueBoundary($eiGuiDeclaration
+				->createNewEiGuiValueBoundary($eiFrame, $this->instruction->areEntryControlsIncluded())
+				->createSiValueBoundary());
 		
-		if ($this->instruction->areGeneralControlsIncluded()) {
-			$getResult->setGeneralControls($eiGui->getEiGuiDeclaration()->createGeneralSiControls($eiFrame));
+		if ($this->instruction->areGeneralControlsIncluded() && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
+			$getResult->setGeneralControls($eiGuiDeclaration->getSingleEiGuiMaskDeclaration()
+					->createGeneralGuiControlsMap($eiFrame)->createSiControls());
 		}
 		
 		if ($this->instruction->isDeclarationRequested()) {
-			$getResult->setDeclaration($eiGui->getEiGuiDeclaration()->createSiDeclaration($eiFrame));
+			$getResult->setDeclaration($eiGuiDeclaration->createSiDeclaration($eiFrame));
 		}
 		
 		return $getResult;
 	}
 	
-	/**
-	 * @param SiValueBoundary $siEntry
-	 * @param EiGuiValueBoundary[] $eiGuiValueBoundaries
-	 * @return \rocket\si\api\SiGetResult
-	 */
-	private function createEntryResult(SiValueBoundary $siValueBoundary, array $eiGuiValueBoundaries) {
-		$result = new SiGetResult();
-		$result->setEntry($siValueBoundary);
-		
-		if (!$this->instruction->isDeclarationRequested()) {
-			return $result;
-		}
-		
-		if ($this->instruction->isBulky()) {
-			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiGuiValueBoundaries));
-		} else {
-			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiGuiValueBoundaries));
-		}
-		
-		return $result;
-	}
+
+//	private function createEntryResult(SiValueBoundary $siValueBoundary, array $eiGuiValueBoundaries): SiGetResult {
+//		$result = new SiGetResult();
+//		$result->setValueBoundary($siValueBoundary);
+//
+//		if (!$this->instruction->isDeclarationRequested()) {
+//			return $result;
+//		}
+//
+//		if ($this->instruction->isBulky()) {
+//			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiGuiValueBoundaries));
+//		} else {
+//			$result->setDeclaration($this->apiUtil->createMultiBuildupSiDeclaration($eiGuiValueBoundaries));
+//		}
+//
+//		return $result;
+//	}
 	
-	private function handlePartialContent(SiPartialContentInstruction $spci) {
+	private function handlePartialContent(SiPartialContentInstruction $spci): SiGetResult {
 		$num = $this->eiFrameUtil->count($spci->getQuickSearchStr());
-		$eiGui = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
-				$this->instruction->getStyle()->isBulky(), $this->instruction->getStyle()->isReadOnly(), $this->parseDefPropPaths(),
-				$spci->getQuickSearchStr());
+		$rangeResult = $this->eiFrameUtil->lookupEiGuiFromRange($spci->getFrom(), $spci->getNum(),
+				$this->instruction->getStyle()->isBulky(), $this->instruction->getStyle()->isReadOnly(),
+				$this->instruction->areEntryControlsIncluded(), $this->parseDefPropPaths(), $spci->getQuickSearchStr());
 		
 		$result = new SiGetResult();
-		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $eiGui));
+		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $rangeResult->eiGuiValueBoundaries));
 		
 		if ($this->instruction->areGeneralControlsIncluded()) {
-			$result->setGeneralControls($eiGui->getEiGuiDeclaration()->createGeneralSiControls($this->eiFrameUtil->getEiFrame()));
+			$result->setGeneralControls($rangeResult->eiGuiDeclaration->createGeneralSiControls($this->eiFrameUtil->getEiFrame()));
 		}
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;
 		}
 		
-		$result->setDeclaration($eiGui->getEiGuiDeclaration()->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
+		$result->setDeclaration($rangeResult->eiGuiDeclaration->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
 		
 		return $result;
 	}

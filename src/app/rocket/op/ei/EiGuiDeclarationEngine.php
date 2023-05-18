@@ -10,16 +10,18 @@ use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\gui\GuiBuildFailedException;
+use rocket\op\ei\manage\DefPropPath;
 
 class EiGuiDeclarationEngine {
 	
-	function __construct(private EiGuiDeclarationFactory $eiGuiDeclarationFactory) {
+	function __construct(private readonly EiGuiDeclarationFactory $eiGuiDeclarationFactory) {
 	}
 
 	/**
 	 * @param int $viewMode
-	 * @param EiType|null $allowedEiTypes
-	 * @param EiPropPath|null $defPropPaths
+	 * @param EiType[]|null $allowedEiTypes
+	 * @param DefPropPath[]|null $defPropPaths
+	 * @param bool $generalGuiControlsIncluded
 	 * @return string
 	 */
 	private function createCacheKey(int $viewMode, ?array $allowedEiTypes, ?array $defPropPaths): string {
@@ -33,8 +35,7 @@ class EiGuiDeclarationEngine {
 			$defPropPathsHashPart = json_encode(array_map(function($defPropPath) { return (string) $defPropPath; }, $defPropPaths));
 		}
 		
-		return $viewMode . ' ' . $allowedEiTypesHashPart . ' '
-				. $defPropPathsHashPart;
+		return $viewMode . ' ' . $allowedEiTypesHashPart . ' ' . $defPropPathsHashPart;
 	}
 	
 	private array $eiGuiDeclarations = [];

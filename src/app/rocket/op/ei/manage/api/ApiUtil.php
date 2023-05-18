@@ -33,12 +33,12 @@ use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\gui\EiGui;
 
 class ApiUtil {
-	private $eiFrame;
-	private $eiEngineUtil;
+//	private $eiFrame;
+//	private $eiEngineUtil;
 	
 	function __construct(EiFrame $eiFrame) {
-		$this->eiFrame = $eiFrame;
-		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getEiLaunch());
+//		$this->eiFrame = $eiFrame;
+//		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getEiLaunch());
 	}
 	
 // 	/**
@@ -73,13 +73,13 @@ class ApiUtil {
 // 	}
 
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @return \rocket\si\content\SiEntryQualifier
-	 */
-	function createSiEntryQualifier(EiObject $eiObject) {
-		return $eiObject->createSiEntryQualifier($this->eiEngineUtil->createIdName(), true);
-	}
+//	/**
+//	 * @param EiObject $eiObject
+//	 * @return \rocket\si\content\SiEntryQualifier
+//	 */
+//	function createSiEntryQualifier(EiObject $eiObject) {
+//		return $eiObject->createSiEntryQualifier($this->eiEngineUtil->createIdName(), true);
+//	}
 	
 // 	/**
 // 	 * @param EiObject $eiObject
@@ -106,10 +106,10 @@ class ApiUtil {
 	 * @param EiGui $eiGui
 	 * @return \rocket\si\content\SiPartialContent
 	 */
-	function createSiPartialContent(int $offset, int $count, EiGui $eiGui) {
+	function createSiPartialContent(int $offset, int $count, array $eiGuiValueBoundaries) {
 		$content = new SiPartialContent($count);
 		$content->setOffset($offset);
-		$content->setEntries($eiGui->createSiEntries($this->eiFrame));
+		$content->setValueBoundaries($eiGuiValueBoundaries);
 		return $content;
 	}
 	

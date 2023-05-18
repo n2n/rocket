@@ -35,54 +35,35 @@ use rocket\si\meta\SiStyle;
 
 class EiGuiValueBoundary {
 	
-	/**
-	 * @var EiMask
-	 */
-	private $contextEiMask;
-	/**
-	 * @var EiGui
-	 */
-	private $eiGui;
+
 	/**
 	 * @var string|null
 	 */
-	private $selectedEiMaskId = null;
+	private ?string $selectedEiMaskId = null;
 	/**	 
 	 * @var EiGuiEntry[]
 	 */
-	private $eiGuiEntries = [];
-	/**
-	 * @var int|null
-	 */
-	private $treeLevel;
-	
-	/**
-	 * @param int|null $treeLevel
-	 */
-	function __construct(EiMask $contextEiMask, EiGui $eiGui, int $treeLevel = null) {
-		$this->contextEiMask = $contextEiMask;
-		$this->eiGui = $eiGui;
-		$this->treeLevel = $treeLevel;
+	private array $eiGuiEntries = [];
+
+	function __construct(private readonly EiGuiDeclaration $eiGuiDeclaration, private readonly ?int $treeLevel = null) {
 	}
-	
-	/**
-	 * @return \rocket\op\ei\manage\gui\EiGui
-	 */
-	function getEiGui() {
-		return $this->eiGui;
+
+	function getEiGuiDeclaration(): EiGuiDeclaration {
+		return $this->eiGuiDeclaration;
 	}
 	
 	/**
 	 * @return int|null
 	 */
-	function getTreeLevel() {
+	function getTreeLevel(): ?int {
 		return $this->treeLevel;
 	}
-	
+
+
 	/**
 	 * @return EiEntry[] 
 	 */
-	function getEiEntries() {
+	function getEiEntries(): array {
 		return array_map(function ($arg) { return $arg->getEiEntry(); }, $this->eiGuiEntries);
 	}
 
@@ -92,7 +73,7 @@ class EiGuiValueBoundary {
 	function putEiGuiEntry(EiGuiEntry $eiGuiEntry): void {
 		$eiType = $eiGuiEntry->getEiMask()->getEiType();
 		
-		ArgUtils::assertTrue($eiType->isA($this->contextEiMask->getEiType()));
+		ArgUtils::assertTrue($eiType->isA($this->eiGuiDeclaration->getContextEiMask()->getEiType()));
 				
 		$this->eiGuiEntries[$eiType->getId()] = $eiGuiEntry;
 	}
@@ -100,7 +81,7 @@ class EiGuiValueBoundary {
 	/**
 	 * @return EiGuiEntry[]
 	 */
-	function getEiGuiEntries() {
+	function getEiGuiEntries(): array {
 		return $this->eiGuiEntries;
 	}
 	
@@ -120,19 +101,17 @@ class EiGuiValueBoundary {
 
 
 	/**
-	 * @param EiFrame $eiFrame
-	 * @param bool $siControlsIncluded
 	 * @return SiValueBoundary
 	 */
-	function createSiEntry(EiFrame $eiFrame, bool $siControlsIncluded) {
+	function createSiValueBoundary(): SiValueBoundary {
+		$viewMode = $this->eiGuiDeclaration->getViewMode();
+
 		$siValueBoundary = new SiValueBoundary(/*$eiGuiValueBoundary->createSiEntryIdentifier(),*/
-				new SiStyle(ViewMode::isBulky($this->viewMode), ViewMode::isReadOnly($this->viewMode)));
+				new SiStyle(ViewMode::isBulky($viewMode), ViewMode::isReadOnly($viewMode)));
 		$siValueBoundary->setTreeLevel($this->getTreeLevel());
 
-
 		foreach ($this->eiGuiEntries as $key => $eiGuiEntry) {
-			$siValueBoundary->putEntry($eiGuiEntry->getEiMask()->getEiTypePath(),
-					$eiGuiEntry->createSiEntry($eiFrame, $siControlsIncluded));
+			$siValueBoundary->putEntry($eiGuiEntry->getEiMask()->getEiTypePath(), $eiGuiEntry->createSiEntry());
 		}
 
 		if ($this->isEiGuiEntrySelected()) {
@@ -147,14 +126,14 @@ class EiGuiValueBoundary {
 	 * @throws CorruptedSiInputDataException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput): void {
-		$eiTypeId = $siEntryInput->getMaskId();
+		$eiMaskId = $siEntryInput->getMaskId();
 		
-		if (!isset($this->eiGuiEntries[$eiTypeId])) {
-			throw new CorruptedSiInputDataException('EiType not available: ' . $eiTypeId);
+		if (!isset($this->eiGuiEntries[$eiMaskId])) {
+			throw new CorruptedSiInputDataException('EiMask not available: ' . $eiMaskId);
 		}
 		
-		$this->selectedEiMaskId = $eiTypeId;
-		$this->eiGuiEntries[$eiTypeId]->handleSiEntryInput($siEntryInput);
+		$this->selectedEiMaskId = $eiMaskId;
+		$this->eiGuiEntries[$eiMaskId]->handleSiEntryInput($siEntryInput);
 	}
 	
 	/**
