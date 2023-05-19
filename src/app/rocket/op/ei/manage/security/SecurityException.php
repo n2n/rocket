@@ -21,7 +21,5 @@
  */
 namespace rocket\op\ei\manage\security;
 
-use rocket\op\ei\manage\EiManageException;
-
-class SecurityException extends EiManageException {
+class SecurityException extends \Exception {
 }

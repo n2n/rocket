@@ -37,6 +37,7 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiException;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\persistence\orm\util\NestedSetUtils;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class ProcessUtil {
 	private $eiFrame;
@@ -104,55 +105,55 @@ class ProcessUtil {
 		
 		return $this->createEiObject($siEntryInput->getMaskId());
 	}
-	
-	/**
-	 * @param SiEntryInput $siEntryInput
-	 * @return EiObject
-	 */
-	function determineEiEntryOfInput(SiEntryInput $siEntryInput) {
-		try {
-			return $this->eiFrame->createEiEntry($this->determineEiObjectOfInput($siEntryInput));
-		} catch (SecurityException $e) {
-			throw new BadRequestException(null, 0, $e);
-		}
-	}
+
+//	/**
+//	 * @param SiEntryInput $siEntryInput
+//	 * @return EiEntry
+//	 * @throws BadRequestException
+//	 */
+//	function determineEiEntryOfInput(SiEntryInput $siEntryInput): EiEntry {
+//		try {
+//			return $this->eiFrame->createEiEntry($this->determineEiObjectOfInput($siEntryInput));
+//		} catch (SecurityException $e) {
+//			throw new BadRequestException(null, 0, $e);
+//		}
+//	}
 	
 	/**
 	 * @param SiEntryInput $siEntryInput
 	 * @throws BadRequestException
-	 * @return EiGui
+	 * @return EiGuiValueBoundary
 	 */
-	function determineEiGuiOfInput(SiEntryInput $siEntryInput) {
+	function determineEiGuiValueBoundaryOfInput(SiEntryInput $siEntryInput): EiGuiValueBoundary {
 		$eiObject = $this->determineEiObjectOfInput($siEntryInput);
 			
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
 			// doesn't work if forked gui fields
 // 			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
-			$defPropPaths = null;
 			
-			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getMaskId(), $defPropPaths, true);
-		} catch (SecurityException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (EiException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
+			return $efu->createEiGuiValueBoundaryFromEiObject($eiObject, $siEntryInput->isBulky(), false,
+					true, $siEntryInput->getMaskId(), null, null);
+		} catch (SecurityException|EiException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
+
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param string $eiTypeId
 	 * @param bool $bulky
 	 * @param bool $readOnly
+	 * @param bool $entryGuiControlsIncluded
 	 * @return EiGuiValueBoundary
 	 * @throws BadRequestException
 	 */
-	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly) {
+	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly,
+			bool $entryGuiControlsIncluded): EiGuiValueBoundary {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			return $efu->createEiGuiFromEiEntry($eiEntry, $bulky, $readOnly, $eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
+			return $efu->createEiGuiValueBoundaryFromEiEntry($eiEntry, $bulky, $readOnly, $entryGuiControlsIncluded,
+					$eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
 		} catch (SecurityException|EiException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -162,12 +163,12 @@ class ProcessUtil {
 	 * @param SiEntryInput $siEntryInput
 	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 * @return bool
-	 *@throws BadRequestException
+	 * @throws BadRequestException
 	 */
-	function handleEntryInput(SiEntryInput $siEntryInput, EiGuiValueBoundary $eiGuiValueBoundary) {
+	function handleEntryInput(SiEntryInput $siEntryInput, EiGuiValueBoundary $eiGuiValueBoundary): bool {
 		try {
 			$eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
-		} catch (\InvalidArgumentException $e) {
+		} catch (CorruptedSiInputDataException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 		
@@ -180,28 +181,28 @@ class ProcessUtil {
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return \rocket\op\ei\mask\EiMask
+	 * @return EiMask
 	 */
-	function determinEiMask(EiObject $eiObject) {
+	function determineEiMask(EiObject $eiObject): EiMask {
 		return $this->eiFrame->getContextEiEngine()->getEiMask()
 				->determineEiMask($eiObject->getEiEntityObj()->getEiType());
 	}
 	
-	/**
-	 * @param EiMask $eiMask
-	 * @param int $viewMode
-	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
-	 */
-	function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode) {
-		return $eiMask->getEiEngine()->createFramedEiGuiMaskDeclaration($this->eiFrame, $viewMode);
-	}
-	
-	/**
-	 * @param EiObject $eiObject
-	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @return EiGuiValueBoundary
-	 */
-	function createEiGuiValueBoundary(EiObject $eiObject, EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
-		return $eiGuiMaskDeclaration->createEiGuiValueBoundaryVariation($this->eiFrame->createEiEntry($eiObject));
-	}
+//	/**
+//	 * @param EiMask $eiMask
+//	 * @param int $viewMode
+//	 * @return EiGuiMaskDeclaration
+//	 */
+//	function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode): EiGuiMaskDeclaration {
+//		return $eiMask->getEiEngine()->createFramedEiGuiMaskDeclaration($this->eiFrame, $viewMode);
+//	}
+//
+//	/**
+//	 * @param EiObject $eiObject
+//	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 * @return EiGuiValueBoundary
+//	 */
+//	function createEiGuiValueBoundary(EiObject $eiObject, EiGuiMaskDeclaration $eiGuiMaskDeclaration): EiGuiValueBoundary {
+//		return $eiGuiMaskDeclaration->createEiGuiValueBoundary($this->eiFrame->createEiEntry($eiObject));
+//	}
 }

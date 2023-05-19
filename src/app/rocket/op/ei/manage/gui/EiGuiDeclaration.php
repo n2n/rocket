@@ -14,6 +14,8 @@ use rocket\op\ei\manage\gui\control\GuiControlPath;
 use rocket\op\ei\manage\gui\control\UnknownGuiControlException;
 use rocket\si\meta\SiStyle;
 use n2n\util\ex\IllegalStateException;
+use n2n\l10n\N2nLocale;
+use rocket\op\spec\TypePath;
 
 class EiGuiDeclaration {
 	/**
@@ -23,7 +25,7 @@ class EiGuiDeclaration {
 	/**
 	 * @var int
 	 */
-	private $viewMode;
+	private int $viewMode;
 	/**
 	 * @var EiGuiMaskDeclaration[]
 	 */
@@ -39,62 +41,65 @@ class EiGuiDeclaration {
 		$this->viewMode = $viewMode;
 	}
 	
-	/**
-	 * @return \rocket\op\ei\mask\EiMask
-	 */
-	function getContextEiMask() {
-		return $this->contextEiMask;
-	}
+//	/**
+//	 * @return \rocket\op\ei\mask\EiMask
+//	 */
+//	function getContextEiMask() {
+//		return $this->contextEiMask;
+//	}
 	
 	/**
 	 * @return int
 	 */
-	function getViewMode() {
+	function getViewMode(): int {
 		return $this->viewMode;
 	}
-	
-	/**
-	 * @return EiGuiMaskDeclaration[]
-	 */
+
 	function getEiGuiMaskDeclarations(): array {
 		return $this->eiGuiMaskDeclarations;
 	}
-	
-	/**
-	 * @return boolean
-	 */
-	function hasEiGuiMaskDeclarations() {
+
+	function hasEiGuiMaskDeclarations(): bool {
 		return !empty($this->eiGuiMaskDeclarations);
 	}
 
-
-	
-	/**
-	 * @return EiType[]
-	 */
-	function getEiTypes() {
-		return array_map(
-				function ($arg) { return $arg->getGuiDefinition()->getEiMask()->getEiType(); }, 
-				$this->eiGuiMaskDeclarations);
+	function containsEiTypePath(TypePath $eiTypePath): bool {
+		return isset($this->eiGuiMaskDeclarations[(string) $eiTypePath]);
 	}
+
+	function containsEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): bool {
+		$eiTypePathStr = (string) $eiGuiMaskDeclaration->getEiMask()->getEiTypePath();
+
+		return isset($this->eiGuiMaskDeclarations[$eiTypePathStr])
+				&& $this->eiGuiMaskDeclarations[$eiTypePathStr] === $eiGuiMaskDeclaration;
+	}
+//	/**
+//	 * @return EiType[]
+//	 */
+//	function getEiTypes() {
+//		return array_map(
+//				function ($arg) { return $arg->getGuiDefinition()->getEiMask()->getEiType(); },
+//				$this->eiGuiMaskDeclarations);
+//	}
 	
 	/**
 	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @return \rocket\op\ei\manage\gui\EiGuiDeclaration
+	 * @return EiGuiDeclaration
 	 */
-	function putEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
+	function putEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): static {
+		ArgUtils::assertTrue($this->viewMode === $eiGuiMaskDeclaration->getViewMode());
 		$eiType = $eiGuiMaskDeclaration->getGuiDefinition()->getEiMask()->getEiType();
 		
 		ArgUtils::assertTrue($eiType->isA($eiGuiMaskDeclaration->getGuiDefinition()->getEiMask()->getEiType()));
 		
-		$this->eiGuiMaskDeclarations[$eiType->getId()] = $eiGuiMaskDeclaration;
+		$this->eiGuiMaskDeclarations[(string) $eiGuiMaskDeclaration->getEiMask()->getEiTypePath()] = $eiGuiMaskDeclaration;
 		return $this;
 	}
 	
 	/**
 	 * @return boolean
 	 */
-	function hasMultipleEiGuiMaskDeclarations() {
+	function hasMultipleEiGuiMaskDeclarations(): bool {
 		return count($this->eiGuiMaskDeclarations) > 1;
 	}
 	
@@ -124,8 +129,7 @@ class EiGuiDeclaration {
 //		return $defPropPaths;
 //	}
 
-	function createSiDeclaration(EiFrame $eiFrame): SiDeclaration {
-		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
+	function createSiDeclaration(N2nLocale $n2nLocale): SiDeclaration {
 		$siDeclaration = new SiDeclaration(ViewMode::createSiStyle($this->viewMode));
 		
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
@@ -179,7 +183,7 @@ class EiGuiDeclaration {
 	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
 	 * @return GuiStructureDeclaration[]
 	 */
-	private function filterFieldGuiStructureDeclarations($guiStructureDeclarations) {
+	private function filterFieldGuiStructureDeclarations(array $guiStructureDeclarations): array {
 		$filtereds = [];
 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
 			if ($guiStructureDeclaration->hasDefPropPath()) {
@@ -225,10 +229,12 @@ class EiGuiDeclaration {
 		$eiEntries = $this->catEiEntries($eiEntries);
 
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
-			$eiType = $eiGuiMaskDeclaration->getEiType();
-			
-			if (isset($eiEntries[$eiType->getId()])) {
-				$eiGuiMaskDeclaration->applyEiGuiEntry($eiFrame, $eiGuiValueBoundary, $eiEntries[$eiType->getId()], $entryGuiControlsIncluded);
+			$eiType = $eiGuiMaskDeclaration->getEiMask()->getEiType();
+			$eiTypeId = $eiType->getId();
+
+			if (isset($eiEntries[$eiTypeId])) {
+				$eiGuiValueBoundary->putEiGuiEntry($eiGuiMaskDeclaration
+						->createEiGuiEntry($eiFrame, $eiEntries[$eiTypeId], $entryGuiControlsIncluded));
 				continue;
 			}
 			
@@ -276,9 +282,12 @@ class EiGuiDeclaration {
 	 */
 	function createNewEiGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, int $treeLevel = null): EiGuiValueBoundary {
 		$eiGuiValueBoundary = new EiGuiValueBoundary($this, $treeLevel);
-		
+
+		$eiGuiValueBoundary = new EiGuiValueBoundary($this, $treeLevel);
+
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
-			$eiGuiMaskDeclaration->createEiGuiEntry($eiFrame, $eiGuiValueBoundary, $entryGuiControlsIncluded);
+			$eiGuiValueBoundary->putEiGuiEntry(
+					$eiGuiMaskDeclaration->createNewEiGuiEntry($eiFrame, $entryGuiControlsIncluded));
 		}
 		
 		$this->finalizeEiGuiValueBoundary($eiGuiValueBoundary);

@@ -28,10 +28,6 @@ use rocket\op\ei\mask\EiMask;
  */
 class EiGuiMaskDeclaration {
 	/**
-	 * @var GuiDefinition
-	 */
-	private $guiDefinition;
-	/**
 	 * @var GuiStructureDeclaration[]
 	 */
 	private $guiStructureDeclarations;
@@ -58,12 +54,12 @@ class EiGuiMaskDeclaration {
 	/**
 	 * @var bool
 	 */
-	private $init = false;
-	
+	private bool $init = false;
+
 	/**
-	 * @param EiFrame $eiFrame
-	 * @param GuiDefinition $guiDefinition
 	 * @param int $viewMode Use constants from {@see ViewMode}
+	 * @param GuiDefinition $guiDefinition
+	 * @param array|null $guiStructureDeclarations
 	 */
 	function __construct(private readonly int $viewMode, private readonly GuiDefinition $guiDefinition,
 			?array $guiStructureDeclarations) {
@@ -77,17 +73,11 @@ class EiGuiMaskDeclaration {
 	function getEiMask(): EiMask {
 		return $this->guiDefinition->getEiMask();
 	}
-	
-// 	/**
-// 	 * @return \rocket\op\ei\manage\frame\EiFrame
-// 	 */
-// 	function getEiFrame() {
-// 		return $this->eiFrame;
-// 	}
-	
-	/**
-	 * @return GuiDefinition
-	 */
+
+	function getViewMode(): int {
+		return $this->viewMode;
+	}
+
 	function getGuiDefinition(): GuiDefinition {
 		return $this->guiDefinition;
 	}
@@ -387,13 +377,11 @@ class EiGuiMaskDeclaration {
 // 		return $forkDefPropPaths;
 // 	}
 
-	function applyEiGuiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry,
-			bool $entryGuiControlsIncluded): EiGuiValueBoundary|EiGuiEntry {
+	function createEiGuiEntry(EiFrame $eiFrame, EiEntry $eiEntry, bool $entryGuiControlsIncluded): EiGuiEntry {
 		$this->ensureInit();
 		
-		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiGuiValueBoundary, $eiEntry, $entryGuiControlsIncluded);
-		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
-		
+		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
 			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
 		}
@@ -403,19 +391,17 @@ class EiGuiMaskDeclaration {
 
 	/**
 	 * @param EiFrame $eiFrame
-	 * @param int $viewMode
 	 * @param bool $entryGuiControlsIncluded
 	 * @return EiGuiEntry
 	 */
-	function createEiGuiEntry(EiFrame $eiFrame, int $viewMode, bool $entryGuiControlsIncluded): EiGuiEntry {
+	function createNewEiGuiEntry(EiFrame $eiFrame, bool $entryGuiControlsIncluded): EiGuiEntry {
 		$this->ensureInit();
 		
 		$eiObject = $this->getGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 		
-		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $viewMode, $eiEntry, $entryGuiControlsIncluded);
-		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
-		
+		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
 			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
 		}
@@ -452,7 +438,7 @@ class EiGuiMaskDeclaration {
 					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
 					new ApiControlCallId($guiControlPath,
 							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->eiGuiDeclaration->getViewMode(), null, null));
+							$this->viewMode, null, null));
 		}
 		return $siControls;
 	}

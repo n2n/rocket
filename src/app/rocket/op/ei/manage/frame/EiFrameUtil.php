@@ -199,7 +199,12 @@ class EiFrameUtil {
 		
 		return $this->eiFrame->getContextEiEngine()
 				->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths);
+	}
 
+	function createNewEiGuiValueBoundary(bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
+			?array $defPropPaths, ?array $allowedEiTypeIds): EiGuiValueBoundary {
+		$eiGuiDeclaration = $this->createNewEiGuiDeclaration($bulky, $readOnly, $defPropPaths, $allowedEiTypeIds);
+		return $eiGuiDeclaration->createNewEiGuiValueBoundary($this->eiFrame, $entryGuiControlsIncluded);
 	}
 
 //	/**
@@ -232,14 +237,14 @@ class EiFrameUtil {
 	}
 	
 
-	function createEiGuiFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
-			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel) {
-		return $this->createEiGuiFromEiEntry($this->eiFrame->createEiEntry($eiObject), $bulky, $readOnly,
+	function createEiGuiValueBoundaryFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
+			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): EiGuiValueBoundary {
+		return $this->createEiGuiValueBoundaryFromEiEntry($this->eiFrame->createEiEntry($eiObject), $bulky, $readOnly,
 				$entryGuiControlsIncluded, $eiTypeId, $defPropPaths, $treeLevel);
 	}
 	
 
-	function createEiGuiFromEiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
+	function createEiGuiValueBoundaryFromEiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
 			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): EiGuiValueBoundary {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
 
@@ -267,7 +272,7 @@ class EiFrameUtil {
 
 		return new EiGuiValueBoundaryResult(
 				$eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded),
-				$this->eiFrame, $eiGuiDeclaration);
+				$eiGuiDeclaration);
 	}
 	
 	/**
@@ -307,7 +312,7 @@ class EiFrameUtil {
 		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 		$treeLevel = $this->lookupTreeLevel($eiObject);
 		
-		return $this->createEiGuiFromEiObject($eiObject, $bulky, $readOnly, $entryGuiControlsIncluded, null, $defPropPaths, $treeLevel);
+		return $this->createEiGuiValueBoundaryFromEiObject($eiObject, $bulky, $readOnly, $entryGuiControlsIncluded, null, $defPropPaths, $treeLevel);
 	}
 	
 
@@ -423,13 +428,11 @@ class EiFrameUtil {
 
 class EiGuiValueBoundaryResult {
 	private $eiGuiValueBoundary;
-	private $eiFrame;
 	private $eiGuiDeclaration;
 
 
-	function __construct(EiGuiValueBoundary $eiGuiValueBoundary, EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration) {
+	function __construct(EiGuiValueBoundary $eiGuiValueBoundary, EiGuiDeclaration $eiGuiDeclaration) {
 		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
-		$this->eiFrame = $eiFrame;
 		$this->eiGuiDeclaration = $eiGuiDeclaration;
 	}
 	
@@ -462,15 +465,15 @@ class EiGuiValueBoundaryResult {
 //		return $this->eiGuiMaskDeclaration->createSiEntry($this->eiFrame, $this->eiGuiValueBoundary);
 //	}
 	
-	/**
-	 * @param EiGuiValueBoundary[]
-	 * @return SiDeclaration
-	 */
-	function createSiDeclaration() {
-		IllegalStateException::assertTrue($this->eiGuiDeclaration !== null);
-		
-		return $this->eiGuiDeclaration->createSiDeclaration($this->eiFrame);
-	}
+//	/**
+//	 * @param EiGuiValueBoundary[]
+//	 * @return SiDeclaration
+//	 */
+//	function createSiDeclaration(): SiDeclaration {
+//		IllegalStateException::assertTrue($this->eiGuiDeclaration !== null);
+//
+//		return $this->eiGuiDeclaration->createSiDeclaration($this->eiFrame);
+//	}
 }
 
 class RangeResult {

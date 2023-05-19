@@ -143,7 +143,7 @@ class GuiFactory {
 // 	}
 
 	public static function createEiGuiEntry(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration,
-			EiGuiValueBoundary $eiGuiValueBoundary, EiEntry $eiEntry, bool $entryGuiControlsIncluded): EiGuiEntry {
+			EiEntry $eiEntry, bool $entryGuiControlsIncluded): EiGuiEntry {
 
 		$n2nLocale = $eiFrame->getN2nContext()->getN2nLocale();
 		$idName = null;
@@ -153,9 +153,7 @@ class GuiFactory {
 					$eiFrame->getN2nContext(), $n2nLocale);
 		}
 
-		$eiGuiEntry = new EiGuiEntry($eiGuiValueBoundary, $eiGuiMaskDeclaration->getGuiDefinition()->getEiMask(),
-				$eiEntry, $idName, $n2nLocale);
-		$eiGuiValueBoundary->putEiGuiEntry($eiGuiEntry);
+		$eiGuiEntry = new EiGuiEntry($eiGuiMaskDeclaration, $eiEntry, $idName, $n2nLocale);
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($eiGuiMaskDeclaration->getEiPropPaths() as $eiPropPath) {
@@ -183,8 +181,9 @@ class GuiFactory {
 	 * @param EiPropPath $eiPropPath
 	 * @return GuiField|null
 	 */
-	private static function buildGuiField($eiFrame, $eiGuiMaskDeclaration, $eiGuiEntry, $eiPropPath) {
-		$readOnly = ViewMode::isReadOnly($eiGuiMaskDeclaration->getEiGuiDeclaration()->getViewMode())
+	private static function buildGuiField(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration,
+			EiGuiEntry $eiGuiEntry, EiPropPath $eiPropPath): ?GuiField {
+		$readOnly = ViewMode::isReadOnly($eiGuiMaskDeclaration->getViewMode())
 				|| !$eiGuiEntry->getEiEntry()->getEiEntryAccess()->isEiPropWritable($eiPropPath);
 		
 		$eiu = new Eiu($eiFrame, $eiGuiMaskDeclaration, $eiGuiEntry, $eiPropPath, new DefPropPath([$eiPropPath]));

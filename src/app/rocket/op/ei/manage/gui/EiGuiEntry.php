@@ -39,19 +39,6 @@ use n2n\l10n\Message;
 use n2n\l10n\N2nLocale;
 
 class EiGuiEntry {
-	/**
-	 * @var EiGuiValueBoundary
-	 */
-	private EiGuiValueBoundary $eiGuiValueBoundary;
-	/**
-	 * @var EiMask
-	 */
-	private EiMask $eiMask;
-	/**
-	 * @var EiEntry
-	 */
-	private EiEntry $eiEntry;
-
 	private ?GuiFieldMap $guiFieldMap = null;
 
 	private ?GuiControlMap $guiControlMap = null;
@@ -61,25 +48,16 @@ class EiGuiEntry {
 	 */
 	private array $eiGuiEntryListeners = array();
 	
-	public function __construct(EiGuiValueBoundary $eiGuiValueBoundary, EiMask $eiMask, EiEntry $eiEntry,
-			private readonly ?string $idName, private readonly N2nLocale $n2nLocale) {
-		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
-		$this->eiMask = $eiMask;
-		$this->eiEntry = $eiEntry;
+	public function __construct(private readonly EiGuiMaskDeclaration $eiGuiMaskDeclaration, private readonly EiEntry $eiEntry,
+			private readonly ?string $idName) {
 	}
-	
-	/**
-	 * @return EiMask
-	 */
+
 	function getEiMask(): EiMask {
-		return $this->eiMask;
+		return $this->eiGuiMaskDeclaration->getEiMask();
 	}
-	
-	/**
-	 * @return EiGuiValueBoundary
-	 */
-	function getEiGuiValueBoundary(): EiGuiValueBoundary {
-		return $this->eiGuiValueBoundary;
+
+	function getEiGuiMaskDeclaration(): EiGuiMaskDeclaration {
+		return $this->eiGuiMaskDeclaration;
 	}
 
 	function getIdName(): ?string {
@@ -92,17 +70,14 @@ class EiGuiEntry {
 	function getEiEntry(): EiEntry {
 		return $this->eiEntry;
 	}
-	
-	/**
-	 * @return GuiFieldMap
-	 */
-	public function getGuiFieldMap() {
+
+	public function getGuiFieldMap(): ?GuiFieldMap {
 		$this->ensureInitialized();
 		
 		return $this->guiFieldMap;
 	}
 	
-	function getGuiFieldByDefPropPath(DefPropPath $defPropPath) {
+	function getGuiFieldByDefPropPath(DefPropPath $defPropPath): field\GuiField {
 		$guiFieldMap = $this->guiFieldMap;
 		
 		$eiPropPaths = $defPropPath->toArray();
@@ -156,7 +131,7 @@ class EiGuiEntry {
 		throw new IllegalStateException('EiGuiValueBoundary already initialized.');
 	}
 
-	function createSiEntry(): SiEntry {
+	function createSiEntry(N2nLocale $n2NLocale): SiEntry {
 		$eiEntry = $this->getEiEntry();
 
 		$siEntry = new SiEntry($eiEntry->getPid(), $this->idName);
@@ -169,7 +144,7 @@ class EiGuiEntry {
 // 			$siValueBoundary->putContextFields($defPropPathStr, $guiField->getContextSiFields());
 		}
 
-		$siEntry->setMessages(array_map(fn (Message $m) => $m->t($this->n2nLocale), $this->getGeneralMessages()));
+		$siEntry->setMessages(array_map(fn (Message $m) => $m->t($n2NLocale), $this->getGeneralMessages()));
 
 		foreach ($this->guiControlMap->createSiControls() as $guiControlPathStr => $siControl) {
 			$siEntry->putControl($guiControlPathStr, $siControl);
@@ -202,7 +177,7 @@ class EiGuiEntry {
 	 * @throws \InvalidArgumentException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput): void {
-		if ($this->eiMask->getEiType()->getId() != $siEntryInput->getMaskId()) {
+		if ((string) $this->getEiMask()->getEiTypePath() != $siEntryInput->getMaskId()) {
 			throw new \InvalidArgumentException('EiType missmatch.');
 		}
 		

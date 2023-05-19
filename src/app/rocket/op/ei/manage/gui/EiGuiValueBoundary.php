@@ -32,6 +32,7 @@ use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\content\SiValueBoundary;
 use rocket\si\meta\SiStyle;
+use n2n\l10n\N2nLocale;
 
 class EiGuiValueBoundary {
 	
@@ -71,11 +72,11 @@ class EiGuiValueBoundary {
 	 * @param EiGuiEntry $eiGuiEntry
 	 */
 	function putEiGuiEntry(EiGuiEntry $eiGuiEntry): void {
-		$eiType = $eiGuiEntry->getEiMask()->getEiType();
-		
-		ArgUtils::assertTrue($eiType->isA($this->eiGuiDeclaration->getContextEiMask()->getEiType()));
-				
-		$this->eiGuiEntries[$eiType->getId()] = $eiGuiEntry;
+		$eiGuiMaskDeclaration = $eiGuiEntry->getEiGuiMaskDeclaration();
+
+		ArgUtils::assertTrue($this->eiGuiDeclaration->containsEiGuiMaskDeclaration($eiGuiMaskDeclaration));
+
+		$this->eiGuiEntries[(string) $eiGuiMaskDeclaration->getEiMask()->getEiTypePath()] = $eiGuiEntry;
 	}
 	
 	/**
@@ -103,7 +104,7 @@ class EiGuiValueBoundary {
 	/**
 	 * @return SiValueBoundary
 	 */
-	function createSiValueBoundary(): SiValueBoundary {
+	function createSiValueBoundary(N2nLocale $n2nLocale): SiValueBoundary {
 		$viewMode = $this->eiGuiDeclaration->getViewMode();
 
 		$siValueBoundary = new SiValueBoundary(/*$eiGuiValueBoundary->createSiEntryIdentifier(),*/
@@ -111,7 +112,7 @@ class EiGuiValueBoundary {
 		$siValueBoundary->setTreeLevel($this->getTreeLevel());
 
 		foreach ($this->eiGuiEntries as $key => $eiGuiEntry) {
-			$siValueBoundary->putEntry($eiGuiEntry->getEiMask()->getEiTypePath(), $eiGuiEntry->createSiEntry());
+			$siValueBoundary->putEntry($eiGuiEntry->getEiMask()->getEiTypePath(), $eiGuiEntry->createSiEntry($n2nLocale));
 		}
 
 		if ($this->isEiGuiEntrySelected()) {
