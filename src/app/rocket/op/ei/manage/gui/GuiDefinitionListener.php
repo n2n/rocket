@@ -2,10 +2,8 @@
 namespace rocket\op\ei\manage\gui;
 
 interface GuiDefinitionListener {
-	/**
-	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 */
-	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration);
+
+	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): void;
 	
 	
 // 	/**

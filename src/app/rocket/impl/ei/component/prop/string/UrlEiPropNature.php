@@ -179,7 +179,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 			return $eiu->factory()->newGuiField(SiFields::stringOut(null));
 		}
 		
-		$label = $this->buildLabel(Url::create($value, true), $eiu->entryGui()->isBulky());
+		$label = $this->buildLabel(Url::create($value, true), $eiu->guiEntry()->isBulky());
 		return $eiu->factory()->newGuiField(
 				SiFields::linkOut(SiNavPoint::href(Url::create($value, true)), $label)
 						->setLytebox($this->isLytebox()));

@@ -27,68 +27,47 @@ use rocket\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\util\EiuPerimeterException;
 use rocket\si\content\impl\basic\CompactEntrySiGui;
-use rocket\op\ei\manage\gui\EiGuiEntry;
+use rocket\op\ei\manage\gui\EiValueBoundary;
 use rocket\op\ei\manage\DefPropPath;
 
-class EiuEntryGuiTypeDef {
-	/**
-	 * @var EiGuiEntry $eiGuiEntry
-	 */
-	private $eiGuiEntry;
-	/**
-	 * @var EiuEntryGui|null
-	 */
-	private $eiuEntryGui;
-	/**
-	 * @var EiuAnalyst
-	 */
-	private $eiuAnalyst;
-	
-	/**
-	 * @param EiGuiEntry $eiGuiEntry
-	 * @param EiuEntryGui|null $eiuEntryGui
-	 * @param EiuAnalyst $eiuAnalyst
-	 */
-	function __construct(EiGuiEntry $eiGuiEntry, ?EiuEntryGui $eiuEntryGui, EiuAnalyst $eiuAnalyst) {
-		$this->eiGuiEntry = $eiGuiEntry;
-		$this->eiuEntryGui = $eiuEntryGui;
-		$this->eiuAnalyst = $eiuAnalyst;
+class EiuValueBoundaryTypeDef {
+
+	function __construct(private readonly EiValueBoundary $eiValueBoundary, private ?EiuGuiDeclaration $eiuGuiDeclaration,
+			private readonly EiuAnalyst $eiuAnalyst) {
+
 	}
-	
-	/**
-	 * @return \rocket\op\ei\manage\gui\EiGuiEntry
-	 */
-	function getEiGuiEntry() {
-		return $this->eiGuiEntry;
+
+	function getEiValueBoundary(): EiValueBoundary {
+		return $this->eiValueBoundary;
 	}
-	
+
 	/**
 	 * @param SiEntryInput $siEntryInput
-	 * @return EiuEntryGuiTypeDef
+	 * @return EiuValueBoundaryTypeDef
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput) {
 		$this->getEiGuiValueBoundaryMulti()->handleSiEntryInput($siEntryInput);
 		return $this;
 	}
-	
+
 	/**
-	 * @return \rocket\op\ei\util\gui\EiuEntryGui[]
+	 * @return \rocket\op\ei\util\gui\EiuValueBoundary[]
 	 */
 	function entryGuis() {
-		$eiuEntryGuis = [];
+		$eiuValueBoundarys = [];
 		foreach ($this->getEiGuiValueBoundaryMulti()->getEiGuiValueBoundaries() as $eiTypeId => $eiGuiValueBoundary) {
-			$eiuEntryGuis[$eiTypeId] = new EiuEntryGui($eiGuiValueBoundary, null, null, $this->eiuAnalyst);
+			$eiuValueBoundarys[$eiTypeId] = new EiuGuiEntry($eiGuiValueBoundary, null, null, $this->eiuAnalyst);
 		}
-		return $eiuEntryGuis;
+		return $eiuValueBoundarys;
 	}
-	
+
 	/**
-	 * @return \rocket\op\ei\util\gui\EiuEntryGui
+	 * @return \rocket\op\ei\util\gui\EiuValueBoundary
 	 */
 	function selectedEntryGui() {
-		return new EiuEntryGui($this->eiGuiValueBoundaryMultiResult->getSelectedEiGuiValueBoundary(), null, null, $this->eiuAnalyst);
+		return new EiuValueBoundary($this->eiGuiValueBoundaryMultiResult->getSelectedEiGuiValueBoundary(), null, null, $this->eiuAnalyst);
 	}
-	
+
 	/**
 	 * @param bool $siControlsIncluded
 	 * @throws EiuPerimeterException
@@ -98,11 +77,11 @@ class EiuEntryGuiTypeDef {
 		if (!ViewMode::isBulky($this->getEiGuiValueBoundaryMulti()->getViewMode())) {
 			throw new EiuPerimeterException('EiGuiValueBoundaryMulti is not bulky.');
 		}
-		
+
 		return new BulkyEntrySiGui($this->eiGuiValueBoundaryMultiResult->createSiDeclaration(),
 				$this->eiGuiValueBoundaryMultiResult->createSiEntry($siControlsIncluded));
 	}
-	
+
 	/**
 	 * @param bool $siControlsIncluded
 	 * @throws EiuPerimeterException
@@ -112,11 +91,11 @@ class EiuEntryGuiTypeDef {
 		if (!ViewMode::isCompact($this->getEiGuiValueBoundaryMulti()->getViewMode())) {
 			throw new EiuPerimeterException('EiGuiValueBoundaryMulti is not compact.');
 		}
-		
+
 		return new CompactEntrySiGui($this->eiGuiValueBoundaryMultiResult->createSiDeclaration(),
 				$this->eiGuiValueBoundaryMultiResult->createSiEntry($siControlsIncluded));
 	}
-	
+
 	/**
 	 * @param DefPropPath|string $defPropPath
 	 * @return EiuGuiField

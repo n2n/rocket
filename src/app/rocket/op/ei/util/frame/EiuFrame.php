@@ -66,7 +66,7 @@ use rocket\si\content\SiEntryQualifier;
 use rocket\si\control\SiCallResponse;
 use rocket\op\ei\util\gui\EiuGui;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\util\gui\EiuEntryGui;
+use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\manage\gui\EiGui;
@@ -77,6 +77,8 @@ use n2n\util\type\TypeConstraints;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\util\spec\EiuCmd;
 use rocket\op\ei\component\command\EiCmd;
+use rocket\op\ei\util\spec\EiuProp;
+use rocket\op\ei\component\prop\EiProp;
 
 class EiuFrame {
 	private $eiFrame;
@@ -621,7 +623,7 @@ class EiuFrame {
 // 		$eiGuiValueBoundary->setContextPropertyPath($contextPropertyPath->ext(
 // 				new PropertyPathPart('eiuEntryTypeForms', true, $eiType->getId()))->ext('dispatchable'));
 		
-// 		return new EiuEntryTypeForm(new EiuEntryGui($eiGuiValueBoundary, null, $this->eiuAnalyst));
+// 		return new EiuEntryTypeForm(new EiuGuiEntry($eiGuiValueBoundary, null, $this->eiuAnalyst));
 // 	}
 	
 
@@ -720,7 +722,7 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @return EiuEntryGui 
+	 * @return EiuGuiEntry 
 	 */
 	function newForgeMultiGuiValueBoundary(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, array $defPropPathsArg = null, 
 			bool $guiStructureDeclarationsRequired = true) {
@@ -740,14 +742,14 @@ class EiuFrame {
 // 	 * @param int $viewMode
 // 	 * @param \Closure $uiFactory
 // 	 * @param array $defPropPaths
-// 	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
+// 	 * @return \rocket\op\ei\util\gui\EiuGuiMaskDeclaration
 // 	 */
 // 	public function newCustomGui(int $viewMode, \Closure $uiFactory, array $defPropPaths) {
 // 		$eiGuiMaskDeclaration = $this->eiFrame->getContextEiEngine()->getEiMask()->createEiGuiMaskDeclaration($this->eiFrame, $viewMode, false);
 		
-// 		$eiuGuiFrame = new EiuGuiFrame($eiGuiMaskDeclaration, $this, $this->eiuAnalyst);
-// 		$eiuGuiFrame->initWithUiCallback($uiFactory, $defPropPaths);
-// 		return $eiuGuiFrame;
+// 		$eiuGuiMaskDeclaration = new EiuGuiMaskDeclaration($eiGuiMaskDeclaration, $this, $this->eiuAnalyst);
+// 		$eiuGuiMaskDeclaration->initWithUiCallback($uiFactory, $defPropPaths);
+// 		return $eiuGuiMaskDeclaration;
 // 	}
 	
 	
@@ -1094,34 +1096,36 @@ class EiuFrame {
 	public function hasRelation($eiPropPath) {
 		return $this->eiFrame->hasEiRelation(EiPropPath::create($eiPropPath));
 	}
-	
-	
+
+
 	/**
-	 * @param string|EiPropPath $eiPropPath
-	 * @param EiObject|object|null $eiObjectArg
+	 * @param EiPropPath|EiuProp|EiProp|array|string $eiPropPath
+	 * @param null $eiObjectArg
+	 * @param mixed ...$eiArgs
 	 * @return Eiu
 	 */
-	function forkSelect($eiPropPath, $eiObjectArg = null, ...$eiArgs) {
+	function forkSelect(EiPropPath|EiuProp|EiProp|array|string $eiPropPath, $eiObjectArg = null, ...$eiArgs): Eiu {
 		return $this->fork($eiPropPath, EiForkLink::MODE_SELECT, $eiObjectArg, ...$eiArgs);
 	}
-	
+
 	/**
-	 * @param string|EiPropPath $eiPropPath
-	 * @param EiObject|object|null $eiObjectArg
+	 * @param EiPropPath|EiuProp|EiProp|array|string $eiPropPath
+	 * @param null $eiObjectArg
+	 * @param mixed ...$eiArgs
 	 * @return Eiu
-	 */ 
-	function forkDiscover($eiPropPath, $eiObjectArg = null, ...$eiArgs) {
+	 */
+	function forkDiscover(EiPropPath|EiuProp|EiProp|array|string $eiPropPath, $eiObjectArg = null, ...$eiArgs) {
 		return $this->fork($eiPropPath, EiForkLink::MODE_DISCOVER, $eiObjectArg, ...$eiArgs);
 	}
 
 	/**
-	 * @param string|EiPropPath $eiPropPath
+	 * @param EiPropPath|EiuProp|EiProp|array|string $eiPropPath
 	 * @param string $mode
 	 * @param null $eiObjectArg
 	 * @param mixed ...$eiArgs
 	 * @return Eiu
 	 */
-	function fork($eiPropPath, string $mode, $eiObjectArg = null, ...$eiArgs) {
+	function fork(EiPropPath|EiuProp|EiProp|array|string $eiPropPath, string $mode, $eiObjectArg = null, ...$eiArgs) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', 
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(), false);

@@ -99,11 +99,8 @@ class ValInstructionProcess {
 		
 		return $result;
 	}
-	
-	/**
-	 * @param EiGui $eiGui
-	 */
-	private function registerEiGui($eiGui) {
+
+	private function registerEiGui(EiGuiValueBoundaryResult $eiGui): void {
 		$this->eiGuiValueBoundaryResults[$eiGui->getEiGuiDeclaration()->getViewMode()] = $eiGui;
 	}
 	
@@ -112,7 +109,7 @@ class ValInstructionProcess {
 	 * @param bool $readOnly
 	 * @return EiGuiValueBoundaryResult
 	 */
-	private function obtainEiGuiValueBoundaryResult(bool $bulky, bool $readOnly) {
+	private function obtainEiGuiValueBoundaryResult(bool $bulky, bool $readOnly): EiGuiValueBoundaryResult {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $this->eiEntry->isNew());
 		if (isset($this->eiGuiValueBoundaryResults[$viewMode])) {
 			return $this->eiGuiValueBoundaryResults[$viewMode];

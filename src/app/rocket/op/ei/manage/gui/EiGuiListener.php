@@ -8,10 +8,8 @@ interface EiGuiListener {
 	 */
 	public function onInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration);
 
-	/**
-	 * @param EiGuiValueBoundary $eiGuiValueBoundary
-	 */
-	public function onNewEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary);
+
+	public function onNewEiGuiEntry(EiGuiEntry $eiGuiEntry): void;
 
 	/**
 	 * 

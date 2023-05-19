@@ -316,14 +316,14 @@ class EiFrame {
 		
 		return $criteria;
 	}
-	
+
 	/**
 	 * @param EiObject $eiObject
+	 * @param EiEntry|null $copyFrom
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
-	 * @throws InaccessibleEiEntryException
 	 */
-	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
+	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0): EiEntry {
 		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
 				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
 		$eiEntry->setEiEntryAccess($this->getEiExecution()->createEiEntryAccess($eiEntry));

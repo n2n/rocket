@@ -28,7 +28,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\op\ei\util\gui\EiuEntryGui;
+use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\relation\SiPanelInput;
 use rocket\si\input\CorruptedSiInputDataException;
@@ -56,7 +56,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 */
 	private $targetEiuFrame;
 	/**
-	 * @var EiuEntryGuiPool
+	 * @var EiuGuiEntryPool
 	 */
 	private $currentPool;
 	/**
@@ -80,7 +80,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
 		
-		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
+		$this->currentPool = new EiuGuiEntryPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
 		
 		$this->readOnly = $readOnly;
 		
@@ -147,7 +147,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 }
 
 
-class EiuEntryGuiPool {
+class EiuGuiEntryPool {
 	/**
 	 * @var PanelDeclaration[]
 	 */
@@ -197,7 +197,7 @@ class EiuEntryGuiPool {
 	
 	/**
 	 * @param string $panelName
-	 * @param EiuEntryGui $eiuEntryGui
+	 * @param EiuGuiEntry $eiuGuiEntry
 	 */
 	function add(EiuEntry $eiuEntry) {
 		$panelName = $eiuEntry->getScalarValue('panel');

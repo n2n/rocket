@@ -27,7 +27,7 @@ interface GuiProp {
 	
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGuiMaskDeclaration and returns an {@see DisplayDefinition}
-	 * if it does. Use <code>$eiu->guiFrame()</code> to access the {@see \rocket\op\ei\util\gui\EiuGuiFrame}
+	 * if it does. Use <code>$eiu->guiFrame()</code> to access the {@see \rocket\op\ei\util\gui\EiuGuiMaskDeclaration}
 	 * object.<p>
 	 * 
 	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiMaskDeclaration.

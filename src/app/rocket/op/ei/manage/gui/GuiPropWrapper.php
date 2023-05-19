@@ -27,6 +27,7 @@ use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\EiLaunch;
+use rocket\op\ei\component\prop\EiProp;
 
 class GuiPropWrapper {
 	
@@ -122,10 +123,8 @@ class GuiPropWrapper {
 		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiMaskDeclaration, $this->eiPropPath), $forkedDefPropPaths);
 	}
 	
-	/**
-	 * @return EiPropNature
-	 */
-	function getEiProp() {
+
+	function getEiProp(): EiProp {
 		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
 	

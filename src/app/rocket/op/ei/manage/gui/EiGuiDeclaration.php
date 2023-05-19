@@ -278,7 +278,7 @@ class EiGuiDeclaration {
 		$eiGuiValueBoundary = new EiGuiValueBoundary($this, $treeLevel);
 		
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
-			$eiGuiMaskDeclaration->applyNewEiGuiEntry($eiFrame, $eiGuiValueBoundary, $entryGuiControlsIncluded);
+			$eiGuiMaskDeclaration->createEiGuiEntry($eiFrame, $eiGuiValueBoundary, $entryGuiControlsIncluded);
 		}
 		
 		$this->finalizeEiGuiValueBoundary($eiGuiValueBoundary);

@@ -14,38 +14,33 @@ use rocket\op\ei\util\spec\EiuProp;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiMaskDeclaration;
 
-class EiuGuiFrame {
+class EiuGuiMaskDeclaration {
 	private $eiGuiMaskDeclaration;
-	private $eiuGuiModel;
+	private $eiuGuiDeclaration ;
 	private $eiuAnalyst;
 	
-	/**
-	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param EiuFrame $eiuFrame
-	 * @param EiuAnalyst $eiuAnalyst
-	 */
-	public function __construct(EiGuiMaskDeclaration $eiGuiMaskDeclaration, ?EiuGuiModel $eiuGuiModel, EiuAnalyst $eiuAnalyst) {
-		$this->eiGuiMaskDeclaration = $eiGuiMaskDeclaration;
-		$this->eiuGuiModel = $eiuGuiModel;
-		$this->eiuAnalyst = $eiuAnalyst;
+
+	public function __construct(private EiGuiMaskDeclaration $eiGuiMaskDeclaration,
+			private ?EiuGuiDeclaration  $eiuGuiDeclaration,
+			private EiuAnalyst $eiuAnalyst) {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
+	 * @return EiGuiMaskDeclaration
 	 */
-	function getEiGuiMaskDeclaration() {
+	function getEiGuiMaskDeclaration(): EiGuiMaskDeclaration {
 		return $this->eiGuiMaskDeclaration;
 	}
 	
 	/**
-	 * @return \rocket\op\ei\util\gui\EiuGuiModel
+	 * @return EiuGuiDeclaration
 	 */
-	function guiModel() {
-		if ($this->eiuGuiModel === null) {
-			$this->eiuGuiModel = new EiuGuiModel($this->eiGuiMaskDeclaration->getEiGuiDeclaration(), $this->eiuAnalyst);
+	function guiDeclaration(): EiuGuiDeclaration {
+		if ($this->eiuGuiDeclaration  === null) {
+			$this->eiuGuiDeclaration  = new EiuGuiDeclaration ($this->eiGuiMaskDeclaration->getEiGuiDeclaration(), $this->eiuAnalyst);
 		}
 		
-		return $this->eiuGuiModel;
+		return $this->eiuGuiDeclaration;
 	}
 	
 // 	/**
@@ -68,12 +63,12 @@ class EiuGuiFrame {
 // 	}
 	
 	/**
-	 * @return number
+	 * @return int
 	 */
-	public function getViewMode() {
+	public function getViewMode(): int {
 		return $this->eiGuiMaskDeclaration->getEiGuiDeclaration()->getViewMode();
 	}
-	
+
 	/**
 	 * @param DefPropPath|string $eiPropPath
 	 * @param bool $required
@@ -121,7 +116,7 @@ class EiuGuiFrame {
 		
 // 		$eiGuiValueBoundary = $this->eiGuiMaskDeclaration->createEiGuiValueBoundaryVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
 		
-// 		return new EiuEntryGui($eiGuiValueBoundary, null, $this, $this->eiuAnalyst);
+// 		return new EiuGuiEntry($eiGuiValueBoundary, null, $this, $this->eiuAnalyst);
 // 	}
 	
 	/**

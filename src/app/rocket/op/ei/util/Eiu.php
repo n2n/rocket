@@ -26,9 +26,9 @@ class Eiu implements Lookupable {
 	private $eiuField;
 	private $eiuFieldMap;
 	private $eiuGui;
-	private $eiuGuiModel;
-	private $eiuGuiFrame;
-	private $eiuEntryGui;
+	private $eiuGuiDeclaration ;
+	private $eiuGuiMaskDeclaration;
+	private $eiuGuiEntry;
 	private $eiuGuiField;
 	private $eiuFactory;
 	
@@ -171,39 +171,39 @@ class Eiu implements Lookupable {
 	 * @return \rocket\op\ei\util\gui\EiuGui
 	 */
 	public function guiModel(bool $required = true) {
-		if ($this->eiuGuiModel !== null) {
-			return $this->eiuGuiModel;
+		if ($this->eiuGuiDeclaration  !== null) {
+			return $this->eiuGuiDeclaration ;
 		}
 		
-		return $this->eiuGuiModel = $this->eiuAnalyst->getEiuGuiModel($required);
+		return $this->eiuGuiDeclaration  = $this->eiuAnalyst->getEiuGuiDeclaration ($required);
 	}
 	
 	/**
 	 * 
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
+	 * @return \rocket\op\ei\util\gui\EiuGuiMaskDeclaration
 	 */
 	public function guiFrame(bool $required = true) {
-		if ($this->eiuGuiFrame !== null) {
-			return $this->eiuGuiFrame;
+		if ($this->eiuGuiMaskDeclaration !== null) {
+			return $this->eiuGuiMaskDeclaration;
 		}
 		
-		return $this->eiuGuiFrame = $this->eiuAnalyst->getEiuGuiFrame($required);
+		return $this->eiuGuiMaskDeclaration = $this->eiuAnalyst->getEiuGuiMaskDeclaration($required);
 	}
 	
 	
 	/**
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\gui\EiuEntryGui
+	 * @return \rocket\op\ei\util\gui\EiuGuiEntry
 	 */
-	public function entryGui(bool $required = true) {
-		if ($this->eiuEntryGui !== null) {
-			return $this->eiuEntryGui;
+	public function guiEntry(bool $required = true) {
+		if ($this->eiuGuiEntry !== null) {
+			return $this->eiuGuiEntry;
 		}
 		
-		return $this->eiuEntryGui = $this->eiuAnalyst->getEiuEntryGui($required);
+		return $this->eiuGuiEntry = $this->eiuAnalyst->getEiuGuiEntry($required);
 	}
 	
 	/**

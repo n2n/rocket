@@ -26,15 +26,15 @@ use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\manage\gui\field\GuiField;
 
-class EiuEntryGuiAssembler {
+class EiuGuiEntryAssembler {
 	private $eiGuiValueBoundaryAssembler;
-	private $eiuEntryGui;
+	private $eiuGuiEntry;
 	private $eiuAnalyst;
 	
-	public function __construct(EiGuiValueBoundaryAssembler $eiGuiValueBoundaryAssembler, ?EiuEntryGui $eiuEntryGui,
+	public function __construct(EiGuiValueBoundaryAssembler $eiGuiValueBoundaryAssembler, ?EiuGuiEntry $eiuGuiEntry,
 			EiuAnalyst $eiuAnalyst) {
 		$this->eiGuiValueBoundaryAssembler = $eiGuiValueBoundaryAssembler;
-		$this->eiuEntryGui = $eiuEntryGui;
+		$this->eiuGuiEntry = $eiuGuiEntry;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -46,14 +46,14 @@ class EiuEntryGuiAssembler {
 	}
 	
 	/**
-	 * @return EiuEntryGui 
+	 * @return EiuGuiEntry 
 	 */
-	public function getEiuEntryGui() {
-		if ($this->eiuEntryGui === null) {
-			$this->eiuEntryGui = new EiuEntryGui($this->eiGuiValueBoundaryAssembler->getEiGuiValueBoundary(), null, null, $this->eiuAnalyst);
+	public function getEiuGuiEntry() {
+		if ($this->eiuGuiEntry === null) {
+			$this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiValueBoundaryAssembler->getEiGuiValueBoundary(), $this->eiuAnalyst);
 		}
 		
-		return $this->eiuEntryGui;
+		return $this->eiuGuiEntry;
 	}
 	
 	/**

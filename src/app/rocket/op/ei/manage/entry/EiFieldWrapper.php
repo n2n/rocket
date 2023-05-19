@@ -39,6 +39,10 @@ class EiFieldWrapper implements EiFieldAbstraction {
 		$this->eiPropPath = $eiPropPath;
 		$this->eiField = $eiField;
 	}
+
+	function getEiField(): EiField {
+		return $this->eiField;
+	}
 	
 	/**
 	 * @param bool $ignored

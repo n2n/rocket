@@ -42,7 +42,7 @@ class EiGuiValueBoundaryAssembler {
 	private $forkedPropertyPaths = array();
 	
 	public function __construct(EiGuiValueBoundary $eiGuiValueBoundary) {
-		$this->guiDefinition = $eiGuiValueBoundary->getEiGuiMaskDeclaration()->getGuiDefinition();
+		$this->guiDefinition = $eiGuiValueBoundary->getEiGuiDeclaration()->getGuiDefinition();
 		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
 		$this->eiu = new Eiu($eiGuiValueBoundary);
 	}
@@ -50,21 +50,21 @@ class EiGuiValueBoundaryAssembler {
 	/**
 	 * @return EiGuiValueBoundary
 	 */
-	public function getEiGuiValueBoundary() {
+	public function getEiGuiValueBoundary(): EiGuiValueBoundary {
 		return $this->eiGuiValueBoundary;
 	}
 	
-	/**
-	 * @return \n2n\impl\web\dispatch\mag\model\MagForm
-	 */
-	private function getOrCreateDispatchable() {
-		if ($this->eiObjectForm === null) {
-			$this->eiObjectForm = new MagForm(new MagCollection());
-			$this->eiGuiValueBoundary->setDispatchable($this->eiObjectForm);
-		}
-		
-		return $this->eiObjectForm;
-	}
+//	/**
+//	 * @return \n2n\impl\web\dispatch\mag\model\MagForm
+//	 */
+//	private function getOrCreateDispatchable() {
+//		if ($this->eiObjectForm === null) {
+//			$this->eiObjectForm = new MagForm(new MagCollection());
+//			$this->eiGuiValueBoundary->setDispatchable($this->eiObjectForm);
+//		}
+//
+//		return $this->eiObjectForm;
+//	}
 	
 // 	public function save() {
 // 		foreach ($this->savables as $savable) {
@@ -78,24 +78,17 @@ class EiGuiValueBoundaryAssembler {
 // 		}
 // 	}
 	
-	/**
-	 * @param string $propertyName
-	 * @param GuiProp $guiProp
-	 * @return NULL|\rocket\op\ei\manage\gui\field\GuiField
-	 */
-	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, DefPropPath $defPropPath) {
-		$guiField = $guiPropWrapper->buildGuiField($this->eiGuiValueBoundary);
-		
-		return $guiField;
+
+	private function assembleExlGuiField(EiPropPath $eiPropPath, GuiPropWrapper $guiPropWrapper, DefPropPath $defPropPath): ?GuiField {
+		return $guiPropWrapper->buildGuiField($this->eiGuiValueBoundary);
 	}
-	
+
 	/**
 	 * @param DefPropPath $defPropPath
 	 * @param GuiPropFork $guiPropFork
-	 * @param EiPropPath $defPropPath
-	 * @return NULL|\rocket\op\ei\manage\gui\field\GuiField
+	 * @return NULL|GuiField
 	 */
-	private function assembleGuiPropFork(DefPropPath $defPropPath, GuiPropFork $guiPropFork) {
+	private function assembleGuiPropFork(DefPropPath $defPropPath, GuiPropFork $guiPropFork): ?GuiField {
 		$eiPropPath = $defPropPath->getFirstEiPropPath();
 		$eiPropPathStr = (string) $eiPropPath;
 		
@@ -113,7 +106,7 @@ class EiGuiValueBoundaryAssembler {
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @return \rocket\op\ei\manage\gui\field\GuiField
+	 * @return GuiField
 	 */
 	public function assembleGuiField(DefPropPath $defPropPath) {
 		if ($this->eiGuiValueBoundary->containsGuiFieldDefPropPath($defPropPath)) {

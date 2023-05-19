@@ -49,7 +49,7 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter {
 	private $sed;
 	
 	/**
-	 * @return \rocket\impl\ei\component\prop\adapter\config\EditAdapter
+	 * @return EditAdapter
 	 */
 	private function getEditConfig() {
 		return $this->sed ?? $this->sed = new EditAdapter();
@@ -119,7 +119,7 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter {
 			
 			if ($value !== null) return;
 			
-			$eiu->entryGui()->onSave(function () use ($eiu) {
+			$eiu->guiEntry()->onSave(function () use ($eiu) {
 				$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($this));
 			});
 		});
@@ -204,8 +204,8 @@ class EmbeddedGuiField implements GuiField {
 		$this->mag = new TogglerMag($this->embeddedEiProp->getLabelLstr(),
 				$this->eiu->field()->getValue() !== null);
 		
-		$this->eiu->entryGui()->whenReady(function () {
-			$this->mag->setOnAssociatedMagWrappers($this->eiu->entryGui()
+		$this->eiu->guiEntry()->whenReady(function () {
+			$this->mag->setOnAssociatedMagWrappers($this->eiu->guiEntry()
 					->getSubMagWrappers($this->embeddedEiProp, true));
 		});
 		

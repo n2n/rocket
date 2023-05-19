@@ -106,8 +106,8 @@
 // 		return $this->getEiuEntry()->isPreviewSupported();
 // 	}
 	
-// // 	public function getEiuEntryGui() {
-// // 		return $this->eiuEntryGui;
+// // 	public function getEiuGuiEntry() {
+// // 		return $this->eiuGuiEntry;
 // // 	}
 	
 	

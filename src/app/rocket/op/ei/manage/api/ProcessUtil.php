@@ -64,12 +64,8 @@ class ProcessUtil {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
-	/**
-	 * @param string $pid
-	 * @return \rocket\op\ei\manage\EiEntityObj
-	 */
-	function lookupEiObject(string $pid) {
+
+	function lookupEiObject(string $pid): EiObject {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
 			return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
@@ -77,19 +73,21 @@ class ProcessUtil {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
+
 	/**
 	 * @param string $pid
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @param array $defPropPaths
-	 * @throws BadRequestException
-	 * @return \rocket\op\ei\manage\gui\EiGui
+	 * @param bool $entryGuiControlsIncluded
+	 * @param DefPropPath[]|null $defPropPaths
+	 * @return EiGuiValueBoundary
 	 */
-	function lookupEiGuiByPid(string $pid, bool $bulky, bool $readOnly, ?array $defPropPaths) {
+	function lookupEiGuiByPid(string $pid, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
+			?array $defPropPaths): EiGuiValueBoundary {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			return $efu->lookupEiGuiFromId($efu->pidToId($pid), $bulky, $readOnly, $defPropPaths);
+			return $efu->lookupEiGuiFromId($efu->pidToId($pid), $bulky, $readOnly, $entryGuiControlsIncluded,
+					$defPropPaths);
 		} catch (UnknownEiObjectException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -148,18 +146,14 @@ class ProcessUtil {
 	 * @param string $eiTypeId
 	 * @param bool $bulky
 	 * @param bool $readOnly
+	 * @return EiGuiValueBoundary
 	 * @throws BadRequestException
-	 * @return \rocket\op\ei\manage\gui\EiGui
 	 */
 	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly) {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
 			return $efu->createEiGuiFromEiEntry($eiEntry, $bulky, $readOnly, $eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
-		} catch (SecurityException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (EiException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
+		} catch (SecurityException|EiException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}

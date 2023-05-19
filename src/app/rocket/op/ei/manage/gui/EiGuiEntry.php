@@ -46,11 +46,11 @@ class EiGuiEntry {
 	/**
 	 * @var EiMask
 	 */
-	private $eiMask;
+	private EiMask $eiMask;
 	/**
 	 * @var EiEntry
 	 */
-	private $eiEntry;
+	private EiEntry $eiEntry;
 
 	private ?GuiFieldMap $guiFieldMap = null;
 

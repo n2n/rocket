@@ -7,17 +7,17 @@ use rocket\op\ei\manage\api\ApiFieldCallId;
 
 class EiuGuiField {
 	private $defPropPath;
-	private $eiuEntryGuiTypeDef;
+	private $eiuGuiEntryTypeDef;
 	private $eiuAnalyst;
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @param EiuEntryGui $eiuEntryGuiTypeDef
+	 * @param EiuGuiEntry $eiuGuiEntryTypeDef
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	function __construct(DefPropPath $defPropPath, EiuEntryGuiTypeDef $eiuEntryGuiTypeDef, EiuAnalyst $eiuAnalyst) {
+	function __construct(DefPropPath $defPropPath, EiuGuiEntryTypeDef $eiuGuiEntryTypeDef, EiuAnalyst $eiuAnalyst) {
 		$this->defPropPath = $defPropPath;
-		$this->eiuEntryGuiTypeDef = $eiuEntryGuiTypeDef;
+		$this->eiuGuiEntryTypeDef = $eiuGuiEntryTypeDef;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -29,11 +29,11 @@ class EiuGuiField {
 	}
 	
 	function createCallId() {
-		$eiGuiEntry = $this->eiuEntryGuiTypeDef->getEiGuiEntry();
+		$eiGuiEntry = $this->eiuGuiEntryTypeDef->getEiGuiEntry();
 		
 		return new ApiFieldCallId($this->defPropPath, 
 				$eiGuiEntry->getEiEntry()->getEiMask()->getEiTypePath(),
-				$this->eiuAnalyst->getEiuGuiFrame(true)->getViewMode(),
+				$this->eiuAnalyst->getEiuGuiMaskDeclaration(true)->getViewMode(),
 				$eiGuiEntry->getEiEntry()->getPid());
 	}
 }

@@ -13,18 +13,15 @@ use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\EiGui;
 
-class EiuGuiModel {
-	private $eiGuiDeclaration;
-	private $eiuGuiFrames;
+class EiuGuiDeclaration  {
+	private $eiuGuiMaskDeclarations;
 	private $eiuAnalyst;
-	
+
 	/**
-	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param EiuFrame $eiuFrame
+	 * @param EiGuiDeclaration $eiGuiDeclaration
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiGuiDeclaration $eiGuiDeclaration, EiuAnalyst $eiuAnalyst) {
-		$this->eiGuiDeclaration = $eiGuiDeclaration;
+	public function __construct(private EiGuiDeclaration $eiGuiDeclaration, EiuAnalyst $eiuAnalyst) {
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
@@ -47,38 +44,35 @@ class EiuGuiModel {
 // 		return $this->eiuFrame;
 // 	}
 	
-	/**
-	 * @return \rocket\op\ei\manage\gui\EiGuiDeclaration
-	 */
-	function getEiGuiDeclaration() {
+
+	function getEiGuiDeclaration(): EiGuiDeclaration {
 		return $this->eiGuiDeclaration;
 	}
 	
-	function newGui() {
-		return new EiuGui(new EiGui($this->eiGuiDeclaration), $this, $this->eiuAnalyst);
-	}
-	
-	function createSiDeclaration() {
-		return $this->eiGuiDeclaration->createSiDeclaration();
-	}
-	
+//	function createSiDeclaration() {
+//		return $this->eiGuiDeclaration->createSiDeclaration();
+//	}
+//
+//	/**
+//	 * @return \rocket\si\control\SiControl[]
+//	 */
+//	function createGeneralSiControls() {
+//		return $this->eiGuiDeclaration->createGeneralSiControls($this->eiuAnalyst->getEiFrame(true));
+//	}
+
 	/**
-	 * @return \rocket\si\control\SiControl[]
+	 * @return EiuGuiMaskDeclaration[]
 	 */
-	function createGeneralSiControls() {
-		return $this->eiGuiDeclaration->createGeneralSiControls($this->eiuAnalyst->getEiFrame(true));
-	}
-	
-	function guiFrames() {
-		if ($this->eiuGuiFrames !== null) {
-			return $this->eiuGuiFrames;
+	function maskDeclarations(): array {
+		if ($this->eiuGuiMaskDeclarations !== null) {
+			return $this->eiuGuiMaskDeclarations;
 		}
 		
-		$this->eiuGuiFrames = [];
+		$this->eiuGuiMaskDeclarations = [];
 		foreach ($this->eiGuiDeclaration->getEiGuiMaskDeclarations() as $key => $eiGuiMaskDeclaration) {
-			$this->eiuGuiFrames[$key] = new EiuGuiFrame($eiGuiMaskDeclaration, $this, $this->eiuAnalyst);
+			$this->eiuGuiMaskDeclarations[$key] = new EiuGuiMaskDeclaration($eiGuiMaskDeclaration, $this, $this->eiuAnalyst);
 		}
-		return $this->eiuGuiFrames;
+		return $this->eiuGuiMaskDeclarations;
 	}
 	
 //	/**
@@ -99,20 +93,21 @@ class EiuGuiModel {
 //			}
 //		}
 //
-//		return new EiuGuiModel($newEiGuiDeclaration, $this->eiuAnalyst);
+//		return new EiuGuiDeclaration ($newEiGuiDeclaration, $this->eiuAnalyst);
 //	}
 	
-	function newEntryGui($eiEntryArg = null) {
+	function newEntryGui($eiEntryArg = null, bool $entryGuiControlsIncluded = false) {
 		$eiGui = new EiGui($this->eiGuiDeclaration);
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
 		if ($eiEntryArg === null) {
 			$eiGui->appendNewEiGuiValueBoundary($eiFrame);
+			$eiValueBoundary = $this->eiGuiDeclaration->createNewEiGuiValueBoundary($eiFrame, $entryGuiControlsIncluded);
 		} else {
 			$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg', true);
-			$eiGui->appendEiGuiValueBoundary($eiFrame, [$eiEntry]);
+			$eiValueBoundary = $this->eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, [$eiEntry], $entryGuiControlsIncluded);
 		}
-		
-		return (new EiuGui($eiGui, $this, $this->eiuAnalyst))->entryGui();
+
+		return new EiuGuiEntry($eiValueBoundary->getSelectedEiGuiEntry(), $this->eiuAnalyst);
 	}
 }
