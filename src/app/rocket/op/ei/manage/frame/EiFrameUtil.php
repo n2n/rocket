@@ -280,7 +280,7 @@ class EiFrameUtil {
 	}
 
 	function copyEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary, int $viewMode = null, array $defPropPaths = null,
-			bool $entryGuiControlsIncluded = null): EiGuiEntry {
+			bool $entryGuiControlsIncluded = null): EiGuiValueBoundary {
 		$newViewMode = $viewMode ?? $eiGuiValueBoundary->getEiGuiDeclaration();
 		$newEiGuiDeclaration = new EiGuiDeclaration($newViewMode);
 		$newEiGuiValueBoundary = new EiGuiValueBoundary($newEiGuiDeclaration, $eiGuiValueBoundary->getTreeLevel());
@@ -303,12 +303,13 @@ class EiFrameUtil {
 		if ($viewMode === null || $viewMode === $eiGuiMaskDeclaration->getViewMode()) {
 			$newEiGuiMaskDeclaration = $eiGuiMaskDeclaration;
 		} else {
-			$newEiGuiMaskDeclaration = $eiGuiMaskDeclaration->getEiMask()->getEiEngine()->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths)
+			$newEiGuiMaskDeclaration = $eiGuiMaskDeclaration->getEiMask()->getEiEngine()
+					->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths);
 		}
 
 		return $newEiGuiMaskDeclaration->createEiGuiEntry($this->eiFrame,
-				$this->eiGuiEntry->getEiEntry(),
-				$entryGuiControlsIncluded ?? $this->eiGuiEntry->getGuiControlMap() === null);
+				$eiGuiEntry->getEiEntry(),
+				$entryGuiControlsIncluded ?? $eiGuiEntry->getGuiControlMap() === null);
 	}
 	
 	/**
