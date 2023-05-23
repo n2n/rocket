@@ -16,12 +16,13 @@ use rocket\si\meta\SiStyle;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
 use rocket\op\spec\TypePath;
+use rocket\si\control\SiControl;
 
 class EiGuiDeclaration {
-	/**
-	 * @var EiMask
-	 */
-	private $contextEiMask;
+//	/**
+//	 * @var EiMask
+//	 */
+//	private $contextEiMask;
 	/**
 	 * @var int
 	 */
@@ -29,24 +30,24 @@ class EiGuiDeclaration {
 	/**
 	 * @var EiGuiMaskDeclaration[]
 	 */
-	private $eiGuiMaskDeclarations = [];
-	
+	private array $eiGuiMaskDeclarations = [];
+
 	/**
-	 * @param EiMask $eiMask
-	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
+	 * @param EiMask $contextEiMask
+	 * @param int $viewMode
 	 */
-	function __construct(EiMask $contextEiMask, int $viewMode) {
+	function __construct(private EiMask $contextEiMask, int $viewMode) {
 		$this->contextEiMask = $contextEiMask;
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
 	}
 	
-//	/**
-//	 * @return \rocket\op\ei\mask\EiMask
-//	 */
-//	function getContextEiMask() {
-//		return $this->contextEiMask;
-//	}
+	/**
+	 * @return EiMask
+	 */
+	function getContextEiMask(): EiMask {
+		return $this->contextEiMask;
+	}
 	
 	/**
 	 * @return int
@@ -90,7 +91,7 @@ class EiGuiDeclaration {
 		ArgUtils::assertTrue($this->viewMode === $eiGuiMaskDeclaration->getViewMode());
 		$eiType = $eiGuiMaskDeclaration->getGuiDefinition()->getEiMask()->getEiType();
 		
-		ArgUtils::assertTrue($eiType->isA($eiGuiMaskDeclaration->getGuiDefinition()->getEiMask()->getEiType()));
+		ArgUtils::assertTrue($eiType->isA($this->contextEiMask->getEiType()));
 		
 		$this->eiGuiMaskDeclarations[(string) $eiGuiMaskDeclaration->getEiMask()->getEiTypePath()] = $eiGuiMaskDeclaration;
 		return $this;
@@ -307,9 +308,9 @@ class EiGuiDeclaration {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @return \rocket\si\control\SiControl[]
+	 * @return SiControl[]
 	 */
-	function createGeneralSiControls(EiFrame $eiFrame) {
+	function createGeneralSiControls(EiFrame $eiFrame): array {
 		$contextEiTypeId = $this->contextEiMask->getEiType()->getId();
 		
 		if (isset($this->eiGuiMaskDeclarations[$contextEiTypeId])) {

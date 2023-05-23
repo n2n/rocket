@@ -31,6 +31,7 @@ use rocket\si\api\SiPartialContentInstruction;
 use rocket\si\content\SiValueBoundary;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
+use n2n\web\http\BadRequestException;
 
 class GetInstructionProcess {
 	private $instruction;
@@ -77,6 +78,9 @@ class GetInstructionProcess {
 		}, $propIds);
 	}
 
+	/**
+	 * @throws BadRequestException
+	 */
 	private function handleEntryId(string $entryId): SiGetResult {
 		$defPropPaths = $this->parseDefPropPaths();
 		
@@ -86,23 +90,30 @@ class GetInstructionProcess {
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
 		$getResult = new SiGetResult();
-		$getResult->setValueBoundary($eiGuiValueBoundary->createSiValueBoundary());
+		$getResult->setValueBoundary($eiGuiValueBoundary
+				->createSiValueBoundary($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale()));
 		
-		if ($this->instruction->areGeneralControlsIncluded()) {
-			$getResult->setGeneralControls($eiGuiValueBoundary->getEiGuiDeclaration()->createGeneralSiControls($eiFrame));
+//		if ($this->instruction->areGeneralControlsIncluded()) {
+//			$getResult->setGeneralControls($eiGuiValueBoundary->getEiGuiDeclaration()->createGeneralSiControls($eiFrame));
+//		}
+
+		if ($this->instruction->areGeneralControlsIncluded() && $eiGuiValueBoundary->isEiGuiEntrySelected()) {
+			$getResult->setGeneralControls($eiGuiValueBoundary->getSelectedEiGuiEntry()->getEiGuiMaskDeclaration()
+					->createGeneralSiControls($eiFrame));
 		}
 		
 		if ($this->instruction->isDeclarationRequested()) {
-			$getResult->setDeclaration($eiGuiValueBoundary->getEiGuiDeclaration()->createSiDeclaration($eiFrame));
+			$getResult->setDeclaration($eiGuiValueBoundary->getEiGuiDeclaration()
+					->createSiDeclaration($eiFrame->getN2nContext()->getN2nLocale()));
 		}
-		
+
 		return $getResult;
 	}
 	
 	/**
 	 * @return SiGetResult
 	 */
-	private function handleNewEntry() {
+	private function handleNewEntry(): SiGetResult {
 		$defPropPaths = $this->parseDefPropPaths();
 
 		$eiGuiDeclaration = $this->eiFrameUtil->createNewEiGuiDeclaration(
@@ -113,7 +124,7 @@ class GetInstructionProcess {
 		$getResult = new SiGetResult();
 		$getResult->setValueBoundary($eiGuiDeclaration
 				->createNewEiGuiValueBoundary($eiFrame, $this->instruction->areEntryControlsIncluded())
-				->createSiValueBoundary());
+				->createSiValueBoundary($eiFrame->getN2nContext()->getN2nLocale()));
 		
 		if ($this->instruction->areGeneralControlsIncluded() && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
 			$getResult->setGeneralControls($eiGuiDeclaration->getSingleEiGuiMaskDeclaration()
@@ -121,7 +132,7 @@ class GetInstructionProcess {
 		}
 		
 		if ($this->instruction->isDeclarationRequested()) {
-			$getResult->setDeclaration($eiGuiDeclaration->createSiDeclaration($eiFrame));
+			$getResult->setDeclaration($eiGuiDeclaration->createSiDeclaration($eiFrame->getN2nContext()->getN2nLocale()));
 		}
 		
 		return $getResult;
@@ -162,7 +173,8 @@ class GetInstructionProcess {
 			return $result;
 		}
 		
-		$result->setDeclaration($rangeResult->eiGuiDeclaration->createSiDeclaration($this->eiFrameUtil->getEiFrame()));
+		$result->setDeclaration($rangeResult->eiGuiDeclaration
+				->createSiDeclaration($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale()));
 		
 		return $result;
 	}
