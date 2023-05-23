@@ -13,14 +13,14 @@ class EiGuiDeclarationFactory {
 
 	/**
 	 * @param int $viewMode
-	 * @param bool $nonAbstractsOnly
+	 * @param bool $nonAbstractOnly
 	 * @param array|null $defPropPaths
 	 * @return EiGuiDeclaration
 	 */
-	function createEiGuiDeclaration(int $viewMode, bool $nonAbstractsOnly, ?array $defPropPaths): EiGuiDeclaration {
+	function createEiGuiDeclaration(int $viewMode, bool $nonAbstractOnly, ?array $defPropPaths): EiGuiDeclaration {
 		$eiGuiDeclaration = new EiGuiDeclaration($this->contextEiMask, $viewMode);
 		
-		$this->applyEiGuiMaskDeclaration($eiGuiDeclaration, false, $defPropPaths);
+		$this->applyEiGuiMaskDeclaration($eiGuiDeclaration, $nonAbstractOnly, $defPropPaths);
 
 		if (!$eiGuiDeclaration->hasEiGuiMaskDeclarations()) {
 			throw new GuiBuildFailedException('Can not build forge EiGuiDeclaration based on '
@@ -35,11 +35,10 @@ class EiGuiDeclarationFactory {
 	 * @param bool $nonAbstractsOnly
 	 * @param array|null $allowedEiTypes
 	 * @param array|null $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
 	 * @return EiGuiDeclaration
 	 */
 	function createMultiEiGuiDeclaration(int $viewMode, bool $nonAbstractsOnly, ?array $allowedEiTypes,
-			?array $defPropPaths, bool $guiStructureDeclarationsRequired): EiGuiDeclaration {
+			?array $defPropPaths): EiGuiDeclaration {
 		$eiGuiDeclaration = new EiGuiDeclaration($this->contextEiMask, $viewMode);
 	
 		$this->applyPossibleEiGuiMaskDeclarations($eiGuiDeclaration, $nonAbstractsOnly, $allowedEiTypes, $defPropPaths);
@@ -72,8 +71,7 @@ class EiGuiDeclarationFactory {
 	}
 
 	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractsOnly,
-			array $allowedEiTypes = null,
-			array $defPropPaths = null): void {
+			array $allowedEiTypes = null, array $defPropPaths = null): void {
 		$contextEiMask = $this->contextEiMask;
 		$contextEiType = $contextEiMask->getEiType();
 		

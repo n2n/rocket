@@ -51,15 +51,17 @@ use rocket\op\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\op\ei\manage\critmod\filter\impl\CriteriaConstraints;
 use rocket\op\ei\manage\DefPropPath;
 use ReflectionClass;
+use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 
 class EiFrameUtil {
-	private $eiFrame;
-	
+	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
+
 	/**
 	 * @param EiFrame $eiFrame
 	 */
-	function __construct(EiFrame $eiFrame) {
-		$this->eiFrame = $eiFrame;
+	function __construct(private EiFrame $eiFrame) {;
+		$this->eiGuiDeclarationFactory = new EiGuiDeclarationFactory($eiFrame->getContextEiEngine()->getEiMask(),
+				$eiFrame->getN2nContext());
 	}
 	
 	/**
@@ -197,8 +199,8 @@ class EiFrameUtil {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 		$allowedEiTypes = $this->determineEiTypes($allowedEiTypeIds);
 		
-		return $this->eiFrame->getContextEiEngine()
-				->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths);
+		return $this->eiGuiDeclarationFactory->createMultiEiGuiDeclaration($viewMode, true,
+				$allowedEiTypes, $defPropPaths);
 	}
 
 	function createNewEiGuiValueBoundary(bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
@@ -233,9 +235,8 @@ class EiFrameUtil {
 	function createEiGuiDeclaration(EiMask $eiMask, bool $bulky, bool $readOnly, array $defPropPaths = null): EiGuiDeclaration {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 
-		return $eiMask->getEiEngine()->obtainEiGuiDeclaration($viewMode, $defPropPaths);
+		return $this->eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 	}
-	
 
 	function createEiGuiValueBoundaryFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
 			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): EiGuiValueBoundary {
@@ -255,7 +256,7 @@ class EiFrameUtil {
 					$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId));
 		}
 
-		$eiGuiDeclaration = $eiMask->getEiEngine()->obtainEiGuiDeclaration($viewMode, $defPropPaths);
+		$eiGuiDeclaration = $this->eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 		return $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
 	}
 	
@@ -318,9 +319,10 @@ class EiFrameUtil {
 
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
 			array $defPropPaths = null, string $quickSearchStr = null): RangeResult {
-		$eiGuiDeclaration = $this->eiFrame->getContextEiEngine()->obtainEiGuiDeclaration(
-				ViewMode::determine($bulky, $readOnly, false), $defPropPaths, true);
-			
+
+		$eiGuiDeclaration = $this->eiGuiDeclarationFactory->createEiGuiDeclaration(
+				ViewMode::determine($bulky, $readOnly, false), true, $defPropPaths);
+
 		$criteria = $this->createCriteria(NestedSetUtils::NODE_ALIAS, false, $quickSearchStr);
 		$criteria->select(NestedSetUtils::NODE_ALIAS);
 		$criteria->limit($offset, $num);
