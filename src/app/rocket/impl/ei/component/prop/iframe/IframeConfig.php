@@ -8,9 +8,9 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
-class IframeConfig extends PropConfigAdaption {
+
+class IframeConfig {
 	const ATTR_URL_KEY = 'url';
 	const ATTR_SRC_DOC_KEY = 'srcDoc';
 	const ATTR_CONTROLLER_LOOKUP_ID = 'controllerLookupId';

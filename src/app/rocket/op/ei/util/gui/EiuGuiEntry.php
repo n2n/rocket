@@ -37,11 +37,13 @@ use rocket\op\ei\util\entry\EiuEntry;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\op\ei\util\entry\EiuField;
 use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\frame\EiFrameUtil;
 
 class EiuGuiEntry {
 //	private $eiuGuiMaskDeclaration;
 	
-	function __construct(private EiGuiEntry $eiGuiEntry, private ?EiuValueBoundary $eiuValueBoundary,
+	function __construct(private EiGuiEntry $eiGuiEntry,
 			private ?EiuEntry $eiuEntry, private readonly EiuAnalyst $eiuAnalyst) {
 	}
 	
@@ -53,11 +55,7 @@ class EiuGuiEntry {
 	 * @return int
 	 */
 	function getViewMode(): int {
-		return $this->eiGuiEntry->getEiGuiValueBoundary()->getEiGuiDeclaration()->getViewMode();
-	}
-
-	function getEiGuiValueBoundary(): EiGuiValueBoundary {
-		return $this->eiGuiEntry->getEiGuiValueBoundary();
+		return $this->eiGuiEntry->getEiGuiMaskDeclaration()->getViewMode();
 	}
 	
 //	/**
@@ -86,12 +84,7 @@ class EiuGuiEntry {
 //		return $this->guiFrame()->getPropLabel($eiPropPath, $n2nLocale, $required);
 //	}
 	
-//	/**
-//	 * @return boolean
-//	 */
-//	function isTypeSelected(): bool {
-//		return $this->eiGuiEntry->isEiGuiEntrySelected();
-//	}
+
 	
 //	/**
 //	 * @return \rocket\op\ei\util\spec\EiuType
@@ -246,13 +239,26 @@ class EiuGuiEntry {
 		return $this;
 	}
 	
-	/**
-	 * 
-	 */
-	function save() {
+	function save(): void {
 		$this->eiGuiEntry->save();
 	}
-	
+
+	function copy(bool $bulky = null, bool $readOnly = null, array $defPropPathsArg = null, bool $entryGuiControlsIncluded = null): EiuGuiEntry {
+		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+
+		$eiGuiMaskDeclaration = $this->eiGuiEntry->getEiGuiMaskDeclaration();
+		$newViewMode = ViewMode::determine(
+				$bulky ?? ViewMode::isBulky($eiGuiMaskDeclaration->getViewMode()),
+				$readOnly ?? ViewMode::isReadOnly($eiGuiMaskDeclaration->getViewMode()),
+				ViewMode::isAdd($eiGuiMaskDeclaration->getViewMode()));
+
+		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
+
+		$eiGuiEntry = $eiFrameUtil->copyEiGuiEntry($this->eiGuiEntry, $newViewMode, $defPropPaths, $entryGuiControlsIncluded);
+
+		return new EiuGuiEntry($eiGuiEntry, null, $this->eiuAnalyst);
+	}
+
 	/**
 	 * @param bool $siControlsIncluded
 	 * @return \rocket\si\content\SiValueBoundary

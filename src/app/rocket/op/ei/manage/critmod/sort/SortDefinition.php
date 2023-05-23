@@ -69,7 +69,11 @@ class SortDefinition {
 		
 		return $sortProps;
 	}
-	
+
+	public function isEmpty(): bool {
+		return empty($this->sortProps) && empty($this->sortPropForks);
+	}
+
 	public function createCriteriaConstraint(SortSettingGroup $sortData) {
 		$sortConstraints = array();
 					

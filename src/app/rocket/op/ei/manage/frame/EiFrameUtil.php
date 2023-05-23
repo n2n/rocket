@@ -52,6 +52,7 @@ use rocket\op\ei\manage\critmod\filter\impl\CriteriaConstraints;
 use rocket\op\ei\manage\DefPropPath;
 use ReflectionClass;
 use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
+use rocket\op\ei\manage\gui\EiGuiEntry;
 
 class EiFrameUtil {
 	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
@@ -259,11 +260,13 @@ class EiFrameUtil {
 		$eiGuiDeclaration = $this->eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 		return $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
 	}
-	
+
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param bool $bulky
 	 * @param bool $readOnly
+	 * @param bool $entryGuiControlsIncluded
+	 * @param array|null $defPropPaths
 	 * @return EiGuiValueBoundaryResult
 	 */
 	function createEiGuiValueBoundary(EiEntry $eiEntry, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
@@ -274,6 +277,38 @@ class EiFrameUtil {
 		return new EiGuiValueBoundaryResult(
 				$eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded),
 				$eiGuiDeclaration);
+	}
+
+	function copyEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary, int $viewMode = null, array $defPropPaths = null,
+			bool $entryGuiControlsIncluded = null): EiGuiEntry {
+		$newViewMode = $viewMode ?? $eiGuiValueBoundary->getEiGuiDeclaration();
+		$newEiGuiDeclaration = new EiGuiDeclaration($newViewMode);
+		$newEiGuiValueBoundary = new EiGuiValueBoundary($newEiGuiDeclaration, $eiGuiValueBoundary->getTreeLevel());
+
+		foreach ($eiGuiValueBoundary->getEiGuiEntries() as $eiGuiEntry) {
+			$newEiGuiEntry = $this->copyEiGuiEntry($eiGuiEntry, $viewMode, $defPropPaths, $entryGuiControlsIncluded);
+			$newEiGuiDeclaration->putEiGuiMaskDeclaration($newEiGuiEntry->getEiGuiMaskDeclaration());
+			$newEiGuiValueBoundary->putEiGuiEntry($newEiGuiEntry);
+		}
+
+		return $newEiGuiValueBoundary;
+	}
+
+	function copyEiGuiEntry(EiGuiEntry $eiGuiEntry, int $viewMode = null, array $defPropPaths = null,
+			bool $entryGuiControlsIncluded = null): EiGuiEntry {
+		ArgUtils::valArray($defPropPaths, DefPropPath::class);
+
+		$eiGuiMaskDeclaration = $eiGuiEntry->getEiGuiMaskDeclaration();
+
+		if ($viewMode === null || $viewMode === $eiGuiMaskDeclaration->getViewMode()) {
+			$newEiGuiMaskDeclaration = $eiGuiMaskDeclaration;
+		} else {
+			$newEiGuiMaskDeclaration = $eiGuiMaskDeclaration->getEiMask()->getEiEngine()->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths)
+		}
+
+		return $newEiGuiMaskDeclaration->createEiGuiEntry($this->eiFrame,
+				$this->eiGuiEntry->getEiEntry(),
+				$entryGuiControlsIncluded ?? $this->eiGuiEntry->getGuiControlMap() === null);
 	}
 	
 	/**

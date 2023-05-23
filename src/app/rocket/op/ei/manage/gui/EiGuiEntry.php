@@ -71,11 +71,17 @@ class EiGuiEntry {
 		return $this->eiEntry;
 	}
 
-	public function getGuiFieldMap(): ?GuiFieldMap {
+	public function getGuiFieldMap(): GuiFieldMap {
 		$this->ensureInitialized();
 		
 		return $this->guiFieldMap;
 	}
+
+	function getGuiControlMap(): ?GuiControlMap {
+		$this->ensureInitialized();
+
+		return $this->guiControlMap;
+}
 	
 	function getGuiFieldByDefPropPath(DefPropPath $defPropPath): field\GuiField {
 		$guiFieldMap = $this->guiFieldMap;
@@ -200,7 +206,7 @@ class EiGuiEntry {
 			}
 		}
 	}
-	
+
 	public function save(): void {
 		$this->ensureInitialized();
 		
@@ -214,7 +220,7 @@ class EiGuiEntry {
 			$eiGuiValueBoundaryListener->saved($this);
 		}
 	}
-	
+
 	public function registerEiGuiEntryListener(EiGuiEntryListener $eiGuiEntryListener): void {
 		$this->eiGuiEntryListeners[spl_object_hash($eiGuiEntryListener)] = $eiGuiEntryListener;
 	}

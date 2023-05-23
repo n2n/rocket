@@ -36,7 +36,7 @@ use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\file\command\MultiUploadEiCommandNature;
 use rocket\impl\ei\component\prop\file\command\controller\MultiUploadEiController;
 use n2n\io\img\impl\ImageSourceFactory;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use n2n\util\type\attrs\AttributesException;
 use rocket\op\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
@@ -50,7 +50,7 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\op\ei\util\spec\EiuMask;
 
-class FileConfig extends PropConfigAdaption {
+class FileConfig {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';
 	
 	const ATTR_ALLOWED_EXTENSIONS_KEY = 'allowedExtensions';

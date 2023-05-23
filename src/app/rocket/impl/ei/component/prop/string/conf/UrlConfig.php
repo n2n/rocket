@@ -30,13 +30,13 @@ use n2n\util\type\TypeConstraint;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\persistence\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\ArgUtils;
 
-class UrlConfig extends PropConfigAdaption {
+class UrlConfig {
 	const ATTR_ALLOWED_PROTOCOLS_KEY = 'allowedProtocols';
 	const ATTR_RELATIVE_ALLOWED_KEY = 'relativeAllowed'; 
 	const ATTR_AUTO_SCHEME_KEY = 'autoScheme';

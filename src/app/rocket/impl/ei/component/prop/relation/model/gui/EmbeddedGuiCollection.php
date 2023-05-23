@@ -52,7 +52,7 @@ class EmbeddedGuiCollection {
 	/** 
 	 * @var EiuGuiEntry[]
 	 */
-	private $eiuGuiEntrys = [];
+	private array $eiuGuiEntrys = [];
 	/**
 	 * 
 	 * @var EiuType[]
@@ -98,7 +98,7 @@ class EmbeddedGuiCollection {
 		}
 		
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
-		$eiuGuiDeclaration  = $this->eiuFrame->contextEngine()->newForgeMultiGuiDeclaration(true, $this->readOnly, $this->allowedEiuTypes);
+		$eiuGuiDeclaration  = $this->eiuFrame->contextEngine()->newMultiGuiDeclaration(true, $this->readOnly, $this->allowedEiuTypes);
 		for ($i = 0; $i < $num; $i++) {
 			$this->eiuGuiEntrys[] = $eiuGuiDeclaration ->newEntryGui();
 		}
@@ -207,7 +207,7 @@ class EmbeddedGuiCollection {
 		$values = [];
 		$i = 0;
 		foreach ($this->eiuGuiEntrys as $eiuGuiEntry) {
-			if (!$eiuGuiEntry->isTypeSelected()) {
+			if (!$eiuGuiEntry->isGuiEntrySelected()) {
 				continue;
 			}
 			

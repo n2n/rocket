@@ -87,6 +87,10 @@ class EiEngine {
 		return $eiType->getSupremeEiType()->getEiMask();
 	}
 
+	function hasSupremeEiEngine(): bool {
+		return $this->eiMask->getEiType()->hasSuperEiType();
+	}
+
 	function getSupremeEiEngine() {
 		return $this->getSupremeEiMask()->getEiEngine();
 	}

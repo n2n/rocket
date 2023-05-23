@@ -28,9 +28,9 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\type\attrs\DataSet;
 use rocket\op\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
 
-class AlphanumericConfig extends PropConfigAdaption {
+
+class AlphanumericConfig {
 	const ATTR_MINLENGTH_KEY = 'minlength';
 	const ATTR_MAXLENGTH_KEY = 'maxlength';
 	

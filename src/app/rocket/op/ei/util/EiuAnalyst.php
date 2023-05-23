@@ -61,10 +61,7 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\spec\UnknownTypeException;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\gui\EiuGuiField;
-use rocket\op\ei\util\gui\EiuGui;
-use rocket\op\ei\manage\gui\EiGui;
 use rocket\op\ei\manage\gui\EiGuiEntry;
-use rocket\op\ei\util\gui\EiuGuiEntryTypeDef;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\util\gui\EiuGuiDeclaration ;
 use rocket\op\ei\component\prop\EiProp;
@@ -303,12 +300,12 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuGuiEntry) {
+			if ($eiArg instanceof EiuGuiValueBoundary) {
 				$this->assignEiGuiValueBoundary($eiArg->getEiGuiValueBoundary());
 				continue;
 			}
 			
-			if ($eiArg instanceof EiuGuiEntryTypeDef) {
+			if ($eiArg instanceof EiuGuiEntry) {
 				$this->assignEiGuiEntry($eiArg->getEiGuiEntry());
 				continue;
 			}
@@ -694,7 +691,6 @@ class EiuAnalyst {
 		$this->eiGuiEntry = $eiGuiEntry;
 		
 		$this->assignEiEntry($eiGuiEntry->getEiEntry());
-		$this->assignEiGuiValueBoundary($eiGuiEntry->getEiGuiValueBoundary());
 	}
 	
 	/**
@@ -870,7 +866,7 @@ class EiuAnalyst {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\op\ei\manage\frame\EiFrame|null
 	 */
-	public function getEiFrame(bool $required) {
+	public function getEiFrame(bool $required): ?EiFrame {
 		$this->ensureAppied();
 
 		if (!$required || $this->eiFrame !== null) {
@@ -1282,7 +1278,7 @@ class EiuAnalyst {
 	 * @throws EiuPerimeterException
 	 * @return EiuGuiEntry
 	 */
-	public function getEiuGuiEntry(bool $required) {
+	public function getEiuGuiEntry(bool $required): ?EiuGuiEntry {
 		$this->ensureAppied();
 
 		if ($this->eiuGuiEntry !== null) {
@@ -1290,7 +1286,7 @@ class EiuAnalyst {
 		}
 		
 		if ($this->eiGuiEntry !== null) {
-			return $this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiEntry, $this);
+			return $this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiEntry, $this->eiuEntry, $this);
 		}
 		
 		if (!$required) return null;
@@ -1531,10 +1527,8 @@ class EiuAnalyst {
 			return $eiObjectArg->object()->getEiObject();
 		}
 		
-		if ($eiObjectArg instanceof EiuGuiEntry && null !== ($eiuEntry = $eiObjectArg->getEiuEntry(false))) {
-			$eiEntry = $eiuEntry->getEiEntry(false);
-			$eiGuiValueBoundary = $eiObjectArg->getEiGuiValueBoundary();
-			return $eiuEntry->object()->getEiObject();
+		if ($eiObjectArg instanceof EiuGuiEntry) {
+			return $eiObjectArg->getEiGuiEntry()->getEiEntry()->getEiObject();
 		}
 		
 		if ($eiObjectArg instanceof Eiu && null !== ($eiuEntry = $eiObjectArg->entry(false))) {
@@ -1570,7 +1564,7 @@ class EiuAnalyst {
 		}
 		
 		if ($eiTypeArg instanceof EiFrame) {
-			return $eiTypeArg->getEiEngine()->getEiMask()->getEiType();
+			return $eiTypeArg->getContextEiEngine()->getEiMask()->getEiType();
 		}
 		
 		if ($eiTypeArg instanceof Eiu && $eiuFrame = $eiTypeArg->frame(false)) {
@@ -1578,7 +1572,7 @@ class EiuAnalyst {
 		}
 		
 		if ($eiTypeArg instanceof EiuFrame) {
-			return $eiTypeArg->getEiType();
+			return $eiTypeArg->getContextEiType();
 		}
 		
 		if ($eiTypeArg instanceof EiuEntry && null !== ($eiuFrame = $eiTypeArg->getEiuFrame(false))) {
