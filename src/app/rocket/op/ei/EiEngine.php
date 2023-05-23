@@ -49,10 +49,12 @@ use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\gui\GuiBuildFailedException;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\op\ei\manage\EiGuiMaskDeclarationEngine;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 
 class EiEngine {
 
-	private EiGuiDeclarationEngine $eiGuiDeclarationEngine;
+	private EiGuiMaskDeclarationEngine $eiGuiMaskDeclarationEngine;
 
 	private ?GenericEiDefinition $genericEiDefinition = null;
 	private ?ScalarEiDefinition $scalarEiDefinition = null;
@@ -62,9 +64,8 @@ class EiEngine {
 	 * @param EiMask $eiMask
 	 * @param N2nContext $n2nContext
 	 */
-	function __construct(private EiMask $eiMask, private N2nContext $n2nContext) {
-		$this->eiGuiDeclarationEngine = new EiGuiDeclarationEngine(
-				new EiGuiDeclarationFactory($this->eiMask, $this->n2nContext));
+	function __construct(private readonly EiMask $eiMask, private N2nContext $n2nContext) {
+		$this->eiGuiMaskDeclarationEngine = new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getGuiDefinition());
 	}
 
 	/**
@@ -314,46 +315,45 @@ class EiEngine {
 //		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiGuiValueBoundary, $view);
 //	}
 
-	function obtainEiGuiDeclaration(int $viewMode, ?array $defPropPaths): EiGuiDeclaration {
-		return $this->eiGuiDeclarationEngine->obtainEiGuiDeclaration($viewMode, $defPropPaths);
+	function obtainEiGuiMaskDeclaration(int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
+		return $this->eiGuiMaskDeclarationEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths);
 	}
 
-	/**
-	 * @param EiMask $contextEiMask
-	 * @param int $viewMode
-	 * @param array|null $defPropPaths
-	 * @return EiGuiDeclaration
-	 * @throws GuiBuildFailedException
-	 */
-	function obtainForgeEiGuiDeclaration(int $viewMode, ?array $defPropPaths): EiGuiDeclaration {
-		return $this->eiGuiDeclarationEngine->obtainForgeEiGuiDeclaration($viewMode, $defPropPaths);
-	}
-
-	/**
-	 * @param int $viewMode
-	 * @param array|null $allowedEiTypes
-	 * @param array|null $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
-	 * @return EiGuiDeclaration
-	 * @throws GuiBuildFailedException
-	 */
-	function obtainMultiEiGuiDeclaration(int $viewMode, ?array $allowedEiTypes,
-			?array $defPropPaths, bool $guiStructureDeclarationsRequired): EiGuiDeclaration {
-		return $this->eiGuiDeclarationEngine->obtainMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths,
-				$guiStructureDeclarationsRequired);
-
-	}
-
-	/**
-	 * @param int $viewMode
-	 * @param array|null $allowedEiTypes
-	 * @param array|null $defPropPaths
-	 * @return EiGuiDeclaration
-	 * @throws GuiBuildFailedException
-	 */
-	function obtainForgeMultiEiGuiDeclaration(int $viewMode, ?array $allowedEiTypes,
-			?array $defPropPaths): EiGuiDeclaration {
-		return $this->eiGuiDeclarationEngine->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths);
-	}
+//	/**
+//	 * @param EiMask $contextEiMask
+//	 * @param int $viewMode
+//	 * @param array|null $defPropPaths
+//	 * @return EiGuiDeclaration
+//	 * @throws GuiBuildFailedException
+//	 */
+//	function obtainForgeEiGuiDeclaration(int $viewMode, ?array $defPropPaths): EiGuiDeclaration {
+//		return $this->eiGuiDeclarationEngine->obtainForgeEiGuiDeclaration($viewMode, $defPropPaths);
+//	}
+//
+//	/**
+//	 * @param int $viewMode
+//	 * @param array|null $allowedEiTypes
+//	 * @param array|null $defPropPaths
+//	 * @param bool $guiStructureDeclarationsRequired
+//	 * @return EiGuiDeclaration
+//	 * @throws GuiBuildFailedException
+//	 */
+//	function obtainMultiEiGuiDeclaration(int $viewMode, ?array $allowedEiTypes,
+//			?array $defPropPaths): EiGuiDeclaration {
+//		return $this->eiGuiDeclarationEngine->obtainMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths);
+//
+//	}
+//
+//	/**
+//	 * @param int $viewMode
+//	 * @param array|null $allowedEiTypes
+//	 * @param array|null $defPropPaths
+//	 * @return EiGuiDeclaration
+//	 * @throws GuiBuildFailedException
+//	 */
+//	function obtainForgeMultiEiGuiDeclaration(int $viewMode, ?array $allowedEiTypes,
+//			?array $defPropPaths): EiGuiDeclaration {
+//		return $this->eiGuiDeclarationEngine->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths);
+//	}
 
 }

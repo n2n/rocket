@@ -709,19 +709,15 @@ class GuiDefinition {
 		
 // 		return new EiGuiDeclaration($guiStructureDeclarations, $eiGuiMaskDeclaration);
 // 	}
-	
+
 	/**
-	 * @param EiFrame $eiFrame
+	 * @param N2nContext $n2nContext
 	 * @param int $viewMode
-	 * @param array $defPropPaths
-	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
+	 * @param array|null $defPropPaths
+	 * @return EiGuiMaskDeclaration
 	 */
-	function createEiGuiMaskDeclaration(N2nContext $n2nContext, EiGuiDeclaration $eiGuiDeclaration, ?array $defPropPaths): EiGuiMaskDeclaration {
-		ArgUtils::assertTrue($this->eiMask->isA($eiGuiDeclaration->getContextEiMask()));
-		
-		$eiGuiMaskDeclaration = new EiGuiMaskDeclaration($eiGuiDeclaration, $this, null);
-		
-		$eiGuiDeclaration->putEiGuiMaskDeclaration($eiGuiMaskDeclaration);
+	function createEiGuiMaskDeclaration(N2nContext $n2nContext, int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
+		$eiGuiMaskDeclaration = new EiGuiMaskDeclaration($viewMode, $this, null);
 
 		if ($defPropPaths === null) {
 			$guiStructureDeclarations = $this->initEiGuiMaskDeclarationFromDisplayScheme($n2nContext, $eiGuiMaskDeclaration);
@@ -731,11 +727,9 @@ class GuiDefinition {
 
 		$eiGuiMaskDeclaration->setGuiStructureDeclarations($guiStructureDeclarations);
 
-		
 // 		if (ViewMode::isBulky($eiGuiDeclaration->getViewMode())) {
 // 			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
 // 		}
-
 
 		return $eiGuiMaskDeclaration;
 	}
@@ -772,7 +766,7 @@ class GuiDefinition {
 		$displayScheme = $this->eiMask->getDisplayScheme();
 
 		$displayStructure = null;
-		switch ($eiGuiMaskDeclaration->getEiGuiDeclaration()->getViewMode()) {
+		switch ($eiGuiMaskDeclaration->getViewMode()) {
 			case ViewMode::BULKY_READ:
 				$displayStructure = $displayScheme->getDetailDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
 				break;
