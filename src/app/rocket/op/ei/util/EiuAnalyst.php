@@ -1713,7 +1713,7 @@ class EiuAnalyst {
 			return $eiGuiMaskDeclarationArg->getEiGuiEntry()->getEiGuiMaskDeclaration();
 		}
 		
-		if ($eiGuiMaskDeclarationArg instanceof Eiu && null !== ($eiuGuiMaskDeclaration = $eiGuiMaskDeclarationArg->guiFrame(false))) {
+		if ($eiGuiMaskDeclarationArg instanceof Eiu && null !== ($eiuGuiMaskDeclaration = $eiGuiMaskDeclarationArg->guiMaskDeclaration(false))) {
 			return $eiuGuiMaskDeclaration->getEiGuiMaskDeclaration();
 		}
 	

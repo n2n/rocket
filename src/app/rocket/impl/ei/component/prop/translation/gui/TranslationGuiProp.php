@@ -56,9 +56,9 @@ class TranslationGuiProp implements GuiProp {
 	 * @see GuiProp::buildGuiPropSetup
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $forkedDefPropPaths): ?GuiPropSetup {
-		$targetEiuGuiMaskDeclaration = $this->relationModel->getTargetEiuEngine()->newGuiMaskDeclaration($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
+		$targetEiuGuiMaskDeclaration = $this->relationModel->getTargetEiuEngine()->newGuiMaskDeclaration($eiu->guiMaskDeclaration()->getViewMode(), $forkedDefPropPaths);
 		$eiCmdPath = null;
-		if ($eiu->guiFrame()->isReadOnly()) {
+		if ($eiu->guiMaskDeclaration()->isReadOnly()) {
 			$eiCmdPath = $this->relationModel->getTargetReadEiCmdPath();
 		} else {
 			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
