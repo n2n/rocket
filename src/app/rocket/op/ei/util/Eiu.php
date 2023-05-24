@@ -259,10 +259,11 @@ class Eiu implements Lookupable {
 	function f(): EiuFactory {
 		return $this->factory();
 	}
-	
+
 	/**
-	 * @param string|\ReflectionClass $lookupId
-	 * @return mixed
+	 * @template T
+	 * @param class-string<T>|\ReflectionClass $lookupId
+	 * @return T
 	 * @throws MagicObjectUnavailableException
 	 */
 	public function lookup($lookupId, bool $required = true) {
