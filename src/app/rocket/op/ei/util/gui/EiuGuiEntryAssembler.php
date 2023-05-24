@@ -45,16 +45,17 @@ class EiuGuiEntryAssembler {
 		return $this->eiGuiValueBoundaryAssembler;
 	}
 	
-	/**
-	 * @return EiuGuiEntry 
-	 */
-	public function getEiuGuiEntry() {
-		if ($this->eiuGuiEntry === null) {
-			$this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiValueBoundaryAssembler->getEiGuiValueBoundary(), $this->eiuAnalyst);
-		}
-		
-		return $this->eiuGuiEntry;
-	}
+//	/**
+//	 * @return EiuGuiEntry
+//	 */
+//	public function getEiuGuiEntry() {
+//		if ($this->eiuGuiEntry === null) {
+//			$this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiValueBoundaryAssembler->getEiGuiValueBoundary(), null,
+//					null, $this->eiuAnalyst);
+//		}
+//
+//		return $this->eiuGuiEntry;
+//	}
 	
 	/**
 	 * @param DefPropPath|string $defPropPath
