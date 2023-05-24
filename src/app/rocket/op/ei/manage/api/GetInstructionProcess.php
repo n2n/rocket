@@ -32,6 +32,7 @@ use rocket\si\content\SiValueBoundary;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\BadRequestException;
+use rocket\si\content\SiPartialContent;
 
 class GetInstructionProcess {
 	private $instruction;
@@ -163,7 +164,14 @@ class GetInstructionProcess {
 				$this->instruction->areEntryControlsIncluded(), $this->parseDefPropPaths(), $spci->getQuickSearchStr());
 		
 		$result = new SiGetResult();
-		$result->setPartialContent($this->apiUtil->createSiPartialContent($spci->getFrom(), $num, $rangeResult->eiGuiValueBoundaries));
+
+		$siPartialContent = new SiPartialContent($num);
+		$siPartialContent->setOffset($spci->getFrom());
+		$siPartialContent->setValueBoundaries(
+				array_map(fn (EiGuiValueBoundary $b)
+						=> $b->createSiValueBoundary($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale()),
+				$rangeResult->eiGuiValueBoundaries));
+		$result->setPartialContent($siPartialContent);
 		
 		if ($this->instruction->areGeneralControlsIncluded()) {
 			$result->setGeneralControls($rangeResult->eiGuiDeclaration->createGeneralSiControls($this->eiFrameUtil->getEiFrame()));

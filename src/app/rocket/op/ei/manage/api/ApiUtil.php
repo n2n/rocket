@@ -99,17 +99,18 @@ class ApiUtil {
 		
 // 		return $siValueBoundary;
 // 	}
-	
+
 	/**
 	 * @param int $offset
 	 * @param int $count
-	 * @param EiGui $eiGui
-	 * @return \rocket\si\content\SiPartialContent
+	 * @param array $eiGuiValueBoundaries
+	 * @return SiPartialContent
 	 */
 	function createSiPartialContent(int $offset, int $count, array $eiGuiValueBoundaries) {
 		$content = new SiPartialContent($count);
 		$content->setOffset($offset);
-		$content->setValueBoundaries($eiGuiValueBoundaries);
+		$content->setValueBoundaries(array_map(fn (EiGuiValueBoundary $b) => $b->createSiValueBoundary(),
+				$eiGuiValueBoundaries));
 		return $content;
 	}
 	

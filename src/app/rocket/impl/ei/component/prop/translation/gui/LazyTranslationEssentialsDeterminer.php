@@ -50,7 +50,7 @@ class LazyTranslationEssentialsDeterminer {
 	function __construct(Eiu $eiu, Eiu $targetEiu, TranslationEiPropNature $translationConfig) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiu->frame();
-		$this->targetEiuGuiMaskDeclaration = $targetEiu->guiFrame();
+		$this->targetEiuGuiMaskDeclaration = $targetEiu->guiMaskDeclaration();
 		$this->translationConfig = $translationConfig;
 	}
 	

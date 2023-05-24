@@ -8,6 +8,6 @@ class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	
 	
 	function setupEiGuiMaskDeclaration(Eiu $eiu) {
-		$eiu->guiFrame()->initWithUiCallback($viewFactory, $eiPropPaths);
+		$eiu->guiMaskDeclaration()->initWithUiCallback($viewFactory, $eiPropPaths);
 	}
 }
