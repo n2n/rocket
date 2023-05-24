@@ -64,7 +64,6 @@ use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\CriteriaFactory;
 use rocket\si\content\SiEntryQualifier;
 use rocket\si\control\SiCallResponse;
-use rocket\op\ei\util\gui\EiuGui;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\op\ei\manage\DefPropPath;
@@ -79,6 +78,8 @@ use rocket\op\ei\util\spec\EiuCmd;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\op\ei\component\prop\EiProp;
+use n2n\util\uri\Url;
+use rocket\si\control\SiNavPoint;
 
 class EiuFrame {
 	private $eiFrame;
@@ -117,46 +118,28 @@ class EiuFrame {
 	public function getN2nLocale() {
 		return $this->eiFrame->getN2nContext()->getN2nLocale();
 	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	function getApiControlUrl($eiCmdPath = null) {
+
+	function getApiControlUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		return $this->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
 	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	function getApiFieldUrl($eiCmdPath = null) {
+
+	function getApiFieldUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		return $this->getApiUrl($eiCmdPath, ApiController::API_FIELD_SECTION);
 	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	function getApiGetUrl($eiCmdPath = null) {
+
+	function getApiGetUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		return $this->getApiUrl($eiCmdPath, ApiController::API_GET_SECTION);
 	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	function getApiValUrl($eiCmdPath = null) {
+
+	function getApiValUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		return $this->getApiUrl($eiCmdPath, ApiController::API_VAL_SECTION);
 	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	function getApiSortUrl($eiCmdPath = null) {
+
+	function getApiSortUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		return $this->getApiUrl($eiCmdPath, ApiController::API_SORT_SECTION);
 	}
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	private function getApiUrl($eiCmdPath = null, string $apiSection = null) {
+
+	private function getApiUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null, string $apiSection = null): Url {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
 					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
@@ -166,12 +149,8 @@ class EiuFrame {
 		
 		return $this->eiFrame->getApiUrl($eiCmdPath, $apiSection);
 	}
-	
-	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	public function getCmdUrl($eiCmdPath = null) {
+
+	public function getCmdUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
 					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
@@ -182,27 +161,25 @@ class EiuFrame {
 		return $this->eiFrame->getCmdUrl($eiCmdPath);
 	}
 	
-	public function getOverviewNavPoint(bool $required = true) {
+	public function getOverviewNavPoint(bool $required = true): ?SiNavPoint {
 		return $this->eiFrame->getOverviewNavPoint($required);
 	}
 	
-	public function getDetailNavPoint($eiObjectArg, bool $required = true) {
+	public function getDetailNavPoint($eiObjectArg, bool $required = true): ?SiNavPoint {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg', 
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
 		return $this->eiFrame->getDetailNavPoint($eiObject, $required);
 	}
 	
-	public function getEditNavPoint($eiObjectArg, bool $required = true) {
+	public function getEditNavPoint($eiObjectArg, bool $required = true): ?SiNavPoint {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType());
 		return $this->eiFrame->getEditNavPoint($eiObject, $required);
 	}
 	
-	public function getAddNavPoint(bool $required = true) {
+	public function getAddNavPoint(bool $required = true): ?SiNavPoint {
 		return $this->eiFrame->getAddNavPoint($required);
 	}
-	
-	
 	
 	/**
 	 * @return EntityManager
@@ -213,11 +190,8 @@ class EiuFrame {
 
 	
 	private $eiuEngine;
-	
-	/**
-	 * @return \rocket\op\ei\util\spec\EiuEngine
-	 */
-	public function contextEngine() {
+
+	public function contextEngine(): EiuEngine {
 		if (null !== $this->eiuEngine) {
 			return $this->eiuEngine;		
 		}
@@ -270,7 +244,8 @@ class EiuFrame {
 			return $this->contextEngine();
 		}
 		
-		return new EiuEngine($this->eiFrame->determineEiMask($eiType)->getEiEngine(), null, $this->eiuAnalyst);
+		return new EiuEngine($this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType)->getEiEngine(),
+				null, $this->eiuAnalyst);
 	}
 	
 	
@@ -453,9 +428,9 @@ class EiuFrame {
 		return (new EiFrameUtil($this->eiFrame))->lookupEiEntityObj($id, $ignoreConstraintTypes);	
 	}
 	
-	public function getDraftManager() {
-		return $this->eiFrame->getEiLaunch()->getDraftManager();
-	}
+//	public function getDraftManager() {
+//		return $this->eiFrame->getEiLaunch()->getDraftManager();
+//	}
 	
 	/**
 	 * @param EiObject $eiObject
@@ -466,13 +441,13 @@ class EiuFrame {
 		return $this->eiFrame->createEiEntry($eiObject, null, $ignoreConstraintTypes);
 	}
 	
-	/**
-	 * @param mixed $fromEiObjectArg
-	 * @return EiuEntry
-	 */
-	public function copyEntryTo($fromEiObjectArg, $toEiObjectArg = null) {
-		return $this->createEiEntryCopy($fromEiObjectArg, EiuAnalyst::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
-	}
+//	/**
+//	 * @param mixed $fromEiObjectArg
+//	 * @return EiuEntry
+//	 */
+//	public function copyEntryTo($fromEiObjectArg, $toEiObjectArg = null) {
+//		return $this->createEiEntryCopy($fromEiObjectArg, EiuAnalyst::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
+//	}
 	
 	public function copyEntry($fromEiObjectArg, bool $draft = null, $eiTypeArg = null) {
 		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectArg, $this, 'fromEiObjectArg');
@@ -700,43 +675,43 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @return \n2n\util\uri\Url
+	 * @return Url
 	 */
 	public function getCurrentUrl() {
 		return $this->eiFrame->getCurrentUrl($this->getN2nContext()->getHttpContext());
 	}
 	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	public function getUrlToCommand(EiCmdNature $eiCmd) {
-		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())
-				->ext((string) EiCmdPath::from($eiCmd))->toUrl();
-	}
+//	/**
+//	 * @return Url
+//	 */
+//	public function getUrlToCommand(EiCmdNature $eiCmd) {
+//		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())
+//				->ext((string) EiCmdPath::from($eiCmd))->toUrl();
+//	}
+//
+//	/**
+//	 * @return Url
+//	 */
+//	public function getContextUrl() {
+//		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())->toUrl();
+//	}
 	
-	/**
-	 * @return \n2n\util\uri\Url
-	 */
-	public function getContextUrl() {
-		return $this->getHttpContext()->getControllerContextPath($this->getEiFrame()->getControllerContext())->toUrl();
-	}
-	
-	/**
-	 * @return EiuGuiEntry 
-	 */
-	function newForgeMultiGuiValueBoundary(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, array $defPropPathsArg = null, 
-			bool $guiStructureDeclarationsRequired = true) {
-		$viewMode = ViewMode::determine($bulky, $readOnly, true);
-		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
-		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-
-		$eiGui =  new EiGui($this->eiFrame->getContextEiEngine()
-				->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
-		$eiGui->appendNewEiGuiValueBoundary($this->eiFrame);
-		
-		$eiuGui = new EiuGui($eiGui, null, $this->eiuAnalyst);
-		return $eiuGui->entryGui();
-	}
+//	/**
+//	 * @return EiuGuiEntry
+//	 */
+//	function newForgeMultiGuiValueBoundary(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, array $defPropPathsArg = null,
+//			bool $guiStructureDeclarationsRequired = true) {
+//		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+//		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
+//		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//
+//		$eiGui =  new EiGui($this->eiFrame->getContextEiEngine()
+//				->obtainForgeMultiEiGuiDeclaration($viewMode, $allowedEiTypes, $defPropPaths, $guiStructureDeclarationsRequired));
+//		$eiGui->appendNewEiGuiValueBoundary($this->eiFrame);
+//
+//		$eiuGui = new EiuGui($eiGui, null, $this->eiuAnalyst);
+//		return $eiuGui->entryGui();
+//	}
 	
 // 	/**
 // 	 * @param int $viewMode
@@ -917,72 +892,72 @@ class EiuFrame {
 		return new LiveEiObject($this->lookupEiEntityObj($id, $ignoreConstraintTypes));
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function isDraftingEnabled(): bool {
-		return $this->getContextEiMask()->isDraftingEnabled();
-	}
+//	/**
+//	 * @return bool
+//	 */
+//	public function isDraftingEnabled(): bool {
+//		return $this->getContextEiMask()->isDraftingEnabled();
+//	}
 
-	/**
-	 * @param int $id
-	 * @throws UnknownEiObjectException
-	 * @return Draft
-	 */
-	public function lookupDraftById(int $id): Draft {
-		$draft = $this->getDraftManager()->find($this->getClass(), $id,
-				$this->getContextEiMask()->getEiEngine()->getDraftDefinition());
-
-		if ($draft !== null) return $draft;
-
-		throw new UnknownEiObjectException('Unknown draft with id: ' . $id);
-	}
-
-
-	/**
-	 * @param int $id
-	 * @return EiObject
-	 */
-	public function lookupEiObjectByDraftId(int $id): EiObject {
-		return new DraftEiObject($this->lookupDraftById($id));
-	}
+//	/**
+//	 * @param int $id
+//	 * @throws UnknownEiObjectException
+//	 * @return Draft
+//	 */
+//	public function lookupDraftById(int $id): Draft {
+//		$draft = $this->getDraftManager()->find($this->getClass(), $id,
+//				$this->getContextEiMask()->getEiEngine()->getDraftDefinition());
+//
+//		if ($draft !== null) return $draft;
+//
+//		throw new UnknownEiObjectException('Unknown draft with id: ' . $id);
+//	}
 
 
-	/**
-	 * @param mixed $entityObjId
-	 * @param int $limit
-	 * @param int $num
-	 * @return array
-	 */
-	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array {
-		return $this->getDraftManager()->findByEntityObjId($this->getClass(), $entityObjId, $limit, $num,
-				$this->getContextEiMask()->getEiEngine()->getDraftDefinition());
-	}
+//	/**
+//	 * @param int $id
+//	 * @return EiObject
+//	 */
+//	public function lookupEiObjectByDraftId(int $id): EiObject {
+//		return new DraftEiObject($this->lookupDraftById($id));
+//	}
 
 
-	/**
-	 * @return object
-	 */
-	public function createEntityObj() {
-		return ReflectionUtils::createObject($this->getClass());
-	}
+//	/**
+//	 * @param mixed $entityObjId
+//	 * @param int $limit
+//	 * @param int $num
+//	 * @return array
+//	 */
+//	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array {
+//		return $this->getDraftManager()->findByEntityObjId($this->getClass(), $entityObjId, $limit, $num,
+//				$this->getContextEiMask()->getEiEngine()->getDraftDefinition());
+//	}
 
 
-	/**
-	 * @param mixed $eiEntityObj
-	 * @return EiObject
-	 */
-	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject {
-		if ($eiEntityObj instanceof EiEntityObj) {
-			return new LiveEiObject($eiEntityObj);
-		}
+//	/**
+//	 * @return object
+//	 */
+//	public function createEntityObj() {
+//		return ReflectionUtils::createObject($this->getClass());
+//	}
 
-		if ($eiEntityObj !== null) {
-			return LiveEiObject::create($this->getContextEiType(), $eiEntityObj);
-		}
 
-		return new LiveEiObject(EiEntityObj::createNew($this->getContextEiMask()));
-	}
+//	/**
+//	 * @param mixed $eiEntityObj
+//	 * @return EiObject
+//	 */
+//	public function createEiObjectFromEiEntityObj($eiEntityObj): EiObject {
+//		if ($eiEntityObj instanceof EiEntityObj) {
+//			return new LiveEiObject($eiEntityObj);
+//		}
+//
+//		if ($eiEntityObj !== null) {
+//			return LiveEiObject::create($this->getContextEiType(), $eiEntityObj);
+//		}
+//
+//		return new LiveEiObject(EiEntityObj::createNew($this->getContextEiMask()->getEiType()));
+//	}
 
 	/**
 	 * @param Draft $draft
@@ -999,10 +974,10 @@ class EiuFrame {
 	 * @param bool $flush
 	 */
 	public function persist($eiObjectObj, bool $flush = true) {
-		if ($eiObjectObj instanceof Draft) {
-			$this->persistDraft($eiObjectObj, $flush);
-			return;
-		}
+//		if ($eiObjectObj instanceof Draft) {
+//			$this->persistDraft($eiObjectObj, $flush);
+//			return;
+//		}
 
 		if ($eiObjectObj instanceof EiEntityObj) {
 			$this->persistEiEntityObj($eiObjectObj, $flush);
@@ -1011,28 +986,28 @@ class EiuFrame {
 
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectObj, 'eiObjectObj', $this->getContextEiType());
 
-		if ($eiObject->isDraft()) {
-			$this->persistDraft($eiObject->getDraft(), $flush);
-			return;
-		}
+//		if ($eiObject->isDraft()) {
+//			$this->persistDraft($eiObject->getDraft(), $flush);
+//			return;
+//		}
 
 		$this->persistEiEntityObj($eiObject->getEiEntityObj(), $flush);
 	}
 
-	private function persistDraft(Draft $draft, bool $flush) {
-		$draftManager = $this->getDraftManager();
-
-		if (!$draft->isNew()) {
-			$draftManager->persist($draft);
-		} else {
-			$draftManager->persist($draft, $this->getContextEiMask()->determineEiMask(
-					$draft->getEiEntityObj()->getEiType())->getEiEngine()->getDraftDefinition());
-		}
-
-		if ($flush) {
-			$draftManager->flush();
-		}
-	}
+//	private function persistDraft(Draft $draft, bool $flush) {
+//		$draftManager = $this->getDraftManager();
+//
+//		if (!$draft->isNew()) {
+//			$draftManager->persist($draft);
+//		} else {
+//			$draftManager->persist($draft, $this->getContextEiMask()->determineEiMask(
+//					$draft->getEiEntityObj()->getEiType())->getEiEngine()->getDraftDefinition());
+//		}
+//
+//		if ($flush) {
+//			$draftManager->flush();
+//		}
+//	}
 
 	private function persistEiEntityObj(EiEntityObj $eiEntityObj, bool $flush) {
 		$em = $this->em();
@@ -1047,7 +1022,7 @@ class EiuFrame {
 						'Flushing is mandatory because EiEntityObj is new and has a NestedSetStrategy.');
 			}
 
-			$nsu = new NestedSetUtils($em, $this->getClass(), $nss);
+			$nsu = new NestedSetUtils($em, $eiEntityObj->getEiType()->getClass(), $nss);
 			$nsu->insertRoot($eiEntityObj->getEntityObj());
 		}
 
@@ -1058,28 +1033,27 @@ class EiuFrame {
 	}
 	
 
-	/**
-	 * @param FilterJhtmlHook $filterJhtmlHook
-	 * @param FilterSettingGroup|null $rootGroup
-	 * @return \rocket\op\ei\util\filter\EiuFilterForm
-	 */
-	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterSettingGroup $rootGroup = null) {
-		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuAnalyst);
-	}
-	
-	/**
-	 * @param SortSettingGroup|null $sortSetting
-	 * @return \rocket\op\ei\util\sort\EiuSortForm
-	 */
-	public function newSortForm(SortSettingGroup $sortSetting = null) {
-		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
-	}
+//	/**
+//	 * @param FilterJhtmlHook $filterJhtmlHook
+//	 * @param FilterSettingGroup|null $rootGroup
+//	 * @return \rocket\op\ei\util\filter\EiuFilterForm
+//	 */
+//	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterSettingGroup $rootGroup = null) {
+//		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuAnalyst);
+//	}
+//
+//	/**
+//	 * @param SortSettingGroup|null $sortSetting
+//	 * @return \rocket\op\ei\util\sort\EiuSortForm
+//	 */
+//	public function newSortForm(SortSettingGroup $sortSetting = null) {
+//		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
+//	}
 	
 	/**
 	 * @param EiPropPath|EiPropNature|string $eiPropPath
 	 * @param mixed $targetEiFrameArg
 	 * @param mixed $targetEiObjectArg
-	 * @return bool
 	 */
 	public function setRelation($eiPropPath, $targetEiFrameArg, $targetEiObjectArg = null) {
 		$eiPropPath = EiPropPath::create($eiPropPath);
@@ -1231,6 +1205,6 @@ class EiuCallbackSortAbility implements SortAbility {
 			$eiuControlResponse = new OpfControlResponse($this->eiuAnalyst);
 		}
 		
-		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getEiLaunch()->getEiLifecycleMonitor());
+		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
 	}
 }

@@ -44,6 +44,8 @@ class BulkyEiGui implements EiGui {
 			throw new CorruptedSiInputDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
 		}
 
+		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
+
 		$this->inputSiValueBoundaries = [];
 		$this->inputEiEntries = [];
 
@@ -53,12 +55,12 @@ class BulkyEiGui implements EiGui {
 			$this->eiGuiValueBoundary->save();
 
 			if ($this->eiGuiValueBoundary->getSelectedEiEntry()->validate()) {
-				$this->inputSiValueBoundaries = [$this->eiGuiValueBoundary->createSiValueBoundary()];
+				$this->inputSiValueBoundaries = [$this->eiGuiValueBoundary->createSiValueBoundary($n2nLocale)];
 				$this->inputEiEntries = [$this->eiGuiValueBoundary->getSelectedEiEntry()];
 				return null;
 			}
 
-			return new SiInputError([$this->eiGuiValueBoundary->createSiValueBoundary()]);
+			return new SiInputError([$this->eiGuiValueBoundary->createSiValueBoundary($n2nLocale)]);
 		}
 
 		throw new IllegalStateException();
@@ -74,9 +76,11 @@ class BulkyEiGui implements EiGui {
 
 
 	function toSiGui(): SiGui {
+		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
+
 		$siGui = new BulkyEntrySiGui($this->eiFrame->createSiFrame(),
-				$this->eiGuiDeclaration->createSiDeclaration($this->eiFrame),
-				$this->eiGuiValueBoundary->createSiValueBoundary());
+				$this->eiGuiDeclaration->createSiDeclaration($this->eiFrame->getN2nContext()->getN2nLocale()),
+				$this->eiGuiValueBoundary->createSiValueBoundary($n2nLocale));
 
 		$siGui->setEntryControlsIncluded($this->entrySiControlsIncluded);
 

@@ -72,6 +72,7 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\UnknownEiTypeException;
 use InvalidArgumentException;
 use rocket\op\util\OpuCtrl;
+use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 
 class EiuAnalyst {
 	const EI_FRAME_TYPES = array(EiFrame::class, EiuFrame::class, N2nContext::class);
@@ -111,7 +112,7 @@ class EiuAnalyst {
 	protected $eiuEntry;
 	protected $eiuFieldMap;
 	protected $eiFieldMap;
-	protected $eiuGui;
+//	protected $eiuGui;
 	protected $eiuGuiDeclaration ;
 	protected $eiuGuiMaskDeclaration;
 	protected $eiuGuiEntry;
@@ -924,7 +925,7 @@ class EiuAnalyst {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundary
+	 * @return EiGuiValueBoundary
 	 *@throws EiuPerimeterException
 	 */
 	public function getEiGuiValueBoundary(bool $required) {
@@ -1377,7 +1378,7 @@ class EiuAnalyst {
 		}
 	
 		if ($this->eiGuiMaskDeclaration !== null) {
-			return $this->eiuGuiMaskDeclaration = new EiuGuiMaskDeclaration($this->eiGuiMaskDeclaration, $this->eiuGui, $this);
+			return $this->eiuGuiMaskDeclaration = new EiuGuiMaskDeclaration($this->eiGuiMaskDeclaration, $this);
 		}
 	
 		if (!$required) return null;
@@ -1575,10 +1576,6 @@ class EiuAnalyst {
 			return $eiTypeArg->getContextEiType();
 		}
 		
-		if ($eiTypeArg instanceof EiuEntry && null !== ($eiuFrame = $eiTypeArg->getEiuFrame(false))) {
-			return $eiuFrame->getContextEiType();
-		}
-		
 		if (!$required) return null;
 		
 		throw new EiuPerimeterException('Can not determine EiType of passed argument type ' 
@@ -1603,7 +1600,7 @@ class EiuAnalyst {
 				return self::buildEiTypeFromEiArg($eiTypeArg, $argName, true);
 			}
 			
-			if (!$spec->containsEiTypeId($eiTypeId) && $spec->containsEiTypeClassName($eiTypeArg)) {
+			if (!$spec->containsEiTypeId($eiTypeArg) && $spec->containsEiTypeClassName($eiTypeArg)) {
 				return $spec->getEiTypeByClassName($eiTypeArg);
 			}
 			
@@ -1622,7 +1619,7 @@ class EiuAnalyst {
 		
 		return array_map(
 				function ($eiTypeArg) use ($argName) { 
-					return self::buildEiTypeFromEiArg($eiEntryArg, $argName, true); 
+					return self::buildEiTypeFromEiArg($eiTypeArg, $argName, true);
 				}, 
 				$eiTypeArg);
 	}
@@ -1669,7 +1666,7 @@ class EiuAnalyst {
 	 * @param mixed $eiGuiValueBoundaryArg
 	 * @param string $argName
 	 * @param bool $required
-	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundary
+	 * @return EiGuiValueBoundary
 	 *@throws EiuPerimeterException
 	 */
 	public static function buildEiGuiValueBoundaryFromEiArg($eiGuiValueBoundaryArg, string $argName = null, bool $required = true) {
@@ -1677,22 +1674,22 @@ class EiuAnalyst {
 			return $eiGuiValueBoundaryArg;
 		}
 		
-		if ($eiGuiValueBoundaryArg instanceof EiuGuiEntry) {
-			return $eiGuiValueBoundaryArg->getEiGuiValueBoundary();
-		}
+//		if ($eiGuiValueBoundaryArg instanceof EiuGuiEntry) {
+//			return $eiGuiValueBoundaryArg->getEiGuiValueBoundary();
+//		}
 		
 		if ($eiGuiValueBoundaryArg instanceof EiuGuiMaskDeclaration) {
 			$eiGuiValueBoundaryArg = $eiGuiValueBoundaryArg->getEiGuiMaskDeclaration();
 		}
 		
-		if ($eiGuiValueBoundaryArg instanceof EiGuiMaskDeclaration) {
-			$eiGuiValueBoundaries = $eiGuiValueBoundaryArg->getEiGuiValueBoundaries();
-			if (1 == count($eiGuiValueBoundaryArg)) {
-				return current($eiGuiValueBoundaries);
-			}
-			
-			throw new EiuPerimeterException('Can not determine EiGuiValueBoundary of passed EiGuiMaskDeclaration ' . $argName);
-		}
+//		if ($eiGuiValueBoundaryArg instanceof EiGuiMaskDeclaration) {
+//			$eiGuiValueBoundaries = $eiGuiValueBoundaryArg->getEiGuiValueBoundaries();
+//			if (1 == count($eiGuiValueBoundaries)) {
+//				return current($eiGuiValueBoundaries);
+//			}
+//
+//			throw new EiuPerimeterException('Can not determine EiGuiValueBoundary of passed EiGuiMaskDeclaration ' . $argName);
+//		}
 		
 		throw new EiuPerimeterException('Can not determine EiGuiValueBoundary of passed argument ' . $argName
 				. '. Following types are allowed: ' . implode(', ', array_merge(self::EI_ENTRY_GUI_TYPES)) . '; '
@@ -1713,7 +1710,7 @@ class EiuAnalyst {
 		}
 	
 		if ($eiGuiMaskDeclarationArg instanceof EiuGuiEntry) {
-			return $eiGuiMaskDeclarationArg->getEiGuiMaskDeclaration();
+			return $eiGuiMaskDeclarationArg->getEiGuiEntry()->getEiGuiMaskDeclaration();
 		}
 		
 		if ($eiGuiMaskDeclarationArg instanceof Eiu && null !== ($eiuGuiMaskDeclaration = $eiGuiMaskDeclarationArg->guiFrame(false))) {

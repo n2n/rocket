@@ -40,22 +40,23 @@ class TranslationGuiProp implements GuiProp {
 	private $relationModel;
 
 	private $translationConfig;
-	
+
 	/**
-	 * @param GuiDefinition $guiDefinition
+	 * @param RelationModel $relationModel
+	 * @param TranslationEiPropNature $translationConfig
 	 */
 	function __construct(RelationModel $relationModel, TranslationEiPropNature $translationConfig) {
-		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getGuiDefinition();
+		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getEiEngine()->getGuiDefinition();
 		$this->relationModel = $relationModel;
 		$this->translationConfig = $translationConfig;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiPropSetup()
+	 * @see GuiProp::buildGuiPropSetup
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $forkedDefPropPaths): ?GuiPropSetup {
-		$targetEiuGuiMaskDeclaration = $this->relationModel->getTargetEiuEngine()->newGuiFrame($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
+		$targetEiuGuiMaskDeclaration = $this->relationModel->getTargetEiuEngine()->newGuiMaskDeclaration($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
 		$eiCmdPath = null;
 		if ($eiu->guiFrame()->isReadOnly()) {
 			$eiCmdPath = $this->relationModel->getTargetReadEiCmdPath();
@@ -68,7 +69,7 @@ class TranslationGuiProp implements GuiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::getForkGuiDefinition()
+	 * @see GuiProp::getForkGuiDefinition
 	 */
 	function getForkGuiDefinition(): ?GuiDefinition {
 		return $this->forkGuiDefinition;

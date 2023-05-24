@@ -12,6 +12,7 @@ use n2n\util\type\CastUtils;
 use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\op\ei\util\spec\EiuCmd;
+use rocket\op\ei\util\gui\EiuGuiDeclaration;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -150,32 +151,32 @@ class Eiu implements Lookupable {
 		return $this->eiuFieldMap = $this->eiuAnalyst->getEiuFieldMap($required);
 	}
 	
-	/**
-	 *
-	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\gui\EiuGui
-	 */
-	public function gui(bool $required = true) {
-		if ($this->eiuGui !== null) {
-			return $this->eiuGui;
-		}
-		
-		return $this->eiuGui = $this->eiuAnalyst->getEiuGui($required);
-	}
+//	/**
+//	 *
+//	 * @param bool $required
+//	 * @throws EiuPerimeterException
+//	 * @return EiuGui
+//	 */
+//	public function gui(bool $required = true) {
+//		if ($this->eiuGui !== null) {
+//			return $this->eiuGui;
+//		}
+//
+//		return $this->eiuGui = $this->eiuAnalyst->getEiuGui($required);
+//	}
 
 	/**
 	 *
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\gui\EiuGui
+	 * @return EiuGuiDeclaration
 	 */
-	public function guiModel(bool $required = true) {
+	public function guiDeclaration(bool $required = true): EiuGuiDeclaration {
 		if ($this->eiuGuiDeclaration  !== null) {
 			return $this->eiuGuiDeclaration ;
 		}
 		
-		return $this->eiuGuiDeclaration  = $this->eiuAnalyst->getEiuGuiDeclaration ($required);
+		return $this->eiuGuiDeclaration  = $this->eiuAnalyst->getEiuGuiDeclaration($required);
 	}
 	
 	/**
@@ -230,7 +231,17 @@ class Eiu implements Lookupable {
 		
 		return $this->eiuGuiField = $this->eiuAnalyst->getEiuGuiField($required);
 	}
-	
+
+	function forkParent(): ?Eiu {
+		$eiForkLink = $this->eiuAnalyst->getEiFrame(true)->getEiForkLink();
+		if ($eiForkLink === null) {
+			return null;
+		}
+
+		return new Eiu($eiForkLink->getParentEiObject(), $eiForkLink->getParent());
+	}
+
+
 	/**
 	 * @return EiuFactory
 	 */

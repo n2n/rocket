@@ -70,7 +70,7 @@ class EiuGuiDeclaration  {
 		
 		$this->eiuGuiMaskDeclarations = [];
 		foreach ($this->eiGuiDeclaration->getEiGuiMaskDeclarations() as $key => $eiGuiMaskDeclaration) {
-			$this->eiuGuiMaskDeclarations[$key] = new EiuGuiMaskDeclaration($eiGuiMaskDeclaration, $this, $this->eiuAnalyst);
+			$this->eiuGuiMaskDeclarations[$key] = new EiuGuiMaskDeclaration($eiGuiMaskDeclaration, $this->eiuAnalyst);
 		}
 		return $this->eiuGuiMaskDeclarations;
 	}
@@ -96,18 +96,20 @@ class EiuGuiDeclaration  {
 //		return new EiuGuiDeclaration ($newEiGuiDeclaration, $this->eiuAnalyst);
 //	}
 	
-	function newEntryGui($eiEntryArg = null, bool $entryGuiControlsIncluded = false) {
-		$eiGui = new EiGui($this->eiGuiDeclaration);
+	function newGuiValueBoundary(array $eiEntryArgs = null, bool $entryGuiControlsIncluded = false): EiuGuiValueBoundary {
+		$eiEntries = null;
+		if ($eiEntryArgs !== null) {
+			$eiEntries = array_map(fn($a) => EiuAnalyst::buildEiEntryFromEiArg($a, 'eiEntryArg', true),
+					$eiEntryArgs);
+		}
 		
 		$eiFrame = $this->eiuAnalyst->getEiFrame(true);
-		if ($eiEntryArg === null) {
-			$eiGui->appendNewEiGuiValueBoundary($eiFrame);
+		if ($eiEntries === null) {
 			$eiValueBoundary = $this->eiGuiDeclaration->createNewEiGuiValueBoundary($eiFrame, $entryGuiControlsIncluded);
 		} else {
-			$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg', true);
-			$eiValueBoundary = $this->eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, [$eiEntry], $entryGuiControlsIncluded);
+			$eiValueBoundary = $this->eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, $eiEntries, $entryGuiControlsIncluded);
 		}
 
-		return new EiuGuiEntry($eiValueBoundary->getSelectedEiGuiEntry(), $this->eiuAnalyst);
+		return new EiuGuiValueBoundary($eiValueBoundary, $this, $this->eiuAnalyst);
 	}
 }

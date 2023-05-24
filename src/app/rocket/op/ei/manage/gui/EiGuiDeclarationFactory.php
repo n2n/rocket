@@ -67,7 +67,8 @@ class EiGuiDeclarationFactory {
 		}
 		
 		$guiDefinition = $contextEiMask->getEiEngine()->getGuiDefinition();
-		$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration->getViewMode(), $defPropPaths);
+		$eiGuiDeclaration->putEiGuiMaskDeclaration(
+				$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration->getViewMode(), $defPropPaths));
 	}
 
 	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractsOnly,

@@ -32,7 +32,6 @@ use rocket\op\ei\manage\gui\GuiDefinition;
 use rocket\op\ei\manage\gui\GuiFieldMap;
 use rocket\op\ei\manage\gui\GuiPropSetup;
 use rocket\op\ei\util\Eiu;
-
 use n2n\reflection\ReflectionUtils;
 use n2n\web\dispatch\mag\Mag;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
@@ -114,7 +113,7 @@ class EmbeddedEiPropNature extends PropertyEiPropNatureAdapter {
 			return new EmbeddedGuiProp($this);
 		}
 		
-		$eiu->engine()->onNewEntryGui(function (Eiu $eiu) {
+		$eiu->engine()->onNewGuiEntry(function (Eiu $eiu) {
 			$value = $eiu->entry()->getValue($this);
 			
 			if ($value !== null) return;

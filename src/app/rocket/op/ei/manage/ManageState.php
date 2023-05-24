@@ -29,11 +29,9 @@ use rocket\user\bo\RocketUser;
 use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\EntityManager;
-use rocket\op\ei\manage\draft\DraftManager;
 use rocket\op\ei\manage\security\EiPermissionManager;
 use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\LazyEiGuiDeclarationStore;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\ex\NotYetImplementedException;
 
@@ -46,9 +44,6 @@ class ManageState implements RequestScoped {
 	private $eiFrames = array();
 	private $entityManager;
 	private $draftManager;
-	/**
-	 * @var LazyEiGuiDeclarationStore
-	 */
 	private $eiGuiDeclarationCache;
 	private $eiLifecycleMonitor;
 	
@@ -118,29 +113,29 @@ class ManageState implements RequestScoped {
 	public function setEntityManager(EntityManager $entityManager) {
 		$this->entityManager = $entityManager;
 	} 
-	/**
-	 * @throws IllegalStateException
-	 * @return DraftManager
-	 */
-	public function getDraftManager(): DraftManager {
-		if ($this->draftManager === null) {
-			throw new IllegalStateException('No DraftManager assigned.');
-		}
-		
-		return $this->draftManager;
-	}
+//	/**
+//	 * @throws IllegalStateException
+//	 * @return DraftManager
+//	 */
+//	public function getDraftManager(): DraftManager {
+//		if ($this->draftManager === null) {
+//			throw new IllegalStateException('No DraftManager assigned.');
+//		}
+//
+//		return $this->draftManager;
+//	}
 	
-	/**
-	 * @param DraftManager $draftManager
-	 */
-	public function setDraftManager(DraftManager $draftManager) {
-		$this->draftManager = $draftManager;
-	} 
+//	/**
+//	 * @param DraftManager $draftManager
+//	 */
+//	public function setDraftManager(DraftManager $draftManager) {
+//		$this->draftManager = $draftManager;
+//	}
 	
 	/**
 	 * @return \rocket\op\ei\manage\veto\EiLifecycleMonitor
 	 */
-	public function getEiLifecycleMonitor() {
+	public function getEiLifecycleMonitor(): EiLifecycleMonitor {
 		if ($this->eiLifecycleMonitor === null) {
 			throw new IllegalStateException('No VetoableRemoveQueue assigned.');
 		}

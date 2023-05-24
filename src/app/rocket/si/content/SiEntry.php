@@ -177,7 +177,8 @@ class SiEntry implements \JsonSerializable {
 			'id' => $this->id,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
-			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
+			'messages' => $this->messages
 		];
 	}
 

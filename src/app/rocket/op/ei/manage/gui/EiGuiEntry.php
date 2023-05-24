@@ -137,7 +137,7 @@ class EiGuiEntry {
 		throw new IllegalStateException('EiGuiValueBoundary already initialized.');
 	}
 
-	function createSiEntry(N2nLocale $n2NLocale): SiEntry {
+	function createSiEntry(N2nLocale $n2nLocale): SiEntry {
 		$eiEntry = $this->getEiEntry();
 
 		$siEntry = new SiEntry($eiEntry->getPid(), $this->idName);
@@ -150,7 +150,7 @@ class EiGuiEntry {
 // 			$siValueBoundary->putContextFields($defPropPathStr, $guiField->getContextSiFields());
 		}
 
-		$siEntry->setMessages(array_map(fn (Message $m) => $m->t($n2NLocale), $this->getGeneralMessages()));
+		$siEntry->setMessages($this->createGeneralMessageStrs($n2nLocale));
 
 		foreach ($this->guiControlMap->createSiControls() as $guiControlPathStr => $siControl) {
 			$siEntry->putControl($guiControlPathStr, $siControl);
@@ -160,21 +160,26 @@ class EiGuiEntry {
 	}
 
 	/**
-	 * @return Message[]
+	 * @return string[]
 	 */
-	function getGeneralMessages(): array {
+	function createGeneralMessageStrs(N2nLocale $n2nLocale): array {
 		if (!$this->eiEntry->hasValidationResult()) {
 			return [];
 		}
 
 		$eiPropPaths = $this->guiFieldMap->getEiPropPaths();
 
-		$messages = [];
+		$messageStrs = [];
 		foreach ($this->eiEntry->getValidationResult()
 						 ->getInvalidEiFieldValidationResults(false, exceptEiPropPaths: $eiPropPaths) as $validationResult) {
-			array_push($messages, ...$validationResult->getMessages(false));
+
+			$label = $this->eiEntry->getEiMask()->getEiPropCollection()
+					->getByPath($validationResult->getEiPropPath())->getNature()->getLabelLstr()->t($n2nLocale);
+			array_push($messageStrs, ...array_map(
+					fn (Message $m) => $label . ': ' . $m->t($n2nLocale),
+					$validationResult->getMessages(false)));
 		}
-		return $messages;
+		return $messageStrs;
 	}
 
 	/**

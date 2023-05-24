@@ -89,10 +89,11 @@ class CompactExplorerEiGui implements EiGui {
 	function toSiGui(): SiGui {
 		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
 
+		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
 		$siPartialContent = new SiPartialContent($this->count,
-				array_map(fn (EiGuiValueBoundary $b) => $b->createSiValueBoundary(), $this->eiGuiValueBoundaries));
+				array_map(fn (EiGuiValueBoundary $b) => $b->createSiValueBoundary($n2nLocale), $this->eiGuiValueBoundaries));
 		$siGui = new CompactExplorerSiGui($this->eiFrame->createSiFrame(), $this->pageSize,
-				$this->eiGuiDeclaration->createSiDeclaration($this->eiFrame), $siPartialContent);
+				$this->eiGuiDeclaration->createSiDeclaration($n2nLocale), $siPartialContent);
 
 		$siControls = $this->generalGuiControlMap?->createSiControls() ?? [];
 

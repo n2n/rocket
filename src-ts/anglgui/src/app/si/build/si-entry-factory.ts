@@ -10,6 +10,7 @@ import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiMetaFactory } from './si-meta-factory';
 import { SiBuildTypes } from './si-build-types';
+import { Message } from '../../util/i18n/message';
 
 export class SiEntryFactory {
 	constructor(private declaration: SiDeclaration, private injector: Injector) {
@@ -64,6 +65,7 @@ export class SiEntryFactory {
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entry.controls = new SiControlFactory(controlBoundary, this.injector)
 				.createControls(extr.reqArray('controls'));
+		entry.messages = Message.createTexts(extr.reqStringArray('messages'));
 
 		return entry;
 	}
