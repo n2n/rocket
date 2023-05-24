@@ -23,35 +23,35 @@ namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\EiObject;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use n2n\util\type\ArgUtils;
 use rocket\si\meta\SiDeclaration;
 use rocket\op\ei\EiEngineUtil;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\si\content\SiPartialContent;
-use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\gui\EiGui;
 
 class ApiUtil {
-	private $eiFrame;
-	private $eiEngineUtil;
+//	private $eiFrame;
+//	private $eiEngineUtil;
 	
 	function __construct(EiFrame $eiFrame) {
-		$this->eiFrame = $eiFrame;
-		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getEiLaunch());
+//		$this->eiFrame = $eiFrame;
+//		$this->eiEngineUtil = new EiEngineUtil($eiFrame->getContextEiEngine(), $eiFrame->getEiLaunch());
 	}
 	
 // 	/**
-// 	 * @param EiEntryGui[]
-// 	 * @return \rocket\op\ei\manage\gui\EiGuiFrame
+// 	 * @param EiGuiValueBoundary[]
+// 	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
 // 	 */
-// 	function createMultiBuildupSiDeclaration(array $eiEntryGuis) {
+// 	function createMultiBuildupSiDeclaration(array $eiGuiValueBoundaries) {
 // 		$declaration = new SiDeclaration();
 		
-// 		foreach ($eiEntryGuis as $eiEntryGui) {
-// 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+// 		foreach ($eiGuiValueBoundaries as $eiGuiValueBoundary) {
+// 			ArgUtils::assertTrue($eiGuiValueBoundary instanceof EiGuiValueBoundary);
 			
-// 			$declaration->addTypeDeclaration($eiEntryGui->getEiGuiFrame()->createSiTypDeclaration());
+// 			$declaration->addTypeDeclaration($eiGuiValueBoundary->getEiGuiMaskDeclaration()->createSiTypDeclaration());
 // 		}
 		
 // 		return $declaration;
@@ -59,57 +59,58 @@ class ApiUtil {
 	
 	
 // 	/**
-// 	 * @param EiGuiFrame $eiGuiFrame
+// 	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 // 	 * @return SiDeclaration
 // 	 */
-// 	function createSiDeclaration(EiGuiFrame $eiGuiFrame) {
+// 	function createSiDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 // 		$typeId = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getId();
 		
 // 		$declaration = new SiDeclaration();
-// 		$declaration->putFieldDeclarations($typeId, $eiGuiFrame->getEiGuiSiFactory()->getSiProps());
-// 		$declaration->putFieldStructureDeclarations($typeId, $eiGuiFrame->getEiGuiSiFactory()->getSiStructureDeclarations());
+// 		$declaration->putFieldDeclarations($typeId, $eiGuiMaskDeclaration->getEiGuiSiFactory()->getSiProps());
+// 		$declaration->putFieldStructureDeclarations($typeId, $eiGuiMaskDeclaration->getEiGuiSiFactory()->getSiStructureDeclarations());
 		
 // 		return $declaration;
 // 	}
 
 	
-	/**
-	 * @param EiObject $eiObject
-	 * @return \rocket\si\content\SiEntryQualifier
-	 */
-	function createSiEntryQualifier(EiObject $eiObject) {
-		return $eiObject->createSiEntryQualifier($this->eiEngineUtil->createIdName(), true);
-	}
+//	/**
+//	 * @param EiObject $eiObject
+//	 * @return \rocket\si\content\SiEntryQualifier
+//	 */
+//	function createSiEntryQualifier(EiObject $eiObject) {
+//		return $eiObject->createSiEntryQualifier($this->eiEngineUtil->createIdName(), true);
+//	}
 	
 // 	/**
 // 	 * @param EiObject $eiObject
-// 	 * @param array $eiEntryGuis
+// 	 * @param array $eiGuiValueBoundaries
 // 	 * @return \rocket\si\content\SiEntry
 // 	 */
-// 	function createSiEntry(EiObject $eiObject, array $eiEntryGuis) {
+// 	function createSiEntry(EiObject $eiObject, array $eiGuiValueBoundaries) {
 // 		$siValueBoundary = new SiEntry($eiObject->createSiEntryQualifier($eiObject), 
-// 				ViewMode::isReadOnly($this->eiGuiFrame->getViewMode()));
+// 				ViewMode::isReadOnly($this->eiGuiMaskDeclaration->getViewMode()));
 		
-// 		foreach ($eiEntryGuis as $eiEntryGui) {
-// 			ArgUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
+// 		foreach ($eiGuiValueBoundaries as $eiGuiValueBoundary) {
+// 			ArgUtils::assertTrue($eiGuiValueBoundary instanceof EiGuiValueBoundary);
 // 			$declaration->putFieldStructureDeclarations(
-// 					$eiEntryGui->getEiEntry()->getEiType()->getId(),
-// 					$eiEntryGui->getEiGuiFrame()->getEiGuiSiFactory()->getSiStructureDeclarations());
+// 					$eiGuiValueBoundary->getEiEntry()->getEiType()->getId(),
+// 					$eiGuiValueBoundary->getEiGuiMaskDeclaration()->getEiGuiSiFactory()->getSiStructureDeclarations());
 // 		}
 		
 // 		return $siValueBoundary;
 // 	}
-	
+
 	/**
 	 * @param int $offset
 	 * @param int $count
-	 * @param EiGui $eiGui
-	 * @return \rocket\si\content\SiPartialContent
+	 * @param array $eiGuiValueBoundaries
+	 * @return SiPartialContent
 	 */
-	function createSiPartialContent(int $offset, int $count, EiGui $eiGui) {
+	function createSiPartialContent(int $offset, int $count, array $eiGuiValueBoundaries) {
 		$content = new SiPartialContent($count);
 		$content->setOffset($offset);
-		$content->setEntries($eiGui->createSiEntries($this->eiFrame));
+		$content->setValueBoundaries(array_map(fn (EiGuiValueBoundary $b) => $b->createSiValueBoundary(),
+				$eiGuiValueBoundaries));
 		return $content;
 	}
 	

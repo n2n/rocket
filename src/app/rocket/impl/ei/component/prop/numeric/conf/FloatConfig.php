@@ -28,14 +28,14 @@ use rocket\impl\ei\component\prop\numeric\DecimalEiPropNature;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
 use hangar\api\CompatibilityLevel;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 
-class FloatConfig extends PropConfigAdaption {
+class FloatConfig {
 	const ATTR_DECIMAL_PLACES_KEY = 'decimalPlaces';
 	const ATTR_PREFIX_KEY = 'prefix';
 	

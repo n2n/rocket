@@ -26,7 +26,7 @@ use rocket\si\control\SiControl;
 use rocket\si\control\SiCallResponse;
 use rocket\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\gui\control\GuiControl;
 use rocket\si\control\impl\GroupSiControl;
@@ -76,15 +76,15 @@ class GroupGuiControl implements GuiControl {
 		return $this->childrean[$id] ?? null;
 	}
 	
-	public function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
+	public function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse {
 		throw new UnsupportedOperationException('no input handled');
 	}
 
-	public function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
+	public function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
 		throw new UnsupportedOperationException('no input handled');
 	}
 
-	public function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
+	public function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse {
 		throw new UnsupportedOperationException('no input handled');
 	}
 }

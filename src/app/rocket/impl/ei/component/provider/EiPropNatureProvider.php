@@ -388,7 +388,8 @@ class EiPropNatureProvider {
 
 	private function getPropertyAccessProxy(PropertyAttribute $attribute, ?bool $readOnly): PropertyAccessProxy {
 		try {
-			return $this->eiTypeSetup->getPropertyAccessProxy($attribute->getProperty()->getName(), $readOnly ?? false);
+			return $this->eiTypeSetup->getPropertyAccessProxy($attribute->getProperty()->getName(),
+					$readOnly === false);
 		} catch (\ReflectionException $e) {
 			throw $this->eiTypeSetup->createPropertyAttributeError($attribute, $e);
 		}

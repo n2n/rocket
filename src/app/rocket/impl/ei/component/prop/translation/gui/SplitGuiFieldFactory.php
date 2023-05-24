@@ -58,7 +58,7 @@ class SplitGuiFieldFactory {
 			$label = $n2nLocale->getName($this->lted->getDisplayN2nLocale());
 			
 			if ($this->lted->isN2nLocaleIdActive($n2nLocaleId)) {
-				$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuEntryGui($n2nLocaleId)->gui()->createSiEntry())
+				$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiEntry($n2nLocaleId)->gui()->createSiEntry())
 						->setShortLabel($n2nLocale->toPrettyId());
 			} else {
 				$siField->putUnavailable($n2nLocaleId, $label)->setShortLabel($n2nLocale->toPrettyId());
@@ -75,12 +75,12 @@ class SplitGuiFieldFactory {
 				->setMin($this->lted->getMinNum())
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds())
 				->setMandatoryKeys($this->lted->getMandatoryN2nLocaleIds());
-		$targetEiuGuiFrame = $this->lted->getTargetEiuGuiFrame();
+		$targetEiuGuiMaskDeclaration = $this->lted->getTargetEiuGuiMaskDeclaration();
 		$apiUrl = $this->lted->getTargetEiuFrame()->getApiGetUrl();
 		
 		$propIds = array_map(
 				function ($defPropPath) { return (string) $defPropPath; }, 
-				$targetEiuGuiFrame->getDefPropPaths());
+				$targetEiuGuiMaskDeclaration->getDefPropPaths());
 		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
@@ -89,7 +89,7 @@ class SplitGuiFieldFactory {
 			$pid = null;
 			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
 				if ($activeTargetEiuEntry->isNew() || $activeTargetEiuEntry->isUnsaved()) {
-					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuEntryGui($n2nLocaleId)->gui()->createSiEntry())
+					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiEntry($n2nLocaleId)->gui()->createSiEntry())
 							->setShortLabel($n2nLocale->toPrettyId());
 					continue;
 				}
@@ -97,16 +97,16 @@ class SplitGuiFieldFactory {
 				$pid = $activeTargetEiuEntry->getPid();
 			}
 			
-			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiFrame->isBulky(), false,
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiMaskDeclaration->isBulky(), false,
 							function () use ($n2nLocaleId) {
-								return $this->lted->getTargetEiuEntryGui($n2nLocaleId)->createSiEntry(false);
+								return $this->lted->getTargetEiuGuiEntry($n2nLocaleId)->createSiEntry(false);
 							})
 					->setShortLabel($n2nLocale->toPrettyId())
 					->setPropIds($propIds);
 		}
 		
 // 		$guiFieldMap = new GuiFieldMap();
-// 		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
+// 		foreach ($this->targetEiuGuiMaskDeclaration->getEiPropPaths() as $eiPropPath) {
 // 			$guiFieldMap->putGuiField($eiPropPath, $this->createPlaceholderGuiField(new DefPropPath([$eiPropPath])));
 // 		}
 		
@@ -149,9 +149,9 @@ class SplitGuiFieldFactory {
 	private function buildPlaceholderGuiFieldMap($forkDefPropPath) {
 		$eiPropPaths = [];
 		if ($forkDefPropPath->isEmpty()) {
-			$eiPropPaths = $this->lted->getTargetEiuGuiFrame()->getEiPropPaths();
+			$eiPropPaths = $this->lted->getTargetEiuGuiMaskDeclaration()->getEiPropPaths();
 		} else {
-			$eiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($forkDefPropPath);
+			$eiPropPaths = $this->lted->getTargetEiuGuiMaskDeclaration()->getForkedEiPropPaths($forkDefPropPath);
 		}
 		
 		if (empty($eiPropPaths)) {
@@ -167,7 +167,7 @@ class SplitGuiFieldFactory {
 	}
 	
 	function getForkedDefPropPaths() {
-		return $this->targetEiuGuiFrame->getForkedDefPropPaths();
+		return $this->targetEiuGuiMaskDeclaration->getForkedDefPropPaths();
 	}
 	
 // 	/**
@@ -179,9 +179,9 @@ class SplitGuiFieldFactory {
 // 		$readOnlyGuiField = new ReadOnlyGuiField($siField);
 
 // 		foreach ($this->lted->getN2nLocales() as $n2nLocaleId => $n2nLocale) {
-// 			$targetEiuEntryGui = $this->lted->getActiveTargetEiuEntryGui($n2nLocaleId);
+// 			$targetEiuGuiEntry = $this->lted->getActiveTargetEiuGuiEntry($n2nLocaleId);
 			
-// 			if ($targetEiuEntryGui === null) {
+// 			if ($targetEiuGuiEntry === null) {
 // 				$siField->putUnavailable($n2nLocaleId, $n2nLocale->toPrettyId());
 // 				continue;
 // 			}
@@ -189,7 +189,7 @@ class SplitGuiFieldFactory {
 // 			$siField->putField($n2nLocaleId, $n2nLocale->toPrettyId(), (string) $defPropPath);
 // 		}
 		
-// 		$forkedEiPropPaths = $this->lted->getTargetEiuGuiFrame()->getForkedEiPropPaths($defPropPath);
+// 		$forkedEiPropPaths = $this->lted->getTargetEiuGuiMaskDeclaration()->getForkedEiPropPaths($defPropPath);
 		
 // 		if (empty($forkedEiPropPaths)) {
 // 			return $readOnlyGuiField;
@@ -206,7 +206,7 @@ class SplitGuiFieldFactory {
 	 */
 	private function createReadOnlyForkGuiFieldMap($defPropPath) {
 		$guiFieldMap = new GuiFieldMap();
-		foreach ($this->targetEiuGuiFrame->getForkedEiPropPaths($defPropPath) as $forkedEiPropPath) {
+		foreach ($this->targetEiuGuiMaskDeclaration->getForkedEiPropPaths($defPropPath) as $forkedEiPropPath) {
 			$guiFieldMap->putGuiField($forkedEiPropPath,
 					$this->createReadOnlyGuiField($defPropPath->ext($forkedEiPropPath)));
 		}
@@ -230,7 +230,7 @@ class SplitGuiFieldFactory {
 // 	 * @return GuiField
 // 	 */
 // 	private function getGuiField(string $key) {
-// 		return $this->lted->getTargetEiuEntryGui($key)->getGuiFieldByDefPropPath($this->defPropPath);
+// 		return $this->lted->getTargetEiuGuiEntry($key)->getGuiFieldByDefPropPath($this->defPropPath);
 // 	}
 	
 // 	function handlInput(array $data, array $uploadDefinitions) {

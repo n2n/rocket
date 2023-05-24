@@ -100,7 +100,7 @@ class AddController extends ControllerAdapter {
 	private function handleInput(Eiu $eiu, array $inputEius) {
 		foreach ($inputEius as $inputEiu) {
 			$result = false;
-			
+
 			if ($this->parentEiuObject !== null) {
 				$result = $inputEiu->entry()->insertAsChild($this->parentEiuObject);
 			} else if ($this->beforeEiuObject !== null) {
@@ -134,22 +134,22 @@ class AddController extends ControllerAdapter {
 //		$this->forward('..\view\add.html', array('addModel' => $addModel, 'entryViewInfo' => $viewModel));
 //	}
 	
-	private function getBreadcrumbLabel() {
-		$eiFrameUtils = $this->opuCtrl->frame();
-		
-		if (null === $eiFrameUtils->getNestedSetStrategy()) {
-			return $this->dtc->translate('ei_impl_add_breadcrumb');
-		} else if ($this->parentEiuObject !== null) {
-			return $this->dtc->translate('ei_impl_add_child_branch_breadcrumb',
-					array('parent_branch' => $eiFrameUtils->createIdentityString($this->parentEiuObject)));
-		} else if ($this->beforeEiuObject !== null) {
-			return$this->dtc->translate('ei_impl_add_before_branch_breadcrumb',
-					array('branch' => $eiFrameUtils->createIdentityString($this->beforeEiuObject)));
-		} else if ($this->afterEiuObject !== null) {
-			return $this->dtc->translate('ei_impl_add_after_branch_breadcrumb',
-					array('branch' => $eiFrameUtils->createIdentityString($this->afterEiuObject)));
-		} else {
-			return $this->dtc->translate('ei_impl_add_root_branch_breadcrumb');
-		}
-	}
+//	private function getBreadcrumbLabel() {
+//		$eiFrameUtils = $this->opuCtrl->frame();
+//
+//		if (null === $eiFrameUtils->getNestedSetStrategy()) {
+//			return $this->dtc->translate('ei_impl_add_breadcrumb');
+//		} else if ($this->parentEiuObject !== null) {
+//			return $this->dtc->translate('ei_impl_add_child_branch_breadcrumb',
+//					array('parent_branch' => $eiFrameUtils->createIdentityString($this->parentEiuObject)));
+//		} else if ($this->beforeEiuObject !== null) {
+//			return$this->dtc->translate('ei_impl_add_before_branch_breadcrumb',
+//					array('branch' => $eiFrameUtils->createIdentityString($this->beforeEiuObject)));
+//		} else if ($this->afterEiuObject !== null) {
+//			return $this->dtc->translate('ei_impl_add_after_branch_breadcrumb',
+//					array('branch' => $eiFrameUtils->createIdentityString($this->afterEiuObject)));
+//		} else {
+//			return $this->dtc->translate('ei_impl_add_root_branch_breadcrumb');
+//		}
+//	}
 }

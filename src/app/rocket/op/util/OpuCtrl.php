@@ -27,12 +27,8 @@ use n2n\web\ui\UiComponent;
 use rocket\si\content\impl\iframe\IframeSiGui;
 use rocket\si\content\impl\iframe\IframeData;
 use n2n\util\uri\Url;
-use rocket\op\ei\manage\gui\EiEntryGui;
-use rocket\op\ei\manage\gui\control\GuiControl;
 use n2n\web\http\Method;
-use rocket\op\ei\manage\api\ZoneApiControlProcess;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use n2n\web\http\controller\ParamPost;
 use rocket\op\ei\manage\api\SiCallResult;
 use rocket\si\control\SiNavPoint;
 use rocket\si\meta\SiBreadcrumb;
@@ -48,6 +44,9 @@ use rocket\si\input\SiInputResult;
 use rocket\op\cu\gui\control\CuControlCallId;
 use rocket\op\cu\util\gui\CufGui;
 use n2n\web\http\BadRequestException;
+use rocket\impl\ei\manage\gui\BulkyEiGui;
+use rocket\op\ei\manage\api\ZoneGuiControlsMap;
+use rocket\impl\ei\manage\gui\CompactExplorerEiGui;
 
 class OpuCtrl {
 
@@ -113,13 +112,13 @@ class OpuCtrl {
 		}
 	}
 
-	function redirectToOverview(int $status = null) {
-		$this->httpContext->getResponse()->send(
-				new Redirect($this->frame()->getEiFrame()->getOverviewUrl($this->httpContext), $status));
-	}
+//	function redirectToOverview(int $status = null) {
+//		$this->httpContext->getResponse()->send(
+//				new Redirect($this->frame()->getEiFrame()->getOverviewUrl($this->httpContext), $status));
+//	}
 
 
-	private function forwardHtml() {
+	private function forwardHtml(): bool {
 		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
 						->bestMatch(['text/html', 'application/json'])) {
 			$this->cu->forward('\rocket\core\view\anglTemplate.html');
@@ -129,85 +128,97 @@ class OpuCtrl {
 		return false;
 	}
 
-	function forwardCompactExplorerZone(int $pageSize = 30, string $title = null) {
+	function forwardCompactExplorerZone(int $pageSize = 30, string $title = null, bool $generalSiControlsIncluded = true,
+			bool $entryGuiControlsIncluded = true, array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
 		$eiFrame = $this->frame()->getEiFrame();
-		$eiGuiModel =  $eiFrame->getContextEiEngine()->getEiMask()->getEiEngine()
-				->obtainEiGuiModel(ViewMode::COMPACT_READ, null, true);
-		$eiGui = new EiGui($eiGuiModel);
+		$eiFrameUtils = new EiFrameUtil($eiFrame);
 
-		$this->composeEiuGuiForList($eiGui, $pageSize);
+		$result = $eiFrameUtils->lookupEiGuiFromRange(0, $pageSize, false, true, $entryGuiControlsIncluded);
 
-		$siComp = (new EiGuiUtil($eiGui, $eiFrame))->createCompactExplorerSiGui($pageSize, true, true, []);
+		$eiGuiDeclaration = $result->eiGuiDeclaration;
+		$eiGuiValueBoundaries = $result->eiGuiValueBoundaries;
+		$count = $eiFrameUtils->count();
 
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp,
-						$this->opState->getBreadcrumbs(),
-						$title ?? $this->frame()->contextEngine()->mask()->getPluralLabel()));
-	}
-
-
-	private function composeEiuGuiForList($eiGui, $limit) {
-
-		$eiType = $this->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
-
-		$criteria = $this->frame()->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
-		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
-
-		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
-			$this->treeLookup($eiGui, $criteria, $nestedSetStrategy);
-		} else {
-			$this->simpleLookup($eiGui, $criteria);
+		$guiControlsMap = null;
+		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
+			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
 		}
+
+		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
+
+		$eiGui = new CompactExplorerEiGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundaries, $pageSize,
+				$count, $guiControlsMap, $zoneGuiControlsMap);
+
+		$this->forwardEiGui($eiGui, $title ?? $this->frame()->contextEngine()->mask()->getPluralLabel());
 	}
 
-	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
-		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
-		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
-			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)]);
-		}
-	}
 
-	private function treeLookup(EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
-		$nestedSetUtils = new NestedSetUtils($this->frame()->em(), $this->frame()->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
-
-		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
-		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
-			$eiGui->appendEiEntryGui($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
-		}
-	}
+//	private function composeEiuGuiForList($eiGui, $limit) {
+//
+//		$eiType = $this->frame()->getEiFrame()->getContextEiEngine()->getEiMask()->getEiType();
+//
+//		$criteria = $this->frame()->getEiFrame()->createCriteria(NestedSetUtils::NODE_ALIAS, false);
+//		$criteria->select(NestedSetUtils::NODE_ALIAS)->limit($limit);
+//
+//		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
+//			$this->treeLookup($eiGui, $criteria, $nestedSetStrategy);
+//		} else {
+//			$this->simpleLookup($eiGui, $criteria);
+//		}
+//	}
+//
+//	private function simpleLookup(EiGui $eiGui, Criteria $criteria) {
+//		$eiFrame = $this->frame()->getEiFrame();
+//		$eiFrameUtil = new EiFrameUtil($eiFrame);
+//		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
+//			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($entityObj));
+//			$eiGui->appendEiGuiValueBoundary($eiFrame, [$eiFrame->createEiEntry($eiObject)]);
+//		}
+//	}
+//
+//	private function treeLookup(EiGui $eiGui, Criteria $criteria, NestedSetStrategy $nestedSetStrategy) {
+//		$nestedSetUtils = new NestedSetUtils($this->frame()->em(), $this->frame()->getContextEiType()->getEntityModel()->getClass(), $nestedSetStrategy);
+//
+//		$eiFrame = $this->frame()->getEiFrame();
+//		$eiFrameUtil = new EiFrameUtil($eiFrame);
+//		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
+//			$eiObject = new LiveEiObject($eiFrameUtil->createEiEntityObj($nestedSetItem->getEntityObj()));
+//			$eiGui->appendEiGuiValueBoundary($eiFrame, [$eiFrame->createEiEntry($eiObject)], $nestedSetItem->getLevel());
+//		}
+//	}
 
 	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
-			bool $entrySiControlsIncluded = true, array $generalGuiControls = []): void {
+			bool $entrySiControlsIncluded = true, array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
-		$eiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($eiEntryArg, $this->frame(), 'eiEntryArg', true);
-		$eiuGui = $eiuEntry->newGui(true, $readOnly);
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiEntryArg', true);
 
-		if (null !== ($siResult = $this->handleEiSiCall($eiuGui->getEiGui()->getEiEntryGui(), $generalGuiControls))) {
-			$this->cu->sendJson($siResult);
-			return;
+		$eiFrame = $this->frame()->getEiFrame();
+		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, $readOnly, null);
+		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, [$eiEntry], $entrySiControlsIncluded);
+
+		$guiControlsMap = null;
+		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
+			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
 		}
 
-		$siComp = $eiuGui->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded, $generalGuiControls);
+		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp,
-						$this->opState->getBreadcrumbs(),
-						$eiuEntry->createIdentityString()));
+		$eiGui = new BulkyEiGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
+				$entrySiControlsIncluded);
+
+		$this->forwardEiGui($eiGui, current($eiGuiValueBoundary->getEiGuiEntries())->getIdName());
 	}
 
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
-			array $generalGuiControls = []): void {
+			array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -215,23 +226,37 @@ class OpuCtrl {
 		$eiFrame = $this->frame()->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 
-		$eiGui = $eiFrameUtil->createNewEiGui(true, !$editable, null, null, true);
-		$eiGuiUtil = new EiGuiUtil($eiGui, $eiFrame);
+		$eiGuiDeclaration = $eiFrameUtil->createNewEiGuiDeclaration(true, !$editable, null, null);
+		$eiGuiValueBoundary = $eiGuiDeclaration->createNewEiGuiValueBoundary($eiFrame, $entrySiControlsIncluded);
 
-		if (null !== ($siResult = $this->handleEiSiCall($eiGui->getEiEntryGui(), $generalGuiControls))) {
-			$this->cu->sendJson($siResult);
-			return;
+		$guiControlsMap = null;
+		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
+			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
 		}
 
-		$siComp = $eiGuiUtil->createBulkyEntrySiGui($generalSiControlsIncluded, $entrySiControlsIncluded, $generalGuiControls);
+		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($siComp,
-						$this->opState->getBreadcrumbs(),
-						$this->eiu->dtc('rocket')->t('common_new_entry_label')));
+		$eiGui = new BulkyEiGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
+				$entrySiControlsIncluded);
+
+		$this->forwardEiGui($eiGui, $this->eiu->dtc('rocket')->t('common_new_entry_label'));
 	}
 
-	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null) {
+	private function forwardEiGui(EiGui $eiGui, string $title = null): void {
+		try {
+			if (null !== ($siResult = $this->handleEiSiCall($eiGui))) {
+				$this->cu->sendJson($siResult);
+				return;
+			}
+		} catch (CorruptedSiInputDataException $e) {
+			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
+		}
+
+		$this->httpContext->getResponse()->send(
+				SiPayloadFactory::create($eiGui->toSiGui(), $this->opState->getBreadcrumbs(), $title));
+	}
+
+	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -249,7 +274,7 @@ class OpuCtrl {
 						$title ?? 'Iframe'));
 	}
 
-	function forwardIframeUrlZone(Url $url, string $title = null) {
+	function forwardIframeUrlZone(Url $url, string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -262,30 +287,32 @@ class OpuCtrl {
 						$title ?? 'Iframe'));
 	}
 
+
 	/**
-	 * @param EiEntryGui $eiEntryGui
-	 * @param GuiControl[] $guiControls
-	 * @return null|\rocket\si\control\SiCallResponse
+	 * @throws CorruptedSiInputDataException
 	 */
-	private function handleEiSiCall(?EiEntryGui $eiEntryGui, array $generalGuiControls) {
-		if (!($this->cu->getRequest()->getMethod() === Method::POST && isset($_POST['apiCallId']))) {
+	private function handleEiSiCall(EiGui $eiGui): ?SiCallResult {
+		$apiCallIdParam = $this->cu->getParamPost('apiCallId');
+		if (!($this->cu->getRequest()->getMethod() === Method::POST && null !== $apiCallIdParam)) {
 			return null;
 		}
 
-		$process = new ZoneApiControlProcess($this->frame()->getEiFrame());
-		$process->provideEiEntryGui($eiEntryGui);
-		$process->determineGuiControl(ZoneApiControlCallId::parse((new ParamPost($_POST['apiCallId']))->parseJson()), $generalGuiControls);
+		$siInputResult = null;
+		if (null !== ($entryInputMapsParam = $this->cu->getParamPost('entryInputMaps'))) {
+			$siInput = (new SiInputFactory())->create($entryInputMapsParam->parseJson());
+			if (null !== ($siInputError = $eiGui->handleSiInput($siInput))) {
+				return SiCallResult::fromInputError($siInputError);
+			}
 
-		if (isset($_POST['entryInputMaps'])
-				&& null !== ($siInputError = $process->handleInput((new ParamPost($_POST['entryInputMaps']))->parseJson()))) {
-			return SiCallResult::fromInputError($siInputError);
+			$siInputResult = new SiInputResult($eiGui->getInputSiValueBoundaries());
 		}
 
-		return SiCallResult::fromCallResponse($process->callGuiControl(),
-				(isset($_POST['entryInputMaps']) ? $process->createSiInputResult() : null));
+		return SiCallResult::fromCallResponse(
+				$eiGui->handleSiCall(ZoneApiControlCallId::parse($apiCallIdParam->parseJson())),
+				$siInputResult);
 	}
 
-	function forwardUrlIframeZone(Url $url, string $title = null) {
+	function forwardUrlIframeZone(Url $url, string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}

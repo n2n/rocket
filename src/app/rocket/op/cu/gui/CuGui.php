@@ -19,6 +19,7 @@ interface CuGui {
 
 	/**
 	 * @param SiInput $siInput
+	 * @param N2nContext $n2nContext
 	 * @return SiInputError|null
 	 * @throws CorruptedSiInputDataException
 	 */

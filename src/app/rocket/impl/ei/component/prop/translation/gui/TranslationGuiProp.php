@@ -25,7 +25,6 @@ use rocket\op\ei\manage\gui\GuiDefinition;
 use rocket\op\ei\manage\gui\GuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 use rocket\op\ei\manage\gui\GuiPropSetup;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 
@@ -39,27 +38,25 @@ class TranslationGuiProp implements GuiProp {
 	 * @var RelationModel
 	 */
 	private $relationModel;
-	
-	/**
-	 * @var TranslationConfig
-	 */
+
 	private $translationConfig;
-	
+
 	/**
-	 * @param GuiDefinition $guiDefinition
+	 * @param RelationModel $relationModel
+	 * @param TranslationEiPropNature $translationConfig
 	 */
 	function __construct(RelationModel $relationModel, TranslationEiPropNature $translationConfig) {
-		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getGuiDefinition();
+		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getEiEngine()->getGuiDefinition();
 		$this->relationModel = $relationModel;
 		$this->translationConfig = $translationConfig;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiPropSetup()
+	 * @see GuiProp::buildGuiPropSetup
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $forkedDefPropPaths): ?GuiPropSetup {
-		$targetEiuGuiFrame = $this->relationModel->getTargetEiuEngine()->newGuiFrame($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
+		$targetEiuGuiMaskDeclaration = $this->relationModel->getTargetEiuEngine()->newGuiMaskDeclaration($eiu->guiFrame()->getViewMode(), $forkedDefPropPaths);
 		$eiCmdPath = null;
 		if ($eiu->guiFrame()->isReadOnly()) {
 			$eiCmdPath = $this->relationModel->getTargetReadEiCmdPath();
@@ -67,12 +64,12 @@ class TranslationGuiProp implements GuiProp {
 			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
 		}
 		
-		return new TranslationGuiPropSetup($targetEiuGuiFrame, $eiCmdPath, $this->translationConfig);
+		return new TranslationGuiPropSetup($targetEiuGuiMaskDeclaration, $eiCmdPath, $this->translationConfig);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::getForkGuiDefinition()
+	 * @see GuiProp::getForkGuiDefinition
 	 */
 	function getForkGuiDefinition(): ?GuiDefinition {
 		return $this->forkGuiDefinition;

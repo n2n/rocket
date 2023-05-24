@@ -26,6 +26,7 @@ use rocket\si\SiPayloadFactory;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\CorruptedSiInputDataException;
 use rocket\si\input\SiEntryInput;
+use n2n\l10n\Message;
 
 class SiEntry implements \JsonSerializable {
 
@@ -45,6 +46,11 @@ class SiEntry implements \JsonSerializable {
 	 * @var SiControl[] $controls
 	 */	
 	private $controls = [];
+
+	/**
+	 * @var Message[]
+	 */
+	private array $messages = [];
 	
 	/**
 	 * @param string|null $idName
@@ -138,6 +144,15 @@ class SiEntry implements \JsonSerializable {
 		return $this;
 	}
 
+	function setMessages(array $messages): static {
+		$this->messages = $messages;
+		return $this;
+	}
+
+	function getMessages(): array {
+		return $this->messages;
+	}
+
 	/**
 	 * @throws CorruptedSiInputDataException
 	 */
@@ -162,7 +177,8 @@ class SiEntry implements \JsonSerializable {
 			'id' => $this->id,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
-			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
+			'messages' => $this->messages
 		];
 	}
 

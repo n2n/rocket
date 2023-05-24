@@ -25,7 +25,7 @@
 // use rocket\op\ei\manage\frame\EiFrame;
 // use n2n\util\ex\IllegalStateException;
 // use rocket\op\ei\manage\DraftEiObject;
-// use rocket\op\ei\manage\gui\EiEntryGui;
+// use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 // use rocket\op\ei\util\frame\EiuFrame;
 
 // class DraftListModel implements Dispatchable {	
@@ -101,7 +101,7 @@
 // 		$this->entryGuis = array();
 // 		foreach ($drafts as $draft) {
 // 			$eiEntry = $this->utils->createEiEntry(new DraftEiObject($draft));
-// 			$this->entryGuis[$draft->getId()] = new EiEntryGui($eiMask->createListEntryGuiModel($eiFrame, 
+// 			$this->entryGuis[$draft->getId()] = new EiGuiValueBoundary($eiMask->createListEntryGuiModel($eiFrame, 
 // 					$eiEntry, false));
 // 		}
 // 	}

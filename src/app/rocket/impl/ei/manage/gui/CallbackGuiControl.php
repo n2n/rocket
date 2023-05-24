@@ -30,7 +30,7 @@ use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\ManageState;
 use n2n\util\uri\Url;
-use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\gui\control\GuiControl;
@@ -106,29 +106,29 @@ class CallbackGuiControl implements GuiControl {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\gui\control\GuiControl::handle()
 	 */
-	function handle(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $inputEiEntries): SiCallResponse {
+	function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
 		ArgUtils::valArray($inputEiEntries, EiEntry::class);
 		
 		$inputEius = array_map(function ($inputEiEntry) use ($eiFrame) { 
 			return new Eiu($eiFrame, $inputEiEntry); 
 		}, $inputEiEntries);
 		
-		return $this->execCall(new Eiu($eiFrame, $eiGuiModel), $inputEius);
+		return $this->execCall(new Eiu($eiFrame, $eiGuiDeclaration), $inputEius);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\gui\control\GuiControl::handleEntry()
 	 */
-	function handleEntry(EiFrame $eiFrame, EiGuiModel $eiGuiModel, EiEntry $eiEntry): SiCallResponse {
-		return $this->execCall(new Eiu($eiFrame, $eiGuiModel, $eiEntry), null);
+	function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse {
+		return $this->execCall(new Eiu($eiFrame, $eiGuiDeclaration, $eiEntry), null);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\gui\control\GuiControl::handleEntries()
 	 */
-	function handleEntries(EiFrame $eiFrame, EiGuiModel $eiGuiModel, array $eiEntries): SiCallResponse {
+	function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 }

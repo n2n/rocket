@@ -23,7 +23,7 @@ namespace rocket\op\ei\mask\model;
 
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 
 class DisplayStructure {
 	/**
@@ -277,22 +277,22 @@ class DisplayStructure {
 		return false;
 	}
 	
-// 	public function purified(EiGuiFrame $eiGuiFrame) {
-// 		return $this->rPurifyDisplayStructure($this, $eiGuiFrame);
+// 	public function purified(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
+// 		return $this->rPurifyDisplayStructure($this, $eiGuiMaskDeclaration);
 // 	}
 	
 // 	/**
 // 	 * @param DisplayStructure $displayStructure
-// 	 * @param EiGuiFrame $eiGuiFrame
+// 	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 // 	 * @return \rocket\op\ei\mask\model\DisplayStructure
 // 	 */
-// 	private function rPurifyDisplayStructure($displayStructure, $eiGuiFrame) {
+// 	private function rPurifyDisplayStructure($displayStructure, $eiGuiMaskDeclaration) {
 // 		$purifiedDisplayStructure = new DisplayStructure();
 		
 // 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 // 			if ($displayItem->hasDisplayStructure()) {
 // 				$purifiedDisplayStructure->addDisplayStructure(
-// 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGuiFrame),
+// 						$this->rPurifyDisplayStructure($displayItem->getDisplayStructure(), $eiGuiMaskDeclaration),
 // 						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText(), 
 // 						$displayItem->getModuleNamespace());
 // 				continue;
@@ -300,7 +300,7 @@ class DisplayStructure {
 			
 // 			$guiPropAssembly = null;
 // 			try {
-// 				$guiPropAssembly = $eiGuiFrame->getDisplayDefintion($displayItem->getDefPropPath());
+// 				$guiPropAssembly = $eiGuiMaskDeclaration->getDisplayDefintion($displayItem->getDefPropPath());
 // 			} catch (UnresolvableDefPropPathException $e) {
 // 				continue;
 // 			}
@@ -313,13 +313,13 @@ class DisplayStructure {
 // 	}
 	
 	/**
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @return DisplayStructure
 	 */
-	public static function fromEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+	public static function fromEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		$displayStructure = new DisplayStructure();
 		
-		foreach ($eiGuiFrame->getGuiPropAssemblies() as $guiPropAssembly) {
+		foreach ($eiGuiMaskDeclaration->getGuiPropAssemblies() as $guiPropAssembly) {
 			$displayStructure->addDefPropPath($guiPropAssembly->getDefPropPath(), 
 					$guiPropAssembly->getDisplayDefinition()->getSiStructureType());
 		}

@@ -29,7 +29,7 @@ interface GuiFieldAssembler {
 	/**
 	 * @param Eiu $eiu
 	 * @param bool $readOnly No access or read only view.
-	 * @return \rocket\op\ei\manage\gui\field\GuiField|null
+	 * @return GuiField|null
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
 }

@@ -36,7 +36,7 @@
 // 	private $numPages;
 // 	private $numEntries;
 	
-// 	private $eiuGuiFrame;
+// 	private $eiuGuiMaskDeclaration;
 		
 // 	private $critmodForm;
 // 	private $quickSearchForm;
@@ -150,10 +150,10 @@
 		
 // 	/**
 // 	 * 
-// 	 * @return \rocket\op\ei\util\gui\EiuGuiFrame
+// 	 * @return \rocket\op\ei\util\gui\EiuGuiMaskDeclaration
 // 	 */
-// 	public function getEiuGuiFrame() {
-// 		return $this->eiuGuiFrame;
+// 	public function getEiuGuiMaskDeclaration() {
+// 		return $this->eiuGuiMaskDeclaration;
 // 	}
 	
 // 	protected $selectedObjectIds = array();

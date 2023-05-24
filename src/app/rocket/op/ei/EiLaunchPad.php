@@ -137,11 +137,11 @@ class EiLaunchPad implements LaunchPad {
 		}
 
 		$manageState->setEntityManager($em);
-		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
+//		$manageState->setDraftManager($rocket->getOrCreateDraftManager($em));
 		$manageState->setEiPermissionManager($loginContext->getSecurityManager()->createEiPermissionManager($manageState));
 		
 		$eiLifecycleMonitor = new EiLifecycleMonitor($rocket->getSpec());
-		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), $manageState->getDraftManager(), $n2nContext);
+		$eiLifecycleMonitor->initialize($manageState->getEntityManager(), /*$manageState->getDraftManager(),*/ $n2nContext);
 		$manageState->setEiLifecycleMonitor($eiLifecycleMonitor);
 
 		$eiLaunch = new EiLaunch($n2nContext, $manageState->getEiPermissionManager(), $em);

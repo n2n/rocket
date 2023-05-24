@@ -27,7 +27,7 @@ use rocket\impl\ei\component\prop\date\DateTimeEiPropNature;
 use n2n\util\type\CastUtils;
 use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\op\ei\util\Eiu;
@@ -35,7 +35,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\config\InvalidConfigurationException;
 use n2n\util\type\ArgUtils;
  
-class DateTimeConfig extends PropConfigAdaption {
+class DateTimeConfig {
 	const ATTR_DATE_STYLE_KEY = 'dateStyle';
 	const ATTR_TIME_STYLE_KEY = 'timeStyle';
 	

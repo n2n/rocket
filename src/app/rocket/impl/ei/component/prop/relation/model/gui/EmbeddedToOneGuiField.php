@@ -130,4 +130,8 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
 	}
+
+	function getMessages(): array {
+
+	}
 }

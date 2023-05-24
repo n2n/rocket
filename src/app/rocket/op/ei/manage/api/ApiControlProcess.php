@@ -32,7 +32,7 @@ use rocket\op\ei\manage\gui\control\UnknownGuiControlException;
 use n2n\util\type\attrs\AttributesException;
 use rocket\si\input\SiInput;
 use rocket\si\input\SiEntryInput;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\si\input\SiInputFactory;
@@ -42,31 +42,29 @@ use rocket\op\ei\UnknownEiTypeException;
 use rocket\op\ei\manage\security\InaccessibleEiEntryException;
 use n2n\web\http\ForbiddenException;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\gui\EiGuiModel;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\gui\EiGui;
 use rocket\si\input\SiInputError;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\input\SiInputResult;
+use rocket\si\control\SiCallResponse;
+use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 
 class ApiControlProcess {
 	private $eiFrame;
 	/**
 	 * @var ProcessUtil
 	 */
-	private $util;
+//	private $util;
 	/**
 	 * @var EiFrameUtil
 	 */
 	private $eiFrameUtil;
 	/**
-	 * @var EiGui
+	 * @var EiGuiDeclaration
 	 */
-	private $eiGui;
-	/**
-	 * @var EiGuiModel
-	 */
-	private $eiGuiModel;
+	private $eiGuiDeclaration;
 	private $eiEntry;
 	private $guiField;
 	/**
@@ -87,28 +85,33 @@ class ApiControlProcess {
 	 */
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
-		$this->util = new ProcessUtil($eiFrame);
+//		$this->util = new ProcessUtil($eiFrame);
 		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
 	}
-	
+
 	/**
 	 * @param int $viewMode
-     * @param string $eiTypeId
+	 * @param string $eiTypeId
+	 * @throws BadRequestException
 	 */
-	function determineEiGuiFrame(int $viewMode, string $eiTypeId) {
+	function determineEiGuiMaskDeclaration(int $viewMode, string $eiTypeId): void {
 		try {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId);
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType);
-			$this->eiGuiModel = $this->createEiGuiModel($eiMask, $viewMode);
-			$this->eiGui = new EiGui($this->eiGuiModel);
+			$this->eiGuiDeclaration = $this->createEiGuiDeclaration($eiMask, $viewMode);
 		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
-	private function createEiGuiModel(EiMask $eiMask, int $viewMode) {
+
+	/**
+	 * @throws BadRequestException
+	 */
+	private function createEiGuiDeclaration(EiMask $eiMask, int $viewMode): EiGuiDeclaration {
+		$factory = new EiGuiDeclarationFactory($eiMask, $this->eiFrame->getN2nContext());
+
 		try {
-			return $eiMask->getEiEngine()->obtainEiGuiModel($viewMode, null);
+			return $factory->createEiGuiDeclaration($viewMode, false, null);
 		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -119,7 +122,7 @@ class ApiControlProcess {
 	 * @throws UnknownEiObjectException
 	 * @return EiEntry
 	 */
-	function determineEiEntry(string $pid) {
+	function determineEiEntry(string $pid): EiEntry {
 		$eiObject = $this->eiFrameUtil->lookupEiObject($this->eiFrameUtil->pidToId($pid));
 		return $this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
@@ -128,35 +131,33 @@ class ApiControlProcess {
 	 * @param string $eiTypeId
 	 * @throws UnknownEiTypeException
 	 */
-	function determineNewEiEntry(string $eiTypeId) {
+	function determineNewEiEntry(string $eiTypeId): void {
 		$eiObject = $this->eiFrameUtil->createNewEiObject($eiTypeId);
 		$this->eiEntry = $this->eiFrame->createEiEntry($eiObject);
 	}
 	
-	function determineGuiField(DefPropPath $defPropPath) {
+	function determineGuiField(DefPropPath $defPropPath): void {
 		
 		try {
-			$eiEntryGui = $this->eiGui->appendEiEntryGui($this->eiFrame, [$this->eiEntry]);
-			$this->guiField = $eiEntryGui->getSelectedTypeDef()->getGuiFieldByDefPropPath($defPropPath);
-		} catch (GuiException $e) {
-			throw new BadRequestException($e->getMessage(), null, $e);
-		} catch (\InvalidArgumentException $e) {
+			$eiGuiValueBoundary = $this->eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$this->eiEntry], false);
+			$this->guiField = $eiGuiValueBoundary->getSelectedEiGuiEntry()->getGuiFieldByDefPropPath($defPropPath);
+		} catch (GuiException|\InvalidArgumentException $e) {
 			throw new BadRequestException($e->getMessage(), null, $e);
 		}
-		
+
 	}
 	
-	function determineGuiControl(GuiControlPath $guiControlPath) {
+	function determineGuiControl(GuiControlPath $guiControlPath): void {
 		if (!$guiControlPath->startsWith(EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd()))) {
 			throw new BadRequestException();
 		}
 		
 		try {
 			if ($this->eiEntry !== null) {
-				$this->entryGuiControl = $this->guiControl = $this->eiGuiModel
+				$this->entryGuiControl = $this->guiControl = $this->eiGuiDeclaration
 						->createEntryGuiControl($this->eiFrame, $this->eiEntry, $guiControlPath);
 			} else {
-				$this->generalGuiControl = $this->guiControl = $this->eiGuiModel
+				$this->generalGuiControl = $this->guiControl = $this->eiGuiDeclaration
 						->createGeneralGuiControl($this->eiFrame, $guiControlPath);
 			}
 		} catch (UnknownGuiControlException $e) {
@@ -178,20 +179,19 @@ class ApiControlProcess {
 		
 		try {
 			return $this->applyInput($inputFactory->create($data));
-		} catch (AttributesException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (\InvalidArgumentException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (UnknownEiObjectException $e) {
-			throw new BadRequestException(null, null, $e);
-		} catch (UnknownEiTypeException $e) {
+		} catch (AttributesException|\InvalidArgumentException|UnknownEiObjectException|UnknownEiTypeException $e) {
 			throw new BadRequestException(null, null, $e);
 		} catch (InaccessibleEiEntryException $e) {
 			throw new ForbiddenException(null, null, $e);
 		}
 	}
-	
+
 	private $inputEiEntries = [];
+
+	/**
+	 * @var EiGuiValueBoundary[]
+	 */
+	private $inputEiGuiValueBoundaries = [];
 	
 	/**
 	 * @param SiInput $siInput
@@ -205,16 +205,15 @@ class ApiControlProcess {
 		$siEntries = [];
 		
 		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
-			$eiEntryGui = null;
+			$eiGuiValueBoundary = null;
 			if ($this->eiEntry !== null) {
 				if ($this->eiEntry->getPid() !== $entryInput->getIdentifier()->getId()) {
-					throw new \InvalidArgumentException('EntryInput id missmatch. Id: ' + $this->eiEntry->getPid() 
+					throw new \InvalidArgumentException('EntryInput id missmatch. Id: ' . $this->eiEntry->getPid()
 							. ' Entry Input Id: ' . $entryInput->getIdentifier()->getId());
 				}
 				
-				$this->inputEiEntries[$key] = $this->eiEntry;
-				$eiEntryGui = $this->eiGuiModel->createEiEntryGuiVariation($this->eiFrame, $this->eiEntry);
-				$this->eiGui->addEiEntryGui($eiEntryGui);
+				$this->inputEiEntries[$key] = $eiEntry = $this->eiEntry;
+				$eiGuiValueBoundary = $this->eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$this->eiEntry], false);
 			} else {
 				$eiObject = null;
 				if (null !== $entryInput->getIdentifier()->getId()) {
@@ -224,18 +223,19 @@ class ApiControlProcess {
 				}
 				
 				$this->inputEiEntries[$key] = $eiEntry = $this->eiFrame->createEiEntry($eiObject);
-				$eiEntryGui = $eiGuiModel->createEiEntryGui($this->eiFrame, [$eiEntry], $this->eiGui);
+				$eiGuiValueBoundary = $this->eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], false);
 			}
 			
-			$this->inputEiEntryGui[$key] = $eiEntryGui;
+			$this->inputEiGuiValueBoundaries[$key] = $eiGuiValueBoundary;
 			
-			$this->applyEntryInput($entryInput, $eiEntryGui);
+			$this->applyEntryInput($entryInput, $eiGuiValueBoundary);
 			
 			if ($eiEntry->validate()) {
 				continue;
 			}
 			
-			$siEntries[$key] = $this->eiGuiModel->createSiEntry($this->eiFrame, $eiEntryGui, false);
+			$siEntries[$key] = $eiGuiValueBoundary->getSelectedEiGuiEntry()
+					->createSiEntry($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
 		if (empty($siEntries)) {
@@ -246,46 +246,48 @@ class ApiControlProcess {
 	}
 	
 	/**
-	 * @return \rocket\si\input\SiInputResult
+	 * @return SiInputResult
 	 */
 	function createSiInputResult() {
 		$siEntries = [];
-		foreach ($this->inputEiEntryGuis as $key => $inputEiEntryGui) {
-			$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($this->inputEiEntries[$key]->getEiObject());
-			$eiGuiModel = $inputEiEntryGui->getEiGui()->getEiGuiModel();
-			$eiGui = new EiGui($eiGuiModel);
-			$eiGui->appendEiEntryGui($this->eiFrameUtil->getEiFrame(), [$eiEntry]);
-			$siEntries[$key] = $eiGui->createSiEntry($this->eiFrameUtil->getEiFrame());
+		foreach ($this->inputEiGuiValueBoundaries as $key => $inputEiGuiValueBoundary) {
+//			$eiEntry = $this->eiFrameUtil->getEiFrame()->createEiEntry($this->inputEiEntries[$key]->getEiObject());
+//			$eiGuiDeclaration = $inputEiGuiValueBoundary->getEiGui()->getEiGuiDeclaration();
+//			$eiGui = new EiGui($eiGuiDeclaration);
+//
+//			$eiGui->appendEiGuiValueBoundary($this->eiFrameUtil->getEiFrame(), [$eiEntry]);
+			$siEntries[$key] = $inputEiGuiValueBoundary->getSelectedEiGuiEntry()
+					->createSiEntry($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		return new SiInputResult($siEntries);
 	}
 	
 	/**
 	 * @param SiEntryInput $entryInput
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 * @param \InvalidArgumentException
 	 */
-	private function applyEntryInput($entryInput, $eiEntryGui) {
-		$eiEntryGui->handleSiEntryInput($entryInput);
+	private function applyEntryInput($entryInput, $eiGuiValueBoundary): void {
+		$eiGuiValueBoundary->handleSiEntryInput($entryInput);
 		
-		// 			foreach ($eiEntryGui->getGuiFieldForks() as $defPropPathStr => $guiFieldFork) {
+		// 			foreach ($eiGuiValueBoundary->getGuiFieldForks() as $defPropPathStr => $guiFieldFork) {
 		// 				$guiFieldFork->
 		// 			}
 		
-		$eiEntryGui->save();
+		$eiGuiValueBoundary->save();
 	}
 	
 	/**
 	 * @throws IllegalStateException
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return SiCallResponse
 	 */
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
-			return $this->generalGuiControl->handle($this->eiFrame, $this->eiGuiModel, $this->inputEiEntries);
+			return $this->generalGuiControl->handle($this->eiFrame, $this->eiGuiDeclaration, $this->inputEiEntries);
 		}
 		
 		if ($this->entryGuiControl !== null) {
-			return $this->entryGuiControl->handleEntry($this->eiFrame, $this->eiGuiModel, $this->eiEntry);
+			return $this->entryGuiControl->handleEntry($this->eiFrame, $this->eiGuiDeclaration, $this->eiEntry);
 		}
 		
 		throw new IllegalStateException();

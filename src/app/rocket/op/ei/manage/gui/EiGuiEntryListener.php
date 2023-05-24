@@ -21,20 +21,20 @@
  */
 namespace rocket\op\ei\manage\gui;
 
-interface EiEntryGuiListener {
+interface EiGuiEntryListener {
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiEntry $eiGuiEntry
 	 */
-	public function finalized(EiEntryGui $eiEntryGui);
+	public function finalized(EiGuiEntry $eiGuiEntry);
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiEntry $eiGuiEntry
 	 */
-	public function onSave(EiEntryGui $eiEntryGui);
+	public function onSave(EiGuiEntry $eiGuiEntry);
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiEntry $eiGuiEntry
 	 */
-	public function saved(EiEntryGui $eiEntryGui);
+	public function saved(EiGuiEntry $eiGuiEntry);
 }

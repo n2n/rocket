@@ -23,8 +23,6 @@ namespace rocket\op\ei\manage\entry;
 
 use n2n\l10n\Message;
 use rocket\op\ei\EiPropPath;
-use rocket\si\input\SiEntryError;
-use n2n\l10n\N2nLocale;
 
 class EiEntryValidationResult {
 	/**
@@ -50,15 +48,21 @@ class EiEntryValidationResult {
 		return !isset($this->eiFieldValidationResults[$eiPropPathStr]) 
 				||  $this->eiFieldValidationResults[$eiPropPathStr]->isValid($checkRecursive);
 	}
-	
+
 	/**
 	 * @param bool $checkRecursive
-	 * @return \rocket\op\ei\manage\entry\EiFieldValidationResult[]
+	 * @param array $exceptEiPropPaths
+	 * @return EiFieldValidationResult[]
 	 */
-	function getInvalidEiFieldValidationResults(bool $checkRecursive) {
+	function getInvalidEiFieldValidationResults(bool $checkRecursive, array $exceptEiPropPaths = []): array {
+		$exceptEiPropPaths = EiPropPath::mapKeys($exceptEiPropPaths);
+
 		$results = [];
 		foreach ($this->eiFieldValidationResults as $eiPropPathStr => $eiFieldValidationResult) {
-			if ($eiFieldValidationResult->isValid($checkRecursive)) continue;
+			if ($eiFieldValidationResult->isValid($checkRecursive)
+					|| isset($exceptEiPropPaths[$eiPropPathStr])) {
+				continue;
+			}
 			
 			$results[$eiPropPathStr] = $eiFieldValidationResult;
 		}
@@ -92,13 +96,13 @@ class EiEntryValidationResult {
 		return $messages;
 	}
 	
-	public function processMessage(bool $recursive) {
-		foreach ($this->eiFieldValidationResults as $result) {
-			if (null !== ($message = $result->processMessage(true))) {
-				return $message;
-			}
-		}
-	}
+//	public function processMessage(bool $recursive) {
+//		foreach ($this->eiFieldValidationResults as $result) {
+//			if (null !== ($message = $result->processMessage(true))) {
+//				return $message;
+//			}
+//		}
+//	}
 
 // 	/**
 // 	 * @return SiEntryError|null 

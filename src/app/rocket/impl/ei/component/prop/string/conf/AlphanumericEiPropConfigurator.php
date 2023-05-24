@@ -31,9 +31,9 @@
 // use n2n\persistence\meta\structure\StringColumn;
 // use n2n\util\type\attrs\LenientAttributeReader;
 // use rocket\impl\ei\component\prop\meta\config\AddonConfig;
-// use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+// 
 
-// class AlphanumericConfig extends PropConfigAdaption {
+// class AlphanumericConfig {
 // 	const ATTR_MINLENGTH_KEY = 'minlength';
 // 	const ATTR_MAXLENGTH_KEY = 'maxlength';
 	

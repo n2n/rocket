@@ -19,8 +19,8 @@ use rocket\op\ei\manage\security\privilege\data\PrivilegeSetting;
 use rocket\op\ei\util\sort\EiuSortForm;
 use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\op\ei\manage\ManageState;
-use rocket\op\ei\manage\gui\EiEntryGui;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\GuiException;
 use rocket\op\ei\util\EiuAnalyst;
@@ -30,26 +30,27 @@ use rocket\op\ei\manage\gui\EiGuiListener;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\gui\GuiDefinition;
-use rocket\op\ei\util\gui\EiuGuiFrame;
+use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
 use rocket\op\ei\manage\gui\ViewMode;
-use rocket\op\ei\util\gui\EiuGuiModel;
+use rocket\op\ei\util\gui\EiuGuiDeclaration ;
+use rocket\op\ei\manage\gui\EiGuiEntry;
+use rocket\op\ei\manage\critmod\sort\SortDefinition;
+use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
+use n2n\l10n\Lstr;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use InvalidArgumentException;
 
 class EiuEngine {
-	private $eiEngine;
-	private $eiuType;
-	private $eiuMask;
-	private $eiuAnalyst;
-	
-	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
-		$this->eiEngine = $eiEngine;
-		$this->eiuMask = $eiuMask;
-		$this->eiuAnalyst = $eiuAnalyst;
+
+	private ?EiuType $eiuType = null;
+
+	public function __construct(private EiEngine $eiEngine, private ?EiuMask $eiuMask, private EiuAnalyst $eiuAnalyst) {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\EiEngine
+	 * @return EiEngine
 	 */
-	public function getEiEngine() {
+	public function getEiEngine(): EiEngine {
 		return $this->eiEngine;
 	}
 	
@@ -81,29 +82,26 @@ class EiuEngine {
 	private function getEiType() {
 		return $this->eiEngine->getEiMask()->getEiType();
 	}
-	
-	/**
-	 * @return \rocket\op\ei\util\spec\EiuEngine
-	 */
-	public function supremeEngine() {
-		if (!$this->eiEngine->hasSuperEiEngine()) {
+
+	public function supremeEngine(): EiuEngine {
+		if (!$this->eiEngine->getEiMask()->getEiType()->hasSuperEiType()) {
 			return $this;
 		}
 		
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), null, $this->eiuAnalyst);
 	}
 	
-	public function removeGuiProp($defPropPath) {
-		$this->getGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
+	public function removeGuiProp($defPropPath): void {
+		$this->eiEngine->getGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
 	}
 	
-	/**
-	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
-	 * @return bool
-	 */
-	public function containsDraftProperty($eiPropArg) {
-		return $this->eiEngine->getDraftDefinition()->containsEiPropPath(EiPropPath::create($eiPropArg));
-	}
+//	/**
+//	 * @param mixed $eiPropArg See {@see EiPropPath::create()}
+//	 * @return bool
+//	 */
+//	public function containsDraftProperty($eiPropArg) {
+//		return $this->eiEngine->getDraftDefinition()->containsEiPropPath(EiPropPath::create($eiPropArg));
+//	}
 	
 	public function getGuiPropOptions(N2nLocale $n2nLocale = null) {
 		/**
@@ -114,8 +112,8 @@ class EiuEngine {
 		$n2nLocale = $n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale();
 		
 		return array_map(
-				function ($labelLstr) use ($n2nLocale) { return $labelLstr->t($n2nLocale); },
-				$ms->getDef()->getGuiDefinition($this->eiEngine->getEiMask())->getLabelLstrs());
+				function (Lstr $labelLstr) use ($n2nLocale) { return $labelLstr->t($n2nLocale); },
+				$this->eiEngine->getEiMask()->getEiEngine()->getGuiDefinition()->getLabelLstrs());
 	}
 	
 	/**
@@ -197,25 +195,25 @@ class EiuEngine {
 		return $options;
 	}
 	
-	/**
-	 * @return ManageState
-	 */
-	private function getEiLaunch() {
-		return $this->eiuAnalyst->getN2nContext(true)->lookup(ManageState::class);
-	}
+//	/**
+//	 * @return ManageState
+//	 */
+//	private function getEiLaunch() {
+//		return $this->eiuAnalyst->getN2nContext(true)->lookup(ManageState::class);
+//	}
 	
-	/**
-	 * @return \rocket\op\ei\manage\critmod\filter\FilterDefinition
-	 */
-	public function getFilterDefinition() {
-		return $this->eiEngine->getFilterDefinition($this->eiEngine->getEiMask());
-	}
-	/**
-	 * @return boolean
-	 */
-	public function hasFilterProps() {
-		return !$this->getFilterDefinition()->isEmpty();
-	}
+//	/**
+//	 * @return FilterDefinition
+//	 */
+//	public function getFilterDefinition() {
+//		return $this->eiEngine->getFilterDefinition($this->eiEngine->getEiMask());
+//	}
+//	/**
+//	 * @return boolean
+//	 */
+//	public function hasFilterProps() {
+//		return !$this->getFilterDefinition()->isEmpty();
+//	}
 	
 	/**
 	 * @return \rocket\op\ei\manage\security\filter\SecurityFilterDefinition
@@ -232,26 +230,26 @@ class EiuEngine {
 	}
 	
 	
-	/**
-	 * @return \rocket\op\ei\manage\critmod\sort\SortDefinition
-	 */
-	public function getSortDefinition() {
-		return $this->eiEngine->getSortDefinition($this->eiEngine->getEiMask());
-	}
+//	/**
+//	 * @return SortDefinition
+//	 */
+//	public function getSortDefinition(): SortDefinition {
+//		return $this->eiEngine->getSortDefinition($this->eiEngine->getEiMask());
+//	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasSortProps() {
-		return !$this->getSortDefinition()->isEmpty();
-	}
+//	/**
+//	 * @return boolean
+//	 */
+//	public function hasSortProps(): bool {
+//		return !$this->getSortDefinition()->isEmpty();
+//	}
 	
-	/**
-	 * @return GuiDefinition 
-	 */
-	public function getGuiDefinition() {
-		return $this->eiEngine->getGuiDefinition($this->eiEngine->getEiMask());
-	}
+//	/**
+//	 * @return GuiDefinition
+//	 */
+//	public function getGuiDefinition() {
+//		return $this->eiEngine->getGuiDefinition($this->eiEngine->getEiMask());
+//	}
 	
 	/**
 	 * @return \rocket\op\ei\manage\security\privilege\PrivilegeDefinition
@@ -295,46 +293,43 @@ class EiuEngine {
 				$n2nLocale ?? $n2nContext->getN2nLocale());
 	}
 	
-	public function onNewGui(\Closure $callback) {
-		$this->getGuiDefinition()->registerGuiDefinitionListener(new ClosureGuiDefinitionListener($callback));
-	}
-	
-	public function onNewEntryGui(\Closure $callback) {
-		$this->getGuiDefinition()->registerGuiDefinitionListener(new ClosureEiGuiListener($callback));
+	public function onNewGuiEntry(\Closure $callback) {
+		$this->eiEngine->getGuiDefinition()->registerGuiDefinitionListener(new ClosureEiGuiListener($callback));
+		return $this;
 	}
 	
 	/**
 	 * @param mixed $eiPropPath
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @return boolean
 	 */
-	public function containsGuiProp($eiPropPath) {
-		return $this->getGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
+	public function containsGuiProp($eiPropPath): bool {
+		return $this->eiEngine->getGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
 	}
 
-	/**
-	 * @param mixed $eiPropPath
-	 * @throws \InvalidArgumentException
-	 * @throws GuiException
-	 * @return EiPropPath
-	 */
-	public function eiPropPathToEiPropPath($eiPropPath) {
-		return $this->getGuiDefinition()->eiPropPathToEiPropPath(DefPropPath::create($eiPropPath));
-	}
+//	/**
+//	 * @param mixed $eiPropPath
+//	 * @throws \InvalidArgumentException
+//	 * @throws GuiException
+//	 * @return EiPropPath
+//	 */
+//	public function eiPropPathToEiPropPath($eiPropPath) {
+//		return $this->getGuiDefinition()->eiPropPathToEiPropPath(DefPropPath::create($eiPropPath));
+//	}
 	
 	
-	/**
-	 * @param FilterSettingGroup|null $rootGroup
-	 * @return \rocket\op\ei\util\filter\EiuFilterForm
-	 */
-	public function newFilterForm(FilterSettingGroup $rootGroup = null) {
-		return $this->createEiuFilterForm(
-				$this->getFilterDefinition(),
-				ScrFilterPropController::buildFilterJhtmlHook(
-						$this->eiuAnalyst->getN2nContext(true)->lookup(ScrRegistry::class), 
-						$this->eiEngine->getEiMask()->getEiTypePath()),
-				$rootGroup);
-	}
+//	/**
+//	 * @param FilterSettingGroup|null $rootGroup
+//	 * @return \rocket\op\ei\util\filter\EiuFilterForm
+//	 */
+//	public function newFilterForm(FilterSettingGroup $rootGroup = null) {
+//		return $this->createEiuFilterForm(
+//				$this->getFilterDefinition(),
+//				ScrFilterPropController::buildFilterJhtmlHook(
+//						$this->eiuAnalyst->getN2nContext(true)->lookup(ScrRegistry::class),
+//						$this->eiEngine->getEiMask()->getEiTypePath()),
+//				$rootGroup);
+//	}
 		
 	/**
 	 * @param FilterSettingGroup|null $rootGroup
@@ -362,14 +357,14 @@ class EiuEngine {
 	}
 	
 	
-	/**
-	 * @param SortSettingGroup|null $sortSetting
-	 * @return \rocket\op\ei\util\sort\EiuSortForm
-	 */
-	public function newSortForm(SortSettingGroup $sortSetting = null) {
-		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
-	}
-	
+//	/**
+//	 * @param SortSettingGroup|null $sortSetting
+//	 * @return \rocket\op\ei\util\sort\EiuSortForm
+//	 */
+//	public function newSortForm(SortSettingGroup $sortSetting = null) {
+//		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
+//	}
+//
 	/**
 	 * @return boolean
 	 */
@@ -405,44 +400,45 @@ class EiuEngine {
 		
 		return new EiuFrame($newEiFrame, $newEiuAnalyst);
 	}
-	
+
 	/**
 	 * @param int $viewMode
-	 * @param array $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
-	 * @return \rocket\op\ei\util\gui\EiuGuiModel
+	 * @param array|null $defPropPathsArg
+	 * @return EiuGuiDeclaration
 	 */
-	function newGuiModel(int $viewMode, array $defPropPathsArg = null) {
+	function newGuiDeclaration(int $viewMode, array $defPropPathsArg = null): EiuGuiDeclaration {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 
-		$eiGuiModel =  $this->eiEngine->obtainEiGuiModel($viewMode, $defPropPaths);
+		$eiGuiDeclaration = new EiGuiDeclaration($this->eiEngine->getEiMask(), $viewMode);
+		$eiGuiDeclaration->putEiGuiMaskDeclaration(
+				$this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths));
 		
-		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
+		return new EiuGuiDeclaration($eiGuiDeclaration, $this->eiuAnalyst);
 	}
-	
+
 	/**
 	 * @param int $viewMode
-	 * @param array $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
-	 * @return EiuGuiFrame
+	 * @param array|null $defPropPaths
+	 * @return EiuGuiMaskDeclaration
 	 */
-	function newGuiFrame(int $viewMode, array $defPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
-		$eiuGui = $this->newGuiModel($viewMode, $defPropPaths, $guiStructureDeclarationsRequired);
-		
-		return current($eiuGui->guiFrames());
+	function newGuiMaskDeclaration(int $viewMode, array $defPropPaths = null): EiuGuiMaskDeclaration {
+		$defPropPaths = DefPropPath::createArray($defPropPaths);
+		return new EiuGuiMaskDeclaration($this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths),
+				$this->eiuAnalyst);
 	}
-	
-	/**
-	 * @return EiuGuiModel 
-	 */
-	function newForgeMultiGuiModel(bool $bulky = true, bool $readOnly = false, array $allowedEiTypesArg = null, 
-			array $defPropPathsArg = null) {
+
+	function newMultiGuiDeclaration(bool $bulky = true, bool $readOnly = false, bool $nonAbstractsOnly = true,
+			array $allowedEiTypesArg = null, array $defPropPathsArg = null): EiuGuiDeclaration {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiGuiModel =  $this->eiEngine->obtainForgeMultiEiGuiModel($viewMode, $allowedEiTypes, $defPropPaths);
-		return new EiuGuiModel($eiGuiModel, $this->eiuAnalyst);
+
+		$eiGuiDeclarationFactory = new EiGuiDeclarationFactory($this->eiEngine->getEiMask(),
+				$this->eiuAnalyst->getN2nContext(true));
+		$eiGuiDeclaration =  $eiGuiDeclarationFactory->createMultiEiGuiDeclaration($viewMode, $nonAbstractsOnly,
+				$allowedEiTypes, $defPropPaths);
+		return new EiuGuiDeclaration($eiGuiDeclaration, $this->eiuAnalyst);
 	}
 }
 
@@ -453,37 +449,35 @@ class ClosureGuiDefinitionListener implements GuiDefinitionListener {
 		$this->callback = $callback;
 	}
 	
-	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): void {
 		$c = $this->callback;
-		$c(new Eiu($eiGuiFrame));
+		$c(new Eiu($eiGuiMaskDeclaration));
 	}
 	
-	public function onEiGuiFrameInitialized(EiGuiFrame $eiGuiFrame) {
+	public function onEiGuiMaskDeclarationInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 	}
 
 }
 
 class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
-	private $eiEntryGuiCallback;
-	
-	public function __construct(\Closure $eiEntryGuiCallback) {
-		$this->eiEntryGuiCallback = $eiEntryGuiCallback;
+
+	public function __construct(private \Closure $eiGuiEntryCallback) {
 	}
 	
-	public function onNewEiEntryGui(EiEntryGui $eiEntryGui) {
-		$c = $this->eiEntryGuiCallback;
-		$c(new Eiu($eiEntryGui));
+	public function onNewEiGuiEntry(EiGuiEntry $eiGuiEntry): void {
+		$c = $this->eiGuiEntryCallback;
+		$c(new Eiu($eiGuiEntry));
 	}
 	
-	public function onInitialized(EiGuiFrame $eiGuiFrame) {
+	public function onInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		
 	}
 
-	public function onNewEiGuiFrame(EiGuiFrame $eiGuiFrame) {
-		$eiGuiFrame->registerEiGuiListener($this);
+	public function onNewEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): void {
+		$eiGuiMaskDeclaration->registerEiGuiListener($this);
 	}
 	
-	public function onGiBuild(EiGuiFrame $eiGuiFrame) {
+	public function onGiBuild(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		
 	}
 

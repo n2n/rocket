@@ -113,14 +113,14 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	
 	
 // 	/**
-// 	 * @param EiuEntryGuiTypeDef $eiuEntryGuiMulti
+// 	 * @param EiuGuiEntryTypeDef $eiuGuiEntryMulti
 // 	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
 // 	 */
-// 	private function createSiEmbeddeEntryFromMulti($eiuEntryGuiMulti) {
+// 	private function createSiEmbeddeEntryFromMulti($eiuGuiEntryMulti) {
 // 		return new SiEmbeddedEntry(
-// 				$eiuEntryGuiMulti->createBulkyEntrySiGui(false, false),
+// 				$eiuGuiEntryMulti->createBulkyEntrySiGui(false, false),
 // 				($this->relationModel->isReduced() ?
-// 						$eiuEntryGuiMulti->entry()->newGui(false, false)->createCompactEntrySiGui(false, false):
+// 						$eiuGuiEntryMulti->entry()->newGui(false, false)->createCompactEntrySiGui(false, false):
 // 						null));
 // 	}
 	

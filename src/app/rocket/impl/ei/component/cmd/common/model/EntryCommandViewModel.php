@@ -106,8 +106,8 @@
 // 		return $this->getEiuEntry()->isPreviewSupported();
 // 	}
 	
-// // 	public function getEiuEntryGui() {
-// // 		return $this->eiuEntryGui;
+// // 	public function getEiuGuiEntry() {
+// // 		return $this->eiuGuiEntry;
 // // 	}
 	
 	
@@ -132,7 +132,7 @@
 	
 // 	public function getPreviewTypOptions() {
 // 		return $this->eiMask->getPreviewTypeOptions($this->eiFrame, 
-// 				$this->entryGuiModel->getEiEntryGui()->getViewMode());
+// 				$this->entryGuiModel->getEiGuiValueBoundary()->getViewMode());
 // 	}
 	
 // 	public function getEiEntityObjUrl(HttpContext $httpContext) {

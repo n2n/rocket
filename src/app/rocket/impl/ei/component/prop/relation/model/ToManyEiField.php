@@ -49,9 +49,10 @@ class ToManyEiField extends EiFieldAdapter {
 	 * @var EiuFrame
 	 */
 	private $targetEiuFrame;
-	
+
 	/**
 	 * @param Eiu $eiu
+	 * @param EiuFrame $targetEiuFrame
 	 * @param RelationEiProp $eiProp
 	 * @param RelationModel $relationModel
 	 */
@@ -165,16 +166,17 @@ class ToManyEiField extends EiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::writeValue()
 	 */
-	protected function writeValue($values) {
-		ArgUtils::assertTrue(is_array($values));
-		
+	protected function writeValue($value) {
+		ArgUtils::assertTrue(is_array($value));
+
 		$nativeValues = new \ArrayObject();
-		foreach ($values as $value) {
-			ArgUtils::assertTrue($value instanceof EiuEntry);
-			$nativeValues->append($value->getEntityObj());
+		foreach ($value as $eiuEntry) {
+			ArgUtils::assertTrue($eiuEntry instanceof EiuEntry);
+
+			$nativeValues->append($eiuEntry->getEntityObj());
 			
 			if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
-				$value->getEiEntry()->write();
+				$eiuEntry->getEiEntry()->write();
 			}
 		}
 		

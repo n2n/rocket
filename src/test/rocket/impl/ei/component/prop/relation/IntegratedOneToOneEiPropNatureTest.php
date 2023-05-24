@@ -43,7 +43,7 @@ class IntegratedOneToOneEiPropNatureTest extends TestCase {
 
 		$siGetResponse = $process->exec();
 
-		$entries = $siGetResponse->getPartialContent()->getEntries();
+		$entries = $siGetResponse->getPartialContent()->getValueBoundaries();
 
 		$this->assertCount(2, $entries);
 

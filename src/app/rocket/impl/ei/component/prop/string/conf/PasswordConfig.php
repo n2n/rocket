@@ -27,12 +27,12 @@ use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use hangar\api\CompatibilityLevel;
 use n2n\util\StringUtils;
 use n2n\impl\persistence\orm\property\StringEntityProperty;
 
-class PasswordConfig extends PropConfigAdaption {
+class PasswordConfig {
 // 	const ATTR_ALGORITHM_KEY = 'algorithm';
 	
 // 	const ALGORITHM_SHA1 = 'sha1';
