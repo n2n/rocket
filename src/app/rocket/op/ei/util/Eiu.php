@@ -232,7 +232,7 @@ class Eiu implements Lookupable {
 		return $this->eiuGuiField = $this->eiuAnalyst->getEiuGuiField($required);
 	}
 
-	function forkParent(): ?Eiu {
+	function parent(): ?Eiu {
 		$eiForkLink = $this->eiuAnalyst->getEiFrame(true)->getEiForkLink();
 		if ($eiForkLink === null) {
 			return null;
