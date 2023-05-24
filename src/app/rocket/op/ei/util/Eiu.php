@@ -13,6 +13,7 @@ use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\op\ei\util\spec\EiuCmd;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
+use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
 
 class Eiu implements Lookupable {
 	private $eiuAnalyst;
@@ -183,9 +184,9 @@ class Eiu implements Lookupable {
 	 * 
 	 * @param bool $required
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\util\gui\EiuGuiMaskDeclaration
+	 * @return EiuGuiMaskDeclaration
 	 */
-	public function guiFrame(bool $required = true) {
+	public function guiMaskDeclaration(bool $required = true): EiuGuiMaskDeclaration {
 		if ($this->eiuGuiMaskDeclaration !== null) {
 			return $this->eiuGuiMaskDeclaration;
 		}
