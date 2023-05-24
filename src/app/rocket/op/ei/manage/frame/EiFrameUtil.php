@@ -315,7 +315,7 @@ class EiFrameUtil {
 
 	function copyEiGuiEntry(EiGuiEntry $eiGuiEntry, int $viewMode = null, array $defPropPaths = null,
 			bool $entryGuiControlsIncluded = null): EiGuiEntry {
-		ArgUtils::valArray($defPropPaths, DefPropPath::class);
+		ArgUtils::valArray($defPropPaths, DefPropPath::class, nullAllowed: true);
 
 		$eiGuiMaskDeclaration = $eiGuiEntry->getEiGuiMaskDeclaration();
 
@@ -470,7 +470,7 @@ class EiFrameUtil {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, N2nLocale $n2nLocale = null) {
+	function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, N2nLocale $n2nLocale = null): string {
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		if ($determineEiMask) {
 			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());

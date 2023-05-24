@@ -7,29 +7,29 @@ use rocket\op\ei\manage\api\ApiFieldCallId;
 
 class EiuGuiField {
 	private $defPropPath;
-	private $eiuGuiEntryTypeDef;
+	private $eiuGuiEntry;
 	private $eiuAnalyst;
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @param EiuGuiEntry $eiuGuiEntryTypeDef
+	 * @param EiuGuiEntry $eiuGuiEntry
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	function __construct(DefPropPath $defPropPath, EiuGuiEntryTypeDef $eiuGuiEntryTypeDef, EiuAnalyst $eiuAnalyst) {
+	function __construct(DefPropPath $defPropPath, EiuGuiEntry $eiuGuiEntry, EiuAnalyst $eiuAnalyst) {
 		$this->defPropPath = $defPropPath;
-		$this->eiuGuiEntryTypeDef = $eiuGuiEntryTypeDef;
+		$this->eiuGuiEntry = $eiuGuiEntry;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
 	
 	/**
 	 * @return DefPropPath
 	 */
-	function getPath() {
+	function getPath(): DefPropPath {
 		return $this->defPropPath;
 	}
 	
 	function createCallId() {
-		$eiGuiEntry = $this->eiuGuiEntryTypeDef->getEiGuiEntry();
+		$eiGuiEntry = $this->eiuGuiEntry->getEiGuiEntry();
 		
 		return new ApiFieldCallId($this->defPropPath, 
 				$eiGuiEntry->getEiEntry()->getEiMask()->getEiTypePath(),

@@ -152,8 +152,10 @@ class EiGuiEntry {
 
 		$siEntry->setMessages($this->createGeneralMessageStrs($n2nLocale));
 
-		foreach ($this->guiControlMap->createSiControls() as $guiControlPathStr => $siControl) {
-			$siEntry->putControl($guiControlPathStr, $siControl);
+		if ($this->guiControlMap !== null) {
+			foreach ($this->guiControlMap->createSiControls() as $guiControlPathStr => $siControl) {
+				$siEntry->putControl($guiControlPathStr, $siControl);
+			}
 		}
 
 		return $siEntry;

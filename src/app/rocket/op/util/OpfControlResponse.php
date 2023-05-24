@@ -113,7 +113,7 @@ class OpfControlResponse {
 	 * @return OpfControlResponse
 	 */
 	function redirectToHref(Url|string $url): static {
-		$this->redirectTo(SiNavPoint::href($url));
+		$this->redirectTo(SiNavPoint::href(Url::create($url)));
 		return $this;
 	}
 	

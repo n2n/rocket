@@ -41,14 +41,16 @@ use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use InvalidArgumentException;
 
 class EiuEngine {
-	
+
+	private ?EiuType $eiuType = null;
+
 	public function __construct(private EiEngine $eiEngine, private ?EiuMask $eiuMask, private EiuAnalyst $eiuAnalyst) {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\EiEngine
+	 * @return EiEngine
 	 */
-	public function getEiEngine() {
+	public function getEiEngine(): EiEngine {
 		return $this->eiEngine;
 	}
 	
@@ -90,7 +92,7 @@ class EiuEngine {
 	}
 	
 	public function removeGuiProp($defPropPath): void {
-		$this->getGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
+		$this->eiEngine->getGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
 	}
 	
 //	/**
@@ -302,7 +304,7 @@ class EiuEngine {
 	 * @return boolean
 	 */
 	public function containsGuiProp($eiPropPath): bool {
-		return $this->getGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
+		return $this->eiEngine->getGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
 	}
 
 //	/**

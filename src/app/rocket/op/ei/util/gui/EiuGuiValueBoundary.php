@@ -80,18 +80,18 @@ class EiuGuiValueBoundary {
 	 * @return boolean
 	 */
 	function isGuiEntrySelected(): bool {
-		return $this->ei->isEiGuiEntrySelected();
+		return $this->eiGuiValueBoundary->isEiGuiEntrySelected();
 	}
 
 	function copy(bool $bulky = null, bool $readOnly = null, array $defPropPathsArg = null,
 			bool $entryGuiControlsIncluded = null): EiuGuiValueBoundary {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 
-		$eiGuiMaskDeclaration = $this->eiGuiEntry->getEiGuiMaskDeclaration();
+		$eiGuiDeclaration = $this->eiGuiValueBoundary->getEiGuiDeclaration();
 		$newViewMode = ViewMode::determine(
-				$bulky ?? ViewMode::isBulky($eiGuiMaskDeclaration->getViewMode()),
-				$readOnly ?? ViewMode::isReadOnly($eiGuiMaskDeclaration->getViewMode()),
-				ViewMode::isAdd($eiGuiMaskDeclaration->getViewMode()));
+				$bulky ?? ViewMode::isBulky($eiGuiDeclaration->getViewMode()),
+				$readOnly ?? ViewMode::isReadOnly($eiGuiDeclaration->getViewMode()),
+				ViewMode::isAdd($eiGuiDeclaration->getViewMode()));
 
 		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
 
@@ -105,7 +105,7 @@ class EiuGuiValueBoundary {
 	 * @return BulkyEntrySiGui
 	 */
 	function createBulkyEntrySiGui(): BulkyEntrySiGui {
-		if (!ViewMode::isBulky($this->getEiGuiValueBoundaryMulti()->getViewMode())) {
+		if (!ViewMode::isBulky($this->eiGuiValueBoundary->getEiGuiDeclaration()->getViewMode())) {
 			throw new EiuPerimeterException('EiGuiValueBoundaryMulti is not bulky.');
 		}
 
@@ -123,7 +123,7 @@ class EiuGuiValueBoundary {
 	 * @return CompactEntrySiGui
 	 */
 	function createCompactEntrySiGui(bool $siControlsIncluded): CompactEntrySiGui {
-		if (!ViewMode::isCompact($this->getEiGuiValueBoundaryMulti()->getViewMode())) {
+		if (!ViewMode::isCompact($this->getEiGuiValueBoundary()->getEiGuiDeclaration()->getViewMode())) {
 			throw new EiuPerimeterException('EiGuiValueBoundaryMulti is not compact.');
 		}
 
@@ -135,11 +135,5 @@ class EiuGuiValueBoundary {
 		return new CompactEntrySiGui($siFrame, $siDeclaration, $siValueBoundary);
 	}
 
-	/**
-	 * @param DefPropPath|string $defPropPath
-	 * @return EiuGuiField
-	 */
-	function field(DefPropPath|string $defPropPath): EiuGuiField {
-		return new EiuGuiField(DefPropPath::create($defPropPath), $this, $this->eiuAnalyst);
-	}
+
 }

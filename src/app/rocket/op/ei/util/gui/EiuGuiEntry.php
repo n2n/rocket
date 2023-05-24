@@ -39,6 +39,9 @@ use rocket\op\ei\util\entry\EiuField;
 use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\si\content\SiValueBoundary;
+use rocket\si\content\SiEntry;
+use rocket\op\ei\manage\gui\EiGuiEntryListener;
 
 class EiuGuiEntry {
 //	private $eiuGuiMaskDeclaration;
@@ -222,22 +225,22 @@ class EiuGuiEntry {
 	}
 	
 	/**
-	 * @param DefPropPath|string $defPropPath
-	 * @return EiuField
+	 * @param string|DefPropPath $defPropPath
+	 * @return EiuGuiField
 	 */
-	function field($defPropPath) {
+	function field(DefPropPath|string $defPropPath): EiuGuiField {
 		return new EiuGuiField(DefPropPath::create($defPropPath), $this, $this->eiuAnalyst);
 	}
 	
-	/**
-	 * @param SiEntryInput $siEntryInput
-	 * @throws CorruptedSiInputDataException
-	 * @return \rocket\op\ei\util\gui\EiuGuiEntry
-	 */
-	function handleSiEntryInput(SiEntryInput $siEntryInput) {
-		$this->eiGuiEntry->handleSiEntryInput($siEntryInput);
-		return $this;
-	}
+//	/**
+//	 * @param SiEntryInput $siEntryInput
+//	 * @throws CorruptedSiInputDataException
+//	 * @return EiuGuiEntry
+//	 */
+//	function handleSiEntryInput(SiEntryInput $siEntryInput): static {
+//		$this->eiGuiEntry->handleSiEntryInput($siEntryInput);
+//		return $this;
+//	}
 	
 	function save(): void {
 		$this->eiGuiEntry->save();
@@ -261,10 +264,10 @@ class EiuGuiEntry {
 
 	/**
 	 * @param bool $siControlsIncluded
-	 * @return \rocket\si\content\SiValueBoundary
+	 * @return SiEntry
 	 */
-	function createSiEntry(bool $siControlsIncluded) {
-		return $this->eiGuiEntry->getEiGuiDeclaration()->getEiGuiDeclaration()->createSiEntry($this->eiuAnalyst->getEiFrame(true),
+	function createSiEntry(bool $siControlsIncluded): SiEntry {
+		return $this->eiGuiEntry->createSiEntry($this->eiuAnalyst->getN2nContext(true)->getN2nLocale(),
 				$this->eiGuiEntry, $siControlsIncluded);
 	}
 	

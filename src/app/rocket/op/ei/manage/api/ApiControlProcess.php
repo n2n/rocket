@@ -49,6 +49,7 @@ use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\si\input\SiInputResult;
 use rocket\si\control\SiCallResponse;
+use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 
 class ApiControlProcess {
 	private $eiFrame;
@@ -87,12 +88,13 @@ class ApiControlProcess {
 //		$this->util = new ProcessUtil($eiFrame);
 		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
 	}
-	
+
 	/**
 	 * @param int $viewMode
-     * @param string $eiTypeId
+	 * @param string $eiTypeId
+	 * @throws BadRequestException
 	 */
-	function determineEiGuiMaskDeclaration(int $viewMode, string $eiTypeId) {
+	function determineEiGuiMaskDeclaration(int $viewMode, string $eiTypeId): void {
 		try {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->determineEiTypeById($eiTypeId);
 			$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMask($eiType);
@@ -101,10 +103,15 @@ class ApiControlProcess {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
+
+	/**
+	 * @throws BadRequestException
+	 */
 	private function createEiGuiDeclaration(EiMask $eiMask, int $viewMode): EiGuiDeclaration {
+		$factory = new EiGuiDeclarationFactory($eiMask, $this->eiFrame->getN2nContext());
+
 		try {
-			return $eiMask->getEiEngine()->obtainEiGuiDeclaration($viewMode, null);
+			return $factory->createEiGuiDeclaration($viewMode, false, null);
 		} catch (EiException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -227,7 +234,8 @@ class ApiControlProcess {
 				continue;
 			}
 			
-			$siEntries[$key] = $eiGuiValueBoundary->getSelectedEiGuiEntry()->createSiEntry();
+			$siEntries[$key] = $eiGuiValueBoundary->getSelectedEiGuiEntry()
+					->createSiEntry($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		
 		if (empty($siEntries)) {
@@ -248,7 +256,8 @@ class ApiControlProcess {
 //			$eiGui = new EiGui($eiGuiDeclaration);
 //
 //			$eiGui->appendEiGuiValueBoundary($this->eiFrameUtil->getEiFrame(), [$eiEntry]);
-			$siEntries[$key] = $inputEiGuiValueBoundary->getSelectedEiGuiEntry()->createSiEntry();
+			$siEntries[$key] = $inputEiGuiValueBoundary->getSelectedEiGuiEntry()
+					->createSiEntry($this->eiFrame->getN2nContext()->getN2nLocale());
 		}
 		return new SiInputResult($siEntries);
 	}

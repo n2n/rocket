@@ -31,11 +31,12 @@ use rocket\attribute\EiType;
 use n2n\persistence\orm\attribute\Inheritance;
 use n2n\persistence\orm\attribute\Table;
 use rocket\attribute\EiPreset;
+use n2n\util\ex\IllegalStateException;
 
 #[Table('rocket_content_item')]
 #[Inheritance(InheritanceType::JOINED)]
 #[EiType]
-#[EiPreset(readProps: ['panel', 'orderIndex'])]
+#[EiPreset(editProps: ['panel', 'orderIndex'])]
 abstract class ContentItem extends ObjectAdapter {
 	private static function _annos(AnnoInit $ai) {
 		$ai->c(new AnnoTable('rocket_content_item'));

@@ -133,11 +133,12 @@ class EiFieldMap {
 	}
 	
 	function write() {
-		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+		foreach ($this->eiFieldWrappers as $key => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored() || !$eiFieldWrapper->isWritable(true)) {
 				continue;
 			}
-			
+
+
 			$eiFieldWrapper->write();
 		}
 	}
