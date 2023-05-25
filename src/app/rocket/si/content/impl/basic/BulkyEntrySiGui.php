@@ -104,7 +104,7 @@ class BulkyEntrySiGui implements SiGui {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'entry' => $this->valueBoundary,
+			'valueBoundary' => $this->valueBoundary,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'entryControlsIncluded' => $this->entryControlsIncluded
 		];

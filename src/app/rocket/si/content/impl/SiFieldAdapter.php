@@ -25,6 +25,8 @@ use n2n\util\ex\IllegalStateException;
 use rocket\si\content\SiField;
 
 abstract class SiFieldAdapter implements SiField {
+	use SiFieldErrorTrait;
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::isCallable()
@@ -40,6 +42,10 @@ abstract class SiFieldAdapter implements SiField {
 	function handleCall(array $data, array $uploadDefinitions): array {
 		throw new IllegalStateException(get_class($this) . ' is not callable.');
 	}
-	
-	
+
+	function getData(): array {
+		return ['messages' => $this->getMessageStrs()];
+	}
+
+
 }

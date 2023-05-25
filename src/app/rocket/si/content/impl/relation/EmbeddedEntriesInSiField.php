@@ -183,11 +183,11 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	}
 	
 	/**
-	 * @param string[]|null $allowedTypeQualifiers
+	 * @param string[]|null $allowedTypeIds
 	 * @return EmbeddedEntriesInSiField
 	 */
-	public function setAllowedTypeIds(?array $allowedTypeIds) {
-		ArgUtils::valArray($allowedTypeIds, string::class, true);
+	public function setAllowedTypeIds(?array $allowedTypeIds): static {
+		ArgUtils::valArray($allowedTypeIds, 'string', true);
 		$this->allowedTypeIds = $allowedTypeIds;
 		return $this;
 	}
@@ -214,7 +214,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'allowedSiTypeIds' => $this->allowedSiTypeIds,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	 

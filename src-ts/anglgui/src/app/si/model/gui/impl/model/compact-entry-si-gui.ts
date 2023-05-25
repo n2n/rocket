@@ -26,11 +26,11 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 			public siModStateService: SiModStateService) {
 	}
 
-	get entry(): SiValueBoundary|null {
+	get valueBoundary(): SiValueBoundary|null {
 		return this.entrySubject.getValue();
 	}
 
-	set entry(entry: SiValueBoundary|null) {
+	set valueBoundary(entry: SiValueBoundary|null) {
 		this.entrySubject.next(entry);
 	}
 
@@ -39,7 +39,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	// }
 
 	getBoundValueBoundaries(): SiValueBoundary[] {
-		return [this.entry!];
+		return [this.valueBoundary!];
 	}
 
 	getBoundDeclaration(): SiDeclaration {
@@ -47,15 +47,15 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	getMessages(): Message[] {
-		if (!this.entry) {
+		if (!this.valueBoundary) {
 			return [];
 		}
 
-		return this.entry.getMessages();
+		return this.valueBoundary.getMessages();
 	}
 
 	getSiEntry(): SiValueBoundary|null {
-		return this.entry;
+		return this.valueBoundary;
 	}
 
 	getSiDeclaration(): SiDeclaration {

@@ -1,5 +1,3 @@
 {{ model.getValue() }}
 
-<div *ngFor="let message of model.getMessages()" class="rocket-message-error">
-	{{ message }}
-</div>
+<rocket-field-messages *ngIf="model.getMessages().length > 0" [model]="model"></rocket-field-messages>

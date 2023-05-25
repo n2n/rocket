@@ -176,13 +176,15 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->field()->getValue();
 		if ($value === null) {
-			return $eiu->factory()->newGuiField(SiFields::stringOut(null));
+			return $eiu->factory()->newGuiField(SiFields::stringOut(null)
+					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 		}
 		
 		$label = $this->buildLabel(Url::create($value, true), $eiu->guiEntry()->isBulky());
 		return $eiu->factory()->newGuiField(
 				SiFields::linkOut(SiNavPoint::href(Url::create($value, true)), $label)
-						->setLytebox($this->isLytebox()));
+						->setLytebox($this->isLytebox())
+						->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
 

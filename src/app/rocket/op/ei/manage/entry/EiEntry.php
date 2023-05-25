@@ -343,10 +343,14 @@ class EiEntry {
 	}
 	
 	public function isValid() {
-		if (!$this->eiFieldMap->isValid()) return false;
+		if (!$this->eiFieldMap->isValid()) {
+			return false;
+		}
 		
 		if (null !== ($eiEntryConstraint = $this->getEiEntryAccess()->getEiEntryConstraint())) {
-			if (!$eiEntryConstraint->check($this)) return false;
+			if (!$eiEntryConstraint->check($this)) {
+				return false;
+			}
 		}
 		
 		foreach ($this->constraintSet as $constraint) {

@@ -153,7 +153,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 			'min' => $this->min,
 			'max' => $this->max,
 			'pickables' => $this->pickables,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	 

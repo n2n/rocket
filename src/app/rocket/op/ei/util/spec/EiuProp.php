@@ -10,6 +10,7 @@ use Throwable;
 use n2n\reflection\property\PropertyAccessException;
 use rocket\op\ei\util\entry\EiuObject;
 use n2n\util\type\TypeConstraint;
+use n2n\l10n\Lstr;
 
 class EiuProp {
 	private $eiPropPath;
@@ -48,14 +49,18 @@ class EiuProp {
 	public function getLabel(N2nLocale $n2nLocale = null) {
 		return $this->eiuMask->getPropLabel($this->eiPropPath, $n2nLocale);
 	}
-	
-	/**
-	 * @param N2nLocale|null $n2nLocale
-	 * @return string
-	 */
-	public function getPluralLabel(N2nLocale $n2nLocale = null) {
-		return $this->eiuMask->getPropPluralLabel($this->eiPropPath, $n2nLocale);
+
+	function getLabelLstr(): Lstr {
+		return $this->eiuMask->getPropLabelLstr($this->eiPropPath);
 	}
+	
+//	/**
+//	 * @param N2nLocale|null $n2nLocale
+//	 * @return string
+//	 */
+//	public function getPluralLabel(N2nLocale $n2nLocale = null) {
+//		return $this->eiuMask->getPropPluralLabel($this->eiPropPath, $n2nLocale);
+//	}
 	
 	/**
 	 * @param N2nLocale|null $n2nLocale

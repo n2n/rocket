@@ -24,6 +24,7 @@ namespace rocket\si\content\impl\string;
 use n2n\util\type\attrs\DataSet;
 use rocket\si\content\impl\InSiFieldAdapter;
 use n2n\util\type\ArgUtils;
+use rocket\si\content\impl\StringInSiField;
 
 class StringArrayInSiField extends InSiFieldAdapter {
 	/**
@@ -45,7 +46,7 @@ class StringArrayInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return StringArrayInSiField
 	 */
 	function setValues(array $values) {
 		ArgUtils::valArray($values, 'string', false, 'values');
@@ -109,7 +110,7 @@ class StringArrayInSiField extends InSiFieldAdapter {
 			'values' => $this->values,
 			'min' => $this->min,
 			'max' => $this->max,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	 

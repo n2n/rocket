@@ -51,7 +51,7 @@ class GuiFieldMap {
 	/**
 	 * @return GuiField[]
 	 */
-	function getGuiFields() {
+	function getGuiFields(): array {
 		return $this->guiFields;
 	}
 
@@ -170,7 +170,7 @@ class GuiFieldMap {
 		return $this->guiFields[$eiPropPathStr];
 	}
 	
-	function save() {
+	function save(): void {
 		foreach ($this->guiFields as $defPropPathStr => $guiField) {
 			if (!$guiField->getSiField()->isReadOnly()
 					/*&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))*/) {

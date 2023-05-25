@@ -211,7 +211,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			'mandatoryKeys' => $this->mandatoryKeys,
 			'declaration' => $this->declaration,
 			'splitContents' => $this->splitContents,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	

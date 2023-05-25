@@ -35,10 +35,10 @@ class FileOutSiField extends OutSiFieldAdapter {
 	function __construct(?SiFile $value) {
 		$this->value = $value;	
 	}
-	
+
 	/**
-	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @param File|null $value
+	 * @return FileOutSiField
 	 */
 	function setValue(?File $value) {
 		$this->value = $value;
@@ -67,6 +67,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	function getData(): array {
 		return [
 			'value' => $this->value,
+			...parent::getData()
 		];
 	}
 }

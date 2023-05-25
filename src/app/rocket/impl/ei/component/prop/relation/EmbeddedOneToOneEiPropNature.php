@@ -98,14 +98,18 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		$eiuEntry = $eiu->field()->getValue();
 		
 		if ($eiuEntry === null) {
-			return $eiu->factory()->newGuiField(SiFields::crumbOut(SiCrumb::createLabel('0')
-					->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT)))->toGuiField();
+			return $eiu->factory()->newGuiField(SiFields
+					::crumbOut(SiCrumb::createLabel('0')
+							->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT))
+					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
 		}
 		
 		CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 		
-		return $eiu->factory()->newGuiField(SiFields::crumbOut(
-				SiCrumb::createIcon($eiuEntry->mask()->getIconType())->setSeverity(SiCrumb::SEVERITY_IMPORTANT),
-				SiCrumb::createLabel($eiuEntry->object()->createIdentityString())))->toGuiField();
+		return $eiu->factory()->newGuiField(SiFields
+				::crumbOut(
+						SiCrumb::createIcon($eiuEntry->mask()->getIconType())->setSeverity(SiCrumb::SEVERITY_IMPORTANT),
+						SiCrumb::createLabel($eiuEntry->object()->createIdentityString()))
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
 	}
 }

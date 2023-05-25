@@ -82,7 +82,7 @@ export class SiGuiFactory {
 
 				bulkyEntrySiGui.entryControlsIncluded = dataExtr.reqBoolean('entryControlsIncluded');
 				bulkyEntrySiGui.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
-						.createValueBoundary(dataExtr.reqObject('entry'));
+						.createValueBoundary(dataExtr.reqObject('valueBoundary'));
 
 				compEssentialsFactory = new SiControlFactory(bulkyEntrySiGui, this.injector);
 				bulkyEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
@@ -96,8 +96,8 @@ export class SiGuiFactory {
 
 				compEssentialsFactory = new SiControlFactory(compactEntrySiGui, this.injector);
 				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
-				compactEntrySiGui.entry = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
-						.createValueBoundary(dataExtr.reqObject('entry'));
+				compactEntrySiGui.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
+						.createValueBoundary(dataExtr.reqObject('valueBoundary'));
 				return compactEntrySiGui;
 
 			case SiGuiType.IFRAME:

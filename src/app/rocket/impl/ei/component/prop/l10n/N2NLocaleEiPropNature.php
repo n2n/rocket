@@ -70,8 +70,9 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->entry()->getValue($eiu->prop());
 		
-		return $eiu->factory()->newGuiField(SiFields::stringOut($value === null ? '' 
-				: $this->generateDisplayNameForN2nLocale($value, $eiu->getN2nLocale())));
+		return $eiu->factory()->newGuiField(SiFields
+				::stringOut($value === null ? '' : $this->generateDisplayNameForN2nLocale($value, $eiu->getN2nLocale()))
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
@@ -169,7 +170,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
 
 	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
-		return new CommonScalarEiProperty($this,
+		return new CommonScalarEiProperty($eiu->prop()->getPath(), $eiu->prop()->getLabelLstr(),
 				function (N2nLocale $n2nLocale = null) {
 					if ($n2nLocale === null) return null;
 

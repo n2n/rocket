@@ -13,7 +13,7 @@ export class SiEmbeddedEntry {
 
 	get summaryEntry(): SiValueBoundary|null {
 		if (this.summaryComp) {
-			return this.summaryComp.entry;
+			return this.summaryComp.valueBoundary;
 		}
 
 		return null;
@@ -29,7 +29,7 @@ export class SiEmbeddedEntry {
 
 	async copy(): Promise<SiGenericEmbeddedEntry> {
 		return new SiGenericEmbeddedEntry(await this.comp.valueBoundary!.copy(),
-				(this.summaryComp ? await this.summaryComp.entry!.copy() : null));
+				(this.summaryComp ? await this.summaryComp.valueBoundary!.copy() : null));
 	}
 
 	async paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<boolean> {
@@ -67,8 +67,8 @@ export class SiEmbeddedEntry {
 
 	set selectedMaskId(maskId: string|null) {
 		this.comp.valueBoundary!.selectedMaskId = maskId;
-		if (this.summaryComp && this.summaryComp.entry) {
-			this.summaryComp.entry.selectedMaskId = maskId;
+		if (this.summaryComp && this.summaryComp.valueBoundary) {
+			this.summaryComp.valueBoundary.selectedMaskId = maskId;
 		}
 	}
 

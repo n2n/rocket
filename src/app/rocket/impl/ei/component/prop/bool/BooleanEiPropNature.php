@@ -151,13 +151,12 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		$value = $eiu->field()->getValue();
-		$siField = null;
 		if ($value) {
 			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_CHECK));
 		} else {
 			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_TIMES));
 		}
-		return $eiu->factory()->newGuiField($siField);
+		return $eiu->factory()->newGuiField($siField->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {

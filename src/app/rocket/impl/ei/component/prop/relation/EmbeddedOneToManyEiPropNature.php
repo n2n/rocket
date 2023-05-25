@@ -91,6 +91,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 					->setSeverity(SiCrumb::SEVERITY_IMPORTANT);
 		}
 		
-		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs)
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
 	}
 }

@@ -57,7 +57,7 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	
 	/**
 	 * @param SplitStyle $splitStyle
-	 * @return SplitContextInSiField
+	 * @return SplitPlaceholderSiField
 	 */
 	function setCopyStyle(SplitStyle $splitStyle) {
 		$this->copyStyle = $splitStyle;
@@ -65,9 +65,9 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\split\SplitStyle
+	 * @return SplitStyle
 	 */
-	function getCopyStyle() {
+	function getCopyStyle(): SplitStyle {
 		return $this->copyStyle;
 	}
 	
@@ -88,7 +88,8 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	function getData(): array {
 		return [
 			'refPropId' => $this->refPropId,
-			'copyStyle' => $this->copyStyle
+			'copyStyle' => $this->copyStyle,
+			...parent::getData()
 		];
 	}
 	
@@ -105,12 +106,12 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$dataMap = (new DataSet($data))->reqArray('value', 'array');
-		
-		foreach ($this->inputHandlers as $key => $inputHandler) {
-			if (isset($dataMap[$key])) {
-				$inputHandler->handleInput($dataMap[$key]);
-			}
-		}
+//		$dataMap = (new DataSet($data))->reqArray('value', 'array');
+//
+//		foreach ($this->inputHandlers as $key => $inputHandler) {
+//			if (isset($dataMap[$key])) {
+//				$inputHandler->handleInput($dataMap[$key]);
+//			}
+//		}
 	}
 }

@@ -102,6 +102,7 @@ class EiGuiValueBoundary {
 
 
 	/**
+	 * @param N2nLocale $n2nLocale
 	 * @return SiValueBoundary
 	 */
 	function createSiValueBoundary(N2nLocale $n2nLocale): SiValueBoundary {
