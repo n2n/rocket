@@ -310,7 +310,7 @@ class EiuEntry {
 				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
 				: null;
 
-		$eiGuiValueBoundary = $eiFrameUtil->createEiGuiValueBoundaryFromEiEntry($this->eiEntry, $bulky, $readOnly,
+		$eiGuiValueBoundary = $eiFrameUtil->createEiGuiValueBoundaryFromEiEntry($this->getEiEntry(), $bulky, $readOnly,
 				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths, $treeLevel);
 
 		return new EiuGuiValueBoundary($eiGuiValueBoundary, null, $this->eiuAnalyst);
