@@ -72,7 +72,7 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		
 		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
 		
-		if ($readOnly && $eiu->gui()->isCompact()) {
+		if ($readOnly && $eiu->guiMaskDeclaration()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
 		
@@ -92,7 +92,7 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\si\content\SiField
+	 * @return GuiField
 	 */
 	private function createCompactGuiField(Eiu $eiu) {
 		$eiuEntry = $eiu->field()->getValue();
