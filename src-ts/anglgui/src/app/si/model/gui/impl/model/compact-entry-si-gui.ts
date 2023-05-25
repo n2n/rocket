@@ -18,7 +18,7 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
-	private entrySubject = new BehaviorSubject<SiValueBoundary|null>(null);
+	private valueBoundarySubject = new BehaviorSubject<SiValueBoundary|null>(null);
 	public entryControlsIncluded = true;
 	public controls: SiControl[] = [];
 
@@ -27,11 +27,12 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	get valueBoundary(): SiValueBoundary|null {
-		return this.entrySubject.getValue();
+		return this.valueBoundarySubject.getValue();
 	}
 
-	set valueBoundary(entry: SiValueBoundary|null) {
-		this.entrySubject.next(entry);
+	set valueBoundary(valueBoundary: SiValueBoundary|null) {
+		console.log(valueBoundary?.selectedEntry);
+		this.valueBoundarySubject.next(valueBoundary);
 	}
 
 	// get entry$(): Observable<SiEntry|null> {
@@ -63,7 +64,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		return new CompactUiStructureModel(this.entrySubject.asObservable(), this.declaration, this.controls,
+		return new CompactUiStructureModel(this.valueBoundarySubject.asObservable(), this.declaration, this.controls,
 				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService,
 						this.siModStateService, this.entryControlsIncluded));
 	}
@@ -78,15 +79,15 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 	private fieldUiStructuresSubject = new BehaviorSubject<UiStructure[]>([]);
 	private subscription: Subscription|null = null;
-	private currentSiEntry: SiValueBoundary|null = null;
+	private currentSiValueBoundary: SiValueBoundary|null = null;
 
-	constructor(private siEntry$: Observable<SiValueBoundary|null>, private siDeclaration: SiDeclaration, private controls: SiControl[],
+	constructor(private siValueBoundary$: Observable<SiValueBoundary|null>, private siDeclaration: SiDeclaration, private controls: SiControl[],
 				private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
 
 	isLoading() {
-		return !this.currentSiEntry;
+		return !this.currentSiValueBoundary;
 	}
 
 	getSiDeclaration(): SiDeclaration {
@@ -140,7 +141,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 		this.subscription = new Subscription();
 
-		this.subscription.add(this.siEntry$.subscribe((siValueBoundary) => {
+		this.subscription.add(this.siValueBoundary$.subscribe((siValueBoundary) => {
 			this.rebuild(siValueBoundary ? siValueBoundary.getFinalReplacementEntry() : null);
 		}));
 
@@ -161,7 +162,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 			return;
 		}
 
-		this.currentSiEntry = siValueBoundary;
+		this.currentSiValueBoundary = siValueBoundary;
 
 		this.buildStructures(siValueBoundary);
 
@@ -234,11 +235,11 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 	private clear() {
-		if (this.currentSiEntry) {
-			if (!this.currentSiEntry.isNew()) {
-				this.siEntryMonitor.unregisterEntry(this.currentSiEntry);
+		if (this.currentSiValueBoundary) {
+			if (!this.currentSiValueBoundary.isNew()) {
+				this.siEntryMonitor.unregisterEntry(this.currentSiValueBoundary);
 			}
-			this.currentSiEntry = null;
+			this.currentSiValueBoundary = null;
 		}
 
 		for (const fieldUiStructure of this.fieldUiStructuresSubject.getValue()) {

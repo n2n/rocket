@@ -263,7 +263,9 @@ class EiFrameUtil {
 		$eiGuiDeclarationFactory = new EiGuiDeclarationFactory($eiMask, $this->eiFrame->getN2nContext());
 
 		$eiGuiDeclaration = $eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
-		return $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
+		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
+		$eiGuiValueBoundary->selectEiGuiEntryByEiMaskId((string) $eiMask->getEiTypePath());
+		return $eiGuiValueBoundary;
 	}
 
 //	/**
@@ -298,6 +300,10 @@ class EiFrameUtil {
 			$newEiGuiEntry = $this->copyEiGuiEntry($eiGuiEntry, $viewMode, $defPropPaths, $entryGuiControlsIncluded);
 			$newEiGuiDeclaration->putEiGuiMaskDeclaration($newEiGuiEntry->getEiGuiMaskDeclaration());
 			$newEiGuiValueBoundary->putEiGuiEntry($newEiGuiEntry);
+		}
+
+		if ($eiGuiValueBoundary->isEiGuiEntrySelected()) {
+			$newEiGuiValueBoundary->selectEiGuiEntryByEiMaskId($eiGuiValueBoundary->getSelectedEiMaskId());
 		}
 
 		return $newEiGuiValueBoundary;

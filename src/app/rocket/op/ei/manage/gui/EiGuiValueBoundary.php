@@ -168,11 +168,15 @@ class EiGuiValueBoundary {
 	 * @throws IllegalStateException
 	 */
 	function getSelectedEiGuiEntry(): EiGuiEntry {
+		return $this->eiGuiEntries[$this->getSelectedEiMaskId()];
+	}
+
+	function getSelectedEiMaskId(): string {
 		if (!isset($this->eiGuiEntries[$this->selectedEiMaskId])) {
 			throw new IllegalStateException('No selection.');
 		}
-		
-		return $this->eiGuiEntries[$this->selectedEiMaskId];
+
+		return $this->selectedEiMaskId;
 	}
 	
 //	/**

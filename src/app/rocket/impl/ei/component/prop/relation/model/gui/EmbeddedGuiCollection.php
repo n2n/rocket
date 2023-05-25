@@ -104,7 +104,7 @@ class EmbeddedGuiCollection {
 		}
 	}
 	
-	function addNew(): \rocket\op\ei\util\gui\EiuGuiValueBoundary {
+	function addNew(): EiuGuiValueBoundary {
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
 		return $this->eiuGuiValueBoundaries[] = $this->eiuFrame->contextEngine()
 				->newMultiGuiDeclaration(true, $this->readOnly, true)
@@ -159,7 +159,7 @@ class EmbeddedGuiCollection {
 		return new SiEmbeddedEntry(
 				$eiuGuiValueBoundary->createBulkyEntrySiGui(false, false),
 				($this->summaryRequired ?
-						$eiuGuiValueBoundary->copy(false, true)->createCompactEntrySiGui(false):
+						$eiuGuiValueBoundary->copy(false, true, entryGuiControlsIncluded: false)->createCompactEntrySiGui(false):
 						null));
 	}
 	
