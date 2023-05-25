@@ -13,6 +13,7 @@ use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\si\meta\SiDeclaration;
 use rocket\si\meta\SiMaskDeclaration;
+use rocket\op\ei\EiPropPath;
 
 class EiuGuiMaskDeclaration {
 	
@@ -110,7 +111,7 @@ class EiuGuiMaskDeclaration {
 //	}
 	
 	/**
-	 * @return \rocket\op\ei\EiPropPath[]
+	 * @return EiPropPath[]
 	 */
 	function getEiPropPaths() {
 		return $this->eiGuiMaskDeclaration->getEiPropPaths();
@@ -146,7 +147,7 @@ class EiuGuiMaskDeclaration {
 	
 	/**
 	 * @param DefPropPath|string $prefixDefPropPath
-	 * @return \rocket\op\ei\EiPropPath[]
+	 * @return EiPropPath[]
 	 */
 	function getForkedEiPropPaths($prefixDefPropPath) {
 		$prefixDefPropPath = DefPropPath::create($prefixDefPropPath);

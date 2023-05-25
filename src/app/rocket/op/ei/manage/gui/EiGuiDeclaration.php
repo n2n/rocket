@@ -42,12 +42,12 @@ class EiGuiDeclaration {
 		$this->viewMode = $viewMode;
 	}
 	
-	/**
-	 * @return EiMask
-	 */
-	function getContextEiMask(): EiMask {
-		return $this->contextEiMask;
-	}
+//	/**
+//	 * @return EiMask
+//	 */
+//	function getContextEiMask(): EiMask {
+//		return $this->contextEiMask;
+//	}
 	
 	/**
 	 * @return int

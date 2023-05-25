@@ -31,6 +31,7 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\si\input\CorruptedSiInputDataException;
+use rocket\si\content\SiValueBoundary;
 
 class EiuGuiValueBoundary {
 
@@ -136,5 +137,9 @@ class EiuGuiValueBoundary {
 		return new CompactEntrySiGui($siFrame, $siDeclaration, $siValueBoundary);
 	}
 
+	function createSiValueBoundary(): SiValueBoundary {
+		return $this->eiGuiValueBoundary
+				->createSiValueBoundary($this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
+	}
 
 }

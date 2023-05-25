@@ -37,9 +37,9 @@ class EiuGuiEntryAssembler {
 		$this->eiuGuiEntry = $eiuGuiEntry;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
-	
+
 	/**
-	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler
+	 * @return EiGuiValueBoundaryAssembler
 	 */
 	public function getEiGuiValueBoundaryAssembler() {
 		return $this->eiGuiValueBoundaryAssembler;

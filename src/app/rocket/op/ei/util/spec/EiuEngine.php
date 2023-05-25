@@ -422,7 +422,7 @@ class EiuEngine {
 	 * @return EiuGuiMaskDeclaration
 	 */
 	function newGuiMaskDeclaration(int $viewMode, array $defPropPaths = null): EiuGuiMaskDeclaration {
-		$defPropPaths = DefPropPath::createArray($defPropPaths);
+		$defPropPaths = DefPropPath::buildArray($defPropPaths);
 		return new EiuGuiMaskDeclaration($this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths),
 				$this->eiuAnalyst);
 	}

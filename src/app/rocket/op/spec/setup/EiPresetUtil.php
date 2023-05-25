@@ -116,7 +116,7 @@ class EiPresetUtil {
 				$eiPresetProps[$propertyName] = $this->createEiPresetProp(
 						$propertiesAnalyzer->analyzeProperty($propertyName), true, $label);
 			} catch (ReflectionException $e) {
-				throw $this->createEiPresetAttributeError($this->eiPreset, $propertyName, $e);
+				throw $this->createEiPresetAttributeError($propertyName, $e);
 			}
 		}
 
