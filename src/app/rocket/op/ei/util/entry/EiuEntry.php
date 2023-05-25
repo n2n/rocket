@@ -336,7 +336,7 @@ class EiuEntry {
 		$eiGuiEntry = $eiFrameUtil->createEiGuiEntry($this->eiEntry, $bulky, $readOnly,
 				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths);
 
-		return new EiuGuiEntry($eiGuiEntry, $this, $this->eiuAnalyst);
+		return new EiuGuiEntry($eiGuiEntry, $this, null, $this->eiuAnalyst);
 	}
 	
 // 	/**

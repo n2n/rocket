@@ -120,13 +120,14 @@ class EiuGuiMaskDeclaration {
 		return $this->eiGuiMaskDeclaration->getDefPropPaths();
 	}
 	
-// 	function newEntryGui($eiEntryArg) {
-// 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
+ 	function newEntryGui($eiEntryArg, bool $entryGuiControlsIncluded = false): EiuGuiEntry {
+ 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
-// 		$eiGuiValueBoundary = $this->eiGuiMaskDeclaration->createEiGuiValueBoundaryVariation($this->eiuAnalyst->getEiFrame(true), $eiEntry);
+ 		$eiGuiEntry = $this->eiGuiMaskDeclaration->createEiGuiEntry($this->eiuAnalyst->getEiFrame(true),
+				$eiEntry, $entryGuiControlsIncluded);
 		
-// 		return new EiuGuiEntry($eiGuiValueBoundary, null, $this, $this->eiuAnalyst);
-// 	}
+ 		return new EiuGuiEntry($eiGuiEntry, null, $this, $this->eiuAnalyst);
+ 	}
 	
 	/**
 	 * @param DefPropPath|string $prefixDefPropPath

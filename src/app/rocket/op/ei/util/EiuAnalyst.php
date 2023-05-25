@@ -1287,7 +1287,8 @@ class EiuAnalyst {
 		}
 		
 		if ($this->eiGuiEntry !== null) {
-			return $this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiEntry, $this->eiuEntry, $this);
+			return $this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiEntry, $this->eiuEntry,
+					$this->eiuGuiMaskDeclaration, $this);
 		}
 		
 		if (!$required) return null;

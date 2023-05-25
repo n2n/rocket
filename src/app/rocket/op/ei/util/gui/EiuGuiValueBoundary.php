@@ -64,7 +64,7 @@ class EiuGuiValueBoundary {
 	function guiEntries(): array {
 		$eiuGuiEntries = [];
 		foreach ($this->eiGuiValueBoundary->getEiGuiEntries() as $eiMaskId => $eiGuiEntry) {
-			$eiuGuiEntries[$eiMaskId] = new EiuGuiEntry($eiGuiEntry, null, $this->eiuAnalyst);
+			$eiuGuiEntries[$eiMaskId] = new EiuGuiEntry($eiGuiEntry, null, null, $this->eiuAnalyst);
 		}
 		return $eiuGuiEntries;
 	}
@@ -73,7 +73,8 @@ class EiuGuiValueBoundary {
 	 * @return EiuGuiEntry
 	 */
 	function selectedGuiEntry(): EiuGuiEntry {
-		return new EiuGuiEntry($this->eiGuiValueBoundary->getSelectedEiGuiEntry(), null, $this->eiuAnalyst);
+		return new EiuGuiEntry($this->eiGuiValueBoundary->getSelectedEiGuiEntry(), null, null,
+				$this->eiuAnalyst);
 	}
 
 	/**

@@ -22,18 +22,18 @@
 namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
 use rocket\op\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
+use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
 
 class LazyTranslationEssentialsDeterminer {
 	private $eiu;
 	private $targetEiuFrame;
-	private $targetEiuGuiMaskDeclaration;
+	private EiuGuiMaskDeclaration $targetEiuGuiMaskDeclaration;
 	private $translationConfig;
 	private $readOnly;
 	
@@ -133,7 +133,7 @@ class LazyTranslationEssentialsDeterminer {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\util\gui\EiuGuiMaskDeclaration
+	 * @return EiuGuiMaskDeclaration
 	 */
 	function getTargetEiuGuiMaskDeclaration() {
 		return $this->targetEiuGuiMaskDeclaration;
@@ -242,7 +242,7 @@ class LazyTranslationEssentialsDeterminer {
 			return $this->targetEiuGuiEntrys[$n2nLocaleId];
 		}
 		
-		return $this->targetEiuGuiEntrys[$n2nLocaleId] = $this->targetEiuGuiMaskDeclaration->guiDeclaration()
+		return $this->targetEiuGuiEntrys[$n2nLocaleId] = $this->targetEiuGuiMaskDeclaration
 				->newEntryGui($this->getTargetEiuEntry($n2nLocaleId));
 	}
 	
@@ -250,7 +250,7 @@ class LazyTranslationEssentialsDeterminer {
 	 * @return EiuEntry[]
 	 */
 	function getActiveTargetEiuEntries() {
-		$this->ensureActiveTargetEiuEntry();
+		$this->ensureActiveTargetEiuEntries();
 		return $this->activeTargetEiuEntries;
 	}
 	

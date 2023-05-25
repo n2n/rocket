@@ -47,7 +47,8 @@ class EiuGuiEntry {
 //	private $eiuGuiMaskDeclaration;
 	
 	function __construct(private EiGuiEntry $eiGuiEntry,
-			private ?EiuEntry $eiuEntry, private readonly EiuAnalyst $eiuAnalyst) {
+			private ?EiuEntry $eiuEntry, private ?EiuGuiMaskDeclaration $eiuGuiMaskDeclaration,
+			private readonly EiuAnalyst $eiuAnalyst) {
 	}
 	
 // 	private function getEiGuiDeclaration() {
@@ -210,18 +211,17 @@ class EiuGuiEntry {
 // 		}
 // 	}
 
-	
-	/**
-	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return EiuEntry
-	 */
 	function entry(): EiuEntry {
 		if ($this->eiuEntry === null) {
 			$this->eiuEntry = new EiuEntry($this->getEiGuiEntry()->getEiEntry(), null, null, $this->eiuAnalyst);
 		}
 		
 		return $this->eiuEntry;
+	}
+
+	function guiMaskDeclaration(): EiuGuiMaskDeclaration {
+		return $this->eiuGuiMaskDeclaration ?? $this->eiuGuiMaskDeclaration
+				= new EiuGuiMaskDeclaration($this->eiGuiEntry->getEiGuiMaskDeclaration(), $this->eiuAnalyst);
 	}
 	
 	/**
@@ -259,7 +259,7 @@ class EiuGuiEntry {
 
 		$eiGuiEntry = $eiFrameUtil->copyEiGuiEntry($this->eiGuiEntry, $newViewMode, $defPropPaths, $entryGuiControlsIncluded);
 
-		return new EiuGuiEntry($eiGuiEntry, null, $this->eiuAnalyst);
+		return new EiuGuiEntry($eiGuiEntry, null, null, $this->eiuAnalyst);
 	}
 
 	/**
