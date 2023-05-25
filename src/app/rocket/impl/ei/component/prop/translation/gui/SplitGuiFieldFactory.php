@@ -58,7 +58,7 @@ class SplitGuiFieldFactory {
 			$label = $n2nLocale->getName($this->lted->getDisplayN2nLocale());
 			
 			if ($this->lted->isN2nLocaleIdActive($n2nLocaleId)) {
-				$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiEntry($n2nLocaleId)->gui()->createSiEntry())
+				$siField->putValueBoundary($n2nLocaleId, $label, $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary())
 						->setShortLabel($n2nLocale->toPrettyId());
 			} else {
 				$siField->putUnavailable($n2nLocaleId, $label)->setShortLabel($n2nLocale->toPrettyId());
@@ -89,7 +89,7 @@ class SplitGuiFieldFactory {
 			$pid = null;
 			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
 				if ($activeTargetEiuEntry->isNew() || $activeTargetEiuEntry->isUnsaved()) {
-					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiEntry($n2nLocaleId)->gui()->createSiEntry())
+					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary())
 							->setShortLabel($n2nLocale->toPrettyId());
 					continue;
 				}
@@ -99,7 +99,7 @@ class SplitGuiFieldFactory {
 			
 			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiMaskDeclaration->isBulky(), false,
 							function () use ($n2nLocaleId) {
-								return $this->lted->getTargetEiuGuiEntry($n2nLocaleId)->createSiEntry(false);
+								return $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary();
 							})
 					->setShortLabel($n2nLocale->toPrettyId())
 					->setPropIds($propIds);
@@ -116,7 +116,7 @@ class SplitGuiFieldFactory {
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @return \rocket\impl\ei\component\prop\translation\gui\EditableGuiField
+	 * @return PlaceholderGuiField
 	 */
 	private function createPlaceholderGuiField($defPropPath) {
 		$siField = SiFields::splitPlaceholder($defPropPath);
@@ -166,9 +166,9 @@ class SplitGuiFieldFactory {
 		return $guiFieldMap;
 	}
 	
-	function getForkedDefPropPaths() {
-		return $this->targetEiuGuiMaskDeclaration->getForkedDefPropPaths();
-	}
+//	function getForkedDefPropPaths() {
+//		return $this->targetEiuGuiMaskDeclaration->getForkedDefPropPaths();
+//	}
 	
 // 	/**
 // 	 * @param DefPropPath $defPropPath
@@ -200,18 +200,18 @@ class SplitGuiFieldFactory {
 // 		return $readOnlyGuiField;
 // 	}
 	
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return \rocket\op\ei\manage\gui\GuiFieldMap
-	 */
-	private function createReadOnlyForkGuiFieldMap($defPropPath) {
-		$guiFieldMap = new GuiFieldMap();
-		foreach ($this->targetEiuGuiMaskDeclaration->getForkedEiPropPaths($defPropPath) as $forkedEiPropPath) {
-			$guiFieldMap->putGuiField($forkedEiPropPath,
-					$this->createReadOnlyGuiField($defPropPath->ext($forkedEiPropPath)));
-		}
-		return $guiFieldMap;
-	}
+//	/**
+//	 * @param DefPropPath $defPropPath
+//	 * @return \rocket\op\ei\manage\gui\GuiFieldMap
+//	 */
+//	private function createReadOnlyForkGuiFieldMap($defPropPath) {
+//		$guiFieldMap = new GuiFieldMap();
+//		foreach ($this->targetEiuGuiMaskDeclaration->getForkedEiPropPaths($defPropPath) as $forkedEiPropPath) {
+//			$guiFieldMap->putGuiField($forkedEiPropPath,
+//					$this->createReadOnlyGuiField($defPropPath->ext($forkedEiPropPath)));
+//		}
+//		return $guiFieldMap;
+//	}
 }
 
 

@@ -30,15 +30,16 @@ use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
+use rocket\op\ei\util\gui\EiuGuiDeclaration;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	private $targetEiuGuiMaskDeclaration;
 	private $eiCmdPath;
 	private $translationConfig;
 	
-	function __construct(EiuGuiMaskDeclaration $targetEiuGuiMaskDeclaration, EiCmdPath $eiCmdPath,
+	function __construct(private EiuGuiDeclaration $targetEiuGuiDeclaration, EiCmdPath $eiCmdPath,
 			TranslationEiPropNature $translationConfig) {
-		$this->targetEiuGuiMaskDeclaration = $targetEiuGuiMaskDeclaration;
+		$this->targetEiuGuiMaskDeclaration = $targetEiuGuiDeclaration->singleMaskDeclaration();
 		$this->eiCmdPath = $eiCmdPath;
 		$this->translationConfig = $translationConfig;
 	}
@@ -60,10 +61,11 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiMaskDeclaration);
+		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiDeclaration,
+				$this->targetEiuGuiMaskDeclaration);
 		$targetEiu->frame()->exec($this->eiCmdPath);
 		
-		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig);
+		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig, $readOnly);
 		$tgff = new SplitGuiFieldFactory($lted, $readOnly);
 		
 		return $tgff->createGuiField();

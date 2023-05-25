@@ -12,6 +12,7 @@ use rocket\op\ei\manage\gui\EiGuiUtil;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\EiGui;
+use rocket\si\meta\SiDeclaration;
 
 class EiuGuiDeclaration  {
 	private $eiuGuiMaskDeclarations;
@@ -74,7 +75,10 @@ class EiuGuiDeclaration  {
 		}
 		return $this->eiuGuiMaskDeclarations;
 	}
-	
+
+	function singleMaskDeclaration(): EiuGuiMaskDeclaration {
+		return new EiuGuiMaskDeclaration($this->eiGuiDeclaration->getSingleEiGuiMaskDeclaration(), $this->eiuAnalyst);
+	}
 //	/**
 //	 * @return \rocket\op\ei\util\gui\EiuGui
 //	 */
@@ -111,5 +115,10 @@ class EiuGuiDeclaration  {
 		}
 
 		return new EiuGuiValueBoundary($eiValueBoundary, $this, $this->eiuAnalyst);
+	}
+
+	function createSiDeclaration(): SiDeclaration {
+		return $this->eiGuiDeclaration
+				->createSiDeclaration($this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 }

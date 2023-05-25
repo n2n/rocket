@@ -26,6 +26,7 @@ use rocket\si\content\SiValueBoundary;
 use rocket\si\content\impl\OutSiFieldAdapter;
 use rocket\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
+use rocket\si\meta\SiStyle;
 
 class SplitContextOutSiField extends OutSiFieldAdapter {
 	/**
@@ -76,12 +77,12 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @param SiValueBoundary $entry
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @param SiValueBoundary $valueBoundary
+	 * @return SiSplitContent
 	 */
-	function putEntry(string $key, string $label, SiValueBoundary $entry) {
+	function putValueBoundary(string $key, string $label, SiValueBoundary $valueBoundary): SiSplitContent {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
-		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
+		return $this->splitContents[$key] = SiSplitContent::createValueBoundary($label, $valueBoundary);
 	}
 	
 	/**
@@ -90,17 +91,17 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	 * @param Url $apiUrl
 	 * @param string $entryId
 	 * @param bool $bulky
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	function putLazy(string $key, string $label, Url $apiUrl, string $entryId, bool $bulky, bool $readOnly) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
-		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, $bulky, $readOnly);
+		return $this->splitContents[$key] = SiSplitContent::createLazy($label, $apiUrl, $entryId, new SiStyle($bulky, $readOnly));
 	}
 	
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @return \rocket\si\content\impl\split\SiSplitContent
+	 * @return SiSplitContent
 	 */
 	function putUnavailable(string $key, string $label) {
 		return $this->splitContents[$key] = SiSplitContent::createUnavailable($label);
