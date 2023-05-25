@@ -45,7 +45,6 @@ use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
 use rocket\si\content\impl\SiFields;
-use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 
@@ -71,8 +70,9 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::createOutSiField()
 	 */
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return $eiu->factory()->newGuiField(SiFields::stringOut(
-				L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale())));
+		return $eiu->factory()->newGuiField(SiFields
+				::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale()))
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
 // 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {

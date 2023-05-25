@@ -57,89 +57,73 @@ class SiFields {
 	static function stringIn(?string $value) {
 		return new StringInSiField($value);
 	}
-	
-	/**
-	 * @return \rocket\si\content\impl\StringOutSiField
-	 */
-	static function stringOut(?string $value) {
+
+	static function stringOut(?string $value): StringOutSiField {
 		return new StringOutSiField($value);
 	}
-	
-	/**
-	 * @param float|null $value
-	 * @return \rocket\si\content\impl\NumberInSiField
-	 */
-	static function numberIn(?float $value) {
+
+	static function numberIn(?float $value): NumberInSiField {
 		return new NumberInSiField($value);
 	}
 	
 	/**
 	 * @param bool $value
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @return BoolInSiField
 	 */
-	static function boolIn(bool $value) {
+	static function boolIn(bool $value): BoolInSiField {
 		return new BoolInSiField($value);
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\string\CkeInSiField
+	 * @return CkeInSiField
 	 */
-	static function ckeIn(?string $value) {
+	static function ckeIn(?string $value): CkeInSiField {
 		return new CkeInSiField($value);
 	}
-	
+
 	/**
 	 * @param string[] $options
-	 * @param string $value
-	 * @return \rocket\si\content\impl\EnumInSiField
+	 * @param string|null $value
+	 * @return EnumInSiField
 	 */
 	static function enumIn(array $options, ?string $value) {
 		return new EnumInSiField($options, $value);
 	}
-	
-	/**
-	 * @param \DateTime $value
-	 * @return DateTimeInSiField
-	 */
+
 	static function dateTimeIn(?\DateTime $value): DateTimeInSiField {
 		return new DateTimeInSiField($value);
 	}
-	
-	/**
-	 * @param SiFile|null $file
-	 * @return \rocket\si\content\impl\FileInSiField
-	 */
-	static function fileIn(?SiFile $file, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle) {
+
+	static function fileIn(?SiFile $file, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle): FileInSiField {
 		return new FileInSiField($file, $apiFieldUrl, $apiCallId, $fileHandle);
 	}
-	
+
 	/**
-	 * @param File $file
-	 * @return \rocket\si\content\impl\FileOutSiField
+	 * @param SiFile|null $file
+	 * @return FileOutSiField
 	 */
-	static function fileOut(?SiFile $file) {
+	static function fileOut(?SiFile $file): FileOutSiField {
 		return new FileOutSiField($file);
 	}
-	
+
 	/**
-	 * @param Url $ref
+	 * @param SiNavPoint $navPoint
 	 * @param string $label
-	 * @param bool $href
-	 * @return \rocket\si\content\impl\LinkOutSiField
+	 * @return LinkOutSiField
 	 */
-	static function linkOut(SiNavPoint $navPoint, string $label) {
+	static function linkOut(SiNavPoint $navPoint, string $label): LinkOutSiField {
 		return new LinkOutSiField($navPoint, $label);
 	}
-	
+
 	/**
-	 * @param Url $apiUrl
+	 * @param SiFrame $frame
 	 * @param array $values
 	 * @param int $min
 	 * @param int|null $max
 	 * @param SiEntryQualifier[]|null $pickables
 	 * @return QualifierSelectInSiField
 	 */
-	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, int $max = null, array $pickables = null) {
+	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, int $max = null, array $pickables = null): QualifierSelectInSiField {
 		return (new QualifierSelectInSiField($frame, $values))->setMin($min)->setMax($max)->setPickables($pickables);
 	}
 
@@ -157,60 +141,51 @@ class SiFields {
 	 * @param EmbeddedEntryInputHandler $inputHandler
 	 * @param array $values
 	 * @param int $min
-	 * @param int $max
-	 * @return \rocket\si\content\impl\relation\EmbeddedEntriesInSiField
+	 * @param int|null $max
+	 * @return EmbeddedEntriesInSiField
 	 */
 	static function embeddedEntriesIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
-			int $min = 0, int $max = null) {
+			int $min = 0, int $max = null): EmbeddedEntriesInSiField {
 		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
 	}
 	
 	/**
 	 * @param SiFrame $frame
 	 * @param array $panels
-	 * @return \rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField
+	 * @return EmbeddedEntryPanelsInSiField
 	 */
-	static function embeddedEntryPanelsOut(SiFrame $frame, array $panels = []) {
+	static function embeddedEntryPanelsOut(SiFrame $frame, array $panels = []): EmbeddedEntryPanelsOutSiField|EmbeddedEntryPanelsInSiField {
 		return (new EmbeddedEntryPanelsOutSiField($frame, $panels));
 	}
-	
+
 	/**
-	 * @param Url $apiUrl
+	 * @param SiFrame $frame
 	 * @param EmbeddedEntryPanelInputHandler $inputHandler
 	 * @param array $panels
-	 * @return \rocket\si\content\impl\relation\EmbeddedEntryPanelsInSiField
+	 * @return EmbeddedEntryPanelsInSiField
 	 */
 	static function embeddedEntryPanelsIn(SiFrame $frame, EmbeddedEntryPanelInputHandler $inputHandler, 
-			array $panels = []) {
+			array $panels = []): EmbeddedEntryPanelsInSiField {
 		return (new EmbeddedEntryPanelsInSiField($frame, $inputHandler, $panels));
 	}
-	
+
 	/**
-	 * @param array $options
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @param SiDeclaration|null $declaration
+	 * @return SplitContextInSiField
 	 */
-	static function splitInContext(?SiDeclaration $declaration) {
+	static function splitInContext(?SiDeclaration $declaration): SplitContextInSiField {
 		return new SplitContextInSiField($declaration);
 	}
-	
-	/**
-	 * @return \rocket\si\content\impl\split\SplitContextOutSiField
-	 */
-	static function splitOutContext(?SiDeclaration $declaration) {
+
+	static function splitOutContext(?SiDeclaration $declaration): SplitContextOutSiField {
 		return new SplitContextOutSiField($declaration);
 	}
-	
-	/**
-	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
-	 */
-	static function splitPlaceholder(string $refPropId) {
+
+	static function splitPlaceholder(string $refPropId): SplitPlaceholderSiField {
 		return new SplitPlaceholderSiField($refPropId);
 	}
 	
-	/**
-	 * @return CrumbOutSiField
-	 */
-	static function crumbOut(SiCrumb ...$crumbs) {
+	static function crumbOut(SiCrumb ...$crumbs): CrumbOutSiField {
 		$siField = new CrumbOutSiField();
 		if (!empty($crumbs)) {
 			$siField->addNewGroup($crumbs);

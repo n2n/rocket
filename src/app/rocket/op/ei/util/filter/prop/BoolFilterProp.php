@@ -38,9 +38,10 @@ use n2n\l10n\Message;
 use rocket\op\ei\manage\critmod\filter\ComparatorConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\op\ei\manage\critmod\filter\impl\PropertyValueComparatorConstraint;
+use rocket\op\ei\manage\security\filter\SecurityFilterProp;
 
 
-class BoolFilterProp {
+class BoolFilterProp implements SecurityFilterProp {
 	const ATTR_VALUE_KEY = 'value';
 	const ATTR_VALUE_DEFAULT = false;
 	

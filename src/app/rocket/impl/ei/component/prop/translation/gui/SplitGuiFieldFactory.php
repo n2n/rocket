@@ -30,11 +30,9 @@ use rocket\si\control\SiIconType;
 
 class SplitGuiFieldFactory {
 	private $lted;
-	private $readOnly;
 	
-	function __construct(LazyTranslationEssentialsDeterminer $lted, bool $readOnly) {
+	function __construct(LazyTranslationEssentialsDeterminer $lted, private bool $readOnly) {
 		$this->lted = $lted;
-		$this->readOnly = $readOnly;
 	}
 	
 	/**
@@ -49,7 +47,7 @@ class SplitGuiFieldFactory {
 	}
 	
 	
-	private function createReadOnlyGuiField() {
+	private function createReadOnlyGuiField(): ReadOnlyGuiField {
 		$siField = SiFields::splitOutContext($this->lted->getTargetSiDeclaration())
 				->setStyle(new SplitStyle(SiIconType::ICON_LANGUAGE, $this->lted->getViewMenuTooltip()));
 		
@@ -58,7 +56,8 @@ class SplitGuiFieldFactory {
 			$label = $n2nLocale->getName($this->lted->getDisplayN2nLocale());
 			
 			if ($this->lted->isN2nLocaleIdActive($n2nLocaleId)) {
-				$siField->putValueBoundary($n2nLocaleId, $label, $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary())
+				$siField->putValueBoundary($n2nLocaleId, $label,
+								$this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary())
 						->setShortLabel($n2nLocale->toPrettyId());
 			} else {
 				$siField->putUnavailable($n2nLocaleId, $label)->setShortLabel($n2nLocale->toPrettyId());
@@ -68,7 +67,7 @@ class SplitGuiFieldFactory {
 		return new ReadOnlyGuiField($siField, $this->buildPlaceholderGuiFieldMap(new DefPropPath([])));
 	}
 	
-	private function createEditableGuiField() {
+	private function createEditableGuiField(): EditableGuiField {
 		$siField = SiFields::splitInContext($this->lted->getTargetSiDeclaration())
 				->setStyle(new SplitStyle(null, $this->lted->getViewMenuTooltip()))
 				->setManagerStyle(new SplitStyle(SiIconType::ICON_GLOBE_AMERICAS, $this->lted->getManagerTooltip()))
@@ -89,7 +88,8 @@ class SplitGuiFieldFactory {
 			$pid = null;
 			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
 				if ($activeTargetEiuEntry->isNew() || $activeTargetEiuEntry->isUnsaved()) {
-					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary())
+					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)
+									->createSiValueBoundary())
 							->setShortLabel($n2nLocale->toPrettyId());
 					continue;
 				}
@@ -118,7 +118,7 @@ class SplitGuiFieldFactory {
 	 * @param DefPropPath $defPropPath
 	 * @return PlaceholderGuiField
 	 */
-	private function createPlaceholderGuiField($defPropPath) {
+	private function createPlaceholderGuiField(DefPropPath $defPropPath): PlaceholderGuiField {
 		$siField = SiFields::splitPlaceholder($defPropPath);
 		
 		$placeholderGuiField = new PlaceholderGuiField($siField);
@@ -144,7 +144,7 @@ class SplitGuiFieldFactory {
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @return \rocket\op\ei\manage\gui\GuiFieldMap|null
+	 * @return GuiFieldMap|null
 	 */
 	private function buildPlaceholderGuiFieldMap($forkDefPropPath) {
 		$eiPropPaths = [];

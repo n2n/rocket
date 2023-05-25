@@ -65,7 +65,7 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 				$this->targetEiuGuiMaskDeclaration);
 		$targetEiu->frame()->exec($this->eiCmdPath);
 		
-		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig, $readOnly);
+		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig);
 		$tgff = new SplitGuiFieldFactory($lted, $readOnly);
 		
 		return $tgff->createGuiField();

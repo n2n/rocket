@@ -55,6 +55,7 @@ use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
+	use QuickSearchConfigTrait;
 
 	private $options = array();
 	private $associatedDefPropPathMap = array();
@@ -212,12 +213,13 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$value = $eiu->field()->getValue();
 		$options = $this->getOptions();
 		
-		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$value] ?? $value));
+		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$value] ?? $value)
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
-	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
-		return $this->buildFilterProp($eiFrame->getN2nContext());
-	}
+//	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+//		return $this->buildFilterProp($eiFrame->getN2nContext());
+//	}
 	
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty())) {

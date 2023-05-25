@@ -115,7 +115,8 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 		return [
 			'style' => $this->style,
 			'declaration' => $this->declaration,
-			'splitContents' => $this->splitContents
+			'splitContents' => $this->splitContents,
+			...parent::getData()
 		];
 	}
 }

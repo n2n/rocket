@@ -97,7 +97,8 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	 */
 	function getData(): array {
 		return [
-			'crumbGroups' => $this->groups
+			'crumbGroups' => $this->groups,
+			...parent::getData()
 		];
 	}
 }

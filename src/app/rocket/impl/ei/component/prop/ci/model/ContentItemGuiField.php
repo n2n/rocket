@@ -78,14 +78,15 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 			array $panelDeclarations, bool $readOnly) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
-		$this->relationModel = $relationModel;
+//		$this->relationModel = $relationModel;
 		
 		$this->currentPool = new EiuGuiEntryPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
 		
 		$this->readOnly = $readOnly;
 		
 		if ($readOnly) {
-			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues());
+			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues())
+					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 			return;
 		}
 		
@@ -95,8 +96,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	}
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
+	 * @return SiPanel[]
 	 */
 	private function readValues() {
 		$this->currentPool->clear();
@@ -248,12 +248,12 @@ class EiuGuiEntryPool {
 		
 		return $siPanels;
 	}
-	
+
 	/**
-	 * @param array $siPanelInputs
-	 * @return array
+	 * @param SiPanelInput[] $siPanelInputs
+	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(array $siPanelInputs) {
+	function handleInput(array $siPanelInputs): void {
 		foreach ($siPanelInputs as $siPanelInput) {
 			ArgUtils::assertTrue($siPanelInput instanceof SiPanelInput);
 			

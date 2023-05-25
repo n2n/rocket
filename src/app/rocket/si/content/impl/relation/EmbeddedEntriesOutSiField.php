@@ -53,7 +53,7 @@ class EmbeddedEntriesOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param SiEmbeddedEntry[] $values
-	 * @return \rocket\si\content\impl\relation\EmbeddedEntriesInSiField
+	 * @return EmbeddedEntriesOutSiField
 	 */
 	function setValues(array $values) {
 		ArgUtils::valArray($values, SiEmbeddedEntry::class);
@@ -77,7 +77,7 @@ class EmbeddedEntriesOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param boolean $reduced
-	 * @return EmbeddedEntriesInSiField
+	 * @return EmbeddedEntriesOutSiField
 	 */
 	public function setReduced(bool $reduced) {
 		$this->reduced = $reduced;
@@ -101,6 +101,7 @@ class EmbeddedEntriesOutSiField extends OutSiFieldAdapter {
 			'values' => $this->values,
 			'frame' => $this->frame,
 			'reduced' => $this->reduced,
+			...parent::getData()
 		];
 	}
 }

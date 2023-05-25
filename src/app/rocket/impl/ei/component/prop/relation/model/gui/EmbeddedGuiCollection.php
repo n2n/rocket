@@ -32,6 +32,7 @@ use n2n\util\type\CastUtils;
 use rocket\si\input\SiEntryInput;
 use rocket\op\ei\util\spec\EiuType;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class EmbeddedGuiCollection {
 	/**
@@ -103,7 +104,7 @@ class EmbeddedGuiCollection {
 		}
 	}
 	
-	function addNew(): \rocket\op\ei\util\gui\EiuGuiValueBoundary {
+	function addNew(): EiuGuiValueBoundary {
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
 		return $this->eiuGuiValueBoundaries[] = $this->eiuFrame->contextEngine()
 				->newMultiGuiDeclaration(true, $this->readOnly, true)
@@ -158,7 +159,7 @@ class EmbeddedGuiCollection {
 		return new SiEmbeddedEntry(
 				$eiuGuiValueBoundary->createBulkyEntrySiGui(false, false),
 				($this->summaryRequired ?
-						$eiuGuiValueBoundary->copy(false, true)->createCompactEntrySiGui(false):
+						$eiuGuiValueBoundary->copy(false, true, entryGuiControlsIncluded: false)->createCompactEntrySiGui(false):
 						null));
 	}
 	
@@ -178,9 +179,10 @@ class EmbeddedGuiCollection {
 	}
 	
 	/**
-	 * @param SiEntryInput $siEntryInputs
+	 * @param SiEntryInput[] $siEntryInputs
+	 * @throws CorruptedSiInputDataException
 	 */
-	function handleSiEntryInputs(array $siEntryInputs) {
+	function handleSiEntryInputs(array $siEntryInputs): void {
 		$newEiuGuiEntrys = [];
 		foreach ($siEntryInputs as $siEntryInput) {
 			CastUtils::assertTrue($siEntryInput instanceof SiEntryInput);

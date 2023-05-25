@@ -70,7 +70,7 @@ class CompactEntrySiGui implements SiGui {
 	 * @param SiControl[] $controls
 	 * @return CompactEntrySiGui
 	 */
-	function setControls(array $controls) {
+	function setControls(array $controls): static {
 		ArgUtils::valArray($controls, SiControl::class);
 		$this->controls = $controls;
 		return $this;
@@ -87,7 +87,7 @@ class CompactEntrySiGui implements SiGui {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'entry' => $this->valueBoundary,
+			'valueBoundary' => $this->valueBoundary,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

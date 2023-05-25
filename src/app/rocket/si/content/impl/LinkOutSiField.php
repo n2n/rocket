@@ -42,7 +42,7 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param string|null $label
-	 * @return \rocket\si\content\impl\StringOutSiField
+	 * @return LinkOutSiField
 	 */
 	function setLabel(string $label) {
 		$this->label = $label;;
@@ -58,7 +58,7 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param bool $href
-	 * @return \rocket\si\content\impl\StringOutSiField
+	 * @return LinkOutSiField
 	 */
 	function setHref(bool $href) {
 		$this->href = $href;
@@ -67,7 +67,7 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param bool|null $lytebox
-	 * @return \rocket\si\content\impl\StringOutSiField
+	 * @return LinkOutSiField
 	 */
 	function setLytebox(bool $lytebox) {
 		$this->lytebox = $lytebox;
@@ -91,7 +91,8 @@ class LinkOutSiField extends OutSiFieldAdapter {
 		return [
 			'navPoint' => $this->navPoint,
 			'label' => $this->label,
-			'lytebox' => $this->lytebox
+			'lytebox' => $this->lytebox,
+			...parent::getData()
 		];
 	}
 }

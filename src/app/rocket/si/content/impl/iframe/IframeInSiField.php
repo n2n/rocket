@@ -42,7 +42,7 @@ class IframeInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getData()
 	 */
 	function getData(): array {
-		$data = $this->iframeData->toArray();
+		$data = [...parent::getData(), ...$this->iframeData->toArray()];
 		$data['params'] = $this->getParams();
 		$data['messages'] = $this->getMessageStrs();
 		return $data;
