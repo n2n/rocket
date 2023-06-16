@@ -81,19 +81,19 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	}
 
 
-	/**
-	 * @return bool
-	 */
-	function hasPanelDeclarations() {
-		return !empty($this->panelDeclarations);
-	}
-
-	/**
-	 * @return PanelDeclaration[]
-	 */
-	function getPanelDeclarations() {
-		return $this->panelDeclarations;
-	}
+//	/**
+//	 * @return bool
+//	 */
+//	function hasPanelDeclarations() {
+//		return !empty($this->panelDeclarations);
+//	}
+//
+//	/**
+//	 * @return PanelDeclaration[]
+//	 */
+//	function getPanelDeclarations() {
+//		return $this->panelDeclarations;
+//	}
 
 	/**
 	 * @param PanelDeclaration[] $panelDeclarations
