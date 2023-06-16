@@ -54,7 +54,7 @@ use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 
 class EiEngine {
 
-	private EiGuiMaskDeclarationEngine $eiGuiMaskDeclarationEngine;
+	private ?EiGuiMaskDeclarationEngine $eiGuiMaskDeclarationEngine = null;
 
 	private ?GenericEiDefinition $genericEiDefinition = null;
 	private ?ScalarEiDefinition $scalarEiDefinition = null;
@@ -65,7 +65,6 @@ class EiEngine {
 	 * @param N2nContext $n2nContext
 	 */
 	function __construct(private readonly EiMask $eiMask, private N2nContext $n2nContext) {
-		$this->eiGuiMaskDeclarationEngine = new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getGuiDefinition());
 	}
 
 	/**
@@ -166,6 +165,11 @@ class EiEngine {
 	 */
 	function forkEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink): EiFrame {
 		return $this->eiMask->getEiPropCollection()->createForkedEiFrame($eiPropPath, $eiForkLink);
+	}
+
+	private function getEiGuiMaskDeclarationEngine(): EiGuiMaskDeclarationEngine {
+		return $this->eiGuiMaskDeclarationEngine ?? $this->eiGuiMaskDeclarationEngine
+				= new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getGuiDefinition());
 	}
 
 	private ?GuiDefinition $guiDefinition = null;
@@ -320,7 +324,7 @@ class EiEngine {
 //	}
 
 	function obtainEiGuiMaskDeclaration(int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
-		return $this->eiGuiMaskDeclarationEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths);
+		return $this->getEiGuiMaskDeclarationEngine()->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths);
 	}
 
 //	/**
