@@ -31,7 +31,6 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	set valueBoundary(valueBoundary: SiValueBoundary|null) {
-		console.log(valueBoundary?.selectedEntry);
 		this.valueBoundarySubject.next(valueBoundary);
 	}
 
