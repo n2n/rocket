@@ -112,9 +112,9 @@ class EmbeddedGuiCollection {
 	}
 	
 	function sort(EiPropPath $orderEiPropPath): void {
-		uasort($this->eiuGuiValueBoundaries, function($a, $b) use ($orderEiPropPath) {
-			$aValue = $a->entry()->getScalarValue($orderEiPropPath);
-			$bValue = $b->entry()->getScalarValue($orderEiPropPath);
+		uasort($this->eiuGuiValueBoundaries, function(EiuGuiValueBoundary $a, $b) use ($orderEiPropPath) {
+			$aValue = $a->selectedGuiEntry()->entry()->getScalarValue($orderEiPropPath);
+			$bValue = $b->selectedGuiEntry()->entry()->getScalarValue($orderEiPropPath);
 			
 			if ($aValue == $bValue) {
 				return 0;
