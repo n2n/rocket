@@ -47,7 +47,9 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
     private int $decimalPlaces = 2;
 
 	function __construct(PropertyAccessProxy $propertyAccessProxy) {
-		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::float(true, true)));
+		parent::__construct($propertyAccessProxy->createRestricted(
+				TypeConstraints::float(true, true),
+				TypeConstraints::float(true, true)));
 	}
 
 	/**
