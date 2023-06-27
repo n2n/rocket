@@ -107,15 +107,15 @@ class PathPartPurifier {
 		}
 	
 		if ($baseScalarEiProperty !== null) {
-			return mb_strtolower(IoUtils::stripSpecialChars($baseScalarEiProperty->eiFieldValueToScalarValue(
+			return mb_strtolower((string) IoUtils::stripSpecialChars($baseScalarEiProperty->eiFieldValueToScalarValue(
 					$this->eiEntry->getValue($baseScalarEiProperty->getEiPropPath()))));
 		}
 	
 		if (null !== ($id = $this->eiEntry->getId())) {
-			return mb_strtolower(IoUtils::stripSpecialChars($this->getIdEntityProperty()->valueToRep($id)));
+			return mb_strtolower((string) IoUtils::stripSpecialChars($this->getIdEntityProperty()->valueToRep($id)));
 		}
 	
-		return IoUtils::stripSpecialChars(uniqid());
+		return (string) IoUtils::stripSpecialChars(uniqid());
 	}
 	
 	private function uniquePathPart(string $pathPart): string {
