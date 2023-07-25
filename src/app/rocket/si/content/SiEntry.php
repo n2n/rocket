@@ -55,8 +55,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @param string|null $idName
 	 */
-	function __construct(?string $id, ?string $idName) {
-		$this->id = $id;
+	function __construct(private ?string $id, ?string $idName) {
 		$this->idName = $idName;
 	}
 	
