@@ -51,8 +51,9 @@ class SiEntry implements \JsonSerializable {
 	 * @var Message[]
 	 */
 	private array $messages = [];
-	
+
 	/**
+	 * @param string|null $id
 	 * @param string|null $idName
 	 */
 	function __construct(private readonly ?string $id, ?string $idName) {
