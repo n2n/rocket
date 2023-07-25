@@ -25,35 +25,44 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\op\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
+use n2n\util\type\ArgUtils;
 
 class GuiFieldMap {
-// 	private $eiEntryGui;
+// 	private $eiGuiValueBoundary;
 // 	private $forkDefPropPath;
 	/**
 	 * @var GuiField[]
 	 */
 	private $guiFields = array();
 	
-	function __construct(/*EiEntryGui $eiEntryGui, DefPropPath $forkDefPropPath*/) {
-// 		$this->eiEntryGui = $eiEntryGui;
+	function __construct(/*EiGuiValueBoundary $eiGuiValueBoundary, DefPropPath $forkDefPropPath*/) {
+// 		$this->eiGuiValueBoundary = $eiGuiValueBoundary;
 // 		$this->forkDefPropPath = $forkDefPropPath;
 	}
 	
 	private function ensureNotInitialized() {
-// 		if (!$this->eiEntryGui->isInitialized()) {
+// 		if (!$this->eiGuiValueBoundary->isInitialized()) {
 // 			return;
 // 		}
 		
-// 		throw new IllegalStateException('EiEntryGui already initialized.');
+// 		throw new IllegalStateException('EiGuiValueBoundary already initialized.');
 	}
 	
 	/**
 	 * @return GuiField[]
 	 */
-	function getGuiFields() {
+	function getGuiFields(): array {
 		return $this->guiFields;
 	}
-	
+
+	/**
+	 * @return EiPropPath[]
+	 */
+	function getEiPropPaths(): array {
+		return array_map(fn ($s) => EiPropPath::create($s), array_keys($this->guiFields));
+
+	}
+
 	/**
 	 * @return GuiField[]
 	 */
@@ -108,8 +117,8 @@ class GuiFieldMap {
 	 * @param DefPropPath $defPropPath
 	 * @return bool
 	 */
-	function containsDefPropPath(DefPropPath $defPropPath) {
-		return $this->rContainsDefPropPath($defPropPath->toArray(), $this->guiFields);
+	function containsDefPropPath(DefPropPath $defPropPath): bool {
+		return $this->rContainsDefPropPath($defPropPath->toArray(), $this);
 	}
 	
 	/**
@@ -136,16 +145,16 @@ class GuiFieldMap {
 		return $this->rContainsDefPropPath($eiPropPaths, $forkGuiFieldMap);
 	}
 	
-	/**
-	 * @return \rocket\op\ei\manage\DefPropPath[]
-	 */
-	function getEiPropPaths() {
-		$eiPropPaths = array();
-		foreach (array_keys($this->guiFields) as $eiPropPathStr) {
-			$eiPropPaths[] = EiPropPath::create($eiPropPathStr);
-		}
-		return $eiPropPaths;
-	}
+//	/**
+//	 * @return \rocket\op\ei\manage\DefPropPath[]
+//	 */
+//	function getEiPropPaths() {
+//		$eiPropPaths = array();
+//		foreach (array_keys($this->guiFields) as $eiPropPathStr) {
+//			$eiPropPaths[] = EiPropPath::create($eiPropPathStr);
+//		}
+//		return $eiPropPaths;
+//	}
 	
 	/**
 	 * @param DefPropPath $defPropPath
@@ -155,13 +164,13 @@ class GuiFieldMap {
 	function getGuiField(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;
 		if (!isset($this->guiFields[$eiPropPathStr])) {
-			throw new GuiException('No GuiField with EiPropPath \'' . $eiPropPathStr . '\' for \'' . $this . '\' registered');
+			throw new GuiException('No GuiField with EiPropPath \'' . $eiPropPathStr . '\' for GuiFieldMap registered');
 		}
 		
 		return $this->guiFields[$eiPropPathStr];
 	}
 	
-	function save() {
+	function save(): void {
 		foreach ($this->guiFields as $defPropPathStr => $guiField) {
 			if (!$guiField->getSiField()->isReadOnly()
 					/*&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))*/) {

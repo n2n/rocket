@@ -189,9 +189,9 @@ class EiEntry {
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @throws UnknownEiFieldExcpetion
-	 * @return \rocket\op\ei\manage\entry\EiFieldWrapper
+	 * @return EiFieldWrapper
 	 */
-	function getEiFieldWrapper(EiPropPath $eiPropPath) {
+	function getEiFieldWrapper(EiPropPath $eiPropPath): EiFieldWrapper {
 		$ids = $eiPropPath->toArray();
 		$passedIds = [];
 		$eiFieldWrapper = null;
@@ -205,12 +205,14 @@ class EiEntry {
 				throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath($passedIds)));
 			}
 			
-			$eiFieldMap = $eiFieldWrapper->getEiField()->getForkedEiFieldMap();
-			if ($eiFieldMap !== null) continue;
-			
-			throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath(
-					array_merge($passedIds, [reset($ids)]))));
+//			$eiFieldMap = $eiFieldWrapper->getEiField()->getForkedEiFieldMap();
+//			if ($eiFieldMap !== null) continue;
+//
+//			throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath(
+//					array_merge($passedIds, [reset($ids)]))));
 		}
+
+		return $eiFieldWrapper;
 	}
 	
 	/**
@@ -274,7 +276,7 @@ class EiEntry {
 		foreach ($this->listeners as $listener) {
 			$listener->onWrite($this);
 		}
-	
+
 		$this->eiFieldMap->write();
 		
 		foreach ($this->listeners as $listener) {
@@ -328,22 +330,27 @@ class EiEntry {
 		$this->getEiFieldWrapper($eiPropPath)->setValue($value, $regardSecurity);
 	}
 
-	public function getOrgValue(EiPropPath $eiPropPath) {
-		return $this->getMappingProfile()->getEiField($eiPropPath)->getOrgValue();
-	}
+//	public function getOrgValue(EiPropPath $eiPropPath) {
+//		return $this->getMappingProfile()->getEiField($eiPropPath)->getOrgValue();
+//	}
 	
 	public function save(): bool {
 		if (!$this->validate()) return false;
+
 		$this->write();
 		$this->flush();
 		return true;
 	}
 	
 	public function isValid() {
-		if (!$this->eiFieldMap->isValid()) return false;
+		if (!$this->eiFieldMap->isValid()) {
+			return false;
+		}
 		
 		if (null !== ($eiEntryConstraint = $this->getEiEntryAccess()->getEiEntryConstraint())) {
-			if (!$eiEntryConstraint->check($this)) return false;
+			if (!$eiEntryConstraint->check($this)) {
+				return false;
+			}
 		}
 		
 		foreach ($this->constraintSet as $constraint) {
@@ -397,27 +404,27 @@ class EiEntry {
 		return $this->validationResult;
 	}
 	
-	/**
-	 * @param EiEntry $targetMapping
-	 */
-	public function copy(EiEntry $targetMapping) {
-		$targetMappingDefinition = $targetMapping->getMappingDefinition();
-		$targetType = $targetMapping->getEiObject()->getType();
-		foreach ($targetMappingDefinition->getIds() as $id) {
-			if (!$this->mappingProfile->containsId($id)) continue;
-
-			$targetMapping->setValue($id, $this->getValue($id));
-		}
-	}
+//	/**
+//	 * @param EiEntry $targetMapping
+//	 */
+//	public function copy(EiEntry $targetMapping) {
+//		$targetMappingDefinition = $targetMapping->getMappingDefinition();
+//		$targetType = $targetMapping->getEiObject()->getType();
+//		foreach ($targetMappingDefinition->getIds() as $id) {
+//			if (!$this->mappingProfile->containsId($id)) continue;
+//
+//			$targetMapping->setValue($id, $this->getValue($id));
+//		}
+//	}
 	
 	public function equals($obj) {
-		return $obj instanceof EiEntry && $this->determineEiType()->equals($obj->determineEiType())
+		return $obj instanceof EiEntry && $this->getEiMask()->getEiType()->equals($obj->getEiMask()->getEiType())
 				&& $this->eiObject->equals($obj->getEiObject());
 	}
 	
-	public function toEntryNavPoint() {
-		return $this->eiObject->toEntryNavPoint($this->contextEiType);
-	}
+//	public function toEntryNavPoint() {
+//		return $this->eiObject->toEntryNavPoint($this->contextEiType);
+//	}
 	
 	public function __toString() {
 		if ($this->eiObject->isDraft()) {

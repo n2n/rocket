@@ -173,7 +173,7 @@ class CkeInSiField extends InSiFieldAdapter {
 			'maxlength' => $this->maxlength,
 			'mandatory' => $this->mandatory,
 			'styles' => $this->styles,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	 

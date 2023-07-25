@@ -23,23 +23,23 @@ namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\op\ei\manage\gui\GuiPropSetup;
 use rocket\op\ei\manage\gui\GuiFieldAssembler;
-use rocket\op\ei\util\gui\EiuGuiFrame;
-use rocket\impl\ei\component\prop\translation\conf\TranslationConfig;
+use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
 use rocket\op\ei\manage\gui\DisplayDefinition;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
+use rocket\op\ei\util\gui\EiuGuiDeclaration;
 
 class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
-	private $targetEiuGuiFrame;
+	private $targetEiuGuiMaskDeclaration;
 	private $eiCmdPath;
 	private $translationConfig;
 	
-	function __construct(EiuGuiFrame $targetEiuGuiFrame, EiCmdPath $eiCmdPath,
+	function __construct(private EiuGuiDeclaration $targetEiuGuiDeclaration, EiCmdPath $eiCmdPath,
 			TranslationEiPropNature $translationConfig) {
-		$this->targetEiuGuiFrame = $targetEiuGuiFrame;
+		$this->targetEiuGuiMaskDeclaration = $targetEiuGuiDeclaration->singleMaskDeclaration();
 		$this->eiCmdPath = $eiCmdPath;
 		$this->translationConfig = $translationConfig;
 	}
@@ -57,11 +57,12 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 	 * @see \rocket\op\ei\manage\gui\GuiPropSetup::getForkedDisplayDefinition()
 	 */
 	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition {
-		return $this->targetEiuGuiFrame->getDisplayDefinition($defPropPath);
+		return $this->targetEiuGuiMaskDeclaration->getDisplayDefinition($defPropPath);
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiFrame);
+		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiDeclaration,
+				$this->targetEiuGuiMaskDeclaration);
 		$targetEiu->frame()->exec($this->eiCmdPath);
 		
 		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig);
@@ -70,7 +71,7 @@ class TranslationGuiPropSetup implements GuiPropSetup, GuiFieldAssembler {
 		return $tgff->createGuiField();
 		
 // 		$guiFieldMap = new GuiFieldMap();
-// 		foreach ($this->targetEiuGuiFrame->getEiPropPaths() as $eiPropPath) {
+// 		foreach ($this->targetEiuGuiMaskDeclaration->getEiPropPaths() as $eiPropPath) {
 // 			$guiFieldMap->putGuiField($eiPropPath, $tgff->createGuiField($eiPropPath));
 // 		}
 		

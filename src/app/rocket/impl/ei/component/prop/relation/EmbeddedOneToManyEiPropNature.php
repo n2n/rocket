@@ -27,7 +27,6 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiField;
@@ -42,6 +41,7 @@ use rocket\op\ei\util\entry\EiuEntry;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\si\meta\SiStructureType;
+use rocket\si\content\SiField;
 
 class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 
@@ -66,7 +66,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
 		
-		if ($readOnly && $eiu->gui()->isCompact()) {
+		if ($readOnly && $eiu->guiMaskDeclaration()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
 		
@@ -81,12 +81,8 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 		
 		return new EmbeddedToManyGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
 	}
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\si\content\SiField
-	 */
-	private function createCompactGuiField(Eiu $eiu) {
+
+	private function createCompactGuiField(Eiu $eiu): GuiField {
 		$siCrumbs = [];
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
@@ -95,6 +91,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 					->setSeverity(SiCrumb::SEVERITY_IMPORTANT);
 		}
 		
-		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs))->toGuiField();
+		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs)
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
 	}
 }

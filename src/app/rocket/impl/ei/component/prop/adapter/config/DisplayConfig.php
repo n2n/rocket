@@ -182,7 +182,7 @@ class DisplayConfig {
 	 * @return GuiPropSetup|null
 	 */
 	function buildGuiPropSetup(Eiu $eiu, GuiFieldAssembler $guiFieldAssembler) {
-		$viewMode = $eiu->guiFrame()->getViewMode();
+		$viewMode = $eiu->guiMaskDeclaration()->getViewMode();
 		
 		if (!$this->isViewModeCompatible($viewMode)) {
 			return null;

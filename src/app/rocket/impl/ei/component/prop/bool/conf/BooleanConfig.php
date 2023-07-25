@@ -12,7 +12,7 @@ use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\attrs\DataSet;
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use n2n\util\type\ArgUtils;
 
 class BooleanConfig {

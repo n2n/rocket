@@ -32,13 +32,13 @@ use rocket\si\meta\SiFrame;
 class CompactEntrySiGui implements SiGui {
 	private $frame;
 	private $declaration;
-	private $entry;
+	private $valueBoundary;
 	private $controls;
 	
-	function __construct(SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $entry = null, array $controls = []) {
+	function __construct(SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $valueBoundary = null, array $controls = []) {
 		$this->frame = $frame;
 		$this->declaration = $declaration;
-		$this->setEntry($entry);
+		$this->setValueBoundary($valueBoundary);
 		$this->setControls($controls);
 	}
 	
@@ -54,23 +54,23 @@ class CompactEntrySiGui implements SiGui {
 	 * @param SiValueBoundary[] $siEntries
 	 * @return CompactEntrySiGui
 	 */
-	function setEntry(?SiValueBoundary $entry) {
-		$this->entry = $entry;
+	function setValueBoundary(?SiValueBoundary $valueBoundary) {
+		$this->valueBoundary = $valueBoundary;
 		return $this;
 	}
 	
 	/**
 	 * @return SiValueBoundary[]
 	 */
-	function getEntry() {
-		return $this->entry;
+	function getValueBoundary() {
+		return $this->valueBoundary;
 	}
 	
 	/**
 	 * @param SiControl[] $controls
 	 * @return CompactEntrySiGui
 	 */
-	function setControls(array $controls) {
+	function setControls(array $controls): static {
 		ArgUtils::valArray($controls, SiControl::class);
 		$this->controls = $controls;
 		return $this;
@@ -87,7 +87,7 @@ class CompactEntrySiGui implements SiGui {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'entry' => $this->entry,
+			'valueBoundary' => $this->valueBoundary,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

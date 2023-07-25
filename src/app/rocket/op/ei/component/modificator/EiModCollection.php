@@ -25,7 +25,7 @@ use rocket\op\ei\component\EiComponentCollection;
 use rocket\op\ei\EiType;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\EiModPath;
-use rocket\op\ei\manage\gui\EiGuiFrame;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\util\Eiu;
 use n2n\util\magic\MagicContext;
 use rocket\op\ei\EiPropPath;
@@ -80,14 +80,14 @@ class EiModCollection extends EiComponentCollection {
 		}
 	}
 
-	function setupEiGuiFrame(EiGuiFrame $eiGuiFrame) {
+	function setupEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
 		if ($this->isEmpty()) {
 			return;
 		}
 		
-		$eiu = new Eiu($eiGuiFrame);
+		$eiu = new Eiu($eiGuiMaskDeclaration);
 		foreach ($this as $eiModificator) {
-			$eiModificator->getNature()->setupEiGuiFrame($eiu);
+			$eiModificator->getNature()->setupEiGuiMaskDeclaration($eiu);
 		}
 	}
 

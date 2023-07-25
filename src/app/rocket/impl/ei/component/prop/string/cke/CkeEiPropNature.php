@@ -56,17 +56,19 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 	}
 	
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-	    $value = $eiu->field()->getValue(EiPropPath::from($this));
+	    $value = $eiu->field()->getValue();
 	    if ($value === null) {
 	    	return $eiu->factory()->newGuiField(SiFields::stringOut(''));
 	    }
 	    
-		if ($eiu->guiFrame()->isCompact()) {
-			return $eiu->factory()->newGuiField(
-					SiFields::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...')));
+		if ($eiu->guiMaskDeclaration()->isCompact()) {
+			return $eiu->factory()->newGuiField(SiFields
+					::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...'))
+					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 		}
 
-		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value));
+		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value)
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {

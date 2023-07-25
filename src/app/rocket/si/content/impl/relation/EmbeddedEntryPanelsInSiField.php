@@ -89,7 +89,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 		return [
 			'panels' => $this->panels,
 			'frame' => $this->frame,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 

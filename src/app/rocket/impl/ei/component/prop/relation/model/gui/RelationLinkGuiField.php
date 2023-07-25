@@ -30,6 +30,7 @@ use n2n\util\ex\UnsupportedOperationException;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
+use rocket\si\content\impl\StringOutSiField;
 
 class RelationLinkGuiField implements GuiField {
 	/**
@@ -69,16 +70,19 @@ class RelationLinkGuiField implements GuiField {
 		}
 		
 		if (null !== ($overviewNavPoint = $targetEiuFrame->getOverviewNavPoint(false))) {
-			return SiFields::linkOut($overviewNavPoint, $label, false);
+			return SiFields::linkOut($overviewNavPoint, $label, false)
+					->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
 		}
 		
-		return SiFields::stringOut($label);
+		return SiFields::stringOut($label)
+				->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
 	}
 	
-	private function createToOneSiField() {
+	private function createToOneSiField(): SiField {
 		$value = $this->eiu->field()->getValue();
 		if ($value === null) {
-			return SiFields::stringOut(null);
+			return SiFields::stringOut(null)
+					->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
 		}
 		
 		CastUtils::assertTrue($value instanceof EiuEntry);
@@ -88,10 +92,12 @@ class RelationLinkGuiField implements GuiField {
 		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCmdPath());
 		
 		if (null !== ($detailNavPoint = $targetEiuFrame->getDetailNavPoint($value, false))) {
-			return SiFields::linkOut($detailNavPoint, $label);
+			return SiFields::linkOut($detailNavPoint, $label)
+					->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
 		}
 		
-		return SiFields::stringOut($label);
+		return SiFields::stringOut($label)
+				->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
 	}
 	
 	function getSiField(): SiField {

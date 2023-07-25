@@ -116,11 +116,12 @@ class PasswordInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::getData()
 	 */
 	function getData(): array {
-		return ['minlength' => $this->minLength,
+		return [
+			'minlength' => $this->minLength,
 			'maxlength' => $this->maxLength,
 			'mandatory' => $this->mandatory,
 			'passwordSet' => $this->passwordSet,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	 

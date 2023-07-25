@@ -125,7 +125,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return SplitContextInSiField
 	 */
 	function setMin(int $min) {
 		$this->min = $min;
@@ -141,7 +141,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	
 	/**
 	 * @param array $activeKeys
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return SplitContextInSiField
 	 */
 	function setActiveKeys(array $activeKeys) {
 		$this->activeKeys = $activeKeys;
@@ -157,7 +157,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	
 	/**
 	 * @param string[] $mandatoryKeys
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return SplitContextInSiField
 	 */
 	function setMandatoryKeys(array $mandatoryKeys) {
 		$this->mandatoryKeys = $mandatoryKeys;
@@ -172,7 +172,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	 */
 	function putEntry(string $key, string $label, SiValueBoundary $entry) {
 		IllegalStateException::assertTrue($this->declaration !== null, 'No SiDeclaration defined.');
-		return $this->splitContents[$key] = SiSplitContent::createEntry($label, $entry);
+		return $this->splitContents[$key] = SiSplitContent::createValueBoundary($label, $entry);
 	}
 	
 	/**
@@ -192,9 +192,9 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
 	 * @param string $key
 	 * @param string $label
-	 * @return \rocket\si\content\impl\split\SplitContextInSiField
+	 * @return SiSplitContent
 	 */
-	function putUnavailable(string $key, string $label) {
+	function putUnavailable(string $key, string $label): SiSplitContent {
 		return $this->splitContents[$key] = SiSplitContent::createUnavailable($label);
 	}
 
@@ -211,7 +211,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			'mandatoryKeys' => $this->mandatoryKeys,
 			'declaration' => $this->declaration,
 			'splitContents' => $this->splitContents,
-			'messages' => $this->getMessageStrs()
+			...parent::getData()
 		];
 	}
 	
@@ -252,7 +252,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			$siValueBoundary->handleEntryInput(SiEntryInput::parse($entryInputData));
 			if ($lazy) {
 				$preSplitContent = $this->splitContents[$key];
-				$this->splitContents[$key] = SiSplitContent::createEntry($preSplitContent->getLabel(), $siValueBoundary)
+				$this->splitContents[$key] = SiSplitContent::createValueBoundary($preSplitContent->getLabel(), $siValueBoundary)
 						->setShortLabel($preSplitContent->getShortLabel());
 			}
 		}

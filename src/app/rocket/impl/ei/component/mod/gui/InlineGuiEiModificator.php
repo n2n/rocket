@@ -7,7 +7,7 @@ use rocket\op\ei\util\Eiu;
 class UniqueEiModificator extends IndependentEiModificatorAdapter {
 	
 	
-	function setupEiGuiFrame(Eiu $eiu) {
-		$eiu->guiFrame()->initWithUiCallback($viewFactory, $eiPropPaths);
+	function setupEiGuiMaskDeclaration(Eiu $eiu) {
+		$eiu->guiMaskDeclaration()->initWithUiCallback($viewFactory, $eiPropPaths);
 	}
 }

@@ -96,7 +96,9 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return $eiu->factory()->newGuiField(SiFields::stringOut(StringUtils::strOf($eiu->field()->getValue(), true)));
+		return $eiu->factory()->newGuiField(SiFields
+				::stringOut(StringUtils::strOf($eiu->field()->getValue(), true))
+				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
@@ -113,9 +115,9 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 				});
 	}
 	
-	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
-		return $this->buildFilterProp($eiFrame->getN2nContext());
-	}
+//	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {
+//		return $this->buildFilterProp($eiFrame->getN2nContext());
+//	}
 
 	public function buildFilterProp(Eiu $eiu): ?FilterProp {
 		if (null !== ($entityProperty = $this->getEntityProperty(false))) {

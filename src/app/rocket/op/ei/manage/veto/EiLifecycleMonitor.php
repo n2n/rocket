@@ -114,18 +114,20 @@ class EiLifecycleMonitor implements LifecycleListener {
 		
 		return isset($this->removeActions[$objHash]);
 	}
-	
+
 	/**
 	 * @param EntityManager $em
-	 * @param DraftManager $draftManager
+	 * @param N2nContext $n2nContext
 	 */
-	public function initialize(EntityManager $em, DraftManager $draftManager, N2nContext $n2nContext) {
+	public function initialize(EntityManager $em, /*DraftManager $draftManager,*/ N2nContext $n2nContext) {
 		$this->em = $em;
 		$this->n2nContext = $n2nContext;
 		
 		$persistenceContext = $this->em->getPersistenceContext();
 		foreach ($persistenceContext->getRemovedEntityObjs() as $entityObj) {
-			$this->remove($persistenceContext->getEntityModelByEntityObj($entityObj), $entityObj);
+			$class = $persistenceContext->getEntityModelByEntityObj($entityObj)->getClass();
+			$eiType = $this->spec->getEiTypeByClass($class);
+			$this->remove($eiType, $entityObj);
 		}
 		
 		$this->em->getActionQueue()->registerLifecycleListener($this);

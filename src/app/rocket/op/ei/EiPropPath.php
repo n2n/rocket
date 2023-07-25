@@ -31,7 +31,7 @@ class EiPropPath extends IdPath {
 
 	/**
 	 * @param string $id
-	 * @return \rocket\op\ei\EiPropPath
+	 * @return EiPropPath
 	 */
 	public function pushed($id) {
 		$ids = $this->ids;
@@ -50,7 +50,7 @@ class EiPropPath extends IdPath {
 	
 	/**
 	 * @param EiPropNature $eiProp
-	 * @return \rocket\op\ei\EiPropPath
+	 * @return EiPropPath
 	 */
 	public static function from(EiProp $eiProp) {
 		return $eiProp->getEiPropPath();
@@ -58,9 +58,9 @@ class EiPropPath extends IdPath {
 	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\op\ei\EiPropPath
+	 * @return EiPropPath
 	 */
-	public static function create($expression) {
+	public static function create(EiPropPath|EiuProp|EiProp|array|string $expression): EiPropPath {
 		if ($expression instanceof EiPropPath) {
 			return $expression;
 		}
@@ -87,7 +87,7 @@ class EiPropPath extends IdPath {
 	
 	/**
 	 * @param mixed|null $expression
-	 * @return NULL|\rocket\op\ei\EiPropPath
+	 * @return NULL|EiPropPath
 	 */
 	public static function build($expression) {
 		if ($expression === null) {
@@ -99,12 +99,12 @@ class EiPropPath extends IdPath {
 	
 	/**
 	 * @param mixed ...$args
-	 * @return \rocket\op\ei\EiPropPath
+	 * @return EiPropPath
 	 */
 	public function ext(...$args) {
 		return new EiPropPath(array_merge($this->ids, $this->argsToIds($args)));
 	}
-	
+
 // 	public function startsWith(EiPropPath $eiPropPath) {
 // 		$size = $this->size();
 		
@@ -120,4 +120,17 @@ class EiPropPath extends IdPath {
 		
 // 		return true;
 // 	}
+
+	/**
+	 * @param array $eiPropPaths
+	 * @return EiPropPath[]
+	 */
+	static function mapKeys(array $eiPropPaths): array {
+		$mappedEiPropPaths = [];
+		foreach ($eiPropPaths as $eiPropPath) {
+			ArgUtils::valType($eiPropPath, EiPropPath::class);
+			$mappedEiPropPaths[(string) $eiPropPath] = $eiPropPath;
+		}
+		return $mappedEiPropPaths;
+	}
 }

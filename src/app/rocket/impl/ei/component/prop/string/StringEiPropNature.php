@@ -23,10 +23,7 @@ namespace rocket\impl\ei\component\prop\string;
 
 use rocket\op\ei\util\Eiu;
 use rocket\si\content\impl\SiFields;
-use rocket\impl\ei\component\prop\string\conf\StringConfig;
-use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 
 class StringEiPropNature extends AlphanumericEiPropNature {
 
@@ -50,7 +47,8 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return $eiu->factory()->newGuiField(
 				SiFields::stringOut($eiu->field()->getValue())
-						->setMultiline($this->isMultiline()));
+						->setMultiline($this->isMultiline())
+						->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {

@@ -28,7 +28,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\op\ei\util\gui\EiuEntryGui;
+use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\si\content\SiField;
 use rocket\si\content\impl\relation\SiPanelInput;
 use rocket\si\input\CorruptedSiInputDataException;
@@ -56,7 +56,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 */
 	private $targetEiuFrame;
 	/**
-	 * @var EiuEntryGuiPool
+	 * @var EiuGuiEntryPool
 	 */
 	private $currentPool;
 	/**
@@ -78,14 +78,15 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 			array $panelDeclarations, bool $readOnly) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
-		$this->relationModel = $relationModel;
+//		$this->relationModel = $relationModel;
 		
-		$this->currentPool = new EiuEntryGuiPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
+		$this->currentPool = new EiuGuiEntryPool($panelDeclarations, $readOnly, $relationModel->isReduced(), $targetEiuFrame);
 		
 		$this->readOnly = $readOnly;
 		
 		if ($readOnly) {
-			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues());
+			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues())
+					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 			return;
 		}
 		
@@ -95,8 +96,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	}
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
+	 * @return SiPanel[]
 	 */
 	private function readValues() {
 		$this->currentPool->clear();
@@ -147,7 +147,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 }
 
 
-class EiuEntryGuiPool {
+class EiuGuiEntryPool {
 	/**
 	 * @var PanelDeclaration[]
 	 */
@@ -197,7 +197,7 @@ class EiuEntryGuiPool {
 	
 	/**
 	 * @param string $panelName
-	 * @param EiuEntryGui $eiuEntryGui
+	 * @param EiuGuiEntry $eiuGuiEntry
 	 */
 	function add(EiuEntry $eiuEntry) {
 		$panelName = $eiuEntry->getScalarValue('panel');
@@ -248,12 +248,12 @@ class EiuEntryGuiPool {
 		
 		return $siPanels;
 	}
-	
+
 	/**
-	 * @param array $siPanelInputs
-	 * @return array
+	 * @param SiPanelInput[] $siPanelInputs
+	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(array $siPanelInputs) {
+	function handleInput(array $siPanelInputs): void {
 		foreach ($siPanelInputs as $siPanelInput) {
 			ArgUtils::assertTrue($siPanelInput instanceof SiPanelInput);
 			

@@ -38,10 +38,10 @@ use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
 use rocket\op\ei\EiCmdPath;
 use n2n\l10n\Lstr;
 use rocket\impl\ei\component\prop\relation\command\TargetEditEiCommandNature;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 
-class RelationConfig extends PropConfigAdaption {
+class RelationConfig {
 	const ATTR_TARGET_EXTENSION_ID_KEY = 'targetExtension';
 	const ATTR_MIN_KEY = 'min';	// tm
 	const ATTR_MAX_KEY = 'max'; // tm

@@ -32,7 +32,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	public controls: Array<SiControl> = [];
 
 	constructor(public frame: SiFrame|null, public declaration: SiDeclaration, public siService: SiService,
-				public siModStateService: SiModStateService) {
+			public siModStateService: SiModStateService) {
 	}
 
 	getBoundValueBoundaries(): SiValueBoundary[] {
@@ -220,11 +220,11 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 			}
 		}
 
-		const toolbarStrucutreModels = [...toolbarResolver.toolbarUiStructureModels];
+		const toolbarStructureModels = [...toolbarResolver.toolbarUiStructureModels];
 		if (this.siValueBoundary.isMultiType()) {
-			toolbarStrucutreModels.push(this.createTypeSwitchUiStructureModel());
+			toolbarStructureModels.push(this.createTypeSwitchUiStructureModel());
 		}
-		this.toolbarStructureModelsSubject.next(toolbarStrucutreModels);
+		this.toolbarStructureModelsSubject.next(toolbarStructureModels);
 	}
 
 	private isBoundStructureInsideGroup(): boolean {

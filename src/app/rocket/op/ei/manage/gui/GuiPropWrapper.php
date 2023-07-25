@@ -27,6 +27,7 @@ use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\EiLaunch;
+use rocket\op\ei\component\prop\EiProp;
 
 class GuiPropWrapper {
 	
@@ -53,11 +54,11 @@ class GuiPropWrapper {
 	}
 	
 	/**
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @return DisplayDefinition|null
 	 */
-	function buildDisplayDefinition(EiGuiFrame $eiGuiFrame, bool $defaultDisplayedRequired) {
-		$displayDefinition = $this->guiProp->buildDisplayDefinition(new Eiu($eiGuiFrame, $this->eiPropPath));
+	function buildDisplayDefinition(EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
+		$displayDefinition = $this->guiProp->buildDisplayDefinition(new Eiu($eiGuiMaskDeclaration, $this->eiPropPath));
 		
 		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
 			return null;
@@ -67,7 +68,7 @@ class GuiPropWrapper {
 			return $displayDefinition;
 		}
 		
-		$n2nLocale = $eiGuiFrame->getEiFrame()->getN2nContext()->getN2nLocale();
+		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
 		
 		if ($displayDefinition->getLabel() === null) {
 			$displayDefinition->setLabel($this->getEiProp()->getLabelLstr()->t($n2nLocale));
@@ -81,9 +82,9 @@ class GuiPropWrapper {
 		return $displayDefinition;
 	}
 	
-	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiFrame $eiGuiFrame, bool $defaultDisplayedRequired) {
+	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
 		return $this->guiProp->getForkGuiDefinition()->getGuiPropWrapperByDefPropPath($forkedDefPropPath)
-				->buildDisplayDefinition($eiGuiFrame, $defaultDisplayedRequired);
+				->buildDisplayDefinition($eiGuiMaskDeclaration, $defaultDisplayedRequired);
 	}
 	
 	/**
@@ -114,18 +115,16 @@ class GuiPropWrapper {
 
 	/**
 	 * @param N2nContext $n2nContext
-	 * @param EiGuiFrame $eiGuiFrame
+	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @param array|null $forkedDefPropPaths
 	 * @return GuiPropSetup
 	 */
-	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiFrame $eiGuiFrame, ?array $forkedDefPropPaths) {
-		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiFrame, $this->eiPropPath), $forkedDefPropPaths);
+	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration, ?array $forkedDefPropPaths) {
+		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiMaskDeclaration, $this->eiPropPath), $forkedDefPropPaths);
 	}
 	
-	/**
-	 * @return EiPropNature
-	 */
-	function getEiProp() {
+
+	function getEiProp(): EiProp {
 		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
 	

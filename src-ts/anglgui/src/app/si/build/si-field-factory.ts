@@ -91,7 +91,9 @@ export class SiFieldFactory {
 		switch (extr.reqString('type')) {
 
 		case SiFieldType.STRING_OUT:
-			return new StringOutSiField(dataExtr.nullaString('value'));
+			const stringOutSiField = new StringOutSiField(dataExtr.nullaString('value'));
+			stringOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return stringOutSiField;
 
 		case SiFieldType.STRING_IN:
 			const stringInSiField = new StringInSiField(prop.label, dataExtr.nullaString('value'), dataExtr.reqBoolean('multiline'));
@@ -129,7 +131,9 @@ export class SiFieldFactory {
 			return booleanInSiField;
 
 		case SiFieldType.FILE_OUT:
-			return new FileOutSiField(SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
+			const fileOutSiField = new FileOutSiField(SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
+			fileOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return fileOutSiField;
 
 		case SiFieldType.FILE_IN:
 			const fileInSiField = new FileInSiField(dataExtr.reqString('apiFieldUrl'),
@@ -146,6 +150,7 @@ export class SiFieldFactory {
 			const linkOutSiField = new LinkOutSiField(SiEssentialsFactory.createNavPoint(dataExtr.reqObject('navPoint')),
 					dataExtr.reqString('label'), this.injector);
 			linkOutSiField.lytebox = dataExtr.reqBoolean('lytebox');
+			linkOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return linkOutSiField;
 
 		case SiFieldType.ENUM_IN:
@@ -176,7 +181,7 @@ export class SiFieldFactory {
 					this.injector.get(TranslationService),
 					new SiBuildTypes.SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryOutSiField.config.reduced = dataExtr.reqBoolean('reduced');
-			// embeddedEntryOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			embeddedEntryOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			return embeddedEntryOutSiField;
 
@@ -196,9 +201,11 @@ export class SiFieldFactory {
 			return embeddedEntryInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_OUT:
-			return new EmbeddedEntryPanelsOutSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
+			const embeddedEntryPanelsOutSiField = new EmbeddedEntryPanelsOutSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
 					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
 					new SiBuildTypes.SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
+			embeddedEntryPanelsOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return embeddedEntryPanelsOutSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
 			const embeddedEntryPanelsInSiField = new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
@@ -228,19 +235,27 @@ export class SiFieldFactory {
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);
+			splitContextOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return splitContextOutSiField;
 
 		case SiFieldType.SPLIT_PLACEHOLDER:
 			const splitSiField = new SplitSiField(dataExtr.reqString('refPropId'), this.injector.get(SplitViewStateService),
 					this.injector.get(TranslationService));
 			splitSiField.copyStyle = this.createSplitStyle(dataExtr.reqObject('copyStyle'));
+			splitSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return splitSiField;
 
 		case SiFieldType.CRUMB_OUT:
-			return new CrumbOutSiField(SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('crumbGroups')));
+			const crumbOutSiField = new CrumbOutSiField(SiEssentialsFactory.createCrumbGroups(
+					dataExtr.reqArray('crumbGroups')));
+			crumbOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return crumbOutSiField;
 
 		case SiFieldType.IFRAME_OUT:
-			return new IframeOutSiField(dataExtr.nullaString('url'), dataExtr.nullaString('srcDoc'));
+			const iframeOutSiField = new IframeOutSiField(dataExtr.nullaString('url'),
+					dataExtr.nullaString('srcDoc'));
+			iframeOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return iframeOutSiField;
 
 		case SiFieldType.IFRAME_IN:
 			// const formData = new Map<string, string>(Object.entries((dataExtr.reqObject('params') as any).formData));

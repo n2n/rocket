@@ -23,7 +23,7 @@ namespace rocket\op\ei\component\modificator;
 
 use rocket\op\ei\component\EiComponentNature;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\draft\DraftDefinition;
 use rocket\op\ei\util\Eiu;
 use n2n\util\ex\IllegalStateException;
@@ -43,12 +43,12 @@ interface EiModNature extends EiComponentNature {
 	/**
 	 * @param Eiu $eiu
 	 */
-	public function setupEiGuiFrame(Eiu $eiu);
+	public function setupEiGuiMaskDeclaration(Eiu $eiu);
 	
 	/**
-	 * @param EiEntryGui $eiEntryGui
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 */
-	public function setupEiEntryGui(EiEntryGui $eiEntryGui);
+	public function setupEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary);
 	
 	/**
 	 * @param DraftDefinition $draftDefinition

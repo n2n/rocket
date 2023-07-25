@@ -31,14 +31,14 @@ use n2n\util\type\TypeConstraint;
 use n2n\impl\web\dispatch\mag\model\group\TogglerMag;
 use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\TypeConstraints;
 
 // @todo validate if dataSet are arrays
 
-class EnumConfig extends PropConfigAdaption {
+class EnumConfig {
 	const ATTR_OPTIONS_KEY = 'options';
 	const ATTR_EMPTY_LABEL_KEY = 'emptyLabel';
 	const ASSOCIATED_GUI_FIELD_KEY = 'associatedGuiProps';

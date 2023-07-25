@@ -26,7 +26,7 @@ use n2n\util\type\ArgUtils;
 class SiPartialContent implements \JsonSerializable {
 	private $count;
 	private $offset = 0;
-	private $entries;
+	private $valueBoundaries;
 	
 
 	/**
@@ -35,7 +35,7 @@ class SiPartialContent implements \JsonSerializable {
 	 */
 	function __construct(int $count, array $entries = []) {
 		$this->count = $count;
-		$this->setEntries($entries);
+		$this->setValueBoundaries($entries);
 	}
 	
 	/**
@@ -70,20 +70,20 @@ class SiPartialContent implements \JsonSerializable {
 	}
 
 	/**
-	 * @param SiValueBoundary[] $siEntries
-	 * @return \rocket\si\meta\SiDeclaration
+	 * @param SiValueBoundary[] $valueBoundaries
+	 * @return static
 	 */
-	function setEntries(array $entries) {
-		ArgUtils::valArray($entries, SiValueBoundary::class);
-		$this->entries = $entries;
+	function setValueBoundaries(array $valueBoundaries): static {
+		ArgUtils::valArray($valueBoundaries, SiValueBoundary::class);
+		$this->valueBoundaries = $valueBoundaries;
 		return $this;
 	}
 	
 	/**
 	 * @return SiValueBoundary[]
 	 */
-	function getEntries() {
-		return $this->entries;
+	function getValueBoundaries(): array {
+		return $this->valueBoundaries;
 	}
 	
 	/**
@@ -92,7 +92,7 @@ class SiPartialContent implements \JsonSerializable {
 	 */
 	function jsonSerialize(): mixed {
 		return [
-			'siValueBoundary' => $this->entries,
+			'siValueBoundary' => $this->valueBoundaries,
 			'count' => $this->count,
 			'offset' => $this->offset
 		];

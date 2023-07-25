@@ -86,7 +86,7 @@ export class EmbeddedEntryObtainer	{
 			if (this.obtainSummary) {
 				result = response.results.shift()!;
 				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
-				summarySiGui.entry = result.valueBoundary;
+				summarySiGui.valueBoundary = result.valueBoundary;
 			}
 
 			siEmbeddedEntries.push(new SiEmbeddedEntry(siComp, summarySiGui));
@@ -115,7 +115,7 @@ export class EmbeddedEntryObtainer	{
 		siEmbeddedEntry.entry.replace(siValResult.getResults[0].valueBoundary!);
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry = siValResult.getResults[1].valueBoundary;
+			siEmbeddedEntry.summaryComp.valueBoundary = siValResult.getResults[1].valueBoundary;
 		}
 	}
 
@@ -125,7 +125,7 @@ export class EmbeddedEntryObtainer	{
 		instruction.getInstructions[0] = SiValGetInstruction.create({ bulky: true, readOnly: false });
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.entry = null;
+			siEmbeddedEntry.summaryComp.valueBoundary = null;
 			instruction.getInstructions[1] = SiValGetInstruction.create({ bulky: false, readOnly: true });
 		}
 

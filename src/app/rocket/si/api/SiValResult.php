@@ -111,7 +111,7 @@ class SiValGetResult implements \JsonSerializable {
 	/**
 	 * @param \rocket\si\content\SiValueBoundary|null $entries
 	 */
-	public function setEntry(?SiValueBoundary $entry) {
+	public function setSiValueBoundaryEntry(?SiValueBoundary $entry) {
 		$this->entry = $entry;
 	}
 

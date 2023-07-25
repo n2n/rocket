@@ -37,7 +37,7 @@ class Type extends DisplayConfigTrait {
 	public function buildDisplayDefinition(Eiu $eiu): ?DisplayDefinition {
 // 		$eiu->prop()->getLabel();
 // 		$eiu->prop()->getHelpText();
-		return $this->getDisplayConfig()->toDisplayDefinition($eiu->guiFrame()->getViewMode(),
+		return $this->getDisplayConfig()->toDisplayDefinition($eiu->guiMaskDeclaration()->getViewMode(),
 				$eiu->prop()->getLabel());
 	}
 

@@ -41,15 +41,22 @@ use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\op\ei\component\prop\EiPropNature;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\component\prop\EiProp;
-use rocket\op\ei\util\gui\EiuGui;
 use rocket\op\ei\manage\gui\EiGui;
 use rocket\op\launch\TransactionApproveAttempt;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
+use rocket\op\ei\util\frame\EiuFrame;
+use rocket\op\ei\util\gui\EiuGuiEntry;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\util\gui\EiuGuiValueBoundary;
+use rocket\op\ei\manage\gui\EiFieldAbstraction;
+
 
 class EiuEntry {
-	private $eiEntry;
+	private ?EiEntry $eiEntry;
 	private $eiuAnalyst;
 	private $eiuObject;
 	private $eiuMask;
@@ -70,9 +77,9 @@ class EiuEntry {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\op\ei\util\frame\EiuFrame
+	 * @return EiuFrame
 	 */
-	private function getEiuFrame(bool $required = true) {
+	private function getEiuFrame(bool $required = true): EiuFrame {
 		return $this->eiuAnalyst->getEiuFrame($required);
 	}
 	
@@ -282,7 +289,7 @@ class EiuEntry {
 	/**
 	 * @return boolean
 	 */
-	public function isAccessible() {
+	public function isAccessible(): bool {
 		if (null !== $this->accessible) return $this->accessible;
 		
 		if ($this->eiEntry !== null) {
@@ -291,41 +298,52 @@ class EiuEntry {
 		
 		// @todo check exception and make $this->accessible = false if thrown.
 		$this->getEiEntry(true);
-		$this->accessible = true;
+		return $this->accessible = true;
 	}
-	
-	
-	/**
-	 * @param int $viewMode
-	 * @param array $defPropPaths
-	 * @param bool $guiStructureDeclarationsRequired
-	 * @return \rocket\op\ei\util\gui\EiuGui
-	 */
-	function newGui(bool $bulky = true, bool $readOnly = true, array $defPropPathsArg = null, 
-			bool $guiStructureDeclarationsRequired = true, bool $determineEiMask = true) {
-		$viewMode = ViewMode::determine($bulky, $readOnly, $this->isNew());
+
+	function newGuiValueBoundary(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
+			array $defPropPathsArg = null, bool $contextEiMaskUsed = false, int $treeLevel = null): EiuGuiValueBoundary {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		
-		$eiEntry = $this->getEiEntry(true);
-		$eiMask = null;
-		if ($determineEiMask) {
-			$eiMask = $eiEntry->getEiMask();
-		} else {
-			$eiMask = $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask();
-		}
-		
-		$eiGui = new EiGui($eiMask->getEiEngine()->obtainEiGuiModel($viewMode, $defPropPaths,
-				$guiStructureDeclarationsRequired));
-		$eiGui->appendEiEntryGui($this->eiuAnalyst->getEiFrame(true), [$eiEntry]);
-		
-		return new EiuGui($eiGui, null, $this->eiuAnalyst);
+		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
+
+		$eiMaskId = $contextEiMaskUsed
+				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
+				: null;
+
+		$eiGuiValueBoundary = $eiFrameUtil->createEiGuiValueBoundaryFromEiEntry($this->getEiEntry(), $bulky, $readOnly,
+				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths, $treeLevel);
+
+		return new EiuGuiValueBoundary($eiGuiValueBoundary, null, $this->eiuAnalyst);
+	}
+
+	/**
+	 * @param bool $bulky
+	 * @param bool $readOnly
+	 * @param bool $entryGuiControlsIncluded
+	 * @param array|null $defPropPathsArg
+	 * @param bool $contextEiMaskUsed
+	 * @return EiuGuiEntry
+	 */
+	function newGuiEntry(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
+			array $defPropPathsArg = null, bool $contextEiMaskUsed = false): EiuGuiEntry {
+		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
+
+		$eiMaskId = $contextEiMaskUsed
+				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
+				: null;
+
+		$eiGuiEntry = $eiFrameUtil->createEiGuiEntry($this->eiEntry, $bulky, $readOnly,
+				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths);
+
+		return new EiuGuiEntry($eiGuiEntry, $this, null, $this->eiuAnalyst);
 	}
 	
 // 	/**
 // 	 * @param bool $eiObjectObj
 // 	 * @param bool $editable
 // 	 * @throws EiuPerimeterException
-// 	 * @return \rocket\op\ei\util\gui\EiuEntryGui
+// 	 * @return \rocket\op\ei\util\gui\EiuGuiEntry
 // 	 */
 // 	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
 // 			bool $determineEiMask = true) {
@@ -340,30 +358,16 @@ class EiuEntry {
 // 		$viewMode = $this->deterViewMode($bulky, $editable);
 // 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-// 		$eiGuiFrame = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiEngine->getEiMask())
-// 				->createEiGuiFrame($eiFrame, $viewMode);
+// 		$eiGuiMaskDeclaration = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+// 				->createEiGuiMaskDeclaration($eiFrame, $viewMode);
 		
-// 		return new EiuEntryGui($eiGuiFrame->createEiEntryGui($eiEntry, $treeLevel), null, $this->eiuAnalyst);
+// 		return new EiuGuiEntry($eiGuiMaskDeclaration->createEiGuiValueBoundary($eiEntry, $treeLevel), null, $this->eiuAnalyst);
 // 	}
-	
-	public function newCustomEntryGui(\Closure $uiFactory, array $defPropPaths, bool $bulky = true, 
-			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
-// 		$eiMask = null;
-// 		if ($determineEiMask) {
-// 			$eiMask = $this->determineEiMask();
-// 		} else {
-// 			$eiMask = $this->getEiFrame()->getContextEiEngine()->getEiMask();
-// 		}
-		
-		$viewMode = $this->deterViewMode($bulky, $editable);
-		$eiuGuiFrame = $this->getEiuFrame()->newCustomGui($viewMode, $uiFactory, $defPropPaths);
-		return $eiuGuiFrame->appendNewEntryGui($this, $treeLevel);
-	}
 	
 // 	/**
 // 	 * @param int $viewMode
 // 	 * @param bool $determineEiMask
-// 	 * @return \rocket\op\ei\util\gui\EiuEntryGuiAssembler
+// 	 * @return \rocket\op\ei\util\gui\EiuGuiEntryAssembler
 // 	 */
 // 	public function newEntryGuiAssembler(int $viewMode, bool $determineEiMask = true) {
 // 		$eiFrame = $this->getEiuFrame()->getEiFrame();
@@ -374,18 +378,18 @@ class EiuEntry {
 // 			$eiMask = $eiFrame->getContextEiEngine()->getEiMask();
 // 		}
 		
-// 		$eiGuiFrame = $eiMask->createEiGuiFrame($eiFrame, $viewMode, false);
-// 		$eiGuiFrame->init(new DummyEiGuiSiFactory(), $eiGuiFrame->getGuiDefinition()->getDefPropPaths());
+// 		$eiGuiMaskDeclaration = $eiMask->createEiGuiMaskDeclaration($eiFrame, $viewMode, false);
+// 		$eiGuiMaskDeclaration->init(new DummyEiGuiSiFactory(), $eiGuiMaskDeclaration->getGuiDefinition()->getDefPropPaths());
 		
-// 		$eiEntryGuiAssembler = new EiEntryGuiAssembler(new EiEntryGui($eiGuiFrame, $this->eiEntry));
+// 		$eiGuiValueBoundaryAssembler = new EiGuiValueBoundaryAssembler(new EiGuiValueBoundary($eiGuiMaskDeclaration, $this->eiEntry));
 		
-// // 		if ($parentEiEntryGui->isInitialized()) {
-// // 			throw new \InvalidArgumentException('Parent EiEntryGui already initialized.');
+// // 		if ($parentEiGuiValueBoundary->isInitialized()) {
+// // 			throw new \InvalidArgumentException('Parent EiGuiValueBoundary already initialized.');
 // // 		}
 		
-// // 		$parentEiEntryGui->registerEiEntryGuiListener(new InitListener($eiEntryGuiAssembler));
+// // 		$parentEiGuiValueBoundary->registerEiGuiValueBoundaryListener(new InitListener($eiGuiValueBoundaryAssembler));
 		
-// 		return new EiuEntryGuiAssembler($eiEntryGuiAssembler, null, $this->eiuAnalyst);
+// 		return new EiuGuiEntryAssembler($eiGuiValueBoundaryAssembler, null, $this->eiuAnalyst);
 // 	}
 	
 // 	/**
@@ -431,18 +435,19 @@ class EiuEntry {
 		return $this->getEiEntry()->getValue(EiPropPath::create($eiPropPath));
 	}
 	
-	public function setValue($eiPropPath, $value) {
-		return $this->getEiEntry()->setValue(EiPropPath::create($eiPropPath), $value);
+	public function setValue($eiPropPath, $value): static {
+		$this->getEiEntry()->setValue(EiPropPath::create($eiPropPath), $value);
+		return $this;
 	}
 	
-	public function getValues() {
-		$eiEntry = $this->getEiEntry();
-		$values = array();
-		foreach (array_keys($eiEntry->getEiFieldWrappers()) as $eiPropPathStr) {
-			$values[$eiPropPathStr] = $this->getEiEntry()->getValue($eiPropPathStr);
-		}
-		return $values;
-	}
+//	public function getValues() {
+//		$eiEntry = $this->getEiEntry();
+//		$values = array();
+//		foreach (array_keys($eiEntry->getEiFieldWrappers()) as $eiPropPathStr) {
+//			$values[$eiPropPathStr] = $this->getEiEntry()->getValue($eiPropPathStr);
+//		}
+//		return $values;
+//	}
 	
 	/**
 	 * @param $eiPropPath
@@ -501,12 +506,12 @@ class EiuEntry {
 		$this->getEiuFrame()->copyEntryValuesTo($this, $toEiEntryArg, $eiPropPaths);
 	}
 	
-	/**
-	 * @return \rocket\op\ei\EiEngine
-	 */
-	public function getEiEngine() {
-		return $this->getEiuFrame()->determineEiEngine($this);
-	}
+//	/**
+//	 * @return \rocket\op\ei\EiEngine
+//	 */
+//	public function getEiEngine() {
+//		return $this->getEiuFrame()->determineEiEngine($this);
+//	}
 	
 // 	/**
 // 	 * @param mixed $eiPropPath
@@ -533,14 +538,14 @@ class EiuEntry {
 		return $this->mask()->engine()->createIdentityString($this, true, $n2nLocale);
 	}
 	
-	/**
-	 * @param int $limit
-	 * @param int $num
-	 * @return \rocket\op\ei\manage\draft\Draft[]
-	 */
-	public function lookupDrafts(int $limit = null, int $num = null) {
-		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getId(), $limit, $num);
-	}
+//	/**
+//	 * @param int $limit
+//	 * @param int $num
+//	 * @return \rocket\op\ei\manage\draft\Draft[]
+//	 */
+//	public function lookupDrafts(int $limit = null, int $num = null) {
+//		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getId(), $limit, $num);
+//	}
 	
 	public function acceptsValue($eiPropPath, $value) {
 		return $this->getEiEntry()->acceptsValue(EiPropPath::create($eiPropPath), $value);
@@ -564,14 +569,14 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @param DefPropPath $defPropPath
+	 * @param DefPropPath|string|EiPropPath|array $defPropPath
 	 * @param bool $required
-	 * @throws EiFieldOperationFailedException
+	 * @return EiFieldAbstraction|null
 	 * @throws GuiException
-	 * @return \rocket\op\ei\manage\entry\EiFieldWrapper|null
-	 */
+	 * @throws EiFieldOperationFailedException
+	 	 */
 	public function getEiFieldAbstraction($defPropPath, bool $required = false) {
-		$guiDefinition = $this->mask()->engine()->getGuiDefinition();
+		$guiDefinition = $this->eiEntry->getEiMask()->getEiEngine()->getGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getN2nContext(true),
 					$this->getEiEntry(), DefPropPath::create($defPropPath));
@@ -634,17 +639,17 @@ class EiuEntry {
 		return $this->getEiuFrame()->newFieldMap($this, $forkEiPropPath, $object);
 	}
 	
-	/**
-	 * @param EiPropNature $eiProp
-	 * @return boolean
-	 */
-	public function isDraftProp($eiPropPath) {
-		$eiPropPath = EiPropPath::create($eiPropPath);
-		
-		return $this->getEiObject()->isDraft()
-				&& $this->getEiEntry(true)->getEiMask()->getEiEngine()->getDraftDefinition()
-						->containsEiPropPath($eiPropPath);
-	}
+//	/**
+//	 * @param EiPropNature $eiProp
+//	 * @return boolean
+//	 */
+//	public function isDraftProp($eiPropPath) {
+//		$eiPropPath = EiPropPath::create($eiPropPath);
+//
+//		return $this->getEiObject()->isDraft()
+//				&& $this->getEiEntry(true)->getEiMask()->getEiEngine()->getDraftDefinition()
+//						->containsEiPropPath($eiPropPath);
+//	}
 	
 	/**
 	 * @param EiPropNature $eiProp
@@ -657,23 +662,24 @@ class EiuEntry {
 			return $this->getEiFieldWrapper($eiPropPath)->getEiFieldMap()->getObject();
 		}
 			
-		return $this->getEiEntry(true)->getEiMask()->getForkObject($eiPropPath->poped(), $this->eiObject); 
+		return $this->getEiEntry(true)->getEiMask()
+				->getForkObject($eiPropPath->poped(), $this->eiEntry->getEiObject());
 	}
 	
 	/**
 	 * @param EiPropNature $eiProp
 	 * @return NULL|mixed
-	 *@throws EiFieldOperationFailedException
+	 * @throws EiFieldOperationFailedException
 	 */
 	public function readNativValue($eiPropPath) {
 		$eiPropPath = EiPropPath::from($eiPropPath);
 		
-		if ($this->isDraftProp($eiPropPath)) {
-			return $this->getEiObject()->getDraft()->getDraftValueMap()->getValue($eiPropPath);
-		}
+//		if ($this->isDraftProp($eiPropPath)) {
+//			return $this->getEiObject()->getDraft()->getDraftValueMap()->getValue($eiPropPath);
+//		}
 		
 		$eiProp = $this->getEiEntry(true)->getEiMask()->getEiPropCollection()->getByPath($eiPropPath);
-		$propertyAccessProxy = $eiProp->getPropertyAccessProxy();
+		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
 		if ($propertyAccessProxy !== null) {
 			return $propertyAccessProxy->getValue($this->getForkObject($eiPropPath));
 		}
@@ -686,13 +692,13 @@ class EiuEntry {
 	 * @param mixed $value
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function writeNativeValue(EiProp $eiProp, $value) {
+	public function writeNativeValue(EiProp $eiProp, mixed $value): void {
 		$eiPropPath = $eiProp->getEiPropPath();
 		
-		if ($this->isDraftProp($eiProp)) {
-			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
-			return;
-		}
+//		if ($this->isDraftProp($eiProp)) {
+//			$this->eiObject->getDraft()->getDraftValueMap()->setValue($eiPropPath);
+//			return;
+//		}
 		
 		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
 		if ($propertyAccessProxy !== null) {
@@ -752,7 +758,7 @@ class EiuEntry {
 	 * @return \n2n\persistence\orm\util\NestedSetUtils
 	 */
 	private function createNestedSetUtils(NestedSetStrategy $nestedSetStrategy) {
-		return new NestedSetUtils($this->eiuAnalyst->getEiLaunch()->getEntityManager(), 
+		return new NestedSetUtils($this->eiuAnalyst->getEiLaunch(true)->getEntityManager(),
 				$this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel()->getClass(),
 				$nestedSetStrategy);
 	}
@@ -783,7 +789,7 @@ class EiuEntry {
 		
 		$nsu = $this->valNestedInsertable();
 		$nsu->insertAfter($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
-		$this->eiuAnalyst->getEiLaunch()->getEntityManager()->flush();
+		$this->eiuAnalyst->getEiLaunch(true)->getEntityManager()->flush();
 		return true;
 	}
 	
@@ -796,7 +802,7 @@ class EiuEntry {
 		
 		$nsu = $this->valNestedInsertable();
 		$nsu->insertBefore($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
-		$this->eiuAnalyst->getEiLaunch()->getEntityManager()->flush();
+		$this->eiuAnalyst->getEiLaunch(true)->getEntityManager()->flush();
 		return true;
 	}
 	
@@ -809,7 +815,7 @@ class EiuEntry {
 		
 		$nsu = $this->valNestedInsertable();
 		$nsu->insert($this->eiEntry->getEiObject()->getEiEntityObj()->getEntityObj(), $eiObject->getEiEntityObj()->getEntityObj());
-		$this->eiuAnalyst->getEiLaunch()->getEntityManager()->flush();
+		$this->eiuAnalyst->getEiLaunch(true)->getEntityManager()->flush();
 		return true;
 	}
 	
@@ -860,23 +866,23 @@ class EiuEntry {
 	}
 }  
 
-// class InitListener implements EiEntryGuiListener {
-// 	private $eiEntryGuiAssembler;
+// class InitListener implements EiGuiValueBoundaryListener {
+// 	private $eiGuiValueBoundaryAssembler;
 	
-// 	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler) {
-// 		$this->eiEntryGuiAssembler = $eiEntryGuiAssembler;
+// 	public function __construct(EiGuiValueBoundaryAssembler $eiGuiValueBoundaryAssembler) {
+// 		$this->eiGuiValueBoundaryAssembler = $eiGuiValueBoundaryAssembler;
 // 	}
 	
-// 	public function finalized(EiEntryGui $eiEntryGui) {
-// 		$eiEntryGui->unregisterEiEntryGuiListener($this);
+// 	public function finalized(EiGuiValueBoundary $eiGuiValueBoundary) {
+// 		$eiGuiValueBoundary->unregisterEiGuiValueBoundaryListener($this);
 		
-// 		$this->eiEntryGuiAssembler->finalize();
+// 		$this->eiGuiValueBoundaryAssembler->finalize();
 // 	}
 
-// 	public function onSave(EiEntryGui $eiEntryGui) {
+// 	public function onSave(EiGuiValueBoundary $eiGuiValueBoundary) {
 // 	}
 
-// 	public function saved(EiEntryGui $eiEntryGui) {
+// 	public function saved(EiGuiValueBoundary $eiGuiValueBoundary) {
 // 	}
 // }
 

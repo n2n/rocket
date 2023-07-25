@@ -22,52 +22,53 @@
 namespace rocket\op\ei\util\gui;
 
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiEntryGuiAssembler;
+use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\manage\gui\field\GuiField;
 
-class EiuEntryGuiAssembler {
-	private $eiEntryGuiAssembler;
-	private $eiuEntryGui;
+class EiuGuiEntryAssembler {
+	private $eiGuiValueBoundaryAssembler;
+	private $eiuGuiEntry;
 	private $eiuAnalyst;
 	
-	public function __construct(EiEntryGuiAssembler $eiEntryGuiAssembler, ?EiuEntryGui $eiuEntryGui,
+	public function __construct(EiGuiValueBoundaryAssembler $eiGuiValueBoundaryAssembler, ?EiuGuiEntry $eiuGuiEntry,
 			EiuAnalyst $eiuAnalyst) {
-		$this->eiEntryGuiAssembler = $eiEntryGuiAssembler;
-		$this->eiuEntryGui = $eiuEntryGui;
+		$this->eiGuiValueBoundaryAssembler = $eiGuiValueBoundaryAssembler;
+		$this->eiuGuiEntry = $eiuGuiEntry;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
-	
+
 	/**
-	 * @return \rocket\op\ei\manage\gui\EiEntryGuiAssembler
+	 * @return EiGuiValueBoundaryAssembler
 	 */
-	public function getEiEntryGuiAssembler() {
-		return $this->eiEntryGuiAssembler;
+	public function getEiGuiValueBoundaryAssembler() {
+		return $this->eiGuiValueBoundaryAssembler;
 	}
 	
-	/**
-	 * @return EiuEntryGui 
-	 */
-	public function getEiuEntryGui() {
-		if ($this->eiuEntryGui === null) {
-			$this->eiuEntryGui = new EiuEntryGui($this->eiEntryGuiAssembler->getEiEntryGui(), null, null, $this->eiuAnalyst);
-		}
-		
-		return $this->eiuEntryGui;
-	}
+//	/**
+//	 * @return EiuGuiEntry
+//	 */
+//	public function getEiuGuiEntry() {
+//		if ($this->eiuGuiEntry === null) {
+//			$this->eiuGuiEntry = new EiuGuiEntry($this->eiGuiValueBoundaryAssembler->getEiGuiValueBoundary(), null,
+//					null, $this->eiuAnalyst);
+//		}
+//
+//		return $this->eiuGuiEntry;
+//	}
 	
 	/**
 	 * @param DefPropPath|string $defPropPath
 	 * @return GuiField
 	 */
 	public function assembleGuiField($defPropPath) {
-		return $this->eiEntryGuiAssembler->assembleGuiField(DefPropPath::create($defPropPath));
+		return $this->eiGuiValueBoundaryAssembler->assembleGuiField(DefPropPath::create($defPropPath));
 	}
 	
 	/**
-	 * @see EiEntryGuiAssembler::finlize()
+	 * @see EiGuiValueBoundaryAssembler::finlize()
 	 */
 	public function finalize() {
-		$this->eiEntryGuiAssembler->finalize();
+		$this->eiGuiValueBoundaryAssembler->finalize();
 	}
 }

@@ -54,7 +54,7 @@ class DefPropPath implements Hashable {
 	/**
 	 * @param int $offset
 	 * @param int|null $length
-	 * @return \rocket\op\ei\manage\DefPropPath
+	 * @return DefPropPath
 	 */
 	public function subDefPropPath(int $offset, int $length = null) {
 		return new DefPropPath(array_slice($this->eiPropPaths, $offset, $length));
@@ -86,8 +86,8 @@ class DefPropPath implements Hashable {
 	}
 	
 	/**
-	 * @throws IllegalStateException
-	 * @return \rocket\op\ei\manage\DefPropPath
+	 * @return DefPropPath
+	 *@throws IllegalStateException
 	 */
 	public function getShifted() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -99,8 +99,8 @@ class DefPropPath implements Hashable {
 	}
 	
 	/**
-	 * @throws IllegalStateException
-	 * @return \rocket\op\ei\manage\DefPropPath
+	 * @return DefPropPath
+	 *@throws IllegalStateException
 	 */
 	public function getPoped() {
 		$eiPropPaths = $this->eiPropPaths;
@@ -178,7 +178,7 @@ class DefPropPath implements Hashable {
 	
 	/**
 	 * @param mixed $expression
-	 * @return \rocket\op\ei\manage\DefPropPath
+	 * @return DefPropPath
 	 * @throws \InvalidArgumentException
 	 */
 	public static function create(mixed $expression) {
@@ -212,7 +212,7 @@ class DefPropPath implements Hashable {
 	
 	/**
 	 * @param array $expressions
-	 * @return \rocket\op\ei\manage\DefPropPath[]
+	 * @return DefPropPath[]
 	 * @throws \InvalidArgumentException
 	 */
 	public static function createArray(array $expressions) {
@@ -225,14 +225,29 @@ class DefPropPath implements Hashable {
 	
 	/**
 	 * @param array $expressions
-	 * @return \rocket\op\ei\manage\DefPropPath[]|null
+	 * @return DefPropPath[]|null
 	 * @throws \InvalidArgumentException
 	 */
-	public static function buildArray(?array $expressions) {
+	public static function buildArray(?array $expressions): ?array {
 		if ($expressions === null) {
 			return null;
 		}
 		
 		return self::createArray($expressions);
+	}
+
+	/**
+	 * @param DefPropPath[] $defPropPaths
+	 * @return EiPropPath[]
+	 */
+	static function extractFirstEiPropPaths(array $defPropPaths): array {
+		ArgUtils::valArray($defPropPaths, DefPropPath::class);
+
+		$eiPropPaths = [];
+		foreach ($defPropPaths as $defPropPath) {
+			$eiPropPath = $defPropPath->getFirstEiPropPath();
+			$eiPropPaths[(string) $eiPropPath] = $eiPropPath;
+		}
+		return $eiPropPaths;
 	}
 }

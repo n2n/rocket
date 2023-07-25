@@ -21,11 +21,6 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use rocket\op\ei\manage\gui\GuiPropFork;
-use rocket\op\ei\manage\gui\field\GuiFieldFork;
-use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiEntryGuiAssembler;
-use rocket\op\ei\EiPropPath;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\op\ei\manage\LiveEiObject;
 use n2n\util\type\CastUtils;
@@ -43,7 +38,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 use rocket\op\ei\manage\gui\GuiProp;
 use n2n\web\dispatch\mag\Mag;
 use rocket\op\ei\manage\gui\field\GuiFieldForkEditable;
-use rocket\op\ei\util\gui\EiuEntryGuiAssembler;
+use rocket\op\ei\util\gui\EiuGuiEntryAssembler;
 use rocket\op\ei\manage\gui\GuiDefinition;
 use rocket\op\ei\manage\entry\EiField;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
@@ -53,7 +48,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\op\ei\manage\EiObject;
 use n2n\reflection\property\PropertyAccessProxy;
 
-class IntegratedOneToOneEiProp extends RelationEiPropNatureAdapter /*implements GuiPropFork*/ {
+class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*implements GuiPropFork*/ {
 
 	public function __construct(ToOneEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
 		ArgUtils::assertTrue($entityProperty->getType() === RelationEntityProperty::TYPE_ONE_TO_ONE);
@@ -64,80 +59,83 @@ class IntegratedOneToOneEiProp extends RelationEiPropNatureAdapter /*implements 
 	
 	private GuiDefinition $forkedGuiDefinition;
 	
-	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
-		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
-				->getGuiDefinition();
-		
-		return $this;
-	}
+//	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+//		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
+//				->getGuiDefinition();
+//
+//		return $this;
+//	}
 	
-	public function getForkedGuiDefinition(): GuiDefinition {
-		return $this->forkedGuiDefinition;
-	}
+//	public function getForkedGuiDefinition(): GuiDefinition {
+//		return $this->forkedGuiDefinition;
+//	}
 	
 	public function buildEiField(Eiu $eiu): ?EiField {
-		$readOnly = $this->eiPropRelation->isReadOnly($eiu->entry()->getEiEntry(), $eiu->frame()->getEiFrame());
-		
-		return new ToOneEiField($eiu, $this, $this, ($readOnly ? null : $this));
+		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
+				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+
+		$field = new ToOneEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
+		$field->setMandatory($this->getRelationModel()->isMandatory());
+		return $field;
 	}
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return GuiFieldFork
-	 */
-	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
-		$eiFrame = $eiu->frame()->getEiFrame();
-		$eiEntry = $eiu->entry()->getEiEntry();
-		
-		$targetEiFrame = null;
-		if ($eiu->entryGui()->isReadOnly()) {
-			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiEntry);
-		} else {
-			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
-		}
-		
-		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
-		
-		$eiuField = $eiu->field();
-		$targetRelationEntry = $eiuField->getValue();
-		CastUtils::assertTrue($targetRelationEntry instanceof RelationEntry || $targetRelationEntry === null);
-		
-		if ($targetRelationEntry === null) {
-			$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->newEntry()->getEiEntry());
-		} else if (!$targetRelationEntry->hasEiEntry()) {
-			$targetRelationEntry = RelationEntry::fromM(
-					$targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry());
-		}
-				
-		$targetEiuEntryGuiAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
-				->newEntryGuiAssembler($eiu->guiFrame()->getViewMode());
-				
-		return new OneToOneGuiFieldFork($eiuField->getEiField(), $targetRelationEntry, $targetEiuEntryGuiAssembler);
-	}
+//	/**
+//	 * @param Eiu $eiu
+//	 * @return GuiFieldFork
+//	 */
+//	public function createGuiFieldFork(Eiu $eiu): GuiFieldFork {
+//		$eiFrame = $eiu->frame()->getEiFrame();
+//		$eiEntry = $eiu->entry()->getEiEntry();
+//
+//		$targetEiFrame = null;
+//		if ($eiu->entryGui()->isReadOnly()) {
+//			$targetEiFrame = $this->eiPropRelation->createTargetReadPseudoEiFrame($eiFrame, $eiEntry);
+//		} else {
+//			$targetEiFrame = $this->eiPropRelation->createTargetEditPseudoEiFrame($eiFrame, $eiEntry);
+//		}
+//
+//		$targetEiuFrame = (new Eiu($targetEiFrame))->frame();
+//
+//		$eiuField = $eiu->field();
+//		$targetRelationEntry = $eiuField->getValue();
+//		CastUtils::assertTrue($targetRelationEntry instanceof RelationEntry || $targetRelationEntry === null);
+//
+//		if ($targetRelationEntry === null) {
+//			$targetRelationEntry = RelationEntry::fromM($targetEiuFrame->newEntry()->getEiEntry());
+//		} else if (!$targetRelationEntry->hasEiEntry()) {
+//			$targetRelationEntry = RelationEntry::fromM(
+//					$targetEiuFrame->entry($targetRelationEntry->getEiObject())->getEiEntry());
+//		}
+//
+//		$targetEiuGuiEntryAssembler = $targetEiuFrame->entry($targetRelationEntry->getEiEntry())
+//				->newEntryGuiAssembler($eiu->guiFrame()->getViewMode());
+//
+//		return new OneToOneGuiFieldFork($eiuField->getEiField(), $targetRelationEntry, $targetEiuGuiEntryAssembler);
+//	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiPropFork::determineForkedEiObject()
-	 */
-	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
-		$targetObject = $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
-		if ($targetObject === null) {
-			return null;
-		}
-		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
-	}
-	
-	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
-		$eiEntry = $eiu->entry()->getEiEntry();
-		
-		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
-		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) {
-			return new EiFieldWrapperCollection([]);
-		}
-	
-		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($eiu->getN2nContext(), 
-				$targetRelationEntry->getEiEntry(), $defPropPath);
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\op\ei\manage\gui\GuiPropFork::determineForkedEiObject()
+//	 */
+//	public function determineForkedEiObject(Eiu $eiu): ?EiObject {
+//		$targetObject = $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
+//		if ($targetObject === null) {
+//			return null;
+//		}
+//		return LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetObject);
+//	}
+//
+//	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction {
+//		$eiEntry = $eiu->entry()->getEiEntry();
+//
+//		$targetRelationEntry = $eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp()));
+//		if ($targetRelationEntry === null || !$targetRelationEntry->hasEiEntry()) {
+//			return new EiFieldWrapperCollection([]);
+//		}
+//
+//		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($eiu->getN2nContext(),
+//				$targetRelationEntry->getEiEntry(), $defPropPath);
+//	}
 
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
 		return null;	
@@ -146,100 +144,100 @@ class IntegratedOneToOneEiProp extends RelationEiPropNatureAdapter /*implements 
 
 }
 
-class OneToOneGuiFieldFork implements GuiFieldFork {
-	private $toOneEiField;
-	private $targetRelationEntry;
-	private $targetEiuEntryGuiAssembler;
-	
-	public function __construct(ToOneEiField $toOneEiField, RelationEntry $targetRelationEntry, 
-			EiuEntryGuiAssembler $targetEiuEntryGuiAssembler) {
-		$this->toOneEiField = $toOneEiField;
-		$this->targetRelationEntry = $targetRelationEntry;
-		$this->targetEiuEntryGuiAssembler = $targetEiuEntryGuiAssembler;
-	}
-	
-	public function assembleGuiField(DefPropPath $defPropPath): GuiField {
-		return $this->targetEiuEntryGuiAssembler->assembleGuiField($defPropPath);
-	}
-	
-	public function isReadOnly(): bool {
-		return null === $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getDispatchable();
-	}
-	
-	public function getEditable(): ?GuiFieldForkEditable {
-		if ($this->isReadOnly()) return null;
-		
-		return new OneToOneGuiFieldForkEditable($this->toOneEiField, $this->targetEiuEntryGuiAssembler,
-				$this->targetRelationEntry);
-	}
-}
+//class OneToOneGuiFieldFork implements GuiFieldFork {
+//	private $toOneEiField;
+//	private $targetRelationEntry;
+//	private $targetEiuGuiEntryAssembler;
+//
+//	public function __construct(ToOneEiField $toOneEiField, RelationEntry $targetRelationEntry,
+//			EiuGuiEntryAssembler $targetEiuGuiEntryAssembler) {
+//		$this->toOneEiField = $toOneEiField;
+//		$this->targetRelationEntry = $targetRelationEntry;
+//		$this->targetEiuGuiEntryAssembler = $targetEiuGuiEntryAssembler;
+//	}
+//
+//	public function assembleGuiField(DefPropPath $defPropPath): GuiField {
+//		return $this->targetEiuGuiEntryAssembler->assembleGuiField($defPropPath);
+//	}
+//
+//	public function isReadOnly(): bool {
+//		return null === $this->targetEiuGuiEntryAssembler->getEiuGuiEntry()->getDispatchable();
+//	}
+//
+//	public function getEditable(): ?GuiFieldForkEditable {
+//		if ($this->isReadOnly()) return null;
+//
+//		return new OneToOneGuiFieldForkEditable($this->toOneEiField, $this->targetEiuGuiEntryAssembler,
+//				$this->targetRelationEntry);
+//	}
+//}
 
-class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
-	private $toOneEiField;
-	private $targetEiuEntryGuiAssembler;
-	private $targetRelationEntry;
-	
-	/**
-	 * @param ToOneEiField $toOneEiField
-	 * @param EiEntryGuiAssembler $targetEiEntryGuiAssembler
-	 */
-	public function __construct(ToOneEiField $toOneEiField, EiuEntryGuiAssembler $targetEiuEntryGuiAssembler,
-			RelationEntry $targetRelationEntry) {
-		$this->toOneEiField = $toOneEiField;
-		$this->targetEiuEntryGuiAssembler = $targetEiuEntryGuiAssembler;
-		$this->targetRelationEntry = $targetRelationEntry;
-	}
-	
-	public function isForkMandatory(): bool {
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiFieldForkEditable::getForkMag()
-	 */
-	public function getForkMag(): Mag {
-		$dispatchable = $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getDispatchable();
-		
-		if ($dispatchable !== null) {
-			return new OneToOneForkMag($dispatchable);
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiFieldForkEditable::getAdditionalForkMagPropertyPaths()
-	 */
-	public function getInheritForkMagAssemblies(): array {
-		return $this->targetEiuEntryGuiAssembler->getEiuEntryGui()->getAllForkMagAssemblies();
-	}
-	
-	/**
-	 * 
-	 */
-	public function save() {
-// 		$this->targetEiEntryGuiAssembler->save();
-		$this->toOneEiField->setValue($this->targetRelationEntry);
-	}
-}
-
-class OneToOneForkMag extends ObjectMagAdapter {
-	private $dispatchable;
-
-	/**
-	 * @param Dispatchable $dispatchable
-	 */
-	public function __construct(Dispatchable $dispatchable) {
-		parent::__construct('', $dispatchable);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
-	 */
-	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
-		return new Raw();
-	}
-}
+//class OneToOneGuiFieldForkEditable implements GuiFieldForkEditable {
+//	private $toOneEiField;
+//	private $targetEiuGuiEntryAssembler;
+//	private $targetRelationEntry;
+//
+//	/**
+//	 * @param ToOneEiField $toOneEiField
+//	 * @param EiGuiValueBoundaryAssembler $targetEiGuiValueBoundaryAssembler
+//	 */
+//	public function __construct(ToOneEiField $toOneEiField, EiuGuiEntryAssembler $targetEiuGuiEntryAssembler,
+//			RelationEntry $targetRelationEntry) {
+//		$this->toOneEiField = $toOneEiField;
+//		$this->targetEiuGuiEntryAssembler = $targetEiuGuiEntryAssembler;
+//		$this->targetRelationEntry = $targetRelationEntry;
+//	}
+//
+//	public function isForkMandatory(): bool {
+//		return true;
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\op\ei\manage\gui\field\GuiFieldForkEditable::getForkMag()
+//	 */
+//	public function getForkMag(): Mag {
+//		$dispatchable = $this->targetEiuGuiEntryAssembler->getEiuGuiEntry()->getDispatchable();
+//
+//		if ($dispatchable !== null) {
+//			return new OneToOneForkMag($dispatchable);
+//		}
+//
+//		return null;
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\op\ei\manage\gui\field\GuiFieldForkEditable::getAdditionalForkMagPropertyPaths()
+//	 */
+//	public function getInheritForkMagAssemblies(): array {
+//		return $this->targetEiuGuiEntryAssembler->getEiuGuiEntry()->getAllForkMagAssemblies();
+//	}
+//
+//	/**
+//	 *
+//	 */
+//	public function save() {
+//// 		$this->targetEiGuiValueBoundaryAssembler->save();
+//		$this->toOneEiField->setValue($this->targetRelationEntry);
+//	}
+//}
+//
+//class OneToOneForkMag extends ObjectMagAdapter {
+//	private $dispatchable;
+//
+//	/**
+//	 * @param Dispatchable $dispatchable
+//	 */
+//	public function __construct(Dispatchable $dispatchable) {
+//		parent::__construct('', $dispatchable);
+//	}
+//
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \n2n\web\dispatch\mag\Mag::createUiField()
+//	 */
+//	public function createUiField(PropertyPath $propertyPath, HtmlView $view, UiOutfitter $uiOutfitter): UiComponent {
+//		return new Raw();
+//	}
+//}

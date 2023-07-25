@@ -40,7 +40,7 @@ class SiGetResult implements \JsonSerializable {
 	/**
 	 * @var SiValueBoundary|null
 	 */
-	private $entry = null;
+	private $valueBoundary = null;
 	/**
 	 * @var SiPartialContent|null
 	 */
@@ -81,18 +81,12 @@ class SiGetResult implements \JsonSerializable {
 		$this->generalControls = $controls;
 	}
 
-	/**
-	 * @return \rocket\si\content\SiValueBoundary
-	 */
-	public function getEntry() {
-		return $this->entry;
+	public function getValueBoundary(): ?SiValueBoundary {
+		return $this->valueBoundary;
 	}
 
-	/**
-	 * @param \rocket\si\content\SiValueBoundary|null $entries
-	 */
-	public function setEntry(?SiValueBoundary $entry) {
-		$this->entry = $entry;
+	public function setValueBoundary(?SiValueBoundary $valueBoundary) {
+		$this->valueBoundary = $valueBoundary;
 	}
 
 	/**
@@ -117,7 +111,7 @@ class SiGetResult implements \JsonSerializable {
 		return [
 			'declaration' => $this->declaration,
 			'generalControls' => ($this->generalControls !== null ? SiPayloadFactory::createDataFromControls($this->generalControls) : null),
-			'entry' => $this->entry,
+			'entry' => $this->valueBoundary,
 			'partialContent' => $this->partialContent
 		];
 	}	

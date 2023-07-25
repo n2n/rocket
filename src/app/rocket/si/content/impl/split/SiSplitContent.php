@@ -136,7 +136,7 @@ class SiSplitContent implements \JsonSerializable {
 	 * @param SiValueBoundary $entry
 	 * @return SiSplitContent
 	 */
-	static function createEntry(string $label, SiValueBoundary $entry) {
+	static function createValueBoundary(string $label, SiValueBoundary $entry): SiSplitContent {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->entry = $entry;

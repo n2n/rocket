@@ -28,8 +28,8 @@ use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\gui\EiGuiFrame;
-use rocket\op\ei\manage\gui\EiEntryGui;
+use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
+use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\si\input\SiEntryInput;
 use rocket\op\ei\manage\security\SecurityException;
 use rocket\op\ei\manage\gui\EiGui;
@@ -37,6 +37,7 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiException;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\persistence\orm\util\NestedSetUtils;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class ProcessUtil {
 	private $eiFrame;
@@ -64,12 +65,8 @@ class ProcessUtil {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
-	/**
-	 * @param string $pid
-	 * @return \rocket\op\ei\manage\EiEntityObj
-	 */
-	function lookupEiObject(string $pid) {
+
+	function lookupEiObject(string $pid): EiObject {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
 			return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
@@ -77,19 +74,21 @@ class ProcessUtil {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
+
 	/**
 	 * @param string $pid
 	 * @param bool $bulky
 	 * @param bool $readOnly
-	 * @param array $defPropPaths
-	 * @throws BadRequestException
-	 * @return \rocket\op\ei\manage\gui\EiGui
+	 * @param bool $entryGuiControlsIncluded
+	 * @param DefPropPath[]|null $defPropPaths
+	 * @return EiGuiValueBoundary
 	 */
-	function lookupEiGuiByPid(string $pid, bool $bulky, bool $readOnly, ?array $defPropPaths) {
+	function lookupEiGuiByPid(string $pid, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
+			?array $defPropPaths): EiGuiValueBoundary {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			return $efu->lookupEiGuiFromId($efu->pidToId($pid), $bulky, $readOnly, $defPropPaths);
+			return $efu->lookupEiGuiFromId($efu->pidToId($pid), $bulky, $readOnly, $entryGuiControlsIncluded,
+					$defPropPaths);
 		} catch (UnknownEiObjectException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
@@ -106,108 +105,104 @@ class ProcessUtil {
 		
 		return $this->createEiObject($siEntryInput->getMaskId());
 	}
-	
-	/**
-	 * @param SiEntryInput $siEntryInput
-	 * @return EiObject
-	 */
-	function determineEiEntryOfInput(SiEntryInput $siEntryInput) {
-		try {
-			return $this->eiFrame->createEiEntry($this->determineEiObjectOfInput($siEntryInput));
-		} catch (SecurityException $e) {
-			throw new BadRequestException(null, 0, $e);
-		}
-	}
+
+//	/**
+//	 * @param SiEntryInput $siEntryInput
+//	 * @return EiEntry
+//	 * @throws BadRequestException
+//	 */
+//	function determineEiEntryOfInput(SiEntryInput $siEntryInput): EiEntry {
+//		try {
+//			return $this->eiFrame->createEiEntry($this->determineEiObjectOfInput($siEntryInput));
+//		} catch (SecurityException $e) {
+//			throw new BadRequestException(null, 0, $e);
+//		}
+//	}
 	
 	/**
 	 * @param SiEntryInput $siEntryInput
 	 * @throws BadRequestException
-	 * @return EiGui
+	 * @return EiGuiValueBoundary
 	 */
-	function determineEiGuiOfInput(SiEntryInput $siEntryInput) {
+	function determineEiGuiValueBoundaryOfInput(SiEntryInput $siEntryInput): EiGuiValueBoundary {
 		$eiObject = $this->determineEiObjectOfInput($siEntryInput);
 			
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
 			// doesn't work if forked gui fields
 // 			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
-			$defPropPaths = null;
 			
-			return $efu->createEiGuiFromEiObject($eiObject, $siEntryInput->isBulky(), false, $siEntryInput->getMaskId(), $defPropPaths, true);
-		} catch (SecurityException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (EiException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
+			return $efu->createEiGuiValueBoundaryFromEiObject($eiObject, $siEntryInput->isBulky(), false,
+					true, $siEntryInput->getMaskId(), null, null);
+		} catch (SecurityException|EiException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
-	
+
 	/**
 	 * @param EiEntry $eiEntry
 	 * @param string $eiTypeId
 	 * @param bool $bulky
 	 * @param bool $readOnly
+	 * @param bool $entryGuiControlsIncluded
+	 * @return EiGuiValueBoundary
 	 * @throws BadRequestException
-	 * @return \rocket\op\ei\manage\gui\EiGui
 	 */
-	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly) {
+	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly,
+			bool $entryGuiControlsIncluded): EiGuiValueBoundary {
 		try {
 			$efu = new EiFrameUtil($this->eiFrame);
-			return $efu->createEiGuiFromEiEntry($eiEntry, $bulky, $readOnly, $eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
-		} catch (SecurityException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (EiException $e) {
-			throw new BadRequestException(null, 0, $e);
-		} catch (\InvalidArgumentException $e) {
+			return $efu->createEiGuiValueBoundaryFromEiEntry($eiEntry, $bulky, $readOnly, $entryGuiControlsIncluded,
+					$eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
+		} catch (SecurityException|EiException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 	}
 	
 	/**
 	 * @param SiEntryInput $siEntryInput
-	 * @param EiEntryGui $eiEntryGui
-	 * @throws BadRequestException
+	 * @param EiGuiValueBoundary $eiGuiValueBoundary
 	 * @return bool
+	 * @throws BadRequestException
 	 */
-	function handleEntryInput(SiEntryInput $siEntryInput, EiEntryGui $eiEntryGui) {
+	function handleEntryInput(SiEntryInput $siEntryInput, EiGuiValueBoundary $eiGuiValueBoundary): bool {
 		try {
-			$eiEntryGui->handleSiEntryInput($siEntryInput);
-		} catch (\InvalidArgumentException $e) {
+			$eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
+		} catch (CorruptedSiInputDataException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 		
-		$eiEntryGui->save();
+		$eiGuiValueBoundary->save();
 		
-		$eiEntry = $eiEntryGui->getSelectedEiEntry();
+		$eiEntry = $eiGuiValueBoundary->getSelectedEiEntry();
 		
 		return $eiEntry->validate();
 	}
 	
 	/**
 	 * @param EiObject $eiObject
-	 * @return \rocket\op\ei\mask\EiMask
+	 * @return EiMask
 	 */
-	function determinEiMask(EiObject $eiObject) {
+	function determineEiMask(EiObject $eiObject): EiMask {
 		return $this->eiFrame->getContextEiEngine()->getEiMask()
 				->determineEiMask($eiObject->getEiEntityObj()->getEiType());
 	}
 	
-	/**
-	 * @param EiMask $eiMask
-	 * @param int $viewMode
-	 * @return \rocket\op\ei\manage\gui\EiGuiFrame
-	 */
-	function createEiGuiFrame(EiMask $eiMask, int $viewMode) {
-		return $eiMask->getEiEngine()->createFramedEiGuiFrame($this->eiFrame, $viewMode);
-	}
-	
-	/**
-	 * @param EiObject $eiObject
-	 * @param EiGuiFrame $eiGuiFrame
-	 * @return EiEntryGui
-	 */
-	function createEiEntryGui(EiObject $eiObject, EiGuiFrame $eiGuiFrame) {
-		return $eiGuiFrame->createEiEntryGuiVariation($this->eiFrame->createEiEntry($eiObject));
-	}
+//	/**
+//	 * @param EiMask $eiMask
+//	 * @param int $viewMode
+//	 * @return EiGuiMaskDeclaration
+//	 */
+//	function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode): EiGuiMaskDeclaration {
+//		return $eiMask->getEiEngine()->createFramedEiGuiMaskDeclaration($this->eiFrame, $viewMode);
+//	}
+//
+//	/**
+//	 * @param EiObject $eiObject
+//	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 * @return EiGuiValueBoundary
+//	 */
+//	function createEiGuiValueBoundary(EiObject $eiObject, EiGuiMaskDeclaration $eiGuiMaskDeclaration): EiGuiValueBoundary {
+//		return $eiGuiMaskDeclaration->createEiGuiValueBoundary($this->eiFrame->createEiEntry($eiObject));
+//	}
 }

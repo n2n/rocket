@@ -31,8 +31,6 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\op\ei\manage\entry\EiField;
 use rocket\op\ei\manage\gui\ViewMode;
@@ -45,7 +43,6 @@ use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\op\ei\manage\security\filter\SecurityFilterProp;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
 
 class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
@@ -78,16 +75,17 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
-		$eiEntryFilterProp = parent::createSecurityFilterProp($eiu);
-		CastUtils::assertTrue($eiEntryFilterProp instanceof ToOneSecurityFilterProp);
-
-		$eiEntryFilterProp->setTargetSelectToolsUrlCallback(function () use ($eiu) {
-			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
-					$eiu->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
-					$this->eiPropRelation->getTargetEiMask());
-		});
-				
-		return $eiEntryFilterProp;
+		return null;
+//		$eiEntryFilterProp = parent::createSecurityFilterProp($eiu);
+//		CastUtils::assertTrue($eiEntryFilterProp instanceof ToOneSecurityFilterProp);
+//
+//		$eiEntryFilterProp->setTargetSelectToolsUrlCallback(function () use ($eiu) {
+//			return GlobalOverviewJhtmlController::buildToolsAjahUrl(
+//					$eiu->lookup(ScrRegistry::class), $this->eiPropRelation->getTargetEiType(),
+//					$this->eiPropRelation->getTargetEiMask());
+//		});
+//
+//		return $eiEntryFilterProp;
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
@@ -102,7 +100,7 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 			return null;
 		}
 		
-		$targetEiu = $eiu->frame()->forkDiscover($this);
+		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop());
 		$targetEiu->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		return new ToOneQuickSearchProp($this->getRelationModel(), $targetDefPropPaths, $targetEiu);
 	}

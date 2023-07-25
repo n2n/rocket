@@ -68,9 +68,9 @@ abstract class IndependentEiModificatorAdapter extends EiModNatureAdapter implem
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiEntryGui()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiValueBoundary()
 	 */
-	public function setupEiEntryGui(\rocket\op\ei\manage\gui\EiEntryGui $eiEntryGui) { }
+	public function setupEiGuiValueBoundary(\rocket\op\ei\manage\gui\EiGuiValueBoundary $eiGuiValueBoundary) { }
 	
 	/**
 	 * {@inheritDoc}

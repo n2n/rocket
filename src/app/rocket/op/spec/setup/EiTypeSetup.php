@@ -123,18 +123,18 @@ class EiTypeSetup {
 	 * @throws InvalidPropertyAccessMethodException
 	 * @throws UnknownPropertyException
 	 */
-	function getPropertyAccessProxy(string $propertyName, ?bool $editable) {
+	function getPropertyAccessProxy(string $propertyName, bool $settingRequired) {
 		$propertyAccessProxy = null;
 		if (isset($this->unassignedEiPresetPropsMap[$propertyName])) {
 			$propertyAccessProxy = $this->unassignedEiPresetPropsMap[$propertyName]->getPropertyAccessProxy();
 		}
 
-		if ($propertyAccessProxy !== null && ($editable !== true || $propertyAccessProxy->isWritable())) {
+		if ($propertyAccessProxy !== null && ($settingRequired !== true || $propertyAccessProxy->isWritable())) {
 			return $propertyAccessProxy;
 		}
 
 		$propertiesAnalyzer = new PropertiesAnalyzer($this->getClass());
-		return $propertiesAnalyzer->analyzeProperty($propertyName, false);
+		return $propertiesAnalyzer->analyzeProperty($propertyName, $settingRequired);
 	}
 
 	/**

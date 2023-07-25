@@ -26,6 +26,8 @@ use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\gui\ViewMode;
 use n2n\util\type\attrs\DataSet;
 use rocket\op\spec\TypePath;
+use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\manage\entry\EiEntry;
 
 class ApiControlCallId implements \JsonSerializable {
 	private $guiControlPath;
@@ -86,7 +88,7 @@ class ApiControlCallId implements \JsonSerializable {
 	 * @param string $id
 	 * @return \rocket\op\ei\manage\api\ApiControlCallId
 	 */
-	function guiControlPathExt(string $id) {
+	function guiControlPathExt(string $id): static {
 		return new ApiControlCallId($this->guiControlPath->ext($id), $this->eiTypePath, $this->pid, 
 				$this->newEiTypeId);
 	}
@@ -107,5 +109,11 @@ class ApiControlCallId implements \JsonSerializable {
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
+	}
+
+	static function create(EiMask $eiMask, GuiControlPath $guiControlPath, EiEntry $eiEntry = null): ApiControlCallId {
+		return new ApiControlCallId($guiControlPath,
+				$eiMask->getEiTypePath(), $eiEntry?->getPid(),
+				($eiEntry?->isNew() ? $eiEntry?->getEiType()->getId() : null));
 	}
 }

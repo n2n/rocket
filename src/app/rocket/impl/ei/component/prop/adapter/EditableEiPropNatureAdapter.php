@@ -41,7 +41,7 @@ abstract class EditableEiPropNatureAdapter extends DisplayableEiPropNatureAdapte
 	 * @see \rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $eiu->guiFrame()->isReadOnly()
+		if ($readOnly || $eiu->guiMaskDeclaration()->isReadOnly()
 				|| ($eiu->entry()->isNew() && $this->isConstant())) {
 			return $this->createOutEifGuiField($eiu)->toGuiField();
 		}

@@ -130,7 +130,7 @@ class ApiController extends ControllerAdapter {
 		$this->sendJson($siValResponse);
 	}
 	
-	function doExecControl(ParamPost $style, ParamPost $apiCallId, ParamPost $entryInputMaps = null) {
+	function doExecControl(ParamPost $style, ParamPost $apiCallId, ParamPost $entryInputMaps = null): void {
 		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
@@ -138,13 +138,14 @@ class ApiController extends ControllerAdapter {
 		if (null !== ($pid = $siApiCallId->getPid())) {
 			$eiEntry = $callProcess->determineEiEntry($pid);
 			$viewMode = $this->parseViewMode($style, false);
-			$callProcess->determineEiGuiFrame($viewMode, $eiEntry->getEiType()->getId());
+			$callProcess->determineEiGuiMaskDeclaration($viewMode, $eiEntry->getEiType()->getId());
 		} else if (null !== ($newEiTypeType = $siApiCallId->getNewEiTypeId())) {
 			$callProcess->determineNewEiEntry($newEiTypeType);
 			$viewMode = $this->parseViewMode($style, true);
-			$callProcess->determineEiGuiFrame($viewMode, $newEiTypeType);
+			$callProcess->determineEiGuiMaskDeclaration($viewMode, $newEiTypeType);
 		} else {
-			$callProcess->determineEiGuiFrame($viewMode, $siApiCallId->getEiTypeId());
+			$viewMode = $this->parseViewMode($style, false);
+			$callProcess->determineEiGuiMaskDeclaration($viewMode, $siApiCallId->getEiTypeId());
 		}
 		
 		$callProcess->determineGuiControl($siApiCallId->getGuiControlPath());
@@ -159,7 +160,7 @@ class ApiController extends ControllerAdapter {
 				($entryInputMaps !== null ? $callProcess->createSiInputResult() : null)));
 	}
 	
-	function doCallField(ParamPost $style, ParamPost $apiCallId, ParamPost $data) {
+	function doCallField(ParamPost $style, ParamPost $apiCallId, ParamPost $data): void {
 		$siApiCallId = $this->parseApiFieldCallId($apiCallId);
 		
 		$callProcess = new ApiControlProcess($this->eiFrame);
@@ -172,7 +173,7 @@ class ApiController extends ControllerAdapter {
 			$viewMode = $this->parseViewMode($style, true);
 		}
 		
-		$callProcess->determineEiGuiFrame($viewMode, $siApiCallId->getEiTypeId());
+		$callProcess->determineEiGuiMaskDeclaration($viewMode, $siApiCallId->getEiTypeId());
 		$callProcess->determineGuiField($siApiCallId->getDefPropPath());
 		
 		$this->sendJson(['data' => $callProcess->callSiField($data->parseJson(), $this->getRequest()->getUploadDefinitions()) ]);

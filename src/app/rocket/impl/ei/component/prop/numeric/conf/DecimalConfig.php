@@ -26,7 +26,7 @@ use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiPropNature;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
-use rocket\impl\ei\component\prop\adapter\config\PropConfigAdaption;
+
 use rocket\op\ei\util\Eiu;
 use n2n\util\type\attrs\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
@@ -35,7 +35,7 @@ use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use n2n\impl\persistence\orm\property\FloatEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 
-class DecimalConfig extends PropConfigAdaption {
+class DecimalConfig {
 	const ATTR_DECIMAL_PLACES_KEY = 'decimalPlaces';
 // 	const ATTR_PREFIX_KEY = 'prefix';
 	
