@@ -477,17 +477,22 @@ class RelationFinalizer {
 	 */
 	private function deterTargetMapped(EiMask $targetEiMask) {
 		$relationEntityProperty = $this->relationModel->getRelationEntityProperty();
-		
+
 		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
-			if (!($targetEiProp instanceof RelationEiProp)) continue;
+			$targetEiPropNature = $targetEiProp->getNature();
+
+			if (!($targetEiPropNature instanceof RelationEiProp)) {
+				continue;
+			}
 			
-			$targetRelationEntityProperty = $targetEiProp->getRelationEntityProperty();
+			$targetRelationEntityProperty = $targetEiPropNature->getRelationEntityProperty();
 			
 			$targetRelation = $targetRelationEntityProperty->getRelation();
+
 			if ($targetRelation instanceof MappedRelation
 					&& $targetRelation->getTargetEntityProperty()->equals($relationEntityProperty)) {
-				return new TargetPropInfo(EiPropPath::from($targetEiProp), 
-						$targetEiProp->getPropertyAccessProxy());
+				return new TargetPropInfo(EiPropPath::from($targetEiProp),
+						$targetEiPropNature->getPropertyAccessProxy());
 			}
 		}
 		

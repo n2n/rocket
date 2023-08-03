@@ -37,7 +37,7 @@ class TargetMasterRelationEiModificator extends EiModNatureAdapter {
 	public function setupEiEntry(Eiu $eiu) {
 		$eiEntry = $eiu->entry()->getEiEntry();
 		if ($eiEntry->getEiObject()->isDraft()) return;
-		
+
 		$eiEntry->registerListener(new TargetMasterEiEntryListener($this->relationModel));
 	}
 }
@@ -61,7 +61,7 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 	
 	public function written(EiEntry $eiEntry) {
 		$entityObj = $eiEntry->getEiObject()->getLiveObject();
-		
+
 		if ($this->relationModel->isTargetMany()) {
 			$this->writeToMany($entityObj);
 		} else {
@@ -76,7 +76,7 @@ class TargetMasterEiEntryListener extends EiEntryListenerAdapter {
 		if (!$this->orphanRemoval && $oldTargetEntityObj !== null && $oldTargetEntityObj !== $targetEntityObj) {
 			$this->removeFromMaster($entityObj, $oldTargetEntityObj);
 		}
-		
+
 		if ($targetEntityObj !== null) {
 			$this->writeToMaster($entityObj, $targetEntityObj);
 		}
