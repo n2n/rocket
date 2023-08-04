@@ -141,6 +141,10 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 // 	}
 	
 	public function buildDetailNavPoint(Eiu $eiu): ?SiNavPoint {
+		if ($eiu->object()->isNew()) {
+			return null;
+		}
+
 		return SiNavPoint::siref((new Path(['live', $eiu->object()->getPid()]))->toUrl());
 	}
 
