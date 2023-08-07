@@ -29,12 +29,10 @@ class EnumEiPropNatureSetupTest extends TestCase {
 		$this->assertNotNull($enumEiPropNature->getEnum());
 		$this->assertEquals(['ATUSCH' => 'ATUSCH', 'BTUSCH' => 'BTUSCH'], $enumEiPropNature->getOptions());
 
-
 		$enumEiPropNature = $eiProps['annotatedProp']->getNature();
 		$this->assertInstanceOf(EnumEiPropNature::class, $enumEiPropNature);
 		$this->assertNotNull($enumEiPropNature->getEnum());
 		$this->assertEquals(['BTUSCH' => 'BTUSCH LABEL'], $enumEiPropNature->getOptions());
-
 	}
 
 
