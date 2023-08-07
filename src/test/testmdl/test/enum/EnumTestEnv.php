@@ -18,4 +18,8 @@ enum EnumTestEnv {
 		return $obj;
 	}
 
+	static function findEnumTestObj(int $id): ?EnumTestObj {
+		return TestEnv::em()->find(EnumTestObj::class, $id);
+	}
+
 }
