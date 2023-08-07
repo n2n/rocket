@@ -291,7 +291,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->isQuickSearchable()
+		if ($this->enum === null && $this->isQuickSearchable()
 				&& null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
@@ -304,4 +304,6 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 			return StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp()));
 		})->toIdNameProp();
 	}
+
+
 }

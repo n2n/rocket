@@ -31,3 +31,12 @@ CREATE TABLE `integrated_target_test_obj` (
      `dingsel` VARCHAR(255) NULL DEFAULT NULL,
      PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci ;
+
+
+DROP TABLE IF EXISTS `enum_test_obj`;
+CREATE TABLE `enum_test_obj` (
+     `id` INT NOT NULL AUTO_INCREMENT,
+     `auto_detected_prop` VARCHAR(255) NULL DEFAULT NULL,
+     `annotated_prop` VARCHAR(255) NULL DEFAULT NULL,
+     PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci ;
