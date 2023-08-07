@@ -39,11 +39,9 @@ class EnumEiPropNatureSetupTest extends TestCase {
 	function testInvalidAnnotated(): void {
 		$spec = SpecTestEnv::setUpSpec([InvalidEnumTestObj::class]);
 
-
 		$eiType = $spec->getEiTypeByClassName(InvalidEnumTestObj::class);
 
 		$this->expectException(ConfigurationError::class);
 		$eiType->getEiMask()->getEiPropCollection()->toArray();
-
 	}
 }
