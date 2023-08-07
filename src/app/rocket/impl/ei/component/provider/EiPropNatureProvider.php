@@ -61,6 +61,7 @@ use rocket\attribute\impl\EiPropString;
 use n2n\util\type\CastUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
+use n2n\util\EnumUtils;
 
 class EiPropNatureProvider {
 
@@ -93,11 +94,20 @@ class EiPropNatureProvider {
 			$propertyName = $eiPropEnumAttribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($eiPropEnumAttribute, $eiPropEnum->readOnly);
 
-			$nature = new EnumEiPropNature($propertyAccessProxy);
+			$enum = null;
+			if ($enumTypeName = EnumUtils::extractEnumTypeName($eiPropEnumAttribute->getProperty()->getType())) {
+				$enum = IllegalStateException::try(fn () => new \ReflectionEnum($enumTypeName));
+			}
+
+			$nature = new EnumEiPropNature($propertyAccessProxy, $enum);
 			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
 					$this->eiTypeSetup->getPropertyLabel($propertyName));
 			$nature->setEntityProperty($this->eiTypeSetup->getEntityProperty($propertyName));
-			$nature->setOptions($eiPropEnum->options);
+			try {
+				$nature->setOptions($eiPropEnum->options);
+			} catch (\InvalidArgumentException $e) {
+				return $this->eiTypeSetup->createPropertyAttributeError($eiPropEnumAttribute, $e);
+			}
 			$nature->setEmptyLabel($eiPropEnum->emptyLabel);
 			$nature->setAssociatedDefPropPathMap($eiPropEnum->associatedDefPropPathMap);
 
@@ -322,7 +332,13 @@ class EiPropNatureProvider {
 				}
 				break;
 			default:
-				return false;
+				if (EnumUtils::isEnumType($typeName)) {
+					$nature = new EnumEiPropNature($eiPresetProp->getPropertyAccessProxy(),
+							IllegalStateException::try(fn () => new \ReflectionEnum($typeName)));
+
+				} else {
+					return false;
+				}
 		}
 
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());

@@ -174,8 +174,8 @@ class EiTypeSetup {
 
 		throw new ConfigurationError(
 				$message ?? 'Could not initialize EiProp for '
-		. TypeUtils::prettyReflPropName($propertyAttribute->getProperty()),
-				$propertyAttribute->getFile(), $propertyAttribute->getLine(), previous: $previous);
+						. TypeUtils::prettyReflPropName($propertyAttribute->getProperty()),
+								$propertyAttribute->getFile(), $propertyAttribute->getLine(), previous: $previous);
 	}
 
 	function finalize(): void {
