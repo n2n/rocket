@@ -140,25 +140,25 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	/**
 	 * @return array
 	 */
-	public function getAssociatedDefPropPathMap() {
+	public function getAssociatedDefPropPathMap(): array {
 		return $this->associatedDefPropPathMap;
 	}
 
 	/**
 	 * @param string|null $emptyLabel
 	 */
-	function setEmptyLabel(?string $emptyLabel) {
+	function setEmptyLabel(?string $emptyLabel): void {
 		$this->emptyLabel = $emptyLabel;
 	}
 
 	/**
 	 * @return string|null
 	 */
-	function getEmptyLabel() {
+	function getEmptyLabel(): ?string {
 		return $this->emptyLabel;
 	}
 
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null): void {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
