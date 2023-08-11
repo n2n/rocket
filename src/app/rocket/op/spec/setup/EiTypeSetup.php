@@ -42,6 +42,7 @@ use n2n\util\ex\err\ConfigurationError;
 use n2n\reflection\attribute\PropertyAttribute;
 use n2n\util\type\TypeUtils;
 use n2n\persistence\orm\property\EntityProperty;
+use rocket\op\ei\component\prop\EiPropCollection;
 
 class EiTypeSetup {
 	private array $propertyNames;
@@ -61,14 +62,14 @@ class EiTypeSetup {
 	/**
 	 * @return EntityModel
 	 */
-	function getEntityModel() {
+	function getEntityModel(): EntityModel {
 		return $this->eiType->getEntityModel();
 	}
 
 	/**
 	 * @return ReflectionClass
 	 */
-	function getClass() {
+	function getClass(): ReflectionClass {
 		return $this->getEntityModel()->getClass();
 	}
 
@@ -140,7 +141,7 @@ class EiTypeSetup {
 	/**
 	 * @param string $propertyName
 	 * @param bool $required
-	 * @return EntityProperty
+	 * @return EntityProperty|null
 	 */
 	function getEntityProperty(string $propertyName, bool $required = false): ?EntityProperty {
 		$entityProperty = null;

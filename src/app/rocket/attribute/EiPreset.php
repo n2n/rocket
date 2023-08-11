@@ -35,6 +35,8 @@ class EiPreset {
 	public readonly	array $editProps;
 	public readonly array $excludeProps;
 
+	const PROP_LEVEL_SEPARATOR = '.';
+
 	function __construct(public readonly ?EiPresetMode $mode = null, array $readProps = [], array $editProps = [],
 			array $excludeProps = []) {
 		$this->readProps = $this->clean($readProps);
@@ -64,19 +66,6 @@ class EiPreset {
 		return $cleaned;
 	}
 
-	function containsReadProp(string $prop): bool {
-		return array_key_exists($prop, $this->readProps);
-	}
 
-	function containsEditProp(string $prop): bool {
-		return array_key_exists($prop, $this->editProps);
-	}
 
-	function containsExcludeProp(string $prop):	bool {
-		return array_key_exists($prop, $this->excludeProps);
-	}
-
-	function getPropLabel(string $prop): ?string {
-		return $this->readProps[$prop] ?? $this->editProps[$prop] ?? null;
-	}
 }

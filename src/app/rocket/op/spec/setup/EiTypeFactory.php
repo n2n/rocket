@@ -45,6 +45,7 @@ use rocket\attribute\EiDefaultSort;
 use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\op\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
+use rocket\op\ei\EiPropPath;
 
 class EiTypeFactory {
 
@@ -195,8 +196,9 @@ class EiTypeFactory {
 		$eiPresetAttribute = $attributeSet->getClassAttribute(EiPreset::class);
 		$eiPresetUtil = null;
 		if ($eiPresetAttribute !== null) {
-			$eiPresetUtil= new EiPresetUtil($eiPresetAttribute, $entityModel);
-			$eiPresetProps = $eiPresetUtil->createEiPresetProps();
+			$eiPresetUtil = new EiPresetPropCompiler(new EnhancedEiPreset($eiPresetAttribute), $entityModel,
+					new EiPropPath([]));
+			$eiPresetProps = $eiPresetUtil->compile();
 		}
 
 		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetAttribute?->getInstance()->mode, $eiPresetProps);
