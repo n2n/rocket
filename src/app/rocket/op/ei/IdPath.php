@@ -106,6 +106,10 @@ abstract class IdPath implements Hashable {
 		
 		return true;
 	}
+
+	function isChildOf(IdPath $idPath): bool {
+		return $idPath->size() + 1 === $this->size() && $this->startsWith($idPath);
+	}
 	
 	/**
 	 * @param array $args

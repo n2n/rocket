@@ -43,20 +43,47 @@ use n2n\reflection\attribute\PropertyAttribute;
 use n2n\util\type\TypeUtils;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\op\ei\component\prop\EiPropCollection;
+use rocket\op\ei\EiPropPath;
+use n2n\util\ex\IllegalStateException;
+use n2n\persistence\orm\model\EntityPropertyCollection;
 
 class EiTypeSetup {
-	private array $propertyNames;
-	private array $sortedEiPropPaths = [];
+	private array $eiTypeClassSetups;
+	private ?array $sortedEiPropPaths = null;
+
+	function __construct(private readonly EiType $eiType, private readonly ?EiPresetMode $eiPresetMode,
+			private readonly ?EiPresetPropCollection $rootEiPresetPropCollection) {
+		IllegalStateException::assertTrue($this->rootEiPresetPropCollection === null
+				|| $this->rootEiPresetPropCollection->getParentEiPropPath()->isEmpty());
+
+		if ($this->rootEiPresetPropCollection === null) {
+			$this->eiTypeClassSetups = $this->createAutoEiTypeClassSetups($this->getEntityModel());
+		} else {
+			$this->sortedEiPropPaths = $this->rootEiPresetPropCollection->getEiPropPaths(true);
+			$this->eiTypeClassSetups = array_map(
+					fn($c) => new EiTypeClassSetup($this->eiType, $c, $c->getEntityPropertyCollection()),
+					$this->rootEiPresetPropCollection->toArray());
+		}
+	}
+
+	private function createAutoEiTypeClassSetups(EntityPropertyCollection $entityPropertyCollection): array {
+		$setups = [new EiTypeClassSetup($this->eiType, null, $entityPropertyCollection) ];
+		foreach ($entityPropertyCollection->getEntityProperties() as $entityProperty) {
+			if (!$entityProperty->hasEmbeddedEntityPropertyCollection()) {
+				continue;
+			}
+
+			array_push($setups, ...$this->createAutoEiTypeClassSetups(
+					$entityProperty->getEmbeddedEntityPropertyCollection()));
+		}
+		return $setups;
+	}
 
 	/**
-	 * @param EiType $eiType
-	 * @param EiPresetMode|null $eiPresetMode
-	 * @param EiPresetProp[] $unassignedEiPresetPropsMap key must be property name.
+	 * @return AttributeSet
 	 */
-	function __construct(private readonly EiType $eiType, private readonly ?EiPresetMode $eiPresetMode,
-			private array $unassignedEiPresetPropsMap) {
-		ArgUtils::valArray($unassignedEiPresetPropsMap, EiPresetProp::class);
-		$this->propertyNames = array_keys($unassignedEiPresetPropsMap);
+	function getAttributeSet(): AttributeSet {
+		return ReflectionContext::getAttributeSet($this->getEntityModel()->getClass());
 	}
 
 	/**
@@ -66,45 +93,34 @@ class EiTypeSetup {
 		return $this->eiType->getEntityModel();
 	}
 
-	/**
-	 * @return ReflectionClass
-	 */
 	function getClass(): ReflectionClass {
 		return $this->getEntityModel()->getClass();
 	}
 
 	/**
+	 * @return EiTypeClassSetup[]
+	 */
+	function getEiTypeClassSetups(): array {
+		return $this->eiTypeClassSetups;
+	}
+
+	/**
 	 * @return EiPresetMode|null
 	 */
-	function getEiPresetMode() {
+	function getEiPresetMode(): ?EiPresetMode {
 		return $this->eiPresetMode;
 	}
+
 
 	/**
 	 * @return EiPresetProp[]
 	 */
-	function getUnassignedEiPresetProps() {
-		return $this->unassignedEiPresetPropsMap;
-	}
-
-	/**
-	 * @return AttributeSet
-	 */
-	function getAttributeSet() {
-		return ReflectionContext::getAttributeSet($this->getClass());
-	}
-
-	function addEiPropNature(?string $propertyName, EiPropNature $eiPropNature, ?string $id = null) {
-		$i = false;
-		if ($propertyName !== null) {
-			unset($this->unassignedEiPresetPropsMap[$propertyName]);
-			$i = array_search($propertyName, $this->propertyNames);
+	function getUnassignedEiPresetProps(): array {
+		$eiPresetProps = [];
+		foreach ($this->eiTypeClassSetups as $eiTypeClassSetup) {
+			array_push($eiPresetProps, ...$eiTypeClassSetup->getUnassignedEiPresetProps());
 		}
-
-		$eiProp = $this->eiType->getEiMask()->getEiPropCollection()->add($id ?? $propertyName, $eiPropNature);
-		if ($i !== false) {
-			$this->sortedEiPropPaths[$i] = $eiProp->getEiPropPath();
-		}
+		return $eiPresetProps;
 	}
 
 	function addEiCmdNature(EiCmdNature $eiCmdNature, ?string $id = null) {
@@ -115,60 +131,7 @@ class EiTypeSetup {
 		$this->eiType->getEiMask()->getEiModCollection()->add($id, $eiModNature);
 	}
 
-	/**
-	 * @param string $propertyName
-	 * @param bool|null $editable
-	 * @return PropertyAccessProxy
-	 * @throws \ReflectionException
-	 * @throws InaccessiblePropertyException
-	 * @throws InvalidPropertyAccessMethodException
-	 * @throws UnknownPropertyException
-	 */
-	function getPropertyAccessProxy(string $propertyName, bool $settingRequired) {
-		$propertyAccessProxy = null;
-		if (isset($this->unassignedEiPresetPropsMap[$propertyName])) {
-			$propertyAccessProxy = $this->unassignedEiPresetPropsMap[$propertyName]->getPropertyAccessProxy();
-		}
 
-		if ($propertyAccessProxy !== null && ($settingRequired !== true || $propertyAccessProxy->isWritable())) {
-			return $propertyAccessProxy;
-		}
-
-		$propertiesAnalyzer = new PropertiesAnalyzer($this->getClass());
-		return $propertiesAnalyzer->analyzeProperty($propertyName, $settingRequired);
-	}
-
-	/**
-	 * @param string $propertyName
-	 * @param bool $required
-	 * @return EntityProperty|null
-	 */
-	function getEntityProperty(string $propertyName, bool $required = false): ?EntityProperty {
-		$entityProperty = null;
-		if (isset($this->unassignedEiPresetPropsMap[$propertyName])) {
-			$entityProperty = $this->unassignedEiPresetPropsMap[$propertyName]->getEntityProperty();
-		}
-
-		try {
-			return $entityProperty ?? $this->getEntityModel()->getLevelEntityPropertyByName($propertyName);
-		} catch (UnknownEntityPropertyException $e) {
-			if (!$required) {
-				return null;
-			}
-
-			throw $e;
-		}
-	}
-
-	/**
-	 * @param string $propertyName
-	 * @return string
-	 */
-	function getPropertyLabel(string $propertyName) {
-		$eiPresetProp = $this->unassignedEiPresetPropsMap[$propertyName] ?? null;
-
-		return $eiPresetProp?->getLabel() ?? StringUtils::pretty($propertyName);
-	}
 
 	function createPropertyAttributeError(PropertyAttribute $propertyAttribute, \Throwable $previous = null,
 			string $message = null): ConfigurationError {
@@ -180,7 +143,10 @@ class EiTypeSetup {
 	}
 
 	function finalize(): void {
-		ksort($this->sortedEiPropPaths);
-		$this->eiType->getEiMask()->getEiPropCollection()->changeOrder($this->sortedEiPropPaths);
+//		ksort($this->sortedEiPropPaths);
+
+		if ($this->sortedEiPropPaths !== null) {
+			$this->eiType->getEiMask()->getEiPropCollection()->changeOrder($this->sortedEiPropPaths);
+		}
 	}
 }

@@ -24,18 +24,16 @@ namespace rocket\op\spec\setup;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\op\ei\EiPropPath;
 
 class EiPresetProp {
-	function __construct(private readonly string $name, private readonly PropertyAccessProxy $propertyAccessProxy,
+	function __construct(private readonly EiPropPath $eiPropPath, private readonly PropertyAccessProxy $propertyAccessProxy,
 			private readonly ?EntityProperty $entityProperty, private readonly bool $editable,
-			private readonly string $label) {
+			private readonly string $label, private readonly bool $autoDetected) {
 	}
 
-	/**
-	 * @return string
-	 */
-	function getName() {
-		return $this->name;
+	function getEiPropPath(): EiPropPath {
+		return $this->eiPropPath;
 	}
 
 	/**
@@ -61,5 +59,9 @@ class EiPresetProp {
 
 	function getLabel() {
 		return $this->label;
+	}
+
+	function isAutoDetected(): bool {
+		return $this->autoDetected;
 	}
 }

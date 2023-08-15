@@ -16,8 +16,10 @@ use rocket\si\api\SiPartialContentInstruction;
 use testmdl\relation\bo\IntegratedSrcTestObj;
 use testmdl\relation\bo\IntegratedTargetTestObj;
 use n2n\util\uri\Url;
+use rocket\op\spec\Spec;
 
 class IntegratedOneToOneEiPropNatureTest extends TestCase {
+	private Spec $spec;
 
 	function setUp(): void {
 		GeneralTestEnv::teardown();

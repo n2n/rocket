@@ -42,7 +42,7 @@ use n2n\reflection\ReflectionUtils;
 class EiPresetPropCompiler {
 	private PropertiesAnalyzer $propertiesAnalyzer;
 
-	private array $eiPresetProps = [];
+	private EiPresetPropCollection $eiPresetPropCollection;
 
 	function __construct(private readonly EnhancedEiPreset $enhancedEiPreset,
 			private readonly EntityPropertyCollection $entityPropertyCollection,
@@ -51,10 +51,10 @@ class EiPresetPropCompiler {
 	}
 
 	/**
-	 * @return EiPresetProp[]
+	 * @return EiPresetPropCollection
 	 */
-	function compile(): array {
-		$this->eiPresetProps = [];
+	function compile(): EiPresetPropCollection {
+		$this->eiPresetPropCollection = new EiPresetPropCollection($this->parentEiPropPath, $this->entityPropertyCollection);
 
 		if ($this->enhancedEiPreset->getMode()?->isReadPropsMode()) {
 			$this->analyzeAccessProxies($this->propertiesAnalyzer->analyzeProperties(true, false), false);
@@ -66,7 +66,7 @@ class EiPresetPropCompiler {
 		$this->analyzePropNotations($this->enhancedEiPreset->getEditPropNotations($this->parentEiPropPath), true);
 		$this->analyzePropNotations($this->enhancedEiPreset->getParentPropNotations($this->parentEiPropPath), false);
 
-		return $this->eiPresetProps;
+		return $this->eiPresetPropCollection;
 	}
 
 	/**
@@ -76,7 +76,7 @@ class EiPresetPropCompiler {
 	 */
 	private function analyzePropNotations(array $propNotations, bool $editable): void {
 		foreach ($propNotations as $eiPropPathStr => $propNotation) {
-			if (!$editable && isset($this->eiPresetProps[$eiPropPathStr])) {
+			if (!$editable && $this->eiPresetPropCollection->containsEiPropPath($eiPropPathStr)) {
 				continue;
 			}
 
@@ -85,8 +85,8 @@ class EiPresetPropCompiler {
 						message: 'Already defined in readProps.');
 			}
 
-			if ($editable && isset($eiPresetProps[$eiPropPathStr])) {
-				IllegalStateException::assertTrue($eiPresetProps[$eiPropPathStr]->isEditable());
+			if ($editable && $this->eiPresetPropCollection->containsEiPropPath($eiPropPathStr)) {
+				IllegalStateException::assertTrue($this->eiPresetPropCollection->getByEiPropPath($eiPropPathStr)->isEditable());
 				continue;
 			}
 
@@ -94,26 +94,34 @@ class EiPresetPropCompiler {
 
 			$propertyName = $propNotation->getEiPropPath()->getLastId();
 			try {
-				$eiPreset = $this->eiPresetProps[$eiPropPathStr] = $this->createEiPresetProp(
-						$this->propertiesAnalyzer->analyzeProperty($propertyName, $editable), $editable, $propNotation->getLabel());
+				$this->eiPresetPropCollection->add($eiPresetProp = $this->createEiPresetProp(
+						EiPropPath::create($eiPropPathStr),
+						$this->propertiesAnalyzer->analyzeProperty($propertyName, $editable), $editable,
+						$propNotation->getLabel(), false));
 			} catch (\ReflectionException $e) {
 				throw $this->enhancedEiPreset->createEiPresetAttributeError($eiPropPathStr, $e);
 			}
 
-			if ($eiPreset->getEntityProperty()?->hasEmbeddedEntityPropertyCollection()) {
-				$eiPresetPropCompiler = new EiPresetPropCompiler($this->enhancedEiPreset,
-						$eiPreset->getEntityProperty()->getEmbeddedEntityPropertyCollection(),
-						$propNotation->getEiPropPath());
-				$this->eiPresetProps += $eiPresetPropCompiler->compile();
-				continue;
-			}
+			$this->checkForFork($eiPresetProp);
+		}
+	}
 
-			if ($this->enhancedEiPreset->containsParentProp($eiPropPathStr)) {
-				throw $this->enhancedEiPreset->createEiPresetAttributeError($eiPropPathStr,
-						message: 'Property has child properties but EntityProperty for "'
-								. TypeUtils::prettyClassPropName($this->entityPropertyCollection->getClass(), $propertyName)
-								. '" does not exist or does not support embedded EntityProperties.');
-			}
+	private function checkForFork(EiPresetProp $eiPresetProp): void {
+		if ($eiPresetProp->getEntityProperty()?->hasEmbeddedEntityPropertyCollection()) {
+			$eiPresetPropCompiler = new EiPresetPropCompiler($this->enhancedEiPreset,
+					$eiPresetProp->getEntityProperty()->getEmbeddedEntityPropertyCollection(),
+					$eiPresetProp->getEiPropPath());
+			$this->eiPresetPropCollection->addChildren($eiPresetPropCompiler->compile());
+			return;
+		}
+
+		$eiPropPathStr = (string) $eiPresetProp->getEiPropPath();
+		if ($this->enhancedEiPreset->containsParentProp($eiPropPathStr)) {
+			throw $this->enhancedEiPreset->createEiPresetAttributeError($eiPropPathStr,
+					message: 'Property has child properties but EntityProperty for "'
+					. TypeUtils::prettyClassPropName($this->entityPropertyCollection->getClass(),
+							$eiPresetProp->getEiPropPath()->getLastId())
+					. '" does not exist or does not support embedded EntityProperties.');
 		}
 	}
 
@@ -125,10 +133,10 @@ class EiPresetPropCompiler {
 	 */
 	private function analyzeAccessProxies(array $accessProxies, bool $editable): void {
 		foreach ($accessProxies as $accessProxy) {
-			$propertyName = $accessProxy->getPropertyName();
-			$eiPropPathStr = (string) $this->parentEiPropPath->ext($propertyName);
+			$eiPropPath = $this->parentEiPropPath->ext($accessProxy->getPropertyName());
+			$eiPropPathStr = (string) $eiPropPath;
 
-			IllegalStateException::assertTrue(!isset($this->eiPresetProps[$eiPropPathStr]));
+			IllegalStateException::assertTrue(!$this->eiPresetPropCollection->containsEiPropPath($eiPropPathStr));
 
 			if ((!$accessProxy->isReadable() && !$accessProxy->isWritable())
 					|| $this->enhancedEiPreset->containsExcludedPropNotation($eiPropPathStr)) {
@@ -136,32 +144,31 @@ class EiPresetPropCompiler {
 			}
 
 			if (!$editable) {
-				$this->eiPresetProps[$eiPropPathStr] = $this->createEiPresetProp($accessProxy,
+				$eiPresetProp = $this->createEiPresetProp($eiPropPath, $accessProxy,
 						$this->enhancedEiPreset->containsEditProp($eiPropPathStr),
-						$this->enhancedEiPreset->getLabel($eiPropPathStr));
-				continue;
+						$this->enhancedEiPreset->getLabel($eiPropPathStr), true);
+			} else {
+				$eiPresetProp = $this->createEiPresetProp($eiPropPath, $accessProxy,
+						!$this->enhancedEiPreset->containsReadProp($eiPropPathStr)
+						&& ($this->enhancedEiPreset->containsEditProp($eiPropPathStr) || $accessProxy->isWritable()),
+						$this->enhancedEiPreset->getLabel($eiPropPathStr), true);
 			}
 
-			$this->eiPresetProps[$propertyName] = $this->createEiPresetProp($accessProxy,
-					!$this->enhancedEiPreset->containsReadProp($eiPropPathStr)
-							&& ($this->enhancedEiPreset->containsEditProp($eiPropPathStr) || $accessProxy->isWritable()),
-					$this->enhancedEiPreset->getLabel($eiPropPathStr));
+			$this->eiPresetPropCollection->add($eiPresetProp);
+
+			$this->checkForFork($eiPresetProp);
 		}
 	}
 
-	private function ensureNotExcluded(string|EiPropPath $eiPropPath) {
+	private function ensureNotExcluded(string|EiPropPath $eiPropPath): void {
 		if ($this->enhancedEiPreset->containsExcludedPropNotation($eiPropPath)) {
 			throw $this->enhancedEiPreset->createEiPresetAttributeError($eiPropPath,
 					message: 'Also defined in excludedProps.');
 		}
 	}
 
-	/**
-	 * @param PropertyAccessProxy $propertyAccessProxy
-	 * @param bool $editable
-	 * @return EiPresetProp
-	 */
-	private function createEiPresetProp(PropertyAccessProxy $propertyAccessProxy, bool $editable, ?string $label) {
+	private function createEiPresetProp(EiPropPath $eiPropPath, PropertyAccessProxy $propertyAccessProxy, bool $editable,
+			?string $label, bool $autoDetected): EiPresetProp {
 		$propertyName = $propertyAccessProxy->getPropertyName();
 		$entityProperty = null;
 
@@ -169,8 +176,8 @@ class EiPresetPropCompiler {
 			$entityProperty = $this->entityPropertyCollection->getLevelEntityPropertyByName($propertyName);
 		}
 
-		return new EiPresetProp($propertyName, $propertyAccessProxy, $entityProperty, $editable,
-				$label ?? StringUtils::pretty($propertyName));
+		return new EiPresetProp($eiPropPath, $propertyAccessProxy, $entityProperty, $editable,
+				$label ?? StringUtils::pretty($propertyName), $autoDetected);
 	}
 
 	/**
@@ -182,7 +189,7 @@ class EiPresetPropCompiler {
 
 		return $this->enhancedEiPreset->createAttributeError( 'No suitable EiProps found for the following properties in '
 				. $this->entityPropertyCollection->getClass()->getName() . ': '
-				. implode(', ', array_map(fn (EiPresetProp $p) => $p->getName(), $unassignedEiPresetProps)));
+				. implode(', ', array_map(fn (EiPresetProp $p) => $p->getEiPropPath(), $unassignedEiPresetProps)));
 	}
 
 

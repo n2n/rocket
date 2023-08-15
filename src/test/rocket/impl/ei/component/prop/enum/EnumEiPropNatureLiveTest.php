@@ -38,7 +38,7 @@ class EnumEiPropNatureLiveTest extends TestCase {
 
 	function testQuickSearch() {
 		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
-		$eiMask = $this->spec->getEiTypeByClassName(EnumTestObj::class)->getEiMask();;
+		$eiMask = $this->spec->getEiTypeByClassName(EnumTestObj::class)->getEiMask();
 
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());

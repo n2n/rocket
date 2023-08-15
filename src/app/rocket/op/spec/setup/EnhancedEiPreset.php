@@ -91,7 +91,7 @@ class EnhancedEiPreset {
 
 	function getLabel(EiPropPath|string $eiPropPath): ?string {
 		$eiPropPathStr = (string) $eiPropPath;
-		return ($this->readPropNotations[$eiPropPathStr] ?? $this->editProps[$eiPropPathStr] ?? null)?->getLabel();
+		return ($this->readPropNotations[$eiPropPathStr] ?? $this->editPropNotations[$eiPropPathStr] ?? null)?->getLabel();
 	}
 
 	private function filterPropNotations(EiPropPath $parentEiPropPath, array &$propNotations): array {

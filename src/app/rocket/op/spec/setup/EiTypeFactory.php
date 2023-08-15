@@ -192,16 +192,16 @@ class EiTypeFactory {
 		$class = $entityModel->getClass();
 		$attributeSet = ReflectionContext::getAttributeSet($class);
 
-		$eiPresetProps = [];
+		$eiPresetPropCollection = null;
 		$eiPresetAttribute = $attributeSet->getClassAttribute(EiPreset::class);
 		$eiPresetUtil = null;
 		if ($eiPresetAttribute !== null) {
 			$eiPresetUtil = new EiPresetPropCompiler(new EnhancedEiPreset($eiPresetAttribute), $entityModel,
 					new EiPropPath([]));
-			$eiPresetProps = $eiPresetUtil->compile();
+			$eiPresetPropCollection = $eiPresetUtil->compile();
 		}
 
-		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetAttribute?->getInstance()->mode, $eiPresetProps);
+		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetAttribute?->getInstance()->mode, $eiPresetPropCollection);
 		foreach (EiSetupPhase::cases() as $eiSetupPhase) {
 			foreach ($this->specConfigLoader->getEiComponentNatureProviders() as $eiComponentNatureProvider) {
 				$eiComponentNatureProvider->provide($eiTypeSetup, $eiSetupPhase);

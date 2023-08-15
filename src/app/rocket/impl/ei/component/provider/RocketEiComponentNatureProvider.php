@@ -55,7 +55,6 @@ use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use rocket\attribute\impl\EiPropBool;
 use rocket\impl\ei\component\prop\enum\EnumEiPropNature;
 use rocket\attribute\impl\EiPropEnum;
-use rocket\impl\ei\component\prop\adapter\EditableEiPropNature;
 use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\reflection\property\AccessProxy;
 
@@ -69,21 +68,27 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 	 * @inheritDoc
 	 */
 	public function provide(EiTypeSetup $eiTypeSetup, EiSetupPhase $eiSetupPhase): void {
-		$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup);
 
 		if ($eiSetupPhase === EiSetupPhase::PERFECT_MATCHES) {
 			$this->provideCmdNatures($eiTypeSetup);
 			$this->provideModNatures($eiTypeSetup);
-			$eiPropNatureProvider->provideAnnotateds($eiTypeSetup);
+
+			foreach ($eiTypeSetup->getEiTypeClassSetups() as $eiTypeClassSetup) {
+				$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup, $eiTypeClassSetup);
+				$eiPropNatureProvider->provideAnnotateds();
+			}
 			return;
 		}
 
-		foreach ($eiTypeSetup->getUnassignedEiPresetProps() as $eiPresetProp) {
-			if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
-				$eiPropNatureProvider->provideRelation($eiPresetProp)
-						|| $eiPropNatureProvider->provideCommon($eiPresetProp);
-			} else {
-				$eiPropNatureProvider->provideFallback($eiPresetProp);
+		foreach ($eiTypeSetup->getEiTypeClassSetups() as $eiTypeClassSetup) {
+			$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup, $eiTypeClassSetup);
+			foreach ($eiTypeClassSetup->getUnassignedEiPresetProps() as $eiPresetProp) {
+				if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
+					$eiPropNatureProvider->provideRelation($eiPresetProp)
+							|| $eiPropNatureProvider->provideCommon($eiPresetProp);
+				} else {
+					$eiPropNatureProvider->provideFallback($eiPresetProp);
+				}
 			}
 		}
 	}
