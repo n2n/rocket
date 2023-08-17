@@ -179,7 +179,9 @@ class EiEngine {
 			return $this->guiDefinition;
 		}
 
-		$this->guiDefinition = $this->eiMask->getEiPropCollection()->createGuiDefinition($this->n2nContext);
+		$this->guiDefinition = new GuiDefinition($this->eiMask);
+		$this->eiMask->getEiPropCollection()
+				->supplyGuiDefinition($this->guiDefinition, $this->n2nContext);
 		$this->eiMask->getEiCmdCollection()->supplyGuiDefinition($this->guiDefinition);
 		return $this->guiDefinition;
 	}

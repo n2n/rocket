@@ -72,10 +72,10 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 
 		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
 		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, false, null);
-		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], true);
+		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], false);
 
 		$guiField = $eiGuiValueBoundary->getSelectedEiGuiEntry()->getGuiFieldByDefPropPath(
-				new DefPropPath([new EiPropPath(['optEditEmbeddable', 'someProp'])]));
+				new DefPropPath([new EiPropPath(['reqEditEmbeddable', 'someProp'])]));
 
 		$guiField->getSiField()->handleInput(['value' => 'some value']);
 		$eiGuiValueBoundary->save();
@@ -85,7 +85,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 
 		$embeddingContainerTestObj = $eiEntry->getEiObject()->getEiEntityObj()->getEntityObj();
 		assert($embeddingContainerTestObj instanceof EmbeddingContainerTestObj);
-		$this->assertEquals('some value', $embeddingContainerTestObj->optEditEmbeddable->someProp);
+		$this->assertEquals('some value', $embeddingContainerTestObj->reqEditEmbeddable->someProp);
 
 	}
 

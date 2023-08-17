@@ -221,8 +221,8 @@ class EiPropCollection extends EiComponentCollection {
 //		return $sortDefinition;
 //	}
 
-	function createGuiDefinition(N2nContext $n2nContext): GuiDefinition {
-		$guiDefinition = new GuiDefinition($this->eiMask);
+	function supplyGuiDefinition(GuiDefinition $guiDefinition, N2nContext $n2nContext): void {
+		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
 		foreach ($this as $eiProp) {
 			$eiPropPath = $eiProp->getEiPropPath();
@@ -232,8 +232,6 @@ class EiPropCollection extends EiComponentCollection {
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 		}
-
-		return $guiDefinition;
 	}
 
 	function createForkedEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink): EiFrame {
