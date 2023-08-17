@@ -4,10 +4,9 @@ namespace rocket\impl\ei\component\prop\enum;
 
 use rocket\test\GeneralTestEnv;
 use rocket\test\SpecTestEnv;
-use testmdl\bo\enum\EnumTestObj;
+use testmdl\enum\bo\EnumTestObj;
 use PHPUnit\Framework\TestCase;
-use rocket\op\ei\EiPropPath;
-use testmdl\bo\enum\InvalidEnumTestObj;
+use testmdl\enum\bo\InvalidEnumTestObj;
 use n2n\util\ex\err\ConfigurationError;
 
 class EnumEiPropNatureSetupTest extends TestCase {

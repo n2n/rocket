@@ -149,8 +149,9 @@ class EiMask {
 				$eiPropPath = $eiPropPath->ext($id);
 
 				$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
-				if ($eiProp->isPropFork()) {
-					$forkObject = $eiProp->getPropForkObject($forkObject);
+				$eiPropNature = $eiProp->getNature();
+				if ($eiPropNature->isPropFork()) {
+					$forkObject = $eiPropNature->getPropForkObject($forkObject);
 					continue;
 				}
 

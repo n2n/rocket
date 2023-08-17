@@ -63,6 +63,8 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\util\EnumUtils;
 use rocket\op\spec\setup\EiTypeClassSetup;
+use rocket\impl\ei\component\prop\embedded\EmbeddedEiPropNature;
+use n2n\persistence\orm\property\EntityProperty;
 
 class EiPropNatureProvider {
 
@@ -85,7 +87,7 @@ class EiPropNatureProvider {
 			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
 					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
 			$this->configureEditiable($eiPropBool->constant, $eiPropBool->readOnly, $eiPropBool->mandatory,
-					$nature->getPropertyAccessProxy(), $nature->getEditConfig());
+					$nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
 
 			$nature->setOnAssociatedDefPropPaths($eiPropBool->onAssociatedDefPropPaths);
 			$nature->setOffAssociatedDefPropPaths($eiPropBool->offAssociatedDefPropPaths);
@@ -117,7 +119,7 @@ class EiPropNatureProvider {
 			$nature->setAssociatedDefPropPathMap($eiPropEnum->associatedDefPropPathMap);
 
 			$this->configureEditiable($eiPropEnum->constant, $eiPropEnum->readOnly, $eiPropEnum->mandatory,
-					$nature->getPropertyAccessProxy(), $nature->getEditConfig());
+					$nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}
@@ -135,7 +137,7 @@ class EiPropNatureProvider {
 			$nature->setDecimalPlaces($eiPropDecimal->decimalPlaces);
 
 			$this->configureEditiable($eiPropDecimal->constant, $eiPropDecimal->readOnly, $eiPropDecimal->mandatory,
-					$nature->getPropertyAccessProxy(), $nature->getEditConfig());
+					$nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
@@ -181,7 +183,7 @@ class EiPropNatureProvider {
 			$nature->setUniquePerEiPropPath($eiPropPathPart->uniquePerEiPropPath);
 
 			$this->configureEditiable($eiPropPathPart->constant, $eiPropPathPart->readOnly, $eiPropPathPart->mandatory,
-					$propertyAccessProxy, $nature->getEditConfig());
+					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
@@ -200,12 +202,35 @@ class EiPropNatureProvider {
 			$nature->setMultiline($eiPropString->multiline);
 
 			$this->configureEditiable($eiPropString->constant, $eiPropString->readOnly, $eiPropString->mandatory,
-					$propertyAccessProxy, $nature->getEditConfig());
+					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}
 
+	}
+
+	function provideEmbedded(EiPresetProp $eiPresetProp): bool {
+		$entityProperty = $eiPresetProp->getEntityProperty();
+
+		if ($entityProperty === null || !$entityProperty->hasEmbeddedEntityPropertyCollection()) {
+			return false;
+		}
+
+		$accessProxy = $eiPresetProp->getPropertyAccessProxy();
+//		$nullAllowed = $accessProxy->isWritable()
+//				? $accessProxy->getSetterConstraint()->allowsNull()
+//				: $accessProxy->getGetterConstraint()->allowsNull();
+//		$propertyName = $accessProxy->getPropertyName();
+
+		$eiPropNature = new EmbeddedEiPropNature($entityProperty, $accessProxy);
+
+		$this->configureLabel($eiPresetProp->getPropertyAccessProxy(), $eiPropNature->getLabelConfig(),
+				$eiPresetProp->getLabel());
+
+		$this->eiTypeClassSetup->addEiPropNature($eiPresetProp->getEiPropPath(), $eiPropNature);
+
+		return true;
 	}
 
 	function provideRelation(EiPresetProp $eiPresetProp): bool{
@@ -350,7 +375,7 @@ class EiPropNatureProvider {
 		$this->configureLabel($eiPresetProp->getPropertyAccessProxy(), $nature->getLabelConfig(),
 				$eiPresetProp->getLabel());
 		$this->configureEditiable(null, !$eiPresetProp->isEditable(), !$nullAllowed, $eiPresetProp->getPropertyAccessProxy(),
-				$nature->getEditConfig());
+				$eiPresetProp->getEntityProperty(), $nature->getEditConfig());
 
 		$this->eiTypeClassSetup->addEiPropNature($eiPresetProp->getEiPropPath(), $nature);
 
@@ -386,7 +411,7 @@ class EiPropNatureProvider {
 		$this->configureLabel($eiPresetProp->getPropertyAccessProxy(), $nature->getLabelConfig(),
 				$eiPresetProp->getLabel());
 		$this->configureEditiable(null, !$eiPresetProp->isEditable(), !$nullAllowed, $eiPresetProp->getPropertyAccessProxy(),
-				$editConfig);
+				$eiPresetProp->getEntityProperty(), $editConfig);
 		$this->configureAddons($eiPresetProp->getPropertyAccessProxy(), $nature);
 
 		$this->eiTypeClassSetup->addEiPropNature($eiPresetProp->getEiPropPath(), $nature);
@@ -435,10 +460,15 @@ class EiPropNatureProvider {
 	}
 
 	private function configureEditiable(?bool $constant, ?bool $readOnly, ?bool $mandatory, AccessProxy $accessProxy,
-			EditConfig $nature): void {
-		$nature->setConstant($constant ?? false);
-		$nature->setReadOnly($readOnly ?? !$accessProxy->isWritable());
-		$nature->setMandatory($mandatory ?? !$accessProxy->getSetterConstraint()->allowsNull());
+			?EntityProperty $entityProperty, EditConfig $nature): void {
+
+		$idDef = $this->eiTypeClassSetup->getIdDef();
+		$isId = $entityProperty !== null && $entityProperty === $idDef->getEntityProperty();
+
+		$nature->setConstant($isId || ($constant ?? false));
+		$nature->setReadOnly(($isId && $idDef->isGenerated()) || ($readOnly ?? !$accessProxy->isWritable()));
+		$nature->setMandatory(!($isId && $idDef->isGenerated())
+				&& ($mandatory ?? !$accessProxy->getSetterConstraint()->allowsNull()));
 	}
 
 	private function configureAddons(PropertyAccessProxy $propertyAccessProxy, AddonEiPropNature $nature): void {

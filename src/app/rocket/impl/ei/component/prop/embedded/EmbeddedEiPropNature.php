@@ -23,30 +23,41 @@ namespace rocket\impl\ei\component\prop\embedded;
 
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\util\Eiu;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-
 use rocket\op\ei\manage\gui\GuiProp;
 use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
+use n2n\util\type\ArgUtils;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\reflection\property\AccessProxy;
 
 class EmbeddedEiPropNature extends EiPropNatureAdapter {
 
 	private PropertyAccessProxy $propertyAccessProxy;
 
-	function __construct(private EmbeddedEntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+	function __construct(private readonly EntityProperty $entityProperty, PropertyAccessProxy $accessProxy) {
+		ArgUtils::assertTrue($this->entityProperty->hasEmbeddedEntityPropertyCollection());
 		$this->propertyAccessProxy = $accessProxy->createRestricted(
 				TypeConstraints::namedType($this->entityProperty->getTargetClass(), true));
+	}
+
+	function getNativeAccessProxy(): ?AccessProxy {
+		return $this->propertyAccessProxy;
+	}
+
+	function getEntityProperty(): EntityProperty {
+		return $this->entityProperty;
 	}
 
 	/**
 	 * @return boolean
 	 */
 	public function isMandatory() {
-		return $this->isMandatory();
+		return true;
 	}
 
 	/**
@@ -63,7 +74,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 	 */
 	public function getPropForkObject(object $object): object {
 		return $this->propertyAccessProxy->getValue($object)
-				?? ReflectionUtils::createObject($this->entityProperty->getTargetClass());
+				?? ReflectionUtils::createObject($this->entityProperty->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 
 	public function buildGuiProp(Eiu $eiu): ?GuiProp {
@@ -72,12 +83,11 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 		}
 
 		$eiu->engine()->onNewGuiEntry(function (Eiu $eiu) {
-			$value = $eiu->entry()->getValue($this);
-
+			$value = $eiu->entry()->getValue($eiu->prop());
 			if ($value !== null) return;
 
 			$eiu->guiEntry()->onSave(function () use ($eiu) {
-				$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($this));
+				$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($eiu->prop()->getPath()));
 			});
 		});
 
@@ -88,7 +98,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\component\prop\FieldEiProp::buildEiField()
 	 */
-	public function buildEiField(Eiu $eiu): ?EiField {
+	public function buildEiField(Eiu $eiu): ?EiFieldNature {
 		return new EmbeddedEiField($eiu, $this);
 	}
 

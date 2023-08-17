@@ -21,11 +21,74 @@
  */
 namespace rocket\op\ei\manage\entry;
 
-interface EiFieldConstraint {
+use rocket\op\ei\manage\EiObject;
+use rocket\op\ei\util\Eiu;
+
+interface EiFieldNature {
 	
+	
+	/**
+	 * @return mixed 
+	 */
+	public function getValue();
+	
+	/**
+	 * @param mixed $value
+	 * @throws \InvalidArgumentException
+	 */
+	public function setValue($value);
+	
+	function hasChanges(): bool;
+	
+	/**
+	 * @param mixed $value
+	 * @return bool
+	 */
 	public function acceptsValue($value): bool;
 	
-	public function check(EiFieldNature $eiField): bool;
+	/**
+	 * @return bool
+	 */
+	public function isValid(): bool;
 	
-	public function validate(EiFieldNature $eiField, EiFieldValidationResult $validationResult);
+	/**
+	 * @param EiFieldValidationResult $eiEiFieldValidationResult
+	 */
+	public function validate(EiFieldValidationResult $eiEiFieldValidationResult);
+	
+	function read();
+	
+	/**
+	 * Security can be ignored
+	 * @return boolean
+	 */
+	public function isWritable(): bool;
+	
+	
+	/**
+	 * 
+	 */
+	public function write();	
+	
+	/**
+	 * @return bool
+	 */
+	public function isCopyable(): bool;
+	
+	/**
+	 * Security can be ignored
+	 * @param EiObject $eiObject
+	 * @return mixed
+	 */
+	public function copyValue(Eiu $copyEiu);
+	
+	/**
+	 * @return bool
+	 */
+	public function hasForkedEiFieldMap(): bool;
+	
+	/**
+	 * @return EiFieldMap
+	 */
+	public function getForkedEiFieldMap(): EiFieldMap;
 }

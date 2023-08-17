@@ -3,13 +3,13 @@ namespace rocket\op\ei\util\factory;
 
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter;
 use n2n\validation\validator\Validator;
 use n2n\util\type\TypeConstraint;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\validation\build\impl\Validate;
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 
 class EifField {
 	/**
@@ -141,7 +141,7 @@ class EifField {
 	}
 	
 	/**
-	 * @return EiField
+	 * @return EiFieldNature
 	 */
 	function toEiField() {
 		return new FabricatedEiField($this->eiu, $this->typeConstraint, $this->readerMmi, $this->readMapperMmi, 
@@ -149,7 +149,7 @@ class EifField {
 	}
 }
 
-class FabricatedEiField extends EiFieldAdapter {
+class FabricatedEiField extends EiFieldNatureAdapter {
 	/**
 	 * @var Eiu
 	 */
@@ -208,7 +208,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::checkValue()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::checkValue()
 	 */
 	protected function checkValue($value) {
 		if ($this->typeConstraint !== null) {
@@ -218,7 +218,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::readValue()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::readValue()
 	 */
 	protected function readValue() {
 		$value = $this->readerMmi->invoke();
@@ -230,7 +230,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\entry\EiField::isWritable()
+	 * @see \rocket\op\ei\manage\entry\EiFieldNature::isWritable()
 	 */
 	public function isWritable(): bool {
 		return $this->writerMmi !== null;
@@ -238,7 +238,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::writeValue()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::writeValue()
 	 */
 	protected function writeValue($value) {
 		if ($this->writeMapperMmi !== null) {
@@ -252,7 +252,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::isValueValid()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::isValueValid()
 	 */
 	protected function isValueValid($value) {
 		if (empty($this->validators)) {
@@ -265,7 +265,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::validateValue()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::validateValue()
 	 */
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {
 		if (empty($this->validators)) {
@@ -284,7 +284,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\entry\EiField::isCopyable()
+	 * @see \rocket\op\ei\manage\entry\EiFieldNature::isCopyable()
 	 */
 	public function isCopyable(): bool {
 		return $this->copierClosure !== null;
@@ -292,7 +292,7 @@ class FabricatedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\entry\EiField::copyValue()
+	 * @see \rocket\op\ei\manage\entry\EiFieldNature::copyValue()
 	 */
 	public function copyValue(Eiu $copyEiu) {
 		IllegalStateException::assertTrue($this->copierClosure !== null);
@@ -302,5 +302,9 @@ class FabricatedEiField extends EiFieldAdapter {
 		$copierMmi->setParamValue('copyEiu', $copyEiu);
 		$copierMmi->setReturnTypeConstraint($this->typeConstraint);
 		return $copierMmi->invoke(null, $this->copierClosure, [$this->getValue()]);
-	}	
+	}
+
+	protected function getChildEiFieldMaps(): array {
+		return [];
+	}
 }

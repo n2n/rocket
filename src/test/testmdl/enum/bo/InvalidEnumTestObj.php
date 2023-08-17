@@ -1,10 +1,9 @@
 <?php
 
-namespace testmdl\bo\enum;
+namespace testmdl\enum\bo;
 
 use rocket\attribute\EiType;
 use rocket\attribute\impl\EiPropEnum;
-use rocket\attribute\EiPreset;
 
 #[EiType]
 class InvalidEnumTestObj {

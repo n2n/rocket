@@ -29,7 +29,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\op\ei\manage\gui\field\GuiField;
@@ -49,7 +49,7 @@ class ManyToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 				new RelationModel($this, true, true, RelationModel::MODE_SELECT));
 	}
 
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		

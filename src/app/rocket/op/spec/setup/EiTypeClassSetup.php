@@ -17,6 +17,7 @@ use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\persistence\orm\model\UnknownEntityPropertyException;
 use n2n\util\StringUtils;
+use n2n\persistence\orm\property\IdDef;
 
 class EiTypeClassSetup {
 
@@ -37,6 +38,10 @@ class EiTypeClassSetup {
 
 	function getClass(): \ReflectionClass {
 		return $this->getEntityPropertyCollection()->getClass();
+	}
+
+	function getIdDef(): IdDef {
+		return $this->eiType->getEntityModel()->getIdDef();
 	}
 
 	/**

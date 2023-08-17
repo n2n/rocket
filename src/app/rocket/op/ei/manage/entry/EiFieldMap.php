@@ -10,7 +10,7 @@ class EiFieldMap {
 	private $forkEiPropPath;
 	private $object;
 	/**
-	 * @var EiFieldWrapper[]
+	 * @var EiField[]
 	 */
 	private $eiFieldWrappers = array();
 	
@@ -63,26 +63,26 @@ class EiFieldMap {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @param EiField $eiField
-	 * @return \rocket\op\ei\manage\entry\EiFieldWrapper
+	 * @param EiFieldNature $eiField
+	 * @return \rocket\op\ei\manage\entry\EiField
 	 */
-	function put(string $id, EiField $eiField) {
-		return $this->eiFieldWrappers[$id] = new EiFieldWrapper($this, $this->forkEiPropPath->ext($id), $eiField);
+	function put(string $id, EiFieldNature $eiField) {
+		return $this->eiFieldWrappers[$id] = new EiField($this, $this->forkEiPropPath->ext($id), $eiField);
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @throws EiFieldOperationFailedException
+	 * @return EiFieldNature
+	 *@throws EiFieldOperationFailedException
+	 */
+	function getNature(string $id) {
+		return $this->getWrapper($id)->getEiFieldNature();
+	}
+	
+	/**
+	 * @param EiPropPath $eiPropPath
 	 * @return EiField
-	 */
-	function get(string $id) {
-		return $this->getWrapper($id)->getEiField();
-	}
-	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @throws UnknownEiFieldExcpetion
-	 * @return EiFieldWrapper
+	 *@throws UnknownEiFieldExcpetion
 	 */
 	function getWrapper(string $id) {
 		if (isset($this->eiFieldWrappers[$id])) {
@@ -93,7 +93,7 @@ class EiFieldMap {
 	}
 	
 	/**
-	 * @return EiFieldWrapper[]
+	 * @return EiField[]
 	 */
 	function getWrappers() {
 		return $this->eiFieldWrappers;
@@ -106,7 +106,7 @@ class EiFieldMap {
 		foreach ($this->eiFieldWrappers as $eiPropPathStr => $eiFieldWrapper) {
 			if ($eiFieldWrapper->isIgnored()) continue;
 			
-			if (!$eiFieldWrapper->getEiField()->isValid()) {
+			if (!$eiFieldWrapper->getEiFieldNature()->isValid()) {
 				return false;
 			}
 		}
@@ -137,9 +137,17 @@ class EiFieldMap {
 			if ($eiFieldWrapper->isIgnored() || !$eiFieldWrapper->isWritable(true)) {
 				continue;
 			}
-
-
 			$eiFieldWrapper->write();
+		}
+	}
+
+	function hasChanges(): bool {
+		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+			if ($eiFieldWrapper->hasChanges()) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 	

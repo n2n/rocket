@@ -58,7 +58,7 @@ class EiPropCollection extends EiComponentCollection {
 	 * @return EiProp
 	 * @throws UnknownEiComponentException
 	 */
-	public function getByPath(EiPropPath $eiPropPath) {
+	public function getByPath(EiPropPath $eiPropPath): EiProp {
 		return $this->getElementByIdPath($eiPropPath);
 	}
 

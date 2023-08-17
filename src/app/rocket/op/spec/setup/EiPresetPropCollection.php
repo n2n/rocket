@@ -9,6 +9,9 @@ use n2n\persistence\orm\model\EntityPropertyCollection;
 class EiPresetPropCollection {
 
 	private array $eiPresetProps = [];
+	/**
+	 * @var EiPresetPropCollection[]
+	 */
 	private array $eiPresetPropCollections = [];
 
 	function __construct(private readonly EiPropPath $parentEiPropPath,
@@ -57,7 +60,7 @@ class EiPresetPropCollection {
 			$eiPropPaths[$eiPropPathStr] = $eiPresetProp->getEiPropPath();
 
 			if ($descendantsIncluded && isset($this->eiPresetPropCollections[$eiPropPathStr])) {
-				$eiPropPaths += $this->eiPresetPropCollections[$eiPropPathStr]->getAllEiPropPaths();
+				$eiPropPaths += $this->eiPresetPropCollections[$eiPropPathStr]->getEiPropPaths(true);
 			}
 		}
 		return $eiPropPaths;

@@ -21,74 +21,152 @@
  */
 namespace rocket\op\ei\manage\entry;
 
-use rocket\op\ei\manage\EiObject;
-use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\gui\EiFieldAbstraction;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\manage\security\InaccessibleEiFieldException;
 
-interface EiField {
+class EiField implements EiFieldAbstraction {
+	private $eiFieldMap;
+	private $eiPropPath;
+	private $eiField;
+	private $ignored = false;
 	
+	private $orgValueLoaded = false;
+	private $orgValue;
+	
+	function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiFieldNature $eiFieldNature) {
+		$this->eiFieldMap = $eiFieldMap;
+		$this->eiPropPath = $eiPropPath;
+		$this->eiField = $eiFieldNature;
+	}
+
+	function getEiFieldNature(): EiFieldNature {
+		return $this->eiField;
+	}
 	
 	/**
-	 * @return mixed 
+	 * @param bool $ignored
 	 */
-	public function getValue();
+	function setIgnored(bool $ignored) {
+		$this->ignored = $ignored;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	function isIgnored(): bool {
+		return $this->ignored;
+	}
+	
+	/**
+	 * @return \rocket\op\ei\manage\entry\EiFieldMap
+	 */
+	function getEiFieldMap() {
+		return $this->eiFieldMap;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	final function isOrgValueLoaded() {
+		return $this->orgValueLoaded;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \rocket\op\ei\manage\entry\EiFieldNature::getOrgValue()
+	 */
+	final function getOrgValue() {
+		$this->ensureOrgLoaded();
+		return $this->orgValue;
+	}
+	
+	final function resetValue() {
+		if (!$this->orgValueLoaded) {
+			return;
+		}
+		
+		$this->eiField->setValue($this->orgValue);
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	final function hasChanges() {
+		return $this->eiField->hasChanges();
+	}
+	
+	final function read() {
+		$this->eiField->read();
+	}
+	
+	private function ensureOrgLoaded() {
+		if ($this->orgValueLoaded) {
+			return;
+		}
+		
+		$this->orgValue = $this->eiField->getValue();
+		$this->orgValueLoaded = true;
+	}
 	
 	/**
 	 * @param mixed $value
-	 * @throws \InvalidArgumentException
+	 * @param bool $ignoreSecurity
+	 * @throws InaccessibleEiFieldException
 	 */
-	public function setValue($value);
-	
-	function hasChanges(): bool;
+	function setValue($value, bool $regardSecurity = true) {
+		if ($regardSecurity && !$this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
+				->isEiPropWritable($this->eiPropPath)) {
+			throw new InaccessibleEiFieldException('User has no write access of on field ' . $this->eiPropPath . '.');
+		}
+		
+		$this->ensureOrgLoaded();
+		$this->eiField->setValue($value);
+	}
 	
 	/**
-	 * @param mixed $value
-	 * @return bool
+	 * @return mixed
 	 */
-	public function acceptsValue($value): bool;
+	function getValue() {
+		$this->ensureOrgLoaded();
+		
+		return $this->eiField->getValue();
+	}
 	
 	/**
+	 * @param bool $regardSecurity
 	 * @return bool
 	 */
-	public function isValid(): bool;
-	
+	function isWritable(bool $regardSecurity) {
+		return $this->eiField->isWritable() 
+				&& (!$regardSecurity || $this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
+						->isEiPropWritable($this->eiPropPath));
+	}
 	/**
 	 * @param EiFieldValidationResult $eiEiFieldValidationResult
 	 */
-	public function validate(EiFieldValidationResult $eiEiFieldValidationResult);
+	function validate(EiFieldValidationResult $eiEiFieldValidationResult) {
+		$this->eiField->validate($eiEiFieldValidationResult);
+	}
 	
-	function read();
+	function write() {
+		$this->eiField->write();
+	}
 	
-	/**
-	 * Security can be ignored
-	 * @return boolean
-	 */
-	public function isWritable(): bool;
+// 	/**
+// 	 * @return \rocket\op\ei\manage\entry\EiField
+// 	 */
+// 	function getEiField() {
+// 		return $this->eiField;
+// 	}
 	
-	
-	/**
-	 * 
-	 */
-	public function write();	
-	
-	/**
-	 * @return bool
-	 */
-	public function isCopyable(): bool;
-	
-	/**
-	 * Security can be ignored
-	 * @param EiObject $eiObject
-	 * @return mixed
-	 */
-	public function copyValue(Eiu $copyEiu);
-	
-	/**
-	 * @return bool
-	 */
-	public function hasForkedEiFieldMap(): bool;
-	
-	/**
-	 * @return EiFieldMap
-	 */
-	public function getForkedEiFieldMap(): EiFieldMap;
+	function getValidationResult(): ?ValidationResult {
+		$eiEntry = $this->eiFieldMap->getEiEntry();
+		
+		if (!$eiEntry->hasValidationResult()) {
+			return null;
+		}
+		
+		return $eiEntry->getValidationResult()->getEiFieldValidationResult($this->eiPropPath);
+	}
 }

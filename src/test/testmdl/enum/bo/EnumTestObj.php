@@ -1,6 +1,6 @@
 <?php
 
-namespace testmdl\bo\enum;
+namespace testmdl\enum\bo;
 
 use rocket\attribute\EiType;
 use rocket\attribute\impl\EiPropEnum;

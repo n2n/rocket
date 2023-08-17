@@ -85,6 +85,7 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 			foreach ($eiTypeClassSetup->getUnassignedEiPresetProps() as $eiPresetProp) {
 				if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
 					$eiPropNatureProvider->provideRelation($eiPresetProp)
+							|| $eiPropNatureProvider->provideEmbedded($eiPresetProp)
 							|| $eiPropNatureProvider->provideCommon($eiPresetProp);
 				} else {
 					$eiPropNatureProvider->provideFallback($eiPresetProp);

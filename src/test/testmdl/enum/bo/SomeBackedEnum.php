@@ -1,6 +1,6 @@
 <?php
 
-namespace testmdl\bo\enum;
+namespace testmdl\enum\bo;
 
 enum SomeBackedEnum: string {
 	case ATUSCH = 'atusch';

@@ -118,7 +118,9 @@ class EiTypeSetup {
 	function getUnassignedEiPresetProps(): array {
 		$eiPresetProps = [];
 		foreach ($this->eiTypeClassSetups as $eiTypeClassSetup) {
-			array_push($eiPresetProps, ...$eiTypeClassSetup->getUnassignedEiPresetProps());
+			foreach ($eiTypeClassSetup->getUnassignedEiPresetProps() as $eiPresetProp) {
+				$eiPresetProps[] = $eiPresetProp;
+			}
 		}
 		return $eiPresetProps;
 	}

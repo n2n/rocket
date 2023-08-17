@@ -40,7 +40,7 @@ use n2n\web\dispatch\mag\Mag;
 use rocket\op\ei\manage\gui\field\GuiFieldForkEditable;
 use rocket\op\ei\util\gui\EiuGuiEntryAssembler;
 use rocket\op\ei\manage\gui\GuiDefinition;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
 use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
 use rocket\op\ei\manage\gui\field\GuiField;
@@ -70,7 +70,7 @@ class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*imple
 //		return $this->forkedGuiDefinition;
 //	}
 	
-	public function buildEiField(Eiu $eiu): ?EiField {
+	public function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 

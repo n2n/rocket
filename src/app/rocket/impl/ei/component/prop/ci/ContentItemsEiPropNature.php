@@ -35,7 +35,7 @@ use rocket\op\ei\manage\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\ci\conf\ContentItemsConfig;
 use rocket\si\content\impl\SiFields;
@@ -148,7 +148,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 		return $this->panelDeclarations;
 	}
 	
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		

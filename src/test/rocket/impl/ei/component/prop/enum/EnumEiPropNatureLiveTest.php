@@ -5,15 +5,13 @@ namespace rocket\impl\ei\component\prop\enum;
 use rocket\op\spec\Spec;
 use rocket\test\GeneralTestEnv;
 use rocket\test\SpecTestEnv;
-use testmdl\bo\QuickSearchTestObj;
 use n2n\test\TestEnv;
-use testmdl\test\TestMdlTestEnv;
 use rocket\op\ei\manage\EiLaunch;
 use rocket\user\model\security\FullEiPermissionManager;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use testmdl\bo\enum\EnumTestObj;
+use testmdl\enum\bo\EnumTestObj;
 use testmdl\test\enum\EnumTestEnv;
-use testmdl\bo\enum\SomeBackedEnum;
+use testmdl\enum\bo\SomeBackedEnum;
 use PHPUnit\Framework\TestCase;
 use rocket\op\ei\EiPropPath;
 

@@ -40,7 +40,7 @@ use rocket\op\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\op\ei\manage\critmod\filter\FilterProp;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
@@ -178,7 +178,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 
-	public function buildEiField(Eiu $eiu): ?EiField {
+	public function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$eiu->entry()->onValidate(function () use ($eiu) {
 			$curBackedValue = $this->unitValueToBackedValue($eiu->field()->getValue());
 				

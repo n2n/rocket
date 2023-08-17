@@ -3,8 +3,8 @@
 namespace testmdl\test\enum;
 
 use n2n\test\TestEnv;
-use testmdl\bo\enum\EnumTestObj;
-use testmdl\bo\enum\SomeBackedEnum;
+use testmdl\enum\bo\EnumTestObj;
+use testmdl\enum\bo\SomeBackedEnum;
 
 enum EnumTestEnv {
 
