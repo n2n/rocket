@@ -29,7 +29,7 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
@@ -56,7 +56,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 				->setDefaultDisplayedViewModes(ViewMode::bulky());
 	}
 	
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		

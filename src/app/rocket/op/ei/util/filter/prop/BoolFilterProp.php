@@ -32,7 +32,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use n2n\web\dispatch\mag\MagDispatchable;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\op\ei\manage\entry\EiFieldConstraint;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\Message;
 use rocket\op\ei\manage\critmod\filter\ComparatorConstraint;
@@ -106,7 +106,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
-	public function check(EiField $eiField): bool {
+	public function check(EiFieldNature $eiField): bool {
 		return $this->acceptsValue($eiField->getValue()); 
 	}
 
@@ -114,7 +114,7 @@ class BoolEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
+	public function validate(EiFieldNature $eiField, EiFieldValidationResult $validationResult) {
 		if ($this->check($eiField)) return;
 
 		$validationResult->addError(Message::createCodeArg('ei_impl_bool_field_must_be_selected_err', 

@@ -29,7 +29,7 @@ use n2n\util\type\attrs\DataSet;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use n2n\l10n\Message;
 use n2n\persistence\orm\criteria\item\CrIt;
@@ -122,7 +122,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
-	public function check(EiField $eiField) {
+	public function check(EiFieldNature $eiField) {
 		return $this->acceptsValue($eiField->getValue());
 	}
 
@@ -130,7 +130,7 @@ class RelationEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
+	public function validate(EiFieldNature $eiField, EiFieldValidationResult $validationResult) {
 		if ($this->check($eiField)) return;
 		
 		$messageKey = null;
@@ -210,7 +210,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldConstraint::check($eiField)
 	 */
-	public function check(EiField $eiField) {
+	public function check(EiFieldNature $eiField) {
 		return $this->acceptsValue($eiField->getValue());
 	}
 
@@ -218,7 +218,7 @@ class TestEiFieldConstraint implements EiFieldConstraint {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldConstraint::validate($eiField, $validationResult)
 	 */
-	public function validate(EiField $eiField, EiFieldValidationResult $validationResult) {
+	public function validate(EiFieldNature $eiField, EiFieldValidationResult $validationResult) {
 		if ($this->exists) {
 			$value = $eiField->getValue();
 			if (!$this->toMany) {

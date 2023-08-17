@@ -29,7 +29,7 @@ use n2n\util\col\Hashable;
 use n2n\util\type\TypeUtils;
 
 class DefPropPath implements Hashable {
-	const EI_PROP_PATH_SEPARATOR = '.';
+	const EI_PROP_PATH_SEPARATOR = '/';
 	
 	/**
 	 * @var EiPropPath[]

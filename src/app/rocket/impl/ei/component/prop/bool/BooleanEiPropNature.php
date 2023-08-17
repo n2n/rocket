@@ -34,7 +34,7 @@ use n2n\util\type\TypeConstraint;
 use rocket\op\ei\manage\critmod\filter\FilterProp;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\filter\prop\BoolFilterProp;

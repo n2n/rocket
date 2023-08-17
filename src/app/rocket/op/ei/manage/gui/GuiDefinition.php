@@ -367,7 +367,7 @@ class GuiDefinition {
 		$eiPropPaths = $defPropPath->toArray();
 		$id = array_shift($eiPropPaths);
 		if (empty($eiPropPaths)) {
-			return $eiEntry->getEiFieldWrapper($id);
+			return $eiEntry->getEiField($id);
 		}
 
 		throw new NotYetImplementedException();

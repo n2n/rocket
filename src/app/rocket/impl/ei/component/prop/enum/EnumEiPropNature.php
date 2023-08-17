@@ -40,7 +40,7 @@ use rocket\op\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\op\ei\manage\critmod\filter\FilterProp;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\impl\persistence\orm\property\IntEntityProperty;
@@ -53,22 +53,75 @@ use rocket\op\ei\util\factory\EifGuiField;
 use rocket\si\content\impl\EnumInSiField;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
+use n2n\util\EnumUtils;
+use function PHPUnit\Framework\containsEqual;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	use QuickSearchConfigTrait;
 
-	private $options = array();
-	private $associatedDefPropPathMap = array();
-	private $emptyLabel = null;
+	private array $options = array();
+	private array $associatedDefPropPathMap = array();
+	private ?string $emptyLabel = null;
 
-	function __construct(PropertyAccessProxy $propertyAccessProxy) {
-		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::scalar(true)));
+	function __construct(PropertyAccessProxy $propertyAccessProxy, private ?\ReflectionEnum $enum = null) {
+		if ($this->enum === null) {
+			$getterTypeConstraint = TypeConstraints::scalar(true);
+		} else {
+			$getterTypeConstraint = TypeConstraints::namedType($enum, true);
+			$names = array_map(fn (\UnitEnum $c) => $c->name, EnumUtils::units($enum));
+			$this->options = array_combine($names, $names);
+		}
+
+		parent::__construct($propertyAccessProxy->createRestricted($getterTypeConstraint));
 	}
 
-	public function setOptions(array $options) {
+	function getEnum(): ?\ReflectionEnum {
+		return $this->enum;
+	}
+
+	public function setOptions(array $options): void {
 		ArgUtils::valArray($options, 'scalar');
-		$this->options = $options;
+
+		if ($this->enum === null) {
+			$this->options = $options;
+			return;
+		}
+
+		$this->options = [];
+		foreach ($options as $backedValue => $label) {
+			if ($this->enum->hasCase($backedValue)) {
+				$this->options[$backedValue] = $label;
+				continue;
+			}
+
+			throw new \InvalidArgumentException('Invalid option value "' . $backedValue
+					. '". Options are fixed to: '
+					. join(', ', array_map(fn ($u) => $u->name, EnumUtils::units($this->enum))));
+		}
 	}
+
+	private function unitValueToBackedValue(string|int|\UnitEnum|null $value): string|int|null {
+		if ($value === null) {
+			return null;
+		}
+
+		if ($this->enum === null) {
+			assert(is_scalar($value));
+			return $value;
+		}
+
+		assert($value instanceof \UnitEnum);
+		return $value->name;
+	}
+
+	private function backedValueToUnitValue(string|int|null $value): string|int|\UnitEnum|null {
+		if ($value === null || $this->enum === null) {
+			return $value;
+		}
+
+		return EnumUtils::nameToUnit($value, $this->enum);
+	}
+
 
 	public function getOptions() {
 		return $this->options;
@@ -87,25 +140,25 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	/**
 	 * @return array
 	 */
-	public function getAssociatedDefPropPathMap() {
+	public function getAssociatedDefPropPathMap(): array {
 		return $this->associatedDefPropPathMap;
 	}
 
 	/**
 	 * @param string|null $emptyLabel
 	 */
-	function setEmptyLabel(?string $emptyLabel) {
+	function setEmptyLabel(?string $emptyLabel): void {
 		$this->emptyLabel = $emptyLabel;
 	}
 
 	/**
 	 * @return string|null
 	 */
-	function getEmptyLabel() {
+	function getEmptyLabel(): ?string {
 		return $this->emptyLabel;
 	}
 
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null): void {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
@@ -125,13 +178,13 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 
-	public function buildEiField(Eiu $eiu): ?EiField {
+	public function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$eiu->entry()->onValidate(function () use ($eiu) {
-			$type = $eiu->field()->getValue();
+			$curBackedValue = $this->unitValueToBackedValue($eiu->field()->getValue());
 				
 			$activeDefPropPaths = array();
 			foreach ($this->getAssociatedDefPropPathMap() as $value => $defPropPaths) {
-				if ($value == $type) {
+				if ($value == $curBackedValue) {
 					$activeDefPropPaths = $defPropPaths;
 					continue;
 				}
@@ -165,7 +218,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 			return array_map(function ($defPropPath) { return (string) $defPropPath; }, $defPropPaths);
 		};
 		
-		$siField = SiFields::enumIn($choicesMap, $eiu->field()->getValue())
+		$siField = SiFields::enumIn($choicesMap, $this->unitValueToBackedValue($eiu->field()->getValue()))
 				->setMandatory($this->isMandatory())
 				->setAssociatedPropIdsMap(array_map($mapCb, $this->getAssociatedDefPropPathMap()))
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs())
@@ -204,16 +257,16 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 // 		return $enablerMag;
 	}
 	
-	function saveSiField(SiField $siField, Eiu $eiu) {
+	function saveSiField(SiField $siField, Eiu $eiu): void {
 		ArgUtils::assertTrue($siField instanceof EnumInSiField);
-		$eiu->field()->setValue($siField->getValue());
+		$eiu->field()->setValue($this->backedValueToUnitValue($siField->getValue()));
 	}
 	
 	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		$value = $eiu->field()->getValue();
+		$backedValue = $this->unitValueToBackedValue($eiu->field()->getValue());
 		$options = $this->getOptions();
 		
-		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$value] ?? $value)
+		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$backedValue] ?? $backedValue)
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
@@ -238,7 +291,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	}
 	
 	public function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {
-		if ($this->isQuickSearchable()
+		if ($this->enum === null && $this->isQuickSearchable()
 				&& null !== ($entityProperty = $this->getEntityProperty())) {
 			return new LikeQuickSearchProp(CrIt::p($entityProperty));
 		}
@@ -251,4 +304,6 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 			return StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp()));
 		})->toIdNameProp();
 	}
+
+
 }

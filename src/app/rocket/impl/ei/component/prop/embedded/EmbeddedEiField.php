@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\embedded;
 
-use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter;
 use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\type\CastUtils;
@@ -33,7 +33,7 @@ use n2n\util\type\ArgUtils;
 use n2n\l10n\Message;
 use rocket\op\ei\manage\entry\EiEntryValidationResult;
 
-class EmbeddedEiField extends EiFieldAdapter {
+class EmbeddedEiField extends EiFieldNatureAdapter {
 	private $eiu;
 	private $eiProp;
 	
@@ -50,7 +50,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::checkValue()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::checkValue()
 	 */
 	protected function checkValue($value) {
 		ArgUtils::assertTrue($value === null || $value instanceof EiuFieldMap);	
@@ -61,15 +61,12 @@ class EmbeddedEiField extends EiFieldAdapter {
 	 * @return \rocket\op\ei\util\entry\EiuFieldMap
 	 */
 	private function buildEiFieldMap($targetObject) {
-		$entityProperty = $this->eiProp->getEntityProperty(true);
-		CastUtils::assertTrue($entityProperty instanceof EmbeddedEntityProperty);
-		
 		if ($targetObject === null) {
 			$targetObject = ReflectionUtils::createObject($this->eiProp->getEntityProperty(true)
 					->getEmbeddedEntityPropertyCollection()->getClass());
 		}
 		
-		$efm = $this->eiu->entry()->newFieldMap($this->eiProp, $targetObject);
+		$efm = $this->eiu->entry()->newFieldMap($this->eiu->prop()->getPath(), $targetObject);
 		
 		return $efm;
 	}
@@ -78,7 +75,7 @@ class EmbeddedEiField extends EiFieldAdapter {
 	 * @return \rocket\op\ei\util\entry\EiuFieldMap|null
 	 */
 	protected function readValue() {
-		$targetLiveObject = $this->eiu->entry()->readNativValue($this->eiProp);
+		$targetLiveObject = $this->eiu->entry()->readNativeValue();
 		$this->forkedEiuFieldMap = $this->buildEiFieldMap($targetLiveObject);
 		
 		if ($targetLiveObject !== null) {
@@ -99,18 +96,18 @@ class EmbeddedEiField extends EiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter::validateValue()
+	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::validateValue()
 	 */
 	protected function validateValue($value, EiFieldValidationResult $validationResult) {
-		if ($value != null) {
+		if ($value !== null) {
 			CastUtils::assertTrue($value instanceof EiuFieldMap);
-			
+
 			$eiEntryValidationResult = new EiEntryValidationResult();
 			$validationResult->addSubEiEntryValidationResult($eiEntryValidationResult);
 			$value->validate($eiEntryValidationResult);
 			return;
 		}
-		
+
 		if ($this->eiProp->isMandatory()) {
 			$validationResult->addError(Message::createCodeArg('common_field_required_err', 
 					['field' => $this->eiProp->getLabelLstr()->t($this->eiu->getN2nLocale())], null, 'rocket'));
@@ -125,16 +122,16 @@ class EmbeddedEiField extends EiFieldAdapter {
 		return null;
 	}
 	
-	protected function writeValue($value) {
+	protected function writeValue($value): void {
 		if ($value !== null) {
-			CastUtils::assertTrue($value instanceof EiuFieldMap);
+			assert($value instanceof EiuFieldMap);
 			$value->write();
 			$value = $value->getObject();
 		}
 		
-		$this->eiu->entry()->writeNativeValue($value, $this->eiProp);
+		$this->eiu->prop()->writeNativeValue($value);
 	}
-	
+
 	public function isReadable(): bool {
 		return true;
 	}

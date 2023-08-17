@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\relation\model;
 
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\entry\EiFieldAdapter;
+use rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\util\type\TypeConstraints;
 use rocket\op\ei\util\entry\EiuEntry;
@@ -34,7 +34,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 
-class ToOneEiField extends EiFieldAdapter {
+class ToOneEiField extends EiFieldNatureAdapter {
 	/**
 	 * @var RelationEiProp
 	 */

@@ -3,7 +3,7 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\component\prop\EiPropNature;
 use n2n\reflection\property\AccessProxy;
 use n2n\validation\validator\impl\Validators;
@@ -38,7 +38,7 @@ trait WritableEiFieldTrait  {
 	/**
 	 * @see EiPropNature::buildEiField()
 	 */
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		return $this->buildEifField($eiu)?->toEiField();
 	}
 }

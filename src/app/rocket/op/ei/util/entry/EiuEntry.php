@@ -53,6 +53,7 @@ use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
+use rocket\op\ei\util\spec\EiuProp;
 
 
 class EiuEntry {
@@ -556,11 +557,11 @@ class EiuEntry {
 	 * @param mixed $eiPropPath
 	 * @param bool $required
 	 * @throws UnknownEiFieldExcpetion
-	 * @return \rocket\op\ei\manage\entry\EiFieldWrapper|null
+	 * @return \rocket\op\ei\manage\entry\EiField|null
 	 */
 	public function getEiFieldWrapper($eiPropPath, bool $required = false) {
 		try {
-			return $this->getEiEntry(true)->getEiFieldWrapper(EiPropPath::create($eiPropPath));
+			return $this->getEiEntry(true)->getEiField(EiPropPath::create($eiPropPath));
 		} catch (UnknownEiFieldExcpetion $e) {
 			if ($required) throw $e;
 		}
@@ -625,7 +626,7 @@ class EiuEntry {
 		
 		$ids = $forkEiPropPath->toArray();
 		while (null !== ($id = array_shift($ids))) {
-			$eiFieldMap = $eiFieldMap->get($id)->getForkedEiFieldMap();
+			$eiFieldMap = $eiFieldMap->getNature($id)->getForkedEiFieldMap();
 		}
 		return new EiuFieldMap($eiFieldMap, $this->eiuAnalyst);
 	}
@@ -665,21 +666,21 @@ class EiuEntry {
 		return $this->getEiEntry(true)->getEiMask()
 				->getForkObject($eiPropPath->poped(), $this->eiEntry->getEiObject());
 	}
-	
+
 	/**
-	 * @param EiPropNature $eiProp
-	 * @return NULL|mixed
+	 * @param EiPropPath|EiuProp|EiProp|array|string|null $eiPropPath
+	 * @return mixed
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function readNativValue($eiPropPath) {
-		$eiPropPath = EiPropPath::from($eiPropPath);
+	public function readNativeValue(EiPropPath|EiuProp|EiProp|array|string $eiPropPath = null): mixed {
+		$eiPropPath = EiPropPath::build($eiPropPath) ?? $this->eiuAnalyst->getEiPropPath(true);
 		
 //		if ($this->isDraftProp($eiPropPath)) {
 //			return $this->getEiObject()->getDraft()->getDraftValueMap()->getValue($eiPropPath);
 //		}
-		
+
 		$eiProp = $this->getEiEntry(true)->getEiMask()->getEiPropCollection()->getByPath($eiPropPath);
-		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
+		$propertyAccessProxy = $eiProp->getNature()->getNativeAccessProxy();
 		if ($propertyAccessProxy !== null) {
 			return $propertyAccessProxy->getValue($this->getForkObject($eiPropPath));
 		}

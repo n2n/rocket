@@ -113,6 +113,9 @@ class SpecConfigLoader {
 		return $namespaceName;
 	}
 
+	/**
+	 * @return EiComponentNatureProvider[]
+	 */
 	function getEiComponentNatureProviders(): array {
 		if ($this->eiComponentNatureProviders === null) {
 			$this->reload();

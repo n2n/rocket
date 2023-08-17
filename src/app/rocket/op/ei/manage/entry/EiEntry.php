@@ -31,6 +31,7 @@ use rocket\op\ei\util\Eiu;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\security\EiEntryAccess;
+use n2n\util\col\ArrayUtils;
 
 class EiEntry {
 	/**
@@ -180,39 +181,44 @@ class EiEntry {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return EiField
+	 * @return EiFieldNature
 	 */
-	function getEiField(EiPropPath $eiPropPath) {
-		return $this->getEiFieldWrapper($eiPropPath)->getEiField();
+	function getEiFieldNature(EiPropPath $eiPropPath) {
+		return $this->getEiField($eiPropPath)->getEiFieldNature();
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
+	 * @return EiField
 	 * @throws UnknownEiFieldExcpetion
-	 * @return EiFieldWrapper
 	 */
-	function getEiFieldWrapper(EiPropPath $eiPropPath): EiFieldWrapper {
+	function getEiField(EiPropPath $eiPropPath): EiField {
 		$ids = $eiPropPath->toArray();
 		$passedIds = [];
-		$eiFieldWrapper = null;
+		$eiField = null;
 		
 		$eiFieldMap = $this->eiFieldMap;
 		while (null !== ($passedIds[] = $id = array_shift($ids))) {
 			try {
-				$eiFieldWrapper = $eiFieldMap->getWrapper($id);
-				if (empty($ids)) return $eiFieldWrapper;
-			} catch (\rocket\op\ei\manage\entry\UnknownEiFieldExcpetion $e) {
+				$eiField = $eiFieldMap->getWrapper($id);
+				if (empty($ids)) {
+					return $eiField;
+				}
+			} catch (UnknownEiFieldExcpetion $e) {
 				throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath($passedIds)));
 			}
-			
-//			$eiFieldMap = $eiFieldWrapper->getEiField()->getForkedEiFieldMap();
-//			if ($eiFieldMap !== null) continue;
-//
-//			throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' . (new EiPropPath(
-//					array_merge($passedIds, [reset($ids)]))));
+
+			$nature = $eiField->getEiFieldNature();
+			if ($nature->hasForkedEiFieldMap()) {
+				$eiFieldMap = $nature->getForkedEiFieldMap();
+				continue;
+			}
+
+			throw new UnknownEiFieldExcpetion('No EiField defined for EiPropPath: ' .
+					(new EiPropPath([...$passedIds, ArrayUtils::first($ids)])));
 		}
 
-		return $eiFieldWrapper;
+		return $eiField;
 	}
 	
 	/**
@@ -221,7 +227,7 @@ class EiEntry {
 	 */
 	function containsEiField(EiPropPath $eiPropPath) {
 		try {
-			$this->getEiFieldWrapper($eiPropPath);
+			$this->getEiField($eiPropPath);
 			return true;
 		} catch (\rocket\op\ei\manage\entry\UnknownEiFieldExcpetion $e) {
 			return false;
@@ -323,11 +329,11 @@ class EiEntry {
 	}
 	
 	public function getValue(EiPropPath $eiPropPath) {
-		return $this->getEiFieldWrapper($eiPropPath)->getValue();
+		return $this->getEiField($eiPropPath)->getValue();
 	}
 	
 	public function setValue(EiPropPath $eiPropPath, $value, bool $regardSecurity = true) {
-		$this->getEiFieldWrapper($eiPropPath)->setValue($value, $regardSecurity);
+		$this->getEiField($eiPropPath)->setValue($value, $regardSecurity);
 	}
 
 //	public function getOrgValue(EiPropPath $eiPropPath) {
@@ -368,9 +374,8 @@ class EiEntry {
 		foreach ($this->listeners as $listener) {
 			$listener->onValidate($this);
 		}
-		
+
 		$this->eiFieldMap->validate($validationResult);
-				
 		if (null !== ($eiEntryConstraint = $this->getEiEntryAccess()->getEiEntryConstraint())) {
 			$eiEntryConstraint->validate($this, $validationResult);
 		}

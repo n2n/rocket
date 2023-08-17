@@ -32,7 +32,7 @@ use n2n\persistence\orm\property\EntityProperty;
 
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\gui\ViewMode;
 
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
@@ -57,7 +57,7 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 		$this->relationModel->setReadOnly(true);
 	}
 	
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$targetEiuFrame = $eiu->frame()->forkSelect($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		

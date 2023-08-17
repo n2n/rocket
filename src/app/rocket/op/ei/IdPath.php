@@ -26,7 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\col\Hashable;
 
 abstract class IdPath implements Hashable {
-	const ID_SEPARATOR = ',';
+	const ID_SEPARATOR = '.';
 	
 	protected $ids;
 	
@@ -105,6 +105,10 @@ abstract class IdPath implements Hashable {
 		}
 		
 		return true;
+	}
+
+	function isChildOf(IdPath $idPath): bool {
+		return $idPath->size() + 1 === $this->size() && $this->startsWith($idPath);
 	}
 	
 	/**

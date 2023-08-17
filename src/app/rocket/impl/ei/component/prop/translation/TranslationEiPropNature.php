@@ -39,7 +39,7 @@ use rocket\op\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\op\ei\manage\critmod\sort\SortConstraint;
 use rocket\op\ei\manage\critmod\sort\SortDefinition;
 use rocket\op\ei\manage\critmod\sort\SortPropFork;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\gui\GuiProp;
 use rocket\op\ei\manage\gui\ViewMode;
 use rocket\op\ei\util\Eiu;
@@ -207,7 +207,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 				$targetEiuFrame->getQuickSearchDefinition());
 	}
 	
-	public function buildEiField(Eiu $eiu): ?EiField {
+	public function buildEiField(Eiu $eiu): ?EiFieldNature {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())
 				->frame()->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		

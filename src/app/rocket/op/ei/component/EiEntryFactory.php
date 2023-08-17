@@ -29,7 +29,7 @@ use rocket\op\ei\component\modificator\EiModCollection;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\EiPropPath;
 
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\entry\EiFieldMap;
@@ -108,7 +108,7 @@ class EiEntryFactory {
 		$this->assembleMappingProfile($eiu, $eiFieldMap, $eiEntry, $copyFrom);
 		
 		foreach ($this->eiModificatorCollection as $constraint) {
-			$constraint->setupEiEntry($eiu);
+			$constraint->getNature()->setupEiEntry($eiu);
 		}
 		
 		return $eiFieldMap;
@@ -117,13 +117,13 @@ class EiEntryFactory {
 	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
 // 		$eiObject = $eiEntry->getEiObject();
 		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
-		
+
 		foreach ($this->eiPropCollection->getForkedByPath($forkEiPropPath) as $id => $eiProp) {
 			$eiPropPath = $forkEiPropPath->ext($id);
 			
 			$eiField = null;
 			if ($fromEiEntry !== null && $fromEiEntry->containsEiField($eiPropPath)) {
-				$fromEiField = $fromEiEntry->getEiField($eiPropPath);
+				$fromEiField = $fromEiEntry->getEiFieldNature($eiPropPath);
 				$eiField = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
 			}
 				
@@ -178,9 +178,9 @@ class EiEntryFactory {
 				continue;
 			}
 			
-			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
+			$fromEiField = $fromEiEntry->getEiFieldNature($eiPropPath);
 			$eiFieldCopy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
-			ArgUtils::valTypeReturn($eiFieldCopy, EiField::class, $fromEiField, 'copyEiField', true);
+			ArgUtils::valTypeReturn($eiFieldCopy, EiFieldNature::class, $fromEiField, 'copyEiField', true);
 			
 			if ($eiFieldCopy === null) {
 				continue;
@@ -209,7 +209,7 @@ class EiEntryFactory {
 			
 			$eiProp = $this->eiPropCollection->getByPath($eiPropPath);
 
-			$fromEiField = $fromEiEntry->getEiField($eiPropPath);
+			$fromEiField = $fromEiEntry->getEiFieldNature($eiPropPath);
 			$copy = $fromEiField->copyEiField(new Eiu($eiu, $eiProp));
 			
 			if ($copy === null) {

@@ -45,6 +45,7 @@ use rocket\attribute\EiDefaultSort;
 use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\op\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
+use rocket\op\ei\EiPropPath;
 
 class EiTypeFactory {
 
@@ -191,15 +192,16 @@ class EiTypeFactory {
 		$class = $entityModel->getClass();
 		$attributeSet = ReflectionContext::getAttributeSet($class);
 
-		$eiPresetProps = [];
+		$eiPresetPropCollection = null;
 		$eiPresetAttribute = $attributeSet->getClassAttribute(EiPreset::class);
 		$eiPresetUtil = null;
 		if ($eiPresetAttribute !== null) {
-			$eiPresetUtil= new EiPresetUtil($eiPresetAttribute, $entityModel);
-			$eiPresetProps = $eiPresetUtil->createEiPresetProps();
+			$eiPresetUtil = new EiPresetPropCompiler(new EnhancedEiPreset($eiPresetAttribute), $entityModel,
+					new EiPropPath([]));
+			$eiPresetPropCollection = $eiPresetUtil->compile();
 		}
 
-		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetAttribute?->getInstance()->mode, $eiPresetProps);
+		$eiTypeSetup = new EiTypeSetup($eiType, $eiPresetAttribute?->getInstance()->mode, $eiPresetPropCollection);
 		foreach (EiSetupPhase::cases() as $eiSetupPhase) {
 			foreach ($this->specConfigLoader->getEiComponentNatureProviders() as $eiComponentNatureProvider) {
 				$eiComponentNatureProvider->provide($eiTypeSetup, $eiSetupPhase);

@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\adapter;
 
 
 
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\gui\GuiProp;
 use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
@@ -40,7 +40,7 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 
 	// EiField
 	
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		return $this->createEifField($eiu)->toEiField();
 	}
 	

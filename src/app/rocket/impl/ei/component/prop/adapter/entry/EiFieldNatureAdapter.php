@@ -21,13 +21,14 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\entry;
 
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use rocket\op\ei\manage\entry\EiFieldMap;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use n2n\util\ex\IllegalStateException;
+use n2n\util\type\ArgUtils;
 
-abstract class EiFieldAdapter implements EiField {
+abstract class EiFieldNatureAdapter implements EiFieldNature {
 // 	protected $typeConstraint;
 	protected bool $valueLoaded = false;
 	protected mixed $value;
@@ -69,7 +70,7 @@ abstract class EiFieldAdapter implements EiField {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\entry\EiField::getValue()
+	 * @see \rocket\op\ei\manage\entry\EiFieldNature::getValue()
 	 */
 	public final function getValue() {
 		if ($this->valueLoaded) {
@@ -88,7 +89,7 @@ abstract class EiFieldAdapter implements EiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\entry\EiField::setValue()
+	 * @see \rocket\op\ei\manage\entry\EiFieldNature::setValue()
 	 */
 	public final function setValue($value) {
 		$this->assetConstraints($value);
@@ -99,8 +100,9 @@ abstract class EiFieldAdapter implements EiField {
 	}
 	
 	final function hasChanges(): bool {
-		return $this->changed; 
+		return $this->changed || ($this->hasForkedEiFieldMap() && $this->getForkedEiFieldMap()->hasChanges());
 	}
+
 
 // 	/**
 // 	 * @param mixed $value
@@ -150,8 +152,7 @@ abstract class EiFieldAdapter implements EiField {
 	
 	public final function write() {
 		IllegalStateException::assertTrue($this->isWritable());
-
-		if (!$this->valueLoaded || !$this->changed) {
+		if (!$this->valueLoaded || !$this->hasChanges()) {
 			return;
 		}
 		

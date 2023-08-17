@@ -19,7 +19,7 @@ class EiGuiDeclarationFactory {
 	 */
 	function createEiGuiDeclaration(int $viewMode, bool $nonAbstractOnly, ?array $defPropPaths): EiGuiDeclaration {
 		$eiGuiDeclaration = new EiGuiDeclaration($this->contextEiMask, $viewMode);
-		
+
 		$this->applyEiGuiMaskDeclaration($eiGuiDeclaration, $nonAbstractOnly, $defPropPaths);
 
 		if (!$eiGuiDeclaration->hasEiGuiMaskDeclarations()) {
@@ -65,7 +65,7 @@ class EiGuiDeclarationFactory {
 		if (!$this->testIfAllowed($contextEiMask->getEiType(), $nonAbstractOnly, null)) {
 			return;
 		}
-		
+
 		$guiDefinition = $contextEiMask->getEiEngine()->getGuiDefinition();
 		$eiGuiDeclaration->putEiGuiMaskDeclaration(
 				$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration->getViewMode(), $defPropPaths));

@@ -58,7 +58,7 @@ class EiPropCollection extends EiComponentCollection {
 	 * @return EiProp
 	 * @throws UnknownEiComponentException
 	 */
-	public function getByPath(EiPropPath $eiPropPath) {
+	public function getByPath(EiPropPath $eiPropPath): EiProp {
 		return $this->getElementByIdPath($eiPropPath);
 	}
 
@@ -71,21 +71,11 @@ class EiPropCollection extends EiComponentCollection {
 	}
 
 	/**
-	 * @param string $id
+	 * @param EiPropPath $eiPropPath
 	 * @param EiPropNature $eiPropNature
-	 * @param EiPropPath $forkEiPropPath
 	 * @return EiProp
 	 */
-	public function add(?string $id, EiPropNature $eiPropNature, EiPropPath $forkEiPropPath = null) {
-		$id = $this->makeId($id, $eiPropNature, $forkEiPropPath?->toArray() ?? []);
-
-		$eiPropPath = null;
-		if ($forkEiPropPath === null) {
-			$eiPropPath = new EiPropPath([$id]);
-		} else {
-			$eiPropPath = $forkEiPropPath->ext($id);
-		}
-
+	public function put(EiPropPath $eiPropPath, EiPropNature $eiPropNature) {
 		$eiPropNature = new EiProp($eiPropPath, $eiPropNature, $this);
 
 		$this->addEiComponent($eiPropPath, $eiPropNature);
@@ -105,9 +95,7 @@ class EiPropCollection extends EiComponentCollection {
 		return parent::toArray($includeInherited);
 	}
 
-	function createGenericEiDefinition(): GenericEiDefinition {
-		$genericEiDefinition = new GenericEiDefinition();
-
+	function supplyGenericEiDefinition(GenericEiDefinition $genericEiDefinition): GenericEiDefinition {
 		$genericEiPropertyMap = $genericEiDefinition->getMap();
 		foreach ($this as $eiProp) {
 			if (null !== ($genericEiProperty = $eiProp->getNature()->getGenericEiProperty())) {
@@ -118,8 +106,7 @@ class EiPropCollection extends EiComponentCollection {
 		return $genericEiDefinition;
 	}
 
-	function createScalarEiDefinition(): ScalarEiDefinition {
-		$scalarEiDefinition = new ScalarEiDefinition();
+	function supplyScalarEiDefinition(ScalarEiDefinition $scalarEiDefinition): void {
 		$scalarEiProperties = $scalarEiDefinition->getMap();
 		foreach ($this as $eiProp) {
 			$eiu = new Eiu($this, $eiProp);
@@ -127,15 +114,15 @@ class EiPropCollection extends EiComponentCollection {
 				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
 			}
 		}
-		return $scalarEiDefinition;
 	}
 
 	/**
 	 * @throws \InvalidArgumentException
 	 * @return IdNameDefinition
 	 */
-	function createIdNameDefinition(): IdNameDefinition {
-		$idNameDefinition = new IdNameDefinition($this->eiMask, $this->eiMask->getLabelLstr());
+	function supplyIdNameDefinition(IdNameDefinition $idNameDefinition): IdNameDefinition {
+		ArgUtils::assertTrue($idNameDefinition->getEiMask() === $this->eiMask);
+
 		$idNameDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 
 		foreach ($this as $eiProp) {
@@ -231,8 +218,8 @@ class EiPropCollection extends EiComponentCollection {
 //		return $sortDefinition;
 //	}
 
-	function createGuiDefinition(N2nContext $n2nContext): GuiDefinition {
-		$guiDefinition = new GuiDefinition($this->eiMask);
+	function supplyGuiDefinition(GuiDefinition $guiDefinition, N2nContext $n2nContext): void {
+		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
 		foreach ($this as $eiProp) {
 			$eiPropPath = $eiProp->getEiPropPath();
@@ -242,8 +229,6 @@ class EiPropCollection extends EiComponentCollection {
 				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 		}
-
-		return $guiDefinition;
 	}
 
 	function createForkedEiFrame(EiPropPath $eiPropPath, EiForkLink $eiForkLink): EiFrame {

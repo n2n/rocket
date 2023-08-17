@@ -29,7 +29,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\manage\idname\IdNamePropFork;
 use rocket\op\ei\manage\gui\GuiProp;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\generic\GenericEiProperty;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
@@ -90,7 +90,7 @@ interface EiPropNature extends EiComponentNature {
 	/**
 	 * @param Eiu $eiu {Eiu::frame()} is available.
 	 */
-	function buildEiField(Eiu $eiu): ?EiField;
+	function buildEiField(Eiu $eiu): ?EiFieldNature;
 
 	/**
 	 * @return GuiProp|null null if not displayable

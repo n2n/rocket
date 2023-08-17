@@ -32,7 +32,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\manage\idname\IdNamePropFork;
 use rocket\op\ei\manage\gui\GuiProp;
-use rocket\op\ei\manage\entry\EiField;
+use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\generic\GenericEiProperty;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
@@ -99,7 +99,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 		return null;
 	}
 
-	function buildEiField(Eiu $eiu): ?EiField {
+	function buildEiField(Eiu $eiu): ?EiFieldNature {
 		return null;
 	}
 
