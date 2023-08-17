@@ -39,7 +39,6 @@ use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\relation\model\relation\TargetMasterRelationEiModificator;
 use rocket\op\ei\util\spec\EiuMask;
-use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use n2n\config\InvalidConfigurationException;
 
 class RelationModel {
@@ -65,9 +64,7 @@ class RelationModel {
 	 * @var string
 	 */
 	private $mode;
-	/**
-	 * @var EditAdapter
-	 */
+
 	private $editConfig;
 	
 	// Select
@@ -512,9 +509,10 @@ class RelationFinalizer {
 		$targetEntityProperty = $mappedRelation->getTargetEntityProperty();
 		
 		foreach ($targetEiMask->getEiPropCollection() as $targetEiProp) {
-			if (($targetEiProp instanceof RelationEiProp)
-					&& $targetEntityProperty->equals($targetEiProp->getRelationEntityProperty())) {
-				return new TargetPropInfo(EiPropPath::from($targetEiProp), $targetEiProp->getPropertyAccessProxy());
+			$targetEiPropNature = $targetEiProp->getNature();
+			if (($targetEiPropNature instanceof RelationEiProp)
+					&& $targetEntityProperty->equals($targetEiPropNature->getRelationEntityProperty())) {
+				return new TargetPropInfo(EiPropPath::from($targetEiProp), $targetEiPropNature->getPropertyAccessProxy());
 			}
 		}
 		
