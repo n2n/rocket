@@ -77,7 +77,7 @@ class EiEngine {
 	/**
 	 * @return EiMask
 	 */
-	private function getSupremeEiMask() {
+	private function getSupremeEiMask(): EiMask {
 		$eiType = $this->eiMask->getEiType();
 		if (!$eiType->hasSuperEiType()) {
 			return $this->eiMask;
@@ -90,7 +90,7 @@ class EiEngine {
 		return $this->eiMask->getEiType()->hasSuperEiType();
 	}
 
-	function getSupremeEiEngine() {
+	function getSupremeEiEngine(): EiEngine {
 		return $this->getSupremeEiMask()->getEiEngine();
 	}
 
@@ -100,7 +100,9 @@ class EiEngine {
 			return $this->genericEiDefinition;
 		}
 
-		return $this->genericEiDefinition = $this->eiMask->getEiPropCollection()->createGenericEiDefinition();
+		$this->genericEiDefinition = new GenericEiDefinition();
+		$this->eiMask->getEiPropCollection()->supplyGenericEiDefinition($this->genericEiDefinition);
+		return $this->genericEiDefinition;
 	}
 
 	function getScalarEiDefinition(): ScalarEiDefinition {
@@ -108,7 +110,9 @@ class EiEngine {
 			return $this->scalarEiDefinition;
 		}
 
-		return $this->scalarEiDefinition = $this->eiMask->getEiPropCollection()->createScalarEiDefinition();
+		$this->scalarEiDefinition = new ScalarEiDefinition();
+		$this->eiMask->getEiPropCollection()->supplyScalarEiDefinition($this->scalarEiDefinition);
+		return $this->scalarEiDefinition;
 	}
 
 
@@ -117,7 +121,9 @@ class EiEngine {
 			return $this->idNameDefinition;
 		}
 
-		return $this->idNameDefinition = $this->eiMask->getEiPropCollection()->createIdNameDefinition();
+		$this->idNameDefinition = new IdNameDefinition($this->eiMask, $this->eiMask->getLabelLstr());
+		$this->eiMask->getEiPropCollection()->supplyIdNameDefinition($this->idNameDefinition);
+		return $this->idNameDefinition;
 	}
 
 	private $eiFrameFactory;

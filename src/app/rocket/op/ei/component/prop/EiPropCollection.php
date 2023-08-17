@@ -95,9 +95,7 @@ class EiPropCollection extends EiComponentCollection {
 		return parent::toArray($includeInherited);
 	}
 
-	function createGenericEiDefinition(): GenericEiDefinition {
-		$genericEiDefinition = new GenericEiDefinition();
-
+	function supplyGenericEiDefinition(GenericEiDefinition $genericEiDefinition): GenericEiDefinition {
 		$genericEiPropertyMap = $genericEiDefinition->getMap();
 		foreach ($this as $eiProp) {
 			if (null !== ($genericEiProperty = $eiProp->getNature()->getGenericEiProperty())) {
@@ -108,8 +106,7 @@ class EiPropCollection extends EiComponentCollection {
 		return $genericEiDefinition;
 	}
 
-	function createScalarEiDefinition(): ScalarEiDefinition {
-		$scalarEiDefinition = new ScalarEiDefinition();
+	function supplyScalarEiDefinition(ScalarEiDefinition $scalarEiDefinition): void {
 		$scalarEiProperties = $scalarEiDefinition->getMap();
 		foreach ($this as $eiProp) {
 			$eiu = new Eiu($this, $eiProp);
@@ -117,15 +114,15 @@ class EiPropCollection extends EiComponentCollection {
 				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
 			}
 		}
-		return $scalarEiDefinition;
 	}
 
 	/**
 	 * @throws \InvalidArgumentException
 	 * @return IdNameDefinition
 	 */
-	function createIdNameDefinition(): IdNameDefinition {
-		$idNameDefinition = new IdNameDefinition($this->eiMask, $this->eiMask->getLabelLstr());
+	function supplyIdNameDefinition(IdNameDefinition $idNameDefinition): IdNameDefinition {
+		ArgUtils::assertTrue($idNameDefinition->getEiMask() === $this->eiMask);
+
 		$idNameDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 
 		foreach ($this as $eiProp) {
