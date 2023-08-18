@@ -36,7 +36,8 @@ class SiGetInstruction {
 	private $partialContentInstruction = null;
 	private $newEntryRequested = false;
 	private $propIds = null;
-	
+	private $typeIds = [];
+
 	/**
 	 * @param bool $bulky
 	 * @param bool $readOnly
