@@ -46,8 +46,7 @@ class MappedOneToCriteriaFactory implements CriteriaFactory {
 	public function create(EntityManager $em, $entityAlias) {
 		$criteria = $em->createCriteria();
 		$criteria->from($this->mappedRelation->getTargetEntityModel()->getClass(), $entityAlias)
-				->where()->match(CrIt::p(
-						array($entityAlias, $this->mappedRelation->getTargetEntityProperty()->getName())), '=', $this->entity);
+				->where()->match(CrIt::p($entityAlias, $this->mappedRelation->getTargetEntityProperty()), '=', $this->entity);
 		return $criteria;
 	}
 }
