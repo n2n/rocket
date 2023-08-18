@@ -41,7 +41,7 @@ class RelationCriteriaFactory implements CriteriaFactory {
 		$mtmsAlias = $entityAlias . self::MOTS_ALIAS_SUFFIX;
 		$criteria = $em->createCriteria();
 		$criteria->from($this->relationProperty->getEntityModel()->getClass(), $mtmsAlias)
-				->joinProperty(CrIt::p(array($mtmsAlias, $this->relationProperty->getName())), $entityAlias)
+				->joinProperty(CrIt::p($mtmsAlias, $this->relationProperty), $entityAlias)
 				->where(array($mtmsAlias => $this->entity));
 // 		$criteria->setBaseEntityAlias($entityAlias);
 		return $criteria;
