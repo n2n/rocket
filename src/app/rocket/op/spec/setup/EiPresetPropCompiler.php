@@ -24,7 +24,6 @@ namespace rocket\op\spec\setup;
 use rocket\attribute\EiPreset;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\ReflectionException;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\err\ConfigurationError;
 use n2n\util\type\TypeUtils;
@@ -98,7 +97,7 @@ class EiPresetPropCompiler {
 						EiPropPath::create($eiPropPathStr),
 						$this->propertiesAnalyzer->analyzeProperty($propertyName, $editable), $editable,
 						$propNotation->getLabel(), false));
-			} catch (ReflectionException|\ReflectionException $e) {
+			} catch (\ReflectionException $e) {
 				throw $this->enhancedEiPreset->createEiPresetAttributeError($eiPropPathStr, $e);
 			}
 
