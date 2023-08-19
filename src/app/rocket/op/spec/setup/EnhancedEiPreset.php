@@ -104,7 +104,7 @@ class EnhancedEiPreset {
 
 	function createEiPresetAttributeError(string $propertyPath, Throwable $previous = null,
 			string $message = null): ConfigurationError {
-		$attrPropName = $this->eiPreset->containsEditProp($propertyPath) ? 'editProps' : 'readProps';
+		$attrPropName = $this->containsEditProp($propertyPath) ? 'editProps' : 'readProps';
 
 		return $this->createAttributeError('Could not assign property \'' . $propertyPath
 				. '\' annotated in '

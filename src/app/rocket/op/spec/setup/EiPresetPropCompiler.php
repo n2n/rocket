@@ -98,7 +98,7 @@ class EiPresetPropCompiler {
 						EiPropPath::create($eiPropPathStr),
 						$this->propertiesAnalyzer->analyzeProperty($propertyName, $editable), $editable,
 						$propNotation->getLabel(), false));
-			} catch (\ReflectionException $e) {
+			} catch (ReflectionException|\ReflectionException $e) {
 				throw $this->enhancedEiPreset->createEiPresetAttributeError($eiPropPathStr, $e);
 			}
 
