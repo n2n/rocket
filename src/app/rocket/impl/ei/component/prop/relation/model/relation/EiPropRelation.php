@@ -26,7 +26,6 @@ use n2n\util\ex\IllegalStateException;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\EiObject;
-use rocket\impl\ei\component\prop\relation\command\RelationEiCommand;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use rocket\op\ei\manage\ManageState;
@@ -36,8 +35,6 @@ use n2n\persistence\orm\CascadeType;
 use rocket\op\ei\EiType;
 use n2n\util\uri\Path;
 use rocket\op\ei\component\EiFrameFactory;
-use rocket\impl\ei\component\prop\relation\command\RelationAjahEiCommand;
-use rocket\impl\ei\component\prop\relation\command\RelationJhtmlController;
 use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\manage\security\InaccessibleEiCmdPathException;
 use n2n\util\uri\Url;
@@ -47,7 +44,6 @@ use rocket\op\ei\component\InvalidEiConfigurationException;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 use n2n\web\http\HttpContext;
 use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\ReflectionException;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\util\Eiu;
 use n2n\l10n\Lstr;
@@ -148,7 +144,7 @@ abstract class EiPropRelation {
 		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
 		try {
 			$this->targetMasterAccessProxy = $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName());
-		} catch (ReflectionException $e) {
+		} catch (\ReflectionException $e) {
 			throw new InvalidEiConfigurationException('No Target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}

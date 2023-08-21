@@ -29,7 +29,6 @@ use rocket\op\ei\mask\EiMask;
 use rocket\impl\ei\component\prop\relation\RelationEiProp;
 use n2n\impl\persistence\orm\property\relation\MappedRelation;
 use n2n\reflection\property\AccessProxy;
-use n2n\reflection\ReflectionException;
 use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use n2n\util\type\CastUtils;
@@ -520,7 +519,7 @@ class RelationFinalizer {
 		$propertiesAnalyzer = new PropertiesAnalyzer($targetClass);
 		try {
 			return new TargetPropInfo(null, $propertiesAnalyzer->analyzeProperty($targetEntityProperty->getName()));
-		} catch (ReflectionException $e) {
+		} catch (\ReflectionException $e) {
 			throw new InvalidEiConfigurationException('No target master property accessible: '
 					. $targetEntityProperty, 0, $e);
 		}
@@ -571,7 +570,7 @@ class RelationFinalizer {
 				&& !$this->relationModel->getTargetPropInfo()->masterAccessProxy->getConstraint()->allowsNull()) {
 			throw new InvalidEiConfigurationException('EiProp requires an EntityProperty '
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
-					. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
+					. ' which removes orphans or target ' . $this->relationModel->getTargetPropInfo()->masterAccessProxy
 					. ' must accept null.');
 		}
 	}

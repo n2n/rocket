@@ -27,9 +27,7 @@ use rocket\op\launch\LaunchPad;
 use rocket\op\launch\UnknownLaunchPadException;
 use n2n\util\type\attrs\AttributesException;
 use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\ReflectionException;
 use rocket\op\ei\component\InvalidEiConfigurationException;
-use n2n\persistence\orm\model\UnknownEntityPropertyException;
 use n2n\config\InvalidConfigurationException;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\component\EiSetup;
@@ -46,6 +44,7 @@ use rocket\op\launch\MenuGroup;
 use rocket\op\spec\setup\EiTypeFactory;
 use n2n\util\ex\DuplicateElementException;
 use ReflectionClass;
+use n2n\persistence\orm\model\UnknownEntityPropertyException;
 
 class Spec {
 	/**
@@ -339,9 +338,9 @@ class EiSetupQueue {
 		$this->n2nContext = $n2nContext;
 	}
 		
-	public function addPropIn(PropIn $propIn) {
-		$this->propIns[] = $propIn;
-	}
+//	public function addPropIn(PropIn $propIn) {
+//		$this->propIns[] = $propIn;
+//	}
 	
 	public function addEiMask(EiMask $eiMask) {
 		$this->eiMasks[] = $eiMask;
@@ -566,89 +565,171 @@ class EiMaskCallbackProcess {
 		// return $newCallbacks;
 	}
 }
-
-class PropIn {
-	private $eiType;
-	private $eiPropConfigurator;
-	private $objectPropertyName;
-	private $entityPropertyName;
-	private $contextEntityPropertyNames;
-
-	public function __construct(EiType $eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName, array $contextEntityPropertyNames) {
-		$this->eiType = $eiType;
-		$this->eiPropConfigurator = $eiPropConfigurator;
-		$this->objectPropertyName = $objectPropertyName;
-		$this->entityPropertyName = $entityPropertyName;
-		$this->contextEntityPropertyNames = $contextEntityPropertyNames;
-	}
-
-	public function getEiType() {
-		return $this->eiType;
-	}
-	
-	public function invoke(EiErrorResult $eiErrorResult = null) {
-		$entityPropertyCollection = $this->eiType->getEntityModel();
-		$class = $entityPropertyCollection->getClass();
-		
-		$contextEntityPropertyNames = $this->contextEntityPropertyNames;
-		while (null !== ($cepn = array_shift($contextEntityPropertyNames))) {
-			$entityPropertyCollection = $entityPropertyCollection->getEntityPropertyByName($cepn)
-					->getEmbeddedEntityPropertyCollection();
-			$class = $entityPropertyCollection->getClass();
-		}
-		
-		$accessProxy = null;
-		if (null !== $this->objectPropertyName) {
-			try{
-				$propertiesAnalyzer = new PropertiesAnalyzer($class, false);
-				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
-				$accessProxy->setNullReturnAllowed(true);
-			} catch (ReflectionException $e) {
-				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown property: '
-						. $this->objectPropertyName, 0, $e), $eiErrorResult);
-			}
-		}
-			
-		$entityProperty = null;
-		if (null !== $this->entityPropertyName) {
-			try {
-				$entityProperty = $entityPropertyCollection->getEntityPropertyByName($this->entityPropertyName, true);
-			} catch (UnknownEntityPropertyException $e) {
-				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown EntityProperty: '
-						. $this->entityPropertyName, 0, $e), $eiErrorResult);
-			}
-		}
-
-// 		if ($entityProperty !== null || $accessProxy !== null) {
-			try {
-				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
-			} catch (IncompatiblePropertyException $e) {
-				$this->handleException($e, $eiErrorResult);
-			}
-// 		}
-	}
-	
-	private function handleException($e, EiErrorResult $eiErrorResult = null) {
-		$e = $this->createException($e);
-		if (null !== $eiErrorResult) {
-			$eiErrorResult->putEiPropError(EiPropError::fromEiProp($this->eiPropConfigurator->getEiComponent(), $e));
-			return;
-		}
-		
-		throw $e;
-	}
-	
-	/**
-	 * @param \Throwable $e
-	 * @return \rocket\op\ei\component\InvalidEiConfigurationException
-	 */
-	private function createException($e) {
-		$eiComponent = $this->eiPropConfigurator->getEiComponent();
-		
-		return new InvalidEiConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in '
-				. $eiComponent->getWrapper()->getEiPropCollection()->getEiMask(), 0, $e);
-	}
-}
+//
+//class PropIn {
+//	private $eiType;
+//	private $eiPropConfigurator;
+//	private $objectPropertyName;
+//	private $entityPropertyName;
+//	private $contextEntityPropertyNames;
+//
+//	public function __construct(EiType $eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName, array $contextEntityPropertyNames) {
+//		$this->eiType = $eiType;
+//		$this->eiPropConfigurator = $eiPropConfigurator;
+//		$this->objectPropertyName = $objectPropertyName;
+//		$this->entityPropertyName = $entityPropertyName;
+//		$this->contextEntityPropertyNames = $contextEntityPropertyNames;
+//	}
+//
+//	public function getEiType() {
+//		return $this->eiType;
+//	}
+//
+//	public function invoke(EiErrorResult $eiErrorResult = null) {
+//		$entityPropertyCollection = $this->eiType->getEntityModel();
+//		$class = $entityPropertyCollection->getClass();
+//
+//		$contextEntityPropertyNames = $this->contextEntityPropertyNames;
+//		while (null !== ($cepn = array_shift($contextEntityPropertyNames))) {
+//			$entityPropertyCollection = $entityPropertyCollection->getEntityPropertyByName($cepn)
+//					->getEmbeddedEntityPropertyCollection();
+//			$class = $entityPropertyCollection->getClass();
+//		}
+//
+//		$accessProxy = null;
+//		if (null !== $this->objectPropertyName) {
+//			try{
+//				$propertiesAnalyzer = new PropertiesAnalyzer($class, false);
+//				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
+//				$accessProxy->setNullReturnAllowed(true);
+//			} catch (\ReflectionException $e) {
+//				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown property: '
+//						. $this->objectPropertyName, 0, $e), $eiErrorResult);
+//			}
+//		}
+//
+//		$entityProperty = null;
+//		if (null !== $this->entityPropertyName) {
+//			try {
+//				$entityProperty = $entityPropertyCollection->getEntityPropertyByName($this->entityPropertyName, true);
+//			} catch (UnknownEntityPropertyException $e) {
+//				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown EntityProperty: '
+//						. $this->entityPropertyName, 0, $e), $eiErrorResult);
+//			}
+//		}
+//
+//// 		if ($entityProperty !== null || $accessProxy !== null) {
+//			try {
+//				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
+//			} catch (IncompatiblePropertyException $e) {
+//				$this->handleException($e, $eiErrorResult);
+//			}
+//// 		}
+//	}
+//
+//	private function handleException($e, EiErrorResult $eiErrorResult = null) {
+//		$e = $this->createException($e);
+//		if (null !== $eiErrorResult) {
+//			$eiErrorResult->putEiPropError(EiPropError::fromEiProp($this->eiPropConfigurator->getEiComponent(), $e));
+//			return;
+//		}
+//
+//		throw $e;
+//	}
+//
+//	/**
+//	 * @param \Throwable $e
+//	 * @return \rocket\op\ei\component\InvalidEiConfigurationException
+//	 */
+//	private function createException($e) {
+//		$eiComponent = $this->eiPropConfigurator->getEiComponent();
+//
+//		return new InvalidEiConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in '
+//				. $eiComponent->getWrapper()->getEiPropCollection()->getEiMask(), 0, $e);
+//	}
+//}
+//class PropIn {
+//	private $eiType;
+//	private $eiPropConfigurator;
+//	private $objectPropertyName;
+//	private $entityPropertyName;
+//	private $contextEntityPropertyNames;
+//
+//	public function __construct(EiType $eiType, $eiPropConfigurator, $objectPropertyName, $entityPropertyName, array $contextEntityPropertyNames) {
+//		$this->eiType = $eiType;
+//		$this->eiPropConfigurator = $eiPropConfigurator;
+//		$this->objectPropertyName = $objectPropertyName;
+//		$this->entityPropertyName = $entityPropertyName;
+//		$this->contextEntityPropertyNames = $contextEntityPropertyNames;
+//	}
+//
+//	public function getEiType() {
+//		return $this->eiType;
+//	}
+//
+//	public function invoke(EiErrorResult $eiErrorResult = null) {
+//		$entityPropertyCollection = $this->eiType->getEntityModel();
+//		$class = $entityPropertyCollection->getClass();
+//
+//		$contextEntityPropertyNames = $this->contextEntityPropertyNames;
+//		while (null !== ($cepn = array_shift($contextEntityPropertyNames))) {
+//			$entityPropertyCollection = $entityPropertyCollection->getEntityPropertyByName($cepn)
+//					->getEmbeddedEntityPropertyCollection();
+//			$class = $entityPropertyCollection->getClass();
+//		}
+//
+//		$accessProxy = null;
+//		if (null !== $this->objectPropertyName) {
+//			try{
+//				$propertiesAnalyzer = new PropertiesAnalyzer($class, false);
+//				$accessProxy = $propertiesAnalyzer->analyzeProperty($this->objectPropertyName, false, true);
+//				$accessProxy->setNullReturnAllowed(true);
+//			} catch (\ReflectionException $e) {
+//				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown property: '
+//						. $this->objectPropertyName, 0, $e), $eiErrorResult);
+//			}
+//		}
+//
+//		$entityProperty = null;
+//		if (null !== $this->entityPropertyName) {
+//			try {
+//				$entityProperty = $entityPropertyCollection->getEntityPropertyByName($this->entityPropertyName, true);
+//			} catch (UnknownEntityPropertyException $e) {
+//				$this->handleException(new InvalidEiConfigurationException('EiProp is assigned to unknown EntityProperty: '
+//						. $this->entityPropertyName, 0, $e), $eiErrorResult);
+//			}
+//		}
+//
+//// 		if ($entityProperty !== null || $accessProxy !== null) {
+//			try {
+//				$this->eiPropConfigurator->assignProperty(new PropertyAssignation($entityProperty, $accessProxy));
+//			} catch (IncompatiblePropertyException $e) {
+//				$this->handleException($e, $eiErrorResult);
+//			}
+//// 		}
+//	}
+//
+//	private function handleException($e, EiErrorResult $eiErrorResult = null) {
+//		$e = $this->createException($e);
+//		if (null !== $eiErrorResult) {
+//			$eiErrorResult->putEiPropError(EiPropError::fromEiProp($this->eiPropConfigurator->getEiComponent(), $e));
+//			return;
+//		}
+//
+//		throw $e;
+//	}
+//
+//	/**
+//	 * @param \Throwable $e
+//	 * @return \rocket\op\ei\component\InvalidEiConfigurationException
+//	 */
+//	private function createException($e) {
+//		$eiComponent = $this->eiPropConfigurator->getEiComponent();
+//
+//		return new InvalidEiConfigurationException('EiProp is invalid configured: ' . $eiComponent . ' in '
+//				. $eiComponent->getWrapper()->getEiPropCollection()->getEiMask(), 0, $e);
+//	}
+//}
 
 class EiCommandSetupTask {
 	private $eiCmd;

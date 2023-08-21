@@ -31,7 +31,6 @@ use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\component\command\EiCmdNature;
 use rocket\op\ei\component\modificator\EiModNature;
 use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\ReflectionException;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\StringUtils;
 use n2n\persistence\orm\model\UnknownEntityPropertyException;
