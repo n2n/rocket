@@ -161,6 +161,7 @@ class SiFieldInput {
 
 class SiInputError implements \JsonSerializable {
 	private $entryErrors;
+	private $entries;
 	
 	/**
 	 * @param SiEntry[] $entries
