@@ -26,6 +26,7 @@ use n2n\util\uri\Url;
 class SiFrame implements \JsonSerializable {
 	private $apiUrl;
 	private $typeContext;
+	private $apiUrlMap;
 	/**
 	 * @var bool
 	 */

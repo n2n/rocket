@@ -65,6 +65,7 @@ class PathPartConfig extends PropConfigAdaption {
 	private $uniquePerGenericEiProperty;
 	private $critical = false;
 	private $criticalMessage;
+	private $entityProperty;
 	
 	public function __construct(PathPartEiProp $eiProp) {
 		$this->eiProp = $eiProp;

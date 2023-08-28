@@ -71,6 +71,7 @@ class EiFrame {
 // 	private $breadcrumbs = [];
 	
 	private $listeners = array();
+	private $forkLink;
 
 	/**
 	 * @param EiMask $contextEiEngine
