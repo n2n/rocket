@@ -24,7 +24,6 @@ namespace rocket\op\spec\setup;
 use rocket\attribute\EiPreset;
 use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\ReflectionException;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\err\ConfigurationError;
 use n2n\util\type\TypeUtils;
