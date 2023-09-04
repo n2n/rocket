@@ -18,6 +18,7 @@ use testmdl\test\translation\TranslationTestEnv;
 use testmdl\bo\TranslationTestObj;
 use testmdl\bo\TranslatableTestObj;
 use n2n\l10n\N2nLocale;
+use rocket\op\ei\manage\LiveEiObject;
 
 class TranslationEiPropNatureLiveTest extends TestCase {
 
@@ -41,18 +42,12 @@ class TranslationEiPropNatureLiveTest extends TestCase {
 	}
 
 	function testIdentityString() {
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
-		$eiMask = $this->spec->getEiTypeByClassName(TranslatableTestObj::class)->getEiMask();
+		$eiType = $this->spec->getEiTypeByClassName(TranslatableTestObj::class);
 
-		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
-		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
+		$eiObject = $eiType->createEiObject(TranslationTestEnv::findTranslatableTestObj($this->translatableTestObj1Id));
 
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
-
-		$eiObject = $eiFrameUtil->lookupEiObject($this->translatableTestObj1Id);
-
-		$is = $eiMask->getEiEngine()->getIdNameDefinition()->createIdentityStringFromPattern(
-				'hui: {translatableTestObjs.name}', $eiFrame->getN2nContext(), $eiObject,
+		$is = $eiType->getEiMask()->getEiEngine()->getIdNameDefinition()->createIdentityStringFromPattern(
+				'hui: {translatableTestObjs.name}', TestEnv::getN2nContext(), $eiObject,
 				N2nLocale::getDefault());
 
 		$this->assertEquals('hui: holeradio', $is);

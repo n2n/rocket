@@ -45,6 +45,7 @@ use PhpParser\Node\Expr\Closure;
 use n2n\util\type\ArgUtils;
 use rocket\op\spec\Spec;
 use ReflectionClass;
+use PhpParser\Node\Arg;
 
 class EiType extends Type {
 	private EntityModel $entityModel;
@@ -499,14 +500,18 @@ class EiType extends Type {
 	 * @param bool $draft
 	 * @return EiObject
 	 */
-	public function createNewEiObject(bool $draft = false) {
+	public function createNewEiObject(bool $draft = false): EiObject {
 		if (!$draft) {
 			return new LiveEiObject(EiEntityObj::createNew($this));
 		}
 		
 		return new DraftEiObject(new Draft(null, EiEntityObj::createNew($this), new \DateTime()));
 	}
-	
+
+	function createEiObject(object $obj): EiObject {
+		return LiveEiObject::create($this, $obj);
+	}
+
 	public function __toString(): string {
 		return 'EiType [id: ' . $this->getId() . ']';
 	}
