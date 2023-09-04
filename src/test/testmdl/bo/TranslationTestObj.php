@@ -22,4 +22,6 @@ class TranslationTestObj extends TranslatableAdapter {
 	#[ManyToOne]
 	public TranslatableTestObj $translatableTestObj;
 
+	public string $name;
+
 }

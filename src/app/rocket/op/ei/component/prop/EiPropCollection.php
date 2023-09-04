@@ -89,7 +89,7 @@ class EiPropCollection extends EiComponentCollection {
 
 	/**
 	 * @param bool $includeInherited
-	 * @return EiPropNature[]
+	 * @return EiProp[]
 	 */
 	function toArray(bool $includeInherited = true): array {
 		return parent::toArray($includeInherited);

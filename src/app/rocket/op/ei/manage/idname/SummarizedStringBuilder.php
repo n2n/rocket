@@ -12,6 +12,7 @@ use n2n\util\thread\RecursionAsserters;
 class SummarizedStringBuilder {
 	const KNOWN_STRING_FIELD_OPEN_DELIMITER = '{';
 	const KNOWN_STRING_FIELD_CLOSE_DELIMITER = '}';
+	const KNOWN_STRING_LEVEL_SEPARATOR = '.';
 	
 	private $identityStringPattern;
 	private $n2nContext;
@@ -34,7 +35,7 @@ class SummarizedStringBuilder {
 	static function detectUsedDefPropPaths(string $identityStringPattern, IdNameDefinition $idNameDefinition) {
 		$usedDefPropPaths = [];
 		foreach (array_keys($idNameDefinition->getAllIdNameProps()) as $defGuiPropPathStr) {
-			if (false === strpos($identityStringPattern, self::createPlaceholerFromStr($defGuiPropPathStr))) {
+			if (false === strpos($identityStringPattern, self::createPlaceholder($defGuiPropPathStr))) {
 				continue;
 			}
 			
@@ -51,7 +52,7 @@ class SummarizedStringBuilder {
 		foreach ($idNameDefinition->getIdNameProps() as $eiPropPathStr => $idNameProp) {
 			$eiPropPath = EiPropPath::create($eiPropPathStr);
 			$placeholder = self::createPlaceholder($this->createDefPropPath($baseEiPropPaths, $eiPropPath));
-			
+
 			if (false === strpos($this->identityStringPattern, $placeholder)) {
 				continue;
 			}
@@ -68,9 +69,9 @@ class SummarizedStringBuilder {
 		foreach ($idNameDefinition->getIdNamePropForks() as $eiPropPathStr => $idNamePropFork) {
 			$forkedIdNameDefinition = $idNamePropFork->getForkedIdNameDefinition();
 			$eiPropPath = EiPropPath::create($eiPropPathStr);
-			
-			if ($forkedIdNameDefinition === null) continue;
-			
+
+//			if ($forkedIdNameDefinition === null) continue;
+
 			$forkedEiFieldSource = null;
 			if ($eiObject !== null) {
 				$eiu = new Eiu($this->n2nContext, $eiObject, $idNameDefinition->getEiMask(), $eiPropPath);
@@ -91,17 +92,9 @@ class SummarizedStringBuilder {
 		return new DefPropPath($ids);
 	}
 	
-	public static function createPlaceholder($eiPropPath) {
-		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . DefPropPath::create($eiPropPath)
-				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
-	}
-	
-	/**
-	 * @param string $defPropPathStr
-	 * @return string
-	 */
-	private static function createPlaceholerFromStr($defPropPathStr) {
-		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER . $defPropPathStr
+	public static function createPlaceholder(mixed $eiPropPath): string {
+		return self::KNOWN_STRING_FIELD_OPEN_DELIMITER
+				. join(self::KNOWN_STRING_LEVEL_SEPARATOR, DefPropPath::create($eiPropPath)->toArray())
 				. self::KNOWN_STRING_FIELD_CLOSE_DELIMITER;
 	}
 	
