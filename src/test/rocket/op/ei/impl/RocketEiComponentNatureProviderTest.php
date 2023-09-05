@@ -101,7 +101,7 @@ class RocketEiComponentNatureProviderTest extends TestCase {
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
-		$this->assertCount(1, $eiProps);
+		$this->assertCount(3, $eiProps);
 
 		$nature = $eiProps['translatableTestObjs']->getNature();
 		$this->assertInstanceOf(TranslationEiPropNature::class, $nature);

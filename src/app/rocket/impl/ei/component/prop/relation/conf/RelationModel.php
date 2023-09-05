@@ -570,7 +570,7 @@ class RelationFinalizer {
 				&& !$this->relationModel->getTargetPropInfo()->masterAccessProxy->getConstraint()->allowsNull()) {
 			throw new InvalidEiConfigurationException('EiProp requires an EntityProperty '
 					. TypeUtils::prettyClassPropName($entityProperty->getEntityModel()->getClass(), $entityProperty->getName())
-					. ' which removes orphans or target ' . $this->getTargetMasterAccessProxy()
+					. ' which removes orphans or target ' . $this->relationModel->getTargetPropInfo()->masterAccessProxy
 					. ' must accept null.');
 		}
 	}
