@@ -47,7 +47,7 @@ class TranslationEiPropNatureLiveTest extends TestCase {
 		$eiObject = $eiType->createEiObject(TranslationTestEnv::findTranslatableTestObj($this->translatableTestObj1Id));
 
 		$is = $eiType->getEiMask()->getEiEngine()->getIdNameDefinition()->createIdentityStringFromPattern(
-				'hui: {translatableTestObjs.name}', TestEnv::getN2nContext(), $eiObject,
+				'hui: {translatableTestObjs/name}', TestEnv::getN2nContext(), $eiObject,
 				N2nLocale::getDefault());
 
 		$this->assertEquals('hui: holeradio', $is);
