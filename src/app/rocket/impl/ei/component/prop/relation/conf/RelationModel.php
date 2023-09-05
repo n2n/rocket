@@ -530,7 +530,7 @@ class RelationFinalizer {
 		
 		if ($this->relationModel->isReadOnly() || $this->relationModel->isMaster() 
 				|| $entityProperty->getRelation()->isOrphanRemoval() || $this->relationModel->isSourceMany()
-				|| $this->relationModel->getTargetPropInfo()->masterAccessProxy->getConstraint()->allowsNull()) {
+				|| $this->relationModel->getTargetPropInfo()->masterAccessProxy->getSetterConstraint()->allowsNull()) {
 			return;			
 		}
 		
