@@ -25,4 +25,9 @@ export class StringOutFieldComponent implements OnInit {
 	get bulky(): boolean {
 		return this.model.isBulky();
 	}
+
+	@HostBinding('class.text-pre-wrap')
+	get textWrappable(): boolean {
+		return this.model.isBulky();
+	}
 }
