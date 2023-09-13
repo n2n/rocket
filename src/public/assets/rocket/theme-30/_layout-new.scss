@@ -358,6 +358,10 @@ html.rocket-iframe {
 //     }
 // }
 
+.text-pre-wrap {
+  white-space: pre-wrap;
+}
+
 
 @include media-breakpoint-down(md) {
     #rocket-global-nav {
