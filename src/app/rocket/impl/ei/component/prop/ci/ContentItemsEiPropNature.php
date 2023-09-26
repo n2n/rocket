@@ -162,7 +162,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
 		$readOnly = $readOnly || $this->relationModel->isReadOnly();
 
-		if ($readOnly && $eiu->gui()->isCompact()) {
+		if ($readOnly && $eiu->guiMaskDeclaration()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
 		

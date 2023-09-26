@@ -1,7 +1,7 @@
-$small-viewport: "(min-width: 576px)";
-$medium-small-viewport: "(min-width: 768px)";
-$medium-viewport: "(min-width: 992px)";
-$large-viewport: "(min-width: 1200px)";
+$small-viewport: "min-width: 576px";
+$medium-small-viewport: "min-width: 768px";
+$medium-viewport: "min-width: 992px";
+$large-viewport: "min-width: 1200px";
 
 .glightbox-container {
     width: 100%;
