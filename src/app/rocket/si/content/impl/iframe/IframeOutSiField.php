@@ -22,6 +22,9 @@ class IframeOutSiField extends OutSiFieldAdapter {
 	 * @throws \n2n\util\magic\MagicObjectUnavailableException
 	 */
 	function getData(): array {
-		return $this->iframeData->toArray();
+		return [
+			...$this->iframeData->toArray(),
+			...parent::getData()
+		];
 	}
 }
