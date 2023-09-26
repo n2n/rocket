@@ -65,10 +65,18 @@ use n2n\util\EnumUtils;
 use rocket\op\spec\setup\EiTypeClassSetup;
 use rocket\impl\ei\component\prop\embedded\EmbeddedEiPropNature;
 use n2n\persistence\orm\property\EntityProperty;
+use rocket\attribute\impl\EiPropCke;
+use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
+use rocket\impl\ei\component\prop\string\cke\ui\Cke;
+use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
+use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
+use n2n\util\magic\MagicContext;
+use n2n\util\magic\MagicLookupFailedException;
 
 class EiPropNatureProvider {
 
-	function __construct(private EiTypeSetup $eiTypeSetup, private EiTypeClassSetup $eiTypeClassSetup) {
+	function __construct(private EiTypeSetup $eiTypeSetup, private EiTypeClassSetup $eiTypeClassSetup,
+			private MagicContext $magicContext) {
 	}
 
 	private function eiPropPath(string $propertyName) {
@@ -204,6 +212,29 @@ class EiPropNatureProvider {
 			$this->configureEditiable($eiPropString->constant, $eiPropString->readOnly, $eiPropString->mandatory,
 					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
+
+			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
+		}
+
+		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropCke::class)
+				 as $attribute) {
+			$eiPropCke = $attribute->getInstance();
+			assert($eiPropCke instanceof EiPropCke);
+			$propertyName = $attribute->getProperty()->getName();
+			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute, $eiPropCke->readOnly);
+
+			$nature = new CkeEiPropNature($propertyAccessProxy);
+			$nature->setEntityProperty($this->eiTypeClassSetup->getEntityProperty($propertyName, false));
+			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
+					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
+			$this->configureEditiable($eiPropCke->constant, $eiPropCke->readOnly, $eiPropCke->mandatory,
+					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
+			$this->configureAddons($propertyAccessProxy, $nature);
+			$nature->setCkeConfig(new CkeConfig($eiPropCke->mode, $eiPropCke->tableEnabled, $eiPropCke->bbcodeEnabled,
+					$this->lookup($eiPropCke->cssConfig, CkeCssConfig::class, $attribute),
+					array_map(
+							fn (string $n) => $this->lookup($n, CkeLinkProvider::class, $attribute),
+							$eiPropCke->linkProviders)));
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}
@@ -506,4 +537,20 @@ class EiPropNatureProvider {
 
 		throw new InvalidEiConfigurationException($message);
 	}
+
+	private function lookup(string $id, ?string $requiredType, PropertyAttribute $attribute): mixed {
+		try {
+			$obj = $this->magicContext->lookup($id);
+		} catch (MagicLookupFailedException $e) {
+			throw $this->eiTypeSetup->createPropertyAttributeError($attribute, $e);
+		}
+
+		if ($requiredType === null || is_a($obj, $requiredType)) {
+			return $obj;
+		}
+
+		throw $this->eiTypeSetup->createPropertyAttributeError($attribute, message: get_class($obj)
+				. ' does not implement ' . $requiredType);
+	}
+
 }

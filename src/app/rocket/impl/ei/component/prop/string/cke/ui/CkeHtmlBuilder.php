@@ -195,10 +195,10 @@ class CkeHtmlBuilder {
 				. 'data-contents-css="' . $headLinkHtml . '" data-content-html-json="' . $this->view->getOut($contentsHtml) . '"></iframe>');
 	}
 
-	private function buildEditorAttrs(CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null) {
+	private function buildEditorAttrs(CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null): array {
 		$ckeConfig = ($ckeComposer !== null) ? $ckeComposer->toCkeConfig() : $ckeConfig = CkeConfig::createDefault();
 
-		$attrs = array('mode' => $ckeConfig->getMode(),
+		$attrs = array('mode' => $ckeConfig->getMode()->value,
 			'tableEditing' => $ckeConfig->isTablesEnabled(),
 			'bbcode' => $ckeConfig->isBbcodeEnabled());
 		if ($ckeCssConfig == null) return $attrs;
@@ -231,7 +231,7 @@ class CkeHtmlBuilder {
 		return $attrs;
 	}
 	
-	private function getContentCssUrls(CkeCssConfig $ckeCssConfig) {
+	private function getContentCssUrls(CkeCssConfig $ckeCssConfig): array {
 		$contentCssUrls = $ckeCssConfig->getContentCssUrls($this->view);
 		if (empty($contentCssUrls)) return [];
 

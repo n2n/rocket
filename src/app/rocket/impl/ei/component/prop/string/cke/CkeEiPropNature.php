@@ -38,6 +38,9 @@ use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
 use rocket\impl\ei\component\prop\string\cke\ui\Cke;
+use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
+use n2n\util\type\ArgUtils;
+use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 
 class CkeEiPropNature extends AlphanumericEiPropNature {
 
@@ -53,6 +56,10 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 
 	function getCkeConfig(): CkeConfig {
 		return $this->ckeConfig;
+	}
+
+	function setCkeConfig(CkeConfig $ckeConfig): void {
+		$this->ckeConfig = $ckeConfig;
 	}
 	
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
@@ -76,8 +83,8 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcodeEnabled())
 				->table($this->ckeConfig->isTablesEnabled());
         $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
-				['composer' => $ckeComposer, 'config' => $this->ckeConfig, 'ckeCssConfig' => null,
-						'ckeLinkProviders' => []]));
+				['composer' => $ckeComposer, 'config' => $this->ckeConfig, 'ckeCssConfig' => $this->ckeConfig->getCssConfig(),
+						'ckeLinkProviders' => $this->ckeConfig->getLinkProviders()]));
 
         $iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()])
         		->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
@@ -87,7 +94,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		});
 	}
 	
-	function saveSiField(SiField $siField, Eiu $eiu) {
+	function saveSiField(SiField $siField, Eiu $eiu): void {
 		CastUtils::assertTrue($siField instanceof StringInSiField);
 		$eiu->field()->setValue($siField->getValue());
 	}

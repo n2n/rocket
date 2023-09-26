@@ -74,14 +74,14 @@ class RocketEiComponentNatureProvider implements EiComponentNatureProvider {
 			$this->provideModNatures($eiTypeSetup);
 
 			foreach ($eiTypeSetup->getEiTypeClassSetups() as $eiTypeClassSetup) {
-				$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup, $eiTypeClassSetup);
+				$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup, $eiTypeClassSetup, $this->magicContext);
 				$eiPropNatureProvider->provideAnnotateds();
 			}
 			return;
 		}
 
 		foreach ($eiTypeSetup->getEiTypeClassSetups() as $eiTypeClassSetup) {
-			$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup, $eiTypeClassSetup);
+			$eiPropNatureProvider = new EiPropNatureProvider($eiTypeSetup, $eiTypeClassSetup, $this->magicContext);
 			foreach ($eiTypeClassSetup->getUnassignedEiPresetProps() as $eiPresetProp) {
 				if ($eiSetupPhase === EiSetupPhase::GOOD_MATCHES) {
 					$eiPropNatureProvider->provideRelation($eiPresetProp)
