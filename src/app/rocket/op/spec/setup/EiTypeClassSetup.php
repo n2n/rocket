@@ -124,13 +124,11 @@ class EiTypeClassSetup {
 	}
 
 	function addEiPropNature(EiPropPath $eiPropPath, EiPropNature $eiPropNature): void {
-		$parentEiPropPath = $this->eiPresetPropCollection->getParentEiPropPath();
-		if (!$eiPropPath->isChildOf($parentEiPropPath)) {
+		$parentEiPropPath = $this->eiPresetPropCollection?->getParentEiPropPath();
+		if ($parentEiPropPath !== null && !$eiPropPath->isChildOf($parentEiPropPath)) {
 			throw new \InvalidArgumentException('EiPropPath must be a direct child of  '
 					. ($parentEiPropPath->isEmpty() ? '<root>' : $parentEiPropPath) . '. Given: "' . $eiPropPath . '"');
 		}
-
-
 
 		$this->eiType->getEiMask()->getEiPropCollection()->put($eiPropPath, $eiPropNature);
 
