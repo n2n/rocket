@@ -538,7 +538,11 @@ class EiPropNatureProvider {
 		throw new InvalidEiConfigurationException($message);
 	}
 
-	private function lookup(string $id, ?string $requiredType, PropertyAttribute $attribute): mixed {
+	private function lookup(?string $id, ?string $requiredType, PropertyAttribute $attribute): mixed {
+		if ($id === null) {
+			return null;
+		}
+
 		try {
 			$obj = $this->magicContext->lookup($id);
 		} catch (MagicLookupFailedException $e) {
