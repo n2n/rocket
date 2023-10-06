@@ -58,7 +58,7 @@ class RocketController extends ControllerAdapter {
 				->ext('scr')->toUrl());
 		$rocket->setControllerContext($this->getControllerContext());
 
-		// url at style-src-elem must be added because of firefox
+		// url at style-src-elem must be added because of cke in firefox
 		$this->getResponse()->setHeader("Content-Security-Policy:"
 				. " script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
 				. " script-src-elem 'self' 'unsafe-inline' 'unsafe-eval'; "
