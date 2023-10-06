@@ -58,8 +58,12 @@ class RocketController extends ControllerAdapter {
 				->ext('scr')->toUrl());
 		$rocket->setControllerContext($this->getControllerContext());
 
-		$this->getResponse()->setHeader("Content-Security-Policy: script-src-elem 'self' 'unsafe-inline'"
-				. " 'unsafe-eval'; style-src-elem 'unsafe-inline' 'self'; script-src-attr 'unsafe-inline'");
+		// url at style-src-elem must be added because of firefox
+		$this->getResponse()->setHeader("Content-Security-Policy:"
+				. " script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+				. " script-src-elem 'self' 'unsafe-inline' 'unsafe-eval'; "
+				. " script-src-attr 'unsafe-inline'; "
+				. " style-src-elem 'self' 'unsafe-inline' " . $this->getRequest()->getHostUrl());
 	}
 	
 	public function doDevLogin($userId) {
