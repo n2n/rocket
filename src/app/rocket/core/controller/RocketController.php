@@ -65,7 +65,10 @@ class RocketController extends ControllerAdapter {
 				. " script-src-attr 'unsafe-inline'; "
 				. " style-src-elem 'self' 'unsafe-inline' " . $this->getRequest()->getHostUrl());
 	}
-	
+
+	/**
+	 * @throws ForbiddenException
+	 */
 	public function doDevLogin($userId) {
 		if (!N2N::isDevelopmentModeOn()) {
 			throw new ForbiddenException();
