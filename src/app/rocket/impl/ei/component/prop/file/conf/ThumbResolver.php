@@ -22,7 +22,6 @@
 namespace rocket\impl\ei\component\prop\file\conf;
 
 use n2n\io\managed\File;
-use rocket\impl\ei\component\prop\file\command\ThumbNatureEiCommand;
 use n2n\io\managed\img\ImageDimension;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\Eiu;
@@ -36,21 +35,22 @@ use n2n\util\StringUtils;
 use n2n\io\managed\FileManager;
 use n2n\io\managed\FileLocator;
 use n2n\io\managed\img\ThumbCut;
+use rocket\op\ei\EiCmdPath;
 
 class ThumbResolver {
 	
 	const DIM_IMPORT_MODE_ALL = 'all';
 	const DIM_IMPORT_MODE_USED_ONLY = 'usedOnly';
 	
-	private $thumbEiCommand;
+	private $thumbEiCmdPath;
 	private $imageDimensionsImportMode = null;
 	private $extraImageDimensions = array();
 	private $targetFileManager;
 	private $targetFileLocator = null;
-	
-	public function setThumbEiCommand(ThumbNatureEiCommand $thumbEiCommand) {
+
+	public function setThumbEiCmdPath(EiCmdPath $thumbEiCmdPath) {
 // 		$thumbEiCommand->setFileEiProp($this);
-		$this->thumbEiCommand = $thumbEiCommand;
+		$this->thumbEiCmdPath = $thumbEiCmdPath;
 	}
 	
 	function setTargetFileManager(?FileManager $fileManager) {
@@ -69,8 +69,8 @@ class ThumbResolver {
 		return $this->targetFileLocator;
 	}
 
-	public function getThumbEiCommand() {
-		return $this->thumbEiCommand;
+	public function getThumbEiCmdPath() {
+		return $this->thumbEiCmdPath;
 	}
 	
 	public function getImageDimensionImportMode() {
@@ -183,7 +183,7 @@ class ThumbResolver {
 	}
 	
 	function createFileUrl(Eiu $eiu, string $pid) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['file', $pid]);
+		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['file', $pid]);
 	}
 		
 	/**
@@ -192,7 +192,7 @@ class ThumbResolver {
 	 * @return \n2n\util\uri\Url
 	 */
 	function createThumbUrl(Eiu $eiu, ImageDimension $imageDimension) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)
+		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)
 				->extR(['thumb', $eiu->entry()->getPid()], ['imgDim' => $imageDimension->__toString()]);
 	}
 	
@@ -202,7 +202,7 @@ class ThumbResolver {
 	 * @return \n2n\util\uri\Url
 	 */
 	function createTmpUrl(Eiu $eiu, string $qualifiedName) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmp'], ['qn' => $qualifiedName]);
+		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['tmp'], ['qn' => $qualifiedName]);
 	}
 	
 	/**
@@ -218,7 +218,7 @@ class ThumbResolver {
 // 			$query['variationImgDim'] = (string) $variationImgDim;
 // 		}
 		
-		return $eiu->frame()->getCmdUrl($this->thumbEiCommand)->extR(['tmpthumb'], $query);
+		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['tmpthumb'], $query);
 	}
 	
 	/**
@@ -226,7 +226,7 @@ class ThumbResolver {
 	 * @return boolean
 	 */
 	function isThumbCreationEnabled(File $file) {
-		if ($this->thumbEiCommand === null
+		if ($this->thumbEiCmdPath === null
 				|| !$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) return false;
 				
 		if (!empty($this->extraImageDimensions)) return true;
