@@ -26,12 +26,8 @@ use n2n\io\UploadedFileExceedsMaxSizeException;
 use n2n\io\managed\File;
 use n2n\io\managed\impl\FileFactory;
 use n2n\io\managed\impl\TmpFileManager;
-use n2n\io\orm\ManagedFileEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\CastUtils;
-use n2n\util\type\TypeConstraint;
 use n2n\util\type\TypeConstraints;
 use n2n\validation\lang\ValidationMessages;
 use n2n\web\http\Session;
@@ -40,24 +36,20 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\impl\ei\component\prop\file\conf\FileConfig;
 use rocket\impl\ei\component\prop\file\conf\FileId;
 use rocket\impl\ei\component\prop\file\conf\FileVerificator;
 use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
-use rocket\si\content\SiField;
 use rocket\si\content\impl\FileInSiField;
 use rocket\si\content\impl\SiFields;
 use rocket\si\content\impl\SiFile;
 use rocket\si\content\impl\SiFileHandler;
 use rocket\si\content\impl\SiUploadResult;
-use rocket\impl\ei\component\prop\file\conf\FileModel;
 use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\img\ImageDimension;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
 use n2n\reflection\property\PropertyAccessProxy;
-use Cassandra\Type;
+use rocket\impl\ei\component\prop\file\command\ThumbNatureEiCommand;
 
 class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
@@ -82,7 +74,11 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$this->fileVerificator = new FileVerificator();
 	}
 
-	
+	function setup(Eiu $eiu): void {
+		$thumbEiCmdPath = $eiu->mask()->addCmd(new ThumbNatureEiCommand($eiu->prop()->getPath()))->getEiCmdPath();
+		$this->thumbResolver->setThumbEiCmdPath($thumbEiCmdPath);
+	}
+
 	/**
 	 * @return ThumbResolver
 	 */
