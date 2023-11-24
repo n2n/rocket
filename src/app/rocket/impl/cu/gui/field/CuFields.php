@@ -6,6 +6,7 @@ use rocket\si\content\impl\SiFields;
 use rocket\impl\cu\gui\field\string\StringInCuField;
 use rocket\impl\cu\gui\field\date\DateTimeInCuField;
 use rocket\impl\cu\gui\field\number\NumberInCuField;
+use rocket\impl\cu\gui\field\enum\EnumInCuField;
 
 class CuFields {
 
@@ -38,5 +39,10 @@ class CuFields {
 				->setArrowStep($arrowStep)
 				->setPrefixAddons($prefixAddons)
 				->setSuffixAddons($suffixAddons));
+	}
+
+	static function enumIn(bool $mandatory = false, array $options = [], string $defaultValue = null): EnumInCuField {
+		return new EnumInCuField(SiFields::enumIn($options, $defaultValue)
+				->setMandatory($mandatory));
 	}
 }
