@@ -59,7 +59,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @param string[] $options
 	 * @return \rocket\si\content\impl\EnumInSiField
 	 */
-	function setOptions(array $options) {
+	function setOptions(array $options): static {
 		ArgUtils::valArray($options, 'string');
 		$this->options = $options;
 		return $this;
@@ -165,6 +165,6 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
 	function handleInput(array $data) {
-		$this->value = (new DataSet($data))->reqString('value', true);
+		$this->value = (new DataSet($data))->reqEnum('value',  array_keys($this->options), true);
 	}
 }
