@@ -41,8 +41,9 @@ class CuFields {
 				->setSuffixAddons($suffixAddons));
 	}
 
-	static function enumIn(bool $mandatory = false, array $options = [], string $defaultValue = null): EnumInCuField {
+	static function enumIn(bool $mandatory = false, array $options = [], string $defaultValue = null, string $emptyLabel = null): EnumInCuField {
 		return new EnumInCuField(SiFields::enumIn($options, $defaultValue)
+				->setEmptyLabel($emptyLabel)
 				->setMandatory($mandatory));
 	}
 }
