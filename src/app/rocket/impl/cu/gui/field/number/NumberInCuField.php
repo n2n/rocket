@@ -10,16 +10,18 @@ use n2n\validation\validator\impl\Validators;
 
 class NumberInCuField implements CuField {
 
-	function __construct(private readonly NumberInSiField $siField) {
+	private array $messageStrs = [];
 
+	function __construct(private readonly NumberInSiField $siField) {
+		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
 	}
 
-	function setValue(?string $value): static {
+	function setValue(?float $value): static {
 		$this->siField->setValue($value);
 		return $this;
 	}
 
-	function getValue(): ?string {
+	function getValue(): ?float {
 		return $this->siField->getValue();
 	}
 

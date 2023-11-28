@@ -9,6 +9,7 @@ use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
 
 class DateTimeInCuField implements CuField {
+
 	private array $messageStrs = [];
 
 	function __construct(private readonly DateTimeInSiField $siField) {

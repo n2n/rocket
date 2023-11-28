@@ -8,8 +8,10 @@ use n2n\validation\validator\impl\Validators;
 use rocket\si\content\impl\EnumInSiField;
 
 class EnumInCuField implements CuField {
-	function __construct(private readonly EnumInSiField $siField) {
+	private array $messageStrs = [];
 
+	function __construct(private readonly EnumInSiField $siField) {
+		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
 	}
 
 	function setValue(?string $value): static {
