@@ -61,13 +61,13 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 	function setCkeConfig(CkeConfig $ckeConfig): void {
 		$this->ckeConfig = $ckeConfig;
 	}
-
+	
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		$value = $eiu->field()->getValue();
-		if ($value === null) {
-			return $eiu->factory()->newGuiField(SiFields::stringOut(''));
-		}
-
+	    $value = $eiu->field()->getValue();
+	    if ($value === null) {
+	    	return $eiu->factory()->newGuiField(SiFields::stringOut(''));
+	    }
+	    
 		if ($eiu->guiMaskDeclaration()->isCompact()) {
 			return $eiu->factory()->newGuiField(SiFields
 					::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...'))
@@ -77,45 +77,40 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value)
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
-
+	
 	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$linkProviders = $this->ckeConfig->getLinkProviders();
-		$linkProvidersMap = array_combine(
-				array_map(fn (CkeLinkProvider $p) => get_class($p), $linkProviders),
-				$linkProviders);
-
 		$ckeComposer = new CkeComposer();
 		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcodeEnabled())
 				->table($this->ckeConfig->isTablesEnabled());
-		$ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
+        $ckeView = ($eiu->createView('rocket\impl\ei\component\prop\string\cke\view\ckeTemplate.html',
 				['composer' => $ckeComposer, 'config' => $this->ckeConfig, 'ckeCssConfig' => $this->ckeConfig->getCssConfig(),
-						'ckeLinkProviders' => $linkProvidersMap]));
+						'ckeLinkProviders' => $this->ckeConfig->getLinkProviders()]));
 
-		$iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()])
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+        $iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()])
+        		->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 
 		return $eiu->factory()->newGuiField($iframeInField)->setSaver(function () use ($iframeInField, $eiu) {
 			$eiu->field()->setValue($iframeInField->getParams()['content'] ?? null);
 		});
 	}
-
+	
 	function saveSiField(SiField $siField, Eiu $eiu): void {
 		CastUtils::assertTrue($siField instanceof StringInSiField);
 		$eiu->field()->setValue($siField->getValue());
 	}
 
-
+	
 // 	/**
 // 	 * @return \rocket\op\ei\component\prop\WysiwygLinkConfig
 // 	 */
 // 	private function obtainLinkConfigurations(EiEntry $eiEntry, Eiu $eiu) {
 // 		$n2nContext = $eiu->frame()->getEiFrame()->getN2nContext();
-
+		
 // 		// @todo @thomas vielleicht im configurator machen und richtige exception werfen
 // 		$linkConfigurations = array();
 // 		foreach((array) $this->linkConfigClassNames as $linkConfigurationClass) {
 // 			try {
-// 				if (null !== ($linkConfiguration = $n2nContext->lookup($linkConfigurationClass))
+// 				if (null !== ($linkConfiguration = $n2nContext->lookup($linkConfigurationClass)) 
 // 						&& $linkConfiguration instanceof WysiwygLinkConfig) {
 // 					$linkConfiguration->setup($eiEntry, $eiu);
 // 					$linkConfigurations[] = $linkConfiguration;
@@ -124,7 +119,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 // 		}
 // 		return $linkConfigurations;
 // 	}<
-
+	
 // 	/**
 // 	* @return rocket\impl\ei\component\prop\string\wysiwyg\WysiwygCssConfig
 // 	*/
@@ -140,7 +135,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 // 				}
 // 			} catch (\ReflectionException $e) {}
 // 		}
-
+		
 // 		return null;
 // 	}
 }
