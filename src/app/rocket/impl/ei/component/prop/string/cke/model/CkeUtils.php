@@ -23,6 +23,8 @@ namespace rocket\impl\ei\component\prop\string\cke\model;
 
 use n2n\core\container\N2nContext;
 use n2n\util\type\ArgUtils;
+use n2n\util\magic\MagicLookupFailedException;
+use n2n\util\magic\MagicObjectUnavailableException;
 
 class CkeUtils {
 	
@@ -38,8 +40,9 @@ class CkeUtils {
 		$ckeLinkProvider = null;
 		try {
 			$ckeLinkProvider = $n2nContext->lookup($ckeLinkProviderLookupId);
-		} catch (\n2n\context\LookupFailedException $e) {
-			throw new \InvalidArgumentException('Could not lookup CkeLinkProvider with lookup id: ' . $ckeLinkProviderLookupId);
+		} catch (MagicLookupFailedException $e) {
+			throw new \InvalidArgumentException('Could not lookup CkeLinkProvider with lookup id: '
+					. $ckeLinkProviderLookupId, previous: $e);
 		}
 		
 		if (!($ckeLinkProvider instanceof CkeLinkProvider)) {
