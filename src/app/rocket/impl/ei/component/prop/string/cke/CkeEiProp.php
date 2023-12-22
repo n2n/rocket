@@ -119,7 +119,7 @@ class CkeEiProp extends AlphanumericEiProp {
 	    if ($value === null) return null;
 	    
 		if ($eiu->gui()->isCompact()) {
-			return StringUtils::reduce(html_entity_decode(strip_tags($value), null, N2N::CHARSET), 50, '...');
+			return StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...');
 		}
 
 		$ckeHtmlBuidler = new CkeHtmlBuilder($view);
