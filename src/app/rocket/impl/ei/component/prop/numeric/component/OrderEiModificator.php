@@ -109,7 +109,7 @@ class OrderEiModificator extends EiModificatorAdapter {
 		$ssm->registerListener(new OnWriteMappingListener(function() use ($eiFrame, $ssm, $eiProp) {
 			$orderIndex = $ssm->getValue(EiPropPath::from($eiProp));
 			
-			if (mb_strlen($orderIndex)) return;
+			if ($orderIndex !== null && mb_strlen($orderIndex)) return;
 			
 			$entityProperty = $eiProp->getEntityProperty();
 			
