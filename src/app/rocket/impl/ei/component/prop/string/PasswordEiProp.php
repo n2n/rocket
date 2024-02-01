@@ -71,7 +71,7 @@ class PasswordEiProp extends AlphanumericEiProp {
 	
 	public function saveMagValue(Mag $option, Eiu $eiu) {
 		$value = $option->getValue();
-		if (mb_strlen($value) === 0 && !$eiu->entry()->isNew()) {
+		if (($value == null || mb_strlen($value)) === 0 && !$eiu->entry()->isNew()) {
 			return;
 		}
 		
