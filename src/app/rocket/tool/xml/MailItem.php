@@ -23,106 +23,100 @@ namespace rocket\tool\xml;
 
 class MailItem {
 	
-	private $dateTime;
-	private $to = '';
-	private $from = '';
-	private $cc = '';
-	private $bcc = '';
-	private $replyTo = '';
-	private $attachments = array();
-	private $message = '';
-	private $subject = '';
-	
-	/**
-	 * @param \DateTime $dateTime
-	 */
+	private \DateTime $dateTime;
+	private string $to = '';
+	private string $from = '';
+	private string $cc = '';
+	private string $bcc = '';
+	private string $replyTo = '';
+	private array $attachments = [];
+	private string $message = '';
+	private string $subject = '';
+
 	public function __construct(\DateTime $dateTime) {
 		$this->dateTime = $dateTime;
 	}
 	
-	/**
-	 * @return \\DateTime
-	 */
-	public function getDateTime() {
+	public function getDateTime(): \DateTime {
 		return $this->dateTime;
 	}
-	public function getTo() {
+	public function getTo(): string {
 		return $this->to;
 	}
 
-	public function setTo($to) {
+	public function setTo(string $to): void {
 		$this->to .= $to;
 	}
 
-	public function getFrom() {
+	public function getFrom(): string {
 		return $this->from;
 	}
 
-	public function setFrom($from) {
+	public function setFrom(string $from): void {
 		$this->from .= $from;
 	}
 
-	public function getCc() {
+	public function getCc(): string {
 		return $this->cc;
 	}
 
-	public function setCc($cc) {
+	public function setCc($cc): void {
 		$this->cc .= $cc;
 	}
 
-	public function getBcc() {
+	public function getBcc(): string {
 		return $this->bcc;
 	}
 
-	public function setBcc($bcc) {
+	public function setBcc(string $bcc): void {
 		$this->bcc .= $bcc;
 	}
 
-	public function getReplyTo() {
+	public function getReplyTo(): string {
 		return $this->replyTo;
 	}
 
-	public function setReplyTo($replyTo) {
+	public function setReplyTo(string $replyTo): void {
 		$this->replyTo .= $replyTo;
 	}
 	
-	public function hasReplyTo() {
+	public function hasReplyTo(): bool {
 		return (bool) trim($this->replyTo);
 	}
 
-	public function getAttachments() {
+	public function getAttachments(): array {
 		return $this->attachments;
 	}
 
-	public function setAttachments($attachments) {
+	public function setAttachments(array $attachments) {
 		$this->attachments = $attachments;
 	}
 
-	public function setDateTime($dateTime) {
+	public function setDateTime(\DateTime $dateTime): void {
 		$this->dateTime = $dateTime;
 	}
 
-	public function addAttachment(MailAttachmentItem $attachment) {
+	public function addAttachment(MailAttachmentItem $attachment): void {
 		$this->attachments[] = $attachment;
 	}
 	
-	public function getMessage() {
+	public function getMessage(): string {
 		return $this->message;
 	}
 
-	public function setMessage($message) {
+	public function setMessage(string $message): void {
 		$this->message .= $message;
 	}
 
-	public function getSubject() {
+	public function getSubject(): string {
 		return $this->subject;
 	}
 
-	public function setSubject($subject) {
+	public function setSubject(string $subject): void {
 		$this->subject .= $subject;
 	}
 	
-	public function hasAttachments() {
+	public function hasAttachments(): bool {
 		return (count($this->attachments) > 0);
 	}
 }

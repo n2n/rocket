@@ -26,30 +26,22 @@ use n2n\log4php\appender\nn6\AdminMailCenter;
 
 class MailItemSaxHandler implements SaxHandler {
 	
-	private $itemCounter = 0;
-	private $items = array();
+	private int $itemCounter = 0;
+	private array $items = [];
 	
-	private $limit;
-	private $num;
-	/**
-	 * @var \rocket\tool\xml\MailItem
-	 */
-	private $currentItem = null;
-	private $currentAttachmentItem = null;
-	private $level = 0;
-	private $currentTagName;
-	/**
-	 *
-	 * @param int $limit
-	 * @param int $num
-	 * @param string $selectorSeverity
-	*/
-	public function __construct($limit = null, $num = null) {
+	private int $limit;
+	private int $num;
+	private ?MailItem $currentItem = null;
+	private ?MailAttachmentItem $currentAttachmentItem = null;
+	private int $level = 0;
+	private ?string $currentTagName;
+
+	public function __construct(int $limit = null, int $num = null) {
 		$this->limit = $limit;
 		$this->num = $num;
 	}
 
-	public function startElement($tagName, array $attributes) {
+	public function startElement(string $tagName, array $attributes): void {
 		$this->currentTagName = null;
 		$this->level++;
 		if ($this->level == 2 && $tagName == 'item') {
@@ -57,10 +49,10 @@ class MailItemSaxHandler implements SaxHandler {
 			
 			if (!isset($attributes['datetime'])) return;
 
-			if (is_numeric($this->num) && $this->num <= sizeof($this->items)) {
+			if ($this->num <= sizeof($this->items)) {
 				return;
 			}
-			if (is_numeric($this->limit) && $this->itemCounter <= $this->limit) {
+			if ($this->itemCounter <= $this->limit) {
 				return;
 			}
 				
@@ -76,9 +68,9 @@ class MailItemSaxHandler implements SaxHandler {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\tool\xml\SaxHandler::cdata()
+	 * @see SaxHandler::cdata
 	 */
-	public function cdata($cdata) {
+	public function cdata(string $cdata): void {
 		if (null === $this->currentTagName) return;
 		switch ($this->currentTagName) {
 			case AdminMailCenter::TAG_NAME_MESSAGE:
@@ -115,23 +107,23 @@ class MailItemSaxHandler implements SaxHandler {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\tool\xml\SaxHandler::endElement()
+	 * @see SaxHandler::endElement
 	 */
-	public function endElement($tag) {
+	public function endElement(string $tagName): void {
 		$this->level--;
-		if (!($this->level == 1 && $tag == 'item')) return;
+		if (!($this->level == 1 && $tagName == 'item')) return;
 		$this->items[] = $this->currentItem;
 		$this->currentItem = null;
 	}
 	
 	/**
-	 * @return \rocket\tool\xml\MailItem[]
+	 * @return MailItem[]
 	 */
-	public function getItems() {
+	public function getItems(): array {
 		return $this->items;
 	}
 
-	private function areArrayKeysGenerated(array $arr) {
+	private function areArrayKeysGenerated(array $arr): bool {
 		foreach (array_keys($arr) as $key => $value) {
 			if (!($key === $value)) return false;
 		}

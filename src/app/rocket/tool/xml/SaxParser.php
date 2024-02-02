@@ -21,15 +21,16 @@
  */
 namespace rocket\tool\xml;
 
-use n2n\io\IoUtils;
-use n2n\io\fs\FsPath;
+use n2n\util\io\fs\FsPath;
+use n2n\util\io\IoUtils;
+
 
 class SaxParser {
 	private $saxHandler;
 	/**
 	 * 
 	 * @param \n2n\io\fs\FsPath $xmlPath
-	 * @param \rocket\tool\xml\SaxHandler $saxHandler
+	 * @param SaxHandler $saxHandler
 	 * @throws \rocket\tool\xml\SaxParsingException
 	 */
 	public function parse(FsPath $xmlPath, SaxHandler $saxHandler) {
@@ -55,7 +56,7 @@ class SaxParser {
 	 * @param string $tag
 	 * @param array $attrs
 	 */
-	private function startElement($parser, $tagName, array $attrs) {
+	private function startElement($parser, string $tagName, array $attrs) {
 		$this->saxHandler->startElement($tagName, $attrs);
 	}
 	/**
@@ -63,7 +64,7 @@ class SaxParser {
 	 * @param mixed $parser
 	 * @param mixed $cdata
 	 */
-	private function cdata($parser, $cdata) {
+	private function cdata($parser, mixed $cdata) {
 		$this->saxHandler->cdata($cdata);
 	}
 	/**
@@ -71,7 +72,7 @@ class SaxParser {
 	 * @param resource $parser
 	 * @param string $tag
 	 */
-	private function endElement($parser, $tagName) {
+	private function endElement($parser, string $tagName) {
 		$this->saxHandler->endElement($tagName);
 	}
 }

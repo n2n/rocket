@@ -22,20 +22,10 @@
 namespace rocket\tool\xml;
 
 interface SaxHandler {
-	/**
-	 *
-	 * @param string $tagName
-	 * @param array $attributes
-	 */
-	public function startElement($tagName, array $attributes);
-	/**
-	 *
-	 * @param string $cdata
-	*/
-	public function cdata($cdata);
-	/**
-	 *
-	 * @param string $tag
-	*/
-	public function endElement($tagName);
+
+	public function startElement(string $tagName, array $attributes);
+
+	public function cdata(string $cdata);
+
+	public function endElement(string $tagName);
 }

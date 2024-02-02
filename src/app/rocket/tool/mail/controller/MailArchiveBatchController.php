@@ -22,68 +22,72 @@
 namespace rocket\tool\mail\controller;
 
 use n2n\util\DateUtils;
-use n2n\io\InvalidPathException;
 use rocket\tool\mail\model\MailCenter;
 use n2n\core\N2N;
 use n2n\core\VarStore;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\context\Lookupable;
+use n2n\util\io\InvalidPathException;
+use n2n\context\attribute\Inject;
 
 class MailArchiveBatchController implements Lookupable {
-		const FILE_NAME_PREFIX = 'mail';
-	const FILE_NAME_PARTS_SEPERATOR = '-';
+	const FILE_NAME_PREFIX = 'mail';
+	const FILE_NAME_PARTS_SEPARATOR = '-';
 	const FILE_EXTENSION = 'xml';
+
+	#[Inject]
+	private VarStore $varStore;
 	
-	public function index() {
+	public function index(): void {
 		$this->createMailArchive();
 	}
 	
-	public function _onNewMonth() {
+	public function _onNewMonth(): void {
 		$this->createMailArchive();
 	}
 	
-	public static function dateToFileName(\DateTime $date, $index = null) {
-		$nameParts = array(self::FILE_NAME_PREFIX, $date->format('Y'), $date->format('m'));
+	public static function dateToFileName(\DateTime $date, int $index = null): string {
+		$nameParts = [self::FILE_NAME_PREFIX, $date->format('Y'), $date->format('m')];
 		if (null !== $index)  {
 			$nameParts[] = $index;
 		}
-		return implode(self::FILE_NAME_PARTS_SEPERATOR, $nameParts) . '.' . self::FILE_EXTENSION;
+		return implode(self::FILE_NAME_PARTS_SEPARATOR, $nameParts) . '.' . self::FILE_EXTENSION;
 	}
-	/**
-	 * @param string $fileName
-	 * @return \DateTime
-	 */
-	public static function fileNameToDate($fileName) {
-		$fileNameParts = explode(self::FILE_NAME_PARTS_SEPERATOR, self::removeFileExtension($fileName));
-		if (count($fileNameParts) < 3) return null;
+
+	public static function fileNameToDate(string $fileName): ?\DateTime {
+		$fileNameParts = explode(self::FILE_NAME_PARTS_SEPARATOR, self::removeFileExtension($fileName));
+		if (count($fileNameParts) < 3) {
+			return null;
+		}
 		return DateUtils::createDateTimeFromFormat('Ym',  $fileNameParts[1] . $fileNameParts[2]);
 	}
 	
-	public static function fileNameToIndex($fileName) {
-		$fileNameParts = explode(self::FILE_NAME_PARTS_SEPERATOR, self::removeFileExtension($fileName));
+	public static function fileNameToIndex(string $fileName): ?string {
+		$fileNameParts = explode(self::FILE_NAME_PARTS_SEPARATOR, self::removeFileExtension($fileName));
 		if (count($fileNameParts) < 4) return null;
 		return $fileNameParts[3];
 	}
 	
-	public static function removeFileExtension($fileName) {
+	public static function removeFileExtension(string $fileName): string {
 		return str_replace('.' . self::FILE_EXTENSION, '', $fileName);
 	}
-	
-	private function createMailArchive() {
+
+	// @todo: replace N2N::getAppConfig()
+	private function createMailArchive(): void {
 		$date = new \DateTime();
 		$date->setDate($date->format('Y'), $date->format('m'), $date->format('d') - 1);
 		$fileName = self::dateToFileName($date);
 		for ($i = 1; ; $i++) {
 			try {
-				MailCenter::requestMailLogFile($fileName);
+				MailCenter::requestMailLogFile($this->varStore, $fileName);
 				$fileName = self::dateToFileName($date, $i);
 			} catch (InvalidPathException $e){
 				break;
 			}
 		}
-		$archiveFilePath = N2N::getVarStore()->requestFilePath(VarStore::CATEGORY_LOG, N2N::NS,
+		$archiveFilePath = $this->varStore->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, $fileName, true, true);
-		$currentMailPath = MailCenter::requestMailLogFile(AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
+		$currentMailPath = MailCenter::requestMailLogFile($this->varStore, AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
 		$currentMailPath->copyFile($archiveFilePath, N2N::getAppConfig()->io()->getPrivateFilePermission());
 		$currentMailPath->delete();
 	}

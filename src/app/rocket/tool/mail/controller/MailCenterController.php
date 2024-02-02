@@ -24,43 +24,39 @@ namespace rocket\tool\mail\controller;
 use n2n\core\container\N2nContext;
 use n2n\web\http\controller\ControllerAdapter;
 use rocket\tool\mail\model\MailCenter;
-use n2n\log4php\appender\nn6\AdminMailCenter;
 use n2n\web\http\PageNotFoundException;
-use n2n\io\InvalidPathException;
 use n2n\core\N2N;
 use n2n\l10n\DynamicTextCollection;
+use n2n\util\io\InvalidPathException;
+use n2n\core\VarStore;
+use n2n\context\attribute\Inject;
+use n2n\util\io\fs\FsPath;
 
 class MailCenterController extends ControllerAdapter {
 	const ACTION_ARCHIVE = 'archive';
 	const ACTION_ATTACHMENT = 'attachment';
-
 	const MAIL_XML = 'mail.xml';
 
-	public function index($currentPageNum = null) {
+	#[Inject]
+	private VarStore $varStore;
+
+	public function index($currentPageNum = null): void {
 		$mailXmlFilePath = null;
 		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile(self::MAIL_XML);
+			$mailXmlFilePath = MailCenter::requestMailLogFile($this->varStore, self::MAIL_XML);
 		} catch (InvalidPathException $e) { }
 
-		$mailCenter = new MailCenter($mailXmlFilePath);
+		$mailCenter = new MailCenter($this->varStore, $mailXmlFilePath);
 		if (null !== $currentPageNum) {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
-		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter,
-			'currentFileName' => self::MAIL_XML));
+		$this->forward('..\view\mailCenter.html', ['mailCenter' => $mailCenter,
+				'currentFileName' => self::MAIL_XML]);
 	}
 
-	public function doArchive($fileName, $currentPageNum = null) {
-		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
-		} catch (InvalidPathException $e) {
-			throw new PageNotFoundException();
-		}
-		if ($mailXmlFilePath->getExtension() !== 'xml') {
-			throw new PageNotFoundException();
-		}
-
-		$mailCenter = new MailCenter($mailXmlFilePath);
+	public function doArchive($fileName, $currentPageNum = null): void {
+		$mailXmlFilePath = $this->getXmlFilePath($fileName);
+		$mailCenter = new MailCenter($this->varStore, $mailXmlFilePath);
 		if (null !== $currentPageNum) {
 			$mailCenter->setCurrentPageNum($currentPageNum);
 		}
@@ -68,16 +64,9 @@ class MailCenterController extends ControllerAdapter {
 		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));
 	}
 
-	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName, N2nContext $n2nContext) {
-		try {
-			$mailXmlFilePath = MailCenter::requestMailLogFile($fileName);
-		} catch (InvalidPathException $e) {
-			throw new PageNotFoundException();
-		}
-		if ($mailXmlFilePath->getExtension() !== 'xml') {
-			throw new PageNotFoundException();
-		}
-		$mailCenter = new MailCenter($mailXmlFilePath);
+	public function doAttachment($fileName, $mailIndex, $attachmentIndex, $attachmentFileName, N2nContext $n2nContext): void {
+		$mailXmlFilePath = $this->getXmlFilePath($fileName);
+		$mailCenter = new MailCenter($this->varStore, $mailXmlFilePath);
 		if (null === ($attachment = $mailCenter->getAttachment($mailIndex, $attachmentIndex))) {
 			throw new PageNotFoundException();
 		}
@@ -89,6 +78,18 @@ class MailCenterController extends ControllerAdapter {
 		}
 
 		$this->sendFile($attachment);
+	}
+
+	private function getXmlFilePath(string $fileName): FsPath {
+		try {
+			$mailXmlFilePath = MailCenter::requestMailLogFile($this->varStore, $fileName);
+		} catch (InvalidPathException $e) {
+			throw new PageNotFoundException('invalid path');
+		}
+		if ($mailXmlFilePath->getExtension() !== 'xml') {
+			throw new PageNotFoundException('no xml file');
+		}
+		return $mailXmlFilePath;
 	}
 
 }

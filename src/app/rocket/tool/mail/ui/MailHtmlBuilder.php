@@ -8,17 +8,17 @@ use n2n\web\ui\Raw;
 
 class MailHtmlBuilder {
 	
-	private $view;
+	private HtmlView $view;
 	
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
 	}
 	
-	public function getMessage(MailItem $mailItem) {
+	public function getMessage(MailItem $mailItem): Raw {
 		return new Raw(preg_replace("/((http:\/\/)|(www\.)|(http:\/\/www.))(([^\s<]{4,68})[^\s<]*)/i",'<a href="http://$3$5" target="_blank">$3$5</a>', $mailItem->getMessage()));
 	}
 	
-	public function message(MailItem $mailItem) {
+	public function message(MailItem $mailItem): void {
 		$this->view->out($this->getMessage($mailItem));
 	}
 }

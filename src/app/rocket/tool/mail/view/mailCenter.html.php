@@ -26,6 +26,11 @@
 	use n2n\log4php\appender\nn6\AdminMailCenter;
 	use rocket\tool\mail\controller\MailCenterController;
 	use rocket\tool\mail\ui\MailHtmlBuilder;
+	use n2n\impl\web\ui\view\html\HtmlView;
+
+	$view = HtmlView::view($this);
+	$html = HtmlView::html($view);
+	$request = HtmlView::request($view);
 
 	$mailCenter = $view->getParam('mailCenter');
 	
@@ -42,7 +47,9 @@
 	
 	$mailHtml = new MailHtmlBuilder($view);
 	
-	$fileNames = MailCenter::getMailFileNames();
+	$fileNames = $mailCenter->getMailFileNames();
+
+	//@todo: replace getCurrentControllerContextPath
 ?>
 <div id="rocket-tools-mail-center" class="rocket-content">
 	<h3><?php $html->text('tool_mail_center_title') ?></h3>
@@ -64,9 +71,9 @@
 										</option>
 									<?php else : ?>
 										<?php if (null == ($date = MailArchiveBatchController::fileNameToDate($fileName))) continue ?>
-										<option value="<?php $html->out($request->getCurrentControllerContextPath(array(MailCenterController::ACTION_ARCHIVE, $fileName))) ?>" 
+										<option value="<?php $html->out($request->getCurrentControllerContextPath([MailCenterController::ACTION_ARCHIVE, $fileName])) ?>"
 												<?php $view->out(($fileName == $currentFileName) ? 'selected' : null) ?>>
-												<?php $html->text('tool_mail_center_archive_file_label', array('month' => $date->format('m'), 'year' => $date->format('Y'))) ?>
+												<?php $html->text('tool_mail_center_archive_file_label', ['month' => $date->format('m'), 'year' => $date->format('Y')]) ?>
 												<?php $view->out(MailArchiveBatchController::fileNameToIndex($fileName)) ?>
 										</option>
 									<?php endif ?>

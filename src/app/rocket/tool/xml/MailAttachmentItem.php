@@ -22,22 +22,22 @@
 namespace rocket\tool\xml;
 
 class MailAttachmentItem {
-	private $path = '';
-	private $name = '';
+	private string $path = '';
+	private string $name = '';
 	
-	public function getPath() {
+	public function getPath(): string {
 		return $this->path;
 	}
 
-	public function setPath($path) {
+	public function setPath(string $path): void {
 		$this->path .= $path;
 	}
 
-	public function getName() {
+	public function getName(): string {
 		return $this->name;
 	}
 
-	public function setName($name) {
+	public function setName(string $name): void {
 		$this->name .= $name;
 	}
 }

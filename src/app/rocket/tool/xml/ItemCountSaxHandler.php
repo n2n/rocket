@@ -25,7 +25,7 @@ class ItemCountSaxHandler implements SaxHandler {
 	private $level = 0;
 	private $number = 0;
 
-	public function startElement($tagName, array $attributes) {
+	public function startElement($tagName, array $attributes): void {
 		$this->level++;
 		if ($this->level == 2 && $tagName == 'item') {
 			$this->number++;
@@ -34,11 +34,11 @@ class ItemCountSaxHandler implements SaxHandler {
 
 	public function cdata($cdata) { }
 
-	public function endElement($tag) {
+	public function endElement($tagName): void {
 		$this->level--;
 	}
 	
-	public function getNumber() {
+	public function getNumber(): int {
 		return $this->number;
 	}
 }
