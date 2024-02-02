@@ -31,7 +31,7 @@ use n2n\util\io\InvalidPathException;
 use n2n\context\attribute\Inject;
 
 class MailArchiveBatchController implements Lookupable {
-	const FILE_NAME_PREFIX = 'mails';
+	const FILE_NAME_PREFIX = 'mail';
 	const FILE_NAME_PARTS_SEPARATOR = '-';
 	const FILE_EXTENSION = 'xml';
 
