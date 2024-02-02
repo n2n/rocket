@@ -48,7 +48,11 @@ class MailCenterController extends ControllerAdapter {
 
 		$mailCenter = new MailCenter($this->varStore, $mailXmlFilePath);
 		if (null !== $currentPageNum) {
-			$mailCenter->setCurrentPageNum($currentPageNum);
+			try {
+				$mailCenter->setCurrentPageNum($currentPageNum);
+			} catch (\InvalidArgumentException $ex) {
+				throw new PageNotFoundException($ex->getMessage());
+			}
 		}
 		$this->forward('..\view\mailCenter.html', ['mailCenter' => $mailCenter,
 				'currentFileName' => self::MAIL_XML]);
@@ -58,7 +62,11 @@ class MailCenterController extends ControllerAdapter {
 		$mailXmlFilePath = $this->getXmlFilePath($fileName);
 		$mailCenter = new MailCenter($this->varStore, $mailXmlFilePath);
 		if (null !== $currentPageNum) {
-			$mailCenter->setCurrentPageNum($currentPageNum);
+			try {
+				$mailCenter->setCurrentPageNum($currentPageNum);
+			} catch (\InvalidArgumentException $ex) {
+				throw new PageNotFoundException($ex->getMessage());
+			}
 		}
 
 		$this->forward('..\view\mailCenter.html', array('mailCenter' => $mailCenter, 'currentFileName' => $fileName));

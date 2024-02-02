@@ -25,10 +25,10 @@ use n2n\util\DateUtils;
 use n2n\log4php\appender\nn6\AdminMailCenter;
 
 class MailItemSaxHandler implements SaxHandler {
-	
+
 	private int $itemCounter = 0;
 	private array $items = [];
-	
+
 	private int $limit;
 	private int $num;
 	private ?MailItem $currentItem = null;
@@ -36,7 +36,7 @@ class MailItemSaxHandler implements SaxHandler {
 	private int $level = 0;
 	private ?string $currentTagName;
 
-	public function __construct(int $limit = null, int $num = null) {
+	public function __construct(int $limit, int $num) {
 		$this->limit = $limit;
 		$this->num = $num;
 	}
@@ -46,16 +46,15 @@ class MailItemSaxHandler implements SaxHandler {
 		$this->level++;
 		if ($this->level == 2 && $tagName == 'item') {
 			$this->itemCounter++;
-			
+
 			if (!isset($attributes['datetime'])) return;
 
-			if ($this->num <= sizeof($this->items)) {
-				return;
-			}
 			if ($this->itemCounter <= $this->limit) {
 				return;
 			}
-				
+			if ($this->itemCounter > $this->limit + $this->num) {
+				return;
+			}
 			$this->currentItem = new MailItem(DateUtils::createDateTime($attributes['datetime']));
 		} else if (isset($this->currentItem) && $this->level > 2) {
 			$this->currentTagName = $tagName;
@@ -65,7 +64,7 @@ class MailItemSaxHandler implements SaxHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see SaxHandler::cdata
@@ -104,7 +103,7 @@ class MailItemSaxHandler implements SaxHandler {
 				break;
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see SaxHandler::endElement
@@ -115,7 +114,7 @@ class MailItemSaxHandler implements SaxHandler {
 		$this->items[] = $this->currentItem;
 		$this->currentItem = null;
 	}
-	
+
 	/**
 	 * @return MailItem[]
 	 */

@@ -36,15 +36,15 @@ use n2n\util\io\fs\FsPath;
 class MailCenter {
 	const NUM_MAILS_PER_PAGE = 30;
 	const ATTACHMENT_INDEX_DEFAULT = 'default';
-	
+
 	private ?FsPath $mailXmlFilePath = null;
 	private VarStore $varStore;
-	
-	private $currentPageNum = 1;
-	
-	private $numItemsTotal = 0;
-	private ?array $currentItems;
-	
+
+	private int $currentPageNum = 1;
+
+	private int $numItemsTotal = 0;
+	private ?array $currentItems = null;
+
 	public function __construct(VarStore $varStore, FsPath $mailXmlFilePath = null) {
 		$this->varStore = $varStore;
 		$this->mailXmlFilePath = $mailXmlFilePath;
@@ -53,13 +53,13 @@ class MailCenter {
 	public function getCurrentPageNum(): int {
 		return $this->currentPageNum;
 	}
-	
+
 	public function setCurrentPageNum($currentPageNum): void {
-		ArgUtils::assertTrue(is_numeric($currentPageNum) && $currentPageNum > 0 
+		ArgUtils::assertTrue(is_numeric($currentPageNum) && $currentPageNum > 0
 				&& $currentPageNum <= $this->getNumPages());
 		$this->currentPageNum = $currentPageNum;
 	}
-	
+
 	public function getNumItemsTotal(): int {
 		if (0 === $this->numItemsTotal && $this->isFilePathAvailable()) {
 			$parser = new SaxParser();
@@ -69,36 +69,34 @@ class MailCenter {
 		}
 		return $this->numItemsTotal;
 	}
-	
+
 	/**
 	 * @return \rocket\tool\xml\MailItem[]
 	 */
 	public function getCurrentItems(): ?array {
 		if (null === $this->currentItems && $this->isFilePathAvailable()) {
-			
 			$limit = ($this->currentPageNum - 1) * self::NUM_MAILS_PER_PAGE;
-			foreach ($this->getAllItems() as $key => $item) {
-				if ($limit > $key) continue;
-				if ($key >= ($limit + self::NUM_MAILS_PER_PAGE)) break;  
-				$this->currentItems[$key] = $item; 
+			foreach ($this->getAllItems($limit) as $key => $item) {
+				if ($item == null) continue;
+				$this->currentItems[$key] = $item;
 			}
 		}
 		return $this->currentItems;
 	}
-	
+
 	public function getNumPages(): int {
 		if (!$this->isFilePathAvailable()) return 0;
 		return ceil(($this->getNumItemsTotal() / self::NUM_MAILS_PER_PAGE));
 	}
-	
+
 	public function getAttachment(int $itemIndex, int $attachmentIndex = null): ?CommonFile {
-		$items = $this->getAllItems();
+		$items = $this->getAllItems($itemIndex);
 		if (!isset($items[$itemIndex]))	return null;
 		$attachments = $items[$itemIndex]->getAttachments();
 		$fsPath = new FsPath($attachments[$attachmentIndex]->getPath());
 		return new CommonFile(new FsFileSource($fsPath), $fsPath->getFileName());
 	}
-	
+
 	public function getMailFileNames(): array {
 		$mailFileNames = array();
 		foreach((array) self::requestMailLogDir($this->varStore)->getChildren('*.xml') as $mailXml) {
@@ -117,14 +115,15 @@ class MailCenter {
 		return new FsPath($varStore->requestDirFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, true));
 	}
-	
-	private function getAllItems(): array {
+
+	private function getAllItems(int $limit): array {
+		$start = $this->getNumItemsTotal() - $limit - self::NUM_MAILS_PER_PAGE;
 		$parser = new SaxParser();
-		$mailItemSaxHandler = new MailItemSaxHandler();
+		$mailItemSaxHandler = new MailItemSaxHandler($start, self::NUM_MAILS_PER_PAGE);
 		$parser->parse($this->mailXmlFilePath, $mailItemSaxHandler);
 		return array_reverse($mailItemSaxHandler->getItems());
 	}
-	
+
 	private function isFilePathAvailable(): bool {
 		return (null !== $this->mailXmlFilePath && $this->mailXmlFilePath->isFile());
 	}
