@@ -100,9 +100,14 @@ class MailCenter {
 	public function getMailFileNames(): array {
 		$mailFileNames = array();
 		foreach((array) self::requestMailLogDir($this->varStore)->getChildren('*.xml') as $mailXml) {
-			$mailFileNames[MailArchiveBatchController::removeFileExtension($mailXml->getName())] = $mailXml->getName();
+			if ($mailXml->getName() == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) {
+				$key = 'z';
+			} else {
+				$key = MailArchiveBatchController::removeFileExtension($mailXml->getName());
+			}
+			$mailFileNames[$key] = $mailXml->getName();
 		}
-		ksort($mailFileNames);
+		krsort($mailFileNames);
 		return $mailFileNames;
 	}
 

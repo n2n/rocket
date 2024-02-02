@@ -1,54 +1,54 @@
 <?php
-	/*
-	 * Copyright (c) 2012-2016, Hofmänner New Media.
-	 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
-	 *
-	 * This file is part of the n2n module ROCKET.
-	 *
-	 * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
-	 * GNU Lesser General Public License as published by the Free Software Foundation, either
-	 * version 2.1 of the License, or (at your option) any later version.
-	 *
-	 * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
-	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-	 * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
-	 *
-	 * The following people participated in this project:
-	 *
-	 * Andreas von Burg...........:	Architect, Lead Developer, Concept
-	 * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
-	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
-	 */
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 
-	use rocket\tool\xml\MailItem;
-	use rocket\tool\mail\model\MailCenter;
-	use rocket\tool\mail\controller\MailArchiveBatchController;
-	use n2n\log4php\appender\nn6\AdminMailCenter;
-	use rocket\tool\mail\controller\MailCenterController;
-	use rocket\tool\mail\ui\MailHtmlBuilder;
-	use n2n\impl\web\ui\view\html\HtmlView;
-	use n2n\web\http\nav\Murl;
+use rocket\tool\xml\MailItem;
+use rocket\tool\mail\model\MailCenter;
+use rocket\tool\mail\controller\MailArchiveBatchController;
+use n2n\log4php\appender\nn6\AdminMailCenter;
+use rocket\tool\mail\controller\MailCenterController;
+use rocket\tool\mail\ui\MailHtmlBuilder;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\http\nav\Murl;
 
-	$view = HtmlView::view($this);
-	$html = HtmlView::html($view);
-	$request = HtmlView::request($view);
+$view = HtmlView::view($this);
+$html = HtmlView::html($view);
+$request = HtmlView::request($view);
 
-	$mailCenter = $view->getParam('mailCenter');
+$mailCenter = $view->getParam('mailCenter');
 
-	$view->assert($mailCenter instanceof MailCenter);
+$view->assert($mailCenter instanceof MailCenter);
 
-	$numPages = $mailCenter->getNumPages();
-	$items = $mailCenter->getCurrentItems();
-	$currentPageNum = $mailCenter->getCurrentPageNum();
-	$numItems = $mailCenter->getNumItemsTotal();
+$numPages = $mailCenter->getNumPages();
+$items = $mailCenter->getCurrentItems();
+$currentPageNum = $mailCenter->getCurrentPageNum();
+$numItems = $mailCenter->getNumItemsTotal();
 
-	$currentFileName = $view->getParam('currentFileName');
-	$view->useTemplate('~\core\view\template.html',
-			array('title' => $view->getL10nText('tool_mail_center_title')));
+$currentFileName = $view->getParam('currentFileName');
+$view->useTemplate('~\core\view\template.html',
+		array('title' => $view->getL10nText('tool_mail_center_title')));
 
-	$mailHtml = new MailHtmlBuilder($view);
+$mailHtml = new MailHtmlBuilder($view);
 
-	$fileNames = $mailCenter->getMailFileNames();
+$fileNames = $mailCenter->getMailFileNames();
 ?>
 <div id="rocket-tools-mail-center" class="rocket-content">
 	<h3><?php $html->text('tool_mail_center_title') ?></h3>
@@ -70,9 +70,11 @@
 										</option>
 									<?php else : ?>
 										<?php if (null == ($date = MailArchiveBatchController::fileNameToDate($fileName))) continue ?>
-										<option value="<?php $html->out($view->buildUrl(Murl::controller()->pathExt([MailCenterController::ACTION_ARCHIVE, $fileName]))); ?>"
+										<option value="<?php $html->out($view->buildUrl(Murl::controller()
+												->pathExt([MailCenterController::ACTION_ARCHIVE, $fileName]))); ?>"
 												<?php $view->out(($fileName == $currentFileName) ? 'selected' : null) ?>>
-											<?php $html->text('tool_mail_center_archive_file_label', ['month' => $date->format('m'), 'year' => $date->format('Y')]) ?>
+											<?php $html->text('tool_mail_center_archive_file_label',
+													['month' => $date->format('m'), 'year' => $date->format('Y')]) ?>
 											<?php $view->out(MailArchiveBatchController::fileNameToIndex($fileName)) ?>
 										</option>
 									<?php endif ?>
@@ -87,7 +89,8 @@
 						<dd>
 							<select class="rocket-mail-paging">
 								<?php for ($i = 1; $i <= $numPages; $i++) : ?>
-									<?php $params = ($currentFileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) ? array() : array(MailCenterController::ACTION_ARCHIVE, $currentFileName) ?>
+									<?php $params = ($currentFileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) ? [] :
+											[MailCenterController::ACTION_ARCHIVE, $currentFileName] ?>
 									<?php $params = ($i == 1) ? $params : array_merge($params, array($i)) ?>
 									<option value="<?php $html->out($html->meta()->getControllerUrl($params)) ?>"
 											<?php $view->out(($i == $currentPageNum) ? 'selected' : null) ?>>
