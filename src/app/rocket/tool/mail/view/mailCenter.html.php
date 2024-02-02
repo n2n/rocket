@@ -27,6 +27,7 @@
 	use rocket\tool\mail\controller\MailCenterController;
 	use rocket\tool\mail\ui\MailHtmlBuilder;
 	use n2n\impl\web\ui\view\html\HtmlView;
+	use n2n\web\http\nav\Murl;
 
 	$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
@@ -48,8 +49,6 @@
 	$mailHtml = new MailHtmlBuilder($view);
 
 	$fileNames = $mailCenter->getMailFileNames();
-
-	//@todo: replace getCurrentControllerContextPath
 ?>
 <div id="rocket-tools-mail-center" class="rocket-content">
 	<h3><?php $html->text('tool_mail_center_title') ?></h3>
@@ -65,13 +64,13 @@
 							<select class="rocket-mail-paging">
 								<?php foreach ($fileNames as $fileName) : ?>
 									<?php if ($fileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) : ?>
-										<option value="<?php $html->out($request->getCurrentControllerContextPath()) ?>"
+										<option value="<?php $html->out($view->buildUrl(Murl::controller())); ?>"
 												<?php $view->out(($fileName == $currentFileName) ? 'selected' : null) ?>>
 											<?php $html->text('tool_mail_center_current_file_label') ?>
 										</option>
 									<?php else : ?>
 										<?php if (null == ($date = MailArchiveBatchController::fileNameToDate($fileName))) continue ?>
-										<option value="<?php $html->out($request->getCurrentControllerContextPath([MailCenterController::ACTION_ARCHIVE, $fileName])) ?>"
+										<option value="<?php $html->out($view->buildUrl(Murl::controller()->pathExt([MailCenterController::ACTION_ARCHIVE, $fileName]))); ?>"
 												<?php $view->out(($fileName == $currentFileName) ? 'selected' : null) ?>>
 											<?php $html->text('tool_mail_center_archive_file_label', ['month' => $date->format('m'), 'year' => $date->format('Y')]) ?>
 											<?php $view->out(MailArchiveBatchController::fileNameToIndex($fileName)) ?>
@@ -103,7 +102,7 @@
 		</div>
 	<?php endif ?>
 	<div>
-		<?php foreach ((array) $items as $itemIndex => $mailItem) : $mailItem instanceof MailItem ?>
+		<?php foreach ((array) $items as $itemIndex => $mailItem) : $view->assert($mailItem instanceof MailItem) ?>
 			<article class="rocket-mail">
 				<header class="rocket-mail-header">
 					<span class="rocket-mail-senddate float-right">

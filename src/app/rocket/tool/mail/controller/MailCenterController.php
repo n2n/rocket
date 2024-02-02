@@ -35,7 +35,7 @@ use n2n\util\io\fs\FsPath;
 class MailCenterController extends ControllerAdapter {
 	const ACTION_ARCHIVE = 'archive';
 	const ACTION_ATTACHMENT = 'attachment';
-	const MAIL_XML = 'mail.xml';
+	const MAIL_XML = 'mails.xml';
 
 	#[Inject]
 	private VarStore $varStore;

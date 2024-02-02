@@ -31,21 +31,21 @@ use n2n\util\io\InvalidPathException;
 use n2n\context\attribute\Inject;
 
 class MailArchiveBatchController implements Lookupable {
-	const FILE_NAME_PREFIX = 'mail';
+	const FILE_NAME_PREFIX = 'mails';
 	const FILE_NAME_PARTS_SEPARATOR = '-';
 	const FILE_EXTENSION = 'xml';
 
 	#[Inject]
 	private VarStore $varStore;
-	
+
 	public function index(): void {
 		$this->createMailArchive();
 	}
-	
+
 	public function _onNewMonth(): void {
 		$this->createMailArchive();
 	}
-	
+
 	public static function dateToFileName(\DateTime $date, int $index = null): string {
 		$nameParts = [self::FILE_NAME_PREFIX, $date->format('Y'), $date->format('m')];
 		if (null !== $index)  {
@@ -61,19 +61,25 @@ class MailArchiveBatchController implements Lookupable {
 		}
 		return DateUtils::createDateTimeFromFormat('Ym',  $fileNameParts[1] . $fileNameParts[2]);
 	}
-	
+
 	public static function fileNameToIndex(string $fileName): ?string {
 		$fileNameParts = explode(self::FILE_NAME_PARTS_SEPARATOR, self::removeFileExtension($fileName));
 		if (count($fileNameParts) < 4) return null;
 		return $fileNameParts[3];
 	}
-	
+
 	public static function removeFileExtension(string $fileName): string {
 		return str_replace('.' . self::FILE_EXTENSION, '', $fileName);
 	}
 
 	// @todo: replace N2N::getAppConfig()
 	private function createMailArchive(): void {
+		try {
+			$currentMailPath = MailCenter::requestMailLogFile($this->varStore, AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
+		} catch (InvalidPathException $e){
+			return;
+		}
+
 		$date = new \DateTime();
 		$date->setDate($date->format('Y'), $date->format('m'), $date->format('d') - 1);
 		$fileName = self::dateToFileName($date);
@@ -85,10 +91,10 @@ class MailArchiveBatchController implements Lookupable {
 				break;
 			}
 		}
+
 		$archiveFilePath = $this->varStore->requestFileFsPath(VarStore::CATEGORY_LOG, N2N::NS,
 				AdminMailCenter::LOG_FOLDER, $fileName, true, true);
-		$currentMailPath = MailCenter::requestMailLogFile($this->varStore, AdminMailCenter::DEFAULT_MAIL_FILE_NAME);
-		$currentMailPath->copyFile($archiveFilePath, N2N::getAppConfig()->io()->getPrivateFilePermission());
+		$currentMailPath->copyFile($archiveFilePath, N2N::getAppConfig()->io()->getPrivateFilePermission(), true);
 		$currentMailPath->delete();
 	}
 }
