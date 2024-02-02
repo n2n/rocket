@@ -20,7 +20,7 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\tool\xml\MailItem;	
+	use rocket\tool\xml\MailItem;
 	use rocket\tool\mail\model\MailCenter;
 	use rocket\tool\mail\controller\MailArchiveBatchController;
 	use n2n\log4php\appender\nn6\AdminMailCenter;
@@ -33,20 +33,20 @@
 	$request = HtmlView::request($view);
 
 	$mailCenter = $view->getParam('mailCenter');
-	
+
 	$view->assert($mailCenter instanceof MailCenter);
-	
+
 	$numPages = $mailCenter->getNumPages();
 	$items = $mailCenter->getCurrentItems();
 	$currentPageNum = $mailCenter->getCurrentPageNum();
 	$numItems = $mailCenter->getNumItemsTotal();
-	
+
 	$currentFileName = $view->getParam('currentFileName');
-	$view->useTemplate('~\core\view\template.html', 
+	$view->useTemplate('~\core\view\template.html',
 			array('title' => $view->getL10nText('tool_mail_center_title')));
-	
+
 	$mailHtml = new MailHtmlBuilder($view);
-	
+
 	$fileNames = $mailCenter->getMailFileNames();
 
 	//@todo: replace getCurrentControllerContextPath
@@ -65,16 +65,16 @@
 							<select class="rocket-mail-paging">
 								<?php foreach ($fileNames as $fileName) : ?>
 									<?php if ($fileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) : ?>
-										<option value="<?php $html->out($request->getCurrentControllerContextPath()) ?>" 
+										<option value="<?php $html->out($request->getCurrentControllerContextPath()) ?>"
 												<?php $view->out(($fileName == $currentFileName) ? 'selected' : null) ?>>
-												<?php $html->text('tool_mail_center_current_file_label') ?>
+											<?php $html->text('tool_mail_center_current_file_label') ?>
 										</option>
 									<?php else : ?>
 										<?php if (null == ($date = MailArchiveBatchController::fileNameToDate($fileName))) continue ?>
 										<option value="<?php $html->out($request->getCurrentControllerContextPath([MailCenterController::ACTION_ARCHIVE, $fileName])) ?>"
 												<?php $view->out(($fileName == $currentFileName) ? 'selected' : null) ?>>
-												<?php $html->text('tool_mail_center_archive_file_label', ['month' => $date->format('m'), 'year' => $date->format('Y')]) ?>
-												<?php $view->out(MailArchiveBatchController::fileNameToIndex($fileName)) ?>
+											<?php $html->text('tool_mail_center_archive_file_label', ['month' => $date->format('m'), 'year' => $date->format('Y')]) ?>
+											<?php $view->out(MailArchiveBatchController::fileNameToIndex($fileName)) ?>
 										</option>
 									<?php endif ?>
 								<?php endforeach ?>
@@ -90,9 +90,9 @@
 								<?php for ($i = 1; $i <= $numPages; $i++) : ?>
 									<?php $params = ($currentFileName == AdminMailCenter::DEFAULT_MAIL_FILE_NAME) ? array() : array(MailCenterController::ACTION_ARCHIVE, $currentFileName) ?>
 									<?php $params = ($i == 1) ? $params : array_merge($params, array($i)) ?>
-									<option value="<?php $html->out($html->meta()->getControllerUrl($params)) ?>" 
+									<option value="<?php $html->out($html->meta()->getControllerUrl($params)) ?>"
 											<?php $view->out(($i == $currentPageNum) ? 'selected' : null) ?>>
-											<?php $html->out($i) ?>
+										<?php $html->out($i) ?>
 									</option>
 								<?php endfor ?>
 							</select>
@@ -129,14 +129,15 @@
 							<ul class="list-unstyled list-inline">
 								<?php foreach($mailItem->getAttachments() as $attachmentIndex => $attachment) : ?>
 									<li>
-										<?php $html->linkToController(array(MailCenterController::ACTION_ATTACHMENT, $currentFileName, 
-												$itemIndex, $attachmentIndex, $attachment->getName()), $attachment->getName()) ?>
+										<?php $html->linkToController([MailCenterController::ACTION_ATTACHMENT, $currentFileName,
+												$itemIndex, $attachmentIndex, $attachment->getName()], $attachment->getName(),
+												['target' => '_blank']) ?>
 									</li>
 								<?php endforeach ?>
 							</ul>
 						</dd>
 					<?php endif ?>
-					
+
 					<dt class="rocket-mail-message-label col-sm-12 sr-only"><?php $html->text('tool_mail_center_mail_message_label') ?></dt>
 					<dd class="rocket-mail-message col-sm-12">
 						<pre><?php $mailHtml->message($mailItem) ?></pre>
