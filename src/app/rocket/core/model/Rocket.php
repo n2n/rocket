@@ -36,7 +36,7 @@ use rocket\op\spec\setup\SpecConfigLoader;
 use rocket\op\spec\SpecFactory;
 
 class Rocket implements RequestScoped {
-	const VERSION = '3.1.0';
+	const VERSION = '4.0.0';
 	const NS = 'rocket';
 	
 	private $dbhPool;
