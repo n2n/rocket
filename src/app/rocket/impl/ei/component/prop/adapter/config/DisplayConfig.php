@@ -109,7 +109,7 @@ class DisplayConfig {
 	
 	public function setDisplayItemType(string $displayItemType) {
 		ArgUtils::valEnum($displayItemType, DisplayItem::getTypes());
-		$this->dispayItemType = $displayItemType;
+		$this->displayItemType = $displayItemType;
 	}
 	
 	public function getDisplayItemType() {
