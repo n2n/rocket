@@ -79,7 +79,7 @@ class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 		}
 		
 		$targetEiuEngine = $this->getRelationModel()->getTargetEiuEngine();
-		$targetDefPropPaths = $targetEiuEngine->getIdNameDefinition()->getAllIdNameProps();
+		$targetDefPropPaths = $targetEiuEngine->getIdNameDefinition()->getUsedDefPropPaths();
 		
 		if (empty($targetDefPropPaths)) {
 			return null;
