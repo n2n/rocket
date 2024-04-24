@@ -46,7 +46,7 @@ use rocket\impl\ei\component\prop\adapter\gui\GuiFieldProxy;
 
 abstract class PropertyDisplayableEiPropAdapter extends PropertyEiPropAdapter implements StatelessGuiFieldDisplayable, 
 		FieldEiProp, GuiEiProp, GuiProp, Readable {
-	private $displayConfig;
+	protected $displayConfig;
 
 	/**
 	 * @return DisplayConfig

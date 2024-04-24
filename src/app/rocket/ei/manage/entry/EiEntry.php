@@ -39,6 +39,8 @@ class EiEntry {
 // 	private $accessible = true;
 	private $listeners = array();
 	private $constraintSet;
+
+	private $listenerBindings = [];
 	
 	public function __construct(EiObject $eiObject, EiMask $eiMask) {
 		$this->eiObject = $eiObject;

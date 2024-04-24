@@ -48,6 +48,7 @@ class Rocket implements RequestScoped {
 	private $layoutManager;
 	private $eiComponentStore;
 	private $controllerContext;
+	private $draftManagers = [];
 	
 	private function _init(PdoPool $dbhPool, N2nContext $n2nContext) {
 		$this->dbhPool = $dbhPool;

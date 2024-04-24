@@ -37,7 +37,8 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	 * @var FilterGroupForm
 	 */
 	private $filterGroupForm;
-	
+	private $contextPropertyPath;
+
 	function __construct(FilterDefinition $filterDefinition, FilterJhtmlHook $filterJhtmlHook, 
 			?FilterSettingGroup $rootGroup, EiuAnalyst $eiuAnalyst) {
 		$this->filterDefinition = $filterDefinition;

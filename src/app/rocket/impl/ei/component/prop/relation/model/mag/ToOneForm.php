@@ -55,6 +55,7 @@ class ToOneForm implements Dispatchable {
 	private $selectedEntryPid;
 	private $currentMappingForm;
 	private $newMappingForm;
+	private $reduced;
 
 	public function __construct(string $label, bool $mandatory, EiuFrame $utils) {
 		$this->label = $label;

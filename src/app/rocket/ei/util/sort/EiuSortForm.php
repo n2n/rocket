@@ -32,6 +32,7 @@ class EiuSortForm implements Dispatchable, UiComponent {
 	 * @var SortForm
 	 */
 	private $sortForm;
+	private $contextPropertyPath;
 	
 	function __construct(SortDefinition $sortDefinition, ?SortSettingGroup $sortSetting, EiuAnalyst $eiuAnalyst) {
 		$this->sortDefinition = $sortDefinition;

@@ -38,6 +38,7 @@ class ToOneEditable implements GuiFieldEditable {
 	private $newMappingFormUrl;
 	private $draftMode = false;
 	private $reduced = true;
+	private $toOneMag;
 	
 	public function __construct(string $label, bool $mandatory, ToOneEiField $relationEiField,
 			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame) {
