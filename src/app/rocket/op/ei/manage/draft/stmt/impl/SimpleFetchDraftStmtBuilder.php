@@ -21,18 +21,18 @@
  */
 namespace rocket\op\ei\manage\draft\stmt\impl;
 
-use n2n\persistence\meta\data\QueryTable;
+use n2n\spec\dbo\meta\data\impl\QueryTable;
 use n2n\persistence\Pdo;
 use rocket\op\ei\EiPropPath;
-use n2n\persistence\meta\data\QueryColumn;
+use n2n\spec\dbo\meta\data\impl\QueryColumn;
 use rocket\op\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\op\ei\manage\draft\stmt\DraftMetaInfo;
 use rocket\op\ei\manage\draft\DraftValueSelection;
 use rocket\op\ei\manage\draft\stmt\DraftValuesResult;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use n2n\persistence\PdoStatement;
-use n2n\persistence\meta\data\QueryItem;
-use n2n\persistence\meta\data\SelectStatementBuilder;
+use n2n\spec\dbo\meta\data\QueryItem;
+use n2n\spec\dbo\meta\data\SelectStatementBuilder;
 use rocket\op\ei\manage\draft\Draft;
 
 class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements FetchDraftStmtBuilder {
@@ -84,7 +84,7 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 	}
 
 	/**
-	 * @return \n2n\persistence\meta\data\SelectStatementBuilder
+	 * @return \n2n\spec\dbo\meta\data\SelectStatementBuilder
 	 */
 	public function getSelectStatementBuilder(): SelectStatementBuilder {
 		return $this->selectBuilder;

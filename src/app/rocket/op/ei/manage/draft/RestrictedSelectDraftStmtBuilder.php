@@ -22,10 +22,10 @@
 namespace rocket\op\ei\manage\draft;
 
 use n2n\persistence\meta\data\QueryComparator;
-use n2n\persistence\meta\data\QueryPlaceMarker;
+use n2n\spec\dbo\meta\data\impl\QueryPlaceMarker;
 use n2n\persistence\meta\data\OrderDirection;
 use rocket\op\ei\manage\draft\stmt\SelectDraftStmtBuilder;
-use n2n\persistence\meta\data\QueryConstant;
+use n2n\spec\dbo\meta\data\impl\QueryConstant;
 
 class RestrictedSelectDraftStmtBuilder {
 	private $selectDraftStmtBuilder;
