@@ -30,7 +30,7 @@ use n2n\util\type\attrs\LenientAttributeReader;
 use rocket\impl\ei\component\prop\relation\model\RelationVetoableActionListener;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\spec\EiuEngine;
-use n2n\persistence\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\Column;
 use rocket\op\ei\util\Eiu;
 use n2n\util\col\ArrayUtils;
 use n2n\util\ex\IllegalStateException;
