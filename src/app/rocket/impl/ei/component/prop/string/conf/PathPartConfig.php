@@ -30,7 +30,7 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\util\type\attrs\InvalidAttributeException;
 use n2n\util\StringUtils;
 use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
-use n2n\persistence\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\Column;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\op\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\op\ei\manage\generic\UnknownGenericEiPropertyException;

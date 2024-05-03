@@ -23,8 +23,8 @@ namespace rocket\op\ei\manage\draft\stmt\impl;
 
 use n2n\persistence\Pdo;
 use rocket\op\ei\manage\draft\stmt\PersistDraftStmtBuilder;
-use n2n\persistence\meta\data\QueryColumn;
-use n2n\persistence\meta\data\QueryPlaceMarker;
+use n2n\spec\dbo\meta\data\impl\QueryColumn;
+use n2n\spec\dbo\meta\data\impl\QueryPlaceMarker;
 use rocket\op\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\meta\data\QueryComparator;
 use rocket\op\ei\EiPropPath;

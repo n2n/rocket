@@ -28,7 +28,7 @@ use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\util\type\TypeConstraint;
 use n2n\util\type\attrs\LenientAttributeReader;
-use n2n\persistence\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
 use rocket\op\ei\util\Eiu;

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use n2n\persistence\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\Column;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\op\ei\manage\gui\ViewMode;

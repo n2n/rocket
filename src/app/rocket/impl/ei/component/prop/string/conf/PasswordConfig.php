@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\string\conf;
 
-use n2n\persistence\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\op\ei\util\Eiu;

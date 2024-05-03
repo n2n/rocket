@@ -21,18 +21,18 @@
  */
 namespace rocket\op\ei\manage\draft\stmt\impl;
 
-use n2n\persistence\meta\data\QueryTable;
+use n2n\spec\dbo\meta\data\impl\QueryTable;
 use n2n\persistence\Pdo;
-use n2n\persistence\meta\data\QueryColumn;
+use n2n\spec\dbo\meta\data\impl\QueryColumn;
 use rocket\op\ei\manage\draft\stmt\DraftMetaInfo;
 use n2n\persistence\orm\property\BasicEntityProperty;
 use n2n\persistence\PdoStatement;
-use n2n\persistence\meta\data\QueryFunction;
-use n2n\persistence\meta\data\QueryConstant;
+use n2n\spec\dbo\meta\data\impl\QueryFunction;
+use n2n\spec\dbo\meta\data\impl\QueryConstant;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\draft\stmt\CountDraftStmtBuilder;
-use n2n\persistence\meta\data\QueryItem;
-use n2n\persistence\meta\data\SelectStatementBuilder;
+use n2n\spec\dbo\meta\data\QueryItem;
+use n2n\spec\dbo\meta\data\SelectStatementBuilder;
 
 class SimpleCountDraftStmtBuilder extends DraftStmtBuilderAdapter implements CountDraftStmtBuilder {
 	const DRAF_COLUMN_PREFIX = 'd';
@@ -60,7 +60,7 @@ class SimpleCountDraftStmtBuilder extends DraftStmtBuilderAdapter implements Cou
 	}
 	
 	/**
-	 * @return \n2n\persistence\meta\data\SelectStatementBuilder
+	 * @return \n2n\spec\dbo\meta\data\SelectStatementBuilder
 	 */
 	public function getSelectStatementBuilder(): SelectStatementBuilder {
 		return $this->selectBuilder;

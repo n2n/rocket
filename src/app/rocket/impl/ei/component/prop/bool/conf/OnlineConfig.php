@@ -25,7 +25,7 @@
 //use rocket\impl\ei\component\prop\bool\command\OnlineNatureEiCommand;
 //use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 //use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
-//use n2n\persistence\meta\structure\Column;
+//use n2n\spec\dbo\meta\structure\Column;
 //use rocket\op\ei\util\Eiu;
 //use n2n\util\type\attrs\DataSet;
 //use n2n\web\dispatch\mag\MagCollection;

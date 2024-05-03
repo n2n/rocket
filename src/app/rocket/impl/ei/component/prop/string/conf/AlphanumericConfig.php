@@ -22,8 +22,8 @@
 namespace rocket\impl\ei\component\prop\string\conf;
 
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\persistence\meta\structure\Column;
-use n2n\persistence\meta\structure\StringColumn;
+use n2n\spec\dbo\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\StringColumn;
 use n2n\util\type\attrs\LenientAttributeReader;
 use n2n\util\type\attrs\DataSet;
 use rocket\op\ei\util\Eiu;

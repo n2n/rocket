@@ -27,8 +27,8 @@
 // use rocket\op\ei\component\EiSetup;
 // use rocket\impl\ei\component\prop\string\AlphanumericEiProp;
 // use n2n\web\dispatch\mag\MagDispatchable;
-// use n2n\persistence\meta\structure\Column;
-// use n2n\persistence\meta\structure\StringColumn;
+// use n2n\spec\dbo\meta\structure\Column;
+// use n2n\spec\dbo\meta\structure\StringColumn;
 // use n2n\util\type\attrs\LenientAttributeReader;
 // use rocket\impl\ei\component\prop\meta\config\AddonConfig;
 // 
