@@ -72,6 +72,7 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use n2n\util\magic\MagicContext;
 use n2n\util\magic\MagicLookupFailedException;
+use n2n\spec\valobj\scalar\StringValueObject;
 
 class EiPropNatureProvider {
 
@@ -396,10 +397,12 @@ class EiPropNatureProvider {
 				if (EnumUtils::isEnumType($typeName)) {
 					$nature = new EnumEiPropNature($eiPresetProp->getPropertyAccessProxy(),
 							IllegalStateException::try(fn () => new \ReflectionEnum($typeName)));
-
+				} else if (is_subclass_of($typeName, StringValueObject::class)) {
+					$nature = new StringEiPropNature($eiPresetProp->getPropertyAccessProxy(), $typeName);
 				} else {
 					return false;
 				}
+
 		}
 
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());

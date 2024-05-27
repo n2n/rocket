@@ -76,7 +76,7 @@ class EifField {
 	function setReadMapper(?\Closure $closure): static {
 		if ($closure === null) {
 			$this->readMapperMmi = null;
-			return this;
+			return $this;
 		}
 		
 		$this->readMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());

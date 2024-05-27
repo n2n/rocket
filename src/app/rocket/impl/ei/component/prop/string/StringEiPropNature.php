@@ -24,25 +24,44 @@ namespace rocket\impl\ei\component\prop\string;
 use rocket\op\ei\util\Eiu;
 use rocket\si\content\impl\SiFields;
 use rocket\op\ei\util\factory\EifGuiField;
+use n2n\reflection\property\AccessProxy;
+use SebastianBergmann\CodeUnit\Mapper;
+use n2n\bind\mapper\impl\Mappers;
+use n2n\util\type\ArgUtils;
+use n2n\spec\valobj\scalar\StringValueObject;
+use n2n\bind\build\impl\Bind;
+use n2n\bind\err\BindMismatchException;
+use n2n\bind\err\BindTargetException;
+use n2n\bind\err\UnresolvableBindableException;
+use n2n\bind\err\BindException;
+use rocket\op\ei\component\InvalidEiConfigurationException;
+use n2n\bind\attribute\impl\Marshal;
+use rocket\op\ei\manage\generic\ScalarEiProperty;
+use rocket\op\ei\manage\generic\CommonScalarEiProperty;
 
 class StringEiPropNature extends AlphanumericEiPropNature {
 
 	private bool $multiline = false;
 
+	function __construct(?AccessProxy $propertyAccessProxy, private ?\ReflectionClass $stringValueObjectClass = null) {
+		parent::__construct($propertyAccessProxy);
+
+		ArgUtils::assertTrue($this->stringValueObjectClass->implementsInterface(StringValueObject::class));
+	}
+
 	/**
 	 * @return bool
 	 */
-	function isMultiline() {
+	function isMultiline(): bool {
 		return $this->multiline;
 	}
 
 	/**
 	 * @param bool $multiline
 	 */
-	function setMultiline(bool $multiline) {
+	function setMultiline(bool $multiline): void {
 		$this->multiline = $multiline;
 	}
-
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return $eiu->factory()->newGuiField(
@@ -51,8 +70,46 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 						->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 
+	private function marshalValue(null|string|StringValueObject $value, Eiu $eiu): ?string {
+		if ($this->stringValueObjectClass === null) {
+			return $value;
+		}
+
+		try {
+			return Bind::values($value)->toValue($value)->map(Mappers::marshal())
+					->exec($eiu->getN2nContext())->get();
+		} catch (BindException $e) {
+			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
+					. ' was not able to marshal value for StringInSiField.', previous: $e);
+		}
+	}
+
+	private function unmarshalValue(?string $value, Eiu $eiu): null|string|StringValueObject {
+		if ($this->stringValueObjectClass === null) {
+			return $value;
+		}
+
+		try {
+			Bind::values($value)->toValue($value)->exec($eiu->getN2nContext());
+			return $value;
+		} catch (BindException $e) {
+			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
+					. ' was not able to marshal value for StringInSiField.', previous: $e);
+		}
+	}
+
+	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
+		if ($this->stringValueObjectClass === null) {
+			return parent::buildScalarEiProperty($eiu);
+		}
+
+		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr(),
+				fn ($value) => $this->marshalValue($value, $eiu),
+				fn (?string $scalarValue) => $this->unmarshalValue($scalarValue, $eiu));
+	}
+
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$siField = SiFields::stringIn($eiu->field()->getValue())
+		$siField = SiFields::stringIn($this->marshalValue($eiu->field()->getValue(), $eiu))
 				->setMandatory($this->isMandatory())
 				->setMinlength($this->getMinlength())
 				->setMaxlength($this->getMaxlength())
@@ -62,8 +119,8 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 		
 		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($siField, $eiu) { 
-					$eiu->field()->setValue($siField->getValue()); 
+				->setSaver(function () use ($siField, $eiu) {
+					$eiu->field()->setValue($this->unmarshalValue($siField->getValue(), $eiu));
 				});
 	}
 }
