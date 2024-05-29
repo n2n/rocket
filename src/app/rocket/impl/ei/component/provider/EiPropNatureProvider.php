@@ -241,7 +241,6 @@ class EiPropNatureProvider {
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}
-
 	}
 
 	private function detectSubTypeName(PropertyAccessProxy $propertyAccessProxy, string $superTypeName): ?string {
