@@ -38,13 +38,17 @@ use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\bind\attribute\impl\Marshal;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\manage\generic\CommonScalarEiProperty;
+use rocket\op\ei\manage\idname\IdNameProp;
+use n2n\util\StringUtils;
+use n2n\util\type\TypeConstraints;
 
 class StringEiPropNature extends AlphanumericEiPropNature {
 
 	private bool $multiline = false;
 
 	function __construct(?AccessProxy $propertyAccessProxy, private ?string $stringValueObjectTypeName = null) {
-		parent::__construct($propertyAccessProxy);
+		parent::__construct($propertyAccessProxy->createRestricted(
+				TypeConstraints::namedType($this->stringValueObjectTypeName ?? 'string', true)));
 
 		ArgUtils::assertTrue($this->stringValueObjectTypeName === null
 				|| is_subclass_of($this->stringValueObjectTypeName, StringValueObject::class));
@@ -99,7 +103,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		}
 
 		try {
-			Bind::values($value)->toValue($value)->map(Mappers::unmarshal($this->stringValueObjectTypeName))
+			$bindResult = Bind::values($value)->toValue($value)->map(Mappers::unmarshal($this->stringValueObjectTypeName))
 					->exec($eiu->getN2nContext());
 			return $value;
 		} catch (BindException $e) {
@@ -116,6 +120,16 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr(),
 				fn ($value) => $this->marshalValue($value, $eiu),
 				fn (?string $scalarValue) => $this->unmarshalValue($scalarValue, $eiu));
+	}
+
+	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
+		if ($this->stringValueObjectTypeName === null) {
+			return parent::buildIdNameProp($eiu);
+		}
+
+		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
+			return StringUtils::reduce($this->marshalValue($eiu->object()->readNativeValue(), $eiu), 30, '...');
+		})->toIdNameProp();
 	}
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {

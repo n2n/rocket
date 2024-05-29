@@ -122,10 +122,10 @@ class EiPropCollection extends EiComponentCollection {
 		return $genericEiDefinition;
 	}
 
-	function supplyScalarEiDefinition(ScalarEiDefinition $scalarEiDefinition): void {
+	function supplyScalarEiDefinition(ScalarEiDefinition $scalarEiDefinition, N2nContext $n2nContext): void {
 		$scalarEiProperties = $scalarEiDefinition->getMap();
 		foreach ($this as $eiProp) {
-			$eiu = new Eiu($this, $eiProp);
+			$eiu = new Eiu($this, $eiProp, $n2nContext);
 			if (null !== ($scalarEiProperty = $eiProp->getNature()->buildScalarEiProperty($eiu))) {
 				$scalarEiProperties->offsetSet(EiPropPath::from($eiProp), $scalarEiProperty);
 			}

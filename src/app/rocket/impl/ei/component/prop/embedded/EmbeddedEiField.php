@@ -86,7 +86,7 @@ class EmbeddedEiField extends EiFieldNatureAdapter {
 	}
 	
 	
-	protected function isValueValid($value) {
+	protected function isValueValid(mixed $value): bool {
 		if ($value === null) return !$this->eiProp->isMandatory();
 		
 		CastUtils::assertTrue($value instanceof EiuFieldMap);
@@ -151,6 +151,7 @@ class EmbeddedEiField extends EiFieldNatureAdapter {
 	}
 
 	public function isCopyable(): bool {
+		return false;
 	}
 
 }

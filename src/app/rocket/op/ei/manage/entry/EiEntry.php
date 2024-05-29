@@ -32,6 +32,8 @@ use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\security\EiEntryAccess;
 use n2n\util\col\ArrayUtils;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
+use rocket\op\ei\manage\security\InaccessibleEiFieldException;
 
 class EiEntry {
 	/**
@@ -331,8 +333,12 @@ class EiEntry {
 	public function getValue(EiPropPath $eiPropPath) {
 		return $this->getEiField($eiPropPath)->getValue();
 	}
-	
-	public function setValue(EiPropPath $eiPropPath, $value, bool $regardSecurity = true) {
+
+	/**
+	 * @throws ValueIncompatibleWithConstraintsException
+	 * @throws InaccessibleEiFieldException
+	 */
+	public function setValue(EiPropPath $eiPropPath, $value, bool $regardSecurity = true): void {
 		$this->getEiField($eiPropPath)->setValue($value, $regardSecurity);
 	}
 

@@ -11,9 +11,9 @@ use n2n\test\TestEnv;
 use rocket\test\GeneralTestEnv;
 use rocket\op\ei\component\prop\EiProp;
 use n2n\spec\valobj\scalar\StringValueObject;
-use testmdl\string\bo\StringValueObjectMock;
+use testmdl\string\bo\StrObjMock;
 
-class StringEiPropNatureTest extends TestCase {
+class StringEiPropNatureSetupTest extends TestCase {
 
 
 	function setUp(): void {
@@ -21,7 +21,6 @@ class StringEiPropNatureTest extends TestCase {
 	}
 
 	function testSetup(): void {
-
 		$spec = SpecTestEnv::setUpSpec([StringTestObj::class]);
 		$eiType = $spec->getEiTypeByClassName(StringTestObj::class);
 
@@ -58,7 +57,7 @@ class StringEiPropNatureTest extends TestCase {
 		$this->assertFalse($nature->isConstant());
 		$this->assertFalse($nature->isReadOnly());
 		$this->assertFalse($nature->isMandatory());
-		$this->assertEquals(StringValueObjectMock::class, $nature->getStringValueObjectTypeName());
+		$this->assertEquals(StrObjMock::class, $nature->getStringValueObjectTypeName());
 
 		$nature = $eiProps['mandatoryHoleradioObj']->getNature();
 		$this->assertInstanceOf(StringEiPropNature::class, $nature);
@@ -66,7 +65,7 @@ class StringEiPropNatureTest extends TestCase {
 		$this->assertFalse($nature->isConstant());
 		$this->assertFalse($nature->isReadOnly());
 		$this->assertTrue($nature->isMandatory());
-		$this->assertEquals(StringValueObjectMock::class, $nature->getStringValueObjectTypeName());
+		$this->assertEquals(StrObjMock::class, $nature->getStringValueObjectTypeName());
 
 		$nature = $eiProps['annoHoleradioObj']->getNature();
 		$this->assertInstanceOf(StringEiPropNature::class, $nature);
@@ -74,8 +73,9 @@ class StringEiPropNatureTest extends TestCase {
 		$this->assertTrue($nature->isConstant());
 		$this->assertTrue($nature->isReadOnly());
 		$this->assertTrue($nature->isMandatory());
-		$this->assertEquals(StringValueObjectMock::class, $nature->getStringValueObjectTypeName());
+		$this->assertEquals(StrObjMock::class, $nature->getStringValueObjectTypeName());
 	}
+
 
 	function testQuickSearch() {
 		$spec = SpecTestEnv::setUpSpec([StringTestObj::class]);

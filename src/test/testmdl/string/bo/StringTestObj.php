@@ -6,24 +6,24 @@ use rocket\attribute\EiType;
 use rocket\attribute\EiMenuItem;
 use rocket\attribute\impl\EiPropString;
 use rocket\attribute\EiPreset;
+use rocket\op\spec\setup\EiPresetMode;
 
 #[EiType]
-#[EiPreset(editProps: ['holeradio', 'mandatoryHoleradio', 'holeradioObj', 'mandatoryHoleradioObj'])]
+#[EiPreset(EiPresetMode::EDIT_CMDS, editProps: ['holeradio', 'mandatoryHoleradio', 'holeradioObj', 'mandatoryHoleradioObj'])]
 class StringTestObj {
 
-	private int $id;
+	public int $id;
 	public ?string $holeradio = null;
 	public string $mandatoryHoleradio = 'holeradio';
 	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true)]
-	public string $annoHoleradio = 'value';
+	public $annoHoleradio = null;
 
-	public ?StringValueObjectMock $holeradioObj = null;
-	public StringValueObjectMock $mandatoryHoleradioObj;
+	public ?StrObjMock $holeradioObj = null;
+	public StrObjMock $mandatoryHoleradioObj;
 	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true)]
-	public StringValueObjectMock $annoHoleradioObj;
+	public ?StrObjMock $annoHoleradioObj = null;
 
 	function __construct() {
-		$this->mandatoryHoleradioObj = new StringValueObjectMock('asd');
-		$this->annoHoleradioObj = new StringValueObjectMock('asd');
+		$this->mandatoryHoleradioObj = new StrObjMock('asd');
 	}
 }

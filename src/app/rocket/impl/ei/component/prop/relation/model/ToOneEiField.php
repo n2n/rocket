@@ -103,7 +103,7 @@ class ToOneEiField extends EiFieldNatureAdapter {
 		return $this->targetEiuFrame->entry($targetEntityObj);
 	}
 	
-	protected function isValueValid($value) {
+	protected function isValueValid(mixed $value): bool {
 		return $value !== null || !$this->mandatory;
 	}
 

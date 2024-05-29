@@ -42,8 +42,11 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 // 	function getTypeConstraint(): ?TypeConstraint {
 // 		return $this->typeConstraint;
 // 	}
-	
-	private function assetConstraints($value) {
+
+	/**
+	 * @throws ValueIncompatibleWithConstraintsException
+	 */
+	private function assetConstraints($value): void {
 		try {
 			$this->checkValue($value);
 		} catch (\InvalidArgumentException|ValueIncompatibleWithConstraintsException $e) {
@@ -56,10 +59,8 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	/**
 	 * @param mixed $value
 	 * @throws ValueIncompatibleWithConstraintsException
-	 * @throws \InvalidArgumentException
-	 * @return bool
 	 */
-	protected abstract function checkValue($value);
+	protected abstract function checkValue(mixed $value);
 
 	/**
 	 * @return bool
@@ -72,7 +73,7 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldNature::getValue()
 	 */
-	public final function getValue() {
+	public final function getValue(): mixed {
 		if ($this->valueLoaded) {
 			return $this->value;
 		}
@@ -86,12 +87,12 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 		$this->value = $this->readValue();
 		$this->valueLoaded = true;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldNature::setValue()
 	 */
-	public final function setValue($value) {
+	public final function setValue(mixed $value): void {
 		$this->assetConstraints($value);
 
 		$this->value = $value;
@@ -125,6 +126,7 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 // 		return $this->eiFieldConstraintSet;
 // 	}
 
+
 	public function acceptsValue($value): bool {
 		$this->assetConstraints($value);
 		
@@ -138,10 +140,10 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	/**
 	 * @param mixed $value
 	 */
-	protected abstract function isValueValid($value);
+	protected abstract function isValueValid(mixed $value): bool;
 
-	public final function validate(EiFieldValidationResult $validationResult) {
-		$this->validateValue($this->getValue(), $validationResult);
+	public final function validate(EiFieldValidationResult $eiEiFieldValidationResult): void {
+		$this->validateValue($this->getValue(), $eiEiFieldValidationResult);
 	}
 
 	/**

@@ -111,7 +111,7 @@ class EiEngine {
 		}
 
 		$this->scalarEiDefinition = new ScalarEiDefinition();
-		$this->eiMask->getEiPropCollection()->supplyScalarEiDefinition($this->scalarEiDefinition);
+		$this->eiMask->getEiPropCollection()->supplyScalarEiDefinition($this->scalarEiDefinition, $this->n2nContext);
 		return $this->scalarEiDefinition;
 	}
 

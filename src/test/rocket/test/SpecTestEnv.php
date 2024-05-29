@@ -28,6 +28,12 @@ use n2n\test\TestEnv;
 use n2n\core\cache\AppCache;
 use n2n\core\ext\N2nMonitor;
 use n2n\core\ext\N2nHttp;
+use rocket\op\ei\manage\EiLaunch;
+use rocket\user\model\security\FullEiPermissionManager;
+use testmdl\relation\bo\IntegratedSrcTestObj;
+use n2n\util\uri\Url;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\mask\EiMask;
 
 class SpecTestEnv {
 
@@ -53,6 +59,16 @@ class SpecTestEnv {
 
 
 		return $spec;
+	}
+
+	static function setUpEiFrame(Spec $spec, EiMask $eiMask): EiFrame {
+		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+
+		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
+		$eiFrame->setBaseUrl(Url::create('/admin'));
+		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
+
+		return $eiFrame;
 	}
 }
 

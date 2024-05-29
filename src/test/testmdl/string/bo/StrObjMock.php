@@ -10,10 +10,10 @@ use n2n\validation\validator\impl\Validators;
 use n2n\bind\attribute\impl\Unmarshal;
 use n2n\bind\mapper\Mapper;
 
-class StringValueObjectMock implements StringValueObject {
+class StrObjMock implements StringValueObject {
 
 	public function __construct(private readonly string $value) {
-		IllegalValueException::assertTrue(mb_strlen($value) <= 5);
+		IllegalValueException::assertTrue(mb_strlen($value) <= 7);
 	}
 
 	#[Marshal]
@@ -24,7 +24,7 @@ class StringValueObjectMock implements StringValueObject {
 	#[Unmarshal]
 	static function unmarshal(): Mapper {
 		return Mappers::pipe(Validators::maxlength(5),
-				Mappers::valueNotNullClosure(fn (string $value) => new StringValueObjectMock($value)));
+				Mappers::valueNotNullClosure(fn (string $value) => new StrObjMock($value)));
 	}
 
 	function toScalar(): string {

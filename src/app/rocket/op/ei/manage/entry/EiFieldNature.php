@@ -23,6 +23,7 @@ namespace rocket\op\ei\manage\entry;
 
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\util\Eiu;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
 
 interface EiFieldNature {
 	
@@ -30,21 +31,23 @@ interface EiFieldNature {
 	/**
 	 * @return mixed 
 	 */
-	public function getValue();
+	public function getValue(): mixed;
 	
 	/**
 	 * @param mixed $value
-	 * @throws \InvalidArgumentException
+	 * @throws ValueIncompatibleWithConstraintsException
 	 */
-	public function setValue($value);
+	public function setValue(mixed $value);
 	
 	function hasChanges(): bool;
 	
 	/**
 	 * @param mixed $value
 	 * @return bool
+	 * @throws ValueIncompatibleWithConstraintsException
+	 * /
 	 */
-	public function acceptsValue($value): bool;
+	public function acceptsValue(mixed $value): bool;
 	
 	/**
 	 * @return bool
@@ -74,10 +77,10 @@ interface EiFieldNature {
 	 * @return bool
 	 */
 	public function isCopyable(): bool;
-	
+
 	/**
 	 * Security can be ignored
-	 * @param EiObject $eiObject
+	 * @param Eiu $copyEiu
 	 * @return mixed
 	 */
 	public function copyValue(Eiu $copyEiu);
