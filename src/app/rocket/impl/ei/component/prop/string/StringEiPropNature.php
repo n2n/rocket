@@ -43,10 +43,19 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 
 	private bool $multiline = false;
 
-	function __construct(?AccessProxy $propertyAccessProxy, private ?\ReflectionClass $stringValueObjectClass = null) {
+	function __construct(?AccessProxy $propertyAccessProxy, private ?string $stringValueObjectTypeName = null) {
 		parent::__construct($propertyAccessProxy);
 
-		ArgUtils::assertTrue($this->stringValueObjectClass->implementsInterface(StringValueObject::class));
+		ArgUtils::assertTrue($this->stringValueObjectTypeName === null
+				|| is_subclass_of($this->stringValueObjectTypeName, StringValueObject::class));
+	}
+
+	function getStringValueObjectTypeName(): ?string {
+		return $this->stringValueObjectTypeName;
+	}
+
+	function setStringValueObjectTypeName(?string $stringValueObjectTypeName): void {
+		$this->stringValueObjectTypeName = $stringValueObjectTypeName;
 	}
 
 	/**
@@ -71,7 +80,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 	}
 
 	private function marshalValue(null|string|StringValueObject $value, Eiu $eiu): ?string {
-		if ($this->stringValueObjectClass === null) {
+		if ($this->stringValueObjectTypeName === null) {
 			return $value;
 		}
 
@@ -85,12 +94,13 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 	}
 
 	private function unmarshalValue(?string $value, Eiu $eiu): null|string|StringValueObject {
-		if ($this->stringValueObjectClass === null) {
+		if ($this->stringValueObjectTypeName === null) {
 			return $value;
 		}
 
 		try {
-			Bind::values($value)->toValue($value)->exec($eiu->getN2nContext());
+			Bind::values($value)->toValue($value)->map(Mappers::unmarshal($this->stringValueObjectTypeName))
+					->exec($eiu->getN2nContext());
 			return $value;
 		} catch (BindException $e) {
 			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
@@ -99,7 +109,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 	}
 
 	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
-		if ($this->stringValueObjectClass === null) {
+		if ($this->stringValueObjectTypeName === null) {
 			return parent::buildScalarEiProperty($eiu);
 		}
 

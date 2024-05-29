@@ -73,6 +73,7 @@ use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use n2n\util\magic\MagicContext;
 use n2n\util\magic\MagicLookupFailedException;
 use n2n\spec\valobj\scalar\StringValueObject;
+use n2n\util\type\TypeName;
 
 class EiPropNatureProvider {
 
@@ -204,7 +205,8 @@ class EiPropNatureProvider {
 			$propertyName = $attribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute, $eiPropString->readOnly);
 
-			$nature = new StringEiPropNature($propertyAccessProxy);
+			$nature = new StringEiPropNature($propertyAccessProxy,
+					$this->detectSubTypeName($propertyAccessProxy, StringValueObject::class));
 			$nature->setEntityProperty($this->eiTypeClassSetup->getEntityProperty($propertyName, false));
 			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
 					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
@@ -240,6 +242,17 @@ class EiPropNatureProvider {
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}
 
+	}
+
+	private function detectSubTypeName(PropertyAccessProxy $propertyAccessProxy, string $superTypeName): ?string {
+		foreach ($propertyAccessProxy->getSetterConstraint()->getNamedTypeConstraints() as $namedTypeConstraint) {
+			$typeName = $namedTypeConstraint->getTypeName();
+			if (is_subclass_of($typeName, $superTypeName)) {
+				return $typeName;
+			}
+		}
+
+		return null;
 	}
 
 	function provideEmbedded(EiPresetProp $eiPresetProp): bool {

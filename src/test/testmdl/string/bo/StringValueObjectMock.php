@@ -24,7 +24,7 @@ class StringValueObjectMock implements StringValueObject {
 	#[Unmarshal]
 	static function unmarshal(): Mapper {
 		return Mappers::pipe(Validators::maxlength(5),
-				Mappers::valueNotNullClosure(fn (string $value) => new StringValueObjectMock($value));
+				Mappers::valueNotNullClosure(fn (string $value) => new StringValueObjectMock($value)));
 	}
 
 	function toScalar(): string {
