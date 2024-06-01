@@ -161,12 +161,13 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$siQualifiers = [];
 		foreach ((new DataSet($data))->reqArray('values', 'array') as $data) {
 			$siQualifiers[] = SiEntryQualifier::parse($data);
 		}
 		
 		$this->values = $siQualifiers;
+		return true;
 	}
 }

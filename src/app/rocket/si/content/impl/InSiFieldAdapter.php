@@ -21,8 +21,10 @@
  */
 namespace rocket\si\content\impl;
 
+use rocket\si\input\CorruptedSiInputDataException;
+
 abstract class InSiFieldAdapter extends SiFieldAdapter {
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::isReadOnly()
@@ -30,5 +32,19 @@ abstract class InSiFieldAdapter extends SiFieldAdapter {
 	function isReadOnly(): bool {
 		return false;
 	}
+
+	final function handleInput(array $data): bool {
+		$valueValid = $this->handleInputValue($data);
+		$valid = $this->getModel()?->handleInput() ?? true;
+
+		return $valueValid && $valid;
+	}
+
+	/**
+	 * @param array $data
+	 * @return bool
+	 * @throws CorruptedSiInputDataException
+	 */
+	protected abstract function handleInputValue(array $data): bool;
 }
 

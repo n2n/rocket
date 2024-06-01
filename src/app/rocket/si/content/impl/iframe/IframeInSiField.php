@@ -44,7 +44,7 @@ class IframeInSiField extends InSiFieldAdapter {
 	function getData(): array {
 		$data = [...parent::getData(), ...$this->iframeData->toArray()];
 		$data['params'] = $this->getParams();
-		$data['messages'] = $this->getMessageStrs();
+//		$data['messages'] = $this->getMessageStrs();
 		return $data;
 	}
 
@@ -52,8 +52,9 @@ class IframeInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$ds = new DataSet($data);
 		$this->params = $ds->reqScalarArray('params', false, true);
+		return true;
 	}
 }

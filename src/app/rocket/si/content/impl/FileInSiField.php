@@ -187,27 +187,29 @@ class FileInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$valueId = (new DataSet($data))->optArray('valueId', null, [], true);
 		if ($valueId === null) {
 			$this->value = null;
-			return;
+			return true;
 		}
 
 		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
 		if ($this->value === null || !isset($data['imageCuts'])) {
-			return;
+			return true;
 		}
 		
 		foreach ($this->value->getImageDimensions() as $imgDim) {
 			$id = $imgDim->getId();
 			
 			if (!isset($data['imageCuts'][$id])) {
-				return;
+				return true;
 			}
 			
 			$imgDim->setThumbCut(ThumbCut::fromArray($data['imageCuts'][$id]));
 		}
+
+		return true;
 	}
 	
 	function isCallable(): bool {

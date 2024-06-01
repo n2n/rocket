@@ -50,7 +50,10 @@ class BulkyEiGui implements EiGui {
 		$this->inputEiEntries = [];
 
 		foreach ($entryInputs as $siEntryInput) {
-			$this->eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
+			$valid = $this->eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
+			if (!$valid) {
+				return new SiInputError([$this->eiGuiValueBoundary->createSiValueBoundary($n2nLocale)]);
+			}
 
 			$this->eiGuiValueBoundary->save();
 

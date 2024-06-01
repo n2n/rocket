@@ -26,5 +26,5 @@ interface EmbeddedEntryPanelInputHandler {
 	 * @param SiPanelInput[] $siPanelInputs
 	 * @return SiPanel[]
 	 */
-	function handleInput(array $siPanelInputs): array;
+	function handleSiPanelInputs(array $siPanelInputs): array;
 }

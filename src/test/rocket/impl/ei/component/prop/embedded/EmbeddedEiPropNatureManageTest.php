@@ -21,6 +21,8 @@ use n2n\persistence\orm\attribute\N2nLocale;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\EiType;
 use rocket\op\ei\manage\frame\EiFrame;
+use rocket\si\input\CorruptedSiInputDataException;
+use n2n\util\type\attrs\AttributesException;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {
 	private Spec $spec;
@@ -67,6 +69,10 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 		$this->assertEquals('some value', $embeddingContainerTestObj->reqEditEmbeddable->someProp);
 	}
 
+	/**
+	 * @throws CorruptedSiInputDataException
+	 * @throws AttributesException
+	 */
 	function testGuiProp(): void {
 		$eiEntry = $this->createEiEntry();
 

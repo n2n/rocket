@@ -127,7 +127,7 @@ class EiGuiValueBoundary {
 	 * @param SiEntryInput $siEntryInput
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleSiEntryInput(SiEntryInput $siEntryInput): void {
+	function handleSiEntryInput(SiEntryInput $siEntryInput): bool {
 		$eiMaskId = $siEntryInput->getMaskId();
 		
 		if (!isset($this->eiGuiEntries[$eiMaskId])) {
@@ -135,7 +135,7 @@ class EiGuiValueBoundary {
 		}
 		
 		$this->selectedEiMaskId = $eiMaskId;
-		$this->eiGuiEntries[$eiMaskId]->handleSiEntryInput($siEntryInput);
+		return $this->eiGuiEntries[$eiMaskId]->handleSiEntryInput($siEntryInput);
 	}
 	
 	/**

@@ -7,13 +7,14 @@ use rocket\si\content\impl\date\DateTimeInSiField;
 use n2n\core\container\N2nContext;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
+use rocket\si\content\SiFieldModel;
 
-class DateTimeInCuField implements CuField {
+class DateTimeInCuField implements CuField, SiFieldModel {
 
 	private array $messageStrs = [];
 
 	function __construct(private readonly DateTimeInSiField $siField) {
-		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
+		$this->siField->setModel($this);
 	}
 
 	function setValue(?\DateTime $value): static {
@@ -47,5 +48,13 @@ class DateTimeInCuField implements CuField {
 		}
 
 		return true;
+	}
+
+	function handleInput(): bool {
+		return true;
+	}
+
+	function getMessageStrs(): array {
+		return $this->messageStrs;
 	}
 }

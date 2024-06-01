@@ -227,10 +227,10 @@ class StringEiPropNatureLiveTest extends TestCase {
 				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null)
 				->createEiGuiEntry($eiFrame, $eiEntry, false);
 
-		$eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradio'])]))->getSiField()
-				->handleInput(['value' => 'new-value']);
-		$eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradioObj'])]))->getSiField()
-				->handleInput(['value' => 'new-ov']);
+		$this->assertTrue($eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradio'])]))->getSiField()
+				->handleInput(['value' => 'new-value']));
+		$this->assertTrue($eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradioObj'])]))->getSiField()
+				->handleInput(['value' => 'new-ov']));
 
 		$eiGuiEntry->save();
 

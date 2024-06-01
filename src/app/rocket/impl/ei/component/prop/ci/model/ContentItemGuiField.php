@@ -41,8 +41,9 @@ use rocket\op\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
+use rocket\si\content\SiFieldModel;
 
-class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
+class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, SiFieldModel {
 	/**
 	 * @var RelationModel
 	 */
@@ -86,13 +87,13 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		
 		if ($readOnly) {
 			$this->siField = SiFields::embeddedEntryPanelsOut($this->targetEiuFrame->createSiFrame(), $this->readValues())
-					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+					->setModel($this);
 			return;
 		}
 		
 		$this->siField = SiFields::embeddedEntryPanelsIn($this->targetEiuFrame->createSiFrame(),
 						$this, $this->readValues())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+				->setModel($this);
 	}
 	
 	/**
@@ -120,7 +121,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	 * @return SiPanel[]
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(array $siPanelInputs): array {
+	function handleSiPanelInputs(array $siPanelInputs): array {
 		IllegalStateException::assertTrue(!$this->readOnly);
 		
 		$this->currentPool->handleInput($siPanelInputs);
@@ -129,7 +130,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 		return $this->currentPool->createSiPanels();
 	}
 	
-	function save() {
+	function save(): void {
 // 		IllegalStateException::assertTrue(!$this->readOnly);
 		
 // 		$values = $this->currentPool->save();
@@ -143,6 +144,14 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler {
 	
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
+	}
+
+	function handleInput(): bool {
+		return true;
+	}
+
+	function getMessageStrs(): array {
+		return $this->eiu->field()->getMessagesAsStrs();
 	}
 }
 

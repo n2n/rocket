@@ -41,6 +41,8 @@ use rocket\op\ei\manage\generic\CommonScalarEiProperty;
 use rocket\op\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
+use n2n\util\magic\TaskResult;
+use n2n\util\magic\impl\TaskResults;
 
 class StringEiPropNature extends AlphanumericEiPropNature {
 
@@ -78,34 +80,33 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 
 	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
 		return $eiu->factory()->newGuiField(
-				SiFields::stringOut($eiu->field()->getValue())
-						->setMultiline($this->isMultiline())
-						->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+						SiFields::stringOut($eiu->field()->getValue())->setMultiline($this->isMultiline()))
+				->setMessagesBearer((fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 
-	private function marshalValue(null|string|StringValueObject $value, Eiu $eiu): ?string {
+	private function marshalValue(null|string|StringValueObject $value, Eiu $eiu): TaskResult {
 		if ($this->stringValueObjectTypeName === null) {
-			return $value;
+			return TaskResults::success($value);
 		}
 
 		try {
 			return Bind::values($value)->toValue($value)->map(Mappers::marshal())
-					->exec($eiu->getN2nContext())->get();
+					->exec($eiu->getN2nContext());
 		} catch (BindException $e) {
 			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
 					. ' was not able to marshal value for StringInSiField.', previous: $e);
 		}
 	}
 
-	private function unmarshalValue(?string $value, Eiu $eiu): null|string|StringValueObject {
+	private function unmarshalValue(?string $value, Eiu $eiu): TaskResult {
 		if ($this->stringValueObjectTypeName === null) {
-			return $value;
+			return TaskResults::success($value);
 		}
 
 		try {
-			$bindResult = Bind::values($value)->toValue($value)->map(Mappers::unmarshal($this->stringValueObjectTypeName))
+			return Bind::values($value)->toValue($value)
+					->map(Mappers::unmarshal($this->stringValueObjectTypeName))
 					->exec($eiu->getN2nContext());
-			return $value;
 		} catch (BindException $e) {
 			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
 					. ' was not able to marshal value for StringInSiField.', previous: $e);
@@ -118,8 +119,8 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		}
 
 		return new CommonScalarEiProperty($eiu->prop()->getPath(), $this->getLabelLstr(),
-				fn ($value) => $this->marshalValue($value, $eiu),
-				fn (?string $scalarValue) => $this->unmarshalValue($scalarValue, $eiu));
+				fn ($value) => $this->marshalValue($value, $eiu)->get(),
+				fn (?string $scalarValue) => $this->unmarshalValue($scalarValue, $eiu)->get());
 	}
 
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
@@ -128,23 +129,22 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		}
 
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
-			return StringUtils::reduce($this->marshalValue($eiu->object()->readNativeValue(), $eiu), 30, '...');
+			return StringUtils::reduce($this->marshalValue($eiu->object()->readNativeValue(), $eiu)->get(), 30, '...');
 		})->toIdNameProp();
 	}
 
 	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$siField = SiFields::stringIn($this->marshalValue($eiu->field()->getValue(), $eiu))
+		$siField = SiFields::stringIn($this->marshalValue($eiu->field()->getValue(), $eiu)->get())
 				->setMandatory($this->isMandatory())
 				->setMinlength($this->getMinlength())
 				->setMaxlength($this->getMaxlength())
 				->setMultiline($this->isMultiline())
 				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+				->setSuffixAddons($this->getSuffixSiCrumbGroups());
 		
 		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($siField, $eiu) {
-					$eiu->field()->setValue($this->unmarshalValue($siField->getValue(), $eiu));
-				});
+				->setMessagesBearer(fn () => $eiu->field()->getMessagesAsStrs())
+				->setReader(fn () => $this->unmarshalValue($siField->getValue(), $eiu))
+				->setSaver(fn (mixed $value) => $eiu->field()->setValue($value));
 	}
 }

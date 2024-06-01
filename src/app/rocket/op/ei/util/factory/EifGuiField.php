@@ -4,11 +4,15 @@ namespace rocket\op\ei\util\factory;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\gui\ClosureGuiField;
 use rocket\si\content\SiField;
+use rocket\op\ei\manage\gui\field\GuiField;
+use n2n\bind\mapper\Mapper;
+use Closure;
 
 class EifGuiField {
-	private $eiu;
-	private $siField;
-	private $saverClosure;
+	private SiField $siField;
+	private ?Closure $messagesClosure = null;
+	private ?Closure $readClosure = null;
+	private ?Closure $saveClosure = null;
 	
 	
 	/**
@@ -16,30 +20,38 @@ class EifGuiField {
 	 * @param SiField $siField
 	 */
 	function __construct(Eiu $eiu, SiField $siField) {
-		$this->eiu = $eiu;
+//		$this->eiu = $eiu;
 		$this->siField = $siField;
 	}
 
+	function setMessagesBearer(?Closure $closure): static {
+		$this->messagesClosure = $closure;
+		return $this;
+	}
 
+	function setReader(?Closure $closure): static {
+		if ($closure !== null && $this->siField->isReadOnly()) {
+			throw new \InvalidArgumentException('Reader disallowed for read only SiField.');
+		}
+
+		$this->readClosure = $closure;
+		return $this;
+	}
 
 	/**
-	 * @param \Closure $closure
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\op\ei\util\factory\EifGuiField
+	 * @param Closure|null $closure
+	 * @return EifGuiField
 	 */
-	function setSaver(?\Closure $closure) {
+	function setSaver(?Closure $closure): static {
 		if ($closure !== null && $this->siField->isReadOnly()) {
 			throw new \InvalidArgumentException('Saver disallowed for read only SiField.');
 		}
 		
-		$this->saverClosure = $closure;
+		$this->saveClosure = $closure;
 		return $this;
 	}
-	
-	/**
-	 * @return \rocket\si\content\SiField
-	 */
-	function toGuiField() {
-		return new ClosureGuiField($this->eiu, $this->siField, $this->saverClosure);
+
+	function toGuiField(): GuiField {
+		return new ClosureGuiField($this->siField, $this->messagesClosure, $this->readClosure, $this->saveClosure);
 	}
 }

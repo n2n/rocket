@@ -19,39 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\si\content\impl;
-
-use n2n\l10n\Message;
-use n2n\util\type\ArgUtils;
-use n2n\util\type\TypeConstraints;
-use n2n\reflection\magic\MagicMethodInvoker;
-use Closure;
-
-trait SiFieldErrorTrait {
-	private $messagesCallback = null;
-
-	/**
-	 * @param Closure|null $messagesCallback
-	 * @return self
-	 */
-	function setMessagesCallback(?Closure $messagesCallback): static {
-		$this->messagesCallback = $messagesCallback;
-		return $this;
-	}
-	
-	/**
-	 * @return string[]
-	 */
-	function getMessageStrs(): array {
-		if ($this->messagesCallback === null) {
-			return [];
-		}
-		
-		
-		$callback = $this->messagesCallback;
-		$messages = $callback();
-		ArgUtils::valTypeReturn($messages, TypeConstraints::array(false, 'string'), null, $this->messagesCallback);
-		return array_map(fn ($m) => (string) $m, $messages);
-	}
-	
-}
+//namespace rocket\si\content\impl;
+//
+//use n2n\util\type\ArgUtils;
+//use n2n\util\type\TypeConstraints;
+//use Closure;
+//
+//trait SiFieldErrorTrait {
+//	private $messagesCallback = null;
+//
+//	/**
+//	 * @param Closure|null $messagesCallback
+//	 * @return self
+//	 */
+//	function setMessagesCallback(?Closure $messagesCallback): static {
+//		$this->messagesCallback = $messagesCallback;
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return string[]
+//	 */
+//	function getMessageStrs(): array {
+//		if ($this->messagesCallback === null) {
+//			return [];
+//		}
+//
+//		$messages = $this->messagesCallback->__invoke();
+//		ArgUtils::valTypeReturn($messages, TypeConstraints::array(false, 'string'), null, $this->messagesCallback);
+//		return array_map(fn ($m) => (string) $m, $messages);
+//	}
+//
+//}

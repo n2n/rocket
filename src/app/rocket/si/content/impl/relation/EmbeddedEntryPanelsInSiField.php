@@ -97,13 +97,14 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$siPanelInputs = [];
 		foreach ((new DataSet($data))->reqArray('panelInputs', 'array') as $panelInputData) {
 			$siPanelInputs[] = SiPanelInput::parse($panelInputData);
 		}
-		$panels = $this->inputHandler->handleInput($siPanelInputs);
+		$panels = $this->inputHandler->handleSiPanelInputs($siPanelInputs);
 		ArgUtils::valArrayReturn($panels, $this->inputHandler, 'handleInput', SiPanel::class);
 		$this->panels = $panels;
+		return true;
 	}
 }

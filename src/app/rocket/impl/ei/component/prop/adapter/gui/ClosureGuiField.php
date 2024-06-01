@@ -27,40 +27,57 @@ use rocket\op\ei\util\Eiu;
 use rocket\si\content\SiField;
 use rocket\op\ei\manage\gui\GuiFieldMap;
 use n2n\reflection\magic\MagicMethodInvoker;
+use n2n\bind\mapper\Mapper;
+use n2n\util\magic\TaskResult;
+use n2n\util\ex\ExUtils;
+use rocket\si\content\SiFieldModel;
+use n2n\util\type\TypeConstraints;
+use n2n\l10n\Message;
+use n2n\persistence\orm\attribute\N2nLocale;
 
-class ClosureGuiField implements GuiField {
+class ClosureGuiField implements GuiField, SiFieldModel {
+
+	private ?MagicMethodInvoker $messagesMmi;
+	private ?MagicMethodInvoker $readMmi;
+
+	private ?MagicMethodInvoker $saveMmi;
+	private mixed $lastReadSiFieldValue = null;
 	/**
-	 * @var Eiu
+	 * @var array<Message>
 	 */
-	private $eiu;
-	/**
-	 * @var SiField
-	 */
-	private $siField;
-	/**
-	 * @var MagicMethodInvoker
-	 */
-	private $writeMmi;
-	
-	/**
-	 * @param Eiu $eiu
-	 * @param SiField $siField
-	 * @param \Closure|null $saveClosure
-	 */
-	public function __construct(Eiu $eiu, SiField $siField, \Closure $saveClosure = null) {
-		$this->eiu = $eiu;
-		$this->siField = $siField;
-		
+	private array $lastReadMessages = [];
+
+
+	public function __construct(private SiField $siField, ?\Closure $messagesClosure,
+			?\Closure $readClosure, ?\Closure $saveClosure) {
+
 		if ($siField->isReadOnly() && $saveClosure !== null) {
-			throw new \InvalidArgumentException('SiField is not writable. No write closure allowed.');
+			throw new \InvalidArgumentException('SiField is not writable. No save closure allowed.');
+		}
+
+		$this->siField->setModel($this);
+
+		if ($messagesClosure !== null) {
+			$this->messagesMmi = new MagicMethodInvoker();
+			$this->messagesMmi->setClassParamObject(SiField::class, $siField);
+			$this->messagesMmi->setClassParamObject(get_class($siField), $siField);
+			$this->messagesMmi->setReturnTypeConstraint(TypeConstraints::array(false, 'string'));
+			$this->messagesMmi->setMethod(ExUtils::try(fn () => new \ReflectionFunction($messagesClosure)));
+		}
+
+		if ($readClosure !== null) {
+			$this->readMmi = new MagicMethodInvoker();
+			$this->readMmi->setClassParamObject(SiField::class, $siField);
+			$this->readMmi->setClassParamObject(get_class($siField), $siField);
+			$this->readMmi->setReturnTypeConstraint(TypeConstraints::namedType(TaskResult::class));
+			$this->readMmi->setMethod(ExUtils::try(fn () => new \ReflectionFunction($readClosure)));
 		}
 		
 		if ($saveClosure !== null) {
-			$this->writeMmi = new MagicMethodInvoker($eiu->getN2nContext()); 
-			$this->writeMmi->setClassParamObject(Eiu::class, $eiu);
-			$this->writeMmi->setClassParamObject(SiField::class, $siField);
-			$this->writeMmi->setClassParamObject(get_class($siField), $siField);
-			$this->writeMmi->setMethod(new \ReflectionFunction($saveClosure));
+			$this->saveMmi = new MagicMethodInvoker();
+			$this->saveMmi->setClassParamObject(SiField::class, $siField);
+			$this->saveMmi->setClassParamObject(get_class($siField), $siField);
+			$this->saveMmi->setMethod(ExUtils::try(fn () => new \ReflectionFunction($saveClosure)));
 		}
 	}
 	
@@ -71,19 +88,49 @@ class ClosureGuiField implements GuiField {
 	function getSiField(): SiField {
 		return $this->siField;
 	}
-	
+
+	function handleInput(): bool {
+		$this->lastReadSiFieldValue = null;
+		$this->lastReadMessages = [];
+
+		if ($this->readMmi === null) {
+			return true;
+		}
+
+		$taskResult = $this->readMmi->invoke();
+		if (!$taskResult->hasErrors()) {
+			$this->lastReadSiFieldValue = $taskResult->get();
+			return true;
+		}
+
+		$this->lastReadMessages = $taskResult->getErrorMap()->getAllMessages();
+		return false;
+	}
+
+	function getMessageStrs(): array {
+		$messageStrs = [];
+		foreach ($this->lastReadMessages as $message) {
+			$messageStrs[] = $message->t(\n2n\l10n\N2nLocale::getAdmin());
+		}
+
+		if (empty($messageStrs)) {
+			$messageStrs = $this->messagesMmi->invoke();
+		}
+
+		return $messageStrs;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\gui\field\GuiField::save()
 	 */
-	public function save() {
+	public function save(): void {
 		if ($this->siField->isReadOnly()) {
 			throw new IllegalStateException('Can not save ready only GuiField');
 		}
-		
-		if ($this->writeMmi !== null) {
-			return $this->writeMmi->invoke();
-		}
+
+		$this->saveMmi?->invoke(null, null, [$this->lastReadSiFieldValue]);
 	}
 	
 // 	function getContextSiFields(): array {

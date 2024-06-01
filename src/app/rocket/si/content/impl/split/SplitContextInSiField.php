@@ -214,12 +214,8 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			...parent::getData()
 		];
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\si\content\SiField::handleInput()
-	 */
-	function handleInput(array $data) {
+
+	function handleInputValue(array $data): bool {
 		$ds = (new DataSet($data));
 		
 		$this->activeKeys = [];
@@ -230,7 +226,8 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			
 			$this->activeKeys[] = $key;
 		}
-		
+
+		$valid = true;
 		foreach ($ds->reqArray('entryInputs', 'array') as $key => $entryInputData) {
 			if (!in_array($key, $this->activeKeys)) {
 				throw new CorruptedSiInputDataException('Unknown or active key: ' . $key);
@@ -249,12 +246,17 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 				throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);	
 			}
 			
-			$siValueBoundary->handleEntryInput(SiEntryInput::parse($entryInputData));
+			if (!$siValueBoundary->handleEntryInput(SiEntryInput::parse($entryInputData))) {
+				$valid = false;
+			}
+
 			if ($lazy) {
 				$preSplitContent = $this->splitContents[$key];
 				$this->splitContents[$key] = SiSplitContent::createValueBoundary($preSplitContent->getLabel(), $siValueBoundary)
 						->setShortLabel($preSplitContent->getShortLabel());
 			}
 		}
+
+		return $valid;
 	}
 }

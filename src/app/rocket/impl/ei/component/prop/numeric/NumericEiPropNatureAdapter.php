@@ -70,9 +70,10 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::createOutSiField()
 	 */
 	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return $eiu->factory()->newGuiField(SiFields
-				::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+		return $eiu->factory()
+				->newGuiField(SiFields
+						::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale())))
+				->setMessagesBearer(fn () => $eiu->field()->getMessagesAsStrs());
 	}
 	
 // 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {

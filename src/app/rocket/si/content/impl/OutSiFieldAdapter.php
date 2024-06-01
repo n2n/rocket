@@ -37,7 +37,7 @@ abstract class OutSiFieldAdapter extends  SiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data): array {
+	function handleInput(array $data): bool {
 		throw new IllegalStateException(get_class($this) . ' is ready only.');
 	}
 }

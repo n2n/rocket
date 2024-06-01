@@ -164,7 +164,8 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$this->value = (new DataSet($data))->reqEnum('value',  array_keys($this->options), true);
+		return true;
 	}
 }

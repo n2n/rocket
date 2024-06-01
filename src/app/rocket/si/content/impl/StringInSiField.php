@@ -161,7 +161,8 @@ class StringInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$this->value = (new DataSet($data))->reqString('value', true);
+		return true;
 	}
 }

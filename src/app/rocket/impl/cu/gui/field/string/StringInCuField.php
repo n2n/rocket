@@ -7,13 +7,14 @@ use rocket\si\content\impl\StringInSiField;
 use n2n\bind\build\impl\Bind;
 use n2n\bind\mapper\impl\Mappers;
 use n2n\core\container\N2nContext;
+use rocket\si\content\SiFieldModel;
 
-class StringInCuField implements CuField {
+class StringInCuField implements CuField, SiFieldModel {
 
 	private array $messageStrs = [];
 
 	function __construct(private StringInSiField $siField) {
-		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
+		$this->siField->setModel($this);
 	}
 
 	function setValue(?string $value): static {
@@ -42,6 +43,14 @@ class StringInCuField implements CuField {
 		}
 
 		return true;
+	}
+
+	function handleInput(): bool {
+		return true;
+	}
+
+	function getMessageStrs(): array {
+		return $this->messageStrs;
 	}
 
 }

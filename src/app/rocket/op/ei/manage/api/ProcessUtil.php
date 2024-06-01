@@ -167,9 +167,13 @@ class ProcessUtil {
 	 */
 	function handleEntryInput(SiEntryInput $siEntryInput, EiGuiValueBoundary $eiGuiValueBoundary): bool {
 		try {
-			$eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
+			$valid = $eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
 		} catch (CorruptedSiInputDataException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
+		}
+
+		if (!$valid) {
+			return false;
 		}
 		
 		$eiGuiValueBoundary->save();

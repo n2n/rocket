@@ -23,6 +23,8 @@ namespace rocket\op\ei\manage\gui\field;
 
 use rocket\si\content\SiField;
 use rocket\op\ei\manage\gui\GuiFieldMap;
+use n2n\util\magic\TaskResult;
+use rocket\op\ei\manage\entry\EiEntry;
 
 interface GuiField {
 	
@@ -36,15 +38,16 @@ interface GuiField {
 // 	 */
 // 	public function isReadOnly(): bool;
 	
-	/**
-	 * @return SiField 
-	 */
 	function getSiField(): ?SiField;
 	
 	/**
-	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true.
+	 * Saves/writes the value previously read value by {@link self::readFromSi()} to the target value container
+	 * (e. g. {@link EiEntry)
+	 *
+	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true or
+	 * 		{@link self::readFromSi()} has never been called.
 	 */
-	function save();
+	function save(): void;
 	
 	/**
 	 * @return GuiFieldMap|NULL

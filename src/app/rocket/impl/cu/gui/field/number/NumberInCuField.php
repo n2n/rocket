@@ -7,13 +7,14 @@ use rocket\si\content\impl\NumberInSiField;
 use n2n\core\container\N2nContext;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
+use rocket\si\content\SiFieldModel;
 
-class NumberInCuField implements CuField {
+class NumberInCuField implements CuField, SiFieldModel {
 
 	private array $messageStrs = [];
 
 	function __construct(private readonly NumberInSiField $siField) {
-		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
+		$this->siField->setModel($this);
 	}
 
 	function setValue(?float $value): static {
@@ -44,5 +45,13 @@ class NumberInCuField implements CuField {
 
 		$this->messageStrs = $validationResult->getErrorMap()->tAllMessages($n2nContext->getN2nLocale());
 		return false;
+	}
+
+	function handleInput(): bool {
+		return true;
+	}
+
+	function getMessageStrs(): array {
+		return $this->messageStrs;
 	}
 }

@@ -103,7 +103,7 @@
 //	 * @throws BadRequestException
 //	 * @return SiCallResponse|null
 //	 */
-//	function handleInput(array $data) {
+//	function handleInput(array $data): void {
 //		if (!$this->guiControl->isInputHandled()) {
 //			throw new BadRequestException('No input SiControl executed with input.');
 //		}

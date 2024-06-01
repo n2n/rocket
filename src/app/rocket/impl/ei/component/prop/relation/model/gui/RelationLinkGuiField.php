@@ -31,8 +31,9 @@ use rocket\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\si\content\impl\StringOutSiField;
+use rocket\si\content\SiFieldModel;
 
-class RelationLinkGuiField implements GuiField {
+class RelationLinkGuiField implements GuiField, SiFieldModel {
 	/**
 	 * @var Eiu
 	 */
@@ -70,19 +71,16 @@ class RelationLinkGuiField implements GuiField {
 		}
 		
 		if (null !== ($overviewNavPoint = $targetEiuFrame->getOverviewNavPoint(false))) {
-			return SiFields::linkOut($overviewNavPoint, $label, false)
-					->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
+			return SiFields::linkOut($overviewNavPoint, $label, false)->setModel($this);
 		}
 		
-		return SiFields::stringOut($label)
-				->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
+		return SiFields::stringOut($label)->setModel($this);
 	}
 	
 	private function createToOneSiField(): SiField {
 		$value = $this->eiu->field()->getValue();
 		if ($value === null) {
-			return SiFields::stringOut(null)
-					->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
+			return SiFields::stringOut(null)->setModel($this);
 		}
 		
 		CastUtils::assertTrue($value instanceof EiuEntry);
@@ -92,12 +90,10 @@ class RelationLinkGuiField implements GuiField {
 		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCmdPath());
 		
 		if (null !== ($detailNavPoint = $targetEiuFrame->getDetailNavPoint($value, false))) {
-			return SiFields::linkOut($detailNavPoint, $label)
-					->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
+			return SiFields::linkOut($detailNavPoint, $label)->setModel($this);
 		}
 		
-		return SiFields::stringOut($label)
-				->setMessagesCallback(fn () => $this->eiu->field()->getMessagesAsStrs());
+		return SiFields::stringOut($label)->setModel($this);
 	}
 	
 	function getSiField(): SiField {
@@ -112,9 +108,16 @@ class RelationLinkGuiField implements GuiField {
 		return null;
 	}
 	
-	function save() {
+	function save(): void {
 		throw new UnsupportedOperationException();
 	}
 
 
+	function handleInput(): bool {
+		throw new UnsupportedOperationException();
+	}
+
+	function getMessageStrs(): array {
+		return $this->eiu->field()->getMessagesAsStrs();
+	}
 }

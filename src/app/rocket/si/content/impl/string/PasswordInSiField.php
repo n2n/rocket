@@ -129,7 +129,8 @@ class PasswordInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data) {
+	function handleInputValue(array $data): bool {
 		$this->rawPassword = (new DataSet($data))->reqString('rawPassword', true);
+		return true;
 	}
 }

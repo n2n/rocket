@@ -37,6 +37,7 @@ use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\manage\gui\control\GuiControlMap;
 use n2n\l10n\Message;
 use n2n\l10n\N2nLocale;
+use rocket\si\input\CorruptedSiInputDataException;
 
 class EiGuiEntry {
 	private ?GuiFieldMap $guiFieldMap = null;
@@ -47,6 +48,8 @@ class EiGuiEntry {
 	 * @var EiGuiEntryListener[]
 	 */
 	private array $eiGuiEntryListeners = array();
+
+	private bool $valid = true;
 	
 	public function __construct(private readonly EiGuiMaskDeclaration $eiGuiMaskDeclaration, private readonly EiEntry $eiEntry,
 			private readonly ?string $idName) {
@@ -187,9 +190,9 @@ class EiGuiEntry {
 	/**
 	 * @param SiEntryInput $siEntryInput
 	 * @throws IllegalStateException
-	 * @throws \InvalidArgumentException
+	 * @throws CorruptedSiInputDataException
 	 */
-	function handleSiEntryInput(SiEntryInput $siEntryInput): void {
+	function handleSiEntryInput(SiEntryInput $siEntryInput): bool {
 		if ((string) $this->getEiMask()->getEiTypePath() != $siEntryInput->getMaskId()) {
 			throw new \InvalidArgumentException('EiType missmatch.');
 		}
@@ -197,7 +200,8 @@ class EiGuiEntry {
 		if ($this->eiEntry->getPid() !== $siEntryInput->getIdentifier()->getId()) {
 			throw new \InvalidArgumentException('EiEntry id missmatch.');
 		}
-		
+
+		$this->valid = true;
 		foreach ($this->guiFieldMap->getAllGuiFields() as $defPropPathStr => $guiField) {
 			$siField = $guiField->getSiField();
 			
@@ -207,15 +211,27 @@ class EiGuiEntry {
 			}
 			
 			try {
-				$siField->handleInput($siEntryInput->getFieldInput($defPropPathStr)->getData());
+				if (!$siField->handleInput($siEntryInput->getFieldInput($defPropPathStr)->getData())) {
+					$this->valid = false;
+				}
 			} catch (AttributesException $e) {
 				throw new \InvalidArgumentException($e->getMessage(), previous: $e);
 			}
 		}
+
+		return $this->valid;
+	}
+
+	function isValid(): bool {
+		return $this->valid;
 	}
 
 	public function save(): void {
 		$this->ensureInitialized();
+
+		if (!$this->valid) {
+			throw new IllegalStateException('Invalid EiGuiEntry cannot be saved.');
+		}
 		
 		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
 			$eiGuiValueBoundaryListener->onSave($this);

@@ -6,12 +6,13 @@ use n2n\core\container\N2nContext;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
 use rocket\si\content\impl\EnumInSiField;
+use rocket\si\content\SiFieldModel;
 
-class EnumInCuField implements CuField {
+class EnumInCuField implements CuField, SiFieldModel {
 	private array $messageStrs = [];
 
 	function __construct(private readonly EnumInSiField $siField) {
-		$this->siField->setMessagesCallback(fn () => $this->messageStrs);
+		$this->siField->setModel($this);
 	}
 
 	function setValue(?string $value): static {
@@ -42,5 +43,13 @@ class EnumInCuField implements CuField {
 
 		$this->messageStrs = $validationResult->getErrorMap()->tAllMessages($n2nContext->getN2nLocale());
 		return false;
+	}
+
+	function handleInput(): bool {
+		return true;
+	}
+
+	function getMessageStrs(): array {
+		return $this->messageStrs;
 	}
 }
