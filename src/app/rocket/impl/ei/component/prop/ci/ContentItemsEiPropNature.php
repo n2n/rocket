@@ -28,25 +28,23 @@ use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\ci\model\ContentItemGuiField;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
-
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\impl\ei\component\prop\ci\conf\ContentItemsConfig;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
-use rocket\si\content\impl\meta\SiCrumb;
-use rocket\si\content\impl\meta\SiCrumbGroup;
+use rocket\ui\si\content\impl\meta\SiCrumb;
+use rocket\ui\si\content\impl\meta\SiCrumbGroup;
 use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\si\meta\SiStructureType;
 
 class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
@@ -157,7 +155,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\ui\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
 		$readOnly = $readOnly || $this->relationModel->isReadOnly();
@@ -181,7 +179,7 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\si\content\SiField
+	 * @return \rocket\ui\si\content\SiField
 	 */
 	private function createCompactGuiField(Eiu $eiu) {
 		$siCrumbGroups = [];

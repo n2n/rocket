@@ -3,9 +3,9 @@
 namespace rocket\op\cu\gui\control;
 
 use n2n\util\uri\Url;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\op\cu\util\Cuu;
-use rocket\si\control\SiControl;
+use rocket\ui\si\control\SiControl;
 
 interface CuControl {
 

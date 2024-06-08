@@ -39,7 +39,7 @@ class ApiFieldCallId implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\manage\gui\control\GuiControlPath
+	 * @return \rocket\ui\gui\control\GuiControlPath
 	 */
 	function getDefPropPath() {
 		return $this->defPropPath;

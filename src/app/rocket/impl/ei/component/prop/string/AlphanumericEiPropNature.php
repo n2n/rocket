@@ -22,21 +22,12 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use rocket\op\ei\util\filter\prop\StringFilterProp;
- 
-
 use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\op\ei\manage\frame\EiFrame;
-use n2n\core\container\N2nContext;
 use n2n\persistence\orm\criteria\item\CrIt;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use rocket\op\ei\util\Eiu;
-
-
 use rocket\op\ei\manage\generic\CommonGenericEiProperty;
 use rocket\op\ei\manage\generic\CommonScalarEiProperty;
-use rocket\op\ei\manage\critmod\quick\impl\LikeQuickSearchProp;
 use rocket\op\ei\manage\critmod\filter\FilterProp;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\op\ei\manage\generic\GenericEiProperty;
@@ -45,13 +36,12 @@ use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
-use n2n\reflection\property\PropertyAccessProxy;
-use n2n\util\type\TypeConstraints;
 use rocket\op\ei\manage\critmod\quick\impl\QuickSearchProps;
+
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
 	use AddonAdapter, QuickSearchConfigTrait;

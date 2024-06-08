@@ -22,17 +22,15 @@
 namespace rocket\op\ei\util\spec;
 
 use rocket\op\ei\mask\EiMask;
-use rocket\core\model\Rocket;
 use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\component\command\EiCmdNature;
 use rocket\op\ei\component\modificator\EiModNature;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\EiuAnalyst;
-use rocket\op\ei\util\Eiu;
 use rocket\op\ei\EiPropPath;
 use n2n\l10n\N2nLocale;
 use rocket\op\ei\component\UnknownEiComponentException;
-use rocket\si\meta\SiMaskQualifier;
+use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\op\ei\EiType;
 use rocket\op\ei\component\prop\EiProp;
 use n2n\l10n\Lstr;

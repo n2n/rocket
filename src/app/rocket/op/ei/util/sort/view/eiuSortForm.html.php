@@ -20,13 +20,13 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\impl\web\ui\view\html\HtmlView;
-	use n2n\persistence\orm\criteria\Criteria;
-	use rocket\si\control\SiIconType;
-	use rocket\op\ei\util\sort\EiuSortForm;
+use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\persistence\orm\criteria\Criteria;
+use rocket\ui\si\control\SiIconType;
+use rocket\op\ei\util\sort\EiuSortForm;
 use n2n\web\dispatch\map\PropertyPath;
-	
-	$view = HtmlView::view($this);
+
+$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	$request = HtmlView::request($this);

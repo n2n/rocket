@@ -25,7 +25,7 @@ use n2n\io\managed\File;
 use n2n\io\managed\img\ImageDimension;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\impl\SiFile;
+use rocket\ui\si\content\impl\SiFile;
 use n2n\io\managed\img\ImageFile;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\impl\TmpFileManager;
@@ -97,7 +97,7 @@ class ThumbResolver {
 	/**
 	 * @param File $file
 	 * @param Eiu $eiu
-	 * @return \rocket\si\content\impl\SiFile
+	 * @return \rocket\ui\si\content\impl\SiFile
 	 */
 	function createSiFile(File $file, Eiu $eiu, bool $imageSupported) {
 		if (!$file->isValid()) {

@@ -26,9 +26,9 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamQuery;
 use rocket\op\util\OpuCtrl;
 use rocket\core\model\Rocket;
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiButton;
 use rocket\op\ei\util\Eiu;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiIconType;
 use n2n\util\ex\IllegalStateException;
 
 class EditController extends ControllerAdapter {

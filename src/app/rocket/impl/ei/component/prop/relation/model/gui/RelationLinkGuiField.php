@@ -22,16 +22,15 @@
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\SiField;
+use rocket\ui\si\content\SiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\op\ei\manage\gui\GuiFieldMap;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiField;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\si\content\impl\StringOutSiField;
-use rocket\si\content\SiFieldModel;
+use rocket\ui\si\content\SiFieldModel;
 
 class RelationLinkGuiField implements GuiField, SiFieldModel {
 	/**

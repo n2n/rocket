@@ -1,8 +1,8 @@
 <?php
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\si\content\impl\relation\SiPanel;
-use rocket\si\content\impl\relation\SiGridPos;
+use rocket\ui\si\content\impl\relation\SiPanel;
+use rocket\ui\si\content\impl\relation\SiGridPos;
 
 class PanelLayout {
 	/**

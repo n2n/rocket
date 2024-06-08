@@ -2,7 +2,7 @@
 
 namespace rocket\op\cu\gui\field;
 
-use rocket\si\content\SiField;
+use rocket\ui\si\content\SiField;
 use n2n\core\container\N2nContext;
 
 interface CuField {

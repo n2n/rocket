@@ -23,17 +23,15 @@ namespace rocket\impl\ei\component\prop\numeric;
 
 use n2n\impl\persistence\orm\property\IntEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\numeric\conf\OrderConfig;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\reflection\property\PropertyAccessProxy;
-use n2n\util\type\attrs\DataSet;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 
 class OrderEiPropNature extends IntegerEiPropNature {
     const ORDER_INCREMENT = 10;

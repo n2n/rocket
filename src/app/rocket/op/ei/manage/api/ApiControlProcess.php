@@ -22,34 +22,32 @@
 namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\EiException;
-use rocket\op\ei\manage\gui\control\GuiControl;
+use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\GuiException;
-use rocket\op\ei\manage\gui\control\GuiControlPath;
-use rocket\op\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\ui\gui\GuiException;
+use rocket\ui\gui\control\GuiControlPath;
+use rocket\ui\gui\control\UnknownGuiControlException;
 use n2n\util\type\attrs\AttributesException;
-use rocket\si\input\SiInput;
-use rocket\si\input\SiEntryInput;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\ui\si\input\SiInput;
+use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\gui\EiGuiValueBoundary;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\si\input\SiInputFactory;
+use rocket\ui\si\input\SiInputFactory;
 use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\ei\UnknownEiTypeException;
 use rocket\op\ei\manage\security\InaccessibleEiEntryException;
 use n2n\web\http\ForbiddenException;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\gui\EiGui;
+use rocket\ui\gui\EiGuiDeclaration;
 use rocket\si\input\SiInputError;
 use rocket\op\ei\manage\entry\EiEntry;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\si\input\SiInputResult;
-use rocket\si\control\SiCallResponse;
-use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
+use rocket\ui\si\control\SiCallResponse;
+use rocket\ui\gui\EiGuiDeclarationFactory;
 
 class ApiControlProcess {
 	private $eiFrame;

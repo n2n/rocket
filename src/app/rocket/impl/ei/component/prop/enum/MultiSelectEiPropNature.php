@@ -37,7 +37,7 @@ use n2n\web\dispatch\mag\MagCollection;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\si\content\SiField;
+use rocket\ui\si\content\SiField;
 
 class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	const ATTR_OPTIONS_KEY = 'options';

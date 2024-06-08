@@ -21,9 +21,7 @@
  */
 namespace rocket\op\ei\manage\api;
 
-use rocket\op\ei\manage\gui\control\GuiControlPath;
-use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\control\GuiControlPath;
 use n2n\util\type\attrs\DataSet;
 use rocket\op\spec\TypePath;
 use rocket\op\ei\mask\EiMask;
@@ -48,7 +46,7 @@ class ApiControlCallId implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\manage\gui\control\GuiControlPath
+	 * @return \rocket\ui\gui\control\GuiControlPath
 	 */
 	function getGuiControlPath() {
 		return $this->guiControlPath;

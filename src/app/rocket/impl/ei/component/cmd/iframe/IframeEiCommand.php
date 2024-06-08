@@ -7,8 +7,8 @@ use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\impl\ei\component\cmd\iframe\config\IframeConfig;
 use rocket\impl\ei\component\cmd\iframe\controller\IframeController;
-use rocket\si\control\SiButton;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiButton;
+use rocket\ui\si\control\SiIconType;
 
 class IframeEiCommand extends IndependentEiCommandAdapter {
 	const CONTROL_RUN_KEY = 'run';

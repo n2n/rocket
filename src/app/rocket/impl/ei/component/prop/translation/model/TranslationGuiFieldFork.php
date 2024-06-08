@@ -22,7 +22,7 @@
 //namespace rocket\impl\ei\component\prop\translation\model;
 //
 //use rocket\op\ei\manage\DefPropPath;
-//use rocket\op\ei\manage\gui\GuiDefinition;
+//use rocket\op\ei\manage\gui\EiGuiDefinition;
 //use n2n\l10n\N2nLocale;
 //use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 //use rocket\impl\ei\component\prop\relation\model\RelationEntry;
@@ -62,7 +62,7 @@
 //	private $markClassKey;
 //	private $srcUrl;
 //
-//	public function __construct(ToManyEiField $toManyEiField, GuiDefinition $guiDefinition, $label, int $minNumTranslations) {
+//	public function __construct(ToManyEiField $toManyEiField, EiGuiDefinition $guiDefinition, $label, int $minNumTranslations) {
 //		$this->toManyEiField = $toManyEiField;
 //		$this->guiDefinition = $guiDefinition;
 //		$this->label = $label;
@@ -143,11 +143,11 @@
 //		$guiFieldEditables = array();
 //
 //		$mandatory = false;
-//		foreach ($this->eiuGuiEntryAssemblers as $n2nLocaleId => $guiFieldAssembler) {
-//			$result = $guiFieldAssembler->assembleGuiField($defPropPath);
+//		foreach ($this->eiuGuiEntryAssemblers as $n2nLocaleId => $eiGuiField) {
+//			$result = $eiGuiField->assembleGuiField($defPropPath);
 //			if ($result === null) continue;
 //
-//			$eiuEntry = $guiFieldAssembler->getEiuGuiEntry()->entry();
+//			$eiuEntry = $eiGuiField->getEiuGuiEntry()->entry();
 //			$validationResult = null;
 //			if ($eiuEntry->getEiEntry()->hasValidationResult()) {
 //				$validationResult = $eiuEntry->getEiEntry()->getValidationResult()
@@ -163,7 +163,7 @@
 //				$translationDisplayable->putDisplayable($n2nLocaleId, $result->getDisplayable());
 //			}
 //
-//			if ($guiFieldAssembler->getEiuGuiEntry()->isReadOnly()) continue;
+//			if ($eiGuiField->getEiuGuiEntry()->isReadOnly()) continue;
 //
 //			if ($translationMag === null) {
 //				$translationMag = new TranslationMag($this->guiDefinition->getGuiPropByDefPropPath($defPropPath)->getDisplayLabelLstr(), $this->getMarkClassKey());
@@ -235,8 +235,8 @@
 //
 //	public function getInheritForkMagAssemblies(): array {
 //		$magAssemblies = array();
-//		foreach ($this->eiuGuiEntryAssemblers as $guiFieldAssembler) {
-//			$forkedMagAssemblies = $guiFieldAssembler->getEiuGuiEntry()->getAllForkMagAssemblies();
+//		foreach ($this->eiuGuiEntryAssemblers as $eiGuiField) {
+//			$forkedMagAssemblies = $eiGuiField->getEiuGuiEntry()->getAllForkMagAssemblies();
 //			if (!empty($forkedMagAssemblies)) {
 //				array_push($magAssemblies, ...$forkedMagAssemblies);
 //			}

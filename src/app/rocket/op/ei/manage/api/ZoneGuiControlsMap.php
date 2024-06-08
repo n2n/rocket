@@ -2,14 +2,13 @@
 
 namespace rocket\op\ei\manage\api;
 
-use rocket\op\ei\manage\gui\control\GuiControl;
+use rocket\ui\gui\control\GuiControl;
 use n2n\util\type\ArgUtils;
 use n2n\util\uri\Url;
-use rocket\si\input\CorruptedSiInputDataException;
-use rocket\si\control\SiCallResponse;
-use rocket\op\ei\util\Eiu;
+use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use rocket\ui\gui\EiGuiDeclaration;
 
 class ZoneGuiControlsMap {
 	/**

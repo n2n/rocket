@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\si\content\SiField;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\si\content\SiField;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\si\content\impl\relation\QualifierSelectInSiField;
-use rocket\op\ei\manage\gui\GuiFieldMap;
+use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
+use rocket\ui\gui\GuiFieldMap;
 use rocket\op\ei\util\frame\EiuFrame;
 
 class ToManyGuiField implements GuiField {
@@ -93,7 +93,7 @@ class ToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiField::save()
+	 * @see \rocket\ui\gui\field\GuiField::save()
 	 */
 	function save() {
 		$values = [];
@@ -107,7 +107,7 @@ class ToManyGuiField implements GuiField {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiField::getSiField()
+	 * @see \rocket\ui\gui\field\GuiField::getSiField()
 	 */
 	function getSiField(): SiField {
 		return $this->siField;

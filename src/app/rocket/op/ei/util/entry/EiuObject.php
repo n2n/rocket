@@ -23,11 +23,10 @@
 namespace rocket\op\ei\util\entry;
 
 use rocket\op\ei\EiPropPath;
-use rocket\op\ei\manage\entry\EiFieldOperationFailedException;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\component\prop\EiPropNature;
-use rocket\si\content\SiEntryQualifier;
+use rocket\ui\si\content\SiEntryQualifier;
 use rocket\op\ei\component\prop\EiProp;
 use n2n\reflection\property\PropertyAccessException;
 use n2n\reflection\property\AccessProxy;

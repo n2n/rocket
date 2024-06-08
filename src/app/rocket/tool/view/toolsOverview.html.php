@@ -20,12 +20,12 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use n2n\web\ui\Raw;
-	use rocket\tool\controller\ToolController;
-	use rocket\si\control\SiIconType;
-	use n2n\impl\web\ui\view\html\HtmlView;
-	
-	$view = HtmlView::view($this);
+use n2n\web\ui\Raw;
+use rocket\tool\controller\ToolController;
+use rocket\ui\si\control\SiIconType;
+use n2n\impl\web\ui\view\html\HtmlView;
+
+$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
 	
 	$view->useTemplate('~\core\view\template.html', array('title' => $view->getL10nText('tool_title')));

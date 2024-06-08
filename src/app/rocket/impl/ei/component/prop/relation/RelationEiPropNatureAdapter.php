@@ -24,12 +24,12 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\GuiProp;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\GuiProp;
+use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
-use rocket\op\ei\manage\gui\GuiFieldAssembler;
+use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
 use n2n\l10n\Lstr;
@@ -41,7 +41,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 
-abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, GuiFieldAssembler {
+abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, EiGuiField {
 	use DisplayConfigTrait;
 
 	private ?Relation $relation = null;

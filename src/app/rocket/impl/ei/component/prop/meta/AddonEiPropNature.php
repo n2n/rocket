@@ -3,8 +3,7 @@
 namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\op\ei\component\prop\EiPropNature;
-use rocket\si\content\impl\meta\SiCrumbGroup;
-use n2n\util\type\ArgUtils;
+use rocket\ui\si\content\impl\meta\SiCrumbGroup;
 
 interface AddonEiPropNature extends EiPropNature  {
 	/**

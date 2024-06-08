@@ -23,7 +23,7 @@
 
 // use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 // use rocket\op\ei\manage\gui\GuiProp;
-// use rocket\op\ei\manage\gui\GuiFieldAssembler;
+// use rocket\op\ei\manage\gui\EiGuiField;
 
 // class GuiProps {
     
@@ -40,8 +40,8 @@
 //      * @param GuiFieldFactory $guiFieldFactory
 //      * @return \rocket\op\ei\manage\gui\GuiProp
 //      */
-//     static function configAndAssembler(DisplayConfig $displayConfig, GuiFieldAssembler $guiFieldAssembler) {
-//     	return new GuiPropProxy($displayConfig, $guiFieldAssembler, null);
+//     static function configAndAssembler(DisplayConfig $displayConfig, EiGuiField $eiGuiField) {
+//     	return new GuiPropProxy($displayConfig, $eiGuiField, null);
 //     }
     
 //     /**

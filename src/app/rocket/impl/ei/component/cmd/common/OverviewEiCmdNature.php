@@ -36,7 +36,7 @@ use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\op\ei\component\EiSetup;
 use n2n\util\type\CastUtils;
-use rocket\si\control\SiNavPoint;
+use rocket\ui\si\control\SiNavPoint;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class OverviewEiCmdNature extends EiCmdNatureAdapter {

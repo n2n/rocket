@@ -141,7 +141,7 @@
 ////			return;
 ////		}
 ////
-////		$guiDefinition = $this->def->getGuiDefinition($contextEiMask);
+////		$guiDefinition = $this->def->getEiGuiDefinition($contextEiMask);
 ////		$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths,
 ////				$guiStructureDeclarationsRequired);
 ////	}
@@ -160,7 +160,7 @@
 ////		$contextEiType = $contextEiMask->getEiType();
 ////
 ////		if ($this->testIfAllowed($contextEiType, $creatablesOnly, $allowedTypes)) {
-////			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($contextEiType));
+////			$guiDefinition = $this->def->getEiGuiDefinition($contextEiMask->determineEiMask($contextEiType));
 ////			$eiGuiMaskDeclaration = $guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths,
 ////					$guiStructureDeclarationsRequired);
 ////			$eiGuiDeclaration->putEiGuiMaskDeclaration($eiGuiMaskDeclaration);
@@ -171,7 +171,7 @@
 ////				continue;
 ////			}
 ////
-////			$guiDefinition = $this->def->getGuiDefinition($contextEiMask->determineEiMask($contextEiType));
+////			$guiDefinition = $this->def->getEiGuiDefinition($contextEiMask->determineEiMask($contextEiType));
 ////			$eiGuiMaskDeclaration = $guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration, $defPropPaths,
 ////					$guiStructureDeclarationsRequired);
 ////			$eiGuiDeclaration->putEiGuiMaskDeclaration($eiGuiMaskDeclaration);

@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\manage\gui;
 
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiButton;
 use n2n\util\uri\Url;
 use Closure;
 

@@ -21,14 +21,14 @@
  */
 namespace rocket\op\util;
 
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\EiType;
 use n2n\l10n\Message;
 use n2n\util\uri\Url;
 use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 use rocket\op\ei\manage\EiObject;
-use rocket\si\control\SiNavPoint;
+use rocket\ui\si\control\SiNavPoint;
 
 class OpfControlResponse {
 	private $eiuAnalyst;

@@ -21,18 +21,14 @@
  */
 namespace rocket\op\ei;
 
-use n2n\core\container\PdoPool;
 use n2n\persistence\orm\model\EntityModel;
-use n2n\core\module\Module;
 use n2n\core\container\N2nContext;
 use n2n\reflection\ReflectionUtils;
 use n2n\util\ex\UnsupportedOperationException;
 use n2n\util\ex\IllegalStateException;
-use n2n\persistence\orm\EntityManager;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\op\spec\Type;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\mask\model\DisplayScheme;
 use rocket\op\ei\manage\veto\VetoableLifecycleAction;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\manage\LiveEiObject;
@@ -40,12 +36,9 @@ use rocket\op\ei\manage\EiEntityObj;
 use rocket\op\ei\manage\DraftEiObject;
 use rocket\op\ei\manage\draft\Draft;
 use rocket\op\spec\TypePath;
-use rocket\si\meta\SiTypeContext;
-use PhpParser\Node\Expr\Closure;
-use n2n\util\type\ArgUtils;
+use rocket\ui\si\meta\SiTypeContext;
 use rocket\op\spec\Spec;
 use ReflectionClass;
-use PhpParser\Node\Arg;
 
 class EiType extends Type {
 	private EntityModel $entityModel;
@@ -541,7 +534,7 @@ class EiType extends Type {
 	}
 	
 	/**
-	 * @return \rocket\si\meta\SiTypeContext
+	 * @return \rocket\ui\si\meta\SiTypeContext
 	 */
 	function createSiTypeContext() {
 		return (new SiTypeContext($this->getSupremeEiType()->getId(), array_map(

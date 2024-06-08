@@ -4,7 +4,7 @@ namespace rocket\op\cu\util\gui;
 
 use rocket\op\cu\gui\CuMaskedEntry;
 use rocket\op\cu\gui\field\CuField;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\si\meta\SiStructureType;
 use rocket\impl\cu\gui\BulkyCuGui;
 use rocket\op\cu\gui\CuGui;
 use rocket\op\cu\gui\control\CuControl;

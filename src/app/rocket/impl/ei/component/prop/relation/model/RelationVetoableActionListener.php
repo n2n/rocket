@@ -229,7 +229,7 @@ class VetoCheck {
 		$eiMask = $this->relationEiProp->getEiMask();
 		$manageState = $this->n2nContext->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
-		return $manageState->getDef()->getGuiDefinition($eiMask)
+		return $manageState->getDef()->getEiGuiDefinition($eiMask)
 				->createIdentityString(LiveEiObject::create($eiMask->getEiType(), $entityObj),
 						$this->n2nContext, $this->n2nContext->getN2nLocale());
 	}
@@ -242,7 +242,7 @@ class VetoCheck {
 	private function createTargetIdentityString() {
 		$manageState = $this->n2nContext->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
-		return $manageState->getDef()->getGuiDefinition($this->relationEiProp->getEiPropRelation()->getTargetEiMask())
+		return $manageState->getDef()->getEiGuiDefinition($this->relationEiProp->getEiPropRelation()->getTargetEiMask())
 				->createIdentityString(new LiveEiObject($this->targetEiEntityObj), $this->n2nContext, $this->n2nContext->getN2nLocale());
 	}
 }

@@ -22,7 +22,7 @@
 // namespace rocket\impl\ei\component\cmd\common\model;
 
 // use rocket\op\ei\manage\model\EntryModel;
-// use rocket\op\ei\manage\gui\GuiDefinition;
+// use rocket\op\ei\manage\gui\EiGuiDefinition;
 // use rocket\op\ei\manage\entry\EiEntry;
 // use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 // use rocket\op\ei\mask\EiMask;
@@ -34,7 +34,7 @@
 // 	private $eiEntry;
 	
 // 	/**
-// 	 * @param GuiDefinition $guiDefinition
+// 	 * @param EiGuiDefinition $guiDefinition
 // 	 * @param EiEntry $eiEntry
 // 	 */
 // 	public function __construct(EiMask $eiMask, EiGuiValueBoundary $eiGuiValueBoundary,	EiEntry $eiEntry) {
@@ -58,9 +58,9 @@
 // 	}
 	
 // 	/* (non-PHPdoc)
-// 	 * @see \rocket\op\ei\manage\model\ManageModel::getGuiDefinition()
+// 	 * @see \rocket\op\ei\manage\model\ManageModel::getEiGuiDefinition()
 // 	 */
-// 	public function getGuiDefinition() {
+// 	public function getEiGuiDefinition() {
 // 		return $this->guiDefinition;	
 // 	}
 	

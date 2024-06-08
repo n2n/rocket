@@ -35,7 +35,7 @@ interface IdNamePropFork {
 	/**
 	 * @param Eiu $eiu
 	 * @return EiObject|null null if not available
-	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
+	 * @throws IllegalStateException if {@see self::getForkedEiGuiDefinition()}
 	 */
 	public function determineForkedEiObject(Eiu $eiu): ?EiObject;
 }

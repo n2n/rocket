@@ -23,10 +23,9 @@ namespace rocket\op\ei\component\modificator;
 
 use rocket\op\ei\component\EiComponentNature;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\draft\DraftDefinition;
 use rocket\op\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
 
 interface EiModNature extends EiComponentNature {
 	

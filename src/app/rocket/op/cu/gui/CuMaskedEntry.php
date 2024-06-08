@@ -2,33 +2,21 @@
 
 namespace rocket\op\cu\gui;
 
-use rocket\si\meta\SiMaskDeclaration;
-use rocket\si\content\SiValueBoundary;
-use rocket\si\meta\SiStyle;
-use rocket\op\ei\manage\gui\control\GuiControl;
-use n2n\util\HashUtils;
-use rocket\si\meta\SiMask;
-use rocket\si\meta\SiMaskQualifier;
-use rocket\si\meta\SiMaskIdentifier;
-use rocket\si\control\SiIconType;
-use rocket\si\content\SiEntryIdentifier;
-use rocket\si\content\SiEntry;
-use n2n\util\uri\Url;
-use rocket\si\content\SiGui;
-use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use rocket\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\si\meta\SiDeclaration;
-use rocket\si\input\SiEntryInput;
+use rocket\ui\si\meta\SiMask;
+use rocket\ui\gui\control\GuiControl;
+use rocket\ui\si\meta\SiMask;
+use rocket\ui\si\meta\SiMaskQualifier;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\ui\si\control\SiIconType;
+use rocket\ui\si\content\SiEntry;
+use rocket\ui\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
-use rocket\si\input\SiInputError;
-use rocket\op\cu\util\Cuu;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 
 class CuMaskedEntry {
 
 
-	private SiMaskDeclaration $siMaskDeclaration;
+	private SiMask $siMaskDeclaration;
 	private CuStructure $eifSiStructure;
 	private CuGuiEntry $cuGuiEntry;
 
@@ -41,7 +29,7 @@ class CuMaskedEntry {
 	function __construct(private string $maskId, string $typeId, string $name,
 			$iconClass = SiIconType::ICON_ROCKET) {
 
-		$this->siMaskDeclaration = new SiMaskDeclaration(
+		$this->siMaskDeclaration = new SiMask(
 				new SiMask(new SiMaskQualifier(new SiMaskIdentifier($maskId, $typeId), $name, $iconClass)),
 				[]);
 		$this->cuGuiEntry = new CuGuiEntry();
@@ -57,7 +45,7 @@ class CuMaskedEntry {
 		return $this->eifSiStructure;
 	}
 
-	function getSiMaskDeclaration(): SiMaskDeclaration {
+	function getSiMaskDeclaration(): SiMask {
 		return $this->siMaskDeclaration;
 	}
 

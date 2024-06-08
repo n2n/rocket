@@ -22,7 +22,6 @@
 namespace rocket\op\ei;
 
 use n2n\core\container\N2nContext;
-use rocket\op\ei\component\GuiFactory;
 use rocket\op\ei\component\EiEntryFactory;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\EiObject;
@@ -30,27 +29,20 @@ use rocket\op\ei\manage\critmod\filter\FilterDefinition;
 use rocket\op\ei\manage\critmod\sort\SortDefinition;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\mask\EiMask;
-
-
 use rocket\op\ei\manage\generic\ScalarEiDefinition;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\generic\GenericEiDefinition;
 use rocket\op\ei\manage\critmod\quick\QuickSearchDefinition;
 use rocket\op\ei\manage\ManageState;
 use rocket\op\ei\component\EiFrameFactory;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use n2n\impl\web\ui\view\html\HtmlView;
 use rocket\op\ei\manage\frame\EiForkLink;
-use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\manage\idname\IdNameDefinition;
-use rocket\op\ei\manage\gui\control\GuiControl;
 use rocket\op\ei\manage\EiLaunch;
-use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\gui\GuiBuildFailedException;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\manage\EiGuiMaskDeclarationEngine;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
+
 
 class EiEngine {
 
@@ -175,20 +167,20 @@ class EiEngine {
 
 	private function getEiGuiMaskDeclarationEngine(): EiGuiMaskDeclarationEngine {
 		return $this->eiGuiMaskDeclarationEngine ?? $this->eiGuiMaskDeclarationEngine
-				= new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getGuiDefinition());
+				= new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getEiGuiDefinition());
 	}
 
-	private ?GuiDefinition $guiDefinition = null;
+	private ?EiGuiDefinition $guiDefinition = null;
 
-	function getGuiDefinition(): GuiDefinition {
+	function getEiGuiDefinition(): EiGuiDefinition {
 		if ($this->guiDefinition !== null) {
 			return $this->guiDefinition;
 		}
 
-		$this->guiDefinition = new GuiDefinition($this->eiMask);
+		$this->guiDefinition = new EiGuiDefinition($this->eiMask);
 		$this->eiMask->getEiPropCollection()
-				->supplyGuiDefinition($this->guiDefinition, $this->n2nContext);
-		$this->eiMask->getEiCmdCollection()->supplyGuiDefinition($this->guiDefinition);
+				->supplyEiGuiDefinition($this->guiDefinition, $this->n2nContext);
+		$this->eiMask->getEiCmdCollection()->supplyEiGuiDefinition($this->guiDefinition);
 		return $this->guiDefinition;
 	}
 

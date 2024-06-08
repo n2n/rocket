@@ -21,16 +21,12 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\op\ei\manage\gui\GuiProp;
+use rocket\ui\gui\GuiProp;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\core\model\Rocket;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
+use rocket\ui\gui\ViewMode;
+use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\op\ei\manage\gui\GuiFieldAssembler;
 
 trait DisplayConfigTrait {
 	protected DisplayConfig $displayConfig;

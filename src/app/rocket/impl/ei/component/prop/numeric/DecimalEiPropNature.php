@@ -22,9 +22,6 @@
 namespace rocket\impl\ei\component\prop\numeric;
 
 use n2n\impl\web\dispatch\mag\model\NumericMag;
-use n2n\util\type\ArgUtils;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraint;
 use rocket\op\ei\util\Eiu;
@@ -33,11 +30,9 @@ use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\ui\UiComponent;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\web\dispatch\mag\UiOutfitter;
-use n2n\impl\persistence\orm\property\FloatEntityProperty;
-use rocket\impl\ei\component\prop\numeric\conf\DecimalConfig;
-use rocket\si\content\SiField;
+use rocket\ui\si\content\SiField;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\validation\validator\impl\Validators;
 use rocket\op\ei\util\factory\EifField;
 use n2n\reflection\property\PropertyAccessProxy;

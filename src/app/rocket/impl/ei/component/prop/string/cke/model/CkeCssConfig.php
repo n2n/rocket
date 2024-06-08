@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\string\cke\model;
 
 use n2n\context\Lookupable;
-use rocket\si\content\impl\string\CkeStyle;
+use rocket\ui\si\content\impl\string\CkeStyle;
 
 interface CkeCssConfig extends Lookupable {
 	

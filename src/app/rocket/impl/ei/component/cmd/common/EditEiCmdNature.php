@@ -23,8 +23,8 @@ namespace rocket\impl\ei\component\cmd\common;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
-use rocket\si\control\SiButton;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiButton;
+use rocket\ui\si\control\SiIconType;
 use rocket\impl\ei\component\cmd\common\controller\EditController;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
 use rocket\op\ei\component\command\PrivilegedEiCommand;
@@ -33,7 +33,6 @@ use rocket\core\model\Rocket;
 use n2n\util\uri\Path;
 use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {

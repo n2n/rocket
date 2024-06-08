@@ -26,12 +26,10 @@ use rocket\op\ei\util\entry\EiuEntry;
 use n2n\util\type\CastUtils;
 use n2n\l10n\N2nLocale;
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
 
 class LazyTranslationEssentialsDeterminer {
@@ -91,7 +89,7 @@ class LazyTranslationEssentialsDeterminer {
 	}
 	
 	/**
-	 * @return \rocket\si\meta\SiDeclaration
+	 * @return \rocket\ui\si\meta\SiDeclaration
 	 */
 	function getTargetSiDeclaration() {
 		if ($this->targetSiDeclaration === null) {

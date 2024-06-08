@@ -25,7 +25,7 @@ use rocket\op\ei\IdPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\attrs\DataSet;
-use rocket\op\ei\manage\gui\control\GuiControl;
+use rocket\ui\gui\control\GuiControl;
 
 class ZoneApiControlCallId extends IdPath implements  \JsonSerializable {
 	

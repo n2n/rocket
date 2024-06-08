@@ -9,7 +9,6 @@ use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\security\EiPermissionManager;
 use rocket\op\ei\manage\gui\LazyEiGuiDeclarationStore;
 use rocket\op\ei\CachedEiDefFactory;
-use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 use n2n\persistence\orm\EntityManager;
 
 class EiLaunch {

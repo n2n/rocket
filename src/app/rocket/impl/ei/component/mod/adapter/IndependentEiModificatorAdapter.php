@@ -62,15 +62,15 @@ abstract class IndependentEiModificatorAdapter extends EiModNatureAdapter implem
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\component\modificator\EiModNature::setupGuiDefinition()
+	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiDefinition()
 	 */
-	public function setupGuiDefinition(Eiu $eiu) { }
+	public function setupEiGuiDefinition(Eiu $eiu) { }
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\component\modificator\EiModNature::setupEiGuiValueBoundary()
 	 */
-	public function setupEiGuiValueBoundary(\rocket\op\ei\manage\gui\EiGuiValueBoundary $eiGuiValueBoundary) { }
+	public function setupEiGuiValueBoundary(\gui\EiGuiValueBoundary $eiGuiValueBoundary) { }
 	
 	/**
 	 * {@inheritDoc}

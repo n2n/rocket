@@ -34,7 +34,7 @@ use rocket\op\ei\manage\critmod\filter\FilterProp;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\critmod\sort\SortDefinition;
 use rocket\op\ei\manage\critmod\sort\SortPropFork;
-use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\manage\generic\GenericEiDefinition;
 use rocket\op\ei\manage\generic\ScalarEiDefinition;
 use rocket\op\ei\manage\idname\IdNameDefinition;
@@ -234,7 +234,7 @@ class EiPropCollection extends EiComponentCollection {
 //		return $sortDefinition;
 //	}
 
-	function supplyGuiDefinition(GuiDefinition $guiDefinition, N2nContext $n2nContext): void {
+	function supplyEiGuiDefinition(EiGuiDefinition $guiDefinition, N2nContext $n2nContext): void {
 		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
 		foreach ($this as $eiProp) {

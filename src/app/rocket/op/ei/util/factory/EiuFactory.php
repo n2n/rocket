@@ -6,8 +6,8 @@ use rocket\op\util\OpfControlResponse;
 use rocket\op\ei\util\EiuAnalyst;
 use n2n\util\type\TypeConstraint;
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\SiField;
-use rocket\op\ei\manage\gui\GuiFieldAssembler;
+use rocket\ui\si\content\SiField;
+use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\util\control\EiuGuiControlFactory;
 use rocket\op\ei\util\si\EiuSiFactory;
 
@@ -83,7 +83,7 @@ class EiuFactory {
 	}
 	
 	/**
-	 * @param \Closure|GuiFieldAssembler $eiGuiCallbackOrAssembler
+	 * @param \Closure|EiGuiField $eiGuiCallbackOrAssembler
 	 * @return \rocket\op\ei\util\factory\EifGuiPropSetup
 	 */
 	function newGuiPropSetup($eiGuiCallbackOrAssembler) {

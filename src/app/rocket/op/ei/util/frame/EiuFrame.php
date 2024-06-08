@@ -35,16 +35,10 @@ use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\component\command\EiCmdNature;
 use rocket\op\ei\manage\LiveEiObject;
 use rocket\op\ei\manage\DraftEiObject;
-use n2n\reflection\ReflectionUtils;
 use rocket\op\ei\manage\draft\Draft;
 use rocket\op\ei\mask\EiMask;
 use n2n\util\ex\IllegalStateException;
 use n2n\persistence\orm\util\NestedSetUtils;
-use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
-use rocket\op\ei\util\filter\EiuFilterForm;
-use rocket\op\ei\util\filter\controller\FilterJhtmlHook;
-use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
-use rocket\op\ei\util\sort\EiuSortForm;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\util\spec\EiuEngine;
 use rocket\op\ei\util\spec\EiuMask;
@@ -62,13 +56,9 @@ use rocket\op\ei\manage\frame\EiRelation;
 use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\CriteriaFactory;
-use rocket\si\content\SiEntryQualifier;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\content\SiEntryQualifier;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\util\gui\EiuGuiEntry;
-use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\op\ei\manage\gui\EiGui;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\op\ei\manage\frame\SortAbility;
 use rocket\op\util\OpfControlResponse;
@@ -79,7 +69,7 @@ use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\op\ei\component\prop\EiProp;
 use n2n\util\uri\Url;
-use rocket\si\control\SiNavPoint;
+use rocket\ui\si\control\SiNavPoint;
 
 class EiuFrame {
 	private $eiFrame;
@@ -504,7 +494,7 @@ class EiuFrame {
 // 		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
 // 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		
-// 		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getGuiDefinition($contextEiMask);
+// 		$guiDefinition = $this->eiFrame->getEiLaunch()->getDef()->getEiGuiDefinition($contextEiMask);
 // 		$eiGuiMaskDeclaration = $contextEiMask->createEiGuiMaskDeclaration($this->eiFrame, ViewMode::BULKY_ADD, true);
 		
 // 		ArgUtils::valArray($eiEntries, EiEntry::class);

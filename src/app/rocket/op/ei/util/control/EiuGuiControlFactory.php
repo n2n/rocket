@@ -21,7 +21,7 @@
  */
 namespace rocket\op\ei\util\control;
 
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiButton;
 use rocket\op\ei\util\EiuAnalyst;
 use n2n\util\uri\Url;
 use rocket\impl\ei\manage\gui\RefGuiControl;

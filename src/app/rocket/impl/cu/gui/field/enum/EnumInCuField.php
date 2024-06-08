@@ -5,8 +5,8 @@ use rocket\op\cu\gui\field\CuField;
 use n2n\core\container\N2nContext;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
-use rocket\si\content\impl\EnumInSiField;
-use rocket\si\content\SiFieldModel;
+use rocket\ui\si\content\impl\EnumInSiField;
+use rocket\ui\si\content\SiFieldModel;
 
 class EnumInCuField implements CuField, SiFieldModel {
 	private array $messageStrs = [];

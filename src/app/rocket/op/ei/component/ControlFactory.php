@@ -22,7 +22,7 @@
 // namespace rocket\op\ei\component;
 
 // use n2n\util\type\ArgUtils;
-// use rocket\op\ei\manage\gui\GuiDefinition;
+// use rocket\op\ei\manage\gui\EiGuiDefinition;
 // use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
 // use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 // 
@@ -52,13 +52,13 @@
 	
 // 	/**
 // 	 * @param N2nContext $n2nContext
-// 	 * @param GuiDefinition|null $guiDefinition
-// 	 * @return \rocket\op\ei\manage\gui\GuiDefinition
+// 	 * @param EiGuiDefinition|null $guiDefinition
+// 	 * @return \rocket\op\ei\manage\gui\EiGuiDefinition
 // 	 */
 // 	public function createEntryGuiControlDefinition(N2nContext $n2nContext, &$guiDefinition = null) {
 // 		$eiu = new Eiu($n2nContext, $this->eiMask);
 		
-// 		$guiDefinition = new GuiDefinition($this->eiMask->getLabelLstr());
+// 		$guiDefinition = new EiGuiDefinition($this->eiMask->getLabelLstr());
 // 		$guiDefinition->setIdentityStringPattern($this->eiMask->getIdentityStringPattern());
 		
 // 		foreach ($this->eiMask->getEiPropCollection() as $eiPropPathStr => $eiProp) {
@@ -78,7 +78,7 @@
 // 		}
 		
 // 		foreach ($this->eiMask->getEiModCollection() as $eiModificator) {
-// 			$eiModificator->setupGuiDefinition($eiu);
+// 			$eiModificator->setupEiGuiDefinition($eiu);
 // 		}
 		
 // 		return $guiDefinition;
@@ -89,7 +89,7 @@
 // 	 * @param N2nLocale $n2nLocale
 // 	 * @return string
 // 	 */
-// 	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale, GuiDefinition $guiDefinition) {
+// 	private function createDefaultIdentityString(EiObject $eiObject, N2nLocale $n2nLocale, EiGuiDefinition $guiDefinition) {
 // 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		
 // 		$idPatternPart = null;
@@ -122,7 +122,7 @@
 // 	 * @param N2nLocale $n2nLocale
 // 	 * @return string
 // 	 */
-// 	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale, GuiDefinition $guiDefinition) {
+// 	public function createIdentityString(EiObject $eiObject, N2nLocale $n2nLocale, EiGuiDefinition $guiDefinition) {
 // 		$identityStringPattern = $this->eiMaskDef->getIdentityStringPattern();
 		
 // 		if ($manageState === null || $identityStringPattern === null) {
@@ -195,13 +195,13 @@
 		
 // 		$eiGuiValueBoundary = new EiGuiValueBoundary($eiGuiMaskDeclaration, $eiEntry, $treeLevel);
 		
-// 		$guiFieldAssembler = new EiGuiValueBoundaryAssembler($eiGuiValueBoundary);
+// 		$eiGuiField = new EiGuiValueBoundaryAssembler($eiGuiValueBoundary);
 		
 // 		foreach ($defPropPaths as $defPropPath) {
-// 			$guiFieldAssembler->assembleGuiField($defPropPath);
+// 			$eiGuiField->assembleGuiField($defPropPath);
 // 		}
 		
-// 		$guiFieldAssembler->finalize();
+// 		$eiGuiField->finalize();
 		
 // 		return $eiGuiValueBoundary;
 // 	}

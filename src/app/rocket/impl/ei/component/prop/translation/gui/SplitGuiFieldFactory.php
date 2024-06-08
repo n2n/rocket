@@ -22,11 +22,11 @@
 namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\op\ei\manage\DefPropPath;
-use rocket\si\content\impl\SiFields;
-use rocket\op\ei\manage\gui\GuiFieldMap;
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\si\content\impl\split\SplitStyle;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\content\impl\SiFields;
+use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\si\content\impl\split\SplitStyle;
+use rocket\ui\si\control\SiIconType;
 
 class SplitGuiFieldFactory {
 	private $lted;

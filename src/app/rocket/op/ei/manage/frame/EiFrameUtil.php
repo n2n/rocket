@@ -26,33 +26,23 @@ use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\ei\manage\EiEntityObj;
 use n2n\persistence\orm\store\EntityInfo;
 use n2n\persistence\orm\criteria\item\CrIt;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\EiObject;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\criteria\Criteria;
-use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use rocket\op\ei\manage\LiveEiObject;
-use rocket\op\ei\EiException;
 use rocket\op\ei\UnknownEiTypeException;
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\op\ei\manage\security\SecurityException;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use n2n\l10n\N2nLocale;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use rocket\si\content\SiValueBoundary;
-use rocket\si\meta\SiDeclaration;
-use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\gui\EiGui;
-use n2n\core\N2N;
-use rocket\op\ei\manage\critmod\filter\ComparatorConstraintGroup;
 use rocket\op\ei\manage\critmod\filter\impl\CriteriaConstraints;
 use rocket\op\ei\manage\DefPropPath;
 use ReflectionClass;
+use rocket\ui\gui\GuiEntry;
 use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
-use rocket\op\ei\manage\gui\EiGuiEntry;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 
 class EiFrameUtil {
 	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
@@ -217,7 +207,7 @@ class EiFrameUtil {
 //	 * @return EiGuiMaskDeclaration
 //	 */
 //	private function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode, array $defPropPaths = null): EiGuiMaskDeclaration {
-//		$guiDefinition = $eiMask->getEiEngine()->getGuiDefinition();
+//		$guiDefinition = $eiMask->getEiEngine()->getEiGuiDefinition();
 //
 ////		if ($defPropPaths === null) {
 ////			return $guiDefinition->createEiGuiDeclaration($this->eiFrame->getN2nContext(), $viewMode)->getEiGuiMaskDeclaration();
@@ -263,7 +253,7 @@ class EiFrameUtil {
 		$eiGuiDeclarationFactory = new EiGuiDeclarationFactory($eiMask, $this->eiFrame->getN2nContext());
 
 		$eiGuiDeclaration = $eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
-		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
+		$eiGuiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
 		$eiGuiValueBoundary->selectEiGuiEntryByEiMaskId((string) $eiMask->getEiTypePath());
 		return $eiGuiValueBoundary;
 	}
@@ -310,17 +300,17 @@ class EiFrameUtil {
 	}
 
 	function createEiGuiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
-			?string $eiTypeId, ?array $defPropPaths): EiGuiEntry {
+			?string $eiTypeId, ?array $defPropPaths): GuiEntry {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
 
 		$eiMask = $this->determineEiMask($eiEntry, $eiTypeId);
 		return $eiMask->getEiEngine()->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths)
-				->createEiGuiEntry($this->eiFrame, $eiEntry, $entryGuiControlsIncluded);
+				->createGuiEntry($this->eiFrame, $eiEntry, $entryGuiControlsIncluded);
 
 	}
 
-	function copyEiGuiEntry(EiGuiEntry $eiGuiEntry, int $viewMode = null, array $defPropPaths = null,
-			bool $entryGuiControlsIncluded = null): EiGuiEntry {
+	function copyEiGuiEntry(GuiEntry $eiGuiEntry, int $viewMode = null, array $defPropPaths = null,
+			bool $entryGuiControlsIncluded = null): GuiEntry {
 		ArgUtils::valArray($defPropPaths, DefPropPath::class, nullAllowed: true);
 
 		$eiGuiMaskDeclaration = $eiGuiEntry->getEiGuiMaskDeclaration();
@@ -417,7 +407,7 @@ class EiFrameUtil {
 	private function simpleLookup(EiGuiDeclaration $eiGuiDeclaration, Criteria $criteria, bool $entryGuiControlsIncluded): array {
 		$eiGuiValueBoundaries = [];
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiGuiValueBoundaries[] = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame,
+			$eiGuiValueBoundaries[] = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame,
 					[$this->eiFrame->createEiEntry($this->createEiObject($entityObj))], $entryGuiControlsIncluded);
 		}
 		return $eiGuiValueBoundaries;
@@ -439,7 +429,7 @@ class EiFrameUtil {
 
 		$eiGuiValueBoundaries = [];
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$eiGuiValueBoundaries[] = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame,
+			$eiGuiValueBoundaries[] = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame,
 					[$this->eiFrame->createEiEntry($this->createEiObject($nestedSetItem->getEntityObj()))],
 					$entryGuiControlsIncluded, $nestedSetItem->getLevel());
 		}

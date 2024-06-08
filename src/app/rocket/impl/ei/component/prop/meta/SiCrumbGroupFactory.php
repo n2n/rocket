@@ -3,8 +3,8 @@
 namespace rocket\impl\ei\component\prop\meta;
 
 
-use rocket\si\content\impl\meta\SiCrumbGroup;
-use rocket\si\content\impl\meta\SiCrumb;
+use rocket\ui\si\content\impl\meta\SiCrumbGroup;
+use rocket\ui\si\content\impl\meta\SiCrumb;
 use n2n\util\StringUtils;
 
 class SiCrumbGroupFactory {

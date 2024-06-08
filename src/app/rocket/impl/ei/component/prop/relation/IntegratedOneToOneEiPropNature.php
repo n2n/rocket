@@ -22,30 +22,14 @@
 namespace rocket\impl\ei\component\prop\relation;
 
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\op\ei\manage\LiveEiObject;
-use n2n\util\type\CastUtils;
-use n2n\impl\web\dispatch\mag\model\ObjectMagAdapter;
-use n2n\web\dispatch\Dispatchable;
-use n2n\web\dispatch\map\PropertyPath;
-use n2n\impl\web\ui\view\html\HtmlView;
-use n2n\web\ui\Raw;
-use n2n\web\ui\UiComponent;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\util\Eiu;
-use n2n\web\dispatch\mag\UiOutfitter;
-use rocket\op\ei\manage\gui\GuiProp;
-use n2n\web\dispatch\mag\Mag;
-use rocket\op\ei\manage\gui\field\GuiFieldForkEditable;
-use rocket\op\ei\util\gui\EiuGuiEntryAssembler;
-use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\manage\entry\EiFieldNature;
-use rocket\op\ei\manage\gui\EiFieldAbstraction;
-use rocket\impl\ei\component\prop\adapter\entry\EiFieldWrapperCollection;
-use rocket\op\ei\manage\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\op\ei\manage\EiObject;
 use n2n\reflection\property\PropertyAccessProxy;
 
 class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*implements GuiPropFork*/ {
@@ -57,17 +41,17 @@ class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*imple
 				new RelationModel($this, false, false, RelationModel::MODE_INTEGRATED, null));
 	}
 	
-	private GuiDefinition $forkedGuiDefinition;
+	private EiGuiDefinition $forkedEiGuiDefinition;
 	
 //	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
-//		$this->forkedGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
-//				->getGuiDefinition();
+//		$this->forkedEiGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
+//				->getEiGuiDefinition();
 //
 //		return $this;
 //	}
 	
-//	public function getForkedGuiDefinition(): GuiDefinition {
-//		return $this->forkedGuiDefinition;
+//	public function getForkedEiGuiDefinition(): EiGuiDefinition {
+//		return $this->forkedEiGuiDefinition;
 //	}
 	
 	public function buildEiField(Eiu $eiu): ?EiFieldNature {
@@ -133,7 +117,7 @@ class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*imple
 //			return new EiFieldWrapperCollection([]);
 //		}
 //
-//		return $this->getForkedGuiDefinition()->determineEiFieldAbstraction($eiu->getN2nContext(),
+//		return $this->getForkedEiGuiDefinition()->determineEiFieldAbstraction($eiu->getN2nContext(),
 //				$targetRelationEntry->getEiEntry(), $defPropPath);
 //	}
 

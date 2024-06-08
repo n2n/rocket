@@ -22,7 +22,7 @@
 namespace rocket\op\ei\manage;
 
 use rocket\op\ei\manage\draft\DraftValueMap;
-use rocket\si\content\SiEntryIdentifier;
+use rocket\ui\si\content\SiEntryIdentifier;
 
 abstract class EiObjectAdapter implements EiObject {
 	public function getLiveObject() {

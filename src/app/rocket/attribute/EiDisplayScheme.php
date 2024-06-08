@@ -23,7 +23,7 @@ namespace rocket\attribute;
 
 use rocket\op\ei\mask\model\DisplayStructure;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\si\meta\SiStructureType;
 use n2n\util\StringUtils;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]

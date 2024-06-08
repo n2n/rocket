@@ -24,10 +24,6 @@ namespace rocket\impl\ei\component\prop\enum;
 
  
 
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use rocket\op\ei\manage\frame\EiFrame;
-use n2n\core\container\N2nContext;
 use rocket\op\ei\util\filter\prop\EnumFilterProp;
 use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
 use n2n\util\type\ArgUtils;
@@ -43,18 +39,15 @@ use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
-use n2n\impl\persistence\orm\property\IntEntityProperty;
-use rocket\si\content\SiField;
-use rocket\si\content\impl\SiFields;
-use rocket\impl\ei\component\prop\enum\conf\EnumConfig;
+use rocket\ui\si\content\SiField;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\EnumInSiField;
+use rocket\ui\si\content\impl\EnumInSiField;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\EnumUtils;
-use function PHPUnit\Framework\containsEqual;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	use QuickSearchConfigTrait;

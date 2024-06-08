@@ -22,7 +22,7 @@
 namespace rocket\op\ei\manage\api;
 
 use rocket\si\input\SiInputError;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\si\input\SiInputResult;
 
 class SiCallResult implements \JsonSerializable {

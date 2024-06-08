@@ -3,11 +3,11 @@
 namespace rocket\impl\cu\gui\field\string;
 
 use rocket\op\cu\gui\field\CuField;
-use rocket\si\content\impl\StringInSiField;
+use rocket\ui\si\content\impl\StringInSiField;
 use n2n\bind\build\impl\Bind;
 use n2n\bind\mapper\impl\Mappers;
 use n2n\core\container\N2nContext;
-use rocket\si\content\SiFieldModel;
+use rocket\ui\si\content\SiFieldModel;
 
 class StringInCuField implements CuField, SiFieldModel {
 

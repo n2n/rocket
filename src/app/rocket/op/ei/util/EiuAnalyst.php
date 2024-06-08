@@ -23,7 +23,6 @@ namespace rocket\op\ei\util;
 
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\core\container\N2nContext;
-use rocket\op\ei\manage\ManageException;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\manage\entry\EiEntry;
@@ -32,12 +31,12 @@ use rocket\op\ei\manage\LiveEiObject;
 use rocket\op\ei\manage\draft\Draft;
 use rocket\op\ei\manage\DraftEiObject;
 use rocket\op\ei\manage\ManageState;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\EiType;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
+use rocket\ui\gui\EiGuiValueBoundaryAssembler;
 use rocket\op\ei\EiEngine;
 use rocket\op\spec\Spec;
 use rocket\op\ei\EiTypeExtension;
@@ -61,9 +60,9 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\spec\UnknownTypeException;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\gui\EiuGuiField;
-use rocket\op\ei\manage\gui\EiGuiEntry;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\util\gui\EiuGuiDeclaration ;
+use rocket\ui\gui\GuiEntry;
+use rocket\ui\gui\EiGuiDeclaration;
+use rocket\op\ei\util\gui\EiuGuiDeclaration;
 use rocket\op\ei\component\prop\EiProp;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\component\modificator\EiMod;
@@ -219,7 +218,7 @@ class EiuAnalyst {
 				continue;
 			}
 			
-			if ($eiArg instanceof EiGuiEntry) {
+			if ($eiArg instanceof GuiEntry) {
 				$this->assignEiGuiEntry($eiArg);
 				continue;
 			}
@@ -657,7 +656,7 @@ class EiuAnalyst {
 		$this->eiuGuiMaskDeclaration = null;
 		$this->eiGuiMaskDeclaration = $eiGuiMaskDeclaration;
 		
-		$this->assignEiMask($eiGuiMaskDeclaration->getGuiDefinition()->getEiMask());
+		$this->assignEiMask($eiGuiMaskDeclaration->getEiGuiDefinition()->getEiMask());
 		
 // 		$eiGuiValueBoundaries = $eiGuiMaskDeclaration->getEiGuiValueBoundaries();
 // 		if (count($eiGuiValueBoundaries) == 1) {
@@ -679,7 +678,7 @@ class EiuAnalyst {
 // 	}
 
 	/**
-	 * @param EiGuiEntry $eiGuiEntry
+	 * @param GuiEntry $eiGuiEntry
 	 */
 	private function assignEiGuiEntry($eiGuiEntry) {
 		if ($this->eiGuiEntry === $eiGuiEntry) {
@@ -908,8 +907,8 @@ class EiuAnalyst {
 	
 	/**
 	 * @param bool $required
-	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\manage\gui\EiGui
+	 * @return \rocket\ui\gui\EiGui
+	 *@throws EiuPerimeterException
 	 */
 	public function getEiGui(bool $required) {
 		$this->ensureAppied();
@@ -942,8 +941,8 @@ class EiuAnalyst {
 	
 	/**
 	 * @param bool $required
+	 * @return \rocket\ui\gui\EiGuiValueBoundaryAssembler
 	 * @throws EiuPerimeterException
-	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler
 	 */
 	public function getEiGuiValueBoundaryAssembler(bool $required) {
 		$this->ensureAppied();

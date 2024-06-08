@@ -21,24 +21,16 @@
  */
 namespace rocket\op\ei\manage\api;
 
-use rocket\si\api\SiValResponse;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\api\SiValResult;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use rocket\si\api\SiPartialContentInstruction;
-use rocket\si\content\SiValueBoundary;
-use rocket\si\api\SiValInstruction;
-use rocket\si\input\SiEntryInput;
+use rocket\ui\si\api\SiValInstruction;
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\si\api\SiValGetResult;
-use rocket\si\api\SiValGetInstruction;
+use rocket\ui\si\api\SiValGetResult;
+use rocket\ui\si\api\SiValGetInstruction;
 use rocket\op\ei\manage\frame\EiGuiValueBoundaryResult;
-use rocket\op\ei\manage\gui\EiGui;
 use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\entry\EiEntry;
-use n2n\l10n\N2nLocale;
 
 class ValInstructionProcess {
 	private $instruction;

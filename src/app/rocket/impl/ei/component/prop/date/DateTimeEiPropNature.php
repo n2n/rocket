@@ -21,17 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\date;
 
-use n2n\impl\persistence\orm\property\DateTimeEntityProperty;
 use n2n\l10n\L10nUtils;
-use n2n\persistence\orm\property\EntityProperty;
- 
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\si\control\SiIconType;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use n2n\util\type\ArgUtils;
-use n2n\reflection\property\AccessProxy;
-use n2n\util\type\TypeConstraint;
 use rocket\op\ei\manage\draft\stmt\PersistDraftStmtBuilder;
 use rocket\op\ei\manage\draft\stmt\FetchDraftStmtBuilder;
 use rocket\op\ei\manage\draft\SimpleDraftValueSelection;
@@ -43,13 +37,11 @@ use rocket\op\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\op\ei\util\Eiu;
 use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
-use n2n\impl\web\ui\view\html\HtmlElement;
 use rocket\op\ei\manage\critmod\sort\SortProp;
-use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\date\conf\DateTimeConfig;
+use rocket\ui\si\content\SiField;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\l10n\DateTimeFormat;
 use n2n\util\type\TypeConstraints;
 use n2n\reflection\property\PropertyAccessProxy;

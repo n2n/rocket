@@ -3,12 +3,10 @@
 namespace testmdl\bo;
 
 use rocket\attribute\EiType;
-use rocket\attribute\EiPreset;
-use rocket\op\spec\setup\EiPresetMode;
 use rocket\attribute\impl\EiSetup;
 use rocket\op\ei\util\Eiu;
 use rocket\attribute\impl\EiModCallback;
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiButton;
 use rocket\impl\ei\component\cmd\EiCmdNatures;
 
 #[EiType]

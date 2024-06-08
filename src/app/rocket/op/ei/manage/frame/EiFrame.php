@@ -36,11 +36,9 @@ use rocket\op\ei\manage\ManageState;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\manage\security\EiEntryAccess;
 use rocket\op\ei\EiPropPath;
-use rocket\op\ei\component\command\EiCmdNature;
-use rocket\op\ei\manage\security\InaccessibleEiEntryException;
 use rocket\op\ei\component\command\GenericResult;
-use rocket\si\control\SiNavPoint;
-use rocket\si\meta\SiFrame;
+use rocket\ui\si\control\SiNavPoint;
+use rocket\ui\si\meta\SiFrame;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\manage\EiLaunch;
@@ -532,7 +530,7 @@ class EiFrame {
 	}
 	
 	/**
-	 * @return \rocket\si\meta\SiFrame
+	 * @return \rocket\ui\si\meta\SiFrame
 	 */
 	function createSiFrame() {
 		$apUrlMap = array_combine(ApiController::getApiSections(), 

@@ -28,9 +28,8 @@ use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\EiObject;
-use rocket\si\control\SiNavPoint;
-use rocket\op\ei\manage\gui\GuiDefinition;
-use n2n\core\container\N2nContext;
+use rocket\ui\si\control\SiNavPoint;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 
 class EiCmdCollection extends EiComponentCollection {
 	
@@ -197,7 +196,7 @@ class EiCmdCollection extends EiComponentCollection {
 		throw new UnknownEiComponentException($this->eiMask . ' provides no generic add EiCommand.');
 	}
 
-	function supplyGuiDefinition(GuiDefinition $guiDefinition) {
+	function supplyEiGuiDefinition(EiGuiDefinition $guiDefinition) {
 		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
 		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {

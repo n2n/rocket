@@ -21,23 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\string;
 
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\l10n\DynamicTextCollection;
-use n2n\util\type\ArgUtils;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\string\conf\PathPartConfig;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\gui\ViewMode;
+use rocket\ui\si\content\SiField;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\op\ei\manage\generic\UnknownGenericEiPropertyException;
 use rocket\op\ei\util\spec\EiuEngine;
-use rocket\op\ei\component\InvalidEiConfigurationException;
-use rocket\op\ei\manage\generic\GenericEiProperty;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
 use test\model\Entity;
 use n2n\util\type\TypeConstraints;

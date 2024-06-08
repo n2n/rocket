@@ -24,7 +24,7 @@ namespace rocket\op;
 use n2n\context\RequestScoped;
 use rocket\op\launch\LaunchPad;
 use n2n\util\type\ArgUtils;
-use rocket\si\meta\SiBreadcrumb;
+use rocket\ui\si\meta\SiBreadcrumb;
 
 class OpState implements RequestScoped {
 	private $breadcrumbs = array();

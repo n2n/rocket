@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\meta;
 
-use rocket\si\content\impl\meta\SiCrumbGroup;
+use rocket\ui\si\content\impl\meta\SiCrumbGroup;
 use n2n\util\type\ArgUtils;
 
 trait AddonAdapter {

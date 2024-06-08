@@ -25,26 +25,17 @@ use n2n\impl\persistence\orm\property\BoolEntityProperty;
 use n2n\impl\persistence\orm\property\ScalarEntityProperty;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
-use n2n\util\type\TypeConstraint;
-
-
- 
 use rocket\op\ei\manage\critmod\filter\FilterProp;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
-use rocket\op\ei\manage\entry\EiFieldNature;
-
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\filter\prop\BoolFilterProp;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\si\content\impl\SiFields;
-use rocket\si\content\SiField;
-use rocket\impl\ei\component\prop\bool\conf\BooleanConfig;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\meta\SiCrumb;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\content\impl\meta\SiCrumb;
+use rocket\ui\si\control\SiIconType;
 use rocket\op\ei\manage\security\filter\SecurityFilterProp;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
@@ -52,6 +43,7 @@ use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\op\ei\util\factory\EifField;
+
 
 class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
 	use AddonAdapter;

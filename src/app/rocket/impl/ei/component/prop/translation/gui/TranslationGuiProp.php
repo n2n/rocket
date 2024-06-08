@@ -21,18 +21,19 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\op\ei\manage\gui\GuiDefinition;
-use rocket\op\ei\manage\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
+use rocket\ui\gui\GuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\op\ei\manage\gui\GuiPropSetup;
+use rocket\ui\gui\GuiPropSetup;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
+use rocket\op\ei\manage\gui\EiGuiProp;
 
 class TranslationGuiProp implements GuiProp {
 	/**
-	 * @var GuiDefinition
+	 * @var EiGuiDefinition
 	 */
-	private $forkGuiDefinition;
+	private $forkEiGuiDefinition;
 
 	/**
 	 * @var RelationModel
@@ -46,14 +47,14 @@ class TranslationGuiProp implements GuiProp {
 	 * @param TranslationEiPropNature $translationConfig
 	 */
 	function __construct(RelationModel $relationModel, TranslationEiPropNature $translationConfig) {
-		$this->forkGuiDefinition = $relationModel->getTargetEiuEngine()->getEiEngine()->getGuiDefinition();
+		$this->forkEiGuiDefinition = $relationModel->getTargetEiuEngine()->getEiEngine()->getEiGuiDefinition();
 		$this->relationModel = $relationModel;
 		$this->translationConfig = $translationConfig;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see GuiProp::buildGuiPropSetup
+	 * @see \EiGuiProp::buildGuiPropSetup
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
 		$targetEiuGuiDeclaration = $this->relationModel->getTargetEiuEngine()
@@ -64,14 +65,14 @@ class TranslationGuiProp implements GuiProp {
 			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
 		}
 		
-		return new TranslationGuiPropSetup($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
+		return new TranslationEiGuiPropSetup($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see GuiProp::getForkGuiDefinition
+	 * @see \EiGuiProp::getForkEiGuiDefinition
 	 */
-	function getForkGuiDefinition(): ?GuiDefinition {
-		return $this->forkGuiDefinition;
+	function getForkEiGuiDefinition(): ?EiGuiDefinition {
+		return $this->forkEiGuiDefinition;
 	}
 }

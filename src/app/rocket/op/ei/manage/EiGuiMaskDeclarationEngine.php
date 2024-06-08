@@ -2,21 +2,12 @@
 namespace rocket\op\ei\manage;
 
 use n2n\core\container\N2nContext;
-use rocket\op\ei\EiType;
-use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\EiPropPath;
-use rocket\op\ei\manage\ManageState;
-use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\gui\GuiBuildFailedException;
-use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 
 class EiGuiMaskDeclarationEngine {
 	
-	function __construct(private readonly N2nContext $n2nContext, private readonly GuiDefinition $guiDefinition) {
+	function __construct(private readonly N2nContext $n2nContext, private readonly EiGuiDefinition $guiDefinition) {
 	}
 
 	/**

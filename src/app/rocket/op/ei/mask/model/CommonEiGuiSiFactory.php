@@ -1,12 +1,9 @@
 <?php
 namespace rocket\op\ei\mask\model;
 
-use rocket\op\ei\manage\gui\EiGuiSiFactory;
+use rocket\ui\gui\EiGuiSiFactory;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\meta\SiProp;
-use rocket\si\meta\SiStructureDeclaration;
-use rocket\op\ei\manage\gui\ViewMode;
 
 class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	private $eiGuiMaskDeclaration;
@@ -109,7 +106,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	
 // 	private function createDefaultDisplayStructure($viewMode) {
 // 		$displayStructure = new DisplayStructure();
-// 		foreach ($this->eiGuiMaskDeclaration->getGuiDefinition()->filterDefPropPaths($viewMode) as $eiPropPath) {
+// 		foreach ($this->eiGuiMaskDeclaration->getEiGuiDefinition()->filterDefPropPaths($viewMode) as $eiPropPath) {
 // 			$displayStructure->addDefPropPath($eiPropPath);
 // 		}
 // 		return $displayStructure;

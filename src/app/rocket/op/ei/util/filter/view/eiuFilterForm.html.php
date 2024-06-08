@@ -20,11 +20,11 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\si\control\SiIconType;
-	use n2n\impl\web\ui\view\html\HtmlView;
-	use rocket\op\ei\util\filter\EiuFilterForm;
+use rocket\ui\si\control\SiIconType;
+use n2n\impl\web\ui\view\html\HtmlView;
+use rocket\op\ei\util\filter\EiuFilterForm;
 
-	$view = HtmlView::view($this);
+$view = HtmlView::view($this);
 	$html = HtmlView::html($this);
 	$formHtml = HtmlView::formHtml($this);
 	

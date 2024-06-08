@@ -22,15 +22,9 @@
 namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\EiObject;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use n2n\util\type\ArgUtils;
-use rocket\si\meta\SiDeclaration;
-use rocket\op\ei\EiEngineUtil;
+use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\si\content\SiPartialContent;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\gui\EiGui;
+use rocket\ui\si\content\SiPartialContent;
 
 class ApiUtil {
 //	private $eiFrame;

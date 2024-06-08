@@ -3,12 +3,12 @@
 namespace rocket\op\cu\gui;
 
 use rocket\op\cu\gui\field\CuField;
-use rocket\si\content\SiEntry;
+use rocket\ui\si\content\SiEntry;
 use phpbob\representation\ex\UnknownElementException;
-use rocket\si\input\SiEntryInput;
+use rocket\ui\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
 use rocket\si\input\SiInputError;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 
 class CuGuiEntry {
 	/**

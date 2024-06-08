@@ -22,9 +22,9 @@
 namespace rocket\op\ei\util\gui;
 
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
+use rocket\ui\gui\EiGuiValueBoundaryAssembler;
 use rocket\op\ei\util\EiuAnalyst;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 
 class EiuGuiEntryAssembler {
 	private $eiGuiValueBoundaryAssembler;

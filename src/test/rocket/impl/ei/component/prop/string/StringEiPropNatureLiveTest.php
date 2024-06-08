@@ -6,7 +6,6 @@ use rocket\op\spec\Spec;
 use rocket\test\GeneralTestEnv;
 use rocket\test\SpecTestEnv;
 use n2n\test\TestEnv;
-
 use PHPUnit\Framework\TestCase;
 use n2n\l10n\N2nLocale;
 use testmdl\string\bo\StringTestObj;
@@ -15,12 +14,8 @@ use testmdl\string\bo\StrObjMock;
 use rocket\op\ei\EiPropPath;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\op\ei\manage\security\InaccessibleEiFieldException;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\si\content\impl\StringInSiField;
-use rocket\si\content\impl\StringOutSiField;
-use rocket\si\content\SiEntry;
-use rocket\si\input\SiEntryInput;
-use rocket\si\input\SiFieldInput;
+use rocket\ui\gui\ViewMode;
+use rocket\ui\si\content\impl\StringInSiField;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\type\attrs\AttributesException;
 
@@ -177,7 +172,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$eiGuiEntry = $eiType->getEiMask()->getEiEngine()
 				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null)
-				->createEiGuiEntry($eiFrame, $eiEntry, false);
+				->createGuiEntry($eiFrame, $eiEntry, false);
 
 
 		$siEntry = $eiGuiEntry->createSiEntry(N2nLocale::getDefault());
@@ -225,7 +220,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$eiGuiEntry = $eiType->getEiMask()->getEiEngine()
 				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null)
-				->createEiGuiEntry($eiFrame, $eiEntry, false);
+				->createGuiEntry($eiFrame, $eiEntry, false);
 
 		$this->assertTrue($eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradio'])]))->getSiField()
 				->handleInput(['value' => 'new-value']));

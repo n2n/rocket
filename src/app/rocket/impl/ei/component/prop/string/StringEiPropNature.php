@@ -22,20 +22,15 @@
 namespace rocket\impl\ei\component\prop\string;
 
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\AccessProxy;
-use SebastianBergmann\CodeUnit\Mapper;
 use n2n\bind\mapper\impl\Mappers;
 use n2n\util\type\ArgUtils;
 use n2n\spec\valobj\scalar\StringValueObject;
 use n2n\bind\build\impl\Bind;
-use n2n\bind\err\BindMismatchException;
-use n2n\bind\err\BindTargetException;
-use n2n\bind\err\UnresolvableBindableException;
 use n2n\bind\err\BindException;
 use rocket\op\ei\component\InvalidEiConfigurationException;
-use n2n\bind\attribute\impl\Marshal;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\manage\generic\CommonScalarEiProperty;
 use rocket\op\ei\manage\idname\IdNameProp;

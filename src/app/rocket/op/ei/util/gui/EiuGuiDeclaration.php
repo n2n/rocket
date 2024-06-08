@@ -2,17 +2,9 @@
 namespace rocket\op\ei\util\gui;
 
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\EiuAnalyst;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\util\entry\EiuObject;
-use rocket\op\ei\util\entry\EiuEntry;
-use rocket\op\ei\util\EiuPerimeterException;
-use rocket\op\ei\manage\gui\EiGuiUtil;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiGui;
-use rocket\si\meta\SiDeclaration;
+use rocket\ui\gui\EiGuiDeclaration;
+use rocket\ui\si\meta\SiDeclaration;
 
 class EiuGuiDeclaration  {
 	private $eiuGuiMaskDeclarations;

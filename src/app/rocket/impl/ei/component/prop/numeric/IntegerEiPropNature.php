@@ -21,18 +21,11 @@
  */
 namespace rocket\impl\ei\component\prop\numeric;
 
-use n2n\impl\persistence\orm\property\IntEntityProperty;
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\property\AccessProxy;
 use n2n\util\type\ArgUtils;
-use n2n\util\type\TypeConstraint;
-
 use rocket\op\ei\manage\generic\CommonScalarEiProperty;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\numeric\conf\IntegerConfig;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\validation\validator\impl\Validators;
 use rocket\op\ei\util\factory\EifField;

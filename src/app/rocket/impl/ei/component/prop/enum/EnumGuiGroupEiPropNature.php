@@ -24,7 +24,6 @@ namespace rocket\impl\ei\component\prop\enum;
 
 use rocket\impl\ei\component\prop\adapter\DisplayableEiPropNature;
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\SiField;
 
 class EnumGuiGroupEiPropNature extends DisplayableEiPropNature {
 

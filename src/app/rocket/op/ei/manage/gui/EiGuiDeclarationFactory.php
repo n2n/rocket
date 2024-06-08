@@ -4,7 +4,6 @@ namespace rocket\op\ei\manage\gui;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\EiType;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\EiLaunch;
 
 class EiGuiDeclarationFactory {
 
@@ -23,7 +22,7 @@ class EiGuiDeclarationFactory {
 		$this->applyEiGuiMaskDeclaration($eiGuiDeclaration, $nonAbstractOnly, $defPropPaths);
 
 		if (!$eiGuiDeclaration->hasEiGuiMaskDeclarations()) {
-			throw new GuiBuildFailedException('Can not build forge EiGuiDeclaration based on '
+			throw new EiGuiBuildFailedException('Can not build forge EiGuiDeclaration based on '
 					. $this->contextEiMask . ' because its type is abstract.');
 		}
 
@@ -44,7 +43,7 @@ class EiGuiDeclarationFactory {
 		$this->applyPossibleEiGuiMaskDeclarations($eiGuiDeclaration, $nonAbstractsOnly, $allowedEiTypes, $defPropPaths);
 		
 		if (!$eiGuiDeclaration->hasEiGuiMaskDeclarations()) {
-			throw new GuiBuildFailedException('Can not build forge EiGuiDeclaration based on '
+			throw new EiGuiBuildFailedException('Can not build forge EiGuiDeclaration based on '
 					. $this->contextEiMask
 					. ' because its type and sub types are abstract or do not match the allowed EiTypes: '
 					. implode(', ', $allowedEiTypes));
@@ -66,7 +65,7 @@ class EiGuiDeclarationFactory {
 			return;
 		}
 
-		$guiDefinition = $contextEiMask->getEiEngine()->getGuiDefinition();
+		$guiDefinition = $contextEiMask->getEiEngine()->getEiGuiDefinition();
 		$eiGuiDeclaration->putEiGuiMaskDeclaration(
 				$guiDefinition->createEiGuiMaskDeclaration($this->n2nContext, $eiGuiDeclaration->getViewMode(), $defPropPaths));
 	}

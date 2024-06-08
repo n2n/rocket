@@ -1,18 +1,12 @@
 <?php
 namespace rocket\op\ei\util\gui;
 
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiGuiSiFactory;
-use rocket\op\ei\manage\gui\GuiException;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\EiuAnalyst;
-use n2n\l10n\N2nLocale;
-use n2n\util\ex\NotYetImplementedException;
-use rocket\op\ei\util\spec\EiuProp;
-use rocket\si\meta\SiDeclaration;
-use rocket\si\meta\SiMaskDeclaration;
+use rocket\ui\si\meta\SiDeclaration;
+use rocket\ui\si\meta\SiMask;
 use rocket\op\ei\EiPropPath;
 
 class EiuGuiMaskDeclaration {
@@ -124,7 +118,7 @@ class EiuGuiMaskDeclaration {
  	function newEntryGui($eiEntryArg, bool $entryGuiControlsIncluded = false): EiuGuiEntry {
  		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
- 		$eiGuiEntry = $this->eiGuiMaskDeclaration->createEiGuiEntry($this->eiuAnalyst->getEiFrame(true),
+ 		$eiGuiEntry = $this->eiGuiMaskDeclaration->createGuiEntry($this->eiuAnalyst->getEiFrame(true),
 				$eiEntry, $entryGuiControlsIncluded);
 		
  		return new EiuGuiEntry($eiGuiEntry, null, $this, $this->eiuAnalyst);
@@ -170,7 +164,7 @@ class EiuGuiMaskDeclaration {
 //		$defPropPath = DefPropPath::create($defPropPath);
 //
 //		try {
-//			return $this->eiGuiMaskDeclaration->getGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
+//			return $this->eiGuiMaskDeclaration->getEiGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
 //		} catch (GuiException $e) {
 //			if (!$required) return null;
 //			throw $e;
@@ -179,7 +173,7 @@ class EiuGuiMaskDeclaration {
 	
 	/**
 	 * @param DefPropPath|string $defPropPath
-	 * @return \rocket\op\ei\manage\gui\DisplayDefinition|null
+	 * @return \rocket\ui\gui\DisplayDefinition|null
 	 */
 	function getDisplayDefinition($defPropPath, bool $required = false) {
 		$defPropPath = DefPropPath::create($defPropPath);
@@ -235,11 +229,11 @@ class EiuGuiMaskDeclaration {
 // 	}
 
 	/**
-	 * @return \rocket\si\meta\SiDeclaration
+	 * @return \rocket\ui\si\meta\SiDeclaration
 	 */
 	function createSiDeclaration() {
-		return new SiDeclaration(ViewMode::createSiStyle($this->getViewMode()), [new SiMaskDeclaration(
-				$this->eiGuiMaskDeclaration->createSiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
+		return new SiDeclaration(ViewMode::createSiStyle($this->getViewMode()), [new SiMask(
+				$this->eiGuiMaskDeclaration->createGuiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
 				null)]);
 	}
 }

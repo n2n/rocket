@@ -21,10 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\translation\gui;
 
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\si\content\SiField;
-use rocket\op\ei\manage\gui\GuiFieldMap;
-use rocket\si\content\impl\split\SplitContextInSiField;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\si\content\SiField;
+use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\si\content\impl\split\SplitContextInSiField;
 
 class EditableGuiField implements GuiField {
 	private $lted;

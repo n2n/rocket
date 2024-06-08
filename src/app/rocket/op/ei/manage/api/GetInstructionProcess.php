@@ -21,18 +21,16 @@
  */
 namespace rocket\op\ei\manage\api;
 
-use rocket\si\api\SiGetResponse;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\api\SiGetInstruction;
-use rocket\si\api\SiGetResult;
+use rocket\ui\si\api\SiGetResult;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use rocket\si\api\SiPartialContentInstruction;
-use rocket\si\content\SiValueBoundary;
+use rocket\ui\gui\EiGuiValueBoundary;
+use rocket\ui\si\api\SiPartialContentInstruction;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\BadRequestException;
-use rocket\si\content\SiPartialContent;
+use rocket\ui\si\content\SiPartialContent;
 
 class GetInstructionProcess {
 	private $instruction;

@@ -21,11 +21,9 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use n2n\impl\web\ui\view\html\HtmlView;
-use rocket\op\ei\manage\gui\GuiProp;
+use rocket\ui\gui\GuiProp;
 use rocket\op\ei\manage\gui\field\GuiFieldDisplayable;
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\SiField;
 
 class TranslationDisplayable implements GuiFieldDisplayable {
 	private $guiProp;

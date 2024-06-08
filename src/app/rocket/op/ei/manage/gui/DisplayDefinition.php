@@ -3,7 +3,7 @@ namespace rocket\op\ei\manage\gui;
 
 use n2n\l10n\Lstr;
 use n2n\util\type\ArgUtils;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\si\meta\SiStructureType;
 
 class DisplayDefinition {
 	private $siStructureType;

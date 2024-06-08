@@ -22,16 +22,13 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\op\ei\component\prop\EiPropNature;
-use n2n\l10n\Lstr;
 use n2n\util\ex\IllegalStateException;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\op\ei\component\prop\EiProp;
-use n2n\util\StringUtils;
 use n2n\reflection\property\AccessProxy;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\manage\idname\IdNamePropFork;
-use rocket\op\ei\manage\gui\GuiProp;
+use rocket\ui\gui\GuiProp;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\generic\GenericEiProperty;
 use rocket\op\ei\manage\generic\ScalarEiProperty;

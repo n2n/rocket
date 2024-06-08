@@ -22,12 +22,12 @@
 namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\DisplayDefinition;
+use rocket\ui\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayConfigTrait;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\meta\SiCrumb;
+use rocket\ui\si\content\impl\meta\SiCrumb;
 
 class Type extends DisplayConfigTrait {
 	

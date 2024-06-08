@@ -2,7 +2,7 @@
 namespace rocket\op\ei\util\factory;
 
 use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
-use rocket\op\ei\manage\gui\GuiProp;
+use rocket\ui\gui\GuiProp;
 
 class EifGuiProp {
 	private $guiPropCallback;

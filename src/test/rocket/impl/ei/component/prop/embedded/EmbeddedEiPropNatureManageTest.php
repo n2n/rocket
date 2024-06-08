@@ -6,10 +6,7 @@ use PHPUnit\Framework\TestCase;
 use n2n\test\TestEnv;
 use rocket\test\GeneralTestEnv;
 use rocket\test\SpecTestEnv;
-use testmdl\enum\bo\EnumTestObj;
-use rocket\impl\ei\component\prop\enum\EnumEiPropNature;
 use testmdl\embedded\bo\EmbeddingContainerTestObj;
-use rocket\impl\ei\component\prop\string\StringEiPropNature;
 use rocket\op\ei\manage\EiLaunch;
 use rocket\user\model\security\FullEiPermissionManager;
 use rocket\op\ei\manage\frame\EiFrameUtil;
@@ -17,11 +14,10 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\spec\Spec;
 use rocket\op\ei\manage\DefPropPath;
 use testmdl\embedded\bo\EmbeddableTestObj;
-use n2n\persistence\orm\attribute\N2nLocale;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\EiType;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 use n2n\util\type\attrs\AttributesException;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {
@@ -78,7 +74,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 
 		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
 		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, false, null);
-		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], false);
+		$eiGuiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame, [$eiEntry], false);
 
 		$guiField = $eiGuiValueBoundary->getSelectedEiGuiEntry()->getGuiFieldByDefPropPath(
 				new DefPropPath([new EiPropPath(['reqEditEmbeddable', 'someProp'])]));

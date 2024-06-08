@@ -23,18 +23,14 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\type\ArgUtils;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 
 

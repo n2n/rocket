@@ -22,28 +22,22 @@
 namespace rocket\impl\ei\component\prop\translation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\l10n\N2nLocale;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\persistence\orm\criteria\JoinType;
 use n2n\persistence\orm\criteria\item\CrIt;
 use n2n\persistence\orm\criteria\item\CriteriaProperty;
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\col\ArrayUtils;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\EiPropPath;
-
-
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\op\ei\manage\critmod\sort\CriteriaAssemblyState;
 use rocket\op\ei\manage\critmod\sort\SortConstraint;
 use rocket\op\ei\manage\critmod\sort\SortDefinition;
 use rocket\op\ei\manage\critmod\sort\SortPropFork;
 use rocket\op\ei\manage\entry\EiFieldNature;
-use rocket\op\ei\manage\gui\GuiProp;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\GuiProp;
 use rocket\op\ei\util\Eiu;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
@@ -55,6 +49,7 @@ use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use n2n\core\config\WebConfig;
+
 
 class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	/**
@@ -163,7 +158,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 // 		foreach ($eiEntry->getValue(EiPropPath::from($this->eiPropRelation->getRelationEiProp())) as $targetRelationEntry) {
 // 			if (!$targetRelationEntry->hasEiEntry()) continue;
 				
-// 			if (null !== ($eiFieldWrapper = $eiu->engine()->getGuiDefinition()
+// 			if (null !== ($eiFieldWrapper = $eiu->engine()->getEiGuiDefinition()
 // 					->determineEiFieldAbstraction($eiu->getN2nContext(), $targetRelationEntry->getEiEntry(), $defPropPath))) {
 // 				$eiFieldWrappers[] = $eiFieldWrapper;
 // 			}

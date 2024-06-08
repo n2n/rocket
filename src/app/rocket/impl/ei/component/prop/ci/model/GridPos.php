@@ -1,7 +1,7 @@
 <?php
 namespace rocket\impl\ei\component\prop\ci\model;
 
-use rocket\si\content\impl\relation\SiGridPos;
+use rocket\ui\si\content\impl\relation\SiGridPos;
 
 class GridPos {
 	private $colStart;
@@ -95,7 +95,7 @@ class GridPos {
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\relation\SiGridPos
+	 * @return \rocket\ui\si\content\impl\relation\SiGridPos
 	 */
 	function toSiGridPos() {
 		return new SiGridPos($this->colStart, $this->colEnd, $this->rowStart, $this->rowEnd);

@@ -22,10 +22,10 @@
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\GuiProp;
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\op\ei\manage\gui\GuiDefinition;
-use rocket\op\ei\manage\gui\GuiPropSetup;
+use rocket\ui\gui\GuiProp;
+use rocket\ui\gui\field\GuiField;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
+use rocket\ui\gui\GuiPropSetup;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 
@@ -44,7 +44,7 @@ class GuiPropProxy implements GuiProp {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiPropSetup()
+	 * @see \rocket\ui\gui\GuiProp::buildGuiPropSetup()
 	 */
 	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
@@ -57,11 +57,11 @@ class GuiPropProxy implements GuiProp {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\GuiProp::buildGuiField()
+	 * @see \rocket\ui\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($this->guiFieldAssembler !== null) {
-			return $this->guiFieldAssembler->buildGuiField($eiu, $readOnly);
+		if ($this->eiGuiField !== null) {
+			return $this->eiGuiField->buildGuiField($eiu, $readOnly);
 		}
 		
 		if ($this->guiFieldClosure !== null) {
@@ -71,7 +71,7 @@ class GuiPropProxy implements GuiProp {
 		return null;
 	}
 	
-	function getForkGuiDefinition(): ?GuiDefinition {
+	function getForkEiGuiDefinition(): ?EiGuiDefinition {
 		return null;
 	}
 }

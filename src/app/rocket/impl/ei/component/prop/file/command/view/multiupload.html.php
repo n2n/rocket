@@ -20,11 +20,11 @@
 	 * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
 	 */
 
-	use rocket\si\control\SiIconType;
-	use rocket\op\ei\util\frame\EiuFrame;
-	use n2n\impl\web\ui\view\html\HtmlView;
-	
-	$view = HtmlView::view($this);
+use rocket\ui\si\control\SiIconType;
+use rocket\op\ei\util\frame\EiuFrame;
+use n2n\impl\web\ui\view\html\HtmlView;
+
+$view = HtmlView::view($this);
 	$html = HtmlView::html($view);
 	$formHtml = HtmlView::formHtml($view);
 	$httpContext = HtmlView::httpContext($view);

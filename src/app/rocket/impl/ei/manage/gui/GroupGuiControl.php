@@ -22,19 +22,17 @@
 namespace rocket\impl\ei\manage\gui;
 
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\si\control\SiControl;
-use rocket\si\control\SiCallResponse;
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiControl;
+use rocket\ui\si\control\SiCallResponse;
+use rocket\ui\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\control\GuiControl;
-use rocket\si\control\impl\GroupSiControl;
+use rocket\ui\gui\control\GuiControl;
+use rocket\ui\si\control\impl\GroupSiControl;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
-use rocket\op\ei\component\command\EiCmdNature;
-use rocket\op\ei\manage\gui\control\GuiControlPath;
 
 class GroupGuiControl implements GuiControl {
 	private $id;
@@ -52,7 +50,7 @@ class GroupGuiControl implements GuiControl {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\control\GuiControl::isInputHandled()
+	 * @see \rocket\ui\gui\control\GuiControl::isInputHandled()
 	 */
 	public function isInputHandled(): bool {
 		return false;

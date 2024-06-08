@@ -21,19 +21,8 @@
  */
 namespace rocket\op\ei\component;
 
-use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\gui\EiGuiValueBoundaryAssembler;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use rocket\op\ei\EiPropPath;
-use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\manage\entry\EiEntry;
-use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\frame\EiFrame;
-use n2n\core\container\N2nContext;
-use rocket\op\ei\manage\idname\IdNameDefinition;
 
 class IdNameFactory {
 	private $eiMask;
@@ -57,13 +46,13 @@ class IdNameFactory {
 		
 // 		$eiGuiValueBoundary = new EiGuiValueBoundary($eiGuiMaskDeclaration, $eiEntry, $treeLevel);
 		
-// 		$guiFieldAssembler = new EiGuiValueBoundaryAssembler($eiGuiValueBoundary);
+// 		$eiGuiField = new EiGuiValueBoundaryAssembler($eiGuiValueBoundary);
 		
 // 		foreach ($defPropPaths as $defPropPath) {
-// 			$guiFieldAssembler->assembleGuiField($defPropPath);
+// 			$eiGuiField->assembleGuiField($defPropPath);
 // 		}
 		
-// 		$guiFieldAssembler->finalize();
+// 		$eiGuiField->finalize();
 		
 // 		return $eiGuiValueBoundary;
 // 	}

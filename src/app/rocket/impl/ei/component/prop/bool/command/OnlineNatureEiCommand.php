@@ -21,11 +21,10 @@
  */
 namespace rocket\impl\ei\component\prop\bool\command;
 
-use rocket\impl\ei\component\prop\bool\OnlineEiPropNature;
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
-use rocket\si\control\SiIconType;
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiIconType;
+use rocket\ui\si\control\SiButton;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;

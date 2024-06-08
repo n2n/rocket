@@ -22,12 +22,11 @@
 namespace rocket\impl\ei\component\prop\embedded;
 
 use rocket\impl\ei\component\prop\adapter\PropertyEiPropNatureAdapter;
-use n2n\impl\persistence\orm\property\EmbeddedEntityProperty;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\util\Eiu;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\op\ei\manage\gui\GuiProp;
+use rocket\ui\gui\GuiProp;
 use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
@@ -131,7 +130,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 //		return new EmbeddedGuiField($eiu, $this->eiProp);
 //	}
 //
-//	public function getForkGuiDefinition(): ?GuiDefinition {
+//	public function getForkEiGuiDefinition(): ?EiGuiDefinition {
 //		return null;
 //	}
 //	public function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {

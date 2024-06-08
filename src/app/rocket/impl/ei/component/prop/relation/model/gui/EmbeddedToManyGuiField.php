@@ -22,20 +22,20 @@
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\frame\EiuFrame;
-use rocket\si\content\SiField;
-use rocket\si\content\impl\relation\EmbeddedEntriesInSiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\SiField;
+use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\si\input\SiEntryInput;
-use rocket\si\input\CorruptedSiInputDataException;
-use rocket\si\content\impl\relation\EmbeddedEntryInputHandler;
-use rocket\op\ei\manage\gui\GuiFieldMap;
+use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
+use rocket\ui\gui\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\content\impl\relation\SiEmbeddedEntry;
+use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 
 class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
@@ -89,7 +89,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry[]
+	 * @return \rocket\ui\si\content\impl\relation\SiEmbeddedEntry[]
 	 */
 	private function readValues() {
 		$this->embeddedGuiCollection->clear();

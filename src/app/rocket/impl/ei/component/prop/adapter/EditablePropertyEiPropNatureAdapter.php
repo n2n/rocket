@@ -22,16 +22,11 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\op\ei\component\prop\PrivilegedEiProp;
-use rocket\core\model\Rocket;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
-use rocket\op\ei\util\factory\EifField;
-use n2n\validation\validator\impl\Validators;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\impl\ei\component\prop\adapter\config\EditConfigTrait;
 
 abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
 	use EditEiFieldTrait;

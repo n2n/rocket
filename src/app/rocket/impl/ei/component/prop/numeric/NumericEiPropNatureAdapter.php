@@ -23,15 +23,7 @@ namespace rocket\impl\ei\component\prop\numeric;
 
 
 use rocket\op\ei\util\filter\prop\StringFilterProp;
- 
-
-use n2n\impl\persistence\orm\property\ScalarEntityProperty;
-use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use n2n\util\type\ArgUtils;
-use n2n\reflection\property\AccessProxy;
-use n2n\util\type\TypeConstraint;
-use n2n\core\container\N2nContext;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\op\ei\util\Eiu;
@@ -44,9 +36,10 @@ use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\l10n\L10nUtils;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
+
 
 abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureAdapter
 		implements AddonEiPropNature {

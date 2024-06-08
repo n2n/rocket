@@ -25,12 +25,12 @@ use n2n\context\Lookupable;
 use n2n\core\container\N2nContext;
 use n2n\validation\lang\ValidationMessages;
 use n2n\l10n\DynamicTextCollection;
-use rocket\si\meta\SiMenuGroup;
-use rocket\si\meta\SiMenuItem;
+use rocket\ui\si\meta\SiMenuGroup;
+use rocket\ui\si\meta\SiMenuItem;
 use n2n\web\http\nav\Murl;
 use rocket\user\model\LoginContext;
 use n2n\web\http\controller\ControllerContext;
-use rocket\si\control\SiNavPoint;
+use rocket\ui\si\control\SiNavPoint;
 use n2n\util\uri\Path;
 use n2n\core\config\AppConfig;
 

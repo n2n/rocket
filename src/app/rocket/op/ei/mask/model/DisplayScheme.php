@@ -22,8 +22,8 @@
 namespace rocket\op\ei\mask\model;
 
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\manage\gui\GuiDefinition;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
+use rocket\ui\gui\ViewMode;
 
 class DisplayScheme {
 	private $overviewDisplayStructure;
@@ -155,9 +155,9 @@ class DisplayScheme {
 	
 	/**
 	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @return GuiDefinition $guiDefinition
+	 * @return EiGuiDefinition $guiDefinition
 	 */
-	public function initEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration, GuiDefinition $guiDefinition) {
+	public function initEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiGuiDefinition $guiDefinition) {
 		$displayStructure = null;
 		switch ($eiGuiMaskDeclaration->getViewMode()) {
 			case ViewMode::BULKY_READ:

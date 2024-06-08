@@ -23,11 +23,10 @@ namespace rocket\op\ei\component\command;
 
 use rocket\op\ei\component\EiComponentNature;
 use rocket\op\ei\util\Eiu;
-use n2n\util\ex\IllegalStateException;
 use n2n\web\http\controller\Controller;
 use n2n\l10n\Lstr;
-use rocket\op\ei\manage\gui\GuiCommand;
-use rocket\si\control\SiNavPoint;
+use rocket\ui\gui\GuiCommand;
+use rocket\ui\si\control\SiNavPoint;
 
 interface EiCmdNature extends EiComponentNature {
 	

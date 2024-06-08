@@ -27,7 +27,7 @@
 //use rocket\op\ei\manage\security\filter\SecurityFilterDefinition;
 //use rocket\op\ei\manage\draft\DraftDefinition;
 //use rocket\op\ei\manage\idname\IdNameDefinition;
-//use rocket\op\ei\manage\gui\GuiDefinition;
+//use rocket\op\ei\manage\gui\EiGuiDefinition;
 //use rocket\op\ei\component\EiComponentCollection;
 //use rocket\op\ei\manage\critmod\quick\QuickSearchDefinition;
 //use rocket\op\ei\component\EiComponentCollectionListener;
@@ -66,7 +66,7 @@
 //	private $securityFilterDefinitions = array();
 //
 //	/**
-//	 * @var GuiDefinition[]
+//	 * @var EiGuiDefinition[]
 //	 */
 //	private $guiDefinitions = array();
 //
@@ -199,14 +199,14 @@
 //
 ////	/**
 ////	 * @param EiMask $eiMask
-////	 * @return GuiDefinition
+////	 * @return EiGuiDefinition
 ////	 */
-////	public function getGuiDefinition(EiMask $eiMask) {
+////	public function getEiGuiDefinition(EiMask $eiMask) {
 ////		$eiTypePathStr = (string) $eiMask->getEiTypePath();
 ////
 ////		if (!isset($this->guiDefinitions[$eiTypePathStr])) {
 ////			$this->guiDefinitions[$eiTypePathStr] = $eiMask->getEiEngine()
-////					->createGuiDefinition($this->manageState->getN2nContext());
+////					->createEiGuiDefinition($this->manageState->getN2nContext());
 ////
 //////			$this->registerListeners($eiMask);
 ////		}

@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\translation\model;
 use n2n\reflection\property\AccessProxy;
 use n2n\impl\web\dispatch\mag\model\MagAdapter;
 use n2n\impl\web\dispatch\property\ScalarProperty;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\map\PropertyPathPart;

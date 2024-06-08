@@ -29,12 +29,12 @@ use rocket\op\ei\EiEngine;
 use rocket\op\ei\manage\preview\controller\PreviewController;
 use n2n\config\InvalidConfigurationException;
 use rocket\op\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\op\ei\manage\gui\control\UnknownGuiControlException;
+use rocket\ui\gui\control\UnknownGuiControlException;
 use rocket\op\ei\component\prop\EiPropCollection;
 use rocket\op\ei\component\command\EiCmdCollection;
 use rocket\op\ei\component\modificator\EiModCollection;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiIconType;
 use rocket\op\ei\EiTypeExtension;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\spec\TypePath;
@@ -46,16 +46,12 @@ use rocket\op\ei\EiPathMissmatchException;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
-use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\l10n\Lstr;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\manage\gui\EiGuiListener;
-use rocket\si\meta\SiMaskQualifier;
+use rocket\ui\si\meta\SiMaskQualifier;
 use n2n\l10n\N2nLocale;
-use rocket\si\meta\SiMaskIdentifier;
+use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\op\ei\util\Eiu;
-use n2n\util\StringUtils;
 
 /**
  * @author andreas
@@ -360,7 +356,7 @@ class EiMask {
 // 			throw new \InvalidArgumentException('Incompatible EiGuiMaskDeclaration');
 // 		}
 
-// 		$guiDefinition = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($this);
+// 		$guiDefinition = $eiFrame->getEiLaunch()->getDef()->getEiGuiDefinition($this);
 // 		$eiGuiMaskDeclaration = new EiGuiMaskDeclaration($eiFrame, $guiDefinition, $viewMode);
 
 // 		if (!$init) {
@@ -368,7 +364,7 @@ class EiMask {
 // 			return $eiGuiMaskDeclaration;
 // 		}
 
-// 		foreach ($guiDefinition->getGuiDefinitionListeners() as $listener) {
+// 		foreach ($guiDefinition->getEiGuiDefinitionListeners() as $listener) {
 // 			$listener->onNewEiGuiMaskDeclaration($eiGuiMaskDeclaration);
 // 		}
 
@@ -387,7 +383,7 @@ class EiMask {
 
 // 		$eiGuiMaskDeclaration->registerEiGuiListener(new class() implements EiGuiListener {
 // 			public function onInitialized(EiGuiMaskDeclaration $eiGuiMaskDeclaration) {
-// 				foreach ($eiGuiMaskDeclaration->getGuiDefinition()->getGuiDefinitionListeners() as $listener) {
+// 				foreach ($eiGuiMaskDeclaration->getEiGuiDefinition()->getEiGuiDefinitionListeners() as $listener) {
 // 					$listener->onNewEiGuiMaskDeclaration($eiGuiMaskDeclaration);
 // 				}
 // 				$eiGuiMaskDeclaration->unregisterEiGuiListener($this);
@@ -645,14 +641,9 @@ class EiMask {
 
 	/**
 	 * @param N2nLocale $n2nLocale
-	 * @return \rocket\si\meta\SiMaskQualifier
+	 * @return \rocket\ui\si\meta\SiMaskQualifier
 	 */
-	public function createSiMaskQualifier(N2nLocale $n2nLocale) {
-		return new SiMaskQualifier(new SiMaskIdentifier(
-				(string) $this->getEiTypePath(), $this->getEiType()->getId(),
-				$this->getEiType()->getSupremeEiType()->getId()),
-				$this->getLabelLstr()->t($n2nLocale), $this->getIconType());
-	}
+
 
 	function equals($obj) {
 		return $obj instanceof EiMask && $obj->getEiTypePath()->equals($this->getEiTypePath());

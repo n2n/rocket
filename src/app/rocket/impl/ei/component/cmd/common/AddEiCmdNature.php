@@ -23,23 +23,14 @@ namespace rocket\impl\ei\component\cmd\common;
 
 use n2n\l10n\DynamicTextCollection;
 use n2n\l10n\N2nLocale;
-use rocket\si\control\SiButton;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiButton;
+use rocket\ui\si\control\SiIconType;
 use rocket\op\ei\component\command\PrivilegedEiCommand;
 use n2n\core\container\N2nContext;
 use rocket\core\model\Rocket;
 use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\cmd\common\controller\AddController;
-use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\ex\IllegalStateException;
-use n2n\impl\web\dispatch\mag\model\MagForm;
-use rocket\op\ei\component\EiSetup;
-use n2n\util\type\CastUtils;
-use rocket\impl\ei\component\config\EiConfiguratorAdapter;
-use rocket\op\ei\component\EiConfigurator;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {

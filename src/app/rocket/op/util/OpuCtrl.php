@@ -11,35 +11,27 @@ use n2n\web\http\PageNotFoundException;
 use n2n\web\http\ForbiddenException;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\ei\manage\preview\model\UnavailablePreviewException;
-use n2n\web\http\payload\impl\Redirect;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\op\ei\manage\gui\EiGui;
-use rocket\op\ei\manage\gui\EiGuiUtil;
-use rocket\si\SiPayloadFactory;
-use n2n\persistence\orm\util\NestedSetUtils;
-use n2n\persistence\orm\criteria\Criteria;
+use rocket\ui\gui\EiGui;
+use rocket\ui\si\SiPayloadFactory;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\op\ei\manage\LiveEiObject;
-use n2n\persistence\orm\util\NestedSetStrategy;
-use rocket\si\content\SiGui;
 use rocket\op\ei\util\EiuAnalyst;
 use n2n\web\ui\UiComponent;
-use rocket\si\content\impl\iframe\IframeSiGui;
-use rocket\si\content\impl\iframe\IframeData;
+use rocket\ui\si\content\impl\iframe\IframeSiGui;
+use rocket\ui\si\content\impl\iframe\IframeData;
 use n2n\util\uri\Url;
 use n2n\web\http\Method;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\op\ei\manage\api\SiCallResult;
-use rocket\si\control\SiNavPoint;
-use rocket\si\meta\SiBreadcrumb;
+use rocket\ui\si\control\SiNavPoint;
+use rocket\ui\si\meta\SiBreadcrumb;
 use n2n\l10n\DynamicTextCollection;
 use rocket\op\cu\util\Cuu;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\util\entry\EiuObject;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\op\cu\gui\CuGui;
-use rocket\si\input\SiInputFactory;
+use rocket\ui\si\input\SiInputFactory;
 use rocket\si\input\SiInputResult;
 use rocket\op\cu\gui\control\CuControlCallId;
 use rocket\op\cu\util\gui\CufGui;
@@ -202,7 +194,7 @@ class OpuCtrl {
 		$eiFrame = $this->frame()->getEiFrame();
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, $readOnly, null);
-		$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, [$eiEntry], $entrySiControlsIncluded);
+		$guiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($eiFrame, [$eiEntry], $entrySiControlsIncluded);
 
 		$guiControlsMap = null;
 		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
@@ -211,10 +203,10 @@ class OpuCtrl {
 
 		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$eiGui = new BulkyEiGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
+		$eiGui = new BulkyEiGui($eiFrame, $eiGuiDeclaration, $guiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
 				$entrySiControlsIncluded);
 
-		$this->forwardEiGui($eiGui, current($eiGuiValueBoundary->getEiGuiEntries())->getIdName());
+		$this->forwardEiGui($eiGui, current($guiValueBoundary->getEiGuiEntries())->getIdName());
 	}
 
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,

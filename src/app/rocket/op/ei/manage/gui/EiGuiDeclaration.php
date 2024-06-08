@@ -2,27 +2,21 @@
 namespace rocket\op\ei\manage\gui;
 
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\DefPropPath;
-use rocket\si\meta\SiDeclaration;
+use rocket\ui\si\meta\SiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\security\InaccessibleEiEntryException;
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\si\content\SiValueBoundary;
-use rocket\op\ei\EiType;
-use rocket\op\ei\manage\gui\control\GuiControlPath;
-use rocket\op\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\si\meta\SiStyle;
+use rocket\ui\gui\control\GuiControlPath;
+use rocket\ui\gui\control\UnknownGuiControlException;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
 use rocket\op\spec\TypePath;
-use rocket\si\control\SiControl;
+use rocket\ui\si\control\SiControl;
+use rocket\ui\gui\GuiStructureDeclaration;
+use rocket\ui\gui\ViewMode;
+use rocket\ui\gui\GuiValueBoundary;
 
 class EiGuiDeclaration {
-//	/**
-//	 * @var EiMask
-//	 */
-//	private $contextEiMask;
 	/**
 	 * @var int
 	 */
@@ -36,8 +30,7 @@ class EiGuiDeclaration {
 	 * @param EiMask $contextEiMask
 	 * @param int $viewMode
 	 */
-	function __construct(private EiMask $contextEiMask, int $viewMode) {
-		$this->contextEiMask = $contextEiMask;
+	function __construct(private readonly EiMask $contextEiMask, int $viewMode) {
 		ArgUtils::valEnum($viewMode, ViewMode::getAll());
 		$this->viewMode = $viewMode;
 	}
@@ -79,17 +72,17 @@ class EiGuiDeclaration {
 //	 */
 //	function getEiTypes() {
 //		return array_map(
-//				function ($arg) { return $arg->getGuiDefinition()->getEiMask()->getEiType(); },
+//				function ($arg) { return $arg->getEiGuiDefinition()->getEiMask()->getEiType(); },
 //				$this->eiGuiMaskDeclarations);
 //	}
-	
+
 	/**
 	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @return EiGuiDeclaration
 	 */
 	function putEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): static {
 		ArgUtils::assertTrue($this->viewMode === $eiGuiMaskDeclaration->getViewMode());
-		$eiType = $eiGuiMaskDeclaration->getGuiDefinition()->getEiMask()->getEiType();
+		$eiType = $eiGuiMaskDeclaration->getEiGuiDefinition()->getEiMask()->getEiType();
 		
 		ArgUtils::assertTrue($eiType->isA($this->contextEiMask->getEiType()));
 		
@@ -221,11 +214,11 @@ class EiGuiDeclaration {
 // 		return $eiGuiValueBoundary;
 // 	}
 
-	function createEiGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, bool $entryGuiControlsIncluded,
-			int $treeLevel = null): EiGuiValueBoundary {
+	function createGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, bool $entryGuiControlsIncluded,
+			int $treeLevel = null): GuiValueBoundary {
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		
-		$eiGuiValueBoundary = new EiGuiValueBoundary($this, $treeLevel);
+		$guiValueBoundary = new GuiValueBoundary($treeLevel);
 		
 		$eiEntries = $this->catEiEntries($eiEntries);
 
@@ -234,17 +227,17 @@ class EiGuiDeclaration {
 			$eiTypeId = $eiType->getId();
 
 			if (isset($eiEntries[$eiTypeId])) {
-				$eiGuiValueBoundary->putEiGuiEntry($eiGuiMaskDeclaration
-						->createEiGuiEntry($eiFrame, $eiEntries[$eiTypeId], $entryGuiControlsIncluded));
+				$guiValueBoundary->putGuiEntry($eiGuiMaskDeclaration
+						->createGuiEntry($eiFrame, $eiEntries[$eiTypeId], $entryGuiControlsIncluded));
 				continue;
 			}
 			
 			throw new \InvalidArgumentException('No EiEntry provided for ' . $eiType);
 		}
 		
-		$this->finalizeEiGuiValueBoundary($eiGuiValueBoundary);
+		$this->finalizeGuiValueBoundary($guiValueBoundary);
 		
-		return $eiGuiValueBoundary;
+		return $guiValueBoundary;
 	}
 	
 	/**
@@ -279,29 +272,29 @@ class EiGuiDeclaration {
 	 * @param EiFrame $eiFrame
 	 * @param bool $entryGuiControlsIncluded
 	 * @param int|null $treeLevel
-	 * @return EiGuiValueBoundary
+	 * @return GuiValueBoundary
 	 */
-	function createNewEiGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, int $treeLevel = null): EiGuiValueBoundary {
-		$eiGuiValueBoundary = new EiGuiValueBoundary($this, $treeLevel);
+	function createNewEiGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, int $treeLevel = null): GuiValueBoundary {
+		$eiGuiValueBoundary = new GuiValueBoundary($this, $treeLevel);
 
-		$eiGuiValueBoundary = new EiGuiValueBoundary($this, $treeLevel);
+		$eiGuiValueBoundary = new GuiValueBoundary($this, $treeLevel);
 
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
-			$eiGuiValueBoundary->putEiGuiEntry(
+			$eiGuiValueBoundary->putGuiEntry(
 					$eiGuiMaskDeclaration->createNewEiGuiEntry($eiFrame, $entryGuiControlsIncluded));
 		}
 		
-		$this->finalizeEiGuiValueBoundary($eiGuiValueBoundary);
+		$this->finalizeGuiValueBoundary($eiGuiValueBoundary);
 		
 		return $eiGuiValueBoundary;
 	}
 	
 	/**
-	 * @param EiGuiValueBoundary $eiGuiValueBoundary
+	 * @param GuiValueBoundary $eiGuiValueBoundary
 	 */
-	private function finalizeEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary): void {
+	private function finalizeGuiValueBoundary(GuiValueBoundary $eiGuiValueBoundary): void {
 		if ($this->hasSingleEiGuiMaskDeclaration()) {
-			$eiGuiValueBoundary->selectEiGuiEntryByEiMaskId(key($this->eiGuiMaskDeclarations));
+			$eiGuiValueBoundary->selectGuiEntryByMaskId(key($this->eiGuiMaskDeclarations));
 		}
 	}
 

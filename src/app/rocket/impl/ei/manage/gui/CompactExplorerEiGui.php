@@ -2,19 +2,19 @@
 
 namespace rocket\impl\ei\manage\gui;
 
-use rocket\op\ei\manage\gui\EiGui;
-use rocket\si\content\SiGui;
+use rocket\ui\gui\EiGui;
+use rocket\ui\si\content\SiGui;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\si\input\SiInputError;
-use rocket\si\control\SiCallResponse;
-use rocket\si\input\SiInput;
+use rocket\ui\si\control\SiCallResponse;
+use rocket\ui\si\input\SiInput;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use rocket\ui\gui\EiGuiDeclaration;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\si\content\SiPartialContent;
-use rocket\si\content\impl\basic\CompactExplorerSiGui;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
+use rocket\ui\si\content\SiPartialContent;
+use rocket\ui\si\content\impl\basic\CompactExplorerSiGui;
+use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\gui\control\GuiControlMap;
 use rocket\op\ei\manage\api\ZoneGuiControlsMap;
 

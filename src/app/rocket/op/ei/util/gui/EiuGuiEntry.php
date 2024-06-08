@@ -21,32 +21,21 @@
  */
 namespace rocket\op\ei\util\gui;
 
-use rocket\op\ei\manage\gui\EiGuiEntry;
+use rocket\ui\gui\GuiEntry;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\GuiException;
-use n2n\web\dispatch\mag\MagWrapper;
-use rocket\op\ei\manage\gui\EiFieldAbstraction;
-use n2n\web\dispatch\map\PropertyPath;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\util\EiuPerimeterException;
 use rocket\op\ei\util\EiuAnalyst;
-use rocket\si\input\SiEntryInput;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\si\input\CorruptedSiInputDataException;
-use rocket\op\ei\util\entry\EiuField;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\si\content\SiValueBoundary;
-use rocket\si\content\SiEntry;
-use rocket\op\ei\manage\gui\EiGuiEntryListener;
+use rocket\ui\si\content\SiEntry;
+use rocket\ui\gui\EiGuiEntryListener;
 
 class EiuGuiEntry {
 //	private $eiuGuiMaskDeclaration;
 	
-	function __construct(private EiGuiEntry $eiGuiEntry,
+	function __construct(private GuiEntry $eiGuiEntry,
 			private ?EiuEntry $eiuEntry, private ?EiuGuiMaskDeclaration $eiuGuiMaskDeclaration,
 			private readonly EiuAnalyst $eiuAnalyst) {
 	}
@@ -125,9 +114,9 @@ class EiuGuiEntry {
 	}
 	
 	/**
-	 * @return EiGuiEntry
+	 * @return GuiEntry
 	 */
-	function getEiGuiEntry(): EiGuiEntry {
+	function getEiGuiEntry(): GuiEntry {
 		return $this->eiGuiEntry;
 	}
 	
@@ -325,9 +314,9 @@ class ClosureGuiListener implements EiGuiEntryListener {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\EiGuiEntryListener::finalized()
+	 * @see \rocket\ui\gui\EiGuiEntryListener::finalized()
 	 */
-	function finalized(EiGuiEntry $eiGuiEntry) {
+	function finalized(GuiEntry $eiGuiEntry) {
 		if ($this->whenReadyClosure === null) return;
 		
 		$this->call($this->whenReadyClosure);
@@ -339,9 +328,9 @@ class ClosureGuiListener implements EiGuiEntryListener {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\EiGuiEntryListener::onSave()
+	 * @see \rocket\ui\gui\EiGuiEntryListener::onSave()
 	 */
-	function onSave(EiGuiEntry $eiGuiEntry) {
+	function onSave(GuiEntry $eiGuiEntry) {
 		if ($this->onSaveClosure !== null) {
 			$this->call($this->onSaveClosure);
 		}
@@ -349,9 +338,9 @@ class ClosureGuiListener implements EiGuiEntryListener {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\EiGuiEntryListener::saved()
+	 * @see \rocket\ui\gui\EiGuiEntryListener::saved()
 	 */
-	function saved(EiGuiEntry $eiGuiEntry) {
+	function saved(GuiEntry $eiGuiEntry) {
 		if ($this->savedClosure !== null) {
 			$this->call($this->savedClosure);
 		}

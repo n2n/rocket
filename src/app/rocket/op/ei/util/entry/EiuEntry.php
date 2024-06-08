@@ -29,10 +29,10 @@ use rocket\op\ei\manage\entry\WrittenMappingListener;
 use rocket\op\ei\manage\entry\OnValidateMappingListener;
 use rocket\op\ei\manage\entry\ValidatedMappingListener;
 use rocket\op\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\op\ei\manage\gui\EiGuiSiFactory;
+use rocket\ui\gui\EiGuiSiFactory;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\GuiException;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\GuiException;
+use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\util\spec\EiuMask;
@@ -41,16 +41,13 @@ use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\op\ei\component\prop\EiPropNature;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\component\prop\EiProp;
-use rocket\op\ei\manage\gui\EiGui;
 use rocket\op\launch\TransactionApproveAttempt;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\gui\EiuGuiEntry;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\frame\EiFrameUtil;
-use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
 use rocket\op\ei\util\spec\EiuProp;
@@ -359,7 +356,7 @@ class EiuEntry {
 // 		$viewMode = $this->deterViewMode($bulky, $editable);
 // 		$eiFrame = $this->getEiuFrame()->getEiFrame();
 		
-// 		$eiGuiMaskDeclaration = $eiFrame->getEiLaunch()->getDef()->getGuiDefinition($eiEngine->getEiMask())
+// 		$eiGuiMaskDeclaration = $eiFrame->getEiLaunch()->getDef()->getEiGuiDefinition($eiEngine->getEiMask())
 // 				->createEiGuiMaskDeclaration($eiFrame, $viewMode);
 		
 // 		return new EiuGuiEntry($eiGuiMaskDeclaration->createEiGuiValueBoundary($eiEntry, $treeLevel), null, $this->eiuAnalyst);
@@ -380,7 +377,7 @@ class EiuEntry {
 // 		}
 		
 // 		$eiGuiMaskDeclaration = $eiMask->createEiGuiMaskDeclaration($eiFrame, $viewMode, false);
-// 		$eiGuiMaskDeclaration->init(new DummyEiGuiSiFactory(), $eiGuiMaskDeclaration->getGuiDefinition()->getDefPropPaths());
+// 		$eiGuiMaskDeclaration->init(new DummyEiGuiSiFactory(), $eiGuiMaskDeclaration->getEiGuiDefinition()->getDefPropPaths());
 		
 // 		$eiGuiValueBoundaryAssembler = new EiGuiValueBoundaryAssembler(new EiGuiValueBoundary($eiGuiMaskDeclaration, $this->eiEntry));
 		
@@ -575,9 +572,9 @@ class EiuEntry {
 	 * @return EiFieldAbstraction|null
 	 * @throws GuiException
 	 * @throws EiFieldOperationFailedException
-	 	 */
+	 */
 	public function getEiFieldAbstraction($defPropPath, bool $required = false) {
-		$guiDefinition = $this->eiEntry->getEiMask()->getEiEngine()->getGuiDefinition();
+		$guiDefinition = $this->eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition();
 		try {
 			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getN2nContext(true),
 					$this->getEiEntry(), DefPropPath::create($defPropPath));
@@ -827,7 +824,7 @@ class EiuEntry {
 	}
 	
 	/**
-	 * @return \rocket\si\content\SiEntryQualifier
+	 * @return \rocket\ui\si\content\SiEntryQualifier
 	 */
 	function createSiEntryQualifier() {
 		$siMaskQualifier = $this->mask()->createSiMaskQualifier();

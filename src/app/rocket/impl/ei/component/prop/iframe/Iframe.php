@@ -7,7 +7,7 @@ use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\factory\EifGuiField;
 use rocket\impl\ei\component\prop\adapter\DisplayConfigTrait;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 
 class Iframe extends DisplayConfigTrait {
 	private IframeConfig $iframeConfig;

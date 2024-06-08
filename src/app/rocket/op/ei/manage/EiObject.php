@@ -22,8 +22,8 @@
 namespace rocket\op\ei\manage;
 
 use rocket\op\ei\manage\draft\Draft;
-use rocket\si\content\SiEntryQualifier;
-use rocket\si\content\SiEntryIdentifier;
+use rocket\ui\si\content\SiEntryQualifier;
+use rocket\ui\si\content\SiEntryIdentifier;
 
 interface EiObject {
     

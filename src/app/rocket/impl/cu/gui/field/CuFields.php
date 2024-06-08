@@ -2,7 +2,7 @@
 
 namespace rocket\impl\cu\gui\field;
 
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\cu\gui\field\string\StringInCuField;
 use rocket\impl\cu\gui\field\date\DateTimeInCuField;
 use rocket\impl\cu\gui\field\number\NumberInCuField;

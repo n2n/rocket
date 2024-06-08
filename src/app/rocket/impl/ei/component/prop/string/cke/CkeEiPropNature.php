@@ -22,25 +22,19 @@
 namespace rocket\impl\ei\component\prop\string\cke;
 
 use rocket\impl\ei\component\prop\string\AlphanumericEiPropNature;
-use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 use n2n\util\StringUtils;
 use n2n\core\N2N;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeComposer;
-use rocket\si\content\SiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\SiField;
+use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
-use rocket\si\content\impl\StringInSiField;
-use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
+use rocket\ui\si\content\impl\StringInSiField;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
-use rocket\impl\ei\component\prop\string\cke\ui\Cke;
-use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
-use n2n\util\type\ArgUtils;
-use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
 
 class CkeEiPropNature extends AlphanumericEiPropNature {
 

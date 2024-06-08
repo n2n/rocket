@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
 
 interface GuiFieldFactory {

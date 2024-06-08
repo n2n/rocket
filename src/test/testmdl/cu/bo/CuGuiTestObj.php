@@ -8,8 +8,8 @@ use rocket\attribute\impl\EiSetup;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\EiCmdNatures;
 use rocket\impl\ei\manage\gui\GuiControls;
-use rocket\si\control\SiButton;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiButton;
+use rocket\ui\si\control\SiIconType;
 use testmdl\cu\controller\CuGuiTestController;
 
 #[EiType]

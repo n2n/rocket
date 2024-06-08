@@ -22,17 +22,16 @@
 namespace rocket\impl\ei\manage\gui;
 
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\si\control\SiControl;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiControl;
+use rocket\ui\si\control\SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\si\control\impl\DeactivatedSiControl;
-use rocket\op\ei\manage\gui\control\GuiControl;
+use rocket\ui\si\control\impl\DeactivatedSiControl;
+use rocket\ui\gui\control\GuiControl;
 use n2n\util\uri\Url;
-use rocket\op\ei\manage\gui\control\GuiControlPath;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 
 class DeactivatedGuiControl implements GuiControl {
@@ -51,7 +50,7 @@ class DeactivatedGuiControl implements GuiControl {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\control\GuiControl::isInputHandled()
+	 * @see \rocket\ui\gui\control\GuiControl::isInputHandled()
 	 */
 	public function isInputHandled(): bool {
 		return false;

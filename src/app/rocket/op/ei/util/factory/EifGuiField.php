@@ -3,9 +3,8 @@ namespace rocket\op\ei\util\factory;
 
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\gui\ClosureGuiField;
-use rocket\si\content\SiField;
-use rocket\op\ei\manage\gui\field\GuiField;
-use n2n\bind\mapper\Mapper;
+use rocket\ui\si\content\SiField;
+use rocket\ui\gui\field\GuiField;
 use Closure;
 
 class EifGuiField {

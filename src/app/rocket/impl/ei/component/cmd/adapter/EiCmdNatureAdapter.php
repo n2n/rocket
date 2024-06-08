@@ -23,15 +23,12 @@ namespace rocket\impl\ei\component\cmd\adapter;
 
 use rocket\op\ei\component\command\EiCmdNature;
 use rocket\impl\ei\component\EiComponentNatureAdapter;
-use rocket\op\ei\component\command\EiCmd;
-use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-
-use rocket\op\ei\manage\gui\GuiCommand;
+use rocket\ui\gui\GuiCommand;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
-use rocket\si\control\SiNavPoint;
+use rocket\ui\si\control\SiNavPoint;
 
 abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, GuiCommand {
 	

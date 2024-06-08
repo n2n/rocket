@@ -31,9 +31,9 @@
 // interface GuiPropFork {
 
 // 	/**
-// 	 * @return GuiDefinition
+// 	 * @return EiGuiDefinition
 // 	 */
-// 	public function getForkedGuiDefinition(): GuiDefinition;
+// 	public function getForkedEiGuiDefinition(): EiGuiDefinition;
 	
 // 	/**
 // 	 * @param Eiu $eiu
@@ -44,7 +44,7 @@
 // 	/**
 // 	 * @param Eiu $eiu
 // 	 * @return EiObject|null null if not available
-// 	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
+// 	 * @throws IllegalStateException if {@see self::getForkedEiGuiDefinition()}
 // 	 */
 // 	public function determineForkedEiObject(Eiu $eiu): ?EiObject;
 	
@@ -52,7 +52,7 @@
 // 	 * @param Eiu $eiu
 // 	 * @param DefPropPath $defPropPath
 // 	 * @return EiFieldAbstraction
-// 	 * @throws IllegalStateException if {@see self::getForkedGuiDefinition()}
+// 	 * @throws IllegalStateException if {@see self::getForkedEiGuiDefinition()}
 // 	 * @throws UnknownEiFieldExcpetion if EiFieldAbstraction is not resovable.
 // 	 */
 // 	public function determineEiFieldAbstraction(Eiu $eiu, DefPropPath $defPropPath): EiFieldAbstraction;

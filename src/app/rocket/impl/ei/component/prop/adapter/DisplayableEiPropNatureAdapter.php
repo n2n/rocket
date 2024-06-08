@@ -22,17 +22,16 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\op\ei\manage\gui\GuiProp;
-
+use rocket\ui\gui\GuiProp;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\op\ei\manage\gui\GuiFieldAssembler;
+use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 
-abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implements GuiFieldAssembler {
+abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implements EiGuiField {
 	use DisplayConfigTrait;
 
 	/**

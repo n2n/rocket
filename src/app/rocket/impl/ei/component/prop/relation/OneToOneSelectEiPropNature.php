@@ -23,26 +23,20 @@ namespace rocket\impl\ei\component\prop\relation;
 
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\type\ArgUtils;
-use n2n\persistence\orm\property\EntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
-
-
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
-use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
+
 
 class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	use QuickSearchConfigTrait;

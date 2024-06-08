@@ -21,27 +21,23 @@
  */
 namespace rocket\impl\ei\component\prop\relation;
 
-use n2n\persistence\orm\property\EntityProperty;
 use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\gui\ViewMode;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\op\ei\manage\gui\field\GuiField;
+use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
-
 use n2n\util\type\CastUtils;
-use rocket\si\content\impl\meta\SiCrumb;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\meta\SiCrumb;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\entry\EiuEntry;
-use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
-use rocket\si\meta\SiStructureType;
-use rocket\si\content\SiField;
+use rocket\ui\si\meta\SiStructureType;
 
 class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 

@@ -2,16 +2,16 @@
 
 namespace rocket\op\cu\gui;
 
-use rocket\si\content\SiGui;
+use rocket\ui\si\content\SiGui;
 use n2n\util\uri\Url;
-use rocket\si\input\SiInput;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\SiInput;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\si\input\SiInputError;
 use rocket\op\cu\gui\control\CuControlCallId;
 use n2n\core\container\N2nContext;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\op\cu\util\Cuu;
-use rocket\si\content\SiValueBoundary;
+use rocket\ui\si\content\SiValueBoundary;
 
 interface CuGui {
 

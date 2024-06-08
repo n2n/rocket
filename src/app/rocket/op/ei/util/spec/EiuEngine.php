@@ -16,28 +16,23 @@ use rocket\op\ei\util\filter\controller\FilterJhtmlHook;
 use n2n\web\http\controller\impl\ScrRegistry;
 use rocket\op\ei\util\privilege\EiuPrivilegeForm;
 use rocket\op\ei\manage\security\privilege\data\PrivilegeSetting;
-use rocket\op\ei\util\sort\EiuSortForm;
-use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\op\ei\manage\ManageState;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\GuiException;
 use rocket\op\ei\util\EiuAnalyst;
-use rocket\op\ei\manage\gui\GuiDefinitionListener;
+use rocket\ui\gui\EiGuiDefinitionListener;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\EiGuiListener;
+use rocket\ui\gui\EiGuiListener;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\manage\frame\EiForkLink;
-use rocket\op\ei\manage\gui\GuiDefinition;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\op\ei\util\gui\EiuGuiDeclaration ;
-use rocket\op\ei\manage\gui\EiGuiEntry;
-use rocket\op\ei\manage\critmod\sort\SortDefinition;
-use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
+use rocket\ui\gui\ViewMode;
+use rocket\op\ei\util\gui\EiuGuiDeclaration;
+use rocket\ui\gui\GuiEntry;
+use rocket\ui\gui\EiGuiDeclarationFactory;
 use n2n\l10n\Lstr;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use rocket\ui\gui\EiGuiDeclaration;
 use InvalidArgumentException;
 
 class EiuEngine {
@@ -92,7 +87,7 @@ class EiuEngine {
 	}
 	
 	public function removeGuiProp($defPropPath): void {
-		$this->eiEngine->getGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
+		$this->eiEngine->getEiGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
 	}
 	
 //	/**
@@ -113,7 +108,7 @@ class EiuEngine {
 		
 		return array_map(
 				function (Lstr $labelLstr) use ($n2nLocale) { return $labelLstr->t($n2nLocale); },
-				$this->eiEngine->getEiMask()->getEiEngine()->getGuiDefinition()->getLabelLstrs());
+				$this->eiEngine->getEiMask()->getEiEngine()->getEiGuiDefinition()->getLabelLstrs());
 	}
 	
 	/**
@@ -245,10 +240,10 @@ class EiuEngine {
 //	}
 	
 //	/**
-//	 * @return GuiDefinition
+//	 * @return EiGuiDefinition
 //	 */
-//	public function getGuiDefinition() {
-//		return $this->eiEngine->getGuiDefinition($this->eiEngine->getEiMask());
+//	public function getEiGuiDefinition() {
+//		return $this->eiEngine->getEiGuiDefinition($this->eiEngine->getEiMask());
 //	}
 	
 	/**
@@ -259,10 +254,10 @@ class EiuEngine {
 	}
 	
 // 	/**
-// 	 * @return \rocket\op\ei\manage\gui\GuiDefinition
+// 	 * @return \rocket\op\ei\manage\gui\EiGuiDefinition
 // 	 */
-// 	public function getGuiDefinition() {
-// 		return $this->eiEngine->getGuiDefinition($this->eiEngine->getEiMask());
+// 	public function getEiGuiDefinition() {
+// 		return $this->eiEngine->getEiGuiDefinition($this->eiEngine->getEiMask());
 // 	}
 	
 	/**
@@ -294,7 +289,7 @@ class EiuEngine {
 	}
 	
 	public function onNewGuiEntry(\Closure $callback) {
-		$this->eiEngine->getGuiDefinition()->registerGuiDefinitionListener(new ClosureEiGuiListener($callback));
+		$this->eiEngine->getEiGuiDefinition()->registerEiGuiDefinitionListener(new ClosureEiGuiListener($callback));
 		return $this;
 	}
 	
@@ -304,7 +299,7 @@ class EiuEngine {
 	 * @return boolean
 	 */
 	public function containsGuiProp($eiPropPath): bool {
-		return $this->eiEngine->getGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
+		return $this->eiEngine->getEiGuiDefinition()->containsGuiProp(DefPropPath::create($eiPropPath));
 	}
 
 //	/**
@@ -314,7 +309,7 @@ class EiuEngine {
 //	 * @return EiPropPath
 //	 */
 //	public function eiPropPathToEiPropPath($eiPropPath) {
-//		return $this->getGuiDefinition()->eiPropPathToEiPropPath(DefPropPath::create($eiPropPath));
+//		return $this->getEiGuiDefinition()->eiPropPathToEiPropPath(DefPropPath::create($eiPropPath));
 //	}
 	
 	
@@ -387,7 +382,7 @@ class EiuEngine {
 // 	 */
 // 	public function createIdentityString(object $eiObjectArg, N2nLocale $n2nLocale = null): string {
 // 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->eiuMask->getEiMask()->getEiType());
-// 		return $this->getGuiDefinition()
+// 		return $this->getEiGuiDefinition()
 // 				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),
 // 						$n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 // 	}
@@ -442,7 +437,7 @@ class EiuEngine {
 	}
 }
 
-class ClosureGuiDefinitionListener implements GuiDefinitionListener {
+class ClosureEiGuiDefinitionListener implements EiGuiDefinitionListener {
 	private $callback;
 	
 	public function __construct(\Closure $callback) {
@@ -459,12 +454,12 @@ class ClosureGuiDefinitionListener implements GuiDefinitionListener {
 
 }
 
-class ClosureEiGuiListener implements EiGuiListener, GuiDefinitionListener {
+class ClosureEiGuiListener implements EiGuiListener, EiGuiDefinitionListener {
 
 	public function __construct(private \Closure $eiGuiEntryCallback) {
 	}
 	
-	public function onNewEiGuiEntry(EiGuiEntry $eiGuiEntry): void {
+	public function onNewEiGuiEntry(GuiEntry $eiGuiEntry): void {
 		$c = $this->eiGuiEntryCallback;
 		$c(new Eiu($eiGuiEntry));
 	}

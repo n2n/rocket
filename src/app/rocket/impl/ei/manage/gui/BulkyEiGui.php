@@ -2,23 +2,20 @@
 
 namespace rocket\impl\ei\manage\gui;
 
-use rocket\op\ei\manage\gui\EiGui;
-use rocket\op\ei\manage\gui\EiGuiEntry;
-use rocket\si\content\SiGui;
-use n2n\util\uri\Url;
-use rocket\op\ei\manage\gui\EiGuiValueBoundary;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\si\input\SiInput;
+use rocket\ui\gui\EiGui;
+use rocket\ui\si\content\SiGui;
+use rocket\ui\gui\EiGuiValueBoundary;
+use rocket\ui\gui\EiGuiDeclaration;
+use rocket\ui\si\input\SiInput;
 use rocket\si\input\SiInputError;
-use n2n\core\container\N2nContext;
-use rocket\si\input\CorruptedSiInputDataException;
-use rocket\si\content\SiValueBoundary;
+use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use rocket\si\content\impl\basic\BulkyEntrySiGui;
+use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\api\ZoneGuiControlsMap;
 use rocket\op\ei\manage\gui\control\GuiControlMap;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiCallResponse;
 use n2n\util\ex\IllegalStateException;
 
 class BulkyEiGui implements EiGui {

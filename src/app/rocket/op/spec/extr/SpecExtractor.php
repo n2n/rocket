@@ -41,7 +41,7 @@ use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\StringUtils;
 use rocket\op\spec\TypePath;
 use rocket\core\model\Rocket;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\si\meta\SiStructureType;
 
 class SpecExtractor {
 	private $dataSet;

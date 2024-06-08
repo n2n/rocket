@@ -21,19 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use n2n\spec\dbo\meta\structure\Column;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
-use rocket\op\ei\manage\gui\ViewMode;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\gui\ViewMode;
+use rocket\ui\si\meta\SiStructureType;
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
-use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\type\attrs\LenientAttributeReader;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
-use n2n\impl\web\dispatch\mag\model\EnumMag;
-use rocket\op\ei\manage\gui\GuiPropSetup;
-use rocket\op\ei\manage\gui\GuiFieldAssembler;
+use rocket\ui\gui\GuiPropSetup;
+use rocket\op\ei\manage\gui\EiGuiField;
 
 class DisplayConfig {
 	private $compatibleViewModes;
@@ -181,14 +175,14 @@ class DisplayConfig {
 	 * @param Eiu $eiu
 	 * @return GuiPropSetup|null
 	 */
-	function buildGuiPropSetup(Eiu $eiu, GuiFieldAssembler $guiFieldAssembler) {
+	function buildGuiPropSetup(Eiu $eiu, EiGuiField $eiGuiField) {
 		$viewMode = $eiu->guiMaskDeclaration()->getViewMode();
 		
 		if (!$this->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
-		return $eiu->factory()->newGuiPropSetup($guiFieldAssembler)
+		return $eiu->factory()->newGuiPropSetup($eiGuiField)
 				->setDefaultDisplayed($this->isViewModeDefaultDisplayed($viewMode))
 				->setSiStructureType($this->getSiStructureType())
 				->toGuiPropSetup();

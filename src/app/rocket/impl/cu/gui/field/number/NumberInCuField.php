@@ -3,11 +3,11 @@
 namespace rocket\impl\cu\gui\field\number;
 
 use rocket\op\cu\gui\field\CuField;
-use rocket\si\content\impl\NumberInSiField;
+use rocket\ui\si\content\impl\NumberInSiField;
 use n2n\core\container\N2nContext;
 use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
-use rocket\si\content\SiFieldModel;
+use rocket\ui\si\content\SiFieldModel;
 
 class NumberInCuField implements CuField, SiFieldModel {
 

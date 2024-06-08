@@ -3,19 +3,19 @@
 namespace rocket\impl\cu\gui;
 
 use n2n\util\uri\Url;
-use rocket\si\content\SiGui;
+use rocket\ui\si\content\SiGui;
 use n2n\util\ex\IllegalStateException;
-use rocket\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\si\meta\SiDeclaration;
+use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
+use rocket\ui\si\meta\SiDeclaration;
 use rocket\op\cu\gui\CuMaskedEntry;
 use rocket\op\cu\gui\control\CuControl;
-use rocket\si\content\SiValueBoundary;
-use rocket\si\meta\SiStyle;
+use rocket\ui\si\content\SiValueBoundary;
+use rocket\ui\si\meta\SiStyle;
 use rocket\op\cu\gui\CuGui;
-use rocket\si\input\SiInput;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\SiInput;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\op\cu\gui\control\CuControlCallId;
-use rocket\si\control\SiCallResponse;
+use rocket\ui\si\control\SiCallResponse;
 use rocket\si\input\SiInputError;
 use n2n\core\container\N2nContext;
 use rocket\op\cu\util\Cuu;

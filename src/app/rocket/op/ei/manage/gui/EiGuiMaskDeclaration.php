@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 namespace rocket\op\ei\manage\gui;
 
 use rocket\op\ei\manage\frame\EiFrame;
@@ -7,20 +27,22 @@ use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\component\GuiFactory;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\control\GuiControlPath;
-use rocket\op\ei\manage\gui\control\UnknownGuiControlException;
-use rocket\op\ei\manage\gui\control\GuiControl;
+use rocket\ui\gui\control\GuiControlPath;
+use rocket\ui\gui\control\UnknownGuiControlException;
+use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\si\content\SiEntry;
 use rocket\op\ei\EiPropPath;
-use rocket\si\meta\SiProp;
-use rocket\si\meta\SiMask;
+use rocket\ui\si\meta\SiProp;
+use rocket\ui\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
-use rocket\si\meta\SiMaskDeclaration;
-use rocket\si\meta\SiStructureDeclaration;
+use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\manage\gui\control\GuiControlMap;
 use rocket\op\ei\mask\EiMask;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\ui\gui\GuiEntry;
+use rocket\ui\si\meta\SiMaskQualifier;
+use rocket\ui\gui\GuiMask;
 
 /**
  * @author andreas
@@ -36,9 +58,9 @@ class EiGuiMaskDeclaration {
 	 */
 	private $eiPropPaths = [];
 	/**
-	 * @var GuiFieldAssembler[]
+	 * @var EiGuiField[]
 	 */
-	private $guiFieldAssemblers = [];
+	private $eiGuiFields = [];
 	/**
 	 * @var DefPropPath[]
 	 */
@@ -58,17 +80,25 @@ class EiGuiMaskDeclaration {
 
 	/**
 	 * @param int $viewMode Use constants from {@see ViewMode}
-	 * @param GuiDefinition $guiDefinition
+	 * @param EiGuiDefinition $guiDefinition
 	 * @param array|null $guiStructureDeclarations
 	 */
-	function __construct(private readonly int $viewMode, private readonly GuiDefinition $guiDefinition,
+	function __construct(private readonly int $viewMode, private readonly EiGuiDefinition $guiDefinition,
 			?array $guiStructureDeclarations) {
 		$this->setGuiStructureDeclarations($guiStructureDeclarations);
 	}
-	
-//	function getEiType() {
-//		return $this->guiDefinition->getEiMask()->getEiType();
-//	}
+
+	function createSiMaskIdentifier(): SiMaskIdentifier {
+		$eiMask = $this->guiDefinition->getEiMask();
+
+		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $this->viewMode);
+		return new SiMaskIdentifier($eiSiMaskId->__toString(), $eiMask->getEiType()->getSupremeEiType()->getId());
+	}
+
+	public function createSiMaskQualifier(N2nLocale $n2nLocale): SiMaskQualifier {
+		return new SiMaskQualifier($this->createSiMaskIdentifier(),
+				$this->getEiMask()->getLabelLstr()->t($n2nLocale), $this->getEiMask()->getIconType());
+	}
 
 	function getEiMask(): EiMask {
 		return $this->guiDefinition->getEiMask();
@@ -78,7 +108,7 @@ class EiGuiMaskDeclaration {
 		return $this->viewMode;
 	}
 
-	function getGuiDefinition(): GuiDefinition {
+	function getEiGuiDefinition(): EiGuiDefinition {
 		return $this->guiDefinition;
 	}
 	
@@ -99,30 +129,30 @@ class EiGuiMaskDeclaration {
 	
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @throws GuiException
-	 * @return GuiFieldAssembler
+	 * @return EiGuiField
+	 *@throws EiGuiException
 	 */
-	function getGuiFieldAssembler(EiPropPath $eiPropPath): GuiFieldAssembler {
+	function getEiGuiField(EiPropPath $eiPropPath): EiGuiField {
 		$eiPropPathStr = (string) $eiPropPath;
-		if (isset($this->guiFieldAssemblers[$eiPropPathStr])) {
-			return $this->guiFieldAssemblers[$eiPropPathStr];
+		if (isset($this->eiGuiFields[$eiPropPathStr])) {
+			return $this->eiGuiFields[$eiPropPathStr];
 		}
 		
-		throw new GuiException('Unknown GuiFieldAssembler for ' . $eiPropPath);
+		throw new EiGuiException('Unknown EiGuiField for ' . $eiPropPath);
 	}
 	
-	function putGuiFieldAssembler(EiPropPath $eiPropPath, GuiFieldAssembler $guiFieldAssembler): void {
+	function putEiGuiField(EiPropPath $eiPropPath, EiGuiField $eiGuiField): void {
 		$this->ensureNotInit();
 		
-		$this->guiFieldAssemblers[(string) $eiPropPath] = $guiFieldAssembler;
+		$this->eiGuiFields[(string) $eiPropPath] = $eiGuiField;
 	}
 	
 	/**
 	 * @param EiPropPath $eiPropPath
 	 * @return bool
 	 */
-	function containsGuiFieldAssembler(EiPropPath $eiPropPath): bool {
-		return isset($this->guiFieldAssemblers[(string) $eiPropPath]);
+	function containsEiGuiField(EiPropPath $eiPropPath): bool {
+		return isset($this->eiGuiFields[(string) $eiPropPath]);
 	}
 	
 	/**
@@ -153,8 +183,8 @@ class EiGuiMaskDeclaration {
 	
 	/**
 	 * @param DefPropPath $defPropPath
-	 * @throws UnresolvableDefPropPathException
 	 * @return DisplayDefinition
+	 * @throws UnresolvableDefPropPathExceptionEi
 	 */
 	function getDisplayDefintion(DefPropPath $defPropPath): DisplayDefinition {
 		$defPropPathStr = (string) $defPropPath;
@@ -162,7 +192,7 @@ class EiGuiMaskDeclaration {
 			return $this->displayDefinitions[$defPropPathStr];
 		}
 		
-		throw new UnresolvableDefPropPathException('Unknown DefPropPath for ' . $defPropPath);
+		throw new UnresolvableDefPropPathExceptionEi('Unknown DefPropPath for ' . $defPropPath);
 	}
 	
 	/**
@@ -180,12 +210,13 @@ class EiGuiMaskDeclaration {
 		return isset($this->defPropPaths[(string) $defPropPath]);
 	}
 
-	function createSiMaskDeclaration(N2nLocale $n2nLocale): SiMaskDeclaration {
+	function createSiMaskDeclaration(N2nLocale $n2nLocale): SiMask {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiMaskDeclaration has no GuiStructureDeclarations.');
 
-		return new SiMaskDeclaration(
-				$this->createSiMask($n2nLocale),
+		return new GuiMask(
+				$this->createSiMaskQualifier($n2nLocale),
+				$this->createSiProps($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
 	}
 	
@@ -216,9 +247,8 @@ class EiGuiMaskDeclaration {
 	/**
 	 * @return SiMask
 	 */
-	function createSiMask(N2nLocale $n2nLocale): SiMask {
-		$siMaskQualifier = $this->getGuiDefinition()->getEiMask()->createSiMaskQualifier($n2nLocale);
-		return new SiMask($siMaskQualifier, $this->createSiProps($n2nLocale));
+	function createGuiMask(N2nLocale $n2nLocale): GuiMask {
+
 	}
 
 	/**
@@ -226,7 +256,7 @@ class EiGuiMaskDeclaration {
 	 * @return SiProp[]
 	 */
 	private function createSiProps(N2nLocale $n2nLocale): array {
-		$deter = new ContextSiFieldDeterminer();
+		$deter = new \rocket\op\gui\ContextSiFieldDeterminer();
 		
 		$siProps = [];
 		foreach ($this->defPropPaths as $defPropPath) {
@@ -377,10 +407,10 @@ class EiGuiMaskDeclaration {
 // 		return $forkDefPropPaths;
 // 	}
 
-	function createEiGuiEntry(EiFrame $eiFrame, EiEntry $eiEntry, bool $entryGuiControlsIncluded): EiGuiEntry {
+	function createGuiEntry(EiFrame $eiFrame, EiEntry $eiEntry, bool $entryGuiControlsIncluded): GuiEntry {
 		$this->ensureInit();
 		
-		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+		$eiGuiEntry = GuiFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
 
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
 			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
@@ -392,15 +422,15 @@ class EiGuiMaskDeclaration {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param bool $entryGuiControlsIncluded
-	 * @return EiGuiEntry
+	 * @return GuiEntry
 	 */
-	function createNewEiGuiEntry(EiFrame $eiFrame, bool $entryGuiControlsIncluded): EiGuiEntry {
+	function createNewEiGuiEntry(EiFrame $eiFrame, bool $entryGuiControlsIncluded): GuiEntry {
 		$this->ensureInit();
 		
-		$eiObject = $this->getGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
+		$eiObject = $this->getEiGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 		
-		$eiGuiEntry = GuiFactory::createEiGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+		$eiGuiEntry = GuiFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
 
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
 			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
@@ -427,7 +457,7 @@ class EiGuiMaskDeclaration {
 //	}
 	
 	/**
-	 * @return \rocket\si\control\SiControl[]
+	 * @return \rocket\ui\si\control\SiControl[]
 	 */
 	function createGeneralSiControls(EiFrame $eiFrame): array {
 		$siControls = [];
@@ -457,7 +487,7 @@ class EiGuiMaskDeclaration {
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
 	 * @param GuiControlPath $guiControlPath
-	 * @return \rocket\op\ei\manage\gui\control\GuiControl
+	 * @return \rocket\ui\gui\control\GuiControl
 	 * @throws UnknownGuiControlException
 	 */
 	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {
@@ -564,12 +594,12 @@ class ContextSiFieldDeterminer {
 	/**
 	 * @return SiProp[]
 	 */
-	function createContextSiProps(N2nLocale $n2nLocale, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
+	function createContextSiProps(N2nLocale $n2nLocale, \rocket\op\ei\manage\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
 		
 		$siProps = [];
 		
 		foreach ($this->forkDefPropPaths as $forkDefPropPath) {
-			$eiProp = $eiGuiMaskDeclaration->getGuiDefinition()->getGuiPropWrapperByDefPropPath($forkDefPropPath)->getEiProp();
+			$eiProp = $eiGuiMaskDeclaration->getEiGuiDefinition()->getGuiPropWrapperByDefPropPath($forkDefPropPath)->getEiProp();
 			
 			$siProp = (new SiProp((string) $forkDefPropPath, $eiProp->getNature()->getLabelLstr()->t($n2nLocale)))
 					->setDescendantPropIds(array_map(

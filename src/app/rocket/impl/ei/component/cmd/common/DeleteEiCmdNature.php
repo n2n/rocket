@@ -24,9 +24,9 @@ namespace rocket\impl\ei\component\cmd\common;
 use rocket\op\ei\component\command\PrivilegedEiCommand;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\cmd\adapter\IndependentEiCommandAdapter;
-use rocket\si\control\SiButton;
-use rocket\si\control\SiConfirm;
-use rocket\si\control\SiIconType;
+use rocket\ui\si\control\SiButton;
+use rocket\ui\si\control\SiConfirm;
+use rocket\ui\si\control\SiIconType;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 
 class DeleteEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {

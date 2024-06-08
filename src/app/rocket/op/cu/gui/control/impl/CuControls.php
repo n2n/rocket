@@ -2,7 +2,7 @@
 
 namespace rocket\op\cu\gui\control\impl;
 
-use rocket\si\control\SiButton;
+use rocket\ui\si\control\SiButton;
 
 class CuControls {
 

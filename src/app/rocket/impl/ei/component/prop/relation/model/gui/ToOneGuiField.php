@@ -21,15 +21,15 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use rocket\op\ei\manage\gui\GuiFieldMap;
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\si\content\SiField;
+use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\si\content\SiField;
 use rocket\op\ei\util\Eiu;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\si\content\impl\relation\QualifierSelectInSiField;
+use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
 
 class ToOneGuiField implements GuiField {
 	/**

@@ -22,18 +22,15 @@
 namespace rocket\impl\ei\component\prop\adapter\gui;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\manage\gui\field\GuiField;
-use rocket\op\ei\util\Eiu;
-use rocket\si\content\SiField;
-use rocket\op\ei\manage\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\si\content\SiField;
+use rocket\ui\gui\GuiFieldMap;
 use n2n\reflection\magic\MagicMethodInvoker;
-use n2n\bind\mapper\Mapper;
 use n2n\util\magic\TaskResult;
 use n2n\util\ex\ExUtils;
-use rocket\si\content\SiFieldModel;
+use rocket\ui\si\content\SiFieldModel;
 use n2n\util\type\TypeConstraints;
 use n2n\l10n\Message;
-use n2n\persistence\orm\attribute\N2nLocale;
 
 class ClosureGuiField implements GuiField, SiFieldModel {
 
@@ -83,7 +80,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiField::getSiField()
+	 * @see \rocket\ui\gui\field\GuiField::getSiField()
 	 */
 	function getSiField(): SiField {
 		return $this->siField;
@@ -123,7 +120,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiField::save()
+	 * @see \rocket\ui\gui\field\GuiField::save()
 	 */
 	public function save(): void {
 		if ($this->siField->isReadOnly()) {
@@ -139,7 +136,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\op\ei\manage\gui\field\GuiField::getForkGuiFieldMap()
+	 * @see \rocket\ui\gui\field\GuiField::getForkGuiFieldMap()
 	 */
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;

@@ -25,7 +25,7 @@ use n2n\util\StringUtils;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\factory\EifGuiField;
-use rocket\si\content\impl\SiFields;
+use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureAdapter;
 
 class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureAdapter {

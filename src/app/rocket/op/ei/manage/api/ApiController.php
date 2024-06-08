@@ -27,11 +27,11 @@ use rocket\op\ei\manage\ManageState;
 use n2n\web\http\BadRequestException;
 use n2n\web\http\controller\Param;
 use n2n\web\http\controller\ParamBody;
-use rocket\si\api\SiGetRequest;
-use rocket\si\api\SiGetResponse;
-use rocket\si\api\SiValRequest;
-use rocket\si\api\SiValResponse;
-use rocket\op\ei\manage\gui\ViewMode;
+use rocket\ui\si\api\SiGetRequest;
+use rocket\ui\si\api\SiGetResponse;
+use rocket\ui\si\api\SiValRequest;
+use rocket\ui\si\api\SiValResponse;
+use rocket\ui\gui\ViewMode;
 
 class ApiController extends ControllerAdapter {
 	const API_CONTROL_SECTION = 'execcontrol';
@@ -82,8 +82,8 @@ class ApiController extends ControllerAdapter {
 	
 	/**
 	 * @param Param $param
-	 * @throws BadRequestException
-	 * @return \rocket\si\api\SiGetRequest
+	 * @return \rocket\ui\si\api\SiGetRequest
+	 *@throws BadRequestException
 	 */
 	private function parseGetRequest(Param $param) {
 		try {
@@ -95,8 +95,8 @@ class ApiController extends ControllerAdapter {
 	
 	/**
 	 * @param Param $param
-	 * @throws BadRequestException
-	 * @return \rocket\si\api\SiValRequest
+	 * @return \rocket\ui\si\api\SiValRequest
+	 *@throws BadRequestException
 	 */
 	private function parseValRequest(Param $param) {
 		try {

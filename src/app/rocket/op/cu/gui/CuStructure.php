@@ -2,19 +2,17 @@
 
 namespace rocket\op\cu\gui;
 
-use rocket\si\meta\SiMaskDeclaration;
-use rocket\si\meta\SiStructureDeclaration;
-use rocket\si\content\SiField;
-use rocket\si\meta\SiProp;
-use rocket\si\content\SiEntry;
-use rocket\si\meta\SiStructureType;
+use rocket\ui\si\meta\SiMask;
+use rocket\ui\si\meta\SiStructureDeclaration;
+use rocket\ui\si\meta\SiProp;
+use rocket\ui\si\meta\SiStructureType;
 use n2n\util\ex\DuplicateElementException;
 use rocket\op\cu\gui\field\CuField;
 
 class CuStructure {
 
 	function __construct(private readonly CuGuiEntry $cuGuiEntry,
-			private readonly SiMaskDeclaration $siMaskDeclaration,
+			private readonly SiMask $siMaskDeclaration,
 			private readonly ?SiStructureDeclaration $siStructureDeclaration) {
 	}
 

@@ -2,6 +2,7 @@
 namespace rocket\op\ei\manage\gui;
 
 use PHPUnit\Framework\TestCase;
+use rocket\ui\gui\ViewMode;
 
 class ViewModeTest extends TestCase {
 	

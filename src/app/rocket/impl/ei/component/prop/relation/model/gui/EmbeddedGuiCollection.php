@@ -21,18 +21,17 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\frame\EiuFrame;
-use rocket\si\content\impl\relation\SiEmbeddedEntry;
+use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\CastUtils;
-use rocket\si\input\SiEntryInput;
+use rocket\ui\si\input\SiEntryInput;
 use rocket\op\ei\util\spec\EiuType;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
-use rocket\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\CorruptedSiInputDataException;
 
 class EmbeddedGuiCollection {
 	/**
