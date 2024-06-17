@@ -9,18 +9,22 @@ use n2n\util\uri\Url;
 class GuiControlMap {
 
 	/**
-	 * @var \rocket\op\gui\control\GuiControlRecord
+	 * @var GuiControl[]
 	 */
-	private array $guiControlRecords = [];
+	private array $guiControls = [];
 
 	function __construct() {
 
 	}
 
-	function putGuiControl(GuiControlPath $guiControlPath, GuiControl $guiControl,
-			ApiControlCallId $apiControlCallId, Url $apiUrl): void {
-		$this->guiControlRecords[(string) $guiControlPath] = new \rocket\op\gui\control\GuiControlRecord($guiControlPath, $guiControl,
-				$apiUrl, $apiControlCallId);
+//	function putGuiControl(string $name, GuiControl $guiControl,
+//			ApiControlCallId $apiControlCallId, Url $apiUrl): void {
+//		$this->guiControlRecords[(string) $guiControlPath] = new \rocket\op\gui\control\GuiControlRecord($guiControlPath, $guiControl,
+//				$apiUrl, $apiControlCallId);
+//	}
+
+	function putGuiControl(string $controlName, GuiControl $guiControl): void {
+		$this->guiControls[$controlName] = $guiControl;
 	}
 
 //	/**
@@ -31,24 +35,20 @@ class GuiControlMap {
 //	}
 
 	/**
-	 * @return SiControl[]
+	 * @return GuiControl[]
 	 */
-	function createSiControls(): array {
-		$siControls = [];
-		foreach ($this->guiControlRecords as $guiControlPathStr => $guiControlRecord) {
-			$siControls[$guiControlPathStr] = $guiControlRecord->createSiControl();
-		}
-		return $siControls;
+	function getGuiControls(): array {
+		return $this->guiControls;
 	}
 
 }
 
-class GuiControlRecord {
-	function __construct(public readonly GuiControlPath $guiControlPath, public readonly GuiControl $guiControl,
-			public readonly Url $apiUrl, public readonly ApiControlCallId $apiControlCallId) {
-	}
-
-	function createSiControl(): SiControl {
-		return $this->guiControl->toSiControl($this->apiUrl, $this->apiControlCallId);
-	}
-}
+//class GuiControlRecord {
+//	function __construct(public readonly GuiControlPath $guiControlPath, public readonly GuiControl $guiControl,
+//			public readonly Url $apiUrl, public readonly ApiControlCallId $apiControlCallId) {
+//	}
+//
+//	function createSiControl(): SiControl {
+//		return $this->guiControl->getSiControl($this->apiUrl, $this->apiControlCallId);
+//	}
+//}

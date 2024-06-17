@@ -42,11 +42,11 @@ class StringArrayEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	 * @param Eiu $eiu
 	 * @return UiComponent
 	 */
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	function createOutGuiField(Eiu $eiu): BackableGuiField {
 		return $eiu->factory()->newGuiField(SiFields::stringOut(implode(', ', $eiu->field()->getValue()))) ;
 	}
 
-	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+	public function createInGuiField(Eiu $eiu): BackableGuiField {
 		$values = ArgUtils::toArray($eiu->field()->getValue());
 		
 		$siField = SiFields::stringArrayIn($values)

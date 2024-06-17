@@ -31,7 +31,7 @@ use rocket\ui\si\content\impl\SiFields;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\col\ArrayUtils;
 

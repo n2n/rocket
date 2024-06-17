@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\meta;
 
 use rocket\op\ei\util\Eiu;
-use rocket\ui\gui\DisplayDefinition;
+use rocket\op\ei\manage\gui\DisplayDefinition;
 use rocket\impl\ei\component\prop\adapter\DisplayConfigTrait;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\manage\idname\IdNameProp;
@@ -41,7 +41,7 @@ class Type extends DisplayConfigTrait {
 				$eiu->prop()->getLabel());
 	}
 
-	public function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	public function createOutGuiField(Eiu $eiu): BackableGuiField {
 		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();

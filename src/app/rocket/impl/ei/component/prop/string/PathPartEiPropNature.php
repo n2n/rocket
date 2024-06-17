@@ -133,7 +133,7 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 //		return $attrs;
 //	}
 	
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
+	function createInGuiField(Eiu $eiu): BackableGuiField {
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
 				->setMinlength($this->getMinlength())

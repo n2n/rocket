@@ -33,7 +33,7 @@ use rocket\op\ei\util\entry\EiuEntry;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 

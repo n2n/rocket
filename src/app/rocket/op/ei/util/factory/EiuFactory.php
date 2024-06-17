@@ -86,7 +86,7 @@ class EiuFactory {
 	 * @param \Closure|EiGuiField $eiGuiCallbackOrAssembler
 	 * @return \rocket\op\ei\util\factory\EifGuiPropSetup
 	 */
-	function newGuiPropSetup($eiGuiCallbackOrAssembler) {
+	function newGuiPropSetup($eiGuiCallbackOrAssembler): EifGuiPropSetup {
 		return new EifGuiPropSetup($eiGuiCallbackOrAssembler);
 	}
 	

@@ -658,13 +658,13 @@ class EiGuiDefinition {
 						->getEiProp()->getNature()->getLabelLstr();
 			}
 
-			if (isset($this->eiGuiPropForkWrappers[$eiPropPathStr])) {
-				$currentEiPropPaths = $contextEiPropPaths;
-				$currentEiPropPaths[] = $eiPropPath;
-
-				$labelLstrs = array_merge($labelLstrs, $this->eiGuiPropForkWrappers[$eiPropPathStr]
-						->getForkedEiGuiDefinition()->buildLabelLstrs($currentEiPropPaths));
-			}
+//			if (isset($this->eiGuiPropForkWrappers[$eiPropPathStr])) {
+//				$currentEiPropPaths = $contextEiPropPaths;
+//				$currentEiPropPaths[] = $eiPropPath;
+//
+//				$labelLstrs = array_merge($labelLstrs, $this->eiGuiPropForkWrappers[$eiPropPathStr]
+//						->getForkedEiGuiDefinition()->buildLabelLstrs($currentEiPropPaths));
+//			}
 		}
 
 		return $labelLstrs;
@@ -1030,7 +1030,7 @@ class EiFieldAssemblerCache {
 	 */
 	private $defPropPaths = [];
 	/**
-	 * @var GuiPropSetup[]
+	 * @var EiGuiPropSetup[]
 	 */
 	private $eiGuiPropSetups = [];
 
@@ -1046,7 +1046,7 @@ class EiFieldAssemblerCache {
 
 	/**
 	 * @param EiPropPath $eiPropPath
-	 * @return GuiPropSetup|null
+	 * @return EiGuiPropSetup|null
 	 */
 	private function assemble(EiPropPath $eiPropPath) {
 		$eiPropPathStr = (string) $eiPropPath;

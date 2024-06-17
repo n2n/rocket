@@ -27,6 +27,8 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\factory\EifGuiField;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropNatureAdapter;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
 
 class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureAdapter {
 
@@ -36,8 +38,8 @@ class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureAdapter {
 		})->toIdNameProp();
 	}
 
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return $eiu->factory()->newGuiField(SiFields::stringOut(
+	function createOutGuiField(Eiu $eiu): BackableGuiField {
+		return GuiFields::out(SiFields::stringOut(
 				StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp()), true)));
 	}
 }

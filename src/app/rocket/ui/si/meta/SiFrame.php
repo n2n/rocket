@@ -24,8 +24,7 @@ namespace rocket\ui\si\meta;
 use n2n\util\uri\Url;
 
 class SiFrame implements \JsonSerializable {
-	private $apiUrl;
-	private $typeContext;
+
 	/**
 	 * @var bool
 	 */
@@ -35,22 +34,17 @@ class SiFrame implements \JsonSerializable {
 	 * @param Url $apiUrl
 	 * @param SiTypeContext $typeContext
 	 */
-	function __construct(private array $apiUrlMap, SiTypeContext $typeContext) {
-		$this->typeContext = $typeContext;
+	function __construct(private array $apiUrlMap/*, SiTypeContext $typeContext*/) {
 	}
 	
-	/**
-	 * @return \rocket\ui\si\meta\SiTypeContext
-	 */
-	function getTypeContext() {
-		return $this->typeContext;
-	}
-	
-	/**
-	 * @param bool $sortable
-	 * @return \rocket\si\meta\SiFrame
-	 */
-	function setSortable(bool $sortable) {
+//	/**
+//	 * @return \rocket\ui\si\meta\SiTypeContext
+//	 */
+//	function getTypeContext() {
+//		return $this->typeContext;
+//	}
+
+	function setSortable(bool $sortable): static {
 		$this->sortable = $sortable;
 		return $this;
 	}
@@ -58,7 +52,7 @@ class SiFrame implements \JsonSerializable {
 	/**
 	 * @return bool
 	 */
-	function isSortable() {
+	function isSortable(): bool {
 		return $this->sortable;
 	}
 	
@@ -69,7 +63,7 @@ class SiFrame implements \JsonSerializable {
 	function jsonSerialize(): mixed {
 		return [
 			'apiUrlMap' => array_map(fn ($url) => (string) $url, $this->apiUrlMap),
-			'typeContext' => $this->typeContext,
+//			'typeContext' => $this->typeContext,
 			'sortable' => $this->sortable
 		];
 	}

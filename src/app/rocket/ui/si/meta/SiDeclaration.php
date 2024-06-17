@@ -24,59 +24,54 @@ namespace rocket\ui\si\meta;
 use n2n\util\type\ArgUtils;
 
 class SiDeclaration implements \JsonSerializable {
+//	/**
+//	 * @var SiStyle
+//	 */
+//	private $style;
 	/**
-	 * @var SiStyle
+	 * @var SiMask[]
 	 */
-	private $style;
+	private array $masks = [];
+
 	/**
-	 * @var \rocket\ui\si\meta\SiMask[]
+	 * @param SiMask[] $masks
 	 */
-	private $maskDeclarations = [];
-	
-	/**
-	 * @param SiMask[] $typedDeclarations
-	 */
-	function __construct(array $maskDeclarations = []) {
-		$this->setMaskDeclarations($maskDeclarations);
+	function __construct(array $masks = []) {
+		$this->setMasks($masks);
 	}
 	
 	/**
-	 * @param SiMask[] $typedDeclarations
-	 * @return \rocket\si\meta\SiDeclaration
+	 * @param SiMask[] $masks
+	 * @return static
 	 */
-	function setMaskDeclarations(array $maskDeclarations) {
-		ArgUtils::valArray($maskDeclarations, SiMask::class);
-		$this->maskDeclarations = [];
+	function setMasks(array $masks): static {
+		ArgUtils::valArray($masks, SiMask::class);
+		$this->masks = [];
 		
-		foreach ($maskDeclarations as $maskDeclaration) {
-			$this->addMaskDeclaration($maskDeclaration);
+		foreach ($masks as $mask) {
+			$this->addMask($mask);
 		}
 		return $this;
 	}
-	
-	/**
-	 * @param string $typeId
-	 * @param SiMask $maskDeclaration
-	 * @return SiDeclaration
-	 */
-	function addMaskDeclaration(SiMask $maskDeclaration) {
-// 		if (empty($this->maskDeclarations) && !$maskDeclaration->hasStructureDeclarations()) {
+
+	function addMask(SiMask $mask): static {
+// 		if (empty($this->masks) && !$mask->hasStructureDeclarations()) {
 // 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 // 		}
 		
-		if (empty($this->maskDeclarations) && !$maskDeclaration->getMask()->hasProps()) {
+		if (empty($this->masks) && !$mask->getMask()->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		
-		$this->maskDeclarations[] = $maskDeclaration;
+		$this->masks[] = $mask;
 		return $this;
 	}
 	
 	/**
 	 * @return SiMask[]
 	 */
-	function getTypeDeclarations() {
-		return $this->maskDeclarations;
+	function getMasks(): array {
+		return $this->masks;
 	}
 	
 	/**
@@ -85,8 +80,7 @@ class SiDeclaration implements \JsonSerializable {
 	 */
 	function jsonSerialize(): mixed {
 		return [
-			'style' => $this->style,
-			'maskDeclarations' => $this->maskDeclarations
+			'masks' => $this->masks
 		];
 	}
 }

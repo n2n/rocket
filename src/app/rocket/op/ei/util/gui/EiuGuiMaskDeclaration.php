@@ -173,7 +173,7 @@ class EiuGuiMaskDeclaration {
 	
 	/**
 	 * @param DefPropPath|string $defPropPath
-	 * @return \rocket\ui\gui\DisplayDefinition|null
+	 * @return \rocket\op\ei\manage\gui\DisplayDefinition|null
 	 */
 	function getDisplayDefinition($defPropPath, bool $required = false) {
 		$defPropPath = DefPropPath::create($defPropPath);

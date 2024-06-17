@@ -25,7 +25,7 @@ use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\component\GuiFactory;
+use rocket\op\ei\component\EiGuiEntryFactory;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\control\UnknownGuiControlException;
@@ -37,12 +37,12 @@ use rocket\ui\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
 use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
-use rocket\op\ei\manage\gui\control\GuiControlMap;
 use rocket\op\ei\mask\EiMask;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\gui\GuiEntry;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\GuiMask;
+use rocket\ui\gui\GuiStructureDeclaration;
 
 /**
  * @author andreas
@@ -410,7 +410,7 @@ class EiGuiMaskDeclaration {
 	function createGuiEntry(EiFrame $eiFrame, EiEntry $eiEntry, bool $entryGuiControlsIncluded): GuiEntry {
 		$this->ensureInit();
 		
-		$eiGuiEntry = GuiFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+		$eiGuiEntry = EiGuiEntryFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
 
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
 			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
@@ -430,7 +430,7 @@ class EiGuiMaskDeclaration {
 		$eiObject = $this->getEiGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 		
-		$eiGuiEntry = GuiFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+		$eiGuiEntry = EiGuiEntryFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
 
 		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
 			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);

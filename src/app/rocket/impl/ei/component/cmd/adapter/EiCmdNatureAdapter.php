@@ -29,8 +29,9 @@ use rocket\ui\gui\GuiCommand;
 use n2n\l10n\Lstr;
 use n2n\util\StringUtils;
 use rocket\ui\si\control\SiNavPoint;
+use rocket\op\ei\manage\gui\EiGuiCommand;
 
-abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, GuiCommand {
+abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements EiCmdNature, EiGuiCommand {
 	
 	public function getLabelLstr(): Lstr {
 		return StringUtils::pretty($this->getIdBase());
@@ -71,7 +72,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 		return null;
 	}
 
-	public function buildGuiCommand(Eiu $eiu): ?GuiCommand {
+	public function buildEiGuiCommand(Eiu $eiu): ?EiGuiCommand {
 		return $this;
 	}
 	

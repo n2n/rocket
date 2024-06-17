@@ -56,7 +56,7 @@ class RefGuiControl implements GuiControl {
 		return null;
 	}
 
-	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
 		if ($this->href) {
 			$this->siButton->setHref($this->url);
 		}
@@ -68,7 +68,7 @@ class RefGuiControl implements GuiControl {
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
+	public function handleCall(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 

@@ -48,6 +48,8 @@ use rocket\ui\si\content\impl\EnumInSiField;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\EnumUtils;
+use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	use QuickSearchConfigTrait;
@@ -199,7 +201,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return parent::buildEiField($eiu);
 	}
 	
-	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+	public function createInGuiField(Eiu $eiu): BackableGuiField {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($eiu->prop(), $value)) {
@@ -255,12 +257,11 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$eiu->field()->setValue($this->backedValueToUnitValue($siField->getValue()));
 	}
 	
-	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+	public function createOutGuiField(Eiu $eiu): BackableGuiField {
 		$backedValue = $this->unitValueToBackedValue($eiu->field()->getValue());
 		$options = $this->getOptions();
 		
-		return $eiu->factory()->newGuiField(SiFields::stringOut($options[$backedValue] ?? $backedValue)
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+		return GuiFields::out(SiFields::stringOut($options[$backedValue] ?? $backedValue));
 	}
 	
 //	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {

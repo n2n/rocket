@@ -30,6 +30,7 @@ use rocket\ui\si\control\SiButton;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\si\control\SiIconType;
 use n2n\util\ex\IllegalStateException;
+use rocket\op\ei\util\entry\EiuEntry;
 
 class EditController extends ControllerAdapter {
 	const CONTROL_SAVE_KEY = 'save';
@@ -54,24 +55,25 @@ class EditController extends ControllerAdapter {
 // 		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 		
 		$this->opuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false,
-				$this->createControls());
+				$this->createControls($eiuEntry));
 	}
 	
-	private function createControls() {
+	private function createControls(EiuEntry $eiuEntry) {
 		$eiuControlFactory = $this->opuCtrl->eiu()->factory()->guiControl();
 		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [
 			$eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY,
 					SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE),
-					function (Eiu $eiu, array $inputEius) {
-						return $this->handleInput($eiu, $inputEius);
+					function () use ($eiuEntry) {
+						$eiuEntry->save();
 					})
 					->setInputHandled(true),
 			$eiuControlFactory->newCallback(self::CONTROL_SAVE_AND_BACK_KEY,
 					SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::ICON_SAVE),
-					function (Eiu $eiu, array $inputEius) {
-						return $this->handleInput($eiu, $inputEius)->redirectBack();
+					function () use ($eiuEntry) {
+						$eiuEntry->save();
+						return $this->opuCtrl->eiu()->f()->newControlResponse()->redirectBack();
 					})
 					->setInputHandled(true),
 			$eiuControlFactory->newCallback(self::CONTROL_CANCEL_KEY,

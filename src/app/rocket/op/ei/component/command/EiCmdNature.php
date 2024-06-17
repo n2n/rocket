@@ -27,6 +27,7 @@ use n2n\web\http\controller\Controller;
 use n2n\l10n\Lstr;
 use rocket\ui\gui\GuiCommand;
 use rocket\ui\si\control\SiNavPoint;
+use rocket\op\ei\manage\gui\EiGuiCommand;
 
 interface EiCmdNature extends EiComponentNature {
 	
@@ -52,7 +53,7 @@ interface EiCmdNature extends EiComponentNature {
 	 */
 	function equals($obj);
 
-	function buildGuiCommand(Eiu $eiu): ?GuiCommand;
+	function buildEiGuiCommand(Eiu $eiu): ?EiGuiCommand;
 
 	function buildOverviewNavPoint(Eiu $eiu): ?SiNavPoint;
 

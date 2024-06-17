@@ -29,21 +29,16 @@ use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\control\SiCallResponse;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
+use rocket\ui\gui\field\GuiFieldMap;
 
 interface GuiControl {
 	
-	/**
-	 * @return string
-	 */
-	function getId(): string;
-	
 	function isInputHandled(): bool;
-	
-	function getChildById(string $id): ?GuiControl;
 
-	function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse;
+
+	function handleCall(): SiCallResponse;
 	
-	function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse;
+//	function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse;
 	
 	
 // 	/**
@@ -53,6 +48,10 @@ interface GuiControl {
 // 	 */
 // 	function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse;
 
-	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl;
+	function getSiControl(/*Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId*/): SiControl;
 
+	/**
+	 * @return GuiFieldMap|NULL
+	 */
+	function getForkGuiControlMap(): ?GuiControlMap;
 }

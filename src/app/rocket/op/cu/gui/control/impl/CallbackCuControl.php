@@ -22,7 +22,7 @@
 namespace rocket\op\cu\gui\control\impl;
 
 use rocket\ui\si\control\SiControl;
-use rocket\ui\si\control\impl\ApiCallSiControl;
+use rocket\ui\si\control\impl\CallbackSiControl;
 use rocket\ui\si\control\SiButton;
 use n2n\util\uri\Url;
 use rocket\op\cu\gui\control\CuControl;
@@ -64,7 +64,7 @@ class CallbackCuControl implements CuControl {
 	
 
 	function toSiControl(Url $apiUrl, CuControlCallId $cuControlCallId): SiControl {
-		return new ApiCallSiControl($apiUrl, $cuControlCallId, $this->siButton, $this->inputHandled);
+		return new CallbackSiControl($apiUrl, $cuControlCallId, $this->siButton, $this->inputHandled);
 	}
 
 	function handle(Cuu $cuu): SiCallResponse {

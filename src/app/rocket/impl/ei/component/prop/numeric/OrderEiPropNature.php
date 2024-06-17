@@ -53,7 +53,7 @@ class OrderEiPropNature extends IntegerEiPropNature {
 				|| $entityProperty instanceof IntEntityProperty;
 	}
 	
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	function createOutGuiField(Eiu $eiu): BackableGuiField {
 		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
 	}
 
@@ -61,7 +61,7 @@ class OrderEiPropNature extends IntegerEiPropNature {
 		return new SimpleSortProp($this->getEntityProperty()->getName(), $this->getLabelLstr());
 	}
 
-	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+	public function createInGuiField(Eiu $eiu): BackableGuiField {
 		$siField = SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());

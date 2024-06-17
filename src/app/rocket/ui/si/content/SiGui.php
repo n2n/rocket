@@ -21,6 +21,10 @@
  */
 namespace rocket\ui\si\content;
 
+use rocket\ui\si\input\SiInput;
+use rocket\ui\si\input\SiInputError;
+use rocket\ui\si\input\CorruptedSiInputDataException;
+
 interface SiGui {
 	
 	/**
@@ -34,4 +38,10 @@ interface SiGui {
 	 */
 	function getData(): array;
 
+	/**
+	 * @param SiInput $siInput
+	 * @return SiInputError|null
+	 * @throws CorruptedSiInputDataException
+	 */
+	function handleSiInput(SiInput $siInput): ?SiInputError;
 }

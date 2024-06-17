@@ -22,6 +22,7 @@
 namespace rocket\ui\si\content\impl;
 
 use rocket\ui\si\input\CorruptedSiInputDataException;
+use n2n\core\container\N2nContext;
 
 abstract class InSiFieldAdapter extends SiFieldAdapter {
 
@@ -33,11 +34,17 @@ abstract class InSiFieldAdapter extends SiFieldAdapter {
 		return false;
 	}
 
-	final function handleInput(array $data): bool {
+	abstract function getValue(): mixed;
+
+	final function handleInput(array $data, N2nContext $n2nContext): bool {
 		$valueValid = $this->handleInputValue($data);
-		$valid = $this->getModel()?->handleInput() ?? true;
+		$valid = $this->getModel()?->handleInput($this->getValue(), $n2nContext);
 
 		return $valueValid && $valid;
+	}
+
+	final function flush(N2nContext $n2nContext): void {
+		$this->getModel()?->flush($n2nContext);
 	}
 
 	/**

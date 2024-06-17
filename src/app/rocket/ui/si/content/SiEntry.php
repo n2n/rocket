@@ -27,6 +27,9 @@ use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\input\SiEntryInput;
 use n2n\l10n\Message;
+use n2n\core\container\N2nContext;
+use n2n\util\col\ArrayUtils;
+use n2n\util\type\ArgUtils;
 
 class SiEntry implements \JsonSerializable {
 
@@ -52,39 +55,18 @@ class SiEntry implements \JsonSerializable {
 	 */
 	private array $messages = [];
 
-	/**
-	 * @param string|null $id
-	 * @param string|null $idName
-	 */
-	function __construct(private ?string $id, ?string $idName) {
-		$this->idName = $idName;
-	}
-	
-	/**
-	 * @return string
-	 */
-	function getMaskId() {
-		return $this->maskId;
-	}
-	
+	private ?SiEntryModel $model = null;
 
-	function setMaskId(string $maskId): static {
-		$this->maskId = $maskId;
+	function __construct(private SiEntryQualifier $siEntryQualifier) {
+	}
+
+	function getQualifier(): SiEntryQualifier {
+		return $this->siEntryQualifier;
+	}
+
+	function setModel(SiEntryModel $model): static {
+		$this->model = $model;
 		return $this;
-	}
-	
-	/**
-	 * @return string|null
-	 */
-	function getIdName(): ?string {
-		return $this->idName;
-	}
-	
-	/**
-	 * @param string|null $idName
-	 */
-	function setIdName(?string $idName) {
-		$this->idName = $idName;
 	}
 
 	/**
@@ -102,8 +84,8 @@ class SiEntry implements \JsonSerializable {
 		return $this;
 	}
 
-	function putField(string $id, SiField $field): static {
-		$this->fields[$id] = $field;
+	function putField(string $nName, SiField $field): static {
+		$this->fields[$nName] = $field;
 		return $this;
 	}
 	
@@ -156,34 +138,48 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleEntryInput(SiEntryInput $entryInput): bool {
+	function handleEntryInput(SiEntryInput $entryInput, N2nContext $n2nContext): bool {
 		$valid = true;
-		foreach ($this->fields as $propId => $field) {
-			if ($field->isReadOnly() || !$entryInput->containsFieldName($propId)) {
+		$fields = [];
+		foreach ($this->fields as $fieldName => $field) {
+			if ($field->isReadOnly() || !$entryInput->containsFieldName($fieldName)) {
 				continue;
 			}
 
 			try {
-				if (!$field->handleInput($entryInput->getFieldInput($propId)->getData())) {
+				if (!$field->handleInput($entryInput->getFieldInput($fieldName)->getData(), $n2nContext)) {
 					$valid = false;
 				}
+
+				$fields[] = $field;
 			} catch (\InvalidArgumentException|AttributesException $e) {
 				throw new CorruptedSiInputDataException($e->getMessage(), previous: $e);
 			}
 		}
 
-		return false;
+		if (!$valid) {
+			return false;
+		}
+
+		foreach ($fields as $field) {
+			$field->flush($n2nContext);
+		}
+
+		$this->model?->handleInput($n2nContext);
+		return true;
 	}
 	
 	function jsonSerialize(): mixed {
 		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
-		
+		$externalMessages = $this->model?->getMessages() ?? [];
+		ArgUtils::valArrayReturn($externalMessages, $this->model, 'getMessages', 'string');
+
 		return [
 			'id' => $this->id,
 			'idName' => $this->idName,
 			'fieldMap' => $fieldsArr,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
-			'messages' => $this->messages
+			'messages' => [...$this->messages, ...$externalMessages]
 		];
 	}
 

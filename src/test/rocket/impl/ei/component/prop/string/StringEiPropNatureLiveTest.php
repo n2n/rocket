@@ -18,6 +18,11 @@ use rocket\ui\gui\ViewMode;
 use rocket\ui\si\content\impl\StringInSiField;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\type\attrs\AttributesException;
+use rocket\ui\gui\field\GuiFieldPath;
+use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\input\SiFieldInput;
+use rocket\ui\si\input\CorruptedSiInputDataException;
+use n2n\core\container\N2nContext;
 
 class StringEiPropNatureLiveTest extends TestCase {
 
@@ -175,7 +180,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 				->createGuiEntry($eiFrame, $eiEntry, false);
 
 
-		$siEntry = $eiGuiEntry->createSiEntry(N2nLocale::getDefault());
+		$siEntry = $eiGuiEntry->getSiEntry(N2nLocale::getDefault());
 		$fields = $siEntry->getFields();
 		$this->assertCount(6, $fields);
 
@@ -210,6 +215,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 	/**
 	 * @throws AttributesException
+	 * @throws CorruptedSiInputDataException
 	 */
 	function testSiEntryInput(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
@@ -218,16 +224,16 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$eiObject = $eiType->createEiObject(StringTestEnv::findStringTestObj($this->stringTestObj1Id));
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 
-		$eiGuiEntry = $eiType->getEiMask()->getEiEngine()
+		$guiEntry = $eiType->getEiMask()->getEiEngine()
 				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null)
 				->createGuiEntry($eiFrame, $eiEntry, false);
 
-		$this->assertTrue($eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradio'])]))->getSiField()
-				->handleInput(['value' => 'new-value']));
-		$this->assertTrue($eiGuiEntry->getGuiFieldByDefPropPath(new DefPropPath([new EiPropPath( ['holeradioObj'])]))->getSiField()
-				->handleInput(['value' => 'new-ov']));
+		$siEntryInput = new SiEntryInput($guiEntry->getSiEntry()->getQualifier()->getIdentifier());
+		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
+		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'new-ov']));
 
-		$eiGuiEntry->save();
+		$this->assertTrue($guiEntry->getSiEntry()->handleEntryInput($siEntryInput,
+				$this->createMock(N2nContext::class)));
 
 		$this->assertEquals('new-value', $eiEntry->getValue(new EiPropPath(['holeradio'])));
 		$this->assertEquals(new StrObjMock('new-ov'), $eiEntry->getValue(new EiPropPath(['holeradioObj'])));

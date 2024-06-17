@@ -1,8 +1,8 @@
 <?php
 namespace rocket\op\ei\util\factory;
 
-use rocket\impl\ei\component\prop\adapter\gui\GuiPropProxy;
-use rocket\ui\gui\GuiProp;
+use rocket\impl\ei\component\prop\adapter\gui\EiGuiPropProxy;
+use rocket\op\ei\manage\gui\EiGuiProp;
 
 class EifGuiProp {
 	private $guiPropCallback;
@@ -15,9 +15,9 @@ class EifGuiProp {
 	}
 	
 	/**
-	 * @return GuiProp
+	 * @return EiGuiProp
 	 */
-	function toGuiProp() {
-		return new GuiPropProxy($this->guiPropCallback);
+	function toEiGuiProp(): EiGuiProp {
+		return new EiGuiPropProxy($this->guiPropCallback);
 	}
 }

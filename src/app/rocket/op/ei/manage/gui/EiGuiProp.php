@@ -33,7 +33,7 @@ interface EiGuiProp {
 	 *
 	 * @return \rocket\op\ei\manage\gui\DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiMaskDeclaration.
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?\rocket\ui\gui\GuiPropSetup;
+	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?\rocket\op\ei\manage\gui\EiGuiPropSetup;
 
 
 	/**

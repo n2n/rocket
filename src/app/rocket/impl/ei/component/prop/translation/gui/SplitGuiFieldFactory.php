@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\op\ei\manage\DefPropPath;
 use rocket\ui\si\content\impl\SiFields;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\impl\split\SplitStyle;
 use rocket\ui\si\control\SiIconType;

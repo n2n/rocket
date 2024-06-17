@@ -35,6 +35,8 @@ use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
 
 class CkeEiPropNature extends AlphanumericEiPropNature {
 
@@ -56,23 +58,21 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		$this->ckeConfig = $ckeConfig;
 	}
 	
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	function createOutGuiField(Eiu $eiu): BackableGuiField {
 	    $value = $eiu->field()->getValue();
 	    if ($value === null) {
-	    	return $eiu->factory()->newGuiField(SiFields::stringOut(''));
+	    	return GuiFields::out(SiFields::stringOut(''));
 	    }
 	    
 		if ($eiu->guiMaskDeclaration()->isCompact()) {
-			return $eiu->factory()->newGuiField(SiFields
-					::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...'))
-					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+			return GuiFields::out(SiFields
+					::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...')));
 		}
 
-		return $eiu->factory()->newGuiField(SiFields::stringOut((string) $value)
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+		return GuiFields::out(SiFields::stringOut((string) $value));
 	}
 	
-	public function createInEifGuiField(Eiu $eiu): EifGuiField {
+	public function createInGuiField(Eiu $eiu): BackableGuiField {
 		$ckeComposer = new CkeComposer();
 		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcodeEnabled())
 				->table($this->ckeConfig->isTablesEnabled());

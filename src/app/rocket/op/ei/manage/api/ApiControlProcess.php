@@ -281,7 +281,7 @@ class ApiControlProcess {
 	 */
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {
-			return $this->generalGuiControl->handle($this->eiFrame, $this->eiGuiDeclaration, $this->inputEiEntries);
+			return $this->generalGuiControl->handleCall($this->eiFrame, $this->eiGuiDeclaration, $this->inputEiEntries);
 		}
 		
 		if ($this->entryGuiControl !== null) {

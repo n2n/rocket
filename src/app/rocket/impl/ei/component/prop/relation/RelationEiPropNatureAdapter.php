@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
@@ -185,10 +185,10 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
-	function buildGuiProp(Eiu $eiu): ?GuiProp {
+	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
 			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
-		})->toGuiProp();
+		})->toEiGuiProp();
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {

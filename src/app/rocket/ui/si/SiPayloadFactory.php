@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace si;
+namespace rocket\ui\si;
 
 use n2n\web\http\payload\impl\JsonPayload;
 use rocket\ui\si\content\SiGui;
@@ -37,12 +37,13 @@ class SiPayloadFactory extends JsonPayload {
 	 */
 	static function create(SiGui $comp, array $breadcrumbs, string $title, array $controls = []): JsonPayload {
 		ArgUtils::valArray($breadcrumbs, SiBreadcrumb::class);
+		ArgUtils::valArray($controls, SiControl::class);
 		
 		return new JsonPayload([
 			'title' => $title,
 			'breadcrumbs' => $breadcrumbs,
 			'comp' => self::buildDataFromComp($comp),
-//			'controls' => self::createDataFromControls($controls)
+			'controls' => self::createDataFromControls($controls)
 		]);
 	}
 	

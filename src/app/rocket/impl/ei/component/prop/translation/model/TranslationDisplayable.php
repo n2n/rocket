@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\translation\model;
 
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\manage\gui\field\GuiFieldDisplayable;
 use rocket\op\ei\util\Eiu;
 
@@ -56,7 +56,7 @@ class TranslationDisplayable implements GuiFieldDisplayable {
 		return array();
 	}
 	
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	function createOutGuiField(Eiu $eiu): BackableGuiField {
 // 		$outputUiComponents = array();
 // 		foreach ($this->translatedDisplayables as $n2nLocaleId => $translatedDisplayable) {
 // 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createUiComponent($view);

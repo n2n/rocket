@@ -22,7 +22,7 @@
  */
 namespace rocket\impl\ei\component\prop\adapter;
 
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
@@ -44,17 +44,17 @@ abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implem
 	}
 
 	
-	function buildGuiProp(Eiu $eiu): ?GuiProp {
+	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		return $eiu->factory ()->newGuiProp (function (Eiu $eiu) {
 			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
-		})->toGuiProp();
+		})->toEiGuiProp();
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField();
 	}
 
-	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		throw new UnsupportedOperationException ( get_class ( $this ) . ' must implement  either' . ' createOutEifGuiField(Eiu $eiu): EifGuiField or' . ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
+	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
+		throw new UnsupportedOperationException ( get_class ( $this ) . ' must implement  either' . ' createOutGuiField(Eiu $eiu): BackableGuiField or' . ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
 	}
 }

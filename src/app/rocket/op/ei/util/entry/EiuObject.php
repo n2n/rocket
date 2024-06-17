@@ -123,7 +123,12 @@ class EiuObject {
 	public function readNativeValue(EiProp|EiPropPath|string|null $eiProp = null): mixed {
 		$eiProp = $this->getEiProp($eiProp);
 
-		return $this->getNativeAccessProxy($eiProp, true)->getValue($this->getForkObject($eiProp));
+		try {
+			return $this->getNativeAccessProxy($eiProp, true)->getValue($this->getForkObject($eiProp));
+		} catch (PropertyAccessException $e) {
+			throw new EiuPerimeterException('Could not read from native AccessProxy of ' . $eiProp,
+					previous: $e);
+		}
 	}
 	
 	/**

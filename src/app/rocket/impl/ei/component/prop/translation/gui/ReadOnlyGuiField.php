@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\translation\gui;
 
 
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\SiField;
 use n2n\util\ex\UnsupportedOperationException;

@@ -25,6 +25,8 @@ use n2n\util\ex\IllegalStateException;
 use n2n\web\http\UploadDefinition;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\input\CorruptedSiInputDataException;
+use n2n\core\container\N2nContext;
+use InvalidArgumentException;
 
 interface SiField {
 	
@@ -46,11 +48,13 @@ interface SiField {
 	/**
 	 * @param array $data
 	 * @throws IllegalStateException if readonly ({@see self::isReadyOnly()} returns true).
-	 * @throws \InvalidArgumentException if data is corrupt
+	 * @throws InvalidArgumentException if data is corrupt
 	 * @throws AttributesException if data is corrupt
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleInput(array $data): bool;
+	function handleInput(array $data, N2nContext $n2nContext): bool;
+
+	function flush(N2nContext $n2nContext): void;
 	
 	/**
 	 * @return bool
@@ -61,7 +65,7 @@ interface SiField {
 	 * @param array $data
 	 * @param UploadDefinition[] $uploadDefinitions
 	 * @return array
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @throws AttributesException
 	 */
 	function handleCall(array $data, array $uploadDefinitions): array;

@@ -22,12 +22,9 @@
 namespace rocket\impl\ei\component\prop\translation\gui;
 
 use rocket\op\ei\manage\gui\EiGuiDefinition;
-use rocket\ui\gui\GuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ui\gui\GuiPropSetup;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
-use rocket\op\ei\manage\gui\EiGuiProp;
 
 class TranslationGuiProp implements GuiProp {
 	/**
@@ -56,7 +53,7 @@ class TranslationGuiProp implements GuiProp {
 	 * {@inheritDoc}
 	 * @see \EiGuiProp::buildGuiPropSetup
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
+	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?EiGuiPropSetup {
 		$targetEiuGuiDeclaration = $this->relationModel->getTargetEiuEngine()
 				->newGuiDeclaration($eiu->guiMaskDeclaration()->getViewMode(), $defPropPaths);
 		if ($eiu->guiMaskDeclaration()->isReadOnly()) {
@@ -65,7 +62,7 @@ class TranslationGuiProp implements GuiProp {
 			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
 		}
 		
-		return new TranslationEiGuiPropSetup($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
+		return new TranslationEiEiGuiPropSetup($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
 	}
 	
 	/**

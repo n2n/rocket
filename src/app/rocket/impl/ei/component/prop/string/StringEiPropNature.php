@@ -38,6 +38,10 @@ use n2n\util\StringUtils;
 use n2n\util\type\TypeConstraints;
 use n2n\util\magic\TaskResult;
 use n2n\util\magic\impl\TaskResults;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\field\impl\string\StringInGuiField;
+use rocket\ui\gui\field\BackableGuiField;
 
 class StringEiPropNature extends AlphanumericEiPropNature {
 
@@ -73,15 +77,13 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		$this->multiline = $multiline;
 	}
 
-	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return $eiu->factory()->newGuiField(
-						SiFields::stringOut($eiu->field()->getValue())->setMultiline($this->isMultiline()))
-				->setMessagesBearer((fn () => $eiu->field()->getMessagesAsStrs()));
+	function createOutGuiField(Eiu $eiu): BackableGuiField  {
+		return GuiFields::out(SiFields::stringOut($eiu->field()->getValue())->setMultiline($this->isMultiline()));
 	}
 
 	private function marshalValue(null|string|StringValueObject $value, Eiu $eiu): TaskResult {
 		if ($this->stringValueObjectTypeName === null) {
-			return TaskResults::success($value);
+			return TaskResults::valid($value);
 		}
 
 		try {
@@ -95,7 +97,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 
 	private function unmarshalValue(?string $value, Eiu $eiu): TaskResult {
 		if ($this->stringValueObjectTypeName === null) {
-			return TaskResults::success($value);
+			return TaskResults::valid($value);
 		}
 
 		try {
@@ -128,18 +130,17 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		})->toIdNameProp();
 	}
 
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$siField = SiFields::stringIn($this->marshalValue($eiu->field()->getValue(), $eiu)->get())
-				->setMandatory($this->isMandatory())
-				->setMinlength($this->getMinlength())
-				->setMaxlength($this->getMaxlength())
-				->setMultiline($this->isMultiline())
-				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setMessagesBearer(fn () => $eiu->field()->getMessagesAsStrs())
-				->setReader(fn () => $this->unmarshalValue($siField->getValue(), $eiu))
-				->setSaver(fn (mixed $value) => $eiu->field()->setValue($value));
+	function createInGuiField(Eiu $eiu): BackableGuiField {
+		$guiField = parent::createInGuiField($eiu);
+		assert($guiField instanceof StringInGuiField);
+
+		$guiField->getSiField()->setMultiline($this->isMultiline());
+		$guiField->setValue($this->marshalValue($eiu->field()->getValue(), $eiu)->get());
+
+		if ($this->stringValueObjectTypeName !== null) {
+			$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::unmarshal($this->stringValueObjectTypeName)));
+		}
+
+		return $guiField;
 	}
 }

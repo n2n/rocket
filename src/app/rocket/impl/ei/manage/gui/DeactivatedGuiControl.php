@@ -60,7 +60,7 @@ class DeactivatedGuiControl implements GuiControl {
 		return null;
 	}
 	
-	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
 		return new DeactivatedSiControl($this->siButton);
 	}
 	
@@ -68,7 +68,7 @@ class DeactivatedGuiControl implements GuiControl {
 		throw new NotYetImplementedException();
 	}
 
-	public function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
+	public function handleCall(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 

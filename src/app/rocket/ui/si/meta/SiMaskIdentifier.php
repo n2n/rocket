@@ -36,30 +36,30 @@ class SiMaskIdentifier implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	function getId() {
+	function getId(): string {
 		return $this->id;
 	}
 
-	function setId(string $id): static {
-		$this->id = $id;
-		return $this;
-	}
+//	function setId(string $id): static {
+//		$this->id = $id;
+//		return $this;
+//	}
 	
 	/**
 	 * @return string
 	 */
-	function getTypeId() {
+	function getTypeId(): string {
 		return $this->typeId;
 	}
 	
-	/**
-	 * @param string $typeId
-	 * @return \rocket\si\meta\SiMaskIdentifier
-	 */
-	function setTypeId(string $typeId) {
-		$this->typeId = $typeId;
-		return $this;
-	}
+//	/**
+//	 * @param string $typeId
+//	 * @return \rocket\si\meta\SiMaskIdentifier
+//	 */
+//	function setTypeId(string $typeId) {
+//		$this->typeId = $typeId;
+//		return $this;
+//	}
 	
 	function jsonSerialize(): mixed {
 		return [

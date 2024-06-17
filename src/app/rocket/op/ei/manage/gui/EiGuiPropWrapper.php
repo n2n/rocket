@@ -26,7 +26,6 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\component\prop\EiProp;
-use rocket\ui\gui\GuiPropSetup;
 use rocket\ui\gui\UnresolvableDefPropPathExceptionEi;
 
 class EiGuiPropWrapper {
@@ -48,7 +47,7 @@ class EiGuiPropWrapper {
 	 * @return DisplayDefinition|null
 	 */
 	function buildDisplayDefinition(EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-		$displayDefinition = $this->guiProp->buildDisplayDefinition(new Eiu($eiGuiMaskDeclaration, $this->eiPropPath));
+		$displayDefinition = $this->eiGuiProp->buildDisplayDefinition(new Eiu($eiGuiMaskDeclaration, $this->eiPropPath));
 		
 		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
 			return null;
@@ -73,7 +72,7 @@ class EiGuiPropWrapper {
 	}
 	
 	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-		return $this->guiProp->getForkEiGuiDefinition()->getGuiPropWrapperByDefPropPath($forkedDefPropPath)
+		return $this->eiGuiProp->getForkEiGuiDefinition()->getGuiPropWrapperByDefPropPath($forkedDefPropPath)
 				->buildDisplayDefinition($eiGuiMaskDeclaration, $defaultDisplayedRequired);
 	}
 	
@@ -81,7 +80,7 @@ class EiGuiPropWrapper {
 	 * @return DefPropPath[]
 	 */
 	function getForkedDefPropPaths() {
-		$forkEiGuiDefinition = $this->guiProp->getForkEiGuiDefinition();
+		$forkEiGuiDefinition = $this->eiGuiProp->getForkEiGuiDefinition();
 		
 		if ($forkEiGuiDefinition === null) {
 			return [];
@@ -107,15 +106,15 @@ class EiGuiPropWrapper {
 	 * @param N2nContext $n2nContext
 	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 * @param array|null $forkedDefPropPaths
-	 * @return GuiPropSetup
+	 * @return EiGuiPropSetup
 	 */
 	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration, ?array $forkedDefPropPaths) {
-		return $this->guiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiMaskDeclaration, $this->eiPropPath), $forkedDefPropPaths);
+		return $this->eiGuiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiMaskDeclaration, $this->eiPropPath), $forkedDefPropPaths);
 	}
 	
 
 	function getEiProp(): EiProp {
-		return $this->guiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
+		return $this->eiGuiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
 	
 	

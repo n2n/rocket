@@ -28,23 +28,24 @@ use rocket\ui\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\meta\SiFrame;
+use rocket\ui\si\control\SiCallResponse;
+use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\input\SiInputError;
+use n2n\util\ex\IllegalStateException;
+use rocket\ui\si\input\SiInput;
 
 class BulkyEntrySiGui implements SiGui {
-	private $frame;
-	private $declaration;
-	private $valueBoundary;
+
 	private $controls = [];
 	private $entryControlsIncluded = true;
 	
-	function __construct(?SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $valueBoundary = null) {
-		$this->frame = $frame;
-		$this->declaration = $declaration;
-		$this->setValueBoundary($valueBoundary);
+	function __construct(private ?SiFrame $frame, private SiDeclaration $declaration,
+			private ?SiValueBoundary $valueBoundary = null) {
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiGui::getTypeName()
+	 * @see SiGui::getTypeName
 	 */
 	function getTypeName(): string {
 		return 'bulky-entry';
@@ -93,10 +94,27 @@ class BulkyEntrySiGui implements SiGui {
 	function getEntryControlsIncluded(bool $entryControlsIncluded) {
 		return $this->entryControlsIncluded;
 	}
-	
+
+
+	function handleSiInput(SiInput $siInput): ?SiInputError {
+		$entryInputs = $siInput->getEntryInputs();
+		if (count($entryInputs) > 1) {
+			throw new CorruptedSiInputDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
+		}
+
+		foreach ($entryInputs as $siEntryInput) {
+			if ($this->valueBoundary->handleEntryInput($siEntryInput)) {
+				return null;
+			}
+
+			return new SiInputError([$this->valueBoundary]);
+		}
+	}
+
+
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiGui::getData()
+	 * @see SiGui::getData
 	 */
 	function getData(): array {
 		return [ 

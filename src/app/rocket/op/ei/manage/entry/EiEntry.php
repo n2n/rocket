@@ -34,8 +34,9 @@ use rocket\op\ei\manage\security\EiEntryAccess;
 use n2n\util\col\ArrayUtils;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\op\ei\manage\security\InaccessibleEiFieldException;
+use rocket\ui\gui\GuiEntryModel;
 
-class EiEntry {
+class EiEntry implements GuiEntryModel {
 	/**
 	 * @var EiObject
 	 */
@@ -446,6 +447,14 @@ class EiEntry {
 		
 		return 'EiEntry (' . $this->eiObject->getEiEntityObj()->getEiType()->getEntityModel()->getClass()->getShortName()
 				. '#' . ($eiEntityObj->hasId() ? $eiEntityObj->getPid() : 'new') . ')';
+	}
+
+	function getMessages(): array {
+		return $this->validationResult?->getMessages() ?? [];
+	}
+
+	function handleInput(): bool {
+		return $this->validate();
 	}
 }
 

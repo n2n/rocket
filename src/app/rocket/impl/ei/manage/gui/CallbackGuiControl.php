@@ -24,7 +24,7 @@ namespace rocket\impl\ei\manage\gui;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\control\SiCallResponse;
-use rocket\ui\si\control\impl\ApiCallSiControl;
+use rocket\ui\si\control\impl\CallbackSiControl;
 use rocket\ui\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\util\Eiu;
@@ -70,8 +70,8 @@ class CallbackGuiControl implements GuiControl {
 		return null;
 	}
 
-	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
-		return new ApiCallSiControl($apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
+	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+		return new CallbackSiControl($apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
 	}
 	
 	/**
@@ -104,9 +104,9 @@ class CallbackGuiControl implements GuiControl {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\gui\control\GuiControl::handle()
+	 * @see \rocket\ui\gui\control\GuiControl::handleCall()
 	 */
-	function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
+	function handleCall(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
 		ArgUtils::valArray($inputEiEntries, EiEntry::class);
 		
 		$inputEius = array_map(function ($inputEiEntry) use ($eiFrame) { 

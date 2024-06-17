@@ -29,7 +29,7 @@ use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use rocket\op\ei\util\frame\EiuFrame;
 
 class ToManyGuiField implements GuiField {

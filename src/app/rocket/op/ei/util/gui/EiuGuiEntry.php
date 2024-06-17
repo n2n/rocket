@@ -256,7 +256,7 @@ class EiuGuiEntry {
 	 * @return SiEntry
 	 */
 	function createSiEntry(bool $siControlsIncluded): SiEntry {
-		return $this->eiGuiEntry->createSiEntry($this->eiuAnalyst->getN2nContext(true)->getN2nLocale(),
+		return $this->eiGuiEntry->getSiEntry($this->eiuAnalyst->getN2nContext(true)->getN2nLocale(),
 				$this->eiGuiEntry, $siControlsIncluded);
 	}
 	

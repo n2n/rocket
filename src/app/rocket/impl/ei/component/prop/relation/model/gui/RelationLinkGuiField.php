@@ -24,7 +24,7 @@ namespace rocket\impl\ei\component\prop\relation\model\gui;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\si\content\SiField;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiField;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ui\si\content\impl\SiFields;
@@ -116,7 +116,7 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 		throw new UnsupportedOperationException();
 	}
 
-	function getMessageStrs(): array {
+	function getMessages(): array {
 		return $this->eiu->field()->getMessagesAsStrs();
 	}
 }

@@ -24,13 +24,14 @@ namespace rocket\impl\ei\component\prop\adapter\gui;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\SiField;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\magic\TaskResult;
 use n2n\util\ex\ExUtils;
 use rocket\ui\si\content\SiFieldModel;
 use n2n\util\type\TypeConstraints;
 use n2n\l10n\Message;
+use n2n\core\container\N2nContext;
 
 class ClosureGuiField implements GuiField, SiFieldModel {
 
@@ -86,7 +87,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 		return $this->siField;
 	}
 
-	function handleInput(): bool {
+	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 		$this->lastReadSiFieldValue = null;
 		$this->lastReadMessages = [];
 
@@ -104,7 +105,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 		return false;
 	}
 
-	function getMessageStrs(): array {
+	function getMessages(): array {
 		$messageStrs = [];
 		foreach ($this->lastReadMessages as $message) {
 			$messageStrs[] = $message->t(\n2n\l10n\N2nLocale::getAdmin());
@@ -117,12 +118,15 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 		return $messageStrs;
 	}
 
+	function prepareForSave(N2nContext $n2nContext): bool {
+		return true;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ui\gui\field\GuiField::save()
 	 */
-	public function save(): void {
+	public function save(N2nContext $n2nContext): void {
 		if ($this->siField->isReadOnly()) {
 			throw new IllegalStateException('Can not save ready only GuiField');
 		}

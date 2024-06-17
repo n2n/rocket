@@ -29,10 +29,11 @@ use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\meta\SiStyle;
 use n2n\l10n\N2nLocale;
+use n2n\core\container\N2nContext;
 
 class GuiValueBoundary {
 	
-
+	private SiValueBoundary $value;
 	/**
 	 * @var string|null
 	 */
@@ -42,7 +43,11 @@ class GuiValueBoundary {
 	 */
 	private array $guiEntries = [];
 
-	function __construct(private readonly ?int $treeLevel = null) {
+	private SiValueBoundary $siValueBoundary;
+
+	function __construct(?int $treeLevel = null) {
+		$this->siValueBoundary = new SiValueBoundary();
+		$this->siValueBoundary->setTreeLevel($treeLevel);
 	}
 
 	
@@ -50,14 +55,15 @@ class GuiValueBoundary {
 	 * @return int|null
 	 */
 	function getTreeLevel(): ?int {
-		return $this->treeLevel;
+		return $this->siValueBoundary->getTreeLevel();
 	}
 
 	/**
 	 * @param GuiEntry $guiEntry
 	 */
 	function putGuiEntry(GuiEntry $guiEntry): void {
-		$this->guiEntries[$guiEntry->getMaskId()] = $guiEntry;
+		$this->guiEntries[$guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getId()] = $guiEntry;
+		$this->siValueBoundary->putEntry($guiEntry->getSiEntry());
 	}
 	
 	/**
@@ -67,12 +73,12 @@ class GuiValueBoundary {
 		return $this->guiEntries;
 	}
 
-	function createSiValueBoundary(N2nLocale $n2nLocale): SiValueBoundary {
-		$siValueBoundary = new SiValueBoundary();
-		$siValueBoundary->setTreeLevel($this->getTreeLevel());
+	function getSiValueBoundary(): SiValueBoundary {
+		return $this->siValueBoundary;
+
 
 		foreach ($this->guiEntries as $key => $guiEntry) {
-			$siValueBoundary->putEntry($guiEntry->getMaskId(), $guiEntry->createSiEntry($n2nLocale));
+			$siValueBoundary->putEntry($guiEntry->getMaskId(), $guiEntry->getSiEntry($n2nLocale));
 		}
 
 		if ($this->isEiGuiEntrySelected()) {
@@ -82,20 +88,20 @@ class GuiValueBoundary {
 		return $siValueBoundary;
 	}
 
-	/**
-	 * @param SiEntryInput $siEntryInput
-	 * @throws CorruptedSiInputDataException
-	 */
-	function handleSiEntryInput(SiEntryInput $siEntryInput): bool {
-		$eiMaskId = $siEntryInput->getMaskId();
-		
-		if (!isset($this->guiEntries[$eiMaskId])) {
-			throw new CorruptedSiInputDataException('EiMask not available: ' . $eiMaskId);
-		}
-		
-		$this->selectedEiMaskId = $eiMaskId;
-		return $this->guiEntries[$eiMaskId]->handleSiEntryInput($siEntryInput);
-	}
+//	/**
+//	 * @param SiEntryInput $siEntryInput
+//	 * @throws CorruptedSiInputDataException
+//	 */
+//	function handleSiEntryInput(SiEntryInput $siEntryInput): bool {
+//		$eiMaskId = $siEntryInput->getMaskId();
+//
+//		if (!isset($this->guiEntries[$eiMaskId])) {
+//			throw new CorruptedSiInputDataException('EiMask not available: ' . $eiMaskId);
+//		}
+//
+//		$this->selectedEiMaskId = $eiMaskId;
+//		return $this->guiEntries[$eiMaskId]->handleSiEntryInput($siEntryInput);
+//	}
 	
 	/**
 	 * @return boolean
@@ -159,8 +165,8 @@ class GuiValueBoundary {
 		return $this->getSelectedGuiEntry()->getEiEntry();
 	}
 	
-	function save(): void {
-		$this->getSelectedGuiEntry()->save();
+	function save(N2nContext $n2nContext): bool {
+		return $this->getSelectedGuiEntry()->save($n2nContext);
 	}
 
 	function __toString() {

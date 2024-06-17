@@ -21,9 +21,13 @@
  */
 namespace rocket\ui\si\control;
 
+use n2n\core\container\N2nContext;
+
 interface SiControl {
 	
 	function getType(): string;
 	
 	function getData(): array;
+
+	function handleCall(N2nContext $n2nContext): SiCallResponse;
 }

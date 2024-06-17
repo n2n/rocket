@@ -35,7 +35,7 @@ class EiGuiUtil {
 	private $eiGui;
 	private $eiFrame;
 	
-	function __construct(EiGui $eiGui, EiFrame $eiFrame) {
+	function __construct(Gui $eiGui, EiFrame $eiFrame) {
 		$this->eiGui = $eiGui;
 		$this->eiFrame = $eiFrame;
 	}
@@ -83,7 +83,7 @@ class EiGuiUtil {
 		ArgUtils::valArray($zoneGuiControls, GuiControl::class);
 		
 		return array_map(function ($guiControl) {
-			return $guiControl->toSiControl($this->eiFrame->getN2nContext()->getHttpContext()->getRequest()->getUrl(),
+			return $guiControl->getSiControl($this->eiFrame->getN2nContext()->getHttpContext()->getRequest()->getUrl(),
 					new ZoneApiControlCallId([$guiControl->getId()]));
 		}, $zoneGuiControls);
 	}

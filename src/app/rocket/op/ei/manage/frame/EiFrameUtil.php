@@ -197,7 +197,7 @@ class EiFrameUtil {
 	function createNewEiGuiValueBoundary(bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
 			?array $defPropPaths, ?array $allowedEiTypeIds): EiGuiValueBoundary {
 		$eiGuiDeclaration = $this->createNewEiGuiDeclaration($bulky, $readOnly, $defPropPaths, $allowedEiTypeIds);
-		return $eiGuiDeclaration->createNewEiGuiValueBoundary($this->eiFrame, $entryGuiControlsIncluded);
+		return $eiGuiDeclaration->createNewGuiValueBoundary($this->eiFrame, $entryGuiControlsIncluded);
 	}
 
 //	/**

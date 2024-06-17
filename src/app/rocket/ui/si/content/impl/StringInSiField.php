@@ -64,7 +64,7 @@ class StringInSiField extends InSiFieldAdapter {
 	/**
 	 * @return string|null
 	 */
-	function getValue() {
+	function getValue(): ?string {
 		return $this->value;
 	}
 	

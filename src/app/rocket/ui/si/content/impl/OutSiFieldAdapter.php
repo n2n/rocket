@@ -22,6 +22,7 @@
 namespace rocket\ui\si\content\impl;
 
 use n2n\util\ex\IllegalStateException;
+use n2n\core\container\N2nContext;
 
 abstract class OutSiFieldAdapter extends  SiFieldAdapter {
 
@@ -37,7 +38,11 @@ abstract class OutSiFieldAdapter extends  SiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data): bool {
+	function handleInput(array $data, N2nContext $n2nContext): bool {
+		throw new IllegalStateException(get_class($this) . ' is ready only.');
+	}
+
+	function flush(N2nContext $n2nContext): void {
 		throw new IllegalStateException(get_class($this) . ' is ready only.');
 	}
 }

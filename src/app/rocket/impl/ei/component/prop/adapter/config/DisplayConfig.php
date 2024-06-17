@@ -26,7 +26,7 @@ use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\si\meta\SiStructureType;
 use rocket\op\ei\util\Eiu;
-use rocket\ui\gui\GuiPropSetup;
+use rocket\op\ei\manage\gui\EiGuiPropSetup;
 use rocket\op\ei\manage\gui\EiGuiField;
 
 class DisplayConfig {
@@ -173,7 +173,7 @@ class DisplayConfig {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return GuiPropSetup|null
+	 * @return EiGuiPropSetup|null
 	 */
 	function buildGuiPropSetup(Eiu $eiu, EiGuiField $eiGuiField) {
 		$viewMode = $eiu->guiMaskDeclaration()->getViewMode();

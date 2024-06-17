@@ -36,7 +36,7 @@ use rocket\op\ei\manage\critmod\sort\SortConstraint;
 use rocket\op\ei\manage\critmod\sort\SortDefinition;
 use rocket\op\ei\manage\critmod\sort\SortPropFork;
 use rocket\op\ei\manage\entry\EiFieldNature;
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\RelationEiPropNatureAdapter;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
@@ -123,7 +123,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 		return $this->translationsMinNum;
 	}
 	
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		return new TranslationGuiProp($this->getRelationModel(), $this);
 	}
 

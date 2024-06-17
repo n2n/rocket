@@ -22,7 +22,9 @@
 namespace rocket\ui\gui\field;
 
 use rocket\ui\si\content\SiField;
-use rocket\ui\gui\GuiFieldMap;
+use n2n\core\container\N2nContext;
+use n2n\util\ex\UnsupportedOperationException;
+use rocket\ui\si\input\SiFieldInput;
 
 interface GuiField {
 	
@@ -37,15 +39,27 @@ interface GuiField {
 // 	public function isReadOnly(): bool;
 	
 	function getSiField(): ?SiField;
-	
+
+//	function handleSiFieldInput(SiFieldInput $siFieldInput): bool;
+
 	/**
-	 * Saves/writes the value previously read value by {@link self::readFromSi()} to the target value container
+	 * An {@link UnsupportedOperationException} might be thrown if the field does not support values.
+	 *
+	 * @return mixed
+	 *
+	 */
+//	function getValue(): mixed;
+
+//	function prepareForSave(N2nContext $n2nContext): bool;
+
+	/**
+	 * Saves/writes the value previously read value by {@link self::prepareForSave()} to the target value container
 	 * (e. g. {@link EiEntry)
 	 *
 	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true or
-	 * 		{@link self::readFromSi()} has never been called.
+	 * 		{@link self::readSiAndValidate()} has never been called.
 	 */
-	function save(): void;
+	function save(N2nContext $n2nContext): void;
 	
 	/**
 	 * @return GuiFieldMap|NULL

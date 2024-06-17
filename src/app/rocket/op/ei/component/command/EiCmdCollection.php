@@ -203,7 +203,7 @@ class EiCmdCollection extends EiComponentCollection {
 			$eiCmdPath = $eiCmd->getEiCmdPath();
 
 			if (null !== ($guiCommand = $eiCmd->getNature()
-							->buildGuiCommand(new Eiu($this->eiMask, $eiCmdPath)))) {
+							->buildEiGuiCommand(new Eiu($this->eiMask, $eiCmdPath)))) {
 				$guiDefinition->putGuiCommand($eiCmdPath, $guiCommand);
 			}
 		}

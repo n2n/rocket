@@ -26,6 +26,7 @@ use rocket\ui\si\input\CorruptedSiInputDataException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;
+use n2n\core\container\N2nContext;
 
 class SiValueBoundary implements \JsonSerializable {
 
@@ -61,8 +62,8 @@ class SiValueBoundary implements \JsonSerializable {
 	}
 
 
-	function putEntry(string $maskId, SiEntry $entry): static {
-		$this->entries[$maskId] = $entry;
+	function putEntry(SiEntry $entry): static {
+		$this->entries[$entry->getQualifier()->getIdentifier()->getMaskIdentifier()->getId()] = $entry;
 		
 		return $this;
 	}
@@ -112,8 +113,8 @@ class SiValueBoundary implements \JsonSerializable {
 	 * @param SiEntryInput $entryInput
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleEntryInput(SiEntryInput $entryInput): bool {
-		$typeId = $entryInput->getMaskId();
+	function handleEntryInput(SiEntryInput $entryInput, N2nContext $n2nContext): bool {
+		$typeId = $entryInput->getIdentifier()->getMaskIdentifier()->getId();
 		
 		try {
 			$this->setSelectedMaskId($typeId);
@@ -121,7 +122,7 @@ class SiValueBoundary implements \JsonSerializable {
 			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
 		}
 		
-		$this->getSelectedEntry()->handleEntryInput($entryInput);
+		$this->getSelectedEntry()->handleEntryInput($entryInput, $n2nContext);
 		return true;
 	}
 	

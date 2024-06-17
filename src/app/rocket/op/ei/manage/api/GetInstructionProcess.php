@@ -122,8 +122,8 @@ class GetInstructionProcess {
 		
 		$getResult = new SiGetResult();
 		$getResult->setValueBoundary($eiGuiDeclaration
-				->createNewEiGuiValueBoundary($eiFrame, $this->instruction->areEntryControlsIncluded())
-				->createSiValueBoundary($eiFrame->getN2nContext()->getN2nLocale()));
+				->createNewGuiValueBoundary($eiFrame, $this->instruction->areEntryControlsIncluded())
+				->getSiValueBoundary($eiFrame->getN2nContext()->getN2nLocale()));
 		
 		if ($this->instruction->areGeneralControlsIncluded() && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
 			$getResult->setGeneralControls($eiGuiDeclaration->getSingleEiGuiMaskDeclaration()

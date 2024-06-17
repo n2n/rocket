@@ -39,6 +39,9 @@ use n2n\l10n\L10nUtils;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
 
 
 abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureAdapter
@@ -62,11 +65,9 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::createOutSiField()
 	 */
-	function createOutEifGuiField(Eiu $eiu): EifGuiField {
-		return $eiu->factory()
-				->newGuiField(SiFields
-						::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale())))
-				->setMessagesBearer(fn () => $eiu->field()->getMessagesAsStrs());
+	function createOutGuiField(Eiu $eiu): BackableGuiField {
+		$siField = SiFields::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale()));
+		return GuiFields::out($siField);
 	}
 	
 // 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {

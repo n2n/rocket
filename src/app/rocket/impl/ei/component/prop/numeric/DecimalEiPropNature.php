@@ -37,6 +37,8 @@ use n2n\validation\validator\impl\Validators;
 use rocket\op\ei\util\factory\EifField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
+use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
 
 class DecimalEiPropNature extends NumericEiPropNatureAdapter {
     private int $decimalPlaces = 2;
@@ -86,10 +88,12 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 
-	public function createInEifGuiField(Eiu $eiu): EifGuiField {
-		
+	public function createInGuiField(Eiu $eiu): BackableGuiField {
+
+		$guiField = GuiFields::numberIn()->setValue($eiu->field()->getValue());
+
 		$step = 1 / pow(10, $this->getDecimalPlaces());
-		$siField = SiFields::numberIn($eiu->field()->getValue())
+		$guiField->getSiField()
 				->setMandatory($this->isMandatory())
 				->setMin($this->getMinValue())
 				->setMax($this->getMaxValue())
@@ -97,13 +101,9 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 				->setArrowStep($step)
 				->setFixed(true)
 				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+				->setSuffixAddons($this->getSuffixSiCrumbGroups());
 		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($siField, $eiu) {
-					$eiu->field()->setValue($siField->getValue());
-				});
+		return $guiField;
 	}
 	public function saveSiField(SiField $siField, Eiu $eiu) {
 	}

@@ -127,7 +127,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		return $value;
 	}
 	
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
+	function createInGuiField(Eiu $eiu): BackableGuiField {
 		$siField = SiFields::stringIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
 				->setMinlength($this->getMinlength())
@@ -170,7 +170,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		return $url;
 	}
 	
-	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+	public function createOutGuiField(Eiu $eiu): BackableGuiField  {
 		$value = $eiu->field()->getValue();
 		if ($value === null) {
 			return $eiu->factory()->newGuiField(SiFields::stringOut(null)

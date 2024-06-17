@@ -11,7 +11,7 @@ use n2n\web\http\PageNotFoundException;
 use n2n\web\http\ForbiddenException;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\ei\manage\preview\model\UnavailablePreviewException;
-use rocket\ui\gui\EiGui;
+use rocket\ui\gui\Gui;
 use rocket\ui\si\SiPayloadFactory;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\op\ei\util\EiuAnalyst;
@@ -36,9 +36,13 @@ use rocket\si\input\SiInputResult;
 use rocket\op\cu\gui\control\CuControlCallId;
 use rocket\op\cu\util\gui\CufGui;
 use n2n\web\http\BadRequestException;
-use rocket\impl\ei\manage\gui\BulkyEiGui;
-use rocket\op\ei\manage\api\ZoneGuiControlsMap;
-use rocket\impl\ei\manage\gui\CompactExplorerEiGui;
+use rocket\impl\ei\manage\gui\BulkyGui;
+use rocket\ui\gui\control\ZoneGuiControlsMap;
+use rocket\impl\ei\manage\gui\CompactExplorerGui;
+use rocket\ui\gui\control\GuiControlMap;
+use rocket\ui\gui\control\GuiControlPath;
+use rocket\ui\gui\GuiZone;
+use rocket\ui\si\content\SiZoneCall;
 
 class OpuCtrl {
 
@@ -142,10 +146,12 @@ class OpuCtrl {
 
 		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$eiGui = new CompactExplorerEiGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundaries, $pageSize,
-				$count, $guiControlsMap, $zoneGuiControlsMap);
+		$eiGui = new CompactExplorerGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundaries, $pageSize,
+				$count, $guiControlsMap);
 
-		$this->forwardEiGui($eiGui, $title ?? $this->frame()->contextEngine()->mask()->getPluralLabel());
+		$this->forwardGui($eiGui,
+				$title ?? $this->frame()->contextEngine()->mask()->getPluralLabel(),
+				$zoneGuiControlsMap);
 	}
 
 
@@ -203,10 +209,11 @@ class OpuCtrl {
 
 		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$eiGui = new BulkyEiGui($eiFrame, $eiGuiDeclaration, $guiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
-				$entrySiControlsIncluded);
+		$eiGui = new BulkyGui($eiFrame->createSiFrame(), $eiGuiDeclaration->createSiDeclaration($this->eiu->getN2nLocale()),
+				$guiValueBoundary, $guiControlsMap, $entrySiControlsIncluded);
 
-		$this->forwardEiGui($eiGui, current($guiValueBoundary->getEiGuiEntries())->getIdName());
+
+		$this->forwardGui($eiGui, current($guiValueBoundary->getEiGuiEntries())->getIdName());
 	}
 
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
@@ -219,7 +226,7 @@ class OpuCtrl {
 		$eiFrameUtil = new EiFrameUtil($eiFrame);
 
 		$eiGuiDeclaration = $eiFrameUtil->createNewEiGuiDeclaration(true, !$editable, null, null);
-		$eiGuiValueBoundary = $eiGuiDeclaration->createNewEiGuiValueBoundary($eiFrame, $entrySiControlsIncluded);
+		$guiValueBoundary = $eiGuiDeclaration->createNewGuiValueBoundary($eiFrame, $entrySiControlsIncluded);
 
 		$guiControlsMap = null;
 		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
@@ -228,15 +235,22 @@ class OpuCtrl {
 
 		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$eiGui = new BulkyEiGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
+		$eiGui = new BulkyGui($eiFrame->createSiFrame(), $eiGuiDeclaration->createSiDeclaration($this->eiu->getN2nLocale()),
+				$guiValueBoundary, $guiControlsMap, $zoneGuiControlsMap,
 				$entrySiControlsIncluded);
 
-		$this->forwardEiGui($eiGui, $this->eiu->dtc('rocket')->t('common_new_entry_label'));
+		$this->forwardGui($eiGui, $this->eiu->dtc('rocket')->t('common_new_entry_label'));
 	}
 
-	private function forwardEiGui(EiGui $eiGui, string $title = null): void {
+	/**
+	 * @throws BadRequestException
+	 */
+	private function forwardGui(Gui $eiGui, string $title = null, GuiControlMap $zoneGuiControlMap = null): void {
+
+		$guiZone = new GuiZone($eiGui, $title, $zoneGuiControlMap);
+		$siZone = $guiZone->getSiZone();
 		try {
-			if (null !== ($siResult = $this->handleEiSiCall($eiGui))) {
+			if (null !== ($siResult = $siZone->handleSiZoneCall(SiZoneCall::fromCu($this->cu)))) {
 				$this->cu->sendJson($siResult);
 				return;
 			}
@@ -244,8 +258,7 @@ class OpuCtrl {
 			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
 		}
 
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($eiGui->toSiGui(), $this->opState->getBreadcrumbs(), $title));
+		$this->httpContext->getResponse()->send($siZone);
 	}
 
 	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null): void {
@@ -283,24 +296,26 @@ class OpuCtrl {
 	/**
 	 * @throws CorruptedSiInputDataException
 	 */
-	private function handleEiSiCall(EiGui $eiGui): ?SiCallResult {
-		$apiCallIdParam = $this->cu->getParamPost('apiCallId');
-		if (!($this->cu->getRequest()->getMethod() === Method::POST && null !== $apiCallIdParam)) {
+	private function handleEiSiCall(Gui $gui, ZoneGuiControlsMap $zoneGuiControlsMap): ?SiCallResult {
+		$zoneControlPath = $this->cu->getParamPost('zoneControlPath');
+		if (!($this->cu->getRequest()->getMethod() === Method::POST && null !== $zoneControlPath)) {
 			return null;
 		}
+
+		$zoneControlPath = GuiControlPath::create($zoneControlPath);
 
 		$siInputResult = null;
 		if (null !== ($entryInputMapsParam = $this->cu->getParamPost('entryInputMaps'))) {
 			$siInput = (new SiInputFactory())->create($entryInputMapsParam->parseJson());
-			if (null !== ($siInputError = $eiGui->handleSiInput($siInput))) {
+			if (null !== ($siInputError = $gui->handleSiInput($siInput))) {
 				return SiCallResult::fromInputError($siInputError);
 			}
 
-			$siInputResult = new SiInputResult($eiGui->getInputSiValueBoundaries());
+			$siInputResult = new \rocket\ui\si\input\SiInputResult($gui->getInputSiValueBoundaries());
 		}
 
 		return SiCallResult::fromCallResponse(
-				$eiGui->handleSiCall(ZoneApiControlCallId::parse($apiCallIdParam->parseJson())),
+				$zoneGuiControlsMap->handleSiCall($zoneControlPath),
 				$siInputResult);
 	}
 

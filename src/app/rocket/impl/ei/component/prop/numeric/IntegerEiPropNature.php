@@ -31,6 +31,9 @@ use n2n\validation\validator\impl\Validators;
 use rocket\op\ei\util\factory\EifField;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
 
 class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	const INT_SIGNED_MIN = -2147483648;
@@ -72,15 +75,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	}
 	
 
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$siField = SiFields::numberIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setMin($this->getMinValue())
-				->setMax($this->getMaxValue())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
-			$eiu->field()->setValue($siField->getValue());
-		});
+	function createInGuiField(Eiu $eiu): BackableGuiField {
+		return GuiFields::numberIn(mandatory: $this->isMandatory(), min: $this->getMinValue(), max: $this->getMaxValue());
 	}
 }

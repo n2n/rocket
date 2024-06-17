@@ -35,7 +35,7 @@ use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\content\impl\relation\SiPanel;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
-use rocket\ui\gui\GuiFieldMap;
+use rocket\ui\gui\field\GuiFieldMap;
 use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedGuiCollection;
 use rocket\op\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
@@ -149,7 +149,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 		return true;
 	}
 
-	function getMessageStrs(): array {
+	function getMessages(): array {
 		return $this->eiu->field()->getMessagesAsStrs();
 	}
 }

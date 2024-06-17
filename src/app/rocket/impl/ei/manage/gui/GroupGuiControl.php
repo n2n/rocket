@@ -33,11 +33,12 @@ use rocket\ui\si\control\impl\GroupSiControl;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
+use rocket\ui\gui\control\GuiControlMap;
 
 class GroupGuiControl implements GuiControl {
 	private $id;
 	private $siButton;
-	private $childrean = [];
+	private GuiControlMap $forkGuiControlMap;
 	
 	function __construct(string $id, SiButton $siButton) {
 		$this->id = $id;
@@ -56,33 +57,17 @@ class GroupGuiControl implements GuiControl {
 		return false;
 	}
 
-	function add(GuiControl ...$guiControls): static {
-		foreach ($guiControls as $guiControl) {
-			$this->childrean[$guiControl->getId()] = $guiControl;
-		}
+	function putGuiControl(string $controlName, GuiControl $guiControl): static {
+		$this->forkGuiControlMap->putGuiControl($controlName, $guiControl);
 		return $this;
 	}
 
-	function toSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
 		return new GroupSiControl($this->siButton, 
 				array_map(function ($child) use ($apiUrl, $siApiCallId) {
 					return $child->toSiControl($apiUrl, $siApiCallId->guiControlPathExt($child->getId()));
 				}, $this->childrean));;
 	}
-	
-	function getChildById(string $id): ?GuiControl {
-		return $this->childrean[$id] ?? null;
-	}
-	
-	public function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse {
-		throw new UnsupportedOperationException('no input handled');
-	}
 
-	public function handle(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
-		throw new UnsupportedOperationException('no input handled');
-	}
 
-	public function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse {
-		throw new UnsupportedOperationException('no input handled');
-	}
 }

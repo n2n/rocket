@@ -26,7 +26,7 @@ use n2n\util\type\ArgUtils;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\util\Eiu;
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
@@ -43,7 +43,7 @@ class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*imple
 	
 	private EiGuiDefinition $forkedEiGuiDefinition;
 	
-//	public function buildGuiPropFork(Eiu $eiu): ?GuiPropFork {
+//	public function buildGuiPropFork(Eiu $eiu): ?EiGuiPropFork {
 //		$this->forkedEiGuiDefinition = $eiu->context()->engine($this->eiPropRelation->getTargetEiMask())
 //				->getEiGuiDefinition();
 //
@@ -121,7 +121,7 @@ class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*imple
 //				$targetRelationEntry->getEiEntry(), $defPropPath);
 //	}
 
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		return null;	
 	}
 

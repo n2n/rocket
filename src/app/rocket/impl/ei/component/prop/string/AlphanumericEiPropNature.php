@@ -41,6 +41,10 @@ use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
 use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
 use rocket\op\ei\manage\critmod\quick\impl\QuickSearchProps;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\field\impl\GuiFields;
+use n2n\bind\mapper\impl\Mappers;
+use rocket\ui\gui\field\BackableGuiField;
 
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
@@ -85,24 +89,19 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 		$this->maxlength = $maxlength;
 	}
 	
-	public function createOutEifGuiField(Eiu $eiu): EifGuiField  {
-		return $eiu->factory()->newGuiField(SiFields
-				::stringOut(StringUtils::strOf($eiu->field()->getValue(), true))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+	public function createOutGuiField(Eiu $eiu): BackableGuiField  {
+		return GuiFields::out(SiFields::stringOut(StringUtils::strOf($eiu->field()->getValue(), true)))
+				->setExternalMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 	}
 	
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
-		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setMinlength($this->getMinlength())
-				->setMaxlength($this->getMaxlength())
-				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($siField, $eiu) {
-					$eiu->field()->setValue($siField->getValue());
-				});
+	function createInGuiField(Eiu $eiu): BackableGuiField {
+		$guiField = GuiFields::stringIn(mandatory: $this->isMandatory(),
+				minlength: $this->getMinlength() ?? 0, maxlength: $this->getMaxlength() ?? 255,
+				prefixAddons: $this->getPrefixSiCrumbGroups(), suffixAddons: $this->getSuffixSiCrumbGroups());
+
+		$guiField->setModel($eiu->field()->asGuiFieldModel());
+
+		return $guiField;
 	}
 	
 //	public function buildManagedFilterProp(EiFrame $eiFrame): ?FilterProp  {

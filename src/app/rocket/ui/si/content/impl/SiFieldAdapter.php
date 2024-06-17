@@ -24,8 +24,9 @@ namespace rocket\ui\si\content\impl;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\SiFieldModel;
+use rocket\ui\si\content\BackableSiField;
 
-abstract class SiFieldAdapter implements SiField {
+abstract class SiFieldAdapter implements SiField, BackableSiField {
 //	use SiFieldErrorTrait;
 
 	private ?SiFieldModel $model;
@@ -56,7 +57,7 @@ abstract class SiFieldAdapter implements SiField {
 	}
 
 	function getData(): array {
-		return ['messages' => $this->model->getMessageStrs() ?? []];
+		return ['messages' => $this->model->getMessages() ?? []];
 	}
 
 

@@ -207,7 +207,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 						->setTooltip($dtc->t('ei_impl_add_branch_tooltip'))
 						->setImportant(false));
 		
-		$groupControl->add(
+		$groupControl->putGuiControl(
 				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_BEFORE_KEY,
 						SiButton::success($dtc->t('ei_impl_add_before_branch_label'), SiIconType::ICON_ANGLE_UP)
 								->setTooltip($dtc->t('ei_impl_add_before_branch_tooltip'))

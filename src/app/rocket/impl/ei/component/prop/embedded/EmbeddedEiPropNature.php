@@ -26,7 +26,7 @@ use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\util\Eiu;
 use n2n\reflection\ReflectionUtils;
 use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
@@ -76,7 +76,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 				?? ReflectionUtils::createObject($this->entityProperty->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 
-	public function buildGuiProp(Eiu $eiu): ?GuiProp {
+	public function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		if (!$this->isMandatory()) {
 			return new EmbeddedGuiProp($this);
 		}
@@ -133,7 +133,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 //	public function getForkEiGuiDefinition(): ?EiGuiDefinition {
 //		return null;
 //	}
-//	public function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?GuiPropSetup {
+//	public function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?EiGuiPropSetup {
 //		return null;
 //	}
 //}
@@ -178,7 +178,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 //		return $this->mag;
 //	}
 //
-//	function createOutEifGuiField(Eiu $eiu): EifGuiField {
+//	function createOutGuiField(Eiu $eiu): BackableGuiField {
 //		return null;
 //	}
 //

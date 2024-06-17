@@ -24,6 +24,13 @@ namespace rocket\op\ei\util\entry;
 use n2n\l10n\Message;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\EiuAnalyst;
+use n2n\core\container\N2nContext;
+use n2n\bind\build\impl\Bind;
+use n2n\bind\err\BindException;
+use n2n\util\ex\IllegalStateException;
+use n2n\bind\mapper\Mapper;
+use rocket\ui\gui\field\GuiFieldModel;
+use rocket\impl\ei\component\prop\ci\model\EiuGuiEntryPool;
 
 class EiuField {
 	private $eiPropPath;
@@ -111,5 +118,64 @@ class EiuField {
 		$this->getEiuEntry()->getEiEntry()->getValidationResult()->getEiFieldValidationResult($this->eiPropPath)
 				->addError($message);
 		return $this;
+	}
+
+	function asGuiFieldModel(Mapper $valueMapper = null): GuiFieldModel {
+		return new EiuGuiFieldModel($this, $valueMapper);
+	}
+}
+
+class EiuGuiFieldModel implements GuiFieldModel {
+
+	private bool $preparationValid = false;
+	private mixed $preparedValue = null;
+
+	/**
+	 * @var Message[]
+	 */
+	private array $prepareMessages = [];
+
+	function __construct(private EiuField $eiuField, private ?Mapper $valueMapper = null) {
+
+	}
+
+	function handleInput(mixed $value, N2nContext $n2nContext): bool {
+		$this->preparationValid = true;
+		$this->prepareMessages = [];
+
+		if ($this->valueMapper === null) {
+			$this->preparedValue = $value;
+			return true;
+		}
+
+		$bindTask = Bind::values($value)->map($this->valueMapper)
+				->toValue($this->preparedValue);
+
+		try {
+			$bindResult = $bindTask->exec($n2nContext);
+		} catch (BindException $e) {
+			$this->preparationValid = false;
+			throw new IllegalStateException('Prepare for save Mappers for GuiField ' . get_class($this)
+					. ' failed:' . $e->getMessage(), previous: $e);
+		}
+
+		if ($bindResult->isValid()) {
+			$this->preparedValue = $bindResult->get();
+			return true;
+		}
+
+		$this->preparationValid = false;
+		$this->prepareMessages = $bindResult->getErrorMap()->getAllMessages();
+		return false;
+	}
+
+	function getMessages(): array {
+		return [$this->eiuField->getMessages(), ...$this->prepareMessages];
+	}
+
+	function save(N2nContext $n2nContext): void {
+		IllegalStateException::assertTrue($this->preparationValid, 'Preparation for ' . $this->eiuField->getEiPropPath()
+				. ' not valid.' );
+		$this->eiuField->setValue($this->preparedValue);
 	}
 }

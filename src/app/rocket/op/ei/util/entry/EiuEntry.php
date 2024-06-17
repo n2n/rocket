@@ -885,7 +885,8 @@ class EiuEntry {
 // }
 
 class DummyEiGuiSiFactory implements EiGuiSiFactory {
-	
+
+
 	public function getSiStructureDeclarations(): array {
 		throw new NotYetImplementedException();
 	}

@@ -274,7 +274,7 @@ class EiGuiDeclaration {
 	 * @param int|null $treeLevel
 	 * @return GuiValueBoundary
 	 */
-	function createNewEiGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, int $treeLevel = null): GuiValueBoundary {
+	function createNewGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, int $treeLevel = null): GuiValueBoundary {
 		$eiGuiValueBoundary = new GuiValueBoundary($this, $treeLevel);
 
 		$eiGuiValueBoundary = new GuiValueBoundary($this, $treeLevel);
@@ -294,7 +294,7 @@ class EiGuiDeclaration {
 	 */
 	private function finalizeGuiValueBoundary(GuiValueBoundary $eiGuiValueBoundary): void {
 		if ($this->hasSingleEiGuiMaskDeclaration()) {
-			$eiGuiValueBoundary->selectGuiEntryByMaskId(key($this->eiGuiMaskDeclarations));
+			$eiGuiValueBoundary->selectGuiEntryByMaskId(current($this->eiGuiMaskDeclarations)->createSiMaskIdentifier()->getId());
 		}
 	}
 

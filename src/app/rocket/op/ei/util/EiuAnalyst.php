@@ -907,7 +907,7 @@ class EiuAnalyst {
 	
 	/**
 	 * @param bool $required
-	 * @return \rocket\ui\gui\EiGui
+	 * @return \rocket\ui\gui\Gui
 	 *@throws EiuPerimeterException
 	 */
 	public function getEiGui(bool $required) {

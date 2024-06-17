@@ -119,7 +119,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 		$controls[] = $groupControl = $eiuControlFactory->newGroup(self::CONTROL_PREVIEW_KEY, $siButton);
 		
 		foreach ($previewTypeOptions as $previewType => $label) {
-			$groupControl->add($eiuControlFactory->newCmdRef($previewType, 
+			$groupControl->putGuiControl($eiuControlFactory->newCmdRef($previewType,
 					SiButton::success($label, SiIconType::ICON_R_EYE),
 					new Path(['livepreview', $eiuEntry->getPid(), $previewType])));
 		}

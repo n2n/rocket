@@ -43,6 +43,7 @@ use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\op\ei\util\factory\EifField;
+use rocket\ui\gui\field\BackableGuiField;
 
 
 class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
@@ -141,7 +142,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 		$this->entityProperty = $entityProperty;
 	}
 
-	function createOutEifGuiField(Eiu $eiu): EifGuiField  {
+	function createOutGuiField(Eiu $eiu): BackableGuiField  {
 		$value = $eiu->field()->getValue();
 		if ($value) {
 			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_CHECK));
@@ -151,7 +152,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 		return $eiu->factory()->newGuiField($siField->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
-	function createInEifGuiField(Eiu $eiu): EifGuiField {
+	function createInGuiField(Eiu $eiu): BackableGuiField {
 		$mapCb = function ($defPropPath) { return (string) $defPropPath; };
 
 		$siField = SiFields::boolIn((bool) $eiu->field()->getValue())

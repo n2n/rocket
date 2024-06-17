@@ -28,7 +28,7 @@ use n2n\reflection\property\AccessProxy;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\manage\idname\IdNamePropFork;
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\op\ei\manage\generic\GenericEiProperty;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
@@ -95,7 +95,7 @@ interface EiPropNature extends EiComponentNature {
 	/**
 	 * @return GuiProp|null null if not displayable
 	 */
-	function buildGuiProp(Eiu $eiu): ?GuiProp;
+	function buildGuiProp(Eiu $eiu): ?EiGuiProp;
 
 	/**
 	 * @return GenericEiProperty|null

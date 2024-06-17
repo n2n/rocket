@@ -20,7 +20,7 @@ use rocket\op\ei\manage\ManageState;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\util\EiuAnalyst;
-use rocket\ui\gui\EiGuiDefinitionListener;
+use rocket\op\ei\manage\gui\EiGuiDefinitionListener;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\gui\EiGuiListener;
 use rocket\op\ei\util\frame\EiuFrame;

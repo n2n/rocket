@@ -27,6 +27,7 @@ use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\ui\gui\field\BackableGuiField;
 
 abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
 	use EditEiFieldTrait;
@@ -42,20 +43,26 @@ abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEi
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $this->isReadOnly() ||  $eiu->guiMaskDeclaration()->isReadOnly()
 				|| ($eiu->entry()->isNew() && $this->isConstant())) {
-			return $this->createOutEifGuiField($eiu)->toGuiField();
+			$guiField = $this->createOutGuiField($eiu);
+		} else {
+			$guiField = $this->createInGuiField($eiu);
 		}
-		
-		return $this->createInEifGuiField($eiu)->toGuiField();
+
+		if ($guiField->getModel() === null) {
+			$guiField->setModel($eiu->field()->asGuiFieldModel());
+		}
+
+		return $guiField;
 	}
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return EifGuiField
 	 */
-	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
 		throw new UnsupportedOperationException(get_class($this)
 				. ' must implement either'
-				. ' createOutEifGuiField(Eiu $eiu): EifGuiField  (recommended) or'
+				. ' createOutGuiField(Eiu $eiu): BackableGuiField  (recommended) or'
 				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
 	
@@ -63,10 +70,10 @@ abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEi
 	 * @param Eiu $eiu
 	 * @return EifGuiField
 	 */
-	protected function createInEifGuiField(Eiu $eiu): EifGuiField {
+	protected function createInGuiField(Eiu $eiu): BackableGuiField {
 		throw new UnsupportedOperationException(get_class($this)
 				. ' must implement either'
-				. ' createInEifGuiField(Eiu $eiu): EifGuiField  (recommended) or'
+				. ' createInGuiField(Eiu $eiu): BackableGuiField  (recommended) or'
 				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
 }

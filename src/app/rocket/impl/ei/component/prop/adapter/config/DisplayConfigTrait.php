@@ -21,12 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\ui\gui\field\BackableGuiField;
 
 trait DisplayConfigTrait {
 	protected DisplayConfig $displayConfig;
@@ -53,19 +54,19 @@ trait DisplayConfigTrait {
 	}
 
 	
-	function buildGuiProp(Eiu $eiu): ?GuiProp {
+	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		return $eiu->factory ()->newGuiProp (function (Eiu $eiu) {
 			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
-		})->toGuiProp();
+		})->toEiGuiProp();
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField ();
 	}
 
-	protected function createOutEifGuiField(Eiu $eiu): EifGuiField {
+	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
 		throw new UnsupportedOperationException ( get_class ($this) . ' must implement either'
-				. ' createOutEifGuiField(Eiu $eiu): EifGuiField or'
+				. ' createOutGuiField(Eiu $eiu): BackableGuiField or'
 				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
 	}
 }
