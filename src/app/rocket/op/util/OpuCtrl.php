@@ -189,6 +189,9 @@ class OpuCtrl {
 //		}
 //	}
 
+	/**
+	 * @throws BadRequestException
+	 */
 	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
 			bool $entrySiControlsIncluded = true, array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
@@ -213,7 +216,7 @@ class OpuCtrl {
 				$guiValueBoundary, $guiControlsMap, $entrySiControlsIncluded);
 
 
-		$this->forwardGui($eiGui, current($guiValueBoundary->getEiGuiEntries())->getIdName());
+		$this->forwardGui($eiGui, current($guiValueBoundary->getGuiEntries())->getSiEntry()->getQualifier()->getIdName());
 	}
 
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
@@ -247,10 +250,11 @@ class OpuCtrl {
 	 */
 	private function forwardGui(Gui $eiGui, string $title = null, GuiControlMap $zoneGuiControlMap = null): void {
 
-		$guiZone = new GuiZone($eiGui, $title, $zoneGuiControlMap);
+		$guiZone = new GuiZone($eiGui, $title, $this->opState->getBreadcrumbs(), $zoneGuiControlMap);
 		$siZone = $guiZone->getSiZone();
 		try {
-			if (null !== ($siResult = $siZone->handleSiZoneCall(SiZoneCall::fromCu($this->cu)))) {
+			$siZoneCall = SiZoneCall::fromCu($this->cu);
+			if ($siZoneCall !== null && null !== ($siResult = $siZone->handleSiZoneCall())) {
 				$this->cu->sendJson($siResult);
 				return;
 			}
@@ -258,7 +262,7 @@ class OpuCtrl {
 			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
 		}
 
-		$this->httpContext->getResponse()->send($siZone);
+		$this->cu->sendJson($siZone);
 	}
 
 	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null): void {

@@ -1,3 +1,23 @@
+DROP TABLE IF EXISTS `rocket_user`;
+CREATE TABLE `rocket_user` (
+                               `id` INT NOT NULL AUTO_INCREMENT,
+                               `nick` VARCHAR(255) NOT NULL,
+                               `firstname` VARCHAR(255) NULL DEFAULT NULL,
+                               `lastname` VARCHAR(255) NULL DEFAULT NULL,
+                               `email` VARCHAR(255) NULL DEFAULT NULL,
+                               `power` ENUM('superadmin','admin','none') NOT NULL DEFAULT 'none',
+                               `password` VARCHAR(255) NOT NULL,
+                               PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci ;
+ALTER TABLE `rocket_user` ADD UNIQUE INDEX `nick` (`nick`);
+
+DROP TABLE IF EXISTS `rocket_user_rocket_user_groups`;
+CREATE TABLE `rocket_user_rocket_user_groups` (
+                                                  `rocket_user_id` INT NOT NULL,
+                                                  `rocket_user_group_id` INT NOT NULL,
+                                                  PRIMARY KEY (`rocket_user_id`, `rocket_user_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci ;
+
 DROP TABLE IF EXISTS `sort_test_obj`;
 CREATE TABLE `sort_test_obj` (
     `id` INT NOT NULL AUTO_INCREMENT,

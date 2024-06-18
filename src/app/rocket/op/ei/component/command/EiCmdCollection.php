@@ -148,7 +148,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 * @return GenericResult
 	 */
 	public function determineGenericEdit(EiObject $eiObject, bool $required = false) {
-		foreach ($this->eiMask->getEiCommandCollection() as $eiCmd) {
+		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
 			$navPoint = $eiCmd->getNature()->buildEditNavPoint(new Eiu($this->eiMask, $eiObject, $eiCmd));
 			if ($navPoint == null) {
 				continue;

@@ -175,8 +175,7 @@ class SiEntry implements \JsonSerializable {
 		ArgUtils::valArrayReturn($externalMessages, $this->model, 'getMessages', 'string');
 
 		return [
-			'id' => $this->id,
-			'idName' => $this->idName,
+			'qualifier' => $this->siEntryQualifier,
 			'fieldMap' => $fieldsArr,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'messages' => [...$this->messages, ...$externalMessages]

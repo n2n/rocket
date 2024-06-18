@@ -205,7 +205,6 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	 */
 	protected function getElementByIdPath(IdPath $idPath) {
 		$idPathStr = (string) $idPath;
-
 		if (isset($this->eiComponents[$idPathStr])) {
 			return $this->eiComponents[$idPathStr];
 		}

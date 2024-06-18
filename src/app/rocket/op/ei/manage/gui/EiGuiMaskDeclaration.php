@@ -43,6 +43,7 @@ use rocket\ui\gui\GuiEntry;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\GuiMask;
 use rocket\ui\gui\GuiStructureDeclaration;
+use rocket\ui\gui\control\GuiControlMap;
 
 /**
  * @author andreas
@@ -214,7 +215,7 @@ class EiGuiMaskDeclaration {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiMaskDeclaration has no GuiStructureDeclarations.');
 
-		return new GuiMask(
+		return new SiMask(
 				$this->createSiMaskQualifier($n2nLocale),
 				$this->createSiProps($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
@@ -256,7 +257,7 @@ class EiGuiMaskDeclaration {
 	 * @return SiProp[]
 	 */
 	private function createSiProps(N2nLocale $n2nLocale): array {
-		$deter = new \rocket\op\gui\ContextSiFieldDeterminer();
+		$deter = new ContextSiFieldDeterminer();
 		
 		$siProps = [];
 		foreach ($this->defPropPaths as $defPropPath) {

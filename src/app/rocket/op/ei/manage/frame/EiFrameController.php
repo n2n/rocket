@@ -203,12 +203,11 @@ class EiFrameController extends ControllerAdapter {
 		$this->delegate($apiController);
 	}
 	
-	public function doCmd($eiCmdPathStr, array $delegateCmds = null) {		
+	public function doCmd($eiCmdPathStr, array $delegateCmds = null) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
 		$eiCmd = $this->lookupEiCmd($eiCmdPath);
-		
 		$this->pushEiFrame($eiCmd);
-		
+
 		$controller = $eiCmd->getNature()->lookupController(new Eiu($this->eiFrame));
 		if ($controller !== null) {
 			$this->delegate($controller);

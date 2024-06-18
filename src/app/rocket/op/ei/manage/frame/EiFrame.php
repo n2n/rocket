@@ -535,7 +535,7 @@ class EiFrame {
 	function createSiFrame() {
 		$apUrlMap = array_combine(ApiController::getApiSections(), 
 				array_map(fn ($section) => $this->getApiUrl(null, $section), ApiController::getApiSections()));
-		return (new SiFrame($apUrlMap, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()))
+		return (new SiFrame($apUrlMap/*, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()*/))
 				->setSortable($this->ability->getSortAbility() !== null);
 	}
 }

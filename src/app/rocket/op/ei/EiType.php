@@ -534,7 +534,7 @@ class EiType extends Type {
 	}
 	
 	/**
-	 * @return \rocket\ui\si\meta\SiTypeContext
+	 * @return SiTypeContext
 	 */
 	function createSiTypeContext() {
 		return (new SiTypeContext($this->getSupremeEiType()->getId(), array_map(

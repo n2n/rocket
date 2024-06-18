@@ -59,7 +59,7 @@ class SiDeclaration implements \JsonSerializable {
 // 			throw new \InvalidArgumentException('First TypeDeclaration need StructureDeclarations');
 // 		}
 		
-		if (empty($this->masks) && !$mask->getMask()->hasProps()) {
+		if (empty($this->masks) && !$mask->hasProps()) {
 			throw new \InvalidArgumentException('First TypeDeclaration needs to have SiProps.');
 		}
 		

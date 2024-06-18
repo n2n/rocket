@@ -37,6 +37,7 @@ use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\op\util\OpfControlResponse;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\ui\gui\control\GuiControlMap;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
@@ -70,22 +71,16 @@ class CallbackGuiControl implements GuiControl {
 		return null;
 	}
 
-	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
-		return new CallbackSiControl($apiUrl, $siApiCallId, $this->siButton, $this->inputHandled);
+	function getSiControl(): SiControl {
+		return new CallbackSiControl($this->callback, $this->siButton, $this->inputHandled);
 	}
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return SiCallResponse
 	 */
-	private function execCall(Eiu $eiu, ?array $inputEius) {
-		$sifControlResponse = null;
-		$callback = $this->callback;
-		if ($inputEius === null) {
-			$sifControlResponse = $callback($eiu);
-		} else {
-			$sifControlResponse = $callback($eiu, $inputEius);
-		}
+	private function execCall() {
+		$sifControlResponse = $callback($eiu);
 		ArgUtils::valTypeReturn($sifControlResponse, OpfControlResponse::class, null, $callback, true);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
@@ -106,14 +101,8 @@ class CallbackGuiControl implements GuiControl {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\gui\control\GuiControl::handleCall()
 	 */
-	function handleCall(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
-		ArgUtils::valArray($inputEiEntries, EiEntry::class);
-		
-		$inputEius = array_map(function ($inputEiEntry) use ($eiFrame) { 
-			return new Eiu($eiFrame, $inputEiEntry); 
-		}, $inputEiEntries);
-		
-		return $this->execCall(new Eiu($eiFrame, $eiGuiDeclaration), $inputEius);
+	function handleCall(): SiCallResponse {
+		return $this->execCall();
 	}
 
 	/**
@@ -130,5 +119,9 @@ class CallbackGuiControl implements GuiControl {
 	 */
 	function handleEntries(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $eiEntries): SiCallResponse {
 		throw new NotYetImplementedException();
+	}
+
+	function getForkGuiControlMap(): ?GuiControlMap {
+		return null;
 	}
 }

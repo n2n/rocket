@@ -3,20 +3,13 @@
 namespace rocket\ui\gui;
 
 use rocket\ui\gui\control\GuiControlMap;
-use rocket\ui\gui\control\ZoneGuiControlsMap;
 use rocket\ui\si\SiZone;
-use rocket\op\ei\manage\api\SiCallResult;
-use n2n\web\http\Method;
-use rocket\ui\gui\control\GuiControlPath;
-use rocket\ui\si\input\SiInputFactory;
-use rocket\ui\si\input\SiInput;
-use rocket\ui\si\content\SiZoneCall;
 
 class GuiZone {
 	private SiZone $siZone;
 
-	function __construct(private Gui $gui, string $title = null, private ?GuiControlMap $zoneGuiControlMap = null) {
-		$this->siZone = new SiZone($this->gui->getSiGui(), $title, $this->zoneGuiControlMap?->getSiControls() ?? []);
+	function __construct(private Gui $gui, string $title = null, array $siBreadcrumbs = [], private ?GuiControlMap $zoneGuiControlMap = null) {
+		$this->siZone = new SiZone($this->gui->getSiGui(), $title, $siBreadcrumbs, $this->zoneGuiControlMap?->getSiControls() ?? []);
 	}
 
 	function getSiZone(): SiZone {

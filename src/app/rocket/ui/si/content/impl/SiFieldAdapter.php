@@ -29,7 +29,7 @@ use rocket\ui\si\content\BackableSiField;
 abstract class SiFieldAdapter implements SiField, BackableSiField {
 //	use SiFieldErrorTrait;
 
-	private ?SiFieldModel $model;
+	private ?SiFieldModel $model = null;
 
 	function setModel(?SiFieldModel $model): static {
 		$this->model = $model;

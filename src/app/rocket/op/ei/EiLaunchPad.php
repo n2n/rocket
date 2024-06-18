@@ -121,7 +121,7 @@ class EiLaunchPad implements LaunchPad {
 	 * {@inheritDoc}
 	 * @see \rocket\op\launch\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
 	 */
-	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
+	public function lookupController(N2nContext $n2nContext/*, ControllerContext $delegateControllerContext*/): Controller {
 		$manageState = $n2nContext->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		$loginContext = $n2nContext->lookup(LoginContext::class);

@@ -35,7 +35,7 @@ interface LaunchPad {
 	
 	public function determinePathExt(N2nContext $n2nContext);
 	
-	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller;
+	public function lookupController(N2nContext $n2nContext): Controller;
 	
 	public function approveTransaction(N2nContext $n2nContext): TransactionApproveAttempt;
 

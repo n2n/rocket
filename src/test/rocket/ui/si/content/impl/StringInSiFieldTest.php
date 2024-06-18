@@ -11,23 +11,21 @@ use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\si\content\SiEntryQualifier;
 use n2n\core\container\N2nContext;
+use n2n\util\type\attrs\AttributesException;
 
 class StringInSiFieldTest extends TestCase {
 
+	function testHandleInput(): void {
+		$siField = SiFields::stringIn('holeradio1');
 
-	/**
-	 * @throws CorruptedSiInputDataException
-	 */
-	function testWithoutModel(): void {
-		$siField = SiFields::stringIn('holeradio');
+		$this->assertEquals('holeradio1', $siField->getValue());
 
-		$siMaskIdentifier = new SiMaskIdentifier('mask-id', 'type-id');
-		$siEntryIndentifier  = new SiEntryIdentifier($siMaskIdentifier, 1);
-		$siEntryQualifier = new SiEntryQualifier($siMaskIdentifier, 1, 'holeradio');
+		$siField->handleInput(['value' => 'holeradio2'], $this->createMock(N2nContext::class));
 
-		$siEntry = new SiEntry($siEntryQualifier);
-		$siEntry->putField('holeradio', $siField);
+		$this->assertEquals('holeradio2', $siField->getValue());
+	}
 
-		$siEntry->handleEntryInput(new SiEntryInput($siEntryIndentifier), $this->createMock(N2nContext::class));
+	function testTypeAndData(): void {
+		// TODO
 	}
 }

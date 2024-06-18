@@ -40,6 +40,8 @@ use n2n\l10n\Lstr;
 use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\manage\api\ApiController;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\ui\gui\control\GuiControlMap;
+use rocket\ui\gui\control\GuiControlPath;
 
 class EiGuiDefinition {
 
@@ -436,9 +438,8 @@ class EiGuiDefinition {
 
 			foreach ($this->extractGeneralGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $generalGuiControl) {
 				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $generalGuiControl->getId()]);
-				$apiControlCallId = ApiControlCallId::create($this->eiMask, $guiControlPath);
 
-				$guiControlsMap->putGuiControl($guiControlPath, $generalGuiControl, $apiControlCallId, $apiUrl);
+				$guiControlsMap->putGuiControl($guiControlPath, $generalGuiControl);
 			}
 		}
 

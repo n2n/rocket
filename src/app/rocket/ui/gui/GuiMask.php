@@ -15,14 +15,13 @@ use rocket\op\ei\EiPropPath;
 use rocket\ui\si\meta\SiProp;
 use rocket\ui\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
-use rocket\ui\si\meta\SiMask;
 use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
-use use rocket\ui\gui\control\GuiControlsMap;;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\op\ei\manage\gui\DisplayDefinition;
 use rocket\op\ei\manage\gui\EiGuiException;
 use rocket\op\ei\manage\gui\EiGuiField;
+use rocket\ui\gui\control\GuiControlMap;
 
 /**
  * @author andreas
@@ -124,6 +123,7 @@ class GuiMask {
 
 		return new SiMask(
 				$this->createSiMask($n2nLocale),
+				$this->createSiProps($n2nLocale),
 				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
 	}
 	

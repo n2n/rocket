@@ -4,16 +4,11 @@ namespace rocket\impl\ei\manage\gui;
 
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
-use rocket\ui\gui\EiGuiValueBoundary;
-use rocket\ui\gui\EiGuiDeclaration;
 use rocket\ui\si\input\SiInput;
 use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\op\ei\manage\frame\EiFrame;
-use rocket\ui\gui\control\ZoneGuiControlsMap;
-use use rocket\ui\gui\control\GuiControlsMap;;
 use rocket\ui\si\control\SiCallResponse;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\gui\GuiValueBoundary;
@@ -41,7 +36,7 @@ class BulkyGui implements Gui {
 				$this->guiValueBoundary->getSiValueBoundary());
 		$this->siGui->setEntryControlsIncluded($this->entrySiControlsIncluded);
 		$siControls = $this->generalGuiControlMap?->getGuiControls() ?? [];
-		$this->siGui->setControls(array_merge($this->zoneGuiControlsMap->createSiControls(), $siControls));
+		$this->siGui->setControls($siControls);
 	}
 
 	function getInputSiValueBoundaries(): array {
@@ -91,13 +86,7 @@ class BulkyGui implements Gui {
 
 
 	function getSiGui(): SiGui {
-		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
-
-
-
-
-
-		return $siGui;
+		return $this->siGui;
 	}
 
 }

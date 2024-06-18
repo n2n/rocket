@@ -14,7 +14,7 @@ use rocket\ui\si\input\SiInputResult;
 
 class SiZone implements JsonSerializable {
 
-	function __construct(private SiGui $gui, private array $breadcrumbs, private string $title, private array $controls = []) {
+	function __construct(private SiGui $gui, private ?string $title, private array $breadcrumbs, private array $controls = []) {
 		ArgUtils::valArray($this->breadcrumbs, SiBreadcrumb::class);
 		ArgUtils::valArray($this->controls, SiControl::class);
 	}

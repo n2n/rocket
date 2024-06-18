@@ -48,9 +48,7 @@ interface SiField {
 	/**
 	 * @param array $data
 	 * @throws IllegalStateException if readonly ({@see self::isReadyOnly()} returns true).
-	 * @throws InvalidArgumentException if data is corrupt
-	 * @throws AttributesException if data is corrupt
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiInputDataExceptionif data is corrupt
 	 */
 	function handleInput(array $data, N2nContext $n2nContext): bool;
 

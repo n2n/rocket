@@ -79,7 +79,7 @@ class CustomLaunchPad implements LaunchPad {
 	 * {@inheritDoc}
 	 * @see \rocket\op\launch\LaunchPad::lookupController($n2nContext, $delegateControllerContext)
 	 */
-	public function lookupController(N2nContext $n2nContext, ControllerContext $delegateControllerContext): Controller {
+	public function lookupController(N2nContext $n2nContext): Controller {
 		return $n2nContext->lookup($this->customSpec->getControllerLookupId());
 	}
 	

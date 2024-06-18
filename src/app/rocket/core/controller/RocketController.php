@@ -156,7 +156,7 @@ class RocketController extends ControllerAdapter {
 		$delegateControllerContext = $this->createDelegateContext();
 		$delegateControllerContext->setController($launchPad->lookupController($this->getN2nContext(), 
 				$delegateControllerContext));
-		
+
 		$this->delegateToControllerContext($delegateControllerContext);
 		
 		$transactionApproveAttempt = $launchPad->approveTransaction($this->getN2nContext());

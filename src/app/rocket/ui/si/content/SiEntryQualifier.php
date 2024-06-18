@@ -28,16 +28,20 @@ use rocket\ui\si\meta\SiMaskIdentifier;
 class SiEntryQualifier implements \JsonSerializable {
 	private SiEntryIdentifier $identifier;
 	
-	function __construct(private SiMaskIdentifier $maskIdentifier, ?string $id, string $idName = null) {
+	function __construct(private SiMaskIdentifier $maskIdentifier, ?string $id, private ?string $idName = null) {
 		$this->maskIdentifier = $maskIdentifier;
 		$this->identifier = new SiEntryIdentifier($maskIdentifier, $id);
 	}
-	
+
 	/**
 	 * @return \rocket\ui\si\content\SiEntryIdentifier
 	 */
 	function getIdentifier() {
 		return $this->identifier;
+	}
+
+	function getIdName(): ?string {
+		return $this->idName;
 	}
 
 	function jsonSerialize(): mixed {

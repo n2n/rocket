@@ -124,10 +124,10 @@ class EiGuiDeclaration {
 //	}
 
 	function createSiDeclaration(N2nLocale $n2nLocale): SiDeclaration {
-		$siDeclaration = new SiDeclaration(ViewMode::createSiStyle($this->viewMode));
+		$siDeclaration = new SiDeclaration(/*ViewMode::createSiStyle($this->viewMode)*/);
 		
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
-			$siDeclaration->addMaskDeclaration($eiGuiMaskDeclaration->createSiMaskDeclaration($n2nLocale));
+			$siDeclaration->addMask($eiGuiMaskDeclaration->createSiMaskDeclaration($n2nLocale));
 		}
 		
 		return $siDeclaration;

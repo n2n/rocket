@@ -7,6 +7,7 @@ use testmdl\bo\SortTestObj;
 use testmdl\bo\QuickSearchTestObj;
 use testmdl\relation\bo\IntegratedSrcTestObj;
 use testmdl\relation\bo\IntegratedTargetTestObj;
+use testmdl\string\bo\StringTestObj;
 
 class TestMdlTestEnv {
 	static function setUpSortTestObj(?string $holeradio, ?int $num): SortTestObj {
@@ -33,6 +34,14 @@ class TestMdlTestEnv {
 		$obj = new IntegratedSrcTestObj();
 		$obj->targetTestObj = new IntegratedTargetTestObj();
 		$obj->targetTestObj->dingsel = 'hoi';
+
+		TestEnv::em()->persist($obj);
+
+		return $obj;
+	}
+
+	static function setUpStringTestObj(): StringTestObj {
+		$obj = new StringTestObj();
 
 		TestEnv::em()->persist($obj);
 
