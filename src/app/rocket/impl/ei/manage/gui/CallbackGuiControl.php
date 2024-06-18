@@ -42,17 +42,10 @@ use rocket\ui\gui\control\GuiControlMap;
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
 
-	function __construct(private string $id, private \Closure $callback, private SiButton $siButton) {
+	function __construct(private \Closure $callback, private SiButton $siButton) {
 
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ui\gui\control\GuiControl::getId()
-	 */
-	function getId(): string {
-		return $this->id;
-	}
+
 	
 	/**
 	 * {@inheritDoc}

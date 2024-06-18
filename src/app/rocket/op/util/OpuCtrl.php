@@ -43,6 +43,7 @@ use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\GuiZone;
 use rocket\ui\si\content\SiZoneCall;
+use n2n\web\http\StatusException;
 
 class OpuCtrl {
 
@@ -210,13 +211,17 @@ class OpuCtrl {
 			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
 		}
 
-		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
+		$zoneGuiControlsMap = new GuiControlMap();
+		foreach ($zoneGuiControls as $controlName => $guiControl) {
+			$zoneGuiControlsMap->putGuiControl($controlName, $guiControl);
+		}
 
 		$eiGui = new BulkyGui($eiFrame->createSiFrame(), $eiGuiDeclaration->createSiDeclaration($this->eiu->getN2nLocale()),
 				$guiValueBoundary, $guiControlsMap, $entrySiControlsIncluded);
 
 
-		$this->forwardGui($eiGui, current($guiValueBoundary->getGuiEntries())->getSiEntry()->getQualifier()->getIdName());
+		$this->forwardGui($eiGui, current($guiValueBoundary->getGuiEntries())->getSiEntry()->getQualifier()->getIdName(),
+				$zoneGuiControlsMap);
 	}
 
 	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
@@ -246,15 +251,14 @@ class OpuCtrl {
 	}
 
 	/**
-	 * @throws BadRequestException
+	 * @throws StatusException
 	 */
 	private function forwardGui(Gui $eiGui, string $title = null, GuiControlMap $zoneGuiControlMap = null): void {
-
 		$guiZone = new GuiZone($eiGui, $title, $this->opState->getBreadcrumbs(), $zoneGuiControlMap);
 		$siZone = $guiZone->getSiZone();
 		try {
 			$siZoneCall = SiZoneCall::fromCu($this->cu);
-			if ($siZoneCall !== null && null !== ($siResult = $siZone->handleSiZoneCall())) {
+			if ($siZoneCall !== null && null !== ($siResult = $siZone->handleSiZoneCall($siZoneCall, $this->cu->getN2nContext()))) {
 				$this->cu->sendJson($siResult);
 				return;
 			}

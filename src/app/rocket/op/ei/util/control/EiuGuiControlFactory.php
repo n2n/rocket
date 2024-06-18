@@ -63,8 +63,8 @@ class EiuGuiControlFactory {
 	 * @param \Closure $callback
 	 * @return CallbackGuiControl
 	 */
-	public function newCallback(string $id, SiButton $siButton, \Closure $callback): CallbackGuiControl {
-		return GuiControls::callback($id, $siButton, $callback);
+	public function newCallback(SiButton $siButton, \Closure $callback): CallbackGuiControl {
+		return GuiControls::callback($siButton, $callback);
 	}
 	
 	/**

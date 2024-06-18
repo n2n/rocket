@@ -24,7 +24,7 @@ namespace rocket\ui\si\content\impl;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 
-abstract class OutSiFieldAdapter extends  SiFieldAdapter {
+abstract class OutSiFieldAdapter extends SiFieldAdapter {
 
 	/**
 	 * {@inheritDoc}

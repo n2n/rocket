@@ -78,7 +78,9 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 	}
 
 	function createOutGuiField(Eiu $eiu): BackableGuiField  {
-		return GuiFields::out(SiFields::stringOut($eiu->field()->getValue())->setMultiline($this->isMultiline()));
+		return GuiFields::out(SiFields
+				::stringOut($this->marshalValue($eiu->field()->getValue(), $eiu)->get())
+				->setMultiline($this->isMultiline()));
 	}
 
 	private function marshalValue(null|string|StringValueObject $value, Eiu $eiu): TaskResult {

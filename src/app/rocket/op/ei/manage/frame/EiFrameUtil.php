@@ -43,6 +43,8 @@ use ReflectionClass;
 use rocket\ui\gui\GuiEntry;
 use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
+use rocket\op\ei\manage\entry\ValidationResult;
+use rocket\ui\gui\GuiValueBoundary;
 
 class EiFrameUtil {
 	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
@@ -224,13 +226,13 @@ class EiFrameUtil {
 	 * @return EiGuiDeclaration
 	 */
 	function createEiGuiDeclaration(EiMask $eiMask, bool $bulky, bool $readOnly, array $defPropPaths = null): EiGuiDeclaration {
-		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+		$viewMode = ViewMode::determine($bulky, $readOnly, false);
 
 		return $this->eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 	}
 
 	function createEiGuiValueBoundaryFromEiObject(EiObject $eiObject, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
-			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): EiGuiValueBoundary {
+			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): GuiValueBoundary {
 		return $this->createEiGuiValueBoundaryFromEiEntry($this->eiFrame->createEiEntry($eiObject), $bulky, $readOnly,
 				$entryGuiControlsIncluded, $eiTypeId, $defPropPaths, $treeLevel);
 	}
@@ -245,7 +247,7 @@ class EiFrameUtil {
 	}
 
 	function createEiGuiValueBoundaryFromEiEntry(EiEntry $eiEntry, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
-			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): EiGuiValueBoundary {
+			?string $eiTypeId, ?array $defPropPaths, ?int $treeLevel): GuiValueBoundary {
 		$viewMode = ViewMode::determine($bulky, $readOnly, $eiEntry->isNew());
 
 		$eiMask = $this->determineEiMask($eiEntry, $eiTypeId);
@@ -254,7 +256,7 @@ class EiFrameUtil {
 
 		$eiGuiDeclaration = $eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 		$eiGuiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
-		$eiGuiValueBoundary->selectEiGuiEntryByEiMaskId((string) $eiMask->getEiTypePath());
+		$eiGuiValueBoundary->selectGuiEntryByMaskId($eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createSiMaskIdentifier()->getId());
 		return $eiGuiValueBoundary;
 	}
 

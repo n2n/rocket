@@ -9,7 +9,8 @@ class GuiZone {
 	private SiZone $siZone;
 
 	function __construct(private Gui $gui, string $title = null, array $siBreadcrumbs = [], private ?GuiControlMap $zoneGuiControlMap = null) {
-		$this->siZone = new SiZone($this->gui->getSiGui(), $title, $siBreadcrumbs, $this->zoneGuiControlMap?->getSiControls() ?? []);
+		$this->siZone = new SiZone($this->gui->getSiGui(), $title, $siBreadcrumbs,
+				array_map(fn ($c) => $c->getSiControl(), $this->zoneGuiControlMap?->getGuiControls() ?? []));
 	}
 
 	function getSiZone(): SiZone {

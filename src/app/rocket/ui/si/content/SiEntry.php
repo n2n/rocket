@@ -165,8 +165,7 @@ class SiEntry implements \JsonSerializable {
 			$field->flush($n2nContext);
 		}
 
-		$this->model?->handleInput($n2nContext);
-		return true;
+		return $this->model?->handleInput($n2nContext) ?? true;
 	}
 	
 	function jsonSerialize(): mixed {

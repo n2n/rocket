@@ -33,12 +33,7 @@ class SiValueBoundary implements \JsonSerializable {
 	private $selectedMaskId = null;
 	private $entries = [];
 	private $treeLevel;
-	private $style;
 
-	/**
-	 * @param SiEntryIdentifier $identifier
-	 * @param SiStyle $style
-	 */
 	function __construct() {
 	}
 
@@ -103,7 +98,6 @@ class SiValueBoundary implements \JsonSerializable {
 		return [
 //			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
-			'style' => $this->style,
 			'entries' => $entries,
 			'selectedMaskId' => $this->selectedMaskId
 		];
@@ -122,8 +116,7 @@ class SiValueBoundary implements \JsonSerializable {
 			throw new CorruptedSiInputDataException('Invalid type id: ' . $typeId, 0, $e);
 		}
 		
-		$this->getSelectedEntry()->handleEntryInput($entryInput, $n2nContext);
-		return true;
+		return $this->getSelectedEntry()->handleEntryInput($entryInput, $n2nContext);
 	}
 	
 }

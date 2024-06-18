@@ -19,32 +19,34 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content;
+namespace rocket\ui\si\input;
 
-use rocket\ui\si\input\SiInput;
-use rocket\ui\si\input\SiInputError;
-use rocket\ui\si\input\CorruptedSiInputDataException;
-use n2n\core\container\N2nContext;
-use rocket\ui\si\input\SiInputResult;
 
-interface SiGui {
-	
-	/**
-	 * @return string
-	 */
-	function getTypeName(): string;
-	
-	
-	/**
-	 * @return array
-	 */
-	function getData(): array;
+use n2n\util\type\ArgUtils;
+use rocket\ui\si\content\SiValueBoundary;
 
-	/**
-	 * @param SiInput $siInput
-	 * @param N2nContext $n2nContext
-	 * @return SiInputResult
-	 * @throws CorruptedSiInputDataException
-	 */
-	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult;
+class SiInputResult {
+	private function __construct(private readonly ?array $valueBoundaries, private readonly ?SiInputError $siInputError) {
+		ArgUtils::valArray($this->valueBoundaries, SiValueBoundary::class, true);
+	}
+
+	function isValid(): bool {
+		return $this->siInputError === null;
+	}
+
+	function getValueBoundaries(): ?array {
+		return $this->valueBoundaries;
+	}
+
+	function getInputError(): ?SiInputError {
+		return $this->siInputError;
+	}
+
+	static function valid(array $valueBoundaries): SiInputResult {
+		return new SiInputResult($valueBoundaries, null);
+	}
+
+	static function error(SiInputError $siInputError): SiInputResult {
+		return new SiInputResult(null, $siInputError);
+	}
 }

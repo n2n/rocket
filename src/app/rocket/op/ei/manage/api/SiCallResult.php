@@ -21,9 +21,9 @@
  */
 namespace rocket\op\ei\manage\api;
 
-use rocket\si\input\SiInputError;
 use rocket\ui\si\control\SiCallResponse;
-use rocket\si\input\SiInputResult;
+use rocket\ui\si\input\SiInputResult;
+use rocket\ui\si\input\SiInputError;
 
 class SiCallResult implements \JsonSerializable {
 	private $inputError;
@@ -52,7 +52,7 @@ class SiCallResult implements \JsonSerializable {
 	 * @param SiCallResponse $callResponse
 	 * @return \rocket\op\ei\manage\api\SiCallResult
 	 */
-	static function fromCallResponse(SiCallResponse $callResponse, ?SiInputResult $inputResult) {
+	static function fromCallResponse(SiCallResponse $callResponse, ?\rocket\ui\si\input\SiInputResult $inputResult) {
 		return new SiCallResult(null, $callResponse, $inputResult);
 	}
 	

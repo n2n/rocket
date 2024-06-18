@@ -53,8 +53,8 @@ class GuiControls {
 	 * @param Closure $callback
 	 * @return CallbackGuiControl
 	 */
-	static function callback(string $id, SiButton $siButton, Closure $callback) {
-		return new CallbackGuiControl($id, $callback, $siButton);
+	static function callback(SiButton $siButton, Closure $callback) {
+		return new CallbackGuiControl($callback, $siButton);
 	}
 
 	/**

@@ -142,6 +142,7 @@ class EiGuiEntryFactory {
 		}
 
 		$guiEntry = new GuiEntry(new SiEntryQualifier($eiGuiMaskDeclaration->createSiMaskIdentifier(), $pid, $idName));
+		$guiEntry->setModel($eiEntry);
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($eiGuiMaskDeclaration->getEiPropPaths() as $eiPropPath) {

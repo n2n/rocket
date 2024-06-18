@@ -11,6 +11,7 @@ use rocket\ui\si\content\SiZoneCall;
 use rocket\op\ei\manage\api\SiCallResult;
 use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\input\SiInputResult;
+use n2n\core\container\N2nContext;
 
 class SiZone implements JsonSerializable {
 
@@ -22,25 +23,24 @@ class SiZone implements JsonSerializable {
 	/**
 	 * @throws CorruptedSiInputDataException
 	 */
-	function handleSiZoneCall(SiZoneCall $siZoneCall): SiCallResult {
+	function handleSiZoneCall(SiZoneCall $siZoneCall, N2nContext $n2nContext): SiCallResult {
 		$siInputResult = null;
 
 		if (null !== ($siInput = $siZoneCall->getInput())) {
-			if (null !== ($siInputError = $this->gui->handleSiInput($siInput))) {
-				return SiCallResult::fromInputError($siInputError);
+			$siInputResult = $this->gui->handleSiInput($siInput, $n2nContext);
+			if (!$siInputResult->isValid()) {
+				return SiCallResult::fromInputError($siInputResult->getInputError());
 			}
-
-			$siInputResult = new SiInputResult($this->gui->getInputSiValueBoundaries());
 		}
 
-		$controlName = $siZoneCall->getControlName();
+		$controlName = $siZoneCall->getZoneControlName();
 		if (!isset($this->controls[$controlName])) {
 			throw new CorruptedSiInputDataException('Could not find SiControl with name: '
 					. $controlName);
 		}
 
 		return SiCallResult::fromCallResponse(
-				$this->controls[$controlName]->handleCall(),
+				$this->controls[$controlName]->handleCall($n2nContext),
 				$siInputResult);
 	}
 

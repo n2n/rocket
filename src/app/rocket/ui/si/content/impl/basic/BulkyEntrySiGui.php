@@ -33,6 +33,8 @@ use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\ui\si\input\SiInputError;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\input\SiInput;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\input\SiInputResult;
 
 class BulkyEntrySiGui implements SiGui {
 
@@ -96,18 +98,18 @@ class BulkyEntrySiGui implements SiGui {
 	}
 
 
-	function handleSiInput(SiInput $siInput): ?SiInputError {
+	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult {
 		$entryInputs = $siInput->getEntryInputs();
 		if (count($entryInputs) > 1) {
 			throw new CorruptedSiInputDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
 		}
 
 		foreach ($entryInputs as $siEntryInput) {
-			if ($this->valueBoundary->handleEntryInput($siEntryInput)) {
-				return null;
+			if ($this->valueBoundary->handleEntryInput($siEntryInput, $n2nContext)) {
+				return SiInputResult::valid([$this->valueBoundary]);
 			}
 
-			return new SiInputError([$this->valueBoundary]);
+			return SiInputResult::error(new SiInputError([$this->valueBoundary]));
 		}
 	}
 

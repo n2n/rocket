@@ -43,8 +43,12 @@ class TestMdlTestEnv {
 	static function setUpStringTestObj(): StringTestObj {
 		$obj = new StringTestObj();
 
-		TestEnv::em()->persist($obj);
+		TestEnv::tem()->persist($obj);
 
 		return $obj;
+	}
+
+	static function findStringTestObj(int $id): ?StringTestObj {
+		return TestEnv::tem()->find(StringTestObj::class, $id);
 	}
 }

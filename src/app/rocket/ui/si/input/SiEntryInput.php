@@ -26,8 +26,9 @@ use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\content\SiValueBoundary;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\AttributesException;
+use PHPUnit\Util\Json;
 
-class SiEntryInput {
+class SiEntryInput implements \JsonSerializable {
 
 	private array $fieldInputs = [];
 
@@ -91,24 +92,30 @@ class SiEntryInput {
 	 * @return SiEntryInput
 	 * @throws CorruptedSiInputDataException
 	 */
-	static function parse(array $data) {
+	static function parse(array $data): SiEntryInput {
 		$dataSet = new DataSet($data);
 		
 		try {
-			$siEntryInput = new SiEntryInput(SiEntryIdentifier::parse($dataSet->reqArray('identifier')),
-					$dataSet->reqString('maskId'), $dataSet->reqBool('bulky'));
+			$siEntryInput = new SiEntryInput(SiEntryIdentifier::parse($dataSet->reqArray('identifier')));
 			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $propId => $fielData) {
-				$siEntryInput->putFieldInput($propId, new \rocket\si\input\SiFieldInput($fielData));
+				$siEntryInput->putFieldInput($propId, SiFieldInput::parse($fielData));
 			}
 			return $siEntryInput;
 		} catch (AttributesException $e) {
 			throw new CorruptedSiInputDataException($e->getMessage(), 0, $e);
 		}
 	}
+
+	public function jsonSerialize(): mixed {
+		return [
+			'identifier' => $this->identifier,
+			'fieldInputMap' => $this->fieldInputs
+		];
+	}
 }
 
 
-class SiFieldInput {
+class SiFieldInput implements \JsonSerializable {
 	private $data;
 	
 	/**
@@ -121,11 +128,29 @@ class SiFieldInput {
 	/**
 	 * @return array
 	 */
-	function getData() {
+	function getData(): array {
 		return $this->data;
 	}
-}
 
+	function jsonSerialize(): mixed {
+		return [
+			'data' => $this->data
+		];
+	}
+
+	/**
+	 * @throws CorruptedSiInputDataException
+	 */
+	static function parse(array $data): SiFieldInput {
+		$dataSet = new DataSet($data);
+
+		try {
+			return new SiFieldInput($dataSet->reqArray('data'));
+		} catch (AttributesException $e) {
+			throw new CorruptedSiInputDataException($e->getMessage(), 0, $e);
+		}
+	}
+}
 
 class SiInputError implements \JsonSerializable {
 	
@@ -135,6 +160,10 @@ class SiInputError implements \JsonSerializable {
 	function __construct(private readonly array $valueBoundaries) {
 		ArgUtils::valArray($valueBoundaries, SiValueBoundary::class);
 	}
+
+	function getValueBoundaries(): array {
+		return $this->valueBoundaries;
+	}
 	
 	function jsonSerialize(): mixed {
 		return [
@@ -143,21 +172,6 @@ class SiInputError implements \JsonSerializable {
 	}
 }
 
-class SiInputResult implements \JsonSerializable {
-
-	/**
-	 * @param SiValueBoundary[] $valueBoundaries
-	 */
-	function __construct(private array $valueBoundaries) {
-		ArgUtils::valArray($valueBoundaries, SiValueBoundary::class);
-	}
-	
-	function jsonSerialize(): mixed {
-		return [
-			'siValueBoundary' => $this->valueBoundaries
-		];
-	}
-}
 
 // class SiEntryError implements \JsonSerializable {
 // 	// 	/**

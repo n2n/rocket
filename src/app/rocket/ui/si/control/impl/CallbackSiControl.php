@@ -53,7 +53,7 @@ class CallbackSiControl implements SiControl {
 	function handleCall(N2nContext $n2nContext): SiCallResponse {
 		$mmi = new MagicMethodInvoker($n2nContext);
 		$mmi->setClosure($this->closure);
-		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(SiCallResponse::class, false));
-		return $mmi->invoke();
+		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(SiCallResponse::class, true));
+		return $mmi->invoke() ?? new SiCallResponse();
 	}
 }

@@ -53,7 +53,7 @@ class EditController extends ControllerAdapter {
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_edit_label'));
 		
 // 		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
-		
+
 		$this->opuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false,
 				$this->createControls($eiuEntry));
 	}
@@ -63,20 +63,22 @@ class EditController extends ControllerAdapter {
 		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [
-			$eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY,
-					SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE),
-					function () use ($eiuEntry) {
-						$eiuEntry->save();
-					})
+			self::CONTROL_SAVE_KEY => $eiuControlFactory
+					->newCallback(
+							SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE),
+							function () use ($eiuEntry) {
+								IllegalStateException::assertTrue($eiuEntry->save(), 'EiuEntry to save not valid.');
+							})
 					->setInputHandled(true),
-			$eiuControlFactory->newCallback(self::CONTROL_SAVE_AND_BACK_KEY,
-					SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::ICON_SAVE),
-					function () use ($eiuEntry) {
-						$eiuEntry->save();
-						return $this->opuCtrl->eiu()->f()->newControlResponse()->redirectBack();
-					})
+			self::CONTROL_SAVE_AND_BACK_KEY => $eiuControlFactory
+					->newCallback(
+							SiButton::primary($dtc->t('common_save_and_back_label'), SiIconType::ICON_SAVE),
+							function () use ($eiuEntry) {
+								$eiuEntry->save();
+								return $this->opuCtrl->eiu()->f()->newControlResponse()->redirectBack();
+							})
 					->setInputHandled(true),
-			$eiuControlFactory->newCallback(self::CONTROL_CANCEL_KEY,
+			self::CONTROL_CANCEL_KEY => $eiuControlFactory->newCallback(
 					SiButton::primary($dtc->t('common_cancel_label'), SiIconType::ICON_ARROW_LEFT),
 					function (Eiu $eiu) {
 						return $eiu->factory()->newControlResponse()->redirectBack();

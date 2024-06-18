@@ -8,10 +8,12 @@ use rocket\ui\si\input\SiInput;
 use rocket\ui\si\input\SiInputFactory;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\si\input\CorruptedSiInputDataException;
+use n2n\web\http\StatusException;
+use n2n\web\http\BadRequestException;
 
-class SiZoneCall {
+class SiZoneCall implements \JsonSerializable {
 
-	function __construct(private ?SiInput $input, private string $controlName) {
+	function __construct(private ?SiInput $input, private string $zoneControlName) {
 
 	}
 
@@ -19,26 +21,44 @@ class SiZoneCall {
 		return $this->input;
 	}
 
-	function getControlName(): string {
-		return $this->controlName;
+	function getZoneControlName(): string {
+		return $this->zoneControlName;
 	}
 
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws StatusException
 	 */
 	static function fromCu(ControllingUtils $cu): ?SiZoneCall {
-		$apiCallIdParam = $cu->getParamPost('zoneControlName');
-		if (!($cu->getRequest()->getMethod() === Method::POST && null !== $apiCallIdParam)) {
+		if (!($cu->getRequest()->getMethod() === Method::POST)) {
 			return null;
 		}
 
-		$siInput = null;
-		if (null !== ($entryInputMapsParam = $this->cu->getParamPost('entryInputMaps'))) {
-			$siInput = (new SiInputFactory())->create($entryInputMapsParam->parseJson());
+		$param = $cu->getParamPost('si-zone-call');
+		if ($param === null) {
+			return null;
 		}
 
-		return new SiZoneCall($siInput, $guiControlPath);
+		$httpData = $param->parseJsonToHttpData();
+		$zoneControlName = $httpData->reqString('zoneControlName');
+
+
+		$siInput = null;
+		if (null !== ($entryInputMapsData = $httpData->optArray('entryInputMaps'))) {
+			try {
+				$siInput = (new SiInputFactory())->create($entryInputMapsData);
+			} catch (CorruptedSiInputDataException $e) {
+				throw new BadRequestException(previous: $e);
+			}
+		}
+
+		return new SiZoneCall($siInput, $zoneControlName);
 	}
 
+	public function jsonSerialize(): mixed {
+		return [
+			'zoneControlName' => $this->zoneControlName,
+			'entryInputMaps' => $this->input?->getEntryInputs()
+		];
+	}
 }

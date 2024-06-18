@@ -28,19 +28,29 @@ use rocket\op\ei\util\entry\EiuObject;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\manage\LiveEiObject;
 use rocket\op\ei\manage\EiEntityObj;
+use rocket\ui\si\content\SiZoneCall;
+use rocket\ui\si\input\SiInput;
+use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\content\SiEntryIdentifier;
+use rocket\op\ei\mask\EiMask;
+use rocket\ui\gui\ViewMode;
+use rocket\ui\si\content\SiEntryQualifier;
+use rocket\ui\si\input\SiFieldInput;
+use testmdl\string\bo\StrObjMock;
 
 class EditControllerTest extends TestCase {
 
 
 	private Spec $spec;
+	private EiMask $eiMask;
 	private int $rocketUserId;
 	private int $stringTestObjId;
 
 	function setUp(): void {
 		GeneralTestEnv::teardown();
 		$this->spec = SpecTestEnv::setUpSpec([StringTestObj::class]);
-		$eiMask = $this->spec->getEiTypeByClassName(StringTestObj::class)->getEiMask();
-		$this->spec->addLaunchPad(new EiLaunchPad('launch-id', fn () => $eiMask));
+		$this->eiMask = $this->spec->getEiTypeByClassName(StringTestObj::class)->getEiMask();
+		$this->spec->addLaunchPad(new EiLaunchPad('launch-id', fn () => $this->eiMask));
 
 
 		$tx = TestEnv::createTransaction();
@@ -56,13 +66,52 @@ class EditControllerTest extends TestCase {
 	/**
 	 * @throws StatusException
 	 */
-	function testHoleradio(): void {
+	function testGet(): void {
 		$result = TestEnv::http()->newRequest()->get('/admin/manage/launch-id/cmd/eecn-0/' . $this->stringTestObjId)
-				->inject(function (Rocket $rocket, LoginContext $loginContext) {
+				->inject(function(Rocket $rocket, LoginContext $loginContext) {
 					$rocket->setSpec($this->spec);
 					$loginContext->loginByUserId($this->rocketUserId);
 				})
 				->exec();
+
+		$jsonData = $result->parseJson();
+
+		$this->assertEquals('bulky-entry', $jsonData['gui']['type']);
+
+	}
+
+	/**
+	 * @throws StatusException
+	 */
+	function testHandleSaveCall(): void {
+
+		$eiGuiMaskDeclaration = $this->eiMask->getEiEngine()
+				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null);
+
+		$siInput = new SiInput();
+		$siEntryIdentifier = new SiEntryIdentifier($eiGuiMaskDeclaration->createSiMaskIdentifier(), $this->stringTestObjId);
+		$siEntryInput = new SiEntryInput($siEntryIdentifier);
+		$siEntryInput->putFieldInput('annoHoleradio', new SiFieldInput(['value' => 'new-value']));
+		$siEntryInput->putFieldInput('annoHoleradioObj', new SiFieldInput(['value' => 'nv']));
+		$siInput->putEntryInput('0', $siEntryInput);
+
+
+		$result = TestEnv::http()->newRequest()->post(
+					'/admin/manage/launch-id/cmd/eecn-0/' . $this->stringTestObjId,
+							['si-zone-call' => json_encode(new SiZoneCall($siInput, EditController::CONTROL_SAVE_KEY))])
+				->inject(function(Rocket $rocket, LoginContext $loginContext) {
+					$rocket->setSpec($this->spec);
+					$loginContext->loginByUserId($this->rocketUserId);
+				})
+				->exec();
+
+		$this->assertNull($result->parseJson()['inputError']);
+
+		$tx = TestEnv::createTransaction(true);
+		$this->assertEquals('new-value', TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->annoHoleradio);
+		$this->assertEquals(new StrObjMock('nv'), TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->annoHoleradioObj);
+		$tx->commit();
+	}
 
 //
 //		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
@@ -79,5 +128,5 @@ class EditControllerTest extends TestCase {
 //
 //		$editController = new EditController();
 //		$entries = $siGetResponse->getPartialContent()->getValueBoundaries();
-	}
+
 }
