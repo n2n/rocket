@@ -168,18 +168,18 @@ class GetInstructionProcess {
 		$siPartialContent->setValueBoundaries(
 				array_map(fn (EiGuiValueBoundary $b)
 						=> $b->createSiValueBoundary($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale()),
-				$rangeResult->eiGuiValueBoundaries));
+				$rangeResult->guiValueBoundaries));
 		$result->setPartialContent($siPartialContent);
 		
 		if ($this->instruction->areGeneralControlsIncluded()) {
-			$result->setGeneralControls($rangeResult->eiGuiDeclaration->createGeneralSiControls($this->eiFrameUtil->getEiFrame()));
+			$result->setGeneralControls($rangeResult->guiDeclaration->createGeneralSiControls($this->eiFrameUtil->getEiFrame()));
 		}
 		
 		if (!$this->instruction->isDeclarationRequested()) {
 			return $result;
 		}
 		
-		$result->setDeclaration($rangeResult->eiGuiDeclaration
+		$result->setDeclaration($rangeResult->guiDeclaration
 				->createSiDeclaration($this->eiFrameUtil->getEiFrame()->getN2nContext()->getN2nLocale()));
 		
 		return $result;

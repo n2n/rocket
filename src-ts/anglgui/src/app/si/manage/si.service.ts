@@ -15,7 +15,6 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { SiFrame, SiFrameApiSection } from '../model/meta/si-frame';
-import { SiStyle } from '../model/meta/si-view-mode';
 import { SiBuildTypes } from '../build/si-build-types';
 
 @Injectable({
@@ -61,13 +60,12 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string|SiFrame, style: SiStyle, apiCallId: object, input: SiInput|null): Observable<SiControlResult> {
+	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput|null): Observable<SiControlResult> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
 		}
 
 		const formData = new FormData();
-		formData.append('style', JSON.stringify(style));
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 
 		if (input) {
@@ -94,13 +92,12 @@ export class SiService {
 				}));
 	}
 
-	fieldCall(apiUrl: string|SiFrame, style: SiStyle, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+	fieldCall(apiUrl: string|SiFrame, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
 		}
 
 		const formData = new FormData();
-		formData.append('style', JSON.stringify(style));
 		formData.append('apiCallId', JSON.stringify(apiCallId));
 		formData.append('data', JSON.stringify(data));
 

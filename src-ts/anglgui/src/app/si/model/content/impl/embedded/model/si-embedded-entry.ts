@@ -33,7 +33,7 @@ export class SiEmbeddedEntry {
 	}
 
 	async paste(genericEmbeddedEntry: SiGenericEmbeddedEntry): Promise<boolean> {
-		const promise = this.comp.valueBoundary!.paste(genericEmbeddedEntry.genericEntry);
+		const promise = this.comp.valueBoundary!.paste(genericEmbeddedEntry.genericValueBoundary);
 		if (!await promise) {
 			return false;
 		}

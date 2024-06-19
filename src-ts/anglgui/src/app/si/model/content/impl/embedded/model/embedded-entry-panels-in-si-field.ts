@@ -57,7 +57,7 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter	{
 	createUiStructureModel(): UiStructureModel {
 		const panelAssemblies = this.panels.map((panel) => {
 			const obtainer = new EmbeddedEntryObtainer(this.siService, this.siModState,
-					this.frame, panel.reduced, panel.allowedTypeIds);
+					this.frame, panel.bulkyMaskId, panel.summaryMaskId, panel.allowedMaskIds);
 
 			const embeInCol = new EmbeInCollection(panel, panel);
 			embeInCol.readEmbes();
@@ -81,8 +81,8 @@ export class EmbeddedEntryPanelsInSiField extends SiFieldAdapter	{
 
 
 	private createGenericManager(panel: SiPanel): GenericEmbeddedEntryManager {
-		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.siModState, this.frame, this, panel.reduced,
-				panel.allowedTypeIds);
+		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.siModState, this.frame, this,
+				panel.bulkyMaskId, panel.summaryMaskId, panel.allowedMaskIds);
 	}
 
 	async copyValue(): Promise<SiGenericValue> {

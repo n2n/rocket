@@ -5,17 +5,15 @@ namespace rocket\impl\ei\manage\gui;
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use rocket\si\input\SiInputError;
 use rocket\ui\si\control\SiCallResponse;
 use rocket\ui\si\input\SiInput;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\ui\gui\EiGuiDeclaration;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\si\content\impl\basic\CompactExplorerSiGui;
-use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\ui\gui\control\GuiControlMap;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 
 class CompactExplorerGui implements Gui {
 

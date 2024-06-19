@@ -38,8 +38,8 @@ export class SiEntryFactory {
 		const extr = new Extractor(entryData);
 
 		const siValueBoundary = new SiValueBoundary(
-				// SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
-				SiMetaFactory.createStyle(extr.reqObject('style')));
+				/*SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
+				SiMetaFactory.createStyle(extr.reqObject('style'))*/);
 		siValueBoundary.treeLevel = extr.nullaNumber('treeLevel');
 
 		const controlBoundry = new SimpleSiControlBoundry([siValueBoundary], this.declaration);
@@ -55,13 +55,13 @@ export class SiEntryFactory {
 	private createEntry(maskId: string, data: any, controlBoundary: SiControlBoundry): SiEntry {
 		const extr = new Extractor(data);
 
-		const maskDeclaration = this.declaration.getMaskDeclarationByMaskId(maskId);
-		const entryQualifier = new SiEntryQualifier(maskDeclaration.mask.qualifier,
-				new SiEntryIdentifier(maskDeclaration.mask.qualifier.identifier.typeId, extr.nullaString('id')),
+		const mask = this.declaration.getMaskById(maskId);
+		const entryQualifier = new SiEntryQualifier(mask.qualifier,
+				new SiEntryIdentifier(mask.qualifier.identifier, extr.nullaString('id')),
 				extr.nullaString('idName'));
 
 		const entry = new SiEntry(entryQualifier);
-		entry.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundary, maskDeclaration.mask, this.injector)
+		entry.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundary, mask, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entry.controls = new SiControlFactory(controlBoundary, this.injector)
 				.createControls(extr.reqArray('controls'));

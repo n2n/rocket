@@ -137,8 +137,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.FILE_IN:
 			const fileInSiField = new FileInSiField(dataExtr.reqString('apiFieldUrl'),
-					this.controlBoundry.getBoundDeclaration().style, dataExtr.reqObject('apiCallId'),
-					SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
+					dataExtr.reqObject('apiCallId'), SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
 			fileInSiField.acceptedMimeTypes = dataExtr.reqStringArray('acceptedMimeTypes');
@@ -190,12 +189,13 @@ export class SiFieldFactory {
 					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
 					this.injector.get(TranslationService),
 					new SiBuildTypes.SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
-			embeddedEntryInSiField.config.reduced = dataExtr.reqBoolean('reduced');
+			embeddedEntryInSiField.config.bulkyMaskId = dataExtr.reqString('bulkyMaskId');
+			embeddedEntryInSiField.config.summaryMaskId = dataExtr.nullaString('summaryMaskId');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
 			embeddedEntryInSiField.config.max = dataExtr.nullaNumber('max');
 			embeddedEntryInSiField.config.nonNewRemovable = dataExtr.reqBoolean('nonNewRemovable');
 			embeddedEntryInSiField.config.sortable = dataExtr.reqBoolean('sortable');
-			embeddedEntryInSiField.config.allowedTypeIds = dataExtr.nullaArray('allowedSiTypeIds');
+			embeddedEntryInSiField.config.allowedMaskIds = dataExtr.nullaArray('allowedSiTypeIds');
 			embeddedEntryInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
 			return embeddedEntryInSiField;
@@ -329,7 +329,7 @@ export class SiFieldFactory {
 					apiGetUrl,
 					entryId: extr.nullaString('entryId'),
 					propIds: extr.nullaStringArray('propIds'),
-					style: SiMetaFactory.createStyle(extr.reqObject('style')),
+					maskId: extr.reqString('maskId'),
 					siControlBoundy: this.controlBoundry,
 					siService: this.injector.get(SiService)
 				}));

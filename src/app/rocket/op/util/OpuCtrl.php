@@ -136,8 +136,8 @@ class OpuCtrl {
 
 		$result = $eiFrameUtils->lookupEiGuiFromRange(0, $pageSize, false, true, $entryGuiControlsIncluded);
 
-		$eiGuiDeclaration = $result->eiGuiDeclaration;
-		$eiGuiValueBoundaries = $result->eiGuiValueBoundaries;
+		$eiGuiDeclaration = $result->guiDeclaration;
+		$guiValueBoundaries = $result->guiValueBoundaries;
 		$count = $eiFrameUtils->count();
 
 		$guiControlsMap = null;
@@ -147,7 +147,7 @@ class OpuCtrl {
 
 		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$eiGui = new CompactExplorerGui($eiFrame, $eiGuiDeclaration, $eiGuiValueBoundaries, $pageSize,
+		$eiGui = new CompactExplorerGui($eiFrame, $eiGuiDeclaration, $guiValueBoundaries, $pageSize,
 				$count, $guiControlsMap);
 
 		$this->forwardGui($eiGui,
@@ -192,6 +192,7 @@ class OpuCtrl {
 
 	/**
 	 * @throws BadRequestException
+	 * @throws StatusException
 	 */
 	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
 			bool $entrySiControlsIncluded = true, array $zoneGuiControls = []): void {

@@ -533,10 +533,10 @@ class EiGuiValueBoundaryResult {
 
 class RangeResult {
 	/**
-	 * @param EiGuiDeclaration $eiGuiDeclaration
-	 * @param array<EiGuiValueBoundary> $eiGuiValueBoundaries
+	 * @param EiGuiDeclaration $guiDeclaration
+	 * @param array<EiGuiValueBoundary> $guiValueBoundaries
 	 */
-	function __construct(public EiGuiDeclaration $eiGuiDeclaration, public readonly array $eiGuiValueBoundaries) {
-		ArgUtils::valArray($this->eiGuiValueBoundaries, EiGuiValueBoundary::class);
+	function __construct(public EiGuiDeclaration $guiDeclaration, public readonly array $guiValueBoundaries) {
+		ArgUtils::valArray($this->guiValueBoundaries, EiGuiValueBoundary::class);
 	}
 }

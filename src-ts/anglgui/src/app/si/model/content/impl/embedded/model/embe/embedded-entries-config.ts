@@ -3,10 +3,12 @@ export interface EmbeddedEntriesOutConfig {
 }
 
 
-export interface EmbeddedEntriesInConfig extends EmbeddedEntriesOutConfig {
+export interface EmbeddedEntriesInConfig {
+	bulkyMaskId: string;
+	summaryMaskId: string|null;
 	min: number;
 	max: number|null;
 	nonNewRemovable: boolean;
 	sortable: boolean;
-	allowedTypeIds: string[]|null;
+	allowedMaskIds: string[]|null;
 }

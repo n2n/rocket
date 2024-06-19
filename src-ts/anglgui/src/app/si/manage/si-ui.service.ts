@@ -123,16 +123,16 @@ export class SiUiService {
 		if (includeInput) {
 			input = new SiInput(controlBoundry.getBoundDeclaration());
 			for (const valueBoundary of controlBoundry.getBoundValueBoundaries()) {
-				if (valueBoundary.style.readOnly) {
-					continue;
-				}
+				// if (valueBoundary.style.readOnly) {
+				// 	continue;
+				// }
 
 				valueBoundaries.push(valueBoundary);
 				input.entryInputs.push(valueBoundary.readInput());
 			}
 		}
 
-		const obs = this.service.controlCall(apiUrl, controlBoundry.getBoundDeclaration().style, callId, input);
+		const obs = this.service.controlCall(apiUrl, callId, input);
 
 		const subject =	new Subject<void>();
 		obs.subscribe((result) => {

@@ -72,8 +72,8 @@ export class EmbeddedEntryPanelsOutSiField extends SiFieldAdapter	{
 
 
 	private createGenericManager(panel: SiPanel): GenericEmbeddedEntryManager {
-		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.siModState, this.frame, this, panel.reduced,
-				panel.allowedTypeIds);
+		return new GenericEmbeddedEntryManager(panel.values, this.siService, this.siModState, this.frame, this,
+				panel.bulkyMaskId, panel.summaryMaskId, panel.allowedMaskIds);
 	}
 
 	async copyValue(): Promise<SiGenericValue> {

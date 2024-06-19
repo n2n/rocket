@@ -211,7 +211,7 @@ class EiGuiMaskDeclaration {
 		return isset($this->defPropPaths[(string) $defPropPath]);
 	}
 
-	function createSiMaskDeclaration(N2nLocale $n2nLocale): SiMask {
+	function createSiMask(N2nLocale $n2nLocale): SiMask {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiMaskDeclaration has no GuiStructureDeclarations.');
 
@@ -360,13 +360,13 @@ class EiGuiMaskDeclaration {
 // 	}
 	
 // 	/**
-// 	 * @return \rocket\si\meta\SiMaskDeclaration
+// 	 * @return \rocket\si\meta\SiMask
 // 	 */
 // 	function createSiTypDeclaration() {
 // 		$siMaskQualifier = $this->guiDefinition->getEiMask()->createSiMaskQualifier($this->eiFrame->getN2nContext()->getN2nLocale());
 // 		$siType = new SiType($siMaskQualifier, $this->getSiProps());
 		
-// 		return new SiMaskDeclaration($siType, $this->createSiStructureDeclarations($this->guiStructureDeclarations)); 
+// 		return new SiMask($siType, $this->createSiStructureDeclarations($this->guiStructureDeclarations)); 
 // 	}
 	
 // 	/**

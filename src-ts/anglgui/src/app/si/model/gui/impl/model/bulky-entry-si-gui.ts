@@ -208,13 +208,13 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.asideUiContents = this.siValueBoundary.selectedEntry.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
 
-		const siMaskDeclaration = this.siDeclaration.getMaskDeclarationByMaskId(this.siValueBoundary!.selectedMaskId!);
+		const mask = this.siDeclaration.getMaskById(this.siValueBoundary!.selectedMaskId!);
 		const toolbarResolver = new ToolbarResolver();
 
-		this.uiStructureSubject.next(this.createStructures(siMaskDeclaration!.structureDeclarations!, toolbarResolver,
+		this.uiStructureSubject.next(this.createStructures(mask!.structureDeclarations!, toolbarResolver,
 				!this.isBoundStructureInsideGroup()));
 
-		for (const prop of siMaskDeclaration.mask.getProps()) {
+		for (const prop of mask.getProps()) {
 			if (prop.dependantPropIds.length > 0 && this.siValueBoundary.selectedEntry.containsPropId(prop.id)) {
 				toolbarResolver.fillContext(prop, this.siValueBoundary.selectedEntry.getFieldById(prop.id));
 			}

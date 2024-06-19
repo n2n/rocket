@@ -9,15 +9,15 @@ export class SiGenericEmbeddedEntryCollection {
 }
 
 export class SiGenericEmbeddedEntry {
-	constructor(public genericEntry: SiGenericValueBoundary, public summaryGenericEntry: SiGenericValueBoundary|null = null) {
+	constructor(public genericValueBoundary: SiGenericValueBoundary, public summaryGenericEntry: SiGenericValueBoundary|null = null) {
 	}
 
 	get selectedTypeId(): string|null {
-		return this.genericEntry.selectedTypeId;
+		return this.genericValueBoundary.selectedMaskId;
 	}
 
 	get entryQualifier(): SiEntryQualifier {
-		return this.genericEntry.entryQualifier;
+		return this.genericValueBoundary.selectedEntryQualifier;
 	}
 }
 

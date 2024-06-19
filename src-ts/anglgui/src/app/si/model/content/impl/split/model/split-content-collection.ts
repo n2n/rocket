@@ -1,6 +1,5 @@
 import {SplitOption} from './split-option';
 import {SiValueBoundary} from '../../../si-value-boundary';
-import {SiStyle} from '../../../../meta/si-view-mode';
 import {SiService} from '../../../../../manage/si.service';
 import {SiControlBoundry} from '../../../../control/si-control-bountry';
 import {SiGetInstruction} from '../../../../api/si-get-instruction';
@@ -97,9 +96,9 @@ export class SplitContent implements SplitOption {
 
 		let instruction: SiGetInstruction|null;
 		if (this.lazyDef!.entryId) {
-			instruction = SiGetInstruction.entry(this.lazyDef!.style, this.lazyDef!.entryId);
+			instruction = SiGetInstruction.entry(this.lazyDef!.maskId, this.lazyDef!.entryId);
 		} else {
-			instruction = SiGetInstruction.newEntry(this.lazyDef!.style);
+			instruction = SiGetInstruction.newEntry(this.lazyDef!.maskId);
 		}
 		instruction.setPropIds(this.lazyDef!.propIds);
 
@@ -116,7 +115,7 @@ export interface LazyDef {
 	apiGetUrl: string;
 	entryId: string|null;
 	propIds: string[]|null;
-	style: SiStyle;
+	maskId: string;
 	siService: SiService;
 	siControlBoundy: SiControlBoundry;
 }

@@ -7,17 +7,17 @@ import { Observable } from 'rxjs';
 
 export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	values: SiEmbeddedEntry[] = [];
-	allowedTypeIds: string[]|null = null;
+	allowedMaskIds: string[]|null = null;
 	min = 0;
 	max: number|null = null;
 	gridPos: SiGridPos|null = null;
 	nonNewRemovable = true;
 	sortable = false;
-	reduced = true;
 
 	private messageCollection = new BehaviorCollection<Message>();
 
-	constructor(public name: string, public label: string) {
+	constructor(public name: string, public label: string, public bulkyMaskId: string,
+			public summaryMaskId: string|null) {
 	}
 
 	setValues(values: SiEmbeddedEntry[]): void {
@@ -61,6 +61,10 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 			name: this.name,
 			entryInputs: this.getTypeSelectedValues().map(embe => embe.entry.readInput())
 		};
+	}
+
+	get reduced(): boolean {
+		return this.summaryMaskId !== null;
 	}
 }
 

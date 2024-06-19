@@ -1,25 +1,24 @@
 
 import { SiDeclaration } from '../meta/si-declaration';
-import { SiStyle } from '../meta/si-view-mode';
 
 export class SiValGetInstruction {
 
 	protected declaration: SiDeclaration|null = null;
 	protected controlsIncluded = false;
 
-	constructor(public style: SiStyle) {
+	constructor() {
 	}
 
 	// static create(bulky: boolean, readOnly: boolean): SiValGetInstruction {
 	// 	return new SiValGetInstruction({ bulky, readOnly });
 	// }
 
-	static create(style: SiStyle): SiValGetInstruction {
-		return new SiValGetInstruction(style);
+	static create(): SiValGetInstruction {
+		return new SiValGetInstruction();
 	}
 
 	static createFromDeclaration(declaration: SiDeclaration): SiValGetInstruction {
-		const instruction = new SiValGetInstruction(declaration.style);
+		const instruction = new SiValGetInstruction();
 		instruction.declaration = declaration;
 		return instruction;
 	}
@@ -40,7 +39,6 @@ export class SiValGetInstruction {
 
 	toJSON(): object {
 		return {
-			style: this.style,
 			declarationRequested: !this.declaration,
 			controlsIncluded: this.controlsIncluded
 		};

@@ -45,7 +45,7 @@ class CuMaskedEntry {
 		return $this->eifSiStructure;
 	}
 
-	function getSiMaskDeclaration(): SiMask {
+	function getSiMask(): SiMask {
 		return $this->siMaskDeclaration;
 	}
 

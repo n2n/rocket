@@ -143,7 +143,7 @@ export class StructurePageManager {
 	getSiProps(): SiProp[] {
 		this.ensureDeclared();
 
-		return this.siPageCollection.declaration!.getBasicMaskDeclaration().getSiProps();
+		return this.siPageCollection.declaration!.getBasicMask().getDeclaredProps();
 	}
 
 	get declarationRequired(): boolean {

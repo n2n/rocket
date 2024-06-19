@@ -6,7 +6,6 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { SiFile, SiImageCut } from './file';
-import { SiStyle } from 'src/app/si/model/meta/si-view-mode';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 
@@ -17,7 +16,7 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 	public acceptedMimeTypes: string[] = [];
 	public acceptedExtensions: string[] = [];
 
-	constructor(public apiFieldUrl: string, public style: SiStyle, public apiCallId: object, public value: SiFile|null) {
+	constructor(public apiFieldUrl: string, public apiCallId: object, public value: SiFile|null) {
 		super();
 	}
 
@@ -47,10 +46,6 @@ export class FileInSiField extends InSiFieldAdapter implements FileInFieldModel 
 
 	getApiCallId(): object {
 		return this.apiCallId;
-	}
-
-	getSiStyle(): SiStyle {
-		return this.style;
 	}
 
 	getSiFile(): SiFile|null {

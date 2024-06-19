@@ -9,13 +9,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { SiGenericValueBoundary } from '../generic/si-generic-value-boundary';
 import { SiGenericEntry } from '../generic/si-generic-entry-buildup';
 import { skip } from 'rxjs/operators';
-import { SiStyle } from '../meta/si-view-mode';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
 
 export class SiValueBoundary {
 
-	constructor(/*identifier: SiEntryIdentifier,*/ public style: SiStyle) {
+	constructor(/*identifier: SiEntryIdentifier, public style: SiStyle*/) {
 	}
 
 	isNew(): boolean {
@@ -112,8 +111,8 @@ export class SiValueBoundary {
 				+ this.entryQualifiers.map((q) => q.toString()).join(','));
 	}
 
-	containsMaskId(typeId: string): boolean {
-		return this._entriesMap.has(typeId);
+	containsMaskId(maskId: string): boolean {
+		return this._entriesMap.has(maskId);
 	}
 
 	isMultiType(): boolean {
@@ -159,7 +158,7 @@ export class SiValueBoundary {
 		// 	throw new IllegalSiStateError('No input available.');
 		// }
 
-		return new SiEntryInput(this.qualifier.identifier, this.selectedMaskId!, this.style.bulky, fieldInputMap);
+		return new SiEntryInput(this.selectedMaskId!, this.qualifier.identifier.id, fieldInputMap);
 	}
 
 	// handleError(error: SiEntryError) {
@@ -217,16 +216,16 @@ export class SiValueBoundary {
 	async copy(): Promise<SiGenericValueBoundary> {
 		const promises: Promise<void>[] = [];
 
-		const genericEntriesMap = new Map<string, SiGenericEntry>();
+		const genericEntries: SiGenericEntry[] = [];
 		for (const [maskId, entry] of this._entriesMap) {
 			entry.copy().then(genericEntry => {
-				genericEntriesMap.set(maskId, genericEntry);
+				genericEntries.push(genericEntry);
 			});
 		}
 
 		await Promise.all(promises);
 
-		return this.createGenericValueBoundary(genericEntriesMap);
+		return this.createGenericValueBoundary(genericEntries);
 	}
 
 	async paste(genericValueBoundary: SiGenericValueBoundary): Promise<boolean> {
@@ -234,14 +233,15 @@ export class SiValueBoundary {
 			return false;
 		}
 
-		if (this._entriesMap.has(genericValueBoundary.selectedTypeId!)) {
-			this.selectedMaskId = genericValueBoundary.selectedTypeId;
+		if (this._entriesMap.has(genericValueBoundary.selectedMaskId!)) {
+			this.selectedMaskId = genericValueBoundary.selectedMaskId;
 		}
 
 		const promises = new Array<Promise<boolean>>();
-		for (const [typeId, genericEntry] of genericValueBoundary.entriesMap) {
-			if (this._entriesMap.has(typeId)) {
-				promises.push(this._entriesMap.get(typeId)!.paste(genericEntry));
+		for (const genericEntry of genericValueBoundary.entries) {
+			const maskId = genericEntry.maskId;
+			if (this._entriesMap.has(maskId)) {
+				promises.push(this._entriesMap.get(maskId)!.paste(genericEntry));
 			}
 		}
 		await Promise.all(promises);
@@ -264,26 +264,36 @@ export class SiValueBoundary {
 				});
 	}
 
-	private createGenericValueBoundary(genericEntriesMap: Map<string, SiGenericEntry>): SiGenericValueBoundary {
-		const genericEntry = new SiGenericValueBoundary(this.identifier, this.selectedMaskId, genericEntriesMap);
-		genericEntry.style = this.style;
+	private createGenericValueBoundary(genericEntries: SiGenericEntry[]): SiGenericValueBoundary {
+		const genericEntry = new SiGenericValueBoundary(this.selectedMaskId, genericEntries);
+		// genericEntry.style = this.style;
 		return genericEntry;
 	}
 
 
 	private valGenericEntry(genericValueBoundary: SiGenericValueBoundary): boolean {
-		if (genericValueBoundary.identifier.typeId !== this.identifier.typeId) {
-			return false;
-			// throw new GenericMissmatchError('SiEntry missmatch: '
-			// 		+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
-		}
-
-		if (genericValueBoundary.style.bulky !== this.style.bulky || genericValueBoundary.style.readOnly !== this.style.readOnly) {
-			return false;
-			// throw new GenericMissmatchError('SiEntry missmatch.');
+		for (const entry of genericValueBoundary.entries) {
+			if (!this.containsMaskId(entry.maskId)) {
+				return false;
+			}
 		}
 
 		return true;
+
+		// return genericValueBoundary.matchMasks(tidentifier.maskIdentifier.matches(this.identifier.maskIdentifier);
+
+		// if (genericValueBoundary.identifier.typeId !== this.identifier.typeId) {
+		// 	return false;
+		// 	// throw new GenericMissmatchError('SiEntry missmatch: '
+		// 	// 		+ genericEntry.identifier.toString() + ' != ' + this.identifier.toString());
+		// }
+		//
+		// if (genericValueBoundary.style.bulky !== this.style.bulky || genericValueBoundary.style.readOnly !== this.style.readOnly) {
+		// 	return false;
+		// 	// throw new GenericMissmatchError('SiEntry missmatch.');
+		// }
+		//
+		// return true;
 	}
 
 	isClean(): boolean {

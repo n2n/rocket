@@ -51,7 +51,7 @@ export class EmbeddedEntriesOutSiField extends SiFieldAdapter implements EmbeOut
 
 	private createGenericManager(): GenericEmbeddedEntryManager {
 		return new GenericEmbeddedEntryManager(this.values, this.siService, this.siModState, this.frame, this,
-				this.config.reduced, null);
+				'todo: move copyValue() out', null, null);
 	}
 
 	copyValue(): Promise<SiGenericValue> {

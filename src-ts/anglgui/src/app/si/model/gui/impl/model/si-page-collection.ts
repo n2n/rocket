@@ -227,7 +227,8 @@ export class SiPageCollection implements SiControlBoundry {
 			siPage = this.createPage(pageNo, null);
 		}
 
-		const instruction = SiGetInstruction.partialContent({ bulky: false, readOnly: true },
+		const instruction = SiGetInstruction.partialContent(
+						this.declaration!.getBasicMask().qualifier.identifier.id,
 						siPage.offset, this.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration!)

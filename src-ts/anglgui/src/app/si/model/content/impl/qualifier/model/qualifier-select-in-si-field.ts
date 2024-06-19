@@ -94,11 +94,20 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 				break;
 			}
 
-			if (!this.frame.typeContext.containsTypeId(siEntryQualifier.identifier.typeId)) {
-				return Promise.resolve(false);
+			if (this.pickables === null) {
+				// TODO: apply validation constraints
+				values.push(siEntryQualifier);
+				continue;
 			}
 
-			values.push(siEntryQualifier);
+			const pickable = this.pickables!.find(
+					(p) => p.identifier.matchesTypeAndId(siEntryQualifier.identifier))
+			if (pickable) {
+				values.push(siEntryQualifier);
+				continue;
+			}
+
+			return Promise.resolve(false);
 		}
 
 		this.values = values;

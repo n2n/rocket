@@ -127,7 +127,7 @@ class EiGuiDeclaration {
 		$siDeclaration = new SiDeclaration(/*ViewMode::createSiStyle($this->viewMode)*/);
 		
 		foreach ($this->eiGuiMaskDeclarations as $eiGuiMaskDeclaration) {
-			$siDeclaration->addMask($eiGuiMaskDeclaration->createSiMaskDeclaration($n2nLocale));
+			$siDeclaration->addMask($eiGuiMaskDeclaration->createSiMask($n2nLocale));
 		}
 		
 		return $siDeclaration;

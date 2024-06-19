@@ -18,12 +18,13 @@ import { SiInputResetPoint } from '../../../si-input-reset-point';
 export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSource {
 
 	config: EmbeddedEntriesInConfig = {
+		bulkyMaskId: 'todo',
+		summaryMaskId: null,
 		min: 0,
 		max: null,
-		reduced: false,
 		nonNewRemovable: true,
 		sortable: false,
-		allowedTypeIds: null
+		allowedMaskIds: null
 	};
 
 	constructor(private label: string, private siService: SiService, private siModState: SiModStateService,
@@ -73,7 +74,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 		embeInCol.readEmbes();
 
 		return new EmbeddedEntriesInUiStructureModel(this.label,
-				new EmbeddedEntryObtainer(this.siService, this.siModState, this.frame, this.config.reduced, this.config.allowedTypeIds),
+				new EmbeddedEntryObtainer(this.siService, this.siModState, this.frame, this.config.bulkyMaskId,
+						this.config.summaryMaskId, this.config.allowedMaskIds),
 				this.frame, embeInCol, this.config, this.translationService,
 				this.getDisabled$());
 	}
@@ -84,7 +86,7 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 
 	private createGenericManager(): GenericEmbeddedEntryManager {
 		return new GenericEmbeddedEntryManager(this.values, this.siService, this.siModState, this.frame, this,
-				this.config.reduced, this.config.allowedTypeIds);
+				this.config.bulkyMaskId, this.config.summaryMaskId, this.config.allowedMaskIds);
 	}
 
 	copyValue(): Promise<SiGenericValue> {

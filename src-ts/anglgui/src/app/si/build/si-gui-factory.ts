@@ -134,15 +134,15 @@ export class SiGuiFactory {
 	createPanel(data: any): SiPanel {
 		const extr = new Extractor(data);
 
-		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'));
+		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'),
+				extr.reqString('bulkyMaskId'), extr.nullaString('summaryMaskId'));
 		panel.values = this.createEmbeddedEntries(extr.reqArray('values'));
-		panel.reduced = extr.reqBoolean('reduced');
 		panel.min = extr.reqNumber('min');
 		panel.max = extr.nullaNumber('max');
 		panel.nonNewRemovable = extr.reqBoolean('nonNewRemovable');
 		panel.sortable = extr.reqBoolean('sortable');
 		panel.gridPos = SiEssentialsFactory.buildGridPos(extr.nullaObject('gridPos'));
-		panel.allowedTypeIds = extr.nullaStringArray('allowedTypeIds');
+		panel.allowedMaskIds = extr.nullaStringArray('allowedMaskIds');
 
 		return panel;
 	}

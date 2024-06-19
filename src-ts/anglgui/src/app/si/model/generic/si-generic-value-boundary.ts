@@ -1,21 +1,31 @@
-import { SiEntryIdentifier, SiEntryQualifier } from '../content/si-entry-qualifier';
+import { SiEntryQualifier } from '../content/si-entry-qualifier';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
-import { SiStyle } from '../meta/si-view-mode';
+
 import { SiGenericEntry } from './si-generic-entry-buildup';
 
 export class SiGenericValueBoundary {
 	// public treeLevel: number|null = null;
-	public style: SiStyle = {
-		bulky: false,
-		readOnly: true
-	};
 
-	constructor(public identifier: SiEntryIdentifier, public selectedTypeId: string|null,
-			public entriesMap = new Map<string, SiGenericEntry>()) {
+	private entriesMap = new Map<string, SiGenericEntry>()
+
+	constructor(public selectedMaskId: string|null, entries: SiGenericEntry[]) {
+		entries.forEach((e) => this.putEntry(e));
 	}
 
-	get entryQualifier(): SiEntryQualifier {
-		IllegalSiStateError.assertTrue(this.entriesMap.has(this.selectedTypeId!));
-		return this.entriesMap.get(this.selectedTypeId!)!.entryQualifier;
+	get selected(): boolean {
+		return this.selectedMaskId !== null;
+	}
+
+	putEntry(genericEntry: SiGenericEntry): void {
+		this.entriesMap.set(genericEntry.maskId, genericEntry);
+	}
+
+	get entries(): SiGenericEntry[] {
+		return Array.from(this.entriesMap.values());
+	}
+
+	get selectedEntryQualifier(): SiEntryQualifier {
+		IllegalSiStateError.assertTrue(this.entriesMap.has(this.selectedMaskId!));
+		return this.entriesMap.get(this.selectedMaskId!)!.entryQualifier;
 	}
 }

@@ -120,7 +120,7 @@ class BulkyCuGui implements CuGui {
 		$siDeclaration = new SiDeclaration($siStyle);
 		$siValueBoundary = new SiValueBoundary($siStyle);
 		foreach ($this->cuMaskedEntries as $id => $cuMaskedEntry) {
-			$siDeclaration->addMaskDeclaration($cuMaskedEntry->getSiMaskDeclaration());
+			$siDeclaration->addMaskDeclaration($cuMaskedEntry->getSiMask());
 			$siValueBoundary->putEntry($id, $cuMaskedEntry->getSiEntry());
 		}
 		$siValueBoundary->setSelectedMaskId($this->selectedMaskId);

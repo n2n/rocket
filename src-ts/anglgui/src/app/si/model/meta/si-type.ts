@@ -2,11 +2,12 @@
 import { SiMaskQualifier } from 'src/app/si/model/meta/si-mask-qualifier';
 import { SiProp } from './si-prop';
 import { IllegalSiStateError } from '../../util/illegal-si-state-error';
+import { SiStructureDeclaration } from './si-structure-declaration';
 
 export class SiMask {
 	private propMap = new Map<string, SiProp>();
 
-	constructor(readonly qualifier: SiMaskQualifier) {
+	constructor(readonly qualifier: SiMaskQualifier, public structureDeclarations: Array<SiStructureDeclaration>|null) {
 	}
 
 	addProp(prop: SiProp) {
@@ -27,5 +28,11 @@ export class SiMask {
 
 	getProps(): SiProp[] {
 		return Array.from(this.propMap.values());
+	}
+
+	getDeclaredProps(): SiProp[] {
+		// return this.type.getProps();
+		return this.structureDeclarations!.filter(sd => !!sd.prop)
+				.map(sd => sd.prop!);
 	}
 }

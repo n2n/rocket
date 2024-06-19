@@ -1,4 +1,3 @@
-import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { SiGetInstruction } from 'src/app/si/model/api/si-get-instruction';
 import { Observable } from 'rxjs';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
@@ -20,25 +19,26 @@ import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.servi
 export class EmbeddedEntryObtainer	{
 
 	constructor(public siService: SiService, public siModStateService: SiModStateService, public siFrame: SiFrame,
-			public obtainSummary: boolean, public typeIds: Array<string>|null) {
+			public bulkyContextMaskId: string, public summaryContextMaskId: string|null,
+			public allowedMaskIds: Array<string>|null) {
 	}
 
 	private preloadedNew$: Promise<SiEmbeddedEntry>|null = null;
 
-	private createBulkyInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
-		if (siEntryIdentifier) {
-			return SiGetInstruction.entry({ bulky: true, readOnly: false }, siEntryIdentifier.id!);
-		}
+	private createBulkyInstruction(siEntryIdentifier: /*SiEntryIdentifier|*/null): SiGetInstruction {
+		// if (siEntryIdentifier) {
+		// 	return SiGetInstruction.entryFromIdentifier(siEntryIdentifier);
+		// }
 
-		return SiGetInstruction.newEntry({ bulky: true, readOnly: false }).setTypeIds(this.typeIds);
+		return SiGetInstruction.newEntry(this.bulkyContextMaskId).setAllowedMaskIds(this.allowedMaskIds);
 	}
 
-	private createSummaryInstruction(siEntryIdentifier: SiEntryIdentifier|null): SiGetInstruction {
-		if (siEntryIdentifier) {
-			return SiGetInstruction.entry({ bulky: false, readOnly: true }, siEntryIdentifier.id!);
-		}
+	private createSummaryInstruction(siEntryIdentifier: /*SiEntryIdentifier|*/null): SiGetInstruction {
+		// if (siEntryIdentifier) {
+		// 	return SiGetInstruction.entryFromIdentifier(eiEntryIdentifier);
+		// }
 
-		return SiGetInstruction.newEntry({ bulky: false, readOnly: true }).setTypeIds(this.typeIds);
+		return SiGetInstruction.newEntry(this.bulkyContextMaskId).setAllowedMaskIds(this.allowedMaskIds);
 	}
 
 	preloadNew(): void {
@@ -58,13 +58,13 @@ export class EmbeddedEntryObtainer	{
 		return siEmbeddedEntry$;
 	}
 
-	obtain(siEntryIdentifiers: Array<SiEntryIdentifier|null>): Observable<SiEmbeddedEntry[]> {
+	obtain(siEntryIdentifiers: Array</*SiEntryIdentifier|*/null>): Observable<SiEmbeddedEntry[]> {
 		const request = new SiGetRequest();
 
 		for (const siEntryIdentifier of siEntryIdentifiers) {
 			request.instructions.push(this.createBulkyInstruction(siEntryIdentifier));
 
-			if (this.obtainSummary) {
+			if (this.summaryContextMaskId !== null) {
 				request.instructions[1] = this.createSummaryInstruction(siEntryIdentifier);
 			}
 		}
@@ -83,7 +83,7 @@ export class EmbeddedEntryObtainer	{
 			siComp.valueBoundary = result.valueBoundary;
 
 			let summarySiGui: CompactEntrySiGui|null = null;
-			if (this.obtainSummary) {
+			if (this.summaryContextMaskId !== null) {
 				result = response.results.shift()!;
 				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
 				summarySiGui.valueBoundary = result.valueBoundary;
@@ -122,11 +122,11 @@ export class EmbeddedEntryObtainer	{
 	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
 		const instruction = new SiValInstruction(siEmbeddedEntry.entry.readInput());
 
-		instruction.getInstructions[0] = SiValGetInstruction.create({ bulky: true, readOnly: false });
+		instruction.getInstructions[0] = SiValGetInstruction.create();
 
 		if (siEmbeddedEntry.summaryComp) {
 			siEmbeddedEntry.summaryComp.valueBoundary = null;
-			instruction.getInstructions[1] = SiValGetInstruction.create({ bulky: false, readOnly: true });
+			instruction.getInstructions[1] = SiValGetInstruction.create();
 		}
 
 		return instruction;

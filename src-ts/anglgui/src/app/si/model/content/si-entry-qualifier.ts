@@ -1,16 +1,30 @@
-import { SiMaskQualifier } from '../meta/si-mask-qualifier';
+import { SiMaskIdentifier, SiMaskQualifier } from '../meta/si-mask-qualifier';
 
-export class SiEntryIdentifier {
-	constructor(readonly typeId: string, readonly id: string|null) {
+export interface SiObjectIdentifier {
+	typeId: string;
+	id: string|null;
+}
+
+export class SiEntryIdentifier implements SiObjectIdentifier {
+	constructor(readonly maskIdentifier: SiMaskIdentifier, readonly id: string|null) {
+	}
+
+	get typeId(): string {
+		return this.maskIdentifier.typeId;
 	}
 
 	equals(obj: any): boolean {
-		return obj instanceof SiEntryIdentifier && this.typeId === (obj as SiEntryIdentifier).typeId
+		return obj instanceof SiEntryIdentifier
+				&& this.maskIdentifier.matches((obj as SiEntryIdentifier).maskIdentifier)
 				&& this.id === (obj as SiEntryIdentifier).id;
 	}
 
+	matchesTypeAndId(otherIdentifier: SiEntryIdentifier): boolean {
+		return this.id === otherIdentifier.id && this.maskIdentifier.typeId === otherIdentifier.maskIdentifier.typeId;
+	}
+
 	toString(): string {
-		return this.typeId + '#' + this.id;
+		return this.maskIdentifier.id + '#' + this.id;
 	}
 }
 

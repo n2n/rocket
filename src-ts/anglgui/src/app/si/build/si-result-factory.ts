@@ -2,12 +2,13 @@
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
 import { SiCallResponse, SiDirective, SiControlResult, SiInputError, SiInputResult } from '../manage/si-control-result';
-import { SiEntryIdentifier } from '../model/content/si-entry-qualifier';
+import { SiEntryIdentifier, SiObjectIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiBuildTypes } from './si-build-types';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
+import { SiMetaFactory } from './si-meta-factory';
 
 export class SiResultFactory {
 
@@ -65,9 +66,9 @@ export class SiResultFactory {
 		}
 
 		const eventMap = extr.reqMap('eventMap');
-		const addedSeis: SiEntryIdentifier[] = [];
-		const updatedSeis: SiEntryIdentifier[] = [];
-		const removedSeis: SiEntryIdentifier[] = [];
+		const addedSeis: SiObjectIdentifier[] = [];
+		const updatedSeis: SiObjectIdentifier[] = [];
+		const removedSeis: SiObjectIdentifier[] = [];
 
 		for (const [typeId, idsEvMapData] of eventMap) {
 			const idEvMapExtr = new Extractor(idsEvMapData);
@@ -75,13 +76,13 @@ export class SiResultFactory {
 			for (const [id, eventType] of idEvMapExtr.reqStringMap('ids')) {
 				switch (eventType) {
 					case 'added':
-						addedSeis.push(new SiEntryIdentifier(typeId, id));
+						addedSeis.push({ typeId, id });
 						break;
 					case 'changed':
-						updatedSeis.push(new SiEntryIdentifier(typeId, id));
+						updatedSeis.push({ typeId, id });
 						break;
 					case 'removed':
-						removedSeis.push(new SiEntryIdentifier(typeId, id));
+						removedSeis.push({ typeId, id });
 						break;
 					default:
 						throw new ObjectMissmatchError('Unknown event type: ' + eventType);

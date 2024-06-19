@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SiEntryIdentifier } from '../../content/si-entry-qualifier';
+import { SiEntryIdentifier, SiObjectIdentifier } from '../../content/si-entry-qualifier';
 import { SiValueBoundary } from '../../content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
@@ -87,11 +87,11 @@ export class SiModStateService {
 
 export class SiModEvent {
 
-	private addedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
-	private updatedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
-	private removedEventMap = new Map<string, Map<string, SiEntryIdentifier>>();
+	private addedEventMap = new Map<string, Map<string, SiObjectIdentifier>>();
+	private updatedEventMap = new Map<string, Map<string, SiObjectIdentifier>>();
+	private removedEventMap = new Map<string, Map<string, SiObjectIdentifier>>();
 
-	constructor(readonly added: SiEntryIdentifier[], readonly updated: SiEntryIdentifier[], readonly removed: SiEntryIdentifier[]) {
+	constructor(readonly added: SiObjectIdentifier[], readonly updated: SiObjectIdentifier[], readonly removed: SiObjectIdentifier[]) {
 		this.update();
 	}
 
@@ -115,7 +115,7 @@ export class SiModEvent {
 		}
 	}
 
-	private reqEiMap(map: Map<string, Map<string, SiEntryIdentifier>>, typeId: string): Map<string, SiEntryIdentifier> {
+	private reqEiMap(map: Map<string, Map<string, SiObjectIdentifier>>, typeId: string): Map<string, SiObjectIdentifier> {
 		if (!map.has(typeId)) {
 			map.set(typeId, new Map());
 		}
@@ -123,7 +123,7 @@ export class SiModEvent {
 		return map.get(typeId)!;
 	}
 
-	containsModEntryIdentifier(ei: SiEntryIdentifier): boolean {
+	containsModEntryIdentifier(ei: SiObjectIdentifier): boolean {
 		if (ei.id === null) {
 			return false;
 		}

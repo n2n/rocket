@@ -8,7 +8,7 @@ export class SiGenericEntry {
 			public fieldValuesMap = new Map<string, SiGenericValue>()) {
 	}
 
-	get typeId(): string {
+	get maskId(): string {
 		return this.entryQualifier.maskQualifier.identifier.id;
 	}
 

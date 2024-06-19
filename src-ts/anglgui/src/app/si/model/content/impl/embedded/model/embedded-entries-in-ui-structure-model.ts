@@ -75,7 +75,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	}
 
 	isSummaryRequired(): boolean {
-		return this.config.reduced;
+		return this.config.summaryMaskId !== null;
 	}
 
 	isNonNewRemovable(): boolean {
@@ -91,7 +91,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	// }
 
 	getAllowedSiTypeIds(): string[]|null {
-		return this.config.allowedTypeIds;
+		return this.config.allowedMaskIds;
 	}
 
 	getAddPasteObtainer(): AddPasteObtainer {
@@ -166,7 +166,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	}
 
 	open(embeStructure: EmbeStructure): void {
-		IllegalStateError.assertTrue(this.config.reduced);
+		IllegalStateError.assertTrue(this.config.summaryMaskId !== null);
 		this.getEmbeInUiStructureManager().open(embeStructure.embe).then((/*changed*/) => {
 			this.embeStructureCollection!.refresh();
 			this.updateDeleteToolbar();
@@ -174,7 +174,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	}
 
 	openAll(): void {
-		IllegalStateError.assertTrue(this.config.reduced);
+		IllegalStateError.assertTrue(this.config.summaryMaskId !== null);
 		this.getEmbeInUiStructureManager().openAll().then((/*changed*/) => {
 			this.embeStructureCollection!.refresh();
 			this.updateDeleteToolbar();
@@ -184,7 +184,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);
 
-		this.embeStructureCollection = new EmbeStructureCollection(this.config.reduced, this.embeInCol);
+		this.embeStructureCollection = new EmbeStructureCollection(this.config.summaryMaskId !== null, this.embeInCol);
 		this.embeStructureCollection.refresh();
 		this.subscription = new Subscription();
 		this.subscription.add(this.embeInCol.source.getMessages$()
@@ -198,7 +198,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 					this.updateReducedStructureErrors();
 				}));
 
-		if (!this.config.reduced) {
+		if (this.config.summaryMaskId === null) {
 			this.uiContent = new TypeUiContent(EmbeddedEntriesInComponent, (ref) => {
 				ref.instance.model = this;
 			});
@@ -217,7 +217,7 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 	}
 
 	private updateDeleteToolbar(): void {
-		if (this.config.reduced || this.config.max !== 1 || !this.config.nonNewRemovable) {
+		if (this.config.summaryMaskId !== null || this.config.max !== 1 || !this.config.nonNewRemovable) {
 			return;
 		}
 
@@ -410,12 +410,13 @@ class EmbeInUiZoneManager {
 		const popupUiStructureModel = new EmbeddedEntriesInUiStructureModel(this.popupTitle, this.obtainer,
 				this.siFrame, this.embeCol,
 				{
-					reduced: false,
+					bulkyMaskId: this.config.bulkyMaskId,
+					summaryMaskId: null,
 					min: this.config.min,
 					max: this.config.max,
 					nonNewRemovable: this.config.nonNewRemovable,
 					sortable: this.config.sortable,
-					allowedTypeIds: this.config.allowedTypeIds
+					allowedMaskIds: this.config.allowedMaskIds
 				}, this.translationService, this.disabled$!);
 
 		const structure = new UiStructure(UiStructureType.SIMPLE_GROUP, null, popupUiStructureModel);

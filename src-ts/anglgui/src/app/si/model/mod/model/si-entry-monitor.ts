@@ -167,7 +167,7 @@ class ReloadJob {
 
 			entry.markAsReloading();
 			IllegalSiStateError.assertTrue(entry.identifier.id !== null);
-			getInstructions.push(SiGetInstruction.entry(entry.style, entry.identifier.id!)
+			getInstructions.push(SiGetInstruction.entryFromIdentifier(entry.identifier)
 					.setEntryControlsIncluded(this.controlsIncluded));
 			entries.push(entry);
 		}

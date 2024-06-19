@@ -225,7 +225,7 @@ class CommonImageEditorModel implements ImageEditorModel {
 		this.uploadingFile = file;
 		this.uploadInitiated = true;
 
-		const data = await this.siService.fieldCall(this.model.getApiFieldUrl(), this.model.getSiStyle(), this.model.getApiCallId(),
+		const data = await this.siService.fieldCall(this.model.getApiFieldUrl(), this.model.getApiCallId(),
 				{ fileName }, new Map().set('upload', file)).toPromise();
 
 		this.uploadingFile = null;
