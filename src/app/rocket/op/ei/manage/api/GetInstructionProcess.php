@@ -33,6 +33,7 @@ use n2n\web\http\BadRequestException;
 use rocket\ui\si\content\SiPartialContent;
 
 class GetInstructionProcess {
+
 	private $instruction;
 	private $util;
 	private $apiUtil;
