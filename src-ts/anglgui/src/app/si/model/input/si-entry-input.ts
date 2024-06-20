@@ -1,6 +1,3 @@
-
-import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
-
 export class SiEntryInput {
 
 	constructor(public maskId: string, public entryId: string|null,

@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\op\ei\manage\api;
+namespace rocket\ui\si\api;
 
 use rocket\ui\si\control\SiCallResponse;
 use rocket\ui\si\input\SiInputResult;
@@ -29,10 +29,11 @@ class SiCallResult implements \JsonSerializable {
 	private $inputError;
 	private $callResponse;
 	private $inputResult;
-	
+
 	/**
-	 * @param SiInputError $inputError
-	 * @param SiCallResponse $callResponse
+	 * @param SiInputError|null $inputError
+	 * @param SiCallResponse|null $callResponse
+	 * @param SiInputResult|null $inputResult
 	 */
 	private function __construct(?SiInputError $inputError, ?SiCallResponse $callResponse, ?SiInputResult $inputResult) {
 		$this->inputError = $inputError;

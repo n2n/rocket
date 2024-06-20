@@ -8,7 +8,6 @@ import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-bountry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
-import { SiMetaFactory } from './si-meta-factory';
 import { SiBuildTypes } from './si-build-types';
 import { Message } from '../../util/i18n/message';
 

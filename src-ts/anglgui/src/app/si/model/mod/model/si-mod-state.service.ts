@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SiEntryIdentifier, SiObjectIdentifier } from '../../content/si-entry-qualifier';
+import { SiObjectIdentifier } from '../../content/si-entry-qualifier';
 import { SiValueBoundary } from '../../content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';

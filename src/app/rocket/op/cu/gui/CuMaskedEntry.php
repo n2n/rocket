@@ -4,7 +4,6 @@ namespace rocket\op\cu\gui;
 
 use rocket\ui\si\meta\SiMask;
 use rocket\ui\gui\control\GuiControl;
-use rocket\ui\si\meta\SiMask;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\control\SiIconType;

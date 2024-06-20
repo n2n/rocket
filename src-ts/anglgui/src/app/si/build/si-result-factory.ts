@@ -2,13 +2,12 @@
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
 import { SiCallResponse, SiDirective, SiControlResult, SiInputError, SiInputResult } from '../manage/si-control-result';
-import { SiEntryIdentifier, SiObjectIdentifier } from '../model/content/si-entry-qualifier';
+import { SiObjectIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiBuildTypes } from './si-build-types';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
-import { SiMetaFactory } from './si-meta-factory';
 
 export class SiResultFactory {
 

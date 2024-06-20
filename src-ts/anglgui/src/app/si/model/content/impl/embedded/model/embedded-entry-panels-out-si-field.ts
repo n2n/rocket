@@ -7,10 +7,8 @@ import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
 import { SiFrame } from 'src/app/si/model/meta/si-frame';
-import { GenericMissmatchError } from 'src/app/si/model/generic/generic-missmatch-error';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 import { GenericEmbeddedEntryManager } from './generic/generic-embedded-entry-manager';
 import { EmbeddedEntriesOutUiStructureModel } from './embedded-entries-out-ui-structure-model';
@@ -23,7 +21,6 @@ import { map } from 'rxjs/operators';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { EmbeOutCollection } from './embe/embe-collection';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
-import { CallbackInputResetPoint } from '../../common/model/callback-si-input-reset-point';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 
 class GenericSiPanelValueCollection {

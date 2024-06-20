@@ -32,6 +32,7 @@ use rocket\ui\si\api\SiGetResponse;
 use rocket\ui\si\api\SiValRequest;
 use rocket\ui\si\api\SiValResponse;
 use rocket\ui\gui\ViewMode;
+use rocket\ui\si\api\SiCallResult;
 
 class ApiController extends ControllerAdapter {
 	const API_CONTROL_SECTION = 'execcontrol';

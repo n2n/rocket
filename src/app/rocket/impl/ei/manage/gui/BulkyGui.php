@@ -15,9 +15,10 @@ use rocket\ui\gui\GuiValueBoundary;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\content\SiZoneCall;
-use rocket\op\ei\manage\api\SiCallResult;
+use rocket\ui\si\api\SiCallResult;
 use rocket\ui\si\input\SiInputError;
-use n2n\core\container\N2nContext;use rocket\ui\gui\control\GuiControlMap;
+use n2n\core\container\N2nContext;
+use rocket\ui\gui\control\GuiControlMap;
 
 class BulkyGui implements Gui {
 
