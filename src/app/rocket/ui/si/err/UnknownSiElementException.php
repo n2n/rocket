@@ -19,29 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\input;
+namespace rocket\ui\si\err;
 
-use n2n\util\type\attrs\AttributesException;
+class UnknownSiElementException extends \Exception {
 
-class SiInputFactory {
-	
-	/**
-	 * @param array $data
-	 * @return SiInput
-	 * @throws CorruptedSiInputDataException
-	 */
-	function create(array $data): SiInput {
-		$input = new SiInput();
-		
-		foreach ($data as $key => $entryData) {
-			try {
-				$input->putEntryInput($key, SiEntryInput::parse($entryData));
-			} catch (AttributesException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
-			}
-		}
-		
-		return $input;
-	}
-	
 }

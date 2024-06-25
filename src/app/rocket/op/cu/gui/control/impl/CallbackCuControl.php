@@ -27,7 +27,7 @@ use rocket\ui\si\control\SiButton;
 use n2n\util\uri\Url;
 use rocket\op\cu\gui\control\CuControl;
 use rocket\op\cu\gui\control\CuControlCallId;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use rocket\op\util\OpfControlResponse;
 use rocket\op\ei\manage\ManageState;
 use n2n\reflection\magic\MagicMethodInvoker;

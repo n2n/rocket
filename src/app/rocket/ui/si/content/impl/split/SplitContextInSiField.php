@@ -28,7 +28,7 @@ use rocket\ui\si\content\SiValueBoundary;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\input\SiEntryInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;
 
@@ -221,7 +221,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 		$this->activeKeys = [];
 		foreach ($ds->reqArray('activeKeys', 'string') as $key) {
 			if (!isset($this->splitContents[$key])) {
-				throw new CorruptedSiInputDataException('Unknown or unavailable key: ' . $key);
+				throw new CorruptedSiDataException('Unknown or unavailable key: ' . $key);
 			}
 			
 			$this->activeKeys[] = $key;
@@ -230,7 +230,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 		$valid = true;
 		foreach ($ds->reqArray('entryInputs', 'array') as $key => $entryInputData) {
 			if (!in_array($key, $this->activeKeys)) {
-				throw new CorruptedSiInputDataException('Unknown or active key: ' . $key);
+				throw new CorruptedSiDataException('Unknown or active key: ' . $key);
 			}
 			
 			$lazy = false;
@@ -243,10 +243,10 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			}
 			
 			if ($siValueBoundary === null) {
-				throw new CorruptedSiInputDataException('No SiEntry available for key: ' . $key);	
+				throw new CorruptedSiDataException('No SiEntry available for key: ' . $key);
 			}
 			
-			if (!$siValueBoundary->handleEntryInput(SiEntryInput::parse($entryInputData))) {
+			if (!$siValueBoundary->handleInput(SiEntryInput::parse($entryInputData))) {
 				$valid = false;
 			}
 

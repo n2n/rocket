@@ -19,48 +19,51 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\input;
-
-use n2n\util\type\attrs\AttributesException;
-use rocket\ui\si\err\CorruptedSiDataException;
+namespace rocket\ui\si\api\request;
 use n2n\util\type\attrs\DataMap;
+use rocket\ui\si\err\CorruptedSiDataException;
+use n2n\util\type\attrs\AttributesException;
 
-class SiInput {
-	/**
-	 * @var SiValueBoundaryInput[] $valueBoundaryInputs
-	 */
-	protected array $valueBoundaryInputs = [];
-	
-	/**
-	 * @return SiValueBoundaryInput[];
-	 */
-	function getValueBoundaryInputs(): array {
-		return $this->valueBoundaryInputs;
+class SiSortCall {
+
+	function __construct(private string $maskId, private array $entryIds, private ?string $afterEntryId = null,
+			private ?string $beforeEntryId = null, private ?string $parentEntryId = null) {
 	}
-	
-	/**
-	 * @param string $key
-	 * @param SiValueBoundaryInput $valueBoundaryInput
-	 */
-	function putValueBoundaryInput(string $key, SiValueBoundaryInput $valueBoundaryInput): void {
-		$this->valueBoundaryInputs[$key] = $valueBoundaryInput;
+
+	public function getMaskId(): string {
+		return $this->maskId;
+	}
+
+	public function getEntryIds(): array {
+		return $this->entryIds;
+	}
+
+	public function getAfterEntryId(): ?string {
+		return $this->afterEntryId;
+	}
+
+	public function getBeforeEntryId(): ?string {
+		return $this->beforeEntryId;
+	}
+
+	public function getParentEntryId(): ?string {
+		return $this->parentEntryId;
 	}
 
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data): SiInput {
-		$input = new SiInput();
-
+	static function parse(array $data): SiSortCall {
 		$dataMap = new DataMap($data);
-		foreach ($data as $key => $entryData) {
-			try {
-				$input->putValueBoundaryInput($key, SiValueBoundaryInput::parse($dataMap->reqArray($key)));
-			} catch (AttributesException $e) {
-				throw new CorruptedSiDataException(null, 0, $e);
-			}
-		}
 
-		return $input;
+		try {
+			return new SiSortCall($dataMap->reqString('maskId'),
+					$dataMap->reqArray('entryIds', 'string'),
+					$dataMap->optString('afterId'),
+					$dataMap->optString('beforeId'),
+					$dataMap->optString('parentId'));
+		} catch (AttributesException $e) {
+			throw new CorruptedSiDataException('Could not parse SiSortCall.', previous: $e);
+		}
 	}
 }

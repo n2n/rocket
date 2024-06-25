@@ -21,7 +21,7 @@
  */
 namespace rocket\op\util;
 
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\EiType;
 use n2n\l10n\Message;

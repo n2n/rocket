@@ -26,7 +26,7 @@ use rocket\si\api\SiValResult;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\ui\si\api\SiValInstruction;
 use n2n\util\ex\IllegalStateException;
-use rocket\ui\si\api\SiValGetResult;
+use SiValGetInstructionResult;
 use rocket\ui\si\api\SiValGetInstruction;
 use rocket\op\ei\manage\frame\EiGuiValueBoundaryResult;
 use n2n\web\http\BadRequestException;
@@ -60,7 +60,7 @@ class ValInstructionProcess {
 	function exec(): SiValResult {
 		IllegalStateException::assertTrue($this->eiEntry === null);
 		
-		$entryInput = $this->instruction->getEntryInput();
+		$entryInput = $this->instruction->getValueBoundaryInput();
 		
 		$eiGuiValueBoundary = $this->util->determineEiGuiValueBoundaryOfInput($entryInput);
 		$this->eiEntry = $eiGuiValueBoundary->getSelectedEiGuiEntry()->getEiEntry();
@@ -79,17 +79,17 @@ class ValInstructionProcess {
 
 	/**
 	 * @param SiValGetInstruction $getInstruction
-	 * @return SiValGetResult
+	 * @return SiValGetInstructionResult
 	 * @throws BadRequestException
 	 */
-	private function handleGetInstruction(SiValGetInstruction $getInstruction): SiValGetResult {
-		$eiGui = $this->util->determineEiGuiOfEiEntry($this->eiEntry, $this->instruction->getEntryInput()->getMaskId(),
+	private function handleGetInstruction(SiValGetInstruction $getInstruction): SiValGetInstructionResult {
+		$eiGui = $this->util->determineEiGuiOfEiEntry($this->eiEntry, $this->instruction->getValueBoundaryInput()->getMaskId(),
 					$getInstruction->getStyle()->isBulky(), $getInstruction->getStyle()->isReadOnly(),
 				$getInstruction->areControlsIncluded());
 		$eiFrame = $this->eiFrameUtil->getEiFrame();
 		
-		$result = new SiValGetResult();
-		$result->setSiValueBoundaryEntry($eiGui->createSiValueBoundary($eiFrame->getN2nContext()->getN2nLocale()));
+		$result = new SiValGetInstructionResult();
+		$result->setValueBoundary($eiGui->createSiValueBoundary($eiFrame->getN2nContext()->getN2nLocale()));
 		
 		if ($getInstruction->isDeclarationRequested()) {
 			$result->setDeclaration($eiGui->getEiGuiDeclaration()->createSiDeclaration($eiFrame->getN2nContext()->getN2nLocale()));

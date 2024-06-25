@@ -19,39 +19,45 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content\impl;
+namespace rocket\ui\si\api\response;
 
-use rocket\ui\si\err\CorruptedSiDataException;
-use n2n\core\container\N2nContext;
+use n2n\util\type\ArgUtils;
 
-abstract class InSiFieldAdapter extends SiFieldAdapter {
-
+class SiValResponse implements \JsonSerializable {
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::isReadOnly()
+	 * @var SiValInstructionResult[]
 	 */
-	function isReadOnly(): bool {
-		return false;
-	}
-
-	abstract function getValue(): mixed;
-
-	final function handleInput(array $data, N2nContext $n2nContext): bool {
-		$valueValid = $this->handleInputValue($data);
-		$valid = $this->getModel()?->handleInput($this->getValue(), $n2nContext);
-
-		return $valueValid && $valid;
-	}
-
-	final function flush(N2nContext $n2nContext): void {
-		$this->getModel()?->flush($n2nContext);
+	private array $instructionResults = [];
+	
+	/**
+	 * @return SiValInstructionResult[]
+	 */
+	function getInstructionResults(): array {
+		return $this->instructionResults;
 	}
 
 	/**
-	 * @param array $data
-	 * @return bool
-	 * @throws CorruptedSiDataException
+	 * @param SiValInstructionResult[] $instructionResults
+	 * @return $this
 	 */
-	protected abstract function handleInputValue(array $data): bool;
+	function setInstructionResults(array $instructionResults): static {
+		ArgUtils::valArray($instructionResults, SiValInstructionResult::class);
+		$this->instructionResults = $instructionResults;
+		return $this;
+	}
+	
+	/** 
+	 * @param string $key
+	 * @param SiValInstructionResult $instructionResult
+	 */
+	function putInstructionResult(string $key, SiValInstructionResult $instructionResult): void {
+		$this->instructionResults[$key] = $instructionResult;
+	}
+	
+	/** 
+	 * @return array
+	 */
+	public function jsonSerialize(): mixed {
+		return ['instructionResults' => $this->instructionResults];
+	}	
 }
-

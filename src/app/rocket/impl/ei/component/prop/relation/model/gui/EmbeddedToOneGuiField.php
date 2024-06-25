@@ -29,7 +29,7 @@ use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\ui\si\input\SiEntryInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\ui\gui\field\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
@@ -101,13 +101,13 @@ class EmbeddedToOneGuiField implements GuiField, EmbeddedEntryInputHandler {
 	
 	/**
 	 * @param SiEntryInput[] $siEntryInputs
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleInput(array $siEntryInputs): array {
 		IllegalStateException::assertTrue(!$this->readOnly);
 		
 		if (count($siEntryInputs) > 1) {
-			throw new CorruptedSiInputDataException('Too many SiEntryInputs for EmbeddedToOneGuiField.');
+			throw new CorruptedSiDataException('Too many SiEntryInputs for EmbeddedToOneGuiField.');
 		}
 		
 		$this->emebeddedGuiCollection->handleSiEntryInputs($siEntryInputs);

@@ -24,7 +24,7 @@ namespace rocket\ui\si\content\impl\relation;
 use rocket\ui\si\input\SiEntryInput;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiPanelInput {
 	/**
@@ -69,7 +69,7 @@ class SiPanelInput {
 	/**
 	 * @param array $data
 	 * @return SiEntryInput
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	static function parse(array $data) {
 		$dataSet = new DataSet($data);
@@ -83,7 +83,7 @@ class SiPanelInput {
 			$panelInput->setEntryInputs($entryInputs);
 			return $panelInput;
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
-			throw new CorruptedSiInputDataException(null, 0, $e);
+			throw new CorruptedSiDataException(null, 0, $e);
 		}
 	}
 }

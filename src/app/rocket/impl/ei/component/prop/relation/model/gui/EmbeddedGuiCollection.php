@@ -31,7 +31,7 @@ use n2n\util\type\CastUtils;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\op\ei\util\spec\EiuType;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class EmbeddedGuiCollection {
 	/**
@@ -179,7 +179,7 @@ class EmbeddedGuiCollection {
 	
 	/**
 	 * @param SiEntryInput[] $siEntryInputs
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiEntryInputs(array $siEntryInputs): void {
 		$newEiuGuiEntrys = [];
@@ -187,7 +187,7 @@ class EmbeddedGuiCollection {
 			CastUtils::assertTrue($siEntryInput instanceof SiEntryInput);
 			
 			$eiuGuiEntry = null;
-			$id = $siEntryInput->getIdentifier()->getId();
+			$id = $siEntryInput->getEntryId()->getId();
 			
 			if ($id !== null && null !== ($eiuGuiEntry = $this->find($id))) {
 				$eiuGuiEntry->handleSiEntryInput($siEntryInput);

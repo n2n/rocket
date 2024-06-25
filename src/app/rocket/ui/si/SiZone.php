@@ -8,8 +8,8 @@ use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiBreadcrumb;
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\content\SiZoneCall;
-use rocket\ui\si\api\SiCallResult;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use SiCallResult;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
 
 class SiZone implements JsonSerializable {
@@ -20,7 +20,7 @@ class SiZone implements JsonSerializable {
 	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiZoneCall(SiZoneCall $siZoneCall, N2nContext $n2nContext): SiCallResult {
 		$siInputResult = null;
@@ -34,7 +34,7 @@ class SiZone implements JsonSerializable {
 
 		$controlName = $siZoneCall->getZoneControlName();
 		if (!isset($this->controls[$controlName])) {
-			throw new CorruptedSiInputDataException('Could not find SiControl with name: '
+			throw new CorruptedSiDataException('Could not find SiControl with name: '
 					. $controlName);
 		}
 

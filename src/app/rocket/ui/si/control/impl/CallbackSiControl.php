@@ -23,7 +23,7 @@ namespace rocket\ui\si\control\impl;
 
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\control\SiButton;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use n2n\core\container\N2nContext;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;

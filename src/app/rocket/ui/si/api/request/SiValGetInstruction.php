@@ -19,56 +19,68 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\request;
 
-use n2n\util\type\attrs\AttributesException;
 use n2n\util\type\attrs\DataSet;
-use n2n\util\type\ArgUtils;
+use rocket\ui\si\meta\SiStyle;
 
-class SiValRequest {
-	private $instructions = [];
+class SiValGetInstruction {
+
+	private $declarationRequested = true;
+	private $controlsIncluded = true;
+
+	function __construct(private string $maskId) {
+	}
 	
 	/**
-	 * 
+	 * @return string
 	 */
-	function __construct() {
+	public function getMaskId() {
+		return $this->maskId;
+	}
+	
+
+	
+	/**
+	 * @return boolean
+	 */
+	function isDeclarationRequested() {
+		return $this->declarationRequested;
 	}
 	
 	/**
-	 * @return SiValInstruction[]
+	 * @param bool $declarationRequest
 	 */
-	function getInstructions() {
-		return $this->instructions;
-	}
-
-	/**
-	 * @param SiValInstruction[]
-	 */
-	function setInstructions(array $instructions) {
-		ArgUtils::valArray($instructions, SiValInstruction::class);
-		$this->instructions = $instructions;
+	function setDeclarationRequested(bool $declarationRequest) {
+		$this->declarationRequested = $declarationRequest;
 	}
 	
-	function putInstruction(string $key, SiValInstruction $instruction) {
-		$this->instructions[$key] = $instruction;
+	/**
+	 * @return boolean
+	 */
+	public function areControlsIncluded() {
+		return $this->controlsIncluded;
 	}
-
+	
+	/**
+	 * @param boolean $controlsIncluded
+	 */
+	public function setControlsIncluded(bool $controlsIncluded) {
+		$this->controlsIncluded = $controlsIncluded;
+	}
+	
 	/**
 	 * @param array $data
-	 * @throws \InvalidArgumentException
-	 * @return \rocket\si\api\SiValRequest
+	 * @return \rocket\ui\si\api\SiValRequest
+	 *@throws \InvalidArgumentException
 	 */
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
 		
-		$getRequest = new SiValRequest();
-		try {
-			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
-				$getRequest->putInstruction($key, SiValInstruction::createFromData($instructionData));
-			}
-		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
-		}
-		return $getRequest;
+		$getInstruction = new SiValGetInstruction(SiStyle::createFromData($ds->reqArray('style')));
+		$getInstruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
+		$getInstruction->setControlsIncluded($ds->reqBool('controlsIncluded'));
+		return $getInstruction;
 	}
+	
 }

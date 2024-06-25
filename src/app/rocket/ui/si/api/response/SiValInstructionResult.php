@@ -19,49 +19,58 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\control;
+namespace rocket\ui\si\api\response;
 
-use rocket\si\input\SiError;
+use rocket\ui\si\meta\SiDeclaration;
+use rocket\ui\si\content\SiValueBoundary;
+use n2n\util\type\ArgUtils;
 
-class SiApiCallResult implements \JsonSerializable {
-	
+class SiValInstructionResult implements \JsonSerializable {
 	/**
-	 * @var SiError
+	 * @var bool
 	 */
-	private $inputError;
-	/**
-	 * @var SiEntryEvent[]
+	private $valid;
+	/** 
+	 * @var SiValGetInstructionResult[]
 	 */
-	private $entryEvents = [];
+	private $getResults = [];
+
+	function __construct(bool $valid) {
+		$this->valid = $valid;
+	}
 	
-	
-	/**
-	 * @param SiError $inputError
-	 * @return \rocket\si\control\SiApiCallResult
+	/** 
+	 * @return SiValGetInstructionResult[]
 	 */
-	function setInputError(SiError $inputError) {
-		$this->inputError = $inputError;
-		return $this;
+	function getGetResults() {
+		return $this->getResults;
+	}
+
+	/**
+	 * @param SiValGetInstructionResult[]
+	 */
+	function setGetResults(array $getResults) {
+		ArgUtils::valArray($getResults, SiValGetInstructionResult::class);
+		$this->getResults = $getResults;
 	}
 	
 	/**
-	 * @return \rocket\si\input\SiError
+	 * @param string $key
+	 * @param SiValGetInstructionResult $getResult
 	 */
-	function getInputError() {
-		return $this->inputError;
+	function putGetResult(string $key, SiValGetInstructionResult $getResult) {
+		$this->getResults[$key] = $getResult;
 	}
-	
+
 	/**
-	 * @param SiEntryEvent $entryEvent
+	 * {@inheritDoc}
+	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	function addEntryEvent(SiEntryEvent $entryEvent) {
-		$this->entryEvents[] = $entryEvent;
-	}
-	
-	function jsonSerialize(): mixed {
+	public function jsonSerialize(): mixed {
 		return [
-			'inputError' => $this->inputError,
-			'entryEvents' => $this->entryEvents
+			'valid' => $this->valid,
+			'getResults' => $this->getResults
 		];
 	}
 }
+

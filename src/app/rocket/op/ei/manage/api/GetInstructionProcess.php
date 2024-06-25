@@ -23,7 +23,7 @@ namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\api\SiGetInstruction;
-use rocket\ui\si\api\SiGetResult;
+use SiGetResult;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\ui\si\api\SiPartialContentInstruction;

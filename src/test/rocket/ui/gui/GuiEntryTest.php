@@ -6,10 +6,9 @@ use PHPUnit\Framework\TestCase;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\field\impl\GuiFields;
-use n2n\bind\mapper\impl\Mappers;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\si\input\SiFieldInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\content\SiEntryQualifier;
@@ -32,7 +31,7 @@ class GuiEntryTest extends TestCase {
 	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function testHandle(): void {
 		$guiEntry = new GuiEntry(self::$siEntryQualifier1);

@@ -19,49 +19,52 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\request;
 
-use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
-use rocket\si\api\SiGetInstruction;
 
-class SiGetRequest {
+class SiValRequest {
 	private $instructions = [];
 	
 	/**
 	 * 
 	 */
-	function __construct() {	
+	function __construct() {
 	}
 	
 	/**
-	 * @return SiGetInstruction[]
+	 * @return SiValInstruction[]
 	 */
 	function getInstructions() {
 		return $this->instructions;
 	}
 
 	/**
-	 * @param SiGetInstruction[]
+	 * @param SiValInstruction[]
 	 */
 	function setInstructions(array $instructions) {
-		ArgUtils::valArray($instructions, SiGetInstruction::class);
+		ArgUtils::valArray($instructions, SiValInstruction::class);
 		$this->instructions = $instructions;
-		return $this;
 	}
 	
-	function putInstruction(string $key, SiGetInstruction $instruction) {
+	function putInstruction(string $key, SiValInstruction $instruction) {
 		$this->instructions[$key] = $instruction;
 	}
 
-	static function createFromData(array $data) {
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\api\SiValRequest
+	 */
+	static function parse(array $data) {
 		$ds = new DataSet($data);
 		
-		$getRequest = new SiGetRequest();
+		$getRequest = new SiValRequest();
 		try {
 			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
-				$getRequest->putInstruction($key, SiGetInstruction::createFromData($instructionData));
+				$getRequest->putInstruction($key, SiValInstruction::createFromData($instructionData));
 			}
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

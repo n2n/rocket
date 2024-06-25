@@ -23,7 +23,7 @@ namespace rocket\impl\ei\manage\gui;
 
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\control\SiControl;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\ui\si\control\SiButton;

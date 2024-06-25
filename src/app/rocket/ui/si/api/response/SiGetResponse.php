@@ -19,44 +19,35 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\response;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\api\SiValResult;
+use SiGetResult;
 
-class SiValResponse implements \JsonSerializable {
+class SiGetResponse implements \JsonSerializable {
 	/**
-	 * @var SiValResult[]
+	 * @var SiGetInstructionResult[]
 	 */
-	private $results = [];
+	private array $instructionResults = [];
+
+	/**
+	 * @return SiGetInstructionResult[]
+	 */
+	function getInstructionResults(): array {
+		return $this->instructionResults;
+	}
+//
+//	function setInstructionResults(array $instructionResults) {
+//		ArgUtils::valArray($instructionResults, SiGetInstructionResult::class);
+//		$this->instructionResults = $instructionResults;
+//	}
 	
-	/**
-	 * @return SiValResult[]
-	 */
-	function getResults() {
-		return $this->results;
+	function putInstructionResult(string $key, SiGetInstructionResult $result): static {
+		$this->instructionResults[$key] = $result;
+		return $this;
 	}
 	
-	/**
-	 * @param SiValResult[]
-	 */
-	function setResults(array $results) {
-		ArgUtils::valArray($results, SiValResult::class);
-		$this->results = $results;
-	}
-	
-	/** 
-	 * @param string $key
-	 * @param SiValResult $result 
-	 */
-	function putResult(string $key, SiValResult $result) {
-		$this->results[$key] = $result;
-	}
-	
-	/** 
-	 * @return array
-	 */
 	public function jsonSerialize(): mixed {
-		return ['results' => $this->results];
+		return ['instructionResults' => $this->instructionResults];
 	}	
 }

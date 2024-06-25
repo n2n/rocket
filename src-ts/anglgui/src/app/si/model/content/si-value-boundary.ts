@@ -339,8 +339,7 @@ export class SiValueBoundary {
 	}
 
 	createLock(): SiEntryLock {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN,
-				'SiEntry not clean: ' + this.state);
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN,'SiEntry not clean: ' + this.state);
 
 		this.stateSubject.next(SiEntryState.LOCKED);
 		const lock = this.lock = {

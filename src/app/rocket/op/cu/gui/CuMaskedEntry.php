@@ -10,7 +10,7 @@ use rocket\ui\si\control\SiIconType;
 use rocket\ui\si\content\SiEntry;
 use rocket\ui\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class CuMaskedEntry {
 
@@ -57,7 +57,7 @@ class CuMaskedEntry {
 	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2nContext): bool {
 		return $this->cuGuiEntry->handleSiEntryInput($siEntryInput, $n2nContext);

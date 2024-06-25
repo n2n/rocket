@@ -19,39 +19,37 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\request;
 
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\input\SiValueBoundaryInput;
 
 class SiValInstruction {
 	/**
 	 * @var SiEntryInput
 	 */
-	private $entryInput;
+	private $valueBoundaryInput;
 	/**
 	 * @var SiValGetInstruction[]
 	 */
 	private $getInstructions = [];
 
-	function __construct(SiEntryInput $entryInput) {
-		$this->entryInput = $entryInput;
+	function __construct(SiValueBoundaryInput $valueBoundaryInput) {
+		$this->valueBoundaryInput = $valueBoundaryInput;
+	}
+	
+	public function getValueBoundaryInput(): SiValueBoundaryInput {
+		return $this->valueBoundaryInput;
 	}
 	
 	/**
-	 * @return \rocket\ui\si\input\SiEntryInput
+	 * @param \rocket\ui\si\input\SiEntryInput $valueBoundaryInput
 	 */
-	public function getEntryInput() {
-		return $this->entryInput;
-	}
-	
-	/**
-	 * @param \rocket\ui\si\input\SiEntryInput $entryInput
-	 */
-	public function setEntryInput($entryInput) {
-		$this->entryInput = $entryInput;
+	public function setValueBoundaryInput($valueBoundaryInput) {
+		$this->valueBoundaryInput = $valueBoundaryInput;
 	}
 
 	/**

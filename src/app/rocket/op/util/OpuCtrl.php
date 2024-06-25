@@ -20,7 +20,7 @@ use rocket\ui\si\content\impl\iframe\IframeSiGui;
 use rocket\ui\si\content\impl\iframe\IframeData;
 use n2n\util\uri\Url;
 use n2n\web\http\Method;
-use rocket\ui\si\api\SiCallResult;
+use SiCallResult;
 use rocket\ui\si\control\SiNavPoint;
 use rocket\ui\si\meta\SiBreadcrumb;
 use n2n\l10n\DynamicTextCollection;
@@ -28,7 +28,7 @@ use rocket\op\cu\util\Cuu;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\util\entry\EiuObject;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\op\cu\gui\CuGui;
 use rocket\ui\si\input\SiInputFactory;
 use rocket\si\input\SiInputResult;
@@ -39,7 +39,6 @@ use rocket\impl\ei\manage\gui\BulkyGui;
 use rocket\ui\gui\control\ZoneGuiControlsMap;
 use rocket\impl\ei\manage\gui\CompactExplorerGui;
 use rocket\ui\gui\control\GuiControlMap;
-use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\GuiZone;
 use rocket\ui\si\content\SiZoneCall;
 use n2n\web\http\StatusException;
@@ -262,7 +261,7 @@ class OpuCtrl {
 				$this->cu->sendJson($siResult);
 				return;
 			}
-		} catch (CorruptedSiInputDataException $e) {
+		} catch (CorruptedSiDataException $e) {
 			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
 		}
 
@@ -302,30 +301,30 @@ class OpuCtrl {
 
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
-	private function handleEiSiCall(Gui $gui, ZoneGuiControlsMap $zoneGuiControlsMap): ?SiCallResult {
-		$zoneControlPath = $this->cu->getParamPost('zoneControlPath');
-		if (!($this->cu->getRequest()->getMethod() === Method::POST && null !== $zoneControlPath)) {
-			return null;
-		}
-
-		$zoneControlPath = GuiControlPath::create($zoneControlPath);
-
-		$siInputResult = null;
-		if (null !== ($entryInputMapsParam = $this->cu->getParamPost('entryInputMaps'))) {
-			$siInput = (new SiInputFactory())->create($entryInputMapsParam->parseJson());
-			if (null !== ($siInputError = $gui->handleSiInput($siInput))) {
-				return SiCallResult::fromInputError($siInputError);
-			}
-
-			$siInputResult = new \rocket\ui\si\input\SiInputResult($gui->getInputSiValueBoundaries());
-		}
-
-		return SiCallResult::fromCallResponse(
-				$zoneGuiControlsMap->handleSiCall($zoneControlPath),
-				$siInputResult);
-	}
+//	private function handleEiSiCall(Gui $gui, ZoneGuiControlsMap $zoneGuiControlsMap): ?SiCallResult {
+//		$zoneControlPath = $this->cu->getParamPost('zoneControlPath');
+//		if (!($this->cu->getRequest()->getMethod() === Method::POST && null !== $zoneControlPath)) {
+//			return null;
+//		}
+//
+//		$zoneControlPath = GuiControlPath::create($zoneControlPath);
+//
+//		$siInputResult = null;
+//		if (null !== ($entryInputMapsParam = $this->cu->getParamPost('entryInputMaps'))) {
+//			$siInput = (new SiInputFactory())->create($entryInputMapsParam->parseJson());
+//			if (null !== ($siInputError = $gui->handleSiInput($siInput))) {
+//				return SiCallResult::fromInputError($siInputError);
+//			}
+//
+//			$siInputResult = new \rocket\ui\si\input\SiInputResult($gui->getInputSiValueBoundaries());
+//		}
+//
+//		return SiCallResult::fromCallResponse(
+//				$zoneGuiControlsMap->handleSiCall($zoneControlPath),
+//				$siInputResult);
+//	}
 
 	function forwardUrlIframeZone(Url $url, string $title = null): void {
 		if ($this->forwardHtml()) {
@@ -460,7 +459,7 @@ class OpuCtrl {
 //	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	private function handleCuSiCall(?CuGui $cuGui): ?SiCallResult {
 		$apiCallIdParam = $this->cu->getParamPost('apiCallId');
@@ -497,7 +496,7 @@ class OpuCtrl {
 				$this->cu->sendJson($siResult);
 				return;
 			}
-		} catch (CorruptedSiInputDataException $e) {
+		} catch (CorruptedSiDataException $e) {
 			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
 		}
 

@@ -93,7 +93,7 @@ class EditControllerTest extends TestCase {
 		$siEntryInput = new SiEntryInput($siEntryIdentifier);
 		$siEntryInput->putFieldInput('annoHoleradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('annoHoleradioObj', new SiFieldInput(['value' => 'nv']));
-		$siInput->putEntryInput('0', $siEntryInput);
+		$siInput->putValueBoundaryInput('0', $siEntryInput);
 
 
 		$result = TestEnv::http()->newRequest()->post(

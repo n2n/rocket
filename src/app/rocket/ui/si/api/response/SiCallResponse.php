@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\control;
+namespace rocket\ui\si\api\response;
 
 use n2n\l10n\Message;
 use n2n\util\type\ArgUtils;
@@ -42,7 +42,7 @@ class SiCallResponse implements \JsonSerializable {
 	 */
 	private $messageArr = [];
 	/**
-	 * @var SiButton
+	 * @var \rocket\ui\si\control\SiButton
 	 */
 	private $newButton;
 	/**
@@ -65,10 +65,10 @@ class SiCallResponse implements \JsonSerializable {
 	}
 	
 	/**
-	 * @param SiNavPoint|null $navPoint
+	 * @param \rocket\ui\si\control\SiNavPoint|null $navPoint
 	 * @return \rocket\si\control\SiCallResponse
 	 */
-	function setNavPoint(?SiNavPoint $navPoint) {
+	function setNavPoint(?\rocket\ui\si\control\SiNavPoint $navPoint) {
 		$this->navPoint = $navPoint;
 		return $this;
 	}
@@ -108,7 +108,7 @@ class SiCallResponse implements \JsonSerializable {
 		return $this;
 	}
 	
-	function setNewButton(?SiButton $newButton) {
+	function setNewButton(?\rocket\ui\si\control\SiButton $newButton) {
 		$this->newButton = $newButton;
 		return $this;
 	}

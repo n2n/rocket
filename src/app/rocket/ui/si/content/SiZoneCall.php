@@ -6,8 +6,7 @@ use n2n\web\http\controller\impl\ControllingUtils;
 use n2n\web\http\Method;
 use rocket\ui\si\input\SiInput;
 use rocket\ui\si\input\SiInputFactory;
-use rocket\ui\gui\control\GuiControlPath;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\web\http\StatusException;
 use n2n\web\http\BadRequestException;
 
@@ -47,7 +46,7 @@ class SiZoneCall implements \JsonSerializable {
 		if (null !== ($entryInputMapsData = $httpData->optArray('entryInputMaps'))) {
 			try {
 				$siInput = (new SiInputFactory())->create($entryInputMapsData);
-			} catch (CorruptedSiInputDataException $e) {
+			} catch (CorruptedSiDataException $e) {
 				throw new BadRequestException(previous: $e);
 			}
 		}
@@ -58,7 +57,7 @@ class SiZoneCall implements \JsonSerializable {
 	public function jsonSerialize(): mixed {
 		return [
 			'zoneControlName' => $this->zoneControlName,
-			'entryInputMaps' => $this->input?->getEntryInputs()
+			'entryInputMaps' => $this->input?->getValueBoundaryInputs()
 		];
 	}
 }

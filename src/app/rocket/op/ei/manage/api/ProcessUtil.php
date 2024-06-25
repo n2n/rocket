@@ -28,14 +28,13 @@ use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\op\ei\manage\security\SecurityException;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiException;
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class ProcessUtil {
 	private $eiFrame;
@@ -97,7 +96,7 @@ class ProcessUtil {
 	 * @return EiObject
 	 */
 	function determineEiObjectOfInput(SiEntryInput $siEntryInput) {
-		if (null !== ($pid = $siEntryInput->getIdentifier()->getId())) {
+		if (null !== ($pid = $siEntryInput->getEntryId()->getId())) {
 			return $this->lookupEiObject($pid);
 		}
 		
@@ -166,7 +165,7 @@ class ProcessUtil {
 	function handleEntryInput(SiEntryInput $siEntryInput, EiGuiValueBoundary $eiGuiValueBoundary): bool {
 		try {
 			$valid = $eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
-		} catch (CorruptedSiInputDataException|\InvalidArgumentException $e) {
+		} catch (CorruptedSiDataException|\InvalidArgumentException $e) {
 			throw new BadRequestException(null, 0, $e);
 		}
 

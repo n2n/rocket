@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\response;
 
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\content\SiPartialContent;
@@ -28,7 +28,7 @@ use rocket\ui\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\SiPayloadFactory;
 
-class SiGetResult implements \JsonSerializable {
+class SiGetInstructionResult implements \JsonSerializable {
 	/**
 	 * @var SiDeclaration|null
 	 */
@@ -53,30 +53,30 @@ class SiGetResult implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\ui\si\meta\SiDeclaration|null
+	 * @return SiDeclaration|null
 	 */
-	public function getDeclaration() {
+	public function getDeclaration(): ?SiDeclaration {
 		return $this->declaration;
 	}
 
 	/**
-	 * @param \rocket\ui\si\meta\SiDeclaration|null $declaration
+	 * @param SiDeclaration|null $declaration
 	 */
-	public function setDeclaration(?SiDeclaration $declaration) {
+	public function setDeclaration(?SiDeclaration $declaration): void {
 		$this->declaration = $declaration;
 	}
 	
 	/**
 	 * @return SiControl[]|null
 	 */
-	public function getGeneralControls() {
+	public function getGeneralControls(): ?array {
 		return $this->generalControls;
 	}
 	
 	/**
 	 * @param SiControl[]|null $controls
 	 */
-	public function setGeneralControls(?array $controls) {
+	public function setGeneralControls(?array $controls): void {
 		ArgUtils::valArray($controls, SiControl::class);
 		$this->generalControls = $controls;
 	}
@@ -85,22 +85,39 @@ class SiGetResult implements \JsonSerializable {
 		return $this->valueBoundary;
 	}
 
-	public function setValueBoundary(?SiValueBoundary $valueBoundary) {
+	public function setValueBoundary(?SiValueBoundary $valueBoundary): void {
 		$this->valueBoundary = $valueBoundary;
 	}
 
 	/**
-	 * @return \rocket\ui\si\content\SiPartialContent|null
+	 * @return SiPartialContent|null
 	 */
-	public function getPartialContent() {
+	public function getPartialContent(): ?SiPartialContent {
 		return $this->partialContent;
 	}
 
 	/**
-	 * @param \rocket\ui\si\content\SiPartialContent|null $partialContent
+	 * @param SiPartialContent|null $partialContent
 	 */
-	public function setPartialContent(?SiPartialContent $partialContent) {
+	public function setPartialContent(?SiPartialContent $partialContent): void {
 		$this->partialContent = $partialContent;
+	}
+
+	/**
+	 * @return SiValueBoundary[]
+	 */
+	function getAllValueBoundaries(): array {
+		$valueBoundaries = [];
+
+		if ($this->valueBoundary !== null) {
+			$valueBoundaries[] = $this->valueBoundary;
+		}
+
+		if ($this->partialContent !== null) {
+			array_push($valueBoundaries, ...$this->partialContent->getValueBoundaries());
+		}
+
+		return $valueBoundaries;
 	}
 
 	/**

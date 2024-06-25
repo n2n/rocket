@@ -8,7 +8,7 @@ use phpbob\representation\ex\UnknownElementException;
 use rocket\ui\si\input\SiEntryInput;
 use n2n\core\container\N2nContext;
 use rocket\si\input\SiInputError;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class CuGuiEntry {
 	/**
@@ -44,7 +44,7 @@ class CuGuiEntry {
 	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiEntryInput(SiEntryInput $siEntryInput, N2nContext $n2nContext): bool {
 		$this->siEntry->handleEntryInput($siEntryInput, $n2nContext);

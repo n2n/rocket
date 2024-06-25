@@ -19,11 +19,11 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\response;
 
-use rocket\ui\si\control\SiCallResponse;
 use rocket\ui\si\input\SiInputResult;
 use rocket\ui\si\input\SiInputError;
+use n2n\util\type\ArgUtils;
 
 class SiCallResult implements \JsonSerializable {
 	private $inputError;
@@ -31,22 +31,21 @@ class SiCallResult implements \JsonSerializable {
 	private $inputResult;
 
 	/**
-	 * @param SiInputError|null $inputError
 	 * @param SiCallResponse|null $callResponse
 	 * @param SiInputResult|null $inputResult
 	 */
-	private function __construct(?SiInputError $inputError, ?SiCallResponse $callResponse, ?SiInputResult $inputResult) {
-		$this->inputError = $inputError;
+	private function __construct(?SiCallResponse $callResponse, ) {
 		$this->callResponse = $callResponse;
 		$this->inputResult = $inputResult;
 	}
 	
 	/**
-	 * @param SiInputError $inputError
+	 * @param SiInputError $inputResult
 	 * @return \rocket\op\ei\manage\api\SiCallResult
 	 */
-	static function fromInputError(SiInputError $inputError) {
-		return new SiCallResult($inputError, null, null);
+	static function fromInputError(SiInputResult $inputResult) {
+		ArgUtils::assertTrue(!$inputResult->isValid());
+		return new SiCallResult(null, $inputResult);
 	}
 	
 	/**
@@ -63,7 +62,6 @@ class SiCallResult implements \JsonSerializable {
 	 */
 	function jsonSerialize(): mixed {
 		return [
-			'inputError' => $this->inputError,
 			'callResponse' => $this->callResponse,
 			'inputResult' => $this->inputResult
 		];

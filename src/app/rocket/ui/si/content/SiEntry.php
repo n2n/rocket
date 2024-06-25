@@ -24,11 +24,10 @@ namespace rocket\ui\si\content;
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\SiPayloadFactory;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\input\SiEntryInput;
 use n2n\l10n\Message;
 use n2n\core\container\N2nContext;
-use n2n\util\col\ArrayUtils;
 use n2n\util\type\ArgUtils;
 
 class SiEntry implements \JsonSerializable {
@@ -136,7 +135,7 @@ class SiEntry implements \JsonSerializable {
 	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleEntryInput(SiEntryInput $entryInput, N2nContext $n2nContext): bool {
 		$valid = true;
@@ -153,7 +152,7 @@ class SiEntry implements \JsonSerializable {
 
 				$fields[] = $field;
 			} catch (\InvalidArgumentException|AttributesException $e) {
-				throw new CorruptedSiInputDataException($e->getMessage(), previous: $e);
+				throw new CorruptedSiDataException($e->getMessage(), previous: $e);
 			}
 		}
 

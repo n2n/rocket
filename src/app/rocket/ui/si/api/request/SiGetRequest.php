@@ -19,51 +19,52 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content;
+namespace rocket\ui\si\api\request;
 
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\UploadDefinition;
+use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
-use n2n\core\container\N2nContext;
-use InvalidArgumentException;
-use rocket\ui\si\err\CorruptedSiDataException;
+use n2n\util\type\ArgUtils;
 
-interface SiField {
+class SiGetRequest {
+	private $instructions = [];
 	
 	/**
-	 * @return string
+	 * 
 	 */
-	function getType(): string;
+	function __construct() {	
+	}
 	
 	/**
-	 * @return array
+	 * @return SiGetInstruction[]
 	 */
-	function getData(): array;
-	
-	/**
-	 * @return bool
-	 */
-	function isReadOnly(): bool;
-	
-	/**
-	 * @param array $data
-	 * @throws IllegalStateException if readonly ({@see self::isReadyOnly()} returns true).
-	 * @throws CorruptedSiDataException if data is corrupt
-	 */
-	function handleInput(array $data, N2nContext $n2nContext): bool;
+	function getInstructions() {
+		return $this->instructions;
+	}
 
-	function flush(N2nContext $n2nContext): void;
-	
 	/**
-	 * @return bool
+	 * @param SiGetInstruction[]
 	 */
-	function isCallable(): bool;
+	function setInstructions(array $instructions) {
+		ArgUtils::valArray($instructions, SiGetInstruction::class);
+		$this->instructions = $instructions;
+		return $this;
+	}
 	
-	/**
-	 * @param array $data
-	 * @param UploadDefinition[] $uploadDefinitions
-	 * @return array
-	 * @throws CorruptedSiDataException
-	 */
-	function handleCall(array $data, array $uploadDefinitions, N2nContext $n2nContext): array;
+	function putInstruction(string $key, SiGetInstruction $instruction) {
+		$this->instructions[$key] = $instruction;
+	}
+
+	static function parse(array $data): SiGetRequest {
+		$ds = new DataSet($data);
+		
+		$getRequest = new SiGetRequest();
+		try {
+			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
+				$getRequest->putInstruction($key, SiGetInstruction::createFromData($instructionData));
+			}
+		} catch (AttributesException $e) {
+			throw new \InvalidArgumentException(null, 0, $e);
+		}
+		return $getRequest;
+	}
 }

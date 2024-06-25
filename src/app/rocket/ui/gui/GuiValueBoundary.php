@@ -22,13 +22,9 @@
 namespace rocket\ui\gui;
 
 use n2n\util\ex\IllegalStateException;
-use rocket\ui\si\input\SiEntryInput;
-use n2n\util\type\ArgUtils;
-use rocket\ui\si\input\CorruptedSiInputDataException;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\meta\SiStyle;
-use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;
 
 class GuiValueBoundary {
@@ -77,15 +73,15 @@ class GuiValueBoundary {
 		return $this->siValueBoundary;
 
 
-		foreach ($this->guiEntries as $key => $guiEntry) {
-			$siValueBoundary->putEntry($guiEntry->getMaskId(), $guiEntry->getSiEntry($n2nLocale));
-		}
-
-		if ($this->isEiGuiEntrySelected()) {
-			$siValueBoundary->setSelectedMaskId($this->getSelectedMaskId());
-		}
-
-		return $siValueBoundary;
+//		foreach ($this->guiEntries as $key => $guiEntry) {
+//			$siValueBoundary->putEntry($guiEntry->getMaskId(), $guiEntry->getSiEntry($n2nLocale));
+//		}
+//
+//		if ($this->isEiGuiEntrySelected()) {
+//			$siValueBoundary->setSelectedMaskId($this->getSelectedMaskId());
+//		}
+//
+//		return $siValueBoundary;
 	}
 
 //	/**
@@ -165,9 +161,9 @@ class GuiValueBoundary {
 		return $this->getSelectedGuiEntry()->getEiEntry();
 	}
 	
-	function save(N2nContext $n2nContext): bool {
-		return $this->getSelectedGuiEntry()->save($n2nContext);
-	}
+//	function save(N2nContext $n2nContext): bool {
+//		return $this->getSelectedGuiEntry()->save($n2nContext);
+//	}
 
 	function __toString() {
 		return 'EiGuiValueBoundary';

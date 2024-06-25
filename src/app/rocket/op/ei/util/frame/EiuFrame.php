@@ -57,7 +57,7 @@ use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\CriteriaFactory;
 use rocket\ui\si\content\SiEntryQualifier;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use rocket\op\ei\util\Eiu;
 use n2n\reflection\magic\MagicMethodInvoker;
 use rocket\op\ei\manage\frame\SortAbility;

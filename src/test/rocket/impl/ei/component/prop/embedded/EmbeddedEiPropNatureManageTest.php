@@ -12,18 +12,15 @@ use rocket\user\model\security\FullEiPermissionManager;
 use rocket\op\ei\manage\frame\EiFrameUtil;
 use rocket\op\ei\EiPropPath;
 use rocket\op\spec\Spec;
-use rocket\op\ei\manage\DefPropPath;
 use testmdl\embedded\bo\EmbeddableTestObj;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\EiType;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\gui\field\GuiFieldPath;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\input\SiEntryInput;
-use rocket\ui\si\content\SiEntryIdentifier;
-use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\input\SiFieldInput;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {
@@ -72,7 +69,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 * @throws AttributesException
 	 */
 	function testEiGuiProp(): void {
@@ -87,7 +84,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 		$guiFieldPath = new GuiFieldPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->__toString()]);
 		$siEntryInput->putFieldInput($guiFieldPath->__toString(), new SiFieldInput(['value' => 'some value']));
 
-		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleEntryInput($siEntryInput,
+		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleInput($siEntryInput,
 				$this->createMock(N2nContext::class)));
 
 //		$guiField->getSiField()->handleInput(, $this->createMock(N2nContext::class));

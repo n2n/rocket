@@ -21,16 +21,12 @@
  */
 namespace rocket\impl\ei\manage\gui;
 
-use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\control\SiControl;
-use rocket\ui\si\control\SiCallResponse;
 use rocket\ui\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\ui\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\control\GuiControl;
 use rocket\ui\si\control\impl\GroupSiControl;
-use n2n\util\ex\UnsupportedOperationException;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
 use rocket\ui\gui\control\GuiControlMap;

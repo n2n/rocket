@@ -22,13 +22,8 @@
 namespace rocket\ui\gui\control;
 
 use rocket\ui\si\control\SiControl;
-use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\entry\EiEntry;
-use rocket\ui\si\control\SiCallResponse;
-use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use n2n\util\uri\Url;
+use SiCallResponse;
 use rocket\ui\gui\field\GuiFieldMap;
 
 interface GuiControl {

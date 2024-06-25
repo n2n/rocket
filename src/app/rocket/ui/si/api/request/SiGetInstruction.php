@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\request;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
@@ -28,59 +28,37 @@ use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;
 
 class SiGetInstruction {
-	private $style;
 	private $declarationRequested = false;
 	private $generalControlsIncluded = false;
 	private $entryControlsIncluded = false;
-	private $entryId = null;
-	private $partialContentInstruction = null;
-	private $newEntryRequested = false;
-	private $propIds = null;
+	private ?string $entryId = null;
+	private SiPartialContentInstruction|null $partialContentInstruction = null;
+	private bool $newEntryRequested = false;
+	private ?array $allowedFieldNames = null;
 
-	private $typeIds = [];
-	
-	/**
-	 * @param bool $bulky
-	 * @param bool $readOnly
-	 */
-	function __construct(SiStyle $style) {
-		$this->style = $style;
-	}
-	
-	/**
-	 * @return SiStyle
-	 */
-	function getStyle() {
-		return $this->style;
+	function __construct(private ?string $maskId) {
 	}
 
-	/**
-	 * @param bool $bulky
-	 */
-	function setStyle(SiStyle $style) {
-		$this->style = $style;
-	}
-
-	function getTypeIds() {
-		return $this->typeIds;
-	}
-	
-	function setTypeIds(?array $typeIds) {
-		ArgUtils::valArray($typeIds, 'string', true);
-		$this->typeIds = $typeIds;
-	}
+//	function getAllowedMaskIds(): ?array {
+//		return $this->allowedMaskIds;
+//	}
+//
+//	function setAllowedMaskIds(?array $allowedMaskIds) {
+//		ArgUtils::valArray($allowedMaskIds, 'string', true);
+//		$this->allowedMaskIds = $allowedMaskIds;
+//	}
 	
 	/**
 	 * @return bool
 	 */
-	function isDeclarationRequested() {
+	function isDeclarationRequested(): bool {
 		return $this->declarationRequested;
 	}
 
 	/**
 	 * @param bool $declarationRequested
 	 */
-	function setDeclarationRequested(bool $declarationRequested) {
+	function setDeclarationRequested(bool $declarationRequested): void {
 		$this->declarationRequested = $declarationRequested;
 	}
 	
@@ -113,7 +91,7 @@ class SiGetInstruction {
 	}
 
 	/**
-	 * @return mixed
+	 * @return SiPartialContentInstruction
 	 */
 	function getPartialContentInstruction() {
 		return $this->partialContentInstruction;
@@ -160,16 +138,16 @@ class SiGetInstruction {
 		return $this->entryId;
 	}
 	
-	function setPropIds(?array $propIds) {
-		ArgUtils::valArray($propIds, 'string', true);
-		$this->propIds = $propIds;
+	function setAllowedFieldNames(?array $allowedFieldNames) {
+		ArgUtils::valArray($allowedFieldNames, 'string', true);
+		$this->allowedFieldNames = $allowedFieldNames;
 	}
 	
 	/**
 	 * @return string[]|null
 	 */
-	function getPropIds() {
-		return $this->propIds;
+	function getAllowedFieldNames() {
+		return $this->allowedFieldNames;
 	}
 	
 	/**
@@ -186,7 +164,7 @@ class SiGetInstruction {
 			$instruction->setGeneralControlsIncluded($ds->reqBool('generalControlsIncluded'));
 			$instruction->setEntryControlsIncluded($ds->reqBool('entryControlsIncluded'));
 			$instruction->setEntryId($ds->optString('entryId'));
-			$instruction->setTypeIds($ds->optArray('typeIds', 'string', null, true));
+			$instruction->setAllowedMaskIds($ds->optArray('typeIds', 'string', null, true));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null, true);
 			if ($pcData == null) {
@@ -196,7 +174,7 @@ class SiGetInstruction {
 			}
 			
 			$instruction->setNewEntryRequested($ds->reqBool('newEntryRequested'));
-			$instruction->setPropIds($ds->reqScalarArray('propIds', true));
+			$instruction->setAllowedFieldNames($ds->reqScalarArray('propIds', true));
 			return $instruction;
 		} catch (AttributesException $e) {
 			throw new \InvalidArgumentException(null, 0, $e);

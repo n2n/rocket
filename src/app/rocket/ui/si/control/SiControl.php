@@ -22,6 +22,7 @@
 namespace rocket\ui\si\control;
 
 use n2n\core\container\N2nContext;
+use SiCallResponse;
 
 interface SiControl {
 	

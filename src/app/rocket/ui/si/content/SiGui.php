@@ -22,8 +22,7 @@
 namespace rocket\ui\si\content;
 
 use rocket\ui\si\input\SiInput;
-use rocket\ui\si\input\SiInputError;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\input\SiInputResult;
 
@@ -44,7 +43,7 @@ interface SiGui {
 	 * @param SiInput $siInput
 	 * @param N2nContext $n2nContext
 	 * @return SiInputResult
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult;
 }

@@ -5,19 +5,17 @@ namespace rocket\impl\ei\manage\gui;
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
 use rocket\ui\si\input\SiInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\ui\si\control\SiCallResponse;
-use n2n\util\ex\IllegalStateException;
+use SiCallResponse;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\content\SiZoneCall;
-use rocket\ui\si\api\SiCallResult;
+use SiCallResult;
 use rocket\ui\si\input\SiInputError;
-use n2n\core\container\N2nContext;
 use rocket\ui\gui\control\GuiControlMap;
 
 class BulkyGui implements Gui {
@@ -45,40 +43,40 @@ class BulkyGui implements Gui {
 	}
 
 	function handleSiGuiOperation(?SiInput $siInput, SiZoneCall $siGuiCall): SiCallResult {
-		$siInput->getEntryInputs();
+		$siInput->getValueBoundaryInputs();
 		$this->guiValueBoundary->handleSiEntryInput();
 
 	}
 
-	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
-		$entryInputs = $siInput->getEntryInputs();
-		if (count($entryInputs) > 1) {
-			throw new CorruptedSiInputDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
-		}
-
-		$this->inputSiValueBoundaries = [];
-		$this->inputEiEntries = [];
-
-		foreach ($entryInputs as $siEntryInput) {
-			if (!$this->guiValueBoundary->getSiValueBoundary()->handleEntryInput($siEntryInput)
-					|| !$this->guiValueBoundary->save($n2nContext)) {
-				return new SiInputError([$this->guiValueBoundary->getSiValueBoundary()]);
-			}
-
-			if ($this->guiValueBoundary->getSelectedEiEntry()->validate()) {
-				$this->inputSiValueBoundaries = [$this->guiValueBoundary->getSiValueBoundary()];
-				$this->inputEiEntries = [$this->guiValueBoundary->getSelectedEiEntry()];
-				return null;
-			}
-
-			return new SiInputError([$this->guiValueBoundary->getSiValueBoundary($n2nLocale)]);
-		}
-
-		throw new IllegalStateException();
-	}
+//	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
+//		$entryInputs = $siInput->getValueBoundaryInputs();
+//		if (count($entryInputs) > 1) {
+//			throw new CorruptedSiDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
+//		}
+//
+//		$this->inputSiValueBoundaries = [];
+//		$this->inputEiEntries = [];
+//
+//		foreach ($entryInputs as $siEntryInput) {
+//			if (!$this->guiValueBoundary->getSiValueBoundary()->handleEntryInput($siEntryInput)
+//					|| !$this->guiValueBoundary->save($n2nContext)) {
+//				return new SiInputError([$this->guiValueBoundary->getSiValueBoundary()]);
+//			}
+//
+//			if ($this->guiValueBoundary->getSelectedEiEntry()->validate()) {
+//				$this->inputSiValueBoundaries = [$this->guiValueBoundary->getSiValueBoundary()];
+//				$this->inputEiEntries = [$this->guiValueBoundary->getSelectedEiEntry()];
+//				return null;
+//			}
+//
+//			return new SiInputError([$this->guiValueBoundary->getSiValueBoundary($n2nLocale)]);
+//		}
+//
+//		throw new IllegalStateException();
+//	}
 
 	/**
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiCall(ZoneApiControlCallId $zoneControlCallId): SiCallResponse {
 		return $this->zoneGuiControlsMap->handleSiCall($zoneControlCallId, $this->eiFrame, $this->eiGuiDeclaration,

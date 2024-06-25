@@ -19,27 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\err;
 
-use n2n\util\type\ArgUtils;
-
-class SiGetResponse implements \JsonSerializable {
-	private $results = [];
+class CorruptedSiDataException extends \Exception {
 	
-	function getResults() {
-		return $this->results;
-	}
-	
-	function setResults(array $results) {
-		ArgUtils::valArray($results, SiGetResult::class);
-		$this->results = $results;
-	}
-	
-	function putResult(string $key, SiGetResult $result) {
-		$this->results[$key] = $result;
-	}
-	
-	public function jsonSerialize(): mixed {
-		return ['results' => $this->results];
-	}	
 }

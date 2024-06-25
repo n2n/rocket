@@ -46,7 +46,7 @@ use rocket\ui\gui\EiGuiDeclaration;
 use rocket\si\input\SiInputError;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\si\input\SiInputResult;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use rocket\ui\gui\EiGuiDeclarationFactory;
 
 class ApiControlProcess {
@@ -202,7 +202,7 @@ class ApiControlProcess {
 	private function applyInput($siInput) {
 		$siEntries = [];
 		
-		foreach ($siInput->getEntryInputs() as $key => $entryInput) {
+		foreach ($siInput->getValueBoundaryInputs() as $key => $entryInput) {
 			$eiGuiValueBoundary = null;
 			if ($this->eiEntry !== null) {
 				if ($this->eiEntry->getPid() !== $entryInput->getIdentifier()->getId()) {
@@ -217,7 +217,7 @@ class ApiControlProcess {
 				if (null !== $entryInput->getIdentifier()->getId()) {
 					$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
 				} else {
-					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getMaskId());
+					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getSelectedMaskId());
 				}
 				
 				$this->inputEiEntries[$key] = $eiEntry = $this->eiFrame->createEiEntry($eiObject);
@@ -276,8 +276,8 @@ class ApiControlProcess {
 	}
 	
 	/**
-	 * @throws IllegalStateException
 	 * @return SiCallResponse
+	 *@throws IllegalStateException
 	 */
 	function callGuiControl() {
 		if ($this->generalGuiControl !== null) {

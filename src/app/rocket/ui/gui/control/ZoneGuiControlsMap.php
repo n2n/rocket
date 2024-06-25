@@ -4,8 +4,8 @@ namespace rocket\ui\gui\control;
 
 use n2n\util\type\ArgUtils;
 use n2n\util\uri\Url;
-use rocket\ui\si\input\CorruptedSiInputDataException;
-use rocket\ui\si\control\SiCallResponse;
+use rocket\ui\si\err\CorruptedSiDataException;
+use SiCallResponse;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
@@ -42,7 +42,7 @@ class ZoneGuiControlsMap {
 	 * @param EiGuiDeclaration $eiGuiDeclaration
 	 * @param array $inputEiEntries
 	 * @return SiCallResponse
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiCall(GuiControlPath $guiControlPath, N2nContext $n2nContext): SiCallResponse {
 		$ids = $guiControlPath->toArray();
@@ -63,7 +63,7 @@ class ZoneGuiControlsMap {
 			}
 		}
 
-		throw new CorruptedSiInputDataException('Could not find matching GuiControl for ZoneApiControlCallId: '
+		throw new CorruptedSiDataException('Could not find matching GuiControl for ZoneApiControlCallId: '
 				. $guiControlPath->__toString());
 	}
 }

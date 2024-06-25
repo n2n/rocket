@@ -16,12 +16,10 @@ use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\op\ei\manage\security\InaccessibleEiFieldException;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\si\content\impl\StringInSiField;
-use rocket\op\ei\manage\DefPropPath;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\gui\field\GuiFieldPath;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\si\input\SiFieldInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
 
 class StringEiPropNatureLiveTest extends TestCase {
@@ -215,7 +213,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 	/**
 	 * @throws AttributesException
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function testSiEntryInput(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);

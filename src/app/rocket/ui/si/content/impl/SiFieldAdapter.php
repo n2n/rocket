@@ -25,6 +25,7 @@ use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\SiFieldModel;
 use rocket\ui\si\content\BackableSiField;
+use n2n\core\container\N2nContext;
 
 abstract class SiFieldAdapter implements SiField, BackableSiField {
 //	use SiFieldErrorTrait;
@@ -50,9 +51,12 @@ abstract class SiFieldAdapter implements SiField, BackableSiField {
 	
 	/**
 	 * {@inheritDoc}
+	 * @param array $data
+	 * @param array $uploadDefinitions
+	 * @param N2nContext $n2nContext
 	 * @see \rocket\ui\si\content\SiField::handleCall()
 	 */
-	function handleCall(array $data, array $uploadDefinitions): array {
+	function handleCall(array $data, array $uploadDefinitions, N2nContext $n2nContext): array {
 		throw new IllegalStateException(get_class($this) . ' is not callable.');
 	}
 

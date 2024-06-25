@@ -4,7 +4,7 @@ namespace rocket\ui\gui;
 use rocket\ui\si\content\SiGui;
 use rocket\ui\si\input\SiInput;
 use rocket\si\input\SiInputError;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\SiValueBoundary;
 
 interface Gui {
@@ -14,7 +14,7 @@ interface Gui {
 	/**
 	 * @param SiInput $siInput
 	 * @return SiInputError|null
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 //	function handleSiInput(SiInput $siInput): ?SiInputError;
 

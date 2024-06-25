@@ -31,7 +31,7 @@ use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\relation\SiPanelInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\impl\relation\SiPanel;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
@@ -118,7 +118,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 	/**
 	 * @param SiPanelInput[] $siPanelInputs
 	 * @return SiPanel[]
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiPanelInputs(array $siPanelInputs): array {
 		IllegalStateException::assertTrue(!$this->readOnly);
@@ -259,7 +259,7 @@ class EiuGuiEntryPool {
 
 	/**
 	 * @param SiPanelInput[] $siPanelInputs
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleInput(array $siPanelInputs): void {
 		foreach ($siPanelInputs as $siPanelInput) {

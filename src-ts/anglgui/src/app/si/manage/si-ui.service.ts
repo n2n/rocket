@@ -172,17 +172,17 @@ export class SiUiService {
 		}
 	}
 
-	private replaceEntries(errorEntries: Map<string, SiValueBoundary>, entries: SiValueBoundary[]): void {
-		if (entries.length === 0) {
+	private replaceEntries(errorEntries: Map<string, SiValueBoundary>, valueBoundaries: SiValueBoundary[]): void {
+		if (valueBoundaries.length === 0) {
 			return;
 		}
 
 		for (const [key, errorEntry] of errorEntries) {
-			if (!entries[Number(key)]) {
+			if (!valueBoundaries[Number(key)]) {
 				throw new IllegalSiStateError('Unknown entry key ' + key);
 			}
 
-			entries[0].replace(errorEntry);
+			valueBoundaries[0].replace(errorEntry);
 		}
 	}
 

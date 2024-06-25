@@ -12,9 +12,9 @@ use rocket\op\cu\gui\control\CuControl;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\cu\gui\CuGui;
 use rocket\ui\si\input\SiInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\op\cu\gui\control\CuControlCallId;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use n2n\core\container\N2nContext;
 use rocket\op\cu\util\Cuu;
 
@@ -66,15 +66,15 @@ class BulkyCuGui implements CuGui {
 	}
 
 	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
-		$entryInputs = $siInput->getEntryInputs();
+		$entryInputs = $siInput->getValueBoundaryInputs();
 		if (count($entryInputs) > 1) {
-			throw new CorruptedSiInputDataException('BulkyEntrySiGui can not handle multiple SiEntryInputs.');
+			throw new CorruptedSiDataException('BulkyEntrySiGui can not handle multiple SiEntryInputs.');
 		}
 
 		foreach ($entryInputs as $entryInput) {
-			$maskId = $entryInput->getMaskId();
+			$maskId = $entryInput->getSelectedMaskId();
 			if (!isset($this->cuMaskedEntries[$maskId])) {
-				throw new CorruptedSiInputDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
+				throw new CorruptedSiDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
 			}
 
 			$this->setSelectedMaskId($maskId);
@@ -107,7 +107,7 @@ class BulkyCuGui implements CuGui {
 			return $this->cuControls[$controlId]->handle(new Cuu($cuu, $this->cuMaskedEntries[$this->selectedMaskId]?->getCuEntry()));
 		}
 
-		throw new CorruptedSiInputDataException('Unknown control id: ' . $controlId);
+		throw new CorruptedSiDataException('Unknown control id: ' . $controlId);
 	}
 
 	function toSiGui(Url $zoneApiUrl = null): SiGui {

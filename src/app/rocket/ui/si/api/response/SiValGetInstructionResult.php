@@ -19,62 +19,12 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\api;
+namespace rocket\ui\si\api\response;
 
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\content\SiValueBoundary;
-use n2n\util\type\ArgUtils;
 
-class SiValResult implements \JsonSerializable {
-	/**
-	 * @var bool
-	 */
-	private $valid;
-	/** 
-	 * @var SiValGetResult[]
-	 */
-	private $getResults = [];
-
-	function __construct(bool $valid) {
-		$this->valid = $valid;
-	}
-	
-	/** 
-	 * @return SiValGetResult[]
-	 */
-	function getGetResults() {
-		return $this->getResults;
-	}
-
-	/**
-	 * @param SiValGetResult[]
-	 */
-	function setGetResults(array $getResults) {
-		ArgUtils::valArray($getResults, SiValGetResult::class);
-		$this->getResults = $getResults;
-	}
-	
-	/**
-	 * @param string $key
-	 * @param SiValGetResult $getResult
-	 */
-	function putGetResult(string $key, SiValGetResult $getResult) {
-		$this->getResults[$key] = $getResult;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	public function jsonSerialize(): mixed {
-		return [
-			'valid' => $this->valid,
-			'getResults' => $this->getResults
-		];
-	}
-}
-
-class SiValGetResult implements \JsonSerializable {
+class SiValGetInstructionResult implements \JsonSerializable {
 	/**
 	 * @var SiDeclaration|null
 	 */
@@ -83,10 +33,10 @@ class SiValGetResult implements \JsonSerializable {
 	 * @var SiValueBoundary|null
 	 */
 	private $entry = null;
-	
+
 	function __construct() {
 	}
-	
+
 	/**
 	 * @return \rocket\ui\si\meta\SiDeclaration|null
 	 */
@@ -111,7 +61,7 @@ class SiValGetResult implements \JsonSerializable {
 	/**
 	 * @param \rocket\ui\si\content\SiValueBoundary|null $entries
 	 */
-	public function setSiValueBoundaryEntry(?SiValueBoundary $entry) {
+	public function setValueBoundary(?SiValueBoundary $entry) {
 		$this->entry = $entry;
 	}
 
@@ -121,8 +71,8 @@ class SiValGetResult implements \JsonSerializable {
 	 */
 	public function jsonSerialize(): mixed {
 		return [
-			'declaration' => $this->declaration,
-			'entry' => $this->entry
+				'declaration' => $this->declaration,
+				'entry' => $this->entry
 		];
-	}	
+	}
 }

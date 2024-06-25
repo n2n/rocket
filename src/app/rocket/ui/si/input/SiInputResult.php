@@ -25,28 +25,31 @@ namespace rocket\ui\si\input;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\content\SiValueBoundary;
 
-class SiInputResult {
-	private function __construct(private readonly ?array $valueBoundaries, private readonly ?SiInputError $siInputError) {
+class SiInputResult implements \JsonSerializable {
+	function __construct(private readonly array $valueBoundaries, private readonly bool $valid) {
 		ArgUtils::valArray($this->valueBoundaries, SiValueBoundary::class, true);
 	}
 
 	function isValid(): bool {
-		return $this->siInputError === null;
+		return $this->valid;
 	}
 
 	function getValueBoundaries(): ?array {
 		return $this->valueBoundaries;
 	}
 
-	function getInputError(): ?SiInputError {
-		return $this->siInputError;
+	function jsonSerialize(): mixed {
+		return [
+			'valid' => $this->valid,
+			'valueBoundaries' => $this->valueBoundaries
+		];
 	}
 
 	static function valid(array $valueBoundaries): SiInputResult {
-		return new SiInputResult($valueBoundaries, null);
+		return new SiInputResult($valueBoundaries, true);
 	}
 
-	static function error(SiInputError $siInputError): SiInputResult {
-		return new SiInputResult(null, $siInputError);
+	static function error(array $valueBoundaries): SiInputResult {
+		return new SiInputResult($valueBoundaries, false);
 	}
 }

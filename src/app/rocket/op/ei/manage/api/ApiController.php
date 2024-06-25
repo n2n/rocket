@@ -30,9 +30,9 @@ use n2n\web\http\controller\ParamBody;
 use rocket\ui\si\api\SiGetRequest;
 use rocket\ui\si\api\SiGetResponse;
 use rocket\ui\si\api\SiValRequest;
-use rocket\ui\si\api\SiValResponse;
+use SiValResponse;
 use rocket\ui\gui\ViewMode;
-use rocket\ui\si\api\SiCallResult;
+use SiCallResult;
 
 class ApiController extends ControllerAdapter {
 	const API_CONTROL_SECTION = 'execcontrol';
@@ -88,7 +88,7 @@ class ApiController extends ControllerAdapter {
 	 */
 	private function parseGetRequest(Param $param) {
 		try {
-			return SiGetRequest::createFromData($param->parseJson());
+			return SiGetRequest::parse($param->parseJson());
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}
@@ -101,7 +101,7 @@ class ApiController extends ControllerAdapter {
 	 */
 	private function parseValRequest(Param $param) {
 		try {
-			return SiValRequest::createFromData($param->parseJson());
+			return SiValRequest::parse($param->parseJson());
 		} catch (\InvalidArgumentException $e) {
 			throw new BadRequestException(null, null, $e);
 		}

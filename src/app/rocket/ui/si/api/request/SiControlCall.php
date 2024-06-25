@@ -19,39 +19,52 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content\impl;
+namespace rocket\ui\si\api\request;
 
 use rocket\ui\si\err\CorruptedSiDataException;
-use n2n\core\container\N2nContext;
+use n2n\util\type\attrs\DataMap;
+use n2n\util\type\attrs\AttributesException;
 
-abstract class InSiFieldAdapter extends SiFieldAdapter {
+class SiControlCall {
 
 	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::isReadOnly()
+	 * @param string $maskId
+	 * @param string|null $entryId if not null the call is meant for an entry control
+	 * @param string $controlName
 	 */
-	function isReadOnly(): bool {
-		return false;
+	function __construct(private string $maskId, private ?string $entryId, private string $controlName) {
 	}
 
-	abstract function getValue(): mixed;
-
-	final function handleInput(array $data, N2nContext $n2nContext): bool {
-		$valueValid = $this->handleInputValue($data);
-		$valid = $this->getModel()?->handleInput($this->getValue(), $n2nContext);
-
-		return $valueValid && $valid;
+	function getMaskId(): string {
+		return $this->maskId;
 	}
 
-	final function flush(N2nContext $n2nContext): void {
-		$this->getModel()?->flush($n2nContext);
+	function getEntryId(): ?string {
+		return $this->entryId;
+	}
+
+	function getControlName(): string {
+		return $this->controlName;
+	}
+
+	function jsonSerialize(): mixed {
+		return [
+			'maskId' => $this->maskId,
+			'entryId' => $this->entryId,
+			'controlName' => $this->controlName
+		];
 	}
 
 	/**
-	 * @param array $data
-	 * @return bool
 	 * @throws CorruptedSiDataException
 	 */
-	protected abstract function handleInputValue(array $data): bool;
+	static function parse(array $data): SiControlCall {
+		$dataMap = new DataMap($data);
+		try {
+			return new SiControlCall($dataMap->reqString('maskId'), $dataMap->optString('entryId'),
+					$dataMap->reqString('controlName'));
+		} catch (AttributesException $e) {
+			throw new CorruptedSiDataException(previous: $e);
+		}
+	}
 }
-

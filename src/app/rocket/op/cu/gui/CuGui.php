@@ -5,11 +5,11 @@ namespace rocket\op\cu\gui;
 use rocket\ui\si\content\SiGui;
 use n2n\util\uri\Url;
 use rocket\ui\si\input\SiInput;
-use rocket\ui\si\input\CorruptedSiInputDataException;
+use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\si\input\SiInputError;
 use rocket\op\cu\gui\control\CuControlCallId;
 use n2n\core\container\N2nContext;
-use rocket\ui\si\control\SiCallResponse;
+use SiCallResponse;
 use rocket\op\cu\util\Cuu;
 use rocket\ui\si\content\SiValueBoundary;
 
@@ -21,7 +21,7 @@ interface CuGui {
 	 * @param SiInput $siInput
 	 * @param N2nContext $n2nContext
 	 * @return SiInputError|null
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError;
 
@@ -34,7 +34,7 @@ interface CuGui {
 	 * @param CuControlCallId $cuControlCallId
 	 * @param Cuu $cuu
 	 * @return SiCallResponse
-	 * @throws CorruptedSiInputDataException
+	 * @throws CorruptedSiDataException
 	 */
 	function handleCall(CuControlCallId $cuControlCallId, Cuu $cuu): SiCallResponse;
 }

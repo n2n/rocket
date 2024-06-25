@@ -5,23 +5,22 @@ import { SiEntryIdentifier } from '../content/si-entry-qualifier';
 
 export class SiGetInstruction {
 
-	constructor() {
+	constructor(protected contextMaskId: string) {
 	}
 
 	protected declaration: SiDeclaration|null = null;
-	protected maskId: string|null = null;
 	protected entryId: string|null = null;
 	protected partialContentInstruction: SiPartialContentInstruction|null = null;
 	protected newEntryRequested = false;
 	protected generalControlsIncluded = false;
-	protected generalControlsBoundry: SiControlBoundry|null = null;
+	protected generalControlsBoundary: SiControlBoundry|null = null;
 	protected entryControlsIncluded = false;
-	protected propIds: string[]|null = null;
+	protected allowedFieldNames: string[]|null = null;
 	protected allowedMaskIds: string[]|null = null;
 
 	static partialContent(maskId: string, offset: number, num: number, quickSearchStr: string|null): SiGetInstruction {
-		const instruction = new SiGetInstruction();
-		instruction.maskId = maskId;
+		const instruction = new SiGetInstruction(maskId);
+		instruction.contextMaskId = maskId;
 		instruction.partialContentInstruction = {
 			offset,
 			num,
@@ -39,15 +38,14 @@ export class SiGetInstruction {
 	}
 
 	static entry(contextMaskId: string, entryId: string): SiGetInstruction {
-		const instruction = new SiGetInstruction();
-		instruction.maskId = contextMaskId;
+		const instruction = new SiGetInstruction(contextMaskId);
+		instruction.contextMaskId = contextMaskId;
 		instruction.entryId = entryId;
 		return instruction;
 	}
 
 	static newEntry(contextMaskId: string): SiGetInstruction {
-		const instruction = new SiGetInstruction();
-		instruction.maskId = contextMaskId;
+		const instruction = new SiGetInstruction(contextMaskId);
 		instruction.newEntryRequested = true;
 		return instruction;
 	}
@@ -71,12 +69,12 @@ export class SiGetInstruction {
 	}
 
 	setGeneralControlsBoundry(generalControlsBoundry: SiControlBoundry|null): SiGetInstruction {
-		this.generalControlsBoundry = generalControlsBoundry;
+		this.generalControlsBoundary = generalControlsBoundry;
 		return this;
 	}
 
 	getGeneralControlsBoundry(): SiControlBoundry|null {
-		return this.generalControlsBoundry;
+		return this.generalControlsBoundary;
 	}
 
 	getEntryControlsIncludes(): boolean {
@@ -89,11 +87,11 @@ export class SiGetInstruction {
 	}
 
 	getPropIds(): string[]|null {
-		return this.propIds;
+		return this.allowedFieldNames;
 	}
 
 	setPropIds(propIds: string[]|null): SiGetInstruction {
-		this.propIds = propIds;
+		this.allowedFieldNames = propIds;
 		return this;
 	}
 
@@ -108,12 +106,12 @@ export class SiGetInstruction {
 
 	toJSON(): object {
 		return {
-			maskId: this.maskId,
+			maskId: this.contextMaskId,
 			declarationRequested: !this.declaration,
 			generalControlsIncluded: this.generalControlsIncluded,
 			entryControlsIncluded: this.entryControlsIncluded,
 			entryId: this.entryId,
-			propIds: this.propIds,
+			propIds: this.allowedFieldNames,
 			typeIds: this.allowedMaskIds,
 			partialContentInstruction: this.partialContentInstruction,
 			newEntryRequested: this.newEntryRequested

@@ -19,51 +19,59 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content;
+namespace rocket\ui\si\api\request;
 
-use n2n\util\ex\IllegalStateException;
-use n2n\web\http\UploadDefinition;
+use n2n\util\type\attrs\DataMap;
 use n2n\util\type\attrs\AttributesException;
-use n2n\core\container\N2nContext;
-use InvalidArgumentException;
 use rocket\ui\si\err\CorruptedSiDataException;
 
-interface SiField {
-	
-	/**
-	 * @return string
-	 */
-	function getType(): string;
-	
-	/**
-	 * @return array
-	 */
-	function getData(): array;
-	
-	/**
-	 * @return bool
-	 */
-	function isReadOnly(): bool;
-	
-	/**
-	 * @param array $data
-	 * @throws IllegalStateException if readonly ({@see self::isReadyOnly()} returns true).
-	 * @throws CorruptedSiDataException if data is corrupt
-	 */
-	function handleInput(array $data, N2nContext $n2nContext): bool;
+class SiFieldCall {
 
-	function flush(N2nContext $n2nContext): void;
-	
 	/**
-	 * @return bool
-	 */
-	function isCallable(): bool;
-	
-	/**
+	 * @param string $maskId
+	 * @param string $entryId if not null the call is meant for an entry control
+	 * @param string $fieldName
 	 * @param array $data
-	 * @param UploadDefinition[] $uploadDefinitions
-	 * @return array
+	 */
+	function __construct(private string $maskId, private string $entryId, private string $fieldName,
+			private array $data)	 {
+	}
+
+	function getMaskId(): string {
+		return $this->maskId;
+	}
+
+	function getEntryId(): ?string {
+		return $this->entryId;
+	}
+
+	function getFieldName(): string {
+		return $this->fieldName;
+	}
+
+	function getData(): array {
+		return $this->data;
+	}
+
+	function jsonSerialize(): mixed {
+		return [
+			'maskId' => $this->maskId,
+			'entryId' => $this->entryId,
+			'controlName' => $this->fieldName,
+			'data' => $this->data
+		];
+	}
+
+	/**
 	 * @throws CorruptedSiDataException
 	 */
-	function handleCall(array $data, array $uploadDefinitions, N2nContext $n2nContext): array;
+	static function parse(array $data): SiFieldCall {
+		$dataMap = new DataMap($data);
+		try {
+			return new SiFieldCall($dataMap->reqString('maskId'), $dataMap->reqString('entryId'),
+					$dataMap->reqString('fieldName'), $dataMap->reqArray('data'));
+		} catch (AttributesException $e) {
+			throw new CorruptedSiDataException(previous: $e);
+		}
+	}
 }
