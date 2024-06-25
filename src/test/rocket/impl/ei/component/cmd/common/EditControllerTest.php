@@ -2,40 +2,27 @@
 
 namespace rocket\impl\ei\component\cmd\common;
 
-use rocket\op\ei\manage\EiLaunch;
 use n2n\test\TestEnv;
-use rocket\user\model\security\FullEiPermissionManager;
-use testmdl\relation\bo\IntegratedSrcTestObj;
-use n2n\util\uri\Url;
 use rocket\ui\si\api\SiPartialContentInstruction;
-use rocket\op\ei\manage\api\GetInstructionProcess;
 use testmdl\string\bo\StringTestObj;
 use rocket\op\spec\Spec;
 use rocket\test\GeneralTestEnv;
 use rocket\test\SpecTestEnv;
-use testmdl\relation\bo\IntegratedTargetTestObj;
 use testmdl\test\TestMdlTestEnv;
 use rocket\impl\ei\component\cmd\common\controller\EditController;
 use rocket\op\ei\EiLaunchPad;
-use rocket\op\ei\manage\frame\EiFrameController;
-use n2n\web\http\controller\ControllerContext;
 use rocket\core\model\Rocket;
 use rocket\user\model\LoginContext;
 use rocket\test\RocketTestEnv;
 use PHPUnit\Framework\TestCase;
 use n2n\web\http\StatusException;
-use rocket\op\ei\util\entry\EiuObject;
-use rocket\op\ei\manage\EiObject;
-use rocket\op\ei\manage\LiveEiObject;
-use rocket\op\ei\manage\EiEntityObj;
-use rocket\ui\si\content\SiZoneCall;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiZoneCall;
+use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\si\content\SiEntryIdentifier;
 use rocket\op\ei\mask\EiMask;
 use rocket\ui\gui\ViewMode;
-use rocket\ui\si\content\SiEntryQualifier;
-use rocket\ui\si\input\SiFieldInput;
+use rocket\ui\si\api\request\SiFieldInput;
 use testmdl\string\bo\StrObjMock;
 
 class EditControllerTest extends TestCase {

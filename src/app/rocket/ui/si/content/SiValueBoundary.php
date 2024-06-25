@@ -27,7 +27,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;
 use n2n\core\container\N2nContext;
-use rocket\ui\si\input\SiValueBoundaryInput;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class SiValueBoundary implements \JsonSerializable {
 

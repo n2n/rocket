@@ -7,7 +7,7 @@ use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\field\impl\GuiFields;
 use rocket\ui\si\input\SiEntryInput;
-use rocket\ui\si\input\SiFieldInput;
+use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\l10n\N2nLocale;
 use n2n\core\container\N2nContext;

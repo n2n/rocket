@@ -1,16 +1,17 @@
 <?php
 
-namespace rocket\ui\si;
+namespace rocket\ui\si\api;
 
 use rocket\ui\si\content\SiGui;
 use JsonSerializable;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiBreadcrumb;
 use rocket\ui\si\control\SiControl;
-use rocket\ui\si\content\SiZoneCall;
-use SiCallResult;
+use rocket\ui\si\api\request\SiZoneCall;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
+use rocket\ui\si\api\response\SiCallResponse;
+use rocket\ui\si\SiPayloadFactory;
 
 class SiZone implements JsonSerializable {
 
@@ -22,7 +23,7 @@ class SiZone implements JsonSerializable {
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	function handleSiZoneCall(SiZoneCall $siZoneCall, N2nContext $n2nContext): SiCallResult {
+	function handleSiZoneCall(SiZoneCall $siZoneCall, N2nContext $n2nContext): SiCallResponse {
 		$siInputResult = null;
 
 		if (null !== ($siInput = $siZoneCall->getInput())) {

@@ -21,7 +21,7 @@ use n2n\util\type\attrs\AttributesException;
 use rocket\ui\gui\field\GuiFieldPath;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\input\SiEntryInput;
-use rocket\ui\si\input\SiFieldInput;
+use rocket\ui\si\api\request\SiFieldInput;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {
 	private Spec $spec;

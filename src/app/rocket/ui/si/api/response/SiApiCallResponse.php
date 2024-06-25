@@ -21,9 +21,6 @@
  */
 namespace rocket\ui\si\api\response;
 
-use rocket\ui\si\control\SiFieldCallResponse;
-use rocket\ui\si\input\SiInputResult;
-
 class SiApiCallResponse implements \JsonSerializable {
 
 	private ?SiInputResult $inputResult = null;

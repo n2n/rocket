@@ -1,14 +1,12 @@
 <?php
 
-namespace rocket\ui\si\input;
+namespace rocket\ui\si\api\request;
 
-use rocket\ui\si\content\SiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataMap;
-use rocket\ui\si\content\SiValueBoundary;
-use n2n\util\type\TypeConstraints;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
+use rocket\ui\si\input\SiEntryInput;
 
 class SiValueBoundaryInput {
 

@@ -21,10 +21,10 @@
  */
 namespace rocket\ui\si\content;
 
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
-use rocket\ui\si\input\SiInputResult;
+use rocket\ui\si\api\response\SiInputResult;
 
 interface SiGui {
 	

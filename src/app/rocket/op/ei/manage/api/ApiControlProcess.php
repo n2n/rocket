@@ -30,7 +30,7 @@ use rocket\ui\gui\GuiException;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\control\UnknownGuiControlException;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\gui\EiGuiValueBoundary;
 use n2n\util\ex\IllegalStateException;

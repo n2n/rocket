@@ -2,23 +2,13 @@
 
 namespace rocket\ui\gui\field\impl;
 
-use rocket\ui\gui\field\GuiField;
 use n2n\util\type\ArgUtils;
 use n2n\core\container\N2nContext;
 use n2n\bind\build\impl\Bind;
-use rocket\ui\si\content\SiFieldModel;
 use n2n\l10n\Message;
 use rocket\ui\si\content\BackableSiField;
 use n2n\util\ex\ExUtils;
-use rocket\ui\si\content\SiField;
 use n2n\bind\mapper\impl\Mappers;
-use n2n\bind\mapper\Mapper;
-use n2n\util\magic\impl\MagicMethodInvoker;
-use n2n\util\type\TypeConstraints;
-use n2n\bind\err\BindException;
-use n2n\util\ex\IllegalStateException;
-use rocket\ui\gui\field\GuiFieldMap;
-use rocket\ui\si\input\SiFieldInput;
 
 abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 

@@ -40,7 +40,7 @@ use rocket\ui\gui\control\ZoneGuiControlsMap;
 use rocket\impl\ei\manage\gui\CompactExplorerGui;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\GuiZone;
-use rocket\ui\si\content\SiZoneCall;
+use rocket\ui\si\api\request\SiZoneCall;
 use n2n\web\http\StatusException;
 
 class OpuCtrl {

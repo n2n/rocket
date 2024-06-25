@@ -30,9 +30,9 @@ use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\input\SiInputError;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiInput;
 use n2n\core\container\N2nContext;
-use rocket\ui\si\input\SiInputResult;
+use rocket\ui\si\api\response\SiInputResult;
 
 class BulkyEntrySiGui implements SiGui {
 

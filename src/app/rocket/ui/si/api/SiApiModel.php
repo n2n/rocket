@@ -8,7 +8,7 @@ use rocket\ui\si\err\UnknownSiElementException;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\si\content\SiField;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 
 interface SiApiModel {
 

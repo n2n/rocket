@@ -2,7 +2,7 @@
 namespace rocket\ui\gui;
 
 use rocket\ui\si\content\SiGui;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiInput;
 use rocket\si\input\SiInputError;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\SiValueBoundary;

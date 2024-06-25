@@ -21,10 +21,7 @@
  */
 namespace rocket\ui\gui\field;
 
-use rocket\ui\si\content\SiField;
 use n2n\core\container\N2nContext;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\ui\si\input\SiFieldInput;
 use n2n\l10n\Message;
 
 interface GuiFieldModel {

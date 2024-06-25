@@ -1,10 +1,9 @@
 <?php
 
-namespace rocket\ui\si\content;
+namespace rocket\ui\si\api\request;
 
 use n2n\web\http\controller\impl\ControllingUtils;
 use n2n\web\http\Method;
-use rocket\ui\si\input\SiInput;
 use rocket\ui\si\input\SiInputFactory;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\web\http\StatusException;

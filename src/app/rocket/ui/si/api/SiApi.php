@@ -23,11 +23,11 @@ namespace rocket\ui\si\api;
 
 use n2n\core\container\N2nContext;
 use rocket\ui\si\err\UnknownSiElementException;
-use rocket\ui\si\input\SiInputResult;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\response\SiInputResult;
+use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\meta\SiDeclaration;
-use rocket\ui\si\control\SiFieldCallResponse;
+use rocket\ui\si\api\response\SiFieldCallResponse;
 use n2n\web\http\UploadDefinition;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\api\request\SiValRequest;
@@ -40,6 +40,8 @@ use rocket\ui\si\meta\SiMask;
 use rocket\ui\si\api\response\SiValResponse;
 use rocket\ui\si\api\response\SiValInstructionResult;
 use rocket\ui\si\api\response\SiValGetInstructionResult;
+use rocket\ui\si\api\request\SiSortCall;
+use rocket\ui\si\api\response\SiCallResponse;
 
 class SiApi {
 

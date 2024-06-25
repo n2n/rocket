@@ -4,7 +4,7 @@ namespace rocket\impl\ei\manage\gui;
 
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
@@ -13,7 +13,7 @@ use SiCallResponse;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiFrame;
-use rocket\ui\si\content\SiZoneCall;
+use rocket\ui\si\api\request\SiZoneCall;
 use SiCallResult;
 use rocket\ui\si\input\SiInputError;
 use rocket\ui\gui\control\GuiControlMap;

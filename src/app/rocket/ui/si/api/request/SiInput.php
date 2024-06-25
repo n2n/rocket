@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\input;
+namespace rocket\ui\si\api\request;
 
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;

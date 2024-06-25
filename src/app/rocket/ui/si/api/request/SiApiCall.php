@@ -24,7 +24,6 @@ namespace rocket\ui\si\api\request;
 use n2n\util\type\attrs\DataMap;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\si\input\SiInput;
 
 class SiApiCall {
 

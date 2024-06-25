@@ -11,7 +11,7 @@ use rocket\op\cu\gui\CuMaskedEntry;
 use rocket\op\cu\gui\control\CuControl;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\cu\gui\CuGui;
-use rocket\ui\si\input\SiInput;
+use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\op\cu\gui\control\CuControlCallId;
 use SiCallResponse;

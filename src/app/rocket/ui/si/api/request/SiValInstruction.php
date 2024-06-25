@@ -25,7 +25,6 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\input\SiEntryInput;
-use rocket\ui\si\input\SiValueBoundaryInput;
 
 class SiValInstruction {
 	/**

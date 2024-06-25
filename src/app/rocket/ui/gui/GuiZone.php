@@ -3,7 +3,7 @@
 namespace rocket\ui\gui;
 
 use rocket\ui\gui\control\GuiControlMap;
-use rocket\ui\si\SiZone;
+use rocket\ui\si\api\SiZone;
 
 class GuiZone {
 	private SiZone $siZone;

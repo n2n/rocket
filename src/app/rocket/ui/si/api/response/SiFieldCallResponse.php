@@ -1,6 +1,6 @@
 <?php
 
-namespace rocket\ui\si\control;
+namespace rocket\ui\si\api\response;
 
 class SiFieldCallResponse {
 
