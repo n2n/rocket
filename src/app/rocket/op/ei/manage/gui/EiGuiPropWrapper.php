@@ -27,6 +27,8 @@ use rocket\op\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\component\prop\EiProp;
 use rocket\ui\gui\UnresolvableDefPropPathExceptionEi;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\op\ei\manage\entry\EiEntry;
 
 class EiGuiPropWrapper {
 
@@ -108,8 +110,8 @@ class EiGuiPropWrapper {
 	 * @param array|null $forkedDefPropPaths
 	 * @return EiGuiPropSetup
 	 */
-	function buildGuiPropSetup(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration, ?array $forkedDefPropPaths) {
-		return $this->eiGuiProp->buildGuiPropSetup(new Eiu($n2nContext, $eiGuiMaskDeclaration, $this->eiPropPath), $forkedDefPropPaths);
+	function buildEiGuiField(EiFrame $eiFrame, EiEntry $eiEntry, ?array $forkedDefPropPaths): ?EiGuiField {
+		return $this->eiGuiProp->buildEiGuiField(new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiPropPath), $forkedDefPropPaths);
 	}
 	
 

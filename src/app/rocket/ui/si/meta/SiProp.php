@@ -95,7 +95,7 @@ class SiProp implements \JsonSerializable {
 	 * @param string[] $descendantPropIds
 	 * @return \rocket\si\meta\SiProp
 	 */
-	function setDescendantPropIds(array $descendantPropIds) {
+	function setDescendantPropNames(array $descendantPropIds) {
 		$this->descendantPropIds = $descendantPropIds;
 		return $this;
 	}

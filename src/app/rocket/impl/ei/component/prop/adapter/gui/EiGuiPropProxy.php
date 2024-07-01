@@ -33,13 +33,13 @@ use rocket\op\ei\manage\gui\EiGuiProp;
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
  */
 class EiGuiPropProxy implements EiGuiProp {
-	private $guiPropSetupCallback;
+	private $eiPropFieldCallback;
 	
 	/**
 	 * @param \Closure $closure
 	 */
-	function __construct(\Closure $guiPropSetupCallback) {
-		$this->guiPropSetupCallback = new \ReflectionFunction($guiPropSetupCallback);
+	function __construct(\Closure $eiGuiFieldCallback) {
+		$this->eiPropFieldCallback = new \ReflectionFunction($eiGuiFieldCallback);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class EiGuiPropProxy implements EiGuiProp {
 		$mmi->setParamValue('defPropPaths', $defPropPaths);
 		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiGuiPropSetup::class, true));
 		
-		return $mmi->invoke(null, $this->guiPropSetupCallback);
+		return $mmi->invoke(null, $this->eiPropFieldCallback);
 	}
 	
 	/**

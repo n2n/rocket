@@ -46,15 +46,15 @@ use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\entry\ValidationResult;
 use rocket\ui\gui\GuiValueBoundary;
 
-class EiFrameUtil {
-	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
+class EiObjectSelector {
+//	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
 
 	/**
 	 * @param EiFrame $eiFrame
 	 */
 	function __construct(private EiFrame $eiFrame) {;
-		$this->eiGuiDeclarationFactory = new EiGuiDeclarationFactory($eiFrame->getContextEiEngine()->getEiMask(),
-				$eiFrame->getN2nContext());
+//		$this->eiGuiDeclarationFactory = new EiGuiDeclarationFactory($eiFrame->getContextEiEngine()->getEiMask(),
+//				$eiFrame->getN2nContext());
 	}
 	
 	/**
@@ -114,7 +114,15 @@ class EiFrameUtil {
 		throw new UnknownEiObjectException('Entity not found: ' . EntityInfo::buildEntityString(
 				$this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()->getEntityModel(), $id));
 	}
-	
+
+	/**
+	 * @throws UnknownEiObjectException
+	 */
+	function lookupEiEntry(mixed $id, int $ignoreConstraintTypes = 0): EiEntry {
+		return $this->eiFrame->createEiEntry($this->lookupEiObject($id, $ignoreConstraintTypes), null,
+				$ignoreConstraintTypes);
+	}
+
 	/**
 	 * @param EiObject $eiObject
 	 * @return int|null
@@ -148,27 +156,7 @@ class EiFrameUtil {
 	/**
 	 * @return \rocket\op\ei\manage\entry\EiEntry[]
 	 */
-	function createPossibleNewEiEntries(array $eiTypeIds = null) {
-		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType(); 
-		
-		$newEiEntries = [];
-		
-		if (!$contextEiType->isAbstract() && ($eiTypeIds === null || in_array($contextEiType->getId(), $eiTypeIds))) {
-			$newEiEntries[$contextEiType->getId()] = $this->eiFrame
-					->createEiEntry($contextEiType->createNewEiObject());
-		}
-		
-		foreach ($contextEiType->getAllSubEiTypes() as $eiType) {
-			if ($eiType->isAbstract() && ($eiTypeIds === null || in_array($eiType->getId(), $eiTypeIds))) {
-				continue;
-			}
-			
-			$newEiEntries[$eiType->getId()] = $this->eiFrame
-					->createEiEntry($eiType->createNewEiObject());
-		}
-		
-		return $newEiEntries;
-	}
+
 	
 	/**
 	 * @param string[]|null $eiTypeIds

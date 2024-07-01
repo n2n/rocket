@@ -42,6 +42,7 @@ use rocket\op\ei\manage\EiLaunch;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\manage\EiGuiMaskDeclarationEngine;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
+use rocket\op\ei\manage\gui\EiGuiDefinitionFactory;
 
 
 class EiEngine {
@@ -170,18 +171,16 @@ class EiEngine {
 				= new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getEiGuiDefinition());
 	}
 
-	private ?EiGuiDefinition $guiDefinition = null;
+	private array $guiDefinitions = [];
 
-	function getEiGuiDefinition(): EiGuiDefinition {
-		if ($this->guiDefinition !== null) {
-			return $this->guiDefinition;
+	function getEiGuiDefinition(int $viewMode): EiGuiDefinition {
+		if (isset($this->guiDefinitions[$viewMode])) {
+			return $this->guiDefinitions[$viewMode];
 		}
 
-		$this->guiDefinition = new EiGuiDefinition($this->eiMask);
-		$this->eiMask->getEiPropCollection()
-				->supplyEiGuiDefinition($this->guiDefinition, $this->n2nContext);
-		$this->eiMask->getEiCmdCollection()->supplyEiGuiDefinition($this->guiDefinition);
-		return $this->guiDefinition;
+		$factory = new EiGuiDefinitionFactory($this->eiMask, $this->n2nContext);
+
+		return $this->guiDefinitions[$viewMode] = $factory->createEiGuiDefinition($viewMode);
 	}
 
 

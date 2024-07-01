@@ -24,7 +24,7 @@ namespace rocket\op\ei\manage\api;
 use n2n\persistence\orm\util\UnknownEntryException;
 use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\manage\frame\SortAbility;
 use rocket\op\ei\manage\EiObject;
 
@@ -35,7 +35,7 @@ class ApiSortProcess {
 	 */
 	private $util;
 	/**
-	 * @var EiFrameUtil
+	 * @var EiObjectSelector
 	 */
 	private $eiFrameUtil;
 	
@@ -54,7 +54,7 @@ class ApiSortProcess {
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
 		$this->util = new ProcessUtil($eiFrame);
-		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
+		$this->eiFrameUtil = new EiObjectSelector($eiFrame);
 		
 		$this->sortAbility = $eiFrame->getAbility()->getSortAbility();
 		if ($this->sortAbility === null) {

@@ -10,7 +10,7 @@ use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\gui\EiGuiPropSetup;
-use rocket\ui\gui\SimpleEiGuiPropSetup;
+use rocket\ui\gui\SimpleEiGuiProp;
 
 class EifGuiPropSetup {
 	private $guiFieldCallbackOrAssembler;
@@ -93,7 +93,7 @@ class EifGuiPropSetup {
 	/**
 	 * @return EiGuiPropSetup
 	 */
-	function toGuiPropSetup() {
+	function toGuiProp() {
 		$displayDefinition = new DisplayDefinition($this->siStructureType, $this->defaultDisplayed,
 				$this->overwriteLabel, $this->overwriteHelpText);
 		
@@ -104,7 +104,7 @@ class EifGuiPropSetup {
 			$eiGuiField = $this->createAssemblerFromClosure($this->guiFieldCallbackOrAssembler);
 		} 
 		
-		return new SimpleEiGuiPropSetup($eiGuiField, $displayDefinition, []);
+		return new SimpleEiGuiProp($eiGuiField, $displayDefinition, []);
 	}
 	
 	/**

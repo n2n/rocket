@@ -178,7 +178,7 @@ class EiuGuiMaskDeclaration {
 	function getDisplayDefinition($defPropPath, bool $required = false) {
 		$defPropPath = DefPropPath::create($defPropPath);
 		
-		if (!$required && !$this->eiGuiMaskDeclaration->containsDisplayDefintion($defPropPath)) {
+		if (!$required && !$this->eiGuiMaskDeclaration->containsDisplayDefinition($defPropPath)) {
 			return null;
 		}
 		

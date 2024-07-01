@@ -51,7 +51,7 @@ use rocket\op\ei\manage\entry\EiEntryConstraint;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\entry\EiuFieldMap;
 use rocket\op\ei\util\entry\EiuObject;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\manage\frame\EiRelation;
 use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\manage\frame\EiForkLink;
@@ -306,7 +306,7 @@ class EiuFrame {
 	 * @return bool
 	 */
 	public function containsId($id, int $ignoreConstraintTypes = 0) {
-		return (new EiFrameUtil($this->eiFrame))->containsId($id, $ignoreConstraintTypes);
+		return (new EiObjectSelector($this->eiFrame))->containsId($id, $ignoreConstraintTypes);
 	}
 	
 	/**
@@ -415,7 +415,7 @@ class EiuFrame {
 	 * @return EiEntityObj
 	 */
 	private function lookupEiEntityObj($id, int $ignoreConstraintTypes = 0) {
-		return (new EiFrameUtil($this->eiFrame))->lookupEiEntityObj($id, $ignoreConstraintTypes);	
+		return (new EiObjectSelector($this->eiFrame))->lookupEiEntityObj($id, $ignoreConstraintTypes);
 	}
 	
 //	public function getDraftManager() {

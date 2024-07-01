@@ -22,26 +22,28 @@ use rocket\op\ei\manage\gui\DisplayDefinition;
 use rocket\op\ei\manage\gui\EiGuiException;
 use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\ui\gui\control\GuiControlMap;
+use rocket\ui\gui\field\GuiFieldPath;
 
 /**
  * @author andreas
  *
  */
 class GuiMask {
+	private SiMask $siMask;
 	/**
 	 * @var GuiStructureDeclaration[]
 	 */
 	private ?array $guiStructureDeclarations = null;
 
-	private array $defPropPaths = [];
-	/**
-	 * @var DisplayDefinition[]
-	 */
-	private array $guiProps = [];
-	/**
-	 * @var EiGuiListener[]
-	 */
-	private array $eiGuiMaskDeclarationListeners = array();
+//	private array $defPropPaths = [];
+//	/**
+//	 * @var GuiProp[]
+//	 */
+//	private array $guiProps = [];
+//	/**
+//	 * @var EiGuiListener[]
+//	 */
+//	private array $eiGuiMaskDeclarationListeners = array();
 
 
 	/**
@@ -49,6 +51,7 @@ class GuiMask {
 	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
 	 */
 	function __construct(private readonly SiMaskQualifier $siMaskQualifier, ?array $guiStructureDeclarations) {
+		$this->siMask = new SiMask($siMaskQualifier);
 		$this->setGuiStructureDeclarations($guiStructureDeclarations);
 	}
 	
@@ -57,74 +60,67 @@ class GuiMask {
 	 */
 	function setGuiStructureDeclarations(?array $guiStructureDeclarations): void {
 		ArgUtils::valArray($guiStructureDeclarations, GuiStructureDeclaration::class, true);
-		$this->guiStructureDeclarations = $guiStructureDeclarations;
+//		$this->guiStructureDeclarations = $guiStructureDeclarations;
+		$this->siMask->setStructureDeclarations($this->createSiStructureDeclarations($guiStructureDeclarations));
 	}
 	
-	/**
-	 * @return GuiStructureDeclaration[]|null
-	 */
-	function getGuiStructureDeclarations(): ?array {
-		return $this->guiStructureDeclarations;
-	}
+//	/**
+//	 * @return GuiStructureDeclaration[]|null
+//	 */
+//	function getGuiStructureDeclarations(): ?array {
+//		return $this->guiStructureDeclarations;
+//	}
 	
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return EiGuiField
-	 *@throws EiGuiException
-	 */
-
-	
-	function putGuiProp(DefPropPath $defPropPath, GuiProp $guiProp): void {
+	function putGuiProp(GuiFieldPath $guiFieldPath, GuiProp $guiProp): void {
 		$this->ensureNotInit();
-		
-		$eiPropPath = $defPropPath->getFirstEiPropPath();
-		$this->eiPropPaths[(string) $eiPropPath] = $eiPropPath;
-		
-		$defPropPathStr = (string) $defPropPath;
-		$this->defPropPaths[$defPropPathStr] = $defPropPath;
-		$this->guiProps[$defPropPathStr] = $guiProp;
-	}
-	
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return bool
-	 */
-	function containsGuiProp(DefPropPath $defPropPath): bool {
-		return isset($this->guiProps[(string) $defPropPath]);
+
+//		$this->guiProps[(string) $guiFieldPath] = $guiProp;
+		$this->siMask->putProp((string) $guiFieldPath, $guiProp->getSiProp());
 	}
 
-	function getGuiProp(DefPropPath $defPropPath): GuiProp {
-		$defPropPathStr = (string) $defPropPath;
-		if (isset($this->guiProps[$defPropPathStr])) {
-			return $this->guiProps[$defPropPathStr];
-		}
-		
-		throw new UnresolvableDefPropPathExceptionEi('Unknown DefPropPath for ' . $defPropPath);
-	}
-	
-	/**
-	 * @return DefPropPath[]
-	 */
-	function getDefPropPaths(): array {
-		return $this->defPropPaths;
-	}
-	
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return bool
-	 */
-	function containsDefPropPath(DefPropPath $defPropPath): bool {
-		return isset($this->defPropPaths[(string) $defPropPath]);
+	function putGuiControl(GuiControlPath $guiControlPath, GuiControl $guiControl): void {
+		$this->ensureNotInit();
+
+		$this->siMask->putControl((string) $guiControlPath, $guiControl->getSiControl());
 	}
 
-	function createSiMask(N2nLocale $n2nLocale): SiMask {
+//	/**
+//	 * @param GuiFieldPath $guiFieldPath
+//	 * @return bool
+//	 */
+//	function containsGuiFieldPath(GuiFieldPath $guiFieldPath): bool {
+//		return isset($this->guiProps[(string) $guiFieldPath]);
+//	}
+//
+//	function getGuiProp(GuiFieldPath $guiFieldPath): GuiProp {
+//		$guiFieldPathStr = (string) $guiFieldPath;
+//		if (isset($this->guiProps[$guiFieldPathStr])) {
+//			return $this->guiProps[$guiFieldPathStr];
+//		}
+//
+//		throw new UnresolvableDefPropPathExceptionEi('Unknown GuiFieldPath for ' . $guiFieldPath);
+//	}
+	
+//	/**
+//	 * @return DefPropPath[]
+//	 */
+//	function getDefPropPaths(): array {
+//		return $this->defPropPaths;
+//	}
+	
+//	/**
+//	 * @param DefPropPath $guiFieldPath
+//	 * @return bool
+//	 */
+//	function containsGuiPath(GuiFieldPath $guiFieldPath): bool {
+//		return isset($this->guiProps[(string) $guiFieldPath]);
+//	}
+
+	function getSiMask(): SiMask {
 		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
 				'EiGuiMaskDeclaration has no GuiStructureDeclarations.');
 
-		return new SiMask(
-				$this->createSiMask($n2nLocale),
-				$this->createSiProps($n2nLocale),
-				$this->createSiStructureDeclarations($this->guiStructureDeclarations));
+		return $this->siMask;
 	}
 	
 	/**
@@ -159,37 +155,35 @@ class GuiMask {
 		return new SiMask($siMaskQualifier, $this->createSiProps($n2nLocale));
 	}
 
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return SiProp[]
-	 */
-	private function createSiProps(N2nLocale $n2nLocale): array {
-		$deter = new ContextSiFieldDeterminer();
-		
-		$siProps = [];
-		foreach ($this->defPropPaths as $defPropPath) {
-			$guiProp = $this->getGuiPropByDefPropPath($defPropPath);
-			$label = $eiPropNature->getLabelLstr()->t($n2nLocale);
-			$helpText = null;
-			if (null !== ($helpTextLstr = $guiProp->getHelpTextLstr())) {
-				$helpText = $helpTextLstr->t($n2nLocale);
-			}
-			
-			$siProps[] = (new SiProp((string) $defPropPath, $label))->setHelpText($helpText);
-			
-			$deter->reportDefPropPath($defPropPath);
-		}
-				
-		return array_merge($deter->createContextSiProps($n2nLocale, $this), $siProps);
-	}
+//	/**
+//	 * @param N2nLocale $n2nLocale
+//	 * @return SiProp[]
+//	 */
+//	private function createSiProps(N2nLocale $n2nLocale): array {
+//		$deter = new ContextSiFieldDeterminer();
+//
+//		$siProps = [];
+//		foreach ($this->defPropPaths as $defPropPath) {
+//			$guiProp = $this->getGuiPropByDefPropPath($defPropPath);
+//			$label = $eiPropNature->getLabelLstr()->t($n2nLocale);
+//			$helpText = null;
+//			if (null !== ($helpTextLstr = $guiProp->getHelpTextLstr())) {
+//				$helpText = $helpTextLstr->t($n2nLocale);
+//			}
+//
+//			$siProps[] = (new SiProp((string) $defPropPath, $label))->setHelpText($helpText);
+//
+//			$deter->reportDefPropPath($defPropPath);
+//		}
+//
+//		return array_merge($deter->createContextSiProps($n2nLocale, $this), $siProps);
+//	}
 
 	function createEntryGuiControlsMap(EiFrame $eiFrame, EiEntry $eiEntry): GuiControlMap {
 		return $this->guiDefinition->createEntryGuiControlsMap($eiFrame, $this, $eiEntry);
 	}
 
-	function createGeneralGuiControlsMap(EiFrame $eiFrame): GuiControlMap {
-		return $this->guiDefinition->createGeneralGuiControlsMap($eiFrame, $this);
-	}
+
 	
 	
 // 	function getRootEiPropPaths() {
@@ -314,37 +308,37 @@ class GuiMask {
 // 		return $forkDefPropPaths;
 // 	}
 
-	function createEiGuiEntry(EiFrame $eiFrame, EiEntry $eiEntry, bool $entryGuiControlsIncluded): GuiEntry {
-		$this->ensureInit();
-		
-		$eiGuiEntry = EiGuiEntryFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+//	function createEiGuiEntry(EiFrame $eiFrame, EiEntry $eiEntry, bool $entryGuiControlsIncluded): GuiEntry {
+//		$this->ensureInit();
+//
+//		$eiGuiEntry = EiGuiEntryFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+//
+//		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
+//			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
+//		}
+//
+//		return $eiGuiEntry;
+//	}
 
-		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
-			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
-		}
-		
-		return $eiGuiEntry;
-	}
-
-	/**
-	 * @param EiFrame $eiFrame
-	 * @param bool $entryGuiControlsIncluded
-	 * @return GuiEntry
-	 */
-	function createNewEiGuiEntry(EiFrame $eiFrame, bool $entryGuiControlsIncluded): GuiEntry {
-		$this->ensureInit();
-		
-		$eiObject = $this->getEiGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
-		$eiEntry = $eiFrame->createEiEntry($eiObject);
-		
-		$eiGuiEntry = EiGuiEntryFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
-
-		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
-			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
-		}
-		
-		return $eiGuiEntry;
-	}
+//	/**
+//	 * @param EiFrame $eiFrame
+//	 * @param bool $entryGuiControlsIncluded
+//	 * @return GuiEntry
+//	 */
+//	function createNewEiGuiEntry(EiFrame $eiFrame, bool $entryGuiControlsIncluded): GuiEntry {
+//		$this->ensureInit();
+//
+//		$eiObject = $this->getEiGuiDefinition()->getEiMask()->getEiType()->createNewEiObject();
+//		$eiEntry = $eiFrame->createEiEntry($eiObject);
+//
+//		$eiGuiEntry = EiGuiEntryFactory::createGuiEntry($eiFrame, $this, $eiEntry, $entryGuiControlsIncluded);
+//
+//		foreach ($this->eiGuiMaskDeclarationListeners as $eiGuiMaskDeclarationListener) {
+//			$eiGuiMaskDeclarationListener->onNewEiGuiEntry($eiGuiEntry);
+//		}
+//
+//		return $eiGuiEntry;
+//	}
 	
 //	/**
 //	 * @return \rocket\si\control\SiControl[]
@@ -401,23 +395,6 @@ class GuiMask {
 		return $this->guiDefinition->createEntryGuiControl($eiFrame, $this, $eiEntry, $guiControlPath);
 	}
 	
-// 	/**
-// 	 * @return \rocket\si\content\SiEntry
-// 	 */
-// 	function createSiEntry(EiFrame $eiFrame, EiGuiValueBoundary $eiGuiValueBoundary, bool $siControlsIncluded = true) {
-// 		$eiEntry = $eiGuiValueBoundary->getEiEntry();
-// 		$eiType = $eiEntry->getEiType();
-// 		$siIdentifier = $eiEntry->getEiObject()->createSiEntryIdentifier();
-// 		$viewMode = $this->getViewMode();
-		
-// 		$siValueBoundary = new SiEntry($siIdentifier, ViewMode::isReadOnly($viewMode), ViewMode::isBulky($viewMode));
-// 		$siValueBoundary->putBuildup($eiType->getId(), $this->createSiEntry($eiFrame, $eiGuiValueBoundary, $siControlsIncluded));
-// 		$siValueBoundary->setSelectedTypeId($eiType->getId());
-		
-// 		return $siValueBoundary;
-// 	}
-
-	
 	
 	/**
 	 * @param DefPropPath $prefixDefPropPath
@@ -438,88 +415,5 @@ class GuiMask {
 
 		return $defPropPaths;
 	}
-	
-	/**
-	 * @param EiGuiListener $eiGuiMaskDeclarationListener
-	 */
-	function registerEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener) {
-		$this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)] = $eiGuiMaskDeclarationListener;
-	}
-	
-	/**
-	 * @param EiGuiListener $eiGuiMaskDeclarationListener
-	 */
-	function unregisterEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener): void {
-		unset($this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)]);
-	}
-}
 
-class ContextSiFieldDeterminer {
-	private $defPropPaths = [];
-	private $forkDefPropPaths = [];
-	private $forkedDefPropPaths = [];
-	
-	/**
-	 * @param DefPropPath $defPropPath
-	 */
-	function reportDefPropPath(DefPropPath $defPropPath) {
-		$defPropPathStr = (string) $defPropPath;
-		
-		$this->defPropPaths[$defPropPathStr] = $defPropPath;
-		unset($this->forkDefPropPaths[$defPropPathStr]);
-		unset($this->forkedDefPropPaths[$defPropPathStr]);
-		
-		$forkDefPropPath = $defPropPath;
-		while ($forkDefPropPath->hasMultipleEiPropPaths()) {
-			$forkDefPropPath = $forkDefPropPath->getPoped();
-			$this->reportFork($forkDefPropPath, $defPropPath);
-		}
-	}
-	
-	/**
-	 * @param DefPropPath $forkDefPropPath
-	 * @param DefPropPath $defPropPath
-	 */
-	private function reportFork(DefPropPath $forkDefPropPath, DefPropPath $defPropPath) {
-		$forkDefPropPathStr = (string) $forkDefPropPath;
-		
-		if (isset($this->defPropPaths[$forkDefPropPathStr])) {
-			return;
-		}
-		
-		if (!isset($this->forkDefPropPaths[$forkDefPropPathStr])) {
-			$this->forkDefPropPaths[$forkDefPropPathStr] = [];
-		}
-		$this->forkedDefPropPaths[$forkDefPropPathStr][] = $defPropPath;
-		$this->forkDefPropPaths[$forkDefPropPathStr] = $forkDefPropPath;
-		
-		if ($forkDefPropPath->hasMultipleEiPropPaths()) {
-			$this->reportFork($forkDefPropPath->getPoped(), $forkDefPropPath);
-		}
-	}
-	
-	/**
-	 * @return SiProp[]
-	 */
-	function createContextSiProps(N2nLocale $n2nLocale, GuiMask $guiMask): array {
-		
-		$siProps = [];
-		
-		foreach ($this->forkDefPropPaths as $forkDefPropPath) {
-			$guiProp = $guiMask->getGuiPropByDefPropPath($forkDefPropPath);
-			
-			$siProp = (new SiProp((string) $forkDefPropPath, $guiProp->getLabelLstr()->t($n2nLocale)))
-					->setDescendantPropIds(array_map(
-							function ($defPropPath) { return (string) $defPropPath; },
-							$this->forkedDefPropPaths[(string) $forkDefPropPath]));
-			
-			if (null !== ($helpTextLstr = $guiProp->getNature()->getHelpTextLstr())) {
-				$siProp->setHelpText($helpTextLstr);
-			}
-			
-			$siProps[] = $siProp;
-		}
-		
-		return $siProps;
-	}
 }

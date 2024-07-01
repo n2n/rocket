@@ -23,21 +23,3 @@ namespace rocket\op\ei\manage\gui;
 
 use rocket\op\ei\manage\DefPropPath;
 
-interface EiGuiPropSetup {
-	
-	/**
-	 * @return EiGuiField
-	 */
-	function getEiGuiField(): EiGuiField;
-	
-	/**
-	 * @return DisplayDefinition|NULL
-	 */
-	function getDisplayDefinition(): ?DisplayDefinition;
-	
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return DisplayDefinition|NULL
-	 */
-	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition; 
-}

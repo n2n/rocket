@@ -42,6 +42,8 @@ use rocket\op\ei\manage\api\ApiController;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\control\GuiControlPath;
+use n2n\l10n\N2nLocale;
+use rocket\ui\gui\GuiMask;
 
 class EiGuiDefinition {
 
@@ -62,11 +64,15 @@ class EiGuiDefinition {
 	 */
 	private $eiCmdPaths = [];
 
-	function __construct(private EiMask $eiMask) {
+	function __construct(private EiMask $eiMask, private int $viewModel) {
 	}
 	
 	function getEiMask(): EiMask {
 		return $this->eiMask;
+	}
+
+	function getViewMode(): int {
+		return $this->viewModel;
 	}
 
 	/**
@@ -363,7 +369,7 @@ class EiGuiDefinition {
 	 * @param EiPropPath $defPropPath
 	 * @throws EiGuiException
 	 */
-	function putGuiCommand(EiCmdPath $eiCmdPath, EiGuiCommand $guiCommand) {
+	function putGuiCommand(EiCmdPath $eiCmdPath, EiGuiCommand $guiCommand): void {
 		$eiCmdPathStr = (string) $eiCmdPath;
 
 		if (isset($this->guiCommands[$eiCmdPathStr])) {
@@ -372,6 +378,13 @@ class EiGuiDefinition {
 
 		$this->guiCommands[$eiCmdPathStr] = $guiCommand;
 		$this->eiCmdPaths[$eiCmdPathStr] = $eiCmdPath;
+	}
+
+	/**
+	 * @return EiGuiCommand[]
+	 */
+	function getGuiCommands(): array {
+		return $this->guiCommands;
 	}
 
 	/**
@@ -404,26 +417,26 @@ class EiGuiDefinition {
 		throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
 	}
 
-	function createEntryGuiControlsMap(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry): GuiControlMap {
-		$guiControlsMap = new GuiControlMap();
-
-		$guiControls = [];
-		foreach ($this->guiCommands as $eiCmdPathStr => $guiCommand) {
-			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
-			$eiu = new Eiu($eiFrame, $eiGuiMaskDeclaration, $eiEntry, $eiCmdPath);
-
-			$apiUrl = $eiFrame->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
-
-			foreach ($this->extractEntryGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $entryGuiControl) {
-				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $entryGuiControl->getId()]);
-				$apiControlCallId = ApiControlCallId::create($this->eiMask, $guiControlPath, $eiEntry);
-
-				$guiControlsMap->putGuiControl($guiControlPath, $entryGuiControl, $apiControlCallId, $apiUrl);
-			}
-		}
-
-		return $guiControlsMap;
-	}
+//	function createEntryGuiControlsMap(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry): GuiControlMap {
+//		$guiControlsMap = new GuiControlMap();
+//
+//		$guiControls = [];
+//		foreach ($this->guiCommands as $eiCmdPathStr => $guiCommand) {
+//			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
+//			$eiu = new Eiu($eiFrame, $eiGuiMaskDeclaration, $eiEntry, $eiCmdPath);
+//
+//			$apiUrl = $eiFrame->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
+//
+//			foreach ($this->extractEntryGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $entryGuiControl) {
+//				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $entryGuiControl->getId()]);
+//				$apiControlCallId = ApiControlCallId::create($this->eiMask, $guiControlPath, $eiEntry);
+//
+//				$guiControlsMap->putGuiControl($guiControlPath, $entryGuiControl, $apiControlCallId, $apiUrl);
+//			}
+//		}
+//
+//		return $guiControlsMap;
+//	}
 
 
 	function createGeneralGuiControlsMap(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration): GuiControlMap {
@@ -690,92 +703,92 @@ class EiGuiDefinition {
 	 * @param array|null $defPropPaths
 	 * @return \rocket\ui\gui\EiGuiMaskDeclaration
 	 */
-	function createEiGuiMaskDeclaration(N2nContext $n2nContext, int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
-		$eiGuiMaskDeclaration = new EiGuiMaskDeclaration($viewMode, $this, null);
-
-		if ($defPropPaths === null) {
-			$guiStructureDeclarations = $this->initEiGuiMaskDeclarationFromDisplayScheme($n2nContext, $eiGuiMaskDeclaration);
-		} else {
-			$guiStructureDeclarations = $this->semiAutoInitEiGuiMaskDeclaration($n2nContext, $eiGuiMaskDeclaration, $defPropPaths);
-		}
-
-		$eiGuiMaskDeclaration->setGuiStructureDeclarations($guiStructureDeclarations);
-
-// 		if (ViewMode::isBulky($eiGuiDeclaration->getViewMode())) {
-// 			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
-// 		}
-
-		return $eiGuiMaskDeclaration;
-	}
-
-//	/**
-//	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
-//	 * @param DefPropPath[] $defPropPaths
-//	 * @return DefPropPath[]
-//	 */
-//	private function filterDefPropPaths($eiGuiMaskDeclaration, $defPropPaths) {
-//		$filteredDefPropPaths = [];
-//		foreach ($defPropPaths as $key => $defPropPath) {
-//			if ($this->containsGuiProp($defPropPath)) {
-//				$filteredDefPropPaths[$key] = $defPropPath;
-//			}
+//	function createEiGuiMaskDeclaration(N2nContext $n2nContext, int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
+//		$eiGuiMaskDeclaration = new EiGuiMaskDeclaration($viewMode, $this, null);
+//
+//		if ($defPropPaths === null) {
+//			$guiStructureDeclarations = $this->initEiGuiMaskDeclarationFromDisplayScheme($n2nContext, $eiGuiMaskDeclaration);
+//		} else {
+//			$guiStructureDeclarations = $this->semiAutoInitEiGuiMaskDeclaration($n2nContext, $eiGuiMaskDeclaration, $defPropPaths);
 //		}
-//		return $filteredDefPropPaths;
+//
+//		$eiGuiMaskDeclaration->setGuiStructureDeclarations($guiStructureDeclarations);
+//
+//// 		if (ViewMode::isBulky($eiGuiDeclaration->getViewMode())) {
+//// 			$guiStructureDeclarations = $this->groupGsds($guiStructureDeclarations);
+//// 		}
+//
+//		return $eiGuiMaskDeclaration;
+//	}
+//
+////	/**
+////	 * @param EiGuiMaskDeclaration $eiGuiMaskDeclaration
+////	 * @param DefPropPath[] $defPropPaths
+////	 * @return DefPropPath[]
+////	 */
+////	private function filterDefPropPaths($eiGuiMaskDeclaration, $defPropPaths) {
+////		$filteredDefPropPaths = [];
+////		foreach ($defPropPaths as $key => $defPropPath) {
+////			if ($this->containsGuiProp($defPropPath)) {
+////				$filteredDefPropPaths[$key] = $defPropPath;
+////			}
+////		}
+////		return $filteredDefPropPaths;
+////	}
+//
+//	/**
+//	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 */
+//	private function initEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): void {
+//		$this->eiMask->getEiModCollection()->setupEiGuiMaskDeclaration($eiGuiMaskDeclaration);
+//
+//		$eiGuiMaskDeclaration->markInitialized();
+//	}
+//
+//	/**
+//	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 * @return \rocket\ui\gui\GuiStructureDeclaration
+//	 */
+//	private function initEiGuiMaskDeclarationFromDisplayScheme(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
+//		$displayScheme = $this->eiMask->getDisplayScheme();
+//
+//		$displayStructure = null;
+//		switch ($eiGuiMaskDeclaration->getViewMode()) {
+//			case \rocket\ui\gui\ViewMode::BULKY_READ:
+//				$displayStructure = $displayScheme->getDetailDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
+//				break;
+//			case \rocket\ui\gui\ViewMode::BULKY_EDIT:
+//				$displayStructure = $displayScheme->getEditDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
+//				break;
+//			case \rocket\ui\gui\ViewMode::BULKY_ADD:
+//				$displayStructure = $displayScheme->getAddDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
+//				break;
+//			case \rocket\ui\gui\ViewMode::COMPACT_READ:
+//			case \rocket\ui\gui\ViewMode::COMPACT_EDIT:
+//			case \rocket\ui\gui\ViewMode::COMPACT_ADD:
+//				$displayStructure = $displayScheme->getOverviewDisplayStructure();
+//				break;
+//		}
+//
+//		if ($displayStructure === null) {
+//			return $this->autoInitEiGuiMaskDeclaration($n2nContext, $eiGuiMaskDeclaration);
+//		}
+//
+//		return $this->nonAutoInitEiGuiMaskDeclaration($n2nContext, $eiGuiMaskDeclaration, $displayStructure);
 //	}
 
-	/**
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 */
-	private function initEiGuiMaskDeclaration(EiGuiMaskDeclaration $eiGuiMaskDeclaration): void {
-		$this->eiMask->getEiModCollection()->setupEiGuiMaskDeclaration($eiGuiMaskDeclaration);
-
-		$eiGuiMaskDeclaration->markInitialized();
-	}
-
-	/**
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @return \rocket\ui\gui\GuiStructureDeclaration
-	 */
-	private function initEiGuiMaskDeclarationFromDisplayScheme(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
-		$displayScheme = $this->eiMask->getDisplayScheme();
-
-		$displayStructure = null;
-		switch ($eiGuiMaskDeclaration->getViewMode()) {
-			case \rocket\ui\gui\ViewMode::BULKY_READ:
-				$displayStructure = $displayScheme->getDetailDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
-				break;
-			case \rocket\ui\gui\ViewMode::BULKY_EDIT:
-				$displayStructure = $displayScheme->getEditDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
-				break;
-			case \rocket\ui\gui\ViewMode::BULKY_ADD:
-				$displayStructure = $displayScheme->getAddDisplayStructure() ?? $displayScheme->getBulkyDisplayStructure();
-				break;
-			case \rocket\ui\gui\ViewMode::COMPACT_READ:
-			case \rocket\ui\gui\ViewMode::COMPACT_EDIT:
-			case \rocket\ui\gui\ViewMode::COMPACT_ADD:
-				$displayStructure = $displayScheme->getOverviewDisplayStructure();
-				break;
-		}
-
-		if ($displayStructure === null) {
-			return $this->autoInitEiGuiMaskDeclaration($n2nContext, $eiGuiMaskDeclaration);
-		}
-
-		return $this->nonAutoInitEiGuiMaskDeclaration($n2nContext, $eiGuiMaskDeclaration, $displayStructure);
-	}
-
-	/**
-	 * @param EiLaunch $eiLaunch ;
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param DisplayStructure $displayStructure
-	 * @return \rocket\ui\gui\GuiStructureDeclaration
-	 */
-	private function nonAutoInitEiGuiMaskDeclaration(N2nContext $n2nContext, $eiGuiMaskDeclaration, $displayStructure): array {
-		$assemblerCache = new \rocket\op\gui\EiFieldAssemblerCache($n2nContext, $eiGuiMaskDeclaration, $displayStructure->getAllDefPropPaths());
-		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayStructure);
-		$this->initEiGuiMaskDeclaration($eiGuiMaskDeclaration);
-		return $guiStructureDeclarations;
-	}
+//	/**
+//	 * @param EiLaunch $eiLaunch ;
+//	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 * @param DisplayStructure $displayStructure
+//	 * @return \rocket\ui\gui\GuiStructureDeclaration
+//	 */
+//	private function nonAutoInitEiGuiMaskDeclaration(N2nContext $n2nContext, $eiGuiMaskDeclaration, $displayStructure): array {
+//		$assemblerCache = new \rocket\op\gui\EiFieldAssemblerCache($n2nContext, $eiGuiMaskDeclaration, $displayStructure->getAllDefPropPaths());
+//		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayStructure);
+//		$this->initEiGuiMaskDeclaration($eiGuiMaskDeclaration);
+//		return $guiStructureDeclarations;
+//	}
 
 // 	/**
 // 	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
@@ -901,34 +914,34 @@ class EiGuiDefinition {
 // 				->buildForkDisplayDefinition($defPropPath->getShifted(), $eiGuiMaskDeclaration, $defaultDisplayedRequired);
 // 	}
 
-	/**
-	 * @param \rocket\op\gui\EiFieldAssemblerCache $assemblerCache
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param DisplayStructure $displayStructure
-	 */
-	private function assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayStructure) {
-		$guiStructureDeclarations = [];
-
-		foreach ($displayStructure->getDisplayItems() as $displayItem) {
-			if ($displayItem->hasDisplayStructure()) {
-				$guiStructureDeclarations[] = \rocket\ui\gui\GuiStructureDeclaration::createGroup(
-						$this->assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayItem->getDisplayStructure()),
-						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText());
-				continue;
-			}
-
-			$defPropPath = $displayItem->getDefPropPath();
-			$displayDefinition = $assemblerCache->assignDefPropPath($defPropPath);
-			if (null === $displayDefinition) {
-				continue;
-			}
-
-			$guiStructureDeclarations[] = \rocket\ui\gui\GuiStructureDeclaration::createField($defPropPath,
-					$displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
-		}
-
-		return $guiStructureDeclarations;
-	}
+//	/**
+//	 * @param \rocket\op\gui\EiFieldAssemblerCache $assemblerCache
+//	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 * @param DisplayStructure $displayStructure
+//	 */
+//	private function assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayStructure) {
+//		$guiStructureDeclarations = [];
+//
+//		foreach ($displayStructure->getDisplayItems() as $displayItem) {
+//			if ($displayItem->hasDisplayStructure()) {
+//				$guiStructureDeclarations[] = \rocket\ui\gui\GuiStructureDeclaration::createGroup(
+//						$this->assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayItem->getDisplayStructure()),
+//						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText());
+//				continue;
+//			}
+//
+//			$defPropPath = $displayItem->getDefPropPath();
+//			$displayDefinition = $assemblerCache->assignDefPropPath($defPropPath);
+//			if (null === $displayDefinition) {
+//				continue;
+//			}
+//
+//			$guiStructureDeclarations[] = \rocket\ui\gui\GuiStructureDeclaration::createField($defPropPath,
+//					$displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+//		}
+//
+//		return $guiStructureDeclarations;
+//	}
 
 	/**
 	 * @param N2nContext $n2nContext
@@ -1016,106 +1029,8 @@ class EiGuiDefinition {
 	function getEiGuiDefinitionListeners() {
 		return $this->guiDefinitionListeners;
 	}
-}
 
-
-class EiFieldAssemblerCache {
-	private $eiGuiMaskDeclaration;
-	private $displayStructure;
-	/**
-	 * @var DefPropPath[]
-	 */
-	private $possibleDefPropPaths = [];
-	/**
-	 * @var DefPropPath[]
-	 */
-	private $defPropPaths = [];
-	/**
-	 * @var EiGuiPropSetup[]
-	 */
-	private $eiGuiPropSetups = [];
-
-	/**
-	 * @param N2nContext $n2nContext
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param array $possibleDefPropPaths
-	 */
-	function __construct(private N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration, array $possibleDefPropPaths) {
-		$this->eiGuiMaskDeclaration = $eiGuiMaskDeclaration;
-		$this->possibleDefPropPaths = $possibleDefPropPaths;
-	}
-
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return EiGuiPropSetup|null
-	 */
-	private function assemble(EiPropPath $eiPropPath) {
-		$eiPropPathStr = (string) $eiPropPath;
-
-		if (array_key_exists($eiPropPathStr, $this->eiGuiPropSetups)) {
-			return $this->eiGuiPropSetups[$eiPropPathStr];
-		}
-
-		$guiDefinition = $this->eiGuiMaskDeclaration->getEiGuiDefinition();
-
-		if (!$guiDefinition->containsEiPropPath($eiPropPath)) {
-			$this->eiGuiPropSetups[$eiPropPathStr] = null;
-			return null;
-		}
-
-		$eiGuiPropWrapper = $this->eiGuiMaskDeclaration->getEiGuiDefinition()->getGuiPropWrapper($eiPropPath);
-		$eiGuiPropSetup = $eiGuiPropWrapper->buildGuiPropSetup($this->n2nContext, $this->eiGuiMaskDeclaration,
-				$this->filterForkedDefPropPaths($eiPropPath));
-		$this->eiGuiMaskDeclaration->putEiGuiField($eiPropPath, $eiGuiPropSetup->getEiGuiField());
-		$this->eiGuiPropSetups[$eiPropPathStr] = $eiGuiPropSetup;
-
-		return $eiGuiPropSetup;
-	}
-
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return DisplayDefinition|null
-	 */
-	function assignDefPropPath(DefPropPath $defPropPath) {
-		$eiGuiPropSetup = $this->assemble($defPropPath->getFirstEiPropPath());
-
-		if ($eiGuiPropSetup === null) {
-			return null;
-		}
-
-		$displayDefinition = null;
-		if (!$defPropPath->hasMultipleEiPropPaths()) {
-			$displayDefinition = $eiGuiPropSetup->getDisplayDefinition();
-		} else {
-			$displayDefinition = $eiGuiPropSetup->getForkedDisplayDefinition($defPropPath->getShifted());
-		}
-
-		if ($displayDefinition !== null) {
-			$this->eiGuiMaskDeclaration->putDisplayDefintion($defPropPath, $displayDefinition);
-		}
-
-		return $displayDefinition;
-	}
-
-	/**
-	 * @param EiPropPath $eiPropPath
-	 * @return DefPropPath[]
-	 */
-	private function filterForkedDefPropPaths($eiPropPath) {
-		$forkedDefPropPaths = [];
-		foreach ($this->possibleDefPropPaths as $possibleDefPropPath) {
-			if ($possibleDefPropPath->hasMultipleEiPropPaths()
-					&& $possibleDefPropPath->getFirstEiPropPath()->equals($eiPropPath)) {
-				$forkedDefPropPaths[] = $possibleDefPropPath->getShifted();
-			}
-		}
-		return $forkedDefPropPaths;
-	}
-
-	/**
-	 * @return DefPropPath[]
-	 */
-	function getDefPropPaths() {
-		return $this->defPropPaths;
+	function createGuiMask(): GuiMask {
+		throw new NotYetImplementedException();
 	}
 }

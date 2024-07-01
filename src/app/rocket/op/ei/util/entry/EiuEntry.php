@@ -47,7 +47,7 @@ use n2n\persistence\orm\util\NestedSetStrategy;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\gui\EiuGuiEntry;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
 use rocket\op\ei\util\spec\EiuProp;
@@ -302,7 +302,7 @@ class EiuEntry {
 	function newGuiValueBoundary(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
 			array $defPropPathsArg = null, bool $contextEiMaskUsed = false, int $treeLevel = null): EiuGuiValueBoundary {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
+		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
 
 		$eiMaskId = $contextEiMaskUsed
 				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
@@ -325,7 +325,7 @@ class EiuEntry {
 	function newGuiEntry(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
 			array $defPropPathsArg = null, bool $contextEiMaskUsed = false): EiuGuiEntry {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
+		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
 
 		$eiMaskId = $contextEiMaskUsed
 				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()

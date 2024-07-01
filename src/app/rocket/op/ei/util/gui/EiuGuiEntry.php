@@ -28,7 +28,7 @@ use rocket\ui\gui\ViewMode;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\si\content\SiEntry;
 use rocket\ui\gui\EiGuiEntryListener;
 
@@ -244,7 +244,7 @@ class EiuGuiEntry {
 				$readOnly ?? ViewMode::isReadOnly($eiGuiMaskDeclaration->getViewMode()),
 				ViewMode::isAdd($eiGuiMaskDeclaration->getViewMode()));
 
-		$eiFrameUtil = new EiFrameUtil($this->eiuAnalyst->getEiFrame(true));
+		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
 
 		$eiGuiEntry = $eiFrameUtil->copyEiGuiEntry($this->eiGuiEntry, $newViewMode, $defPropPaths, $entryGuiControlsIncluded);
 

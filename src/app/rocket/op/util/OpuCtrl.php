@@ -13,7 +13,7 @@ use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\ei\manage\preview\model\UnavailablePreviewException;
 use rocket\ui\gui\Gui;
 use rocket\ui\si\SiPayloadFactory;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\util\EiuAnalyst;
 use n2n\web\ui\UiComponent;
 use rocket\ui\si\content\impl\iframe\IframeSiGui;
@@ -130,7 +130,7 @@ class OpuCtrl {
 		}
 
 		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtils = new EiFrameUtil($eiFrame);
+		$eiFrameUtils = new EiObjectSelector($eiFrame);
 
 		$result = $eiFrameUtils->lookupEiGuiFromRange(0, $pageSize, false, true, $entryGuiControlsIncluded);
 
@@ -201,7 +201,7 @@ class OpuCtrl {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiEntryArg', true);
 
 		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiFrameUtil = new EiObjectSelector($eiFrame);
 		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, $readOnly, null);
 		$guiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($eiFrame, [$eiEntry], $entrySiControlsIncluded);
 
@@ -230,7 +230,7 @@ class OpuCtrl {
 		}
 
 		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiFrameUtil = new EiObjectSelector($eiFrame);
 
 		$eiGuiDeclaration = $eiFrameUtil->createNewEiGuiDeclaration(true, !$editable, null, null);
 		$guiValueBoundary = $eiGuiDeclaration->createNewGuiValueBoundary($eiFrame, $entrySiControlsIncluded);
@@ -378,7 +378,7 @@ class OpuCtrl {
 		}
 
 		if ($label === null) {
-			$label = (new EiFrameUtil($eiFrame))->createIdentityString($eiObject);
+			$label = (new EiObjectSelector($eiFrame))->createIdentityString($eiObject);
 		}
 
 		$this->opState->addBreadcrumb(new SiBreadcrumb($navPoint, $label));

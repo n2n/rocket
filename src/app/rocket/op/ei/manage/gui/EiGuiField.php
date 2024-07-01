@@ -23,6 +23,7 @@ namespace rocket\op\ei\manage\gui;
 
 use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\DefPropPath;
 
 interface EiGuiField {
 	
@@ -31,5 +32,5 @@ interface EiGuiField {
 	 * @param bool $readOnly No access or read only view.
 	 * @return GuiField|null
 	 */
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
+	function getGuiField(): ?GuiField;
 }

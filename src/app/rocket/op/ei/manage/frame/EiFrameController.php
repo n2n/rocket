@@ -116,7 +116,7 @@ class EiFrameController extends ControllerAdapter {
 	 * @return \rocket\op\ei\manage\LiveEiObject
 	 */
 	private function lookupEiObject($pid) {
-		$util = new EiFrameUtil($this->eiFrame);
+		$util = new EiObjectSelector($this->eiFrame);
 		
 		try {
 			return new LiveEiObject($util->lookupEiEntityObj($util->pidToId($pid)));
@@ -133,7 +133,7 @@ class EiFrameController extends ControllerAdapter {
 	 * @return \rocket\op\ei\manage\EiObject
 	 */
 	private function createEiObject($eiTypeId) {
-		$util = new EiFrameUtil($this->eiFrame);
+		$util = new EiObjectSelector($this->eiFrame);
 		
 		try {
 			return $util->createNewEiObject($eiTypeId);
@@ -170,7 +170,7 @@ class EiFrameController extends ControllerAdapter {
 	 */
 	private function lookupEiType($eiTypeId) {
 		try {
-			return (new EiFrameUtil($this->eiFrame))->getEiTypeById($eiTypeId);
+			return (new EiObjectSelector($this->eiFrame))->getEiTypeById($eiTypeId);
 		} catch (\rocket\op\ei\UnknownEiTypeException $e) {
 			throw new PageNotFoundException(null, 0, $e);
 		}

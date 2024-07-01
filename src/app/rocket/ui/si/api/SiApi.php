@@ -42,6 +42,7 @@ use rocket\ui\si\api\response\SiValInstructionResult;
 use rocket\ui\si\api\response\SiValGetInstructionResult;
 use rocket\ui\si\api\request\SiSortCall;
 use rocket\ui\si\api\response\SiCallResponse;
+use rocket\ui\si\api\request\SiControlCall;
 
 class SiApi {
 
@@ -114,11 +115,11 @@ class SiApi {
 
 		$entryId = $controlCall->getEntryId();
 		if ($entryId !== null) {
-			return $this->model->lookupSiEntryControl($controlCall->getMaskId(), $entryId,
+			return $this->model->getSiEntryControl($controlCall->getMaskId(), $entryId,
 					$controlCall->getControlName())->handleCall($n2nContext);
 		}
 
-		return $this->model->lookupSiMaskControl($controlCall->getMaskId(), $controlCall->getControlName())
+		return $this->model->getSiMaskControl($controlCall->getMaskId(), $controlCall->getControlName())
 				->handleCall($n2nContext);
 	}
 
@@ -196,7 +197,7 @@ class SiApi {
 
 		$masks = [];
 		foreach ($maskIds as $maskId) {
-			$masks[] = $this->model->lookupSiMask($maskId);
+			$masks[] = $this->model->getSiMask($maskId);
 		}
 		return $masks;
 	}

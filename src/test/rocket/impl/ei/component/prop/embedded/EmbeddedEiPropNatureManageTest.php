@@ -9,7 +9,7 @@ use rocket\test\SpecTestEnv;
 use testmdl\embedded\bo\EmbeddingContainerTestObj;
 use rocket\op\ei\manage\EiLaunch;
 use rocket\user\model\security\FullEiPermissionManager;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\EiPropPath;
 use rocket\op\spec\Spec;
 use testmdl\embedded\bo\EmbeddableTestObj;
@@ -75,7 +75,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 	function testEiGuiProp(): void {
 		$eiEntry = $this->createEiEntry();
 
-		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
+		$eiFrameUtil = new EiObjectSelector($this->eiFrame);
 		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, false, null);
 		$eiGuiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame, [$eiEntry], false);
 

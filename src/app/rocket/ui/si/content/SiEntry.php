@@ -25,21 +25,21 @@ use rocket\ui\si\control\SiControl;
 use rocket\ui\si\SiPayloadFactory;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
-use rocket\ui\si\input\SiEntryInput;
 use n2n\l10n\Message;
 use n2n\core\container\N2nContext;
 use n2n\util\type\ArgUtils;
+use rocket\ui\si\api\request\SiEntryInput;
 
 class SiEntry implements \JsonSerializable {
 
 	/**
 	 * @var string|null
 	 */
-	private $idName;
+	private ?string $idName = null;
 	/**
 	 * @var SiField[] $fields
 	 */
-	private $fields = [];
+	private array $fields = [];
 // 	/**
 // 	 * @var SiField[] $contextFields
 // 	 */
@@ -47,7 +47,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @var SiControl[] $controls
 	 */	
-	private $controls = [];
+	private array $controls = [];
 
 	/**
 	 * @var Message[]
@@ -56,11 +56,11 @@ class SiEntry implements \JsonSerializable {
 
 	private ?SiEntryModel $model = null;
 
-	function __construct(private SiEntryQualifier $siEntryQualifier) {
+	function __construct(private SiEntryQualifier $entryQualifier) {
 	}
 
 	function getQualifier(): SiEntryQualifier {
-		return $this->siEntryQualifier;
+		return $this->entryQualifier;
 	}
 
 	function setModel(SiEntryModel $model): static {
@@ -107,7 +107,7 @@ class SiEntry implements \JsonSerializable {
 	/**
 	 * @return SiControl[] 
 	 */
-	function getControls() {
+	function getControls(): array {
 		return $this->controls;
 	}
 	
@@ -173,7 +173,7 @@ class SiEntry implements \JsonSerializable {
 		ArgUtils::valArrayReturn($externalMessages, $this->model, 'getMessages', 'string');
 
 		return [
-			'qualifier' => $this->siEntryQualifier,
+			'qualifier' => $this->entryQualifier,
 			'fieldMap' => $fieldsArr,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'messages' => [...$this->messages, ...$externalMessages]

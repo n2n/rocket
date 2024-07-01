@@ -8,7 +8,7 @@ use rocket\test\SpecTestEnv;
 use n2n\test\TestEnv;
 use rocket\op\ei\manage\EiLaunch;
 use rocket\user\model\security\FullEiPermissionManager;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use testmdl\enum\bo\EnumTestObj;
 use testmdl\test\enum\EnumTestEnv;
 use testmdl\enum\bo\SomeBackedEnum;

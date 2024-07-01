@@ -22,7 +22,7 @@
 namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\manage\LiveEiObject;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use n2n\web\http\BadRequestException;
@@ -65,7 +65,7 @@ class ProcessUtil {
 
 	function lookupEiObject(string $pid): EiObject {
 		try {
-			$efu = new EiFrameUtil($this->eiFrame);
+			$efu = new EiObjectSelector($this->eiFrame);
 			return new LiveEiObject($efu->lookupEiEntityObj($efu->pidToId($pid)));
 		} catch (UnknownEiObjectException $e) {
 			throw new BadRequestException(null, 0, $e);
@@ -83,7 +83,7 @@ class ProcessUtil {
 	function lookupEiGuiByPid(string $pid, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
 			?array $defPropPaths): EiGuiValueBoundary {
 		try {
-			$efu = new EiFrameUtil($this->eiFrame);
+			$efu = new EiObjectSelector($this->eiFrame);
 			return $efu->lookupEiGuiFromId($efu->pidToId($pid), $bulky, $readOnly, $entryGuiControlsIncluded,
 					$defPropPaths);
 		} catch (UnknownEiObjectException $e) {
@@ -125,7 +125,7 @@ class ProcessUtil {
 		$eiObject = $this->determineEiObjectOfInput($siEntryInput);
 			
 		try {
-			$efu = new EiFrameUtil($this->eiFrame);
+			$efu = new EiObjectSelector($this->eiFrame);
 			// doesn't work if forked gui fields
 // 			$defPropPaths = DefPropPath::createArray($siEntryInput->getFieldIds());
 			
@@ -148,7 +148,7 @@ class ProcessUtil {
 	function determineEiGuiOfEiEntry(EiEntry $eiEntry, string $eiTypeId, bool $bulky, bool $readOnly,
 			bool $entryGuiControlsIncluded): EiGuiValueBoundary {
 		try {
-			$efu = new EiFrameUtil($this->eiFrame);
+			$efu = new EiObjectSelector($this->eiFrame);
 			return $efu->createEiGuiValueBoundaryFromEiEntry($eiEntry, $bulky, $readOnly, $entryGuiControlsIncluded,
 					$eiTypeId, null, $efu->lookupTreeLevel($eiEntry->getEiObject()));
 		} catch (SecurityException|EiException|\InvalidArgumentException $e) {

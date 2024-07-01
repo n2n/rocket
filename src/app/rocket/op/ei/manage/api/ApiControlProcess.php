@@ -34,7 +34,7 @@ use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\gui\EiGuiValueBoundary;
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\si\input\SiInputFactory;
 use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
@@ -56,7 +56,7 @@ class ApiControlProcess {
 	 */
 //	private $util;
 	/**
-	 * @var EiFrameUtil
+	 * @var EiObjectSelector
 	 */
 	private $eiFrameUtil;
 	/**
@@ -84,7 +84,7 @@ class ApiControlProcess {
 	function __construct(EiFrame $eiFrame) {
 		$this->eiFrame = $eiFrame;
 //		$this->util = new ProcessUtil($eiFrame);
-		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
+		$this->eiFrameUtil = new EiObjectSelector($eiFrame);
 	}
 
 	/**

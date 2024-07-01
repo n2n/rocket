@@ -23,6 +23,7 @@
 namespace rocket\op\ei\manage\gui;
 
 use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\DefPropPath;
 
 interface EiGuiProp {
 
@@ -31,13 +32,23 @@ interface EiGuiProp {
 	 * if it does. Use <code>$eiu->guiFrame()</code> to access the {@see \rocket\op\ei\util\gui\EiuGuiMaskDeclaration}
 	 * object.<p>
 	 *
-	 * @return \rocket\op\ei\manage\gui\DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiMaskDeclaration.
+	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiMaskDeclaration.
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?\rocket\op\ei\manage\gui\EiGuiPropSetup;
+	function buildEiGuiField(Eiu $eiu, bool $readOnly): ?EiGuiField;
 
 
 	/**
 	 * @return \rocket\ui\gui\EiGuiDefinition|NULL
 	 */
 	function getForkEiGuiDefinition(): ?EiGuiDefinition;
+
+
+
+	function getDisplayDefinition(): ?DisplayDefinition;
+
+	/**
+	 * @param DefPropPath $defPropPath
+	 * @return DisplayDefinition|NULL
+	 */
+	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition;
 }

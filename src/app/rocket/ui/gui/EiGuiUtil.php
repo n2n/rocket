@@ -25,7 +25,7 @@ use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\si\content\impl\basic\CompactEntrySiGui;
 use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\ui\si\content\impl\basic\CompactExplorerSiGui;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
@@ -89,7 +89,7 @@ class EiGuiUtil {
 	}
 	
 	function createCompactExplorerSiGui(int $pageSize, bool $entrySiControlsIncluded, bool $generalSiControlsIncluded, array $zoneGuiControls) {
-		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
+		$eiFrameUtil = new EiObjectSelector($this->eiFrame);
 				
 		$siDeclaration = $this->eiGui->getEiGuiDeclaration()->createSiDeclaration($this->eiFrame);
 		$siPartialContent = new SiPartialContent($eiFrameUtil->count(), 

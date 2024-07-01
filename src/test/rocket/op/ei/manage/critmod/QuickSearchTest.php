@@ -11,7 +11,7 @@ use rocket\user\model\security\FullEiPermissionManager;
 use rocket\op\spec\Spec;
 use rocket\test\GeneralTestEnv;
 use testmdl\bo\QuickSearchTestObj;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\op\ei\EiPropPath;
 
 class QuickSearchTest extends TestCase {
@@ -34,7 +34,7 @@ class QuickSearchTest extends TestCase {
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
 
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiFrameUtil = new EiObjectSelector($eiFrame);
 
 		$criteria = $eiFrameUtil->createCriteria('qsto', quickSearchStr: 'find me')->select('qsto');
 		$quickSearchTestObjs = $criteria->toQuery()->fetchArray();
@@ -65,7 +65,7 @@ class QuickSearchTest extends TestCase {
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
 
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiFrameUtil = new EiObjectSelector($eiFrame);
 
 
 		$criteria = $eiFrameUtil->createCriteria('qsto', quickSearchStr: 'find')->select('qsto');

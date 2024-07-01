@@ -176,15 +176,15 @@ class DisplayConfig {
 	 * @return EiGuiPropSetup|null
 	 */
 	function buildGuiPropSetup(Eiu $eiu, EiGuiField $eiGuiField) {
-		$viewMode = $eiu->guiMaskDeclaration()->getViewMode();
+
 		
 		if (!$this->isViewModeCompatible($viewMode)) {
 			return null;
 		}
 		
-		return $eiu->factory()->newGuiPropSetup($eiGuiField)
+		return $eiu->factory()->newGuiProp($eiGuiField)
 				->setDefaultDisplayed($this->isViewModeDefaultDisplayed($viewMode))
 				->setSiStructureType($this->getSiStructureType())
-				->toGuiPropSetup();
+				->toGuiProp();
 	}
 }

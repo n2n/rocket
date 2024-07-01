@@ -350,7 +350,7 @@ class EiType extends Type {
 	 * @throws UnknownEiTypeExtensionException
 	 * @return EiMask
 	 */
-	public function determineEiMask(TypePath $typePath) {
+	public function determineEiMask(TypePath $typePath): EiMask {
 		$this->ensureInitialized();
 		
 		$eiType = $this;

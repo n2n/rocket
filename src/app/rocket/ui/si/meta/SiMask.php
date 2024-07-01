@@ -22,6 +22,7 @@
 namespace rocket\ui\si\meta;
 
 use n2n\util\type\ArgUtils;
+use rocket\ui\si\control\SiControl;
 
 class SiMask implements \JsonSerializable {
 
@@ -34,6 +35,11 @@ class SiMask implements \JsonSerializable {
 	 * @var SiStructureDeclaration[]|null
 	 */
 	private ?array $structureDeclarations = null;
+
+	/**
+	 * @var SiControl[]
+	 */
+	private array $controls = [];
 
 	/**
 	 * @param SiMaskQualifier $qualifier
@@ -76,8 +82,8 @@ class SiMask implements \JsonSerializable {
 		return $this->props !== null;
 	}
 
-	function addProp(SiProp $prop): static {
-		$this->props[] = $prop;
+	function putProp(string $controlName, SiProp $prop): static {
+		$this->props[$controlName] = $prop;
 		return $this;
 	}
 
@@ -117,7 +123,16 @@ class SiMask implements \JsonSerializable {
 	function getStructureDeclarations(): ?array {
 		return $this->structureDeclarations;
 	}
-	
+
+	function putControl(string $controlName, SiControl $control): static {
+		$this->controls[$controlName] = $control;
+		return $this;
+	}
+
+	function getControl(string $controlName): ?SiControl {
+		return $this->controls[$controlName] ?? null;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
@@ -126,6 +141,7 @@ class SiMask implements \JsonSerializable {
 		return [
 			'qualifier' => $this->qualifier,
 			'props' => $this->props,
+			'controls' => $this->controls,
 			'structureDeclarations' => $this->structureDeclarations
 		];
 	}

@@ -24,7 +24,7 @@ namespace rocket\op\ei\manage\api;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\api\SiGetInstruction;
 use SiGetResult;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\gui\EiGuiValueBoundary;
 use rocket\ui\si\api\SiPartialContentInstruction;
 use rocket\op\ei\manage\DefPropPath;
@@ -43,7 +43,7 @@ class GetInstructionProcess {
 		$this->instruction = $instruction;
 		$this->util = new ProcessUtil($eiFrame);
 		$this->apiUtil = new ApiUtil($eiFrame);
-		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
+		$this->eiFrameUtil = new EiObjectSelector($eiFrame);
 	}
 	
 

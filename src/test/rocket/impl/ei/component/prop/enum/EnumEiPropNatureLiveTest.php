@@ -8,7 +8,7 @@ use rocket\test\SpecTestEnv;
 use n2n\test\TestEnv;
 use rocket\op\ei\manage\EiLaunch;
 use rocket\user\model\security\FullEiPermissionManager;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use testmdl\enum\bo\EnumTestObj;
 use testmdl\test\enum\EnumTestEnv;
 use testmdl\enum\bo\SomeBackedEnum;
@@ -41,7 +41,7 @@ class EnumEiPropNatureLiveTest extends TestCase {
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
 
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiFrameUtil = new EiObjectSelector($eiFrame);
 
 		$criteria = $eiFrameUtil->createCriteria('eto', quickSearchStr: 'ATUSCH')->select('eto');
 		$enumTestObjs = $criteria->toQuery()->fetchArray();
@@ -56,7 +56,7 @@ class EnumEiPropNatureLiveTest extends TestCase {
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
 
-		$eiFrameUtil = new EiFrameUtil($eiFrame);
+		$eiFrameUtil = new EiObjectSelector($eiFrame);
 
 		$tx = TestEnv::createTransaction();
 		$eiObject = $eiFrameUtil->lookupEiObject($this->enumTestObj1Id);

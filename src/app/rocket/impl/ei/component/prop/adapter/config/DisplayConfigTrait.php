@@ -55,8 +55,12 @@ trait DisplayConfigTrait {
 
 	
 	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory ()->newGuiProp (function (Eiu $eiu) {
-			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
+		return $eiu->factory ()->newGuiProp(function (Eiu $eiu) {
+			$displayConfig = $this->getDisplayConfig();
+			return $eiu->f()->newGuiProp()
+					->setDefaultDisplayed($displayConfig->isViewModeDefaultDisplayed($eiu->guiDefinition()->getViewMode()))
+					->setSiStructureType($displayConfig->getSiStructureType())
+					->toGuiProp();
 		})->toEiGuiProp();
 	}
 	

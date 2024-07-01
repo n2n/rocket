@@ -52,6 +52,9 @@ use rocket\ui\si\meta\SiMaskQualifier;
 use n2n\l10n\N2nLocale;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\op\ei\util\Eiu;
+use rocket\op\ei\UnknownEiTypeExtensionException;
+use rocket\op\ei\UnknownEiTypeException;
+use rocket\ui\gui\err\UnknownGuiElementException;
 
 /**
  * @author andreas
@@ -554,6 +557,24 @@ class EiMask {
 		}
 
 		return $eiType->getEiMask();
+	}
+
+
+	/**
+	 * @throws UnknownEiTypeExtensionException
+	 * @throws UnknownEiTypeException
+	 */
+	function determineEiMaskByEiTypePath(TypePath $eiTypePath): EiMask {
+		if ($this->getEiTypePath()->equals($eiTypePath)) {
+			return $this;
+		}
+
+		$typeId = $eiTypePath->getTypeId();
+		if (isset($this->subEiTypeExtensions[$typeId])) {
+			return $this->subEiTypeExtensions[$typeId]->getEiMask();
+		}
+
+		return $this->eiType->determineEiMask($eiTypePath);
 	}
 
 //	/**

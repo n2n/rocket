@@ -26,10 +26,12 @@ use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\gui\DisplayDefinition;
 use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\manage\gui\EiGuiPropSetup;
+use rocket\op\ei\manage\gui\EiGuiProp;
+use rocket\op\ei\util\Eiu;
 
 
-class SimpleEiGuiPropSetup implements EiGuiPropSetup {
-	private $eiGuiField;
+class SimpleEiGuiProp implements EiGuiProp {
+	private EiGui$eiGuiField;
 	private $displayDefinition;
 	private $forkedDisplayDefinitions;
 	
@@ -40,9 +42,10 @@ class SimpleEiGuiPropSetup implements EiGuiPropSetup {
 		ArgUtils::valArray($forkedDisplayDefinitions, DisplayDefinition::class, 'forkedDisplayDefinitions');
 		$this->forkedDisplayDefinitions = $forkedDisplayDefinitions;
 	}
-	
-	public function getEiGuiField(): EiGuiField {
-		return $this->eiGuiField;
+
+
+	function buildEiGuiField(Eiu $eiu, ?array $defPropPaths): ?EiGuiField {
+
 	}
 
 	public function getDisplayDefinition(): ?DisplayDefinition {

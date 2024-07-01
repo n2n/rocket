@@ -9,7 +9,7 @@ use SiCallResponse;
 use rocket\ui\si\api\request\SiInput;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\si\content\impl\basic\CompactExplorerSiGui;
 use rocket\ui\gui\control\GuiControlMap;
@@ -84,7 +84,7 @@ class CompactExplorerGui implements Gui {
 	}
 
 	function getSiGui(): SiGui {
-		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
+		$eiFrameUtil = new EiObjectSelector($this->eiFrame);
 
 		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
 		$siPartialContent = new SiPartialContent($this->count,

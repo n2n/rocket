@@ -17,24 +17,24 @@ interface SiApiModel {
 	 * @return SiMask
 	 * @throws UnknownSiElementException
 	 */
-	function lookupSiMask(string $maskId): SiMask;
+	function getSiMask(string $maskId): SiMask;
 
 	/**
-	 * @param string $contextMaskId
+	 * @param string $maskId
 	 * @param string $controlName
 	 * @return SiControl
 	 * @throws UnknownSiElementException
 	 */
-	function lookupSiMaskControl(string $contextMaskId, string $controlName): SiControl;
+	function getSiMaskControl(string $maskId, string $controlName): SiControl;
 
 	/**
-	 * @param string $contextMaskId
+	 * @param string $maskId
 	 * @param string $entryId
 	 * @param string $controlName
 	 * @return SiControl
 	 * @throws UnknownSiElementException
 	 */
-	function lookupSiEntryControl(string $contextMaskId, string $entryId, string $controlName): SiControl;
+	function getSiEntryControl(string $maskId, string $entryId, string $controlName): SiControl;
 
 	/**
 	 * @param string $contextMaskId

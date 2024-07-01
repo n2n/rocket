@@ -23,7 +23,7 @@ namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\si\api\SiValResult;
-use rocket\op\ei\manage\frame\EiFrameUtil;
+use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\si\api\SiValInstruction;
 use n2n\util\ex\IllegalStateException;
 use SiValGetInstructionResult;
@@ -45,7 +45,7 @@ class ValInstructionProcess {
 		$this->instruction = $instruction;
 		$this->util = new ProcessUtil($eiFrame);
 //		$this->apiUtil = new ApiUtil($eiFrame);
-		$this->eiFrameUtil = new EiFrameUtil($eiFrame);
+		$this->eiFrameUtil = new EiObjectSelector($eiFrame);
 	}
 	
 	function clear() {

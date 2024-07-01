@@ -51,7 +51,7 @@ abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implem
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField();
+		return $this->createOutEifGuiField( $eiu, $readOnly )->toGuiField();
 	}
 
 	protected function createOutGuiField(Eiu $eiu): BackableGuiField {

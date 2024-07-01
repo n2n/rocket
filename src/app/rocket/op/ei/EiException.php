@@ -21,5 +21,5 @@
  */
 namespace rocket\op\ei;
 
-class EiException extends \RuntimeException {
+class EiException extends \Exception {
 }
