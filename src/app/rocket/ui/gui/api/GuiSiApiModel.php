@@ -74,16 +74,47 @@ class GuiSiApiModel implements SiApiModel {
 		return $siControl;
 	}
 
-	function lookupSiField(string $contextMaskId, string $entryId, string $fieldName): SiField {
-		// TODO: Implement lookupSiField() method.
+	function lookupSiField(string $maskId, string $entryId, string $fieldName): SiField {
+		$entry = $this->lookupSiValueBoundary($maskId, $entryId, null)->getSelectedEntry();
+		if ($entry->containsFieldName($fieldName)) {
+			return $entry->getField($fieldName);
+		}
+
+		throw new UnknownSiElementException('Field "' . $fieldName . '" does not exist in entry: '
+				. $maskId . '#' . $entryId);
 	}
 
 	function lookupSiValueBoundary(string $maskId, ?string $entryId, ?array $allowedFieldNames): SiValueBoundary {
-		// TODO: Implement lookupSiValueBoundary() method.
+		if ($entryId !== null) {
+			try {
+				return $this->guiApiModel->lookupGuiValueBoundary($maskId, $entryId)->getSiValueBoundary();
+			} catch (UnknownGuiElementException $e) {
+				throw new UnknownSiElementException('Could not create a new SiValueBoundary based on maskId: '
+						. $maskId, previous: $e);
+			}
+		}
+
+		try {
+			return $this->guiApiModel->lookupGuiValueBoundary($maskId, $entryId)->getSiValueBoundary();
+		} catch (UnknownGuiElementException $e) {
+			throw new UnknownSiElementException('Could not lookup a SiValueBoundary for: '
+					. $maskId . '#' . $entryId, previous: $e);
+		}
 	}
 
+	/**
+	 * @throws UnknownSiElementException
+	 */
 	function lookupSiPartialContent(string $maskId, int $from, int $num, ?string $quickSearchStr, ?array $allowedFieldNames): SiPartialContent {
-		// TODO: Implement lookupSiPartialContent() method.
+		try {
+			$guiValueBoundaries = $this->guiApiModel->lookupGuiValueBoundaries($maskId, $from, $num, $quickSearchStr);
+			$num = $this->guiApiModel->countGuiValueBoundaries($maskId, $quickSearchStr);
+		} catch (UnknownGuiElementException $e) {
+			throw new UnknownSiElementException(previous: $e);
+		}
+
+		return new SiPartialContent($num, array_map(fn (GuiValueBoundary $gvb) => $gvb->getSiValueBoundary(),
+				$guiValueBoundaries));
 	}
 
 	function copySiValueBoundary(SiValueBoundary $boundary, string $maskId): SiValueBoundary {

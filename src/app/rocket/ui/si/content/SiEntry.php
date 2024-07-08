@@ -87,6 +87,14 @@ class SiEntry implements \JsonSerializable {
 		$this->fields[$nName] = $field;
 		return $this;
 	}
+
+	function containsFieldName(string $name): bool {
+		return isset($this->fields[$name]);
+	}
+
+	function getField(string $nName): SiField {
+		return $this->fields[$nName];
+	}
 	
 // 	/**
 // 	 * @param string $id

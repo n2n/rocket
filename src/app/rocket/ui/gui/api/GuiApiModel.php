@@ -20,4 +20,10 @@ interface GuiApiModel {
 	 * @throws UnknownGuiElementException
 	 */
 	function createGuiValueBoundary(string $maskId): GuiValueBoundary;
+
+	/**
+	 * @throws UnknownGuiElementException
+	 * @return GuiValueBoundary[]
+	 */
+	function lookupGuiValueBoundaries(string $maskId, int $offset, int $num, ?string $quickSearchStr): array;
 }

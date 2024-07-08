@@ -40,7 +40,7 @@ class EiGuiApiModel implements GuiApiModel {
 		try {
 			return $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMaskByEiTypePath($eiTypePath);
 		} catch (EiException $e) {
-			throw new UnknownGuiElementException('Could not determine EiMask of ' . $eiSiMaskId->eiTypePath,
+			throw new UnknownGuiElementException('Could not determine EiMask of ' . $eiTypePath,
 					previous: $e);
 		}
 	}
@@ -63,36 +63,49 @@ class EiGuiApiModel implements GuiApiModel {
 			throw new UnknownGuiElementException(previous: $e);
 		}
 
-		$guiValueBoundary = new GuiValueBoundary($selector->lookupTreeLevel($eiEntry->getEiObject()));
-
-		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($eiSiMaskId->viewMode);
-		$guiValueBoundary->putGuiEntry($eiGuiDefinition->createGuiEntry($eiEntry, $eiFrame));
-
-
-		$factory = new EiGuiDeclarationFactory($this->eiFrame->getN2nContext());
-
-		return $factory->createEiGuiDeclaration($eiSiMaskId->viewMode, true, null)
-				->createGuiValueBoundary($this->eiFrame, [$eiEntry], true);
+		$factory = new EiGuiEntryFactory($this->eiFrame);
+		return $factory->createGuiValueBoundary($eiSiMaskId->viewMode, [$eiEntry],
+				$selector->lookupTreeLevel($eiEntry->getEiObject()));
 	}
 
 	function createGuiValueBoundary(string $maskId): GuiValueBoundary {
 		$eiSiMaskId = $this->parseEiSiMaskId($maskId);
 
 		$factory = new EiObjectFactory($this->eiFrame);
-
 		try {
 			$eiEntries = $factory->createPossibleNewEiEntries($eiSiMaskId->eiTypePath);
 		} catch (EiException $e) {
 			throw new UnknownGuiElementException('Failed to create new EiEntries for Mask: '
-					. $eiSiMaskId->eiTypePath);
+					. $eiSiMaskId->eiTypePath, previous: $e);
 		}
 
-		$factory = new EiGuiDeclarationFactory($this->eiFrame);
+		$factory = new EiGuiEntryFactory($this->eiFrame);
+		return $factory->createGuiValueBoundary($eiSiMaskId->viewMode, $eiEntries);
+	}
 
-		foreach ($factory->createEiGuiEntries($eiEntries) as $eiGuiEntry) {
+	function lookupGuiValueBoundaries(string $maskId, int $offset, int $num, ?string $quickSearchStr): array {
+		$eiSiMaskId = $this->parseEiSiMaskId($maskId);
 
+		$selector = new EiObjectSelector($this->eiFrame);
+		$eiEntryRecords = $selector->lookupEiEntries($offset, $num, $quickSearchStr);
+
+		$factory = new EiGuiEntryFactory($this->eiFrame);
+		$guiValueBoundaries = [];
+		foreach ($eiEntryRecords as $eiEntryRecord) {
+			$guiValueBoundaries[] = $factory->createGuiValueBoundary($eiSiMaskId->viewMode, [$eiEntryRecord->eiEntry],
+					$eiEntryRecord->treeLevel);
 		}
+		return $guiValueBoundaries;
+	}
 
+	/**
+	 * @throws UnknownGuiElementException
+	 */
+	function countGuiValueBoundaries(string $maskId, ?string $quickSearchStr): int {
+		$this->parseEiSiMaskId($maskId);
+
+		$selector = new EiObjectSelector($this->eiFrame);
+		return $selector->count($quickSearchStr);
 	}
 
 }

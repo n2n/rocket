@@ -37,13 +37,13 @@ interface SiApiModel {
 	function getSiEntryControl(string $maskId, string $entryId, string $controlName): SiControl;
 
 	/**
-	 * @param string $contextMaskId
+	 * @param string $maskId
 	 * @param string $entryId
 	 * @param string $fieldName
 	 * @return SiField
 	 * @throws UnknownSiElementException
 	 */
-	function lookupSiField(string $contextMaskId, string $entryId, string $fieldName): SiField;
+	function lookupSiField(string $maskId, string $entryId, string $fieldName): SiField;
 
 	/**
 	 * @param string $maskId

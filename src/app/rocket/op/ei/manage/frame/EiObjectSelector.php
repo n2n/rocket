@@ -45,6 +45,7 @@ use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\entry\ValidationResult;
 use rocket\ui\gui\GuiValueBoundary;
+use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
 
 class EiObjectSelector {
 //	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;
@@ -356,7 +357,26 @@ class EiObjectSelector {
 		
 		return $this->createEiGuiValueBoundaryFromEiObject($eiObject, $bulky, $readOnly, $entryGuiControlsIncluded, null, $defPropPaths, $treeLevel);
 	}
-	
+
+	/**
+	 * @param int $offset
+	 * @param int $num
+	 * @param string|null $quickSearchStr
+	 * @return EiEntrySelectionRecord[]
+	 */
+	function lookupEiEntries(int $offset, int $num, ?string $quickSearchStr): array {
+		$criteria = $this->createCriteria(NestedSetUtils::NODE_ALIAS, false, $quickSearchStr);
+		$criteria->select(NestedSetUtils::NODE_ALIAS);
+		$criteria->limit($offset, $num);
+
+		$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();
+		if (null !== ($nestedSetStrategy = $eiType->getNestedSetStrategy())) {
+			return $this->treeLookup($criteria, $eiType->getClass(), $nestedSetStrategy);
+		} else {
+			return $this->simpleLookup($criteria);
+		}
+	}
+
 
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
 			array $defPropPaths = null, string $quickSearchStr = null): RangeResult {
@@ -389,46 +409,42 @@ class EiObjectSelector {
 	}
 
 	/**
-	 * @param EiGuiDeclaration $eiGuiDeclaration
 	 * @param Criteria $criteria
-	 * @param bool $entryGuiControlsIncluded
-	 * @return array<EiGuiValueBoundary>
+	 * @return array<EiEntrySelectionRecord>
 	 */
-	private function simpleLookup(EiGuiDeclaration $eiGuiDeclaration, Criteria $criteria, bool $entryGuiControlsIncluded): array {
-		$eiGuiValueBoundaries = [];
+	private function simpleLookup(Criteria $criteria): array {
+		$eiEntrySelectionRecords = [];
 		foreach ($criteria->toQuery()->fetchArray() as $entityObj) {
-			$eiGuiValueBoundaries[] = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame,
-					[$this->eiFrame->createEiEntry($this->createEiObject($entityObj))], $entryGuiControlsIncluded);
+			$eiEntrySelectionRecords[] = new EiEntrySelectionRecord(
+					$this->eiFrame->createEiEntry($this->createEiObject($entityObj)), null);
 		}
-		return $eiGuiValueBoundaries;
+		return $eiEntrySelectionRecords;
 	}
 
 
 	/**
-	 * @param EiGuiDeclaration $eiGuiDeclaration
 	 * @param Criteria $criteria
 	 * @param ReflectionClass $class
 	 * @param NestedSetStrategy $nestedSetStrategy
-	 * @param bool $entryGuiControlsIncluded
-	 * @return array<EiGuiValueBoundary>
+	 * @return array<EiEntrySelectionRecord>
 	 */
-	private function treeLookup(EiGuiDeclaration $eiGuiDeclaration, Criteria $criteria, ReflectionClass $class,
-			NestedSetStrategy $nestedSetStrategy, bool $entryGuiControlsIncluded): array {
+	private function treeLookup(Criteria $criteria, ReflectionClass $class,
+			NestedSetStrategy $nestedSetStrategy): array {
 		$nestedSetUtils = new NestedSetUtils($this->eiFrame->getEiLaunch()->getEntityManager(), 
 				$class, $nestedSetStrategy);
 
-		$eiGuiValueBoundaries = [];
+		$eiEntrySelectionRecords = [];
 		foreach ($nestedSetUtils->fetch(null, false, $criteria) as $nestedSetItem) {
-			$eiGuiValueBoundaries[] = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame,
-					[$this->eiFrame->createEiEntry($this->createEiObject($nestedSetItem->getEntityObj()))],
-					$entryGuiControlsIncluded, $nestedSetItem->getLevel());
+			$eiEntrySelectionRecords[] = new EiEntrySelectionRecord(
+					$this->eiFrame->createEiEntry($this->createEiObject($nestedSetItem->getEntityObj())),
+					$nestedSetItem->getLevel());
 		}
-		return $eiGuiValueBoundaries;
+		return $eiEntrySelectionRecords;
 	}
 	
 	/**
 	 * @param string $eiTypeId
-	 * @return \rocket\op\ei\manage\EiObject
+	 * @return EiObject
 	 * @throws UnknownEiTypeException
 	 */
 	function createNewEiObject(string $eiTypeId) {
@@ -468,6 +484,8 @@ class EiObjectSelector {
 	}
 }
 
+
+class
 
 class EiGuiValueBoundaryResult {
 	private $eiGuiValueBoundary;
@@ -517,6 +535,24 @@ class EiGuiValueBoundaryResult {
 //
 //		return $this->eiGuiDeclaration->createSiDeclaration($this->eiFrame);
 //	}
+}
+
+class EiEntryRange {
+
+
+	/**
+	 * @param int $num
+	 * @param EiEntrySelectionRecord[] $records
+	 */
+	function __construct(public readonly int $num, public readonly array $records) {
+
+	}
+}
+
+class EiEntrySelectionRecord {
+	function __construct(public EiEntry $eiEntry, public ?int $treeLevel = null) {
+
+	}
 }
 
 class RangeResult {
