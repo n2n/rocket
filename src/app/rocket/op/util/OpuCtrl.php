@@ -20,7 +20,6 @@ use rocket\ui\si\content\impl\iframe\IframeSiGui;
 use rocket\ui\si\content\impl\iframe\IframeData;
 use n2n\util\uri\Url;
 use n2n\web\http\Method;
-use SiCallResult;
 use rocket\ui\si\control\SiNavPoint;
 use rocket\ui\si\meta\SiBreadcrumb;
 use n2n\l10n\DynamicTextCollection;
@@ -42,6 +41,10 @@ use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\GuiZone;
 use rocket\ui\si\api\request\SiZoneCall;
 use n2n\web\http\StatusException;
+use rocket\ui\gui\ViewMode;
+use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
+use rocket\ui\si\meta\SiDeclaration;
+use rocket\op\ei\manage\gui\EiGuiMaskFactory;
 
 class OpuCtrl {
 
@@ -201,23 +204,35 @@ class OpuCtrl {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiEntryArg', true);
 
 		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtil = new EiObjectSelector($eiFrame);
-		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, $readOnly, null);
-		$guiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($eiFrame, [$eiEntry], $entrySiControlsIncluded);
+//		$eiFrameUtil = new EiObjectSelector($eiFrame);
 
-		$guiControlsMap = null;
-		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
-			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
-		}
+//		$eiGuiMaskDeclaration = $eiEntry->getEiMask()->getEiEngine()
+//				->obtainEiGuiMaskDeclaration(ViewMode::determine(true, $readOnly, false), null);
+//
+//		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, $readOnly, null);
+
+//		$guiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($eiFrame, [$eiEntry], $entrySiControlsIncluded);
+
+		$viewMode = ViewMode::determine(true, $readOnly, false);
+		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($viewMode);
+		$eiGuiMaskFactory = new EiGuiMaskFactory($eiGuiDefinition);
+		$guiMask = $eiGuiMaskFactory->createGuiMask($eiFrame->getN2nContext()->getN2nLocale());
+
+		$factory = new EiGuiValueBoundaryFactory($eiFrame);
+		$guiValueBoundary = $factory->create(null, [$eiEntry], $viewMode);
+
+//		$guiControlsMap = null;
+//		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
+//			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
+//		}
 
 		$zoneGuiControlsMap = new GuiControlMap();
 		foreach ($zoneGuiControls as $controlName => $guiControl) {
 			$zoneGuiControlsMap->putGuiControl($controlName, $guiControl);
 		}
 
-		$eiGui = new BulkyGui($eiFrame->createSiFrame(), $eiGuiDeclaration->createSiDeclaration($this->eiu->getN2nLocale()),
+		$eiGui = new BulkyGui($eiFrame->createSiFrame(), new SiDeclaration([$guiMask->getSiMask()]),
 				$guiValueBoundary, $guiControlsMap, $entrySiControlsIncluded);
-
 
 		$this->forwardGui($eiGui, current($guiValueBoundary->getGuiEntries())->getSiEntry()->getQualifier()->getIdName(),
 				$zoneGuiControlsMap);

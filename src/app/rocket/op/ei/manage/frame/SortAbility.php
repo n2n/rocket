@@ -30,18 +30,18 @@ interface SortAbility {
 	 * @param EiObject[] $eiObjects
 	 * @param EiObject $afterEiObject
 	 */
-	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiCallResponse;
+	function insertAfter(array $eiObjects, EiObject $afterEiObject): void;
 	
 	/**
 	 * @param EiObject[] $eiObjects
 	 * @param EiObject $beforeEiObject
 	 */
-	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiCallResponse;
+	function insertBefore(array $eiObjects, EiObject $beforeEiObject): void;
 	
 	/**
 	 * @param EiObject[] $eiObjects
 	 * @param EiObject $asChildOfEiObject
 	 * @throws IllegalStateException if context EiType of EiFrame contains no NestedSetStrategy
 	 */
-	function insertAsChild(array $eiObjects, EiObject $asChildOfEiObject): SiCallResponse;
+	function insertAsChild(array $eiObjects, EiObject $asChildOfEiObject): void;
 }

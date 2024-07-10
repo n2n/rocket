@@ -14,11 +14,18 @@ use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\spec\TypePath;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\frame\EiObjectFactory;
+use rocket\op\util\OpfControlResponse;
+use rocket\op\ei\util\EiuAnalyst;
+use rocket\op\ei\manage\ManageState;
+use rocket\ui\gui\GuiCallResponse;
+use rocket\op\ei\manage\EiObject;
 
 class EiGuiApiModel implements GuiApiModel {
 
-	function __construct(private EiFrame $eiFrame) {
+	private \WeakMap $cachedEiEntriesMap;
 
+	function __construct(private EiFrame $eiFrame) {
+		$this->cachedEiEntriesMap = new \WeakMap();
 	}
 
 	/**
@@ -64,8 +71,10 @@ class EiGuiApiModel implements GuiApiModel {
 		}
 
 		$factory = new EiGuiEntryFactory($this->eiFrame);
-		return $factory->createGuiValueBoundary($eiSiMaskId->viewMode, [$eiEntry],
+		$guiValueBoundary = $factory->createGuiValueBoundary($eiSiMaskId->viewMode, [$eiEntry],
 				$selector->lookupTreeLevel($eiEntry->getEiObject()));
+		$this->cacheEiEntries($guiValueBoundary, [$eiEntry]);
+		return $guiValueBoundary;
 	}
 
 	function createGuiValueBoundary(string $maskId): GuiValueBoundary {
@@ -80,7 +89,9 @@ class EiGuiApiModel implements GuiApiModel {
 		}
 
 		$factory = new EiGuiEntryFactory($this->eiFrame);
-		return $factory->createGuiValueBoundary($eiSiMaskId->viewMode, $eiEntries);
+		$guiValueBoundary =  $factory->createGuiValueBoundary($eiSiMaskId->viewMode, $eiEntries);
+		$this->cacheEiEntries($guiValueBoundary, $eiEntries);
+		return $guiValueBoundary;
 	}
 
 	function lookupGuiValueBoundaries(string $maskId, int $offset, int $num, ?string $quickSearchStr): array {
@@ -108,4 +119,81 @@ class EiGuiApiModel implements GuiApiModel {
 		return $selector->count($quickSearchStr);
 	}
 
+	function copyGuiValueBoundary(GuiValueBoundary $guiValueBoundary, string $maskId): GuiValueBoundary {
+		$eiMaskId = $this->parseEiSiMaskId($maskId);
+
+		$eiEntries = $this->getCachedEiEntries($guiValueBoundary);
+
+		$factory = new EiGuiEntryFactory($this->eiFrame);
+		$copiedGuiValueBoundary =  $factory->createGuiValueBoundary($eiMaskId->viewMode, $eiEntries, $guiValueBoundary->getTreeLevel());
+		if ($guiValueBoundary->isEiGuiEntrySelected()) {
+			$copiedGuiValueBoundary->selectGuiEntryByMaskId($guiValueBoundary);
+		}
+		$this->cacheEiEntries($guiValueBoundary, $eiEntries);
+		return $copiedGuiValueBoundary;
+	}
+
+	private function cacheEiEntries(GuiValueBoundary $guiValueBoundary, array $eiEntries): void {
+		$this->cachedEiEntriesMap->offsetSet($guiValueBoundary, $eiEntries);
+	}
+
+	/**
+	 * @throws UnknownGuiElementException
+	 */
+	private function getCachedEiEntries(GuiValueBoundary $guiValueBoundary): array {
+		if ($this->cachedEiEntriesMap->offsetExists($guiValueBoundary)) {
+			return $this->cachedEiEntriesMap->offsetGet($guiValueBoundary);
+		}
+
+		throw new UnknownGuiElementException('Provided GuiValueBoundary is unknown to EiGuiApiModel: '
+				. $guiValueBoundary);
+	}
+
+	function insertAfter(string $maskId, string $entryIds, string $afterEntryId): GuiCallResponse {
+		$this->parseEiSiMaskId($maskId);
+
+		$eiObjects = $this->lookupEiObjects([...$entryIds, $afterEntryId]);
+		$afterEiObject = array_pop($eiObjects);
+		$this->eiFrame->getAbility()->getSortAbility()->insertAfter($eiObjects, $afterEiObject);
+
+		return new OpfControlResponse($this->eiFrame->getN2nContext());
+	}
+
+	function insertBefore(string $maskId, string $entryIds, string $beforeEntryId): GuiCallResponse {
+		$this->parseEiSiMaskId($maskId);
+
+		$eiObjects = $this->lookupEiObjects([...$entryIds, $beforeEntryId]);
+		$beforeEiObject = array_pop($eiObjects);
+		$this->eiFrame->getAbility()->getSortAbility()->insertBefore($eiObjects, $beforeEiObject);
+
+		return new OpfControlResponse($this->eiFrame->getN2nContext());
+	}
+
+	function insertAsChildren(string $maskId, string $entryIds, string $parentId): GuiCallResponse {
+		$this->parseEiSiMaskId($maskId);
+
+		$eiObjects = $this->lookupEiObjects([...$entryIds, $parentId]);
+		$parentEiObject = array_pop($eiObjects);
+		$this->eiFrame->getAbility()->getSortAbility()->insertBefore($eiObjects, $parentEiObject);
+
+		return new OpfControlResponse($this->eiFrame->getN2nContext());
+	}
+
+	/**
+	 * @throws UnknownGuiElementException
+	 * @param string[] $entryIds;
+	 * @return EiObject[]
+	 */
+	private function lookupEiObjects(array $entryIds): array {
+		try {
+			$selector = new EiObjectSelector($this->eiFrame);
+			$eiObjects = [];
+			foreach ($entryIds as $entryId) {
+				$eiObjects[] = $selector->lookupEiObject($entryId);
+			}
+			return $eiObjects;
+		} catch (UnknownEiObjectException $e) {
+			throw new UnknownGuiElementException(previous: $e);
+		}
+	}
 }

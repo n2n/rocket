@@ -3,24 +3,24 @@ namespace rocket\op\ei\util\gui;
 
 use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiMask;
 use rocket\op\ei\EiPropPath;
 
-class EiuGuiMaskDeclaration {
+class EiuGuiDefinition {
 	
 
-	public function __construct(private readonly EiGuiMaskDeclaration $eiGuiMaskDeclaration,
+	public function __construct(private readonly EiGuiDefinition $eiGuiDefinition,
 			private readonly EiuAnalyst $eiuAnalyst) {
 	}
 	
 	/**
-	 * @return EiGuiMaskDeclaration
+	 * @return EiGuiDefinition
 	 */
-	function getEiGuiMaskDeclaration(): EiGuiMaskDeclaration {
-		return $this->eiGuiMaskDeclaration;
+	function getEiGuiDefinition(): EiGuiDefinition {
+		return $this->eiGuiDefinition;
 	}
 	
 //	/**
@@ -28,7 +28,7 @@ class EiuGuiMaskDeclaration {
 //	 */
 //	function guiDeclaration(): EiuGuiDeclaration {
 //		if ($this->eiuGuiDeclaration  === null) {
-//			$this->eiuGuiDeclaration  = new EiuGuiDeclaration($this->eiGuiMaskDeclaration->getEiGuiDeclaration(), $this->eiuAnalyst);
+//			$this->eiuGuiDeclaration  = new EiuGuiDeclaration($this->eiGuiDefinition->getEiGuiDeclaration(), $this->eiuAnalyst);
 //		}
 //
 //		return $this->eiuGuiDeclaration;
@@ -37,7 +37,7 @@ class EiuGuiMaskDeclaration {
 //	 */
 //	function guiDeclaration(): EiuGuiDeclaration {
 //		if ($this->eiuGuiDeclaration  === null) {
-//			$this->eiuGuiDeclaration  = new EiuGuiDeclaration($this->eiGuiMaskDeclaration->getEiGuiDeclaration(), $this->eiuAnalyst);
+//			$this->eiuGuiDeclaration  = new EiuGuiDeclaration($this->eiGuiDefinition->getEiGuiDeclaration(), $this->eiuAnalyst);
 //		}
 //
 //		return $this->eiuGuiDeclaration;
@@ -46,7 +46,7 @@ class EiuGuiMaskDeclaration {
 //	 */
 //	function guiDeclaration(): EiuGuiDeclaration {
 //		if ($this->eiuGuiDeclaration  === null) {
-//			$this->eiuGuiDeclaration  = new EiuGuiDeclaration($this->eiGuiMaskDeclaration->getEiGuiDeclaration(), $this->eiuAnalyst);
+//			$this->eiuGuiDeclaration  = new EiuGuiDeclaration($this->eiGuiDefinition->getEiGuiDeclaration(), $this->eiuAnalyst);
 //		}
 //
 //		return $this->eiuGuiDeclaration;
@@ -65,7 +65,7 @@ class EiuGuiMaskDeclaration {
 // 		}
 		
 // 		if ($this->eiuFrame === null) {
-// 			$this->eiuFrame = new EiuFrame($this->eiGuiMaskDeclaration->getEiFrame(), $this->eiuAnalyst);
+// 			$this->eiuFrame = new EiuFrame($this->eiGuiDefinition->getEiFrame(), $this->eiuAnalyst);
 // 		}
 		
 // 		return $this->eiuFrame;
@@ -75,7 +75,7 @@ class EiuGuiMaskDeclaration {
 	 * @return int
 	 */
 	public function getViewMode(): int {
-		return $this->eiGuiMaskDeclaration->getViewMode();
+		return $this->eiGuiDefinition->getViewMode();
 	}
 //
 //	public function getPropLabel(DefPropPath|string $defPropPath, N2nLocale $n2nLocale = null, bool $required = false): ?string {
@@ -108,17 +108,17 @@ class EiuGuiMaskDeclaration {
 	 * @return EiPropPath[]
 	 */
 	function getEiPropPaths() {
-		return $this->eiGuiMaskDeclaration->getEiPropPaths();
+		return $this->eiGuiDefinition->getEiPropPaths();
 	}
 	
 	function getDefPropPaths() {
-		return $this->eiGuiMaskDeclaration->getDefPropPaths();
+		return $this->eiGuiDefinition->getDefPropPaths();
 	}
 	
  	function newEntryGui($eiEntryArg, bool $entryGuiControlsIncluded = false): EiuGuiEntry {
  		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
 		
- 		$eiGuiEntry = $this->eiGuiMaskDeclaration->createGuiEntry($this->eiuAnalyst->getEiFrame(true),
+ 		$eiGuiEntry = $this->eiGuiDefinition->createGuiEntry($this->eiuAnalyst->getEiFrame(true),
 				$eiEntry, $entryGuiControlsIncluded);
 		
  		return new EiuGuiEntry($eiGuiEntry, null, $this, $this->eiuAnalyst);
@@ -133,7 +133,7 @@ class EiuGuiMaskDeclaration {
 		$size = $prefixDefPropPath->size();
 		
 		$forkedDefPropPaths = [];
-		foreach ($this->eiGuiMaskDeclaration->filterDefPropPaths($prefixDefPropPath) as $defPropPath) {
+		foreach ($this->eiGuiDefinition->filterDefPropPaths($prefixDefPropPath) as $defPropPath) {
 			$forkedDefPropPaths[] = $defPropPath->subDefPropPath($size);
 		}
 		return $forkedDefPropPaths;
@@ -164,7 +164,7 @@ class EiuGuiMaskDeclaration {
 //		$defPropPath = DefPropPath::create($defPropPath);
 //
 //		try {
-//			return $this->eiGuiMaskDeclaration->getEiGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
+//			return $this->eiGuiDefinition->getEiGuiDefinition()->getGuiPropWrapperByDefPropPath($defPropPath);
 //		} catch (GuiException $e) {
 //			if (!$required) return null;
 //			throw $e;
@@ -178,11 +178,11 @@ class EiuGuiMaskDeclaration {
 	function getDisplayDefinition($defPropPath, bool $required = false) {
 		$defPropPath = DefPropPath::create($defPropPath);
 		
-		if (!$required && !$this->eiGuiMaskDeclaration->containsDisplayDefinition($defPropPath)) {
+		if (!$required && !$this->eiGuiDefinition->containsDisplayDefinition($defPropPath)) {
 			return null;
 		}
 		
-		return $this->eiGuiMaskDeclaration->getDisplayDefintion($defPropPath);
+		return $this->eiGuiDefinition->getDisplayDefintion($defPropPath);
 	}
 		
 // 	/**
@@ -194,7 +194,7 @@ class EiuGuiMaskDeclaration {
 // 	public function getDisplayItemByDefPropPath($eiPropPath) {
 // 		$eiPropPath = DefPropPath::create($eiPropPath);
 		
-// 		$displayStructure = $this->eiGuiMaskDeclaration->getEiGuiSiFactory()->getDisplayStructure();
+// 		$displayStructure = $this->eiGuiDefinition->getEiGuiSiFactory()->getDisplayStructure();
 // 		if ($displayStructure !== null) {
 // 			return $displayStructure->getDisplayItemByDefPropPath($eiPropPath);
 // 		}
@@ -225,7 +225,7 @@ class EiuGuiMaskDeclaration {
 // 	public function initWithUiCallback(\Closure $viewFactory, array $defPropPaths) {
 // 		$defPropPaths = DefPropPath::createArray($defPropPaths);
 		
-// 		$this->eiGuiMaskDeclaration->init(new CustomGuiViewFactory($viewFactory), $defPropPaths);
+// 		$this->eiGuiDefinition->init(new CustomGuiViewFactory($viewFactory), $defPropPaths);
 // 	}
 
 	/**
@@ -233,7 +233,7 @@ class EiuGuiMaskDeclaration {
 	 */
 	function createSiDeclaration() {
 		return new SiDeclaration(ViewMode::createSiStyle($this->getViewMode()), [new SiMask(
-				$this->eiGuiMaskDeclaration->createGuiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
+				$this->eiGuiDefinition->createGuiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
 				null)]);
 	}
 }

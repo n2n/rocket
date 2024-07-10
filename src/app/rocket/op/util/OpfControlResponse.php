@@ -21,16 +21,18 @@
  */
 namespace rocket\op\util;
 
-use SiCallResponse;
 use rocket\op\ei\util\EiuAnalyst;
 use rocket\op\ei\EiType;
 use n2n\l10n\Message;
 use n2n\util\uri\Url;
-use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 use rocket\op\ei\manage\EiObject;
 use rocket\ui\si\control\SiNavPoint;
+use rocket\ui\gui\GuiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
+use n2n\core\container\N2nContext;
+use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 
-class OpfControlResponse {
+class OpfControlResponse implements GuiCallResponse {
 	private $eiuAnalyst;
 	/**
 	 * @var SiCallResponse
@@ -49,8 +51,7 @@ class OpfControlResponse {
 	/**
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	function __construct(EiuAnalyst $eiuAnalyst) {
-		$this->eiuAnalyst = $eiuAnalyst;
+	function __construct(private N2nContext $n2nContext) {
 		$this->siCallResponse = new SiCallResponse();
 	}
 	
@@ -219,19 +220,17 @@ class OpfControlResponse {
 	 * @param EiType $eiType
 	 * @return string
 	 */
-	private static function buildCategory(EiType $eiType) {
+	private static function buildCategory(EiType $eiType): string {
 		return $eiType->getSupremeEiType()->getId();
 	}
 	
-	/**
-	 * @param EiLifecycleMonitor $elm
-	 * @return SiCallResponse
-	 */
-	function toSiCallResponse(EiLifecycleMonitor $elm): SiCallResponse {
+
+	function toSiCallResponse(): SiCallResponse {
 		if ($this->noAutoEvents) {
 			return $this->siCallResponse;
 		}
-		
+
+		$elm = $this->n2nContext->lookup(EiLifecycleMonitor::class);
 		$taa = $elm->approve();
 		
 		if (!$taa->isSuccessful()) {

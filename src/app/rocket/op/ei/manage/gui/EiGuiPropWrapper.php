@@ -29,6 +29,7 @@ use rocket\op\ei\component\prop\EiProp;
 use rocket\ui\gui\UnresolvableDefPropPathExceptionEi;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
+use rocket\ui\gui\field\GuiField;
 
 class EiGuiPropWrapper {
 
@@ -43,38 +44,42 @@ class EiGuiPropWrapper {
 	function getEiPropPath(): EiPropPath {
 		return $this->eiPropPath;
 	}
-	
-	/**
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @return DisplayDefinition|null
-	 */
-	function buildDisplayDefinition(EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-		$displayDefinition = $this->eiGuiProp->buildDisplayDefinition(new Eiu($eiGuiMaskDeclaration, $this->eiPropPath));
-		
-		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
-			return null;
-		}
-		
-		if ($displayDefinition->getOverwriteLabel() !== null && $displayDefinition->getOverwriteLabel() !== null) {
-			return $displayDefinition;
-		}
-		
-		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
-		
-		if ($displayDefinition->getLabel() === null) {
-			$displayDefinition->setLabel($this->getEiProp()->getLabelLstr()->t($n2nLocale));
-		}
-		
-		if ($displayDefinition->getHelpText() === null
-				&& null !== ($helpTextLstr = $this->getEiProp()->getHelpTextLstr())) {
-			$displayDefinition->setHelpText($helpTextLstr->t($n2nLocale));
-		}
-		
-		return $displayDefinition;
+
+	function getDisplayDefinition(): ?DisplayDefinition {
+		return $this->eiGuiProp->getDisplayDefinition();
 	}
 	
+//	/**
+//	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
+//	 * @return DisplayDefinition|null
+//	 */
+//	function buildDisplayDefinition(EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
+//		$displayDefinition = $this->eiGuiProp->buildDisplayDefinition(new Eiu($eiGuiMaskDeclaration, $this->eiPropPath));
+//
+//		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
+//			return null;
+//		}
+//
+//		if ($displayDefinition->getOverwriteLabel() !== null && $displayDefinition->getOverwriteLabel() !== null) {
+//			return $displayDefinition;
+//		}
+//
+//		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
+//
+//		if ($displayDefinition->getLabel() === null) {
+//			$displayDefinition->setLabel($this->getEiProp()->getLabelLstr()->t($n2nLocale));
+//		}
+//
+//		if ($displayDefinition->getHelpText() === null
+//				&& null !== ($helpTextLstr = $this->getEiProp()->getHelpTextLstr())) {
+//			$displayDefinition->setHelpText($helpTextLstr->t($n2nLocale));
+//		}
+//
+//		return $displayDefinition;
+//	}
+	
 	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-		return $this->eiGuiProp->getForkEiGuiDefinition()->getGuiPropWrapperByDefPropPath($forkedDefPropPath)
+		return $this->eiGuiProp->getForkEiGuiDefinition()->getEiGuiPropWrapperByDefPropPath($forkedDefPropPath)
 				->buildDisplayDefinition($eiGuiMaskDeclaration, $defaultDisplayedRequired);
 	}
 	
@@ -110,8 +115,8 @@ class EiGuiPropWrapper {
 	 * @param array|null $forkedDefPropPaths
 	 * @return EiGuiPropSetup
 	 */
-	function buildEiGuiField(EiFrame $eiFrame, EiEntry $eiEntry, ?array $forkedDefPropPaths): ?EiGuiField {
-		return $this->eiGuiProp->buildEiGuiField(new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiPropPath), $forkedDefPropPaths);
+	function buildGuiField(EiFrame $eiFrame, EiEntry $eiEntry, bool $readOnly, ?array $forkedDefPropPaths): ?GuiField {
+		return $this->eiGuiProp->buildGuiField(new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiPropPath), $readOnly);
 	}
 	
 

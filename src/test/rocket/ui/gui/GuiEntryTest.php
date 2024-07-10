@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\field\impl\GuiFields;
-use rocket\ui\si\input\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\l10n\N2nLocale;
@@ -43,7 +42,7 @@ class GuiEntryTest extends TestCase {
 				->setModel($guiFieldModel));
 		$guiEntry->init($guiFieldMap, null);
 
-		$siEntryInput = new SiEntryInput(self::$siEntryIdentifier1);
+		$siEntryInput = new \rocket\ui\si\api\request\SiEntryInput(self::$siEntryIdentifier1);
 		$siEntryInput->putFieldInput('prop1', new SiFieldInput(['value' => 'new-value']));
 
 		$this->assertTrue($guiEntry->getSiEntry(N2nLocale::getDefault())->handleEntryInput($siEntryInput,

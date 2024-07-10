@@ -21,6 +21,6 @@
  */
 namespace rocket\ui\si\err;
 
-class UnknownSiElementException extends \Exception {
+class UnknownSiElementException extends SiException {
 
 }

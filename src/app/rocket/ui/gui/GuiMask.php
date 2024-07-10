@@ -5,22 +5,16 @@ use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use rocket\op\ei\component\EiGuiEntryFactory;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\control\UnknownGuiControlException;
 use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\EiPropPath;
-use rocket\ui\si\meta\SiProp;
 use rocket\ui\si\meta\SiMask;
 use n2n\l10n\N2nLocale;
 use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\ui\si\meta\SiMaskQualifier;
-use rocket\op\ei\manage\gui\DisplayDefinition;
-use rocket\op\ei\manage\gui\EiGuiException;
-use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\field\GuiFieldPath;
 
@@ -62,6 +56,30 @@ class GuiMask {
 		ArgUtils::valArray($guiStructureDeclarations, GuiStructureDeclaration::class, true);
 //		$this->guiStructureDeclarations = $guiStructureDeclarations;
 		$this->siMask->setStructureDeclarations($this->createSiStructureDeclarations($guiStructureDeclarations));
+	}
+
+	/**
+	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+	 * @return SiStructureDeclaration[]
+	 */
+	private function createSiStructureDeclarations(array $guiStructureDeclarations): array {
+		$siStructureDeclarations = [];
+
+		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+			if ($guiStructureDeclaration->hasDefPropPath()) {
+				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
+						$guiStructureDeclaration->getSiStructureType(),
+						$guiStructureDeclaration->getDefPropPath());
+				continue;
+			}
+
+			$siStructureDeclarations[] = SiStructureDeclaration
+					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(),
+							$guiStructureDeclaration->getHelpText())
+					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
+		}
+
+		return $siStructureDeclarations;
 	}
 	
 //	/**
@@ -123,29 +141,29 @@ class GuiMask {
 		return $this->siMask;
 	}
 	
-	/**
-	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
-	 * @return SiStructureDeclaration[]
-	 */
-	private function createSiStructureDeclarations(array $guiStructureDeclarations): array {
-		$siStructureDeclarations = [];
-		
-		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if ($guiStructureDeclaration->hasDefPropPath()) {
-				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
-						$guiStructureDeclaration->getSiStructureType(),
-						$guiStructureDeclaration->getDefPropPath());
-				continue;
-			}
-			
-			$siStructureDeclarations[] = SiStructureDeclaration
-					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(),
-							$guiStructureDeclaration->getHelpText())
-					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
-		}
-		
-		return $siStructureDeclarations;
-	}
+//	/**
+//	 * @param GuiStructureDeclaration[] $guiStructureDeclarations
+//	 * @return SiStructureDeclaration[]
+//	 */
+//	private function createSiStructureDeclarations(array $guiStructureDeclarations): array {
+//		$siStructureDeclarations = [];
+//
+//		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
+//			if ($guiStructureDeclaration->hasDefPropPath()) {
+//				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
+//						$guiStructureDeclaration->getSiStructureType(),
+//						$guiStructureDeclaration->getDefPropPath());
+//				continue;
+//			}
+//
+//			$siStructureDeclarations[] = SiStructureDeclaration
+//					::createGroup($guiStructureDeclaration->getSiStructureType(), $guiStructureDeclaration->getLabel(),
+//							$guiStructureDeclaration->getHelpText())
+//					->setChildren($this->createSiStructureDeclarations($guiStructureDeclaration->getChildren()));
+//		}
+//
+//		return $siStructureDeclarations;
+//	}
 	
 	/**
 	 * @return SiMask
@@ -236,18 +254,18 @@ class GuiMask {
 	 * @throws IllegalStateException
 	 */
 	private function ensureInit(): void {
-		if ($this->init) return;
-		
-		throw new IllegalStateException('EiGuiMaskDeclaration not yet initialized.');
+//		if ($this->init) return;
+//
+//		throw new IllegalStateException('EiGuiMaskDeclaration not yet initialized.');
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 */
 	private function ensureNotInit(): void {
-		if (!$this->init) return;
-		
-		throw new IllegalStateException('EiGuiMaskDeclaration is already initialized.');
+//		if (!$this->init) return;
+//
+//		throw new IllegalStateException('EiGuiMaskDeclaration is already initialized.');
 	}
 	
 // 	/**

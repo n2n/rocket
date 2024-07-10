@@ -31,17 +31,17 @@ class SiProp implements \JsonSerializable {
 	 * @param string|null $id
 	 * @param string|null $label
 	 */
-	function __construct(?string $id, ?string $label) {
-		$this->id = $id;
+	function __construct(/*?string $id, */?string $label) {
+//		$this->id = $id;
 		$this->label = $label;
 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getPropId() {
-		return $this->id;
-	}
+//	/**
+//	 * @return string
+//	 */
+//	public function getPropId() {
+//		return $this->id;
+//	}
 
 	/**
 	 * @param string $id

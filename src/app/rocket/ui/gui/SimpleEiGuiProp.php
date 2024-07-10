@@ -28,10 +28,12 @@ use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\manage\gui\EiGuiPropSetup;
 use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\util\Eiu;
+use rocket\ui\gui\field\GuiField;
+use n2n\util\ex\NotYetImplementedException;
 
 
 class SimpleEiGuiProp implements EiGuiProp {
-	private EiGui$eiGuiField;
+	private EiGui $eiGuiField;
 	private $displayDefinition;
 	private $forkedDisplayDefinitions;
 	
@@ -44,8 +46,8 @@ class SimpleEiGuiProp implements EiGuiProp {
 	}
 
 
-	function buildEiGuiField(Eiu $eiu, ?array $defPropPaths): ?EiGuiField {
-
+	function buildGuiField(Eiu $eiu, ?array $defPropPaths): ?GuiField {
+		throw new NotYetImplementedException();
 	}
 
 	public function getDisplayDefinition(): ?DisplayDefinition {

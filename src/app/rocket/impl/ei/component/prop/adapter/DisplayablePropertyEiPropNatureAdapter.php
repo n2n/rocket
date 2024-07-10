@@ -34,7 +34,7 @@ use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 use rocket\ui\gui\field\BackableGuiField;
 
 abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapter
-		implements PropertyEiPropNature, EiGuiField {
+		implements PropertyEiPropNature/*, EiGuiField*/ {
 	use DisplayConfigTrait, PropertyAdapter;
 
 	// EiField
@@ -61,13 +61,13 @@ abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapte
 	// GuiProp
 	
 	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
-			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
+		return $eiu->factory()->newGuiProp(function (Eiu $eiu, bool $readOnly) {
+			return $this->buildGuiField($eiu, $readOnly);
 		})->toEiGuiProp();
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutEifGuiField($eiu)->toGuiField();
+		return $this->createOutGuiField($eiu);
 	}
 	
 	protected function createOutGuiField(Eiu $eiu): BackableGuiField {

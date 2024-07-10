@@ -44,13 +44,17 @@ use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\control\GuiControlPath;
 use n2n\l10n\N2nLocale;
 use rocket\ui\gui\GuiMask;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\ui\si\meta\SiMaskQualifier;
+use rocket\ui\gui\field\GuiFieldPath;
+use rocket\ui\gui\GuiStructureDeclaration;
 
 class EiGuiDefinition {
 
 	/**
-	 * @var EiGuiPropWrapper
+	 * @var EiGuiPropWrapper[]
 	 */
-	private $eiGuiPropWrappers = array();
+	private array $eiGuiPropWrappers = array();
 	/**
 	 * @var EiPropPath[]
 	 */
@@ -64,7 +68,12 @@ class EiGuiDefinition {
 	 */
 	private $eiCmdPaths = [];
 
-	function __construct(private EiMask $eiMask, private int $viewModel) {
+	/**
+	 * @var GuiStructureDeclaration[]|null
+	 */
+	private ?array $guiStructureDeclarations = null;
+
+	function __construct(private readonly EiMask $eiMask, private readonly int $viewMode) {
 	}
 	
 	function getEiMask(): EiMask {
@@ -72,7 +81,7 @@ class EiGuiDefinition {
 	}
 
 	function getViewMode(): int {
-		return $this->viewModel;
+		return $this->viewMode;
 	}
 
 	/**
@@ -88,6 +97,20 @@ class EiGuiDefinition {
 
 		$this->eiGuiPropWrappers[$eiPropPathStr] = new EiGuiPropWrapper($this, $eiPropPath, $eiGuiProp);
 		$this->eiPropPaths[$eiPropPathStr] = $eiPropPath;
+	}
+
+	/**
+	 * @return EiPropPath[]
+	 */
+	function getEiPropPaths(): array {
+		return $this->eiPropPaths;
+	}
+
+	/**
+	 * @return EiGuiPropWrapper[]
+	 */
+	function getEiGuiPropWrappers(): array {
+		return $this->eiGuiPropWrappers;
 	}
 
 	/**
@@ -330,7 +353,7 @@ class EiGuiDefinition {
 	 * @return EiGuiPropWrapper
 	 * @throws EiGuiException
 	 */
-	function getGuiPropWrapperByDefPropPath(DefPropPath $defPropPath): EiGuiPropWrapper {
+	function getEiGuiPropWrapperByDefPropPath(DefPropPath $defPropPath): EiGuiPropWrapper {
 		$eiGuiPropWrapper = $this->getGuiPropWrapper($defPropPath->getFirstEiPropPath());
 
 		if (!$defPropPath->hasMultipleEiPropPaths()) {
@@ -947,47 +970,47 @@ class EiGuiDefinition {
 	 * @param N2nContext $n2nContext
 	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
 	 */
-	private function autoInitEiGuiMaskDeclaration(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
-// 		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
-
-		$guiStructureDeclarations = [];
-		foreach ($this->eiGuiPropWrappers as $eiGuiPropWrapper) {
-			$eiPropPath = $eiGuiPropWrapper->getEiPropPath();
-			$eiGuiPropSetup = $eiGuiPropWrapper->buildGuiPropSetup($n2nContext, $eiGuiMaskDeclaration, null);
-
-			if ($eiGuiPropSetup === null) {
-				continue;
-			}
-
-			$eiGuiMaskDeclaration->putEiGuiField($eiPropPath, $eiGuiPropSetup->getEiGuiField());
-
-			$defPropPath = new DefPropPath([$eiPropPath]);
-
-			$displayDefinition = $eiGuiPropSetup->getDisplayDefinition();
-			if (null !== $displayDefinition && $displayDefinition->isDefaultDisplayed()) {
-				$eiGuiMaskDeclaration->putDisplayDefintion($defPropPath, $displayDefinition);
-				$guiStructureDeclarations[(string) $defPropPath] = \rocket\ui\gui\GuiStructureDeclaration
-						::createField($defPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
-			}
-
-			foreach ($eiGuiPropWrapper->getForkedDefPropPaths() as $forkedDefPropPath) {
-				$absDefPropPath = $defPropPath->ext($forkedDefPropPath);
-				$displayDefinition = $eiGuiPropSetup->getForkedDisplayDefinition($forkedDefPropPath);
-
-				if ($displayDefinition === null/* || !$displayDefinition->isDefaultDisplayed()*/) {
-					continue;
-				}
-				$eiGuiMaskDeclaration->putDisplayDefintion($absDefPropPath, $displayDefinition);
-
-				$guiStructureDeclarations[(string) $absDefPropPath] = \rocket\ui\gui\GuiStructureDeclaration
-						::createField($absDefPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
-			}
-		}
-
-		$this->initEiGuiMaskDeclaration($eiGuiMaskDeclaration);
-
-		return $guiStructureDeclarations;
-	}
+//	private function autoInitEiGuiMaskDeclaration(N2nContext $n2nContext, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
+//// 		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
+//
+//		$guiStructureDeclarations = [];
+//		foreach ($this->eiGuiPropWrappers as $eiGuiPropWrapper) {
+//			$eiPropPath = $eiGuiPropWrapper->getEiPropPath();
+//			$eiGuiPropSetup = $eiGuiPropWrapper->buildGuiPropSetup($n2nContext, $eiGuiMaskDeclaration, null);
+//
+//			if ($eiGuiPropSetup === null) {
+//				continue;
+//			}
+//
+//			$eiGuiMaskDeclaration->putEiGuiField($eiPropPath, $eiGuiPropSetup->getEiGuiField());
+//
+//			$defPropPath = new DefPropPath([$eiPropPath]);
+//
+//			$displayDefinition = $eiGuiPropSetup->getDisplayDefinition();
+//			if (null !== $displayDefinition && $displayDefinition->isDefaultDisplayed()) {
+//				$eiGuiMaskDeclaration->putDisplayDefintion($defPropPath, $displayDefinition);
+//				$guiStructureDeclarations[(string) $defPropPath] = \rocket\ui\gui\GuiStructureDeclaration
+//						::createField($defPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+//			}
+//
+//			foreach ($eiGuiPropWrapper->getForkedDefPropPaths() as $forkedDefPropPath) {
+//				$absDefPropPath = $defPropPath->ext($forkedDefPropPath);
+//				$displayDefinition = $eiGuiPropSetup->getForkedDisplayDefinition($forkedDefPropPath);
+//
+//				if ($displayDefinition === null/* || !$displayDefinition->isDefaultDisplayed()*/) {
+//					continue;
+//				}
+//				$eiGuiMaskDeclaration->putDisplayDefintion($absDefPropPath, $displayDefinition);
+//
+//				$guiStructureDeclarations[(string) $absDefPropPath] = \rocket\ui\gui\GuiStructureDeclaration
+//						::createField($absDefPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+//			}
+//		}
+//
+//		$this->initEiGuiMaskDeclaration($eiGuiMaskDeclaration);
+//
+//		return $guiStructureDeclarations;
+//	}
 
 //	/**
 //	 * @param DefPropPath $defPropPath
@@ -1030,7 +1053,46 @@ class EiGuiDefinition {
 		return $this->guiDefinitionListeners;
 	}
 
-	function createGuiMask(): GuiMask {
-		throw new NotYetImplementedException();
+	function createSiMaskIdentifier(): SiMaskIdentifier {
+		$eiMask = $this->guiDefinition->getEiMask();
+
+		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $this->viewMode);
+		return new SiMaskIdentifier($eiSiMaskId->__toString(), $eiMask->getEiType()->getSupremeEiType()->getId());
 	}
+
+	public function createSiMaskQualifier(N2nLocale $n2nLocale): SiMaskQualifier {
+		return new SiMaskQualifier($this->createSiMaskIdentifier(),
+				$this->getEiMask()->getLabelLstr()->t($n2nLocale), $this->getEiMask()->getIconType());
+	}
+
+	function createGuiMask(EiFrame $eiFrame): GuiMask {
+		$guiMask = new GuiMask($this->createSiMaskQualifier($eiFrame->getN2nContext()->getN2nLocale()), null);
+
+		foreach ($this->eiGuiPropWrappers as $eiGuiPropWrapper) {
+			$eiGuiPropWrapper->getForkedDefPropPaths();
+			$eiGuiPropWrapper->
+			$guiMask->putGuiProp(new GuiFieldPath([]), $eiGuiPropWrapper->get);setGuiProps(createGuiProps);
+		}
+
+		$guiMask->setGuiControlMap($this->createGeneralGuiControlsMap($eiFrame));
+
+		return $guiMask;
+	}
+
+	/**
+	 * @param GuiStructureDeclaration[]|null $guiStructureDeclarations
+	 */
+	function setGuiStructureDeclarations(?array $guiStructureDeclarations): void {
+		ArgUtils::valArray($guiStructureDeclarations, GuiStructureDeclaration::class, true);
+		$this->guiStructureDeclarations = $guiStructureDeclarations;
+	}
+
+	/**
+	 * @return GuiStructureDeclaration[]|null
+	 */
+	function getGuiStructureDeclarations(): ?array {
+		return $this->guiStructureDeclarations;
+	}
+
+
 }

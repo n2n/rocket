@@ -30,6 +30,9 @@ use rocket\ui\si\control\SiControl;
 use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\err\UnknownGuiElementException;
 use rocket\ui\si\err\UnknownSiElementException;
+use n2n\util\type\ArgUtils;
+use rocket\op\util\OpfControlResponse;
+use rocket\op\ei\util\EiuAnalyst;
 
 class GuiSiApiModel implements SiApiModel {
 
@@ -39,7 +42,7 @@ class GuiSiApiModel implements SiApiModel {
 	private array $guiMasks = [];
 
 	function __construct(private GuiApiModel $guiApiModel) {
-
+		$this->guiValueBoundariesMap = new \WeakMap();
 	}
 
 	function getSiMask(string $maskId): SiMask {
@@ -87,19 +90,22 @@ class GuiSiApiModel implements SiApiModel {
 	function lookupSiValueBoundary(string $maskId, ?string $entryId, ?array $allowedFieldNames): SiValueBoundary {
 		if ($entryId !== null) {
 			try {
-				return $this->guiApiModel->lookupGuiValueBoundary($maskId, $entryId)->getSiValueBoundary();
+				$guiValueBoundary = $this->guiApiModel->createGuiValueBoundary($maskId);
 			} catch (UnknownGuiElementException $e) {
 				throw new UnknownSiElementException('Could not create a new SiValueBoundary based on maskId: '
 						. $maskId, previous: $e);
 			}
+		} else {
+			try {
+				$guiValueBoundary = $this->guiApiModel->lookupGuiValueBoundary($maskId, $entryId);
+			} catch (UnknownGuiElementException $e) {
+				throw new UnknownSiElementException('Could not lookup a SiValueBoundary for: '
+						. $maskId . '#' . $entryId, previous: $e);
+			}
 		}
 
-		try {
-			return $this->guiApiModel->lookupGuiValueBoundary($maskId, $entryId)->getSiValueBoundary();
-		} catch (UnknownGuiElementException $e) {
-			throw new UnknownSiElementException('Could not lookup a SiValueBoundary for: '
-					. $maskId . '#' . $entryId, previous: $e);
-		}
+		$this->cacheGuiValueBoundary($guiValueBoundary);
+		return $guiValueBoundary->getSiValueBoundary();
 	}
 
 	/**
@@ -108,28 +114,73 @@ class GuiSiApiModel implements SiApiModel {
 	function lookupSiPartialContent(string $maskId, int $from, int $num, ?string $quickSearchStr, ?array $allowedFieldNames): SiPartialContent {
 		try {
 			$guiValueBoundaries = $this->guiApiModel->lookupGuiValueBoundaries($maskId, $from, $num, $quickSearchStr);
+			ArgUtils::valArrayReturn($guiValueBoundaries, $this->guiApiModel, 'lookupGuiValueBoundaries', GuiValueBoundary::class);
 			$num = $this->guiApiModel->countGuiValueBoundaries($maskId, $quickSearchStr);
 		} catch (UnknownGuiElementException $e) {
 			throw new UnknownSiElementException(previous: $e);
 		}
+
+//		remove comment, if needed.
+//		foreach ($guiValueBoundaries as $guiValueBoundary) {
+//			$this->cacheGuiValueBoundary($guiValueBoundary);
+//		}
 
 		return new SiPartialContent($num, array_map(fn (GuiValueBoundary $gvb) => $gvb->getSiValueBoundary(),
 				$guiValueBoundaries));
 	}
 
 	function copySiValueBoundary(SiValueBoundary $boundary, string $maskId): SiValueBoundary {
-		// TODO: Implement copySiValueBoundary() method.
+		$guiValueBoundary = $this->getCachedGuiValueBoundary($boundary, $maskId);
+
+		try {
+			$copiedGuiValueBoundary = $this->guiApiModel->copyGuiValueBoundary($guiValueBoundary, $maskId);
+		} catch (UnknownGuiElementException $e) {
+			throw new UnknownSiElementException('Could not create copy of "' . $boundary . '" for mask: '
+					. $maskId, previous: $e);
+		}
+
+		$this->cacheGuiValueBoundary($copiedGuiValueBoundary);
+		return $copiedGuiValueBoundary->getSiValueBoundary();
+	}
+
+	private \WeakMap $guiValueBoundariesMap;
+
+	private function cacheGuiValueBoundary(GuiValueBoundary $guiValueBoundary): void {
+		$this->guiValueBoundariesMap->offsetSet($guiValueBoundary->getSiValueBoundary(), $guiValueBoundary);
+	}
+
+	/**
+	 * @throws UnknownSiElementException
+	 */
+	private function getCachedGuiValueBoundary(SiValueBoundary $siValueBoundary): SiValueBoundary {
+		if ($this->guiValueBoundariesMap->offsetExists($siValueBoundary)) {
+			return $this->guiValueBoundariesMap->offsetGet($siValueBoundary);
+		}
+
+		throw new UnknownSiElementException('Provided SiValueBoundary is unknown to GuiSiApiModel'.);
 	}
 
 	function insertSiEntriesAfter(string $maskId, string $entryIds, string $afterEntryId): SiCallResponse {
-		// TODO: Implement insertSiEntriesAfter() method.
+		try {
+			return $this->guiApiModel->insertAfter($maskId, $entryIds, $afterEntryId)->toSiCallResponse();
+		} catch (UnknownGuiElementException $e) {
+			throw new UnknownSiElementException(previous: $e);
+		}
 	}
 
 	function insertSiEntriesBefore(string $maskId, string $entryIds, string $beforeEntryId): SiCallResponse {
-		// TODO: Implement insertSiEntriesBefore() method.
+		try {
+			return $this->guiApiModel->insertBefore($maskId, $entryIds, $beforeEntryId)->toSiCallResponse();
+		} catch (UnknownGuiElementException $e) {
+			throw new UnknownSiElementException(previous: $e);
+		}
 	}
 
 	function insertSiEntriesAsChildren(string $maskId, string $entryIds, string $parentId): SiCallResponse {
-		// TODO: Implement insertSiEntriesAsChildren() method.
+		try {
+			return $this->guiApiModel->insertAsChildren($maskId, $entryIds, $parentId)->toSiCallResponse();
+		} catch (UnknownGuiElementException $e) {
+			throw new UnknownSiElementException(previous: $e);
+		}
 	}
 }

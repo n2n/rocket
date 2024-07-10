@@ -28,50 +28,65 @@ use rocket\op\ei\manage\gui\EiGuiPropSetup;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 use rocket\op\ei\manage\gui\EiGuiProp;
+use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\DisplayDefinition;
+use rocket\op\ei\manage\DefPropPath;
 
 /**
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
  */
 class EiGuiPropProxy implements EiGuiProp {
-	private $eiPropFieldCallback;
+
 	
 	/**
 	 * @param \Closure $closure
 	 */
-	function __construct(\Closure $eiGuiFieldCallback) {
-		$this->eiPropFieldCallback = new \ReflectionFunction($eiGuiFieldCallback);
+	function __construct(private GuiProp $guiProp, private \Closure $guiFieldCallback, private ?DisplayDefinition $displayDefinition) {
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ui\gui\GuiProp::buildGuiPropSetup()
 	 */
-	function buildGuiPropSetup(Eiu $eiu, ?array $defPropPaths): ?EiGuiPropSetup {
-		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
-		$mmi->setClassParamObject(Eiu::class, $eiu);
-		$mmi->setParamValue('defPropPaths', $defPropPaths);
-		$mmi->setReturnTypeConstraint(TypeConstraints::type(EiGuiPropSetup::class, true));
-		
-		return $mmi->invoke(null, $this->eiPropFieldCallback);
+	function getGuiProp(): GuiProp {
+		return $this->guiProp;
 	}
-	
+
+	function getDisplayDefinition(): ?DisplayDefinition {
+		return $this->displayDefinition;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ui\gui\GuiProp::buildGuiField()
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($this->eiGuiField !== null) {
-			return $this->eiGuiField->buildGuiField($eiu, $readOnly);
-		}
-		
-		if ($this->guiFieldClosure !== null) {
-			
-		}
-		
-		return null;
+		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
+		$mmi->setClassParamObject(Eiu::class, $eiu);
+//		$mmi->setParamValue('defPropPaths', $defPropPaths);
+		$mmi->setParamValue('readOnly', $readOnly);
+		$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class));
+		$mmi->setClosure($this->guiFieldCallback);
+
+		return $mmi->invoke();
+
+//		if ($this->eiGuiField !== null) {
+//			return $this->eiGuiField->buildGuiField($eiu, $readOnly);
+//		}
+//
+//		if ($this->guiFieldClosure !== null) {
+//
+//		}
+//
+//		return null;
 	}
 	
 	function getForkEiGuiDefinition(): ?EiGuiDefinition {
+		return null;
+	}
+
+
+	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition {
 		return null;
 	}
 }

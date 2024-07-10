@@ -15,6 +15,9 @@ use rocket\ui\si\control\SiControl;
 use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\gui\GuiValueBoundary;
+use rocket\ui\gui\GuiMask;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\ui\si\meta\SiMaskQualifier;
 
 class EiGuiDeclaration {
 	/**
@@ -342,4 +345,5 @@ class EiGuiDeclaration {
 		
 		throw new UnknownGuiControlException('Unknown GuiControlPath: ' . $guiControlPath);
 	}
+
 }

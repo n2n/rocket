@@ -21,6 +21,6 @@
  */
 namespace rocket\ui\si\err;
 
-class CorruptedSiDataException extends \Exception {
+class CorruptedSiDataException extends SiException {
 	
 }

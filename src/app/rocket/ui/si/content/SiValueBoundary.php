@@ -96,6 +96,10 @@ class SiValueBoundary implements \JsonSerializable {
 		
 		return $this->selectedMaskId;
 	}
+
+	function __toString() {
+		return 'SiValueBoundary TODO: insert identifier...';
+	}
 	
 	function jsonSerialize(): mixed {
 		$entries = array();

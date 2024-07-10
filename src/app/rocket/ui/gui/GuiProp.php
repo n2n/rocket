@@ -16,11 +16,17 @@ class GuiProp {
 		$this->siProp->setHelpText($helpText);
 	}
 
-	function setHelperText(?string $helperText): void {
+	function setHelpText(?string $helperText): static {
 		$this->siProp->setHelpText($helperText);
+		return $this;
 	}
 
-	function setDescendantGuiPropNames(array $guiPropNames): void {
+	function setDescendantGuiPropNames(array $guiPropNames): static {
 		$this->siProp->setDescendantPropNames($guiPropNames);
+		return $this;
+	}
+
+	function getSiProp(): SiProp {
+		return $this->siProp;
 	}
 }

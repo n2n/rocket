@@ -180,7 +180,7 @@ class EiEngine {
 
 		$factory = new EiGuiDefinitionFactory($this->eiMask, $this->n2nContext);
 
-		return $this->guiDefinitions[$viewMode] = $factory->createEiGuiDefinition($viewMode);
+		return $this->guiDefinitions[$viewMode] = $factory->createEiGuiDefinition($viewMode, null);
 	}
 
 

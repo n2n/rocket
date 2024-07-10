@@ -10,6 +10,7 @@ use rocket\ui\si\content\SiField;
 use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\util\control\EiuGuiControlFactory;
 use rocket\op\ei\util\si\EiuSiFactory;
+use rocket\ui\gui\GuiProp;
 
 class EiuFactory {
 	private $eiu;
@@ -79,16 +80,18 @@ class EiuFactory {
 	 * @return \rocket\op\ei\util\factory\EifGuiProp
 	 */
 	function newGuiProp(\Closure $closure) {
-		return new EifGuiProp($closure);
+		$guiProp = new GuiProp($this->eiu->prop()->getLabel(), $this->eiu->prop()->getHelpText());
+
+		return new EifGuiProp($guiProp, $closure);
 	}
 	
-	/**
-	 * @param \Closure|EiGuiField $eiGuiCallbackOrAssembler
-	 * @return \rocket\op\ei\util\factory\EifGuiPropSetup
-	 */
-	function newGuiProp($eiGuiCallbackOrAssembler): EifGuiPropSetup {
-		return new EifGuiPropSetup($eiGuiCallbackOrAssembler);
-	}
+//	/**
+//	 * @param \Closure|EiGuiField $eiGuiCallbackOrAssembler
+//	 * @return \rocket\op\ei\util\factory\EifGuiPropSetup
+//	 */
+//	function newGuiProp($eiGuiCallbackOrAssembler): EifGuiPropSetup {
+//		return new EifGuiPropSetup($eiGuiCallbackOrAssembler);
+//	}
 	
 	/**
 	 * @return EifGuiField

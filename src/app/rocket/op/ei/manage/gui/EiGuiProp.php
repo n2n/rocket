@@ -24,8 +24,12 @@ namespace rocket\op\ei\manage\gui;
 
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\DefPropPath;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\GuiProp;
 
 interface EiGuiProp {
+
+	function getGuiProp(): GuiProp;
 
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGuiMaskDeclaration and returns an {@see DisplayDefinition}
@@ -34,7 +38,7 @@ interface EiGuiProp {
 	 *
 	 * @return DisplayDefinition|null return null if this GuiProp is not compatible with passed EiGuiMaskDeclaration.
 	 */
-	function buildEiGuiField(Eiu $eiu, bool $readOnly): ?EiGuiField;
+	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
 
 
 	/**

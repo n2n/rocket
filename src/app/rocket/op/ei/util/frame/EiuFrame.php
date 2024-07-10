@@ -1165,36 +1165,36 @@ class EiuCallbackSortAbility implements SortAbility {
 		$this->insertAsChildCallback = $insertAsChildCallback;
 	}
 	
-	function insertAfter(array $eiObjects, EiObject $afterEiObject): SiCallResponse {
-		return $this->callClosure($this->insertAfterCallback, $eiObjects, $afterEiObject);
+	function insertAfter(array $eiObjects, EiObject $afterEiObject): void {
+		$this->callClosure($this->insertAfterCallback, $eiObjects, $afterEiObject);
 	}
 
-	function insertBefore(array $eiObjects, EiObject $beforeEiObject): SiCallResponse {
-		return $this->callClosure($this->insertBeforeCallback, $eiObjects, $beforeEiObject);
+	function insertBefore(array $eiObjects, EiObject $beforeEiObject): void {
+		$this->callClosure($this->insertBeforeCallback, $eiObjects, $beforeEiObject);
 	}
 	
-	function insertAsChild(array $eiObjects, EiObject $parentEiObject): SiCallResponse {
+	function insertAsChild(array $eiObjects, EiObject $parentEiObject): void {
 		if ($this->insertAsChildCallback === null) {
 			throw new IllegalStateException('Tree sort ability not available.');
 		}
 		
-		return $this->callClosure($this->insertAsChildCallback, $eiObjects, $parentEiObject);
+		$this->callClosure($this->insertAsChildCallback, $eiObjects, $parentEiObject);
 	}
 	
 	private function callClosure(\Closure $closure, array $eiObjects, EiObject $targetEiObject) {
 		$mmi = new MagicMethodInvoker($this->eiuAnalyst->getN2nContext(true));
 		$mmi->setMethod(new \ReflectionFunction($closure));
-		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(OpfControlResponse::class, true));
+//		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(OpfControlResponse::class, true));
 		
 		$eiuObjects = array_map(function ($eiObject) { return new EiuObject($eiObject, $this->eiuAnalyst); }, $eiObjects);
 		$targetEiuObject = new EiuObject($targetEiObject, $this->eiuAnalyst);
 		
 		$eiuControlResponse = $mmi->invoke(null, null, [$eiuObjects, $targetEiuObject]);
 		
-		if ($eiuControlResponse === null) {
-			$eiuControlResponse = new OpfControlResponse($this->eiuAnalyst);
-		}
-		
-		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
+//		if ($eiuControlResponse === null) {
+//			$eiuControlResponse = new OpfControlResponse($this->eiuAnalyst);
+//		}
+//
+//		return $eiuControlResponse->toSiCallResponse($this->eiuAnalyst->getManageState()->getEiLifecycleMonitor());
 	}
 }

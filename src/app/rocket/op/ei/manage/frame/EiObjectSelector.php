@@ -217,6 +217,7 @@ class EiObjectSelector {
 	function createEiGuiDeclaration(EiMask $eiMask, bool $bulky, bool $readOnly, array $defPropPaths = null): EiGuiDeclaration {
 		$viewMode = ViewMode::determine($bulky, $readOnly, false);
 
+
 		return $this->eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 	}
 
@@ -485,7 +486,6 @@ class EiObjectSelector {
 }
 
 
-class
 
 class EiGuiValueBoundaryResult {
 	private $eiGuiValueBoundary;

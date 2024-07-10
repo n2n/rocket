@@ -112,11 +112,10 @@ class SiApi {
 	 * @throws UnknownSiElementException
 	 */
 	private function handleControlCall(SiControlCall $controlCall, N2nContext $n2nContext): SiCallResponse {
-
 		$entryId = $controlCall->getEntryId();
 		if ($entryId !== null) {
-			return $this->model->getSiEntryControl($controlCall->getMaskId(), $entryId,
-					$controlCall->getControlName())->handleCall($n2nContext);
+			return $this->model->getSiEntryControl($controlCall->getMaskId(), $entryId, $controlCall->getControlName())
+					->handleCall($n2nContext);
 		}
 
 		return $this->model->getSiMaskControl($controlCall->getMaskId(), $controlCall->getControlName())

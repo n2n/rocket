@@ -65,7 +65,7 @@ trait DisplayConfigTrait {
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutEifGuiField ( $eiu, $readOnly )->toGuiField ();
+		return $this->createOutGuiField($eiu);
 	}
 
 	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
