@@ -18,12 +18,14 @@ use PHPUnit\Framework\TestCase;
 use n2n\web\http\StatusException;
 use rocket\ui\si\api\request\SiZoneCall;
 use rocket\ui\si\api\request\SiInput;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\content\SiEntryIdentifier;
 use rocket\op\ei\mask\EiMask;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\si\api\request\SiFieldInput;
 use testmdl\string\bo\StrObjMock;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EditControllerTest extends TestCase {
 
@@ -72,15 +74,16 @@ class EditControllerTest extends TestCase {
 	 */
 	function testHandleSaveCall(): void {
 
-		$eiGuiMaskDeclaration = $this->eiMask->getEiEngine()
-				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null);
+		$eiGuiDefinition = $this->eiMask->getEiEngine()->getEiGuiDefinition(ViewMode::BULKY_EDIT);
 
 		$siInput = new SiInput();
-		$siEntryIdentifier = new SiEntryIdentifier($eiGuiMaskDeclaration->createSiMaskIdentifier(), $this->stringTestObjId);
-		$siEntryInput = new SiEntryInput($siEntryIdentifier);
+		$siEntryInput = new SiEntryInput($this->stringTestObjId);
 		$siEntryInput->putFieldInput('annoHoleradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('annoHoleradioObj', new SiFieldInput(['value' => 'nv']));
-		$siInput->putValueBoundaryInput('0', $siEntryInput);
+		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getId(), $siEntryInput);
+
+		$siInput->putValueBoundaryInput('0', $siValueBoundaryInput);
+
 
 
 		$result = TestEnv::http()->newRequest()->post(
@@ -92,7 +95,8 @@ class EditControllerTest extends TestCase {
 				})
 				->exec();
 
-		$this->assertNull($result->parseJson()['inputError']);
+		$this->assertNotNull($result->parseJson()['inputResult']);
+		$this->assertNotNull($result->parseJson()['callResult']);
 
 		$tx = TestEnv::createTransaction(true);
 		$this->assertEquals('new-value', TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->annoHoleradio);

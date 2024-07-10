@@ -30,7 +30,7 @@ use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\ui\gui\field\GuiFieldMap;

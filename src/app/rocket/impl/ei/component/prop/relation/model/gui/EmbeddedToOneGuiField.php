@@ -28,7 +28,7 @@ use rocket\op\ei\util\frame\EiuFrame;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\ui\si\content\impl\SiFields;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
 use rocket\ui\gui\field\GuiFieldMap;

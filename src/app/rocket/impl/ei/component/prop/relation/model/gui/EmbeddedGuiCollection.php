@@ -28,7 +28,7 @@ use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\CastUtils;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\op\ei\util\spec\EiuType;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\ui\si\err\CorruptedSiDataException;

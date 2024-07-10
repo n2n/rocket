@@ -1069,11 +1069,13 @@ class EiGuiDefinition {
 		return $this->guiDefinitionListeners;
 	}
 
-	function createSiMaskIdentifier(): SiMaskIdentifier {
-		$eiMask = $this->guiDefinition->getEiMask();
+	function createEiSiMaskId(): EiSiMaskId {
+		return new EiSiMaskId($this->eiMask->getEiTypePath(), $this->viewMode);
+	}
 
-		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $this->viewMode);
-		return new SiMaskIdentifier($eiSiMaskId->__toString(), $eiMask->getEiType()->getSupremeEiType()->getId());
+	function createSiMaskIdentifier(): SiMaskIdentifier {
+		$eiSiMaskId = $this->createEiSiMaskId();
+		return new SiMaskIdentifier($eiSiMaskId->__toString(), $this->eiMask->getEiType()->getSupremeEiType()->getId());
 	}
 
 	public function createSiMaskQualifier(N2nLocale $n2nLocale): SiMaskQualifier {

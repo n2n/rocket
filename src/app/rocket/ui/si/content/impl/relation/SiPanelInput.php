@@ -21,7 +21,7 @@
  */
 namespace rocket\ui\si\content\impl\relation;
 
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\err\CorruptedSiDataException;

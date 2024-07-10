@@ -42,9 +42,9 @@ class SiZoneCall implements \JsonSerializable {
 
 
 		$siInput = null;
-		if (null !== ($entryInputMapsData = $httpData->optArray('entryInputMaps'))) {
+		if (null !== ($inputData = $httpData->optArray('input'))) {
 			try {
-				$siInput = (new SiInputFactory())->create($entryInputMapsData);
+				$siInput = SiInput::parse($inputData);
 			} catch (CorruptedSiDataException $e) {
 				throw new BadRequestException(previous: $e);
 			}
@@ -56,7 +56,7 @@ class SiZoneCall implements \JsonSerializable {
 	public function jsonSerialize(): mixed {
 		return [
 			'zoneControlName' => $this->zoneControlName,
-			'entryInputMaps' => $this->input?->getValueBoundaryInputs()
+			'input' => $this->input
 		];
 	}
 }

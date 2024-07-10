@@ -25,7 +25,7 @@ use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\attrs\DataMap;
 
-class SiInput {
+class SiInput implements \JsonSerializable {
 	/**
 	 * @var SiValueBoundaryInput[] $valueBoundaryInputs
 	 */
@@ -62,5 +62,9 @@ class SiInput {
 		}
 
 		return $input;
+	}
+
+	function jsonSerialize(): array {
+		return $this->valueBoundaryInputs;
 	}
 }

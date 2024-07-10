@@ -24,7 +24,7 @@ namespace rocket\ui\si\api\request;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 
 class SiValInstruction {
 	/**
@@ -45,7 +45,7 @@ class SiValInstruction {
 	}
 	
 	/**
-	 * @param \rocket\ui\si\input\SiEntryInput $valueBoundaryInput
+	 * @param \rocket\ui\si\api\request\SiEntryInput $valueBoundaryInput
 	 */
 	public function setValueBoundaryInput($valueBoundaryInput) {
 		$this->valueBoundaryInput = $valueBoundaryInput;

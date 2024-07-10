@@ -12,6 +12,8 @@ use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\si\SiPayloadFactory;
+use rocket\ui\si\api\response\SiApiCallResponse;
+use rocket\ui\si\api\response\SiZoneCallResponse;
 
 class SiZone implements JsonSerializable {
 
@@ -23,13 +25,16 @@ class SiZone implements JsonSerializable {
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	function handleSiZoneCall(SiZoneCall $siZoneCall, N2nContext $n2nContext): SiCallResponse {
+	function handleSiZoneCall(SiZoneCall $siZoneCall, N2nContext $n2nContext): SiZoneCallResponse {
+
+		$zoneCallResponse = new SiZoneCallResponse();
 		$siInputResult = null;
 
 		if (null !== ($siInput = $siZoneCall->getInput())) {
 			$siInputResult = $this->gui->handleSiInput($siInput, $n2nContext);
+			$zoneCallResponse->setInputResult($siInputResult);
 			if (!$siInputResult->isValid()) {
-				return SiCallResult::fromInputError($siInputResult->getInputError());
+				return $zoneCallResponse;
 			}
 		}
 
@@ -39,9 +44,7 @@ class SiZone implements JsonSerializable {
 					. $controlName);
 		}
 
-		return SiCallResult::fromCallResponse(
-				$this->controls[$controlName]->handleCall($n2nContext),
-				$siInputResult);
+		$zoneCallResponse->setCallResponse($this->controls[$controlName]->handleCall($n2nContext));
 	}
 
 	function jsonSerialize(): mixed {

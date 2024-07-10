@@ -22,7 +22,7 @@
 //namespace rocket\op\ei\util\gui;
 //
 //use rocket\op\ei\util\EiuAnalyst;
-//use rocket\ui\si\input\SiEntryInput;
+//use rocket\ui\si\api\request\SiEntryInput;
 //use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
 //use rocket\ui\gui\ViewMode;
 //use rocket\op\ei\util\EiuPerimeterException;

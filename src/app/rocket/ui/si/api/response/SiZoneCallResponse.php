@@ -19,15 +19,34 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content\impl\relation;
+namespace rocket\ui\si\api\response;
 
-use rocket\ui\si\api\request\SiEntryInput;
-use rocket\ui\si\content\SiValueBoundary;
+class SiZoneCallResponse implements \JsonSerializable {
 
-interface EmbeddedEntryInputHandler {
-	/**
-	 * @param SiEntryInput[] $siEntryInputs
-	 * @return SiValueBoundary[]
-	 */
-	function handleInput(array $siEntryInputs): array;
+	private ?SiInputResult $inputResult = null;
+	private ?SiCallResponse $callResult = null;
+
+	public function getInputResult(): ?SiInputResult {
+		return $this->inputResult;
+	}
+
+	function setInputResult(SiInputResult $inputResult): void {
+		$this->inputResult = $inputResult;
+	}
+
+	public function getCallResponse(): ?SiCallResponse {
+		return $this->callResult;
+	}
+
+	public function setCallResponse(?SiCallResponse $callResult): static {
+		$this->callResult = $callResult;
+		return $this;
+	}
+
+	function jsonSerialize(): mixed {
+		return [
+			'callResult' => $this->callResult,
+			'inputResult' => $this->inputResult
+		];
+	}
 }

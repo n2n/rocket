@@ -107,7 +107,7 @@ class BulkyEntrySiGui implements SiGui {
 				return SiInputResult::valid([$this->valueBoundary]);
 			}
 
-			return SiInputResult::error(new SiInputError([$this->valueBoundary]));
+			return SiInputResult::error([$this->valueBoundary]);
 		}
 	}
 

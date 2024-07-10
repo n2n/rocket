@@ -29,7 +29,7 @@ use n2n\web\http\BadRequestException;
 use rocket\op\ei\manage\EiObject;
 use rocket\op\ei\mask\EiMask;
 use rocket\ui\gui\EiGuiValueBoundary;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\op\ei\manage\security\SecurityException;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiException;

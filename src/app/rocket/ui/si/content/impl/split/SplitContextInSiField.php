@@ -27,7 +27,7 @@ use n2n\util\uri\Url;
 use rocket\ui\si\content\SiValueBoundary;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\meta\SiDeclaration;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;

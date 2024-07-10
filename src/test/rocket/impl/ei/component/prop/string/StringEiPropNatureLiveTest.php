@@ -17,7 +17,7 @@ use rocket\op\ei\manage\security\InaccessibleEiFieldException;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\si\content\impl\StringInSiField;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;

@@ -8,7 +8,7 @@ use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\control\SiIconType;
 use rocket\ui\si\content\SiEntry;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\err\CorruptedSiDataException;
 

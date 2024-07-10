@@ -25,7 +25,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\uri\Url;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\meta\SiFrame;
 
 class EmbeddedEntriesInSiField extends InSiFieldAdapter {

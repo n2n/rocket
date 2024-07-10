@@ -6,9 +6,9 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataMap;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 
-class SiValueBoundaryInput {
+class SiValueBoundaryInput implements \JsonSerializable {
 
 	/**
 	 * Ent
@@ -47,7 +47,8 @@ class SiValueBoundaryInput {
 		try {
 			$siValueBoundary = new SiValueBoundaryInput($dataMap->reqString('selectedMaskId'),
 					SiEntryInput::parse($dataMap->reqArray('entryInput')));
-			$siValueBoundary->setMaskIds($dataMap->reqArray('maskIds', 'string', true));
+//			$siValueBoundary->setMaskIds($dataMap->reqArray('maskIds', 'string', true));
+			return $siValueBoundary;
 		} catch (AttributesException $e) {
 			throw new CorruptedSiDataException('SiValueBoundaryInput', previous: $e);
 		}
@@ -56,7 +57,7 @@ class SiValueBoundaryInput {
 	function jsonSerialize(): mixed {
 		return [
 			'selectedMaskId' => $this->selectedMaskId,
-			'maskIds' => $this->maskIds,
+//			'maskIds' => $this->maskIds,
 			'entryInput' => $this->entryInput
 		];
 	}

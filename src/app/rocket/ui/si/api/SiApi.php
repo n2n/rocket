@@ -61,8 +61,8 @@ class SiApi {
 		$inputResult = null;
 		if (null !== ($input = $call->getInput())) {
 			$inputResult = $this->handleInput($input);
+			$apiCallResponse->setInputResult($inputResult);
 			if (!$inputResult->isValid()) {
-				$apiCallResponse->setInputResult($inputResult);
 				return $apiCallResponse;
 			}
 		}

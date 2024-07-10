@@ -5,7 +5,7 @@ namespace rocket\op\cu\gui;
 use rocket\op\cu\gui\field\CuField;
 use rocket\ui\si\content\SiEntry;
 use phpbob\representation\ex\UnknownElementException;
-use rocket\ui\si\input\SiEntryInput;
+use rocket\ui\si\api\request\SiEntryInput;
 use n2n\core\container\N2nContext;
 use rocket\si\input\SiInputError;
 use rocket\ui\si\err\CorruptedSiDataException;
