@@ -20,11 +20,11 @@ class GuiControlPath implements Hashable {
 	 * @param string[] $fieldNames
 	 */
 	public function __construct(array $fieldNames) {
-		ArgUtils::valArray($fieldNames, 'string');
+		ArgUtils::valArray($fieldNames, 'scalar');
 
 		foreach ($fieldNames as $fieldName) {
 			self::valFieldId($fieldName);
-			$this->fieldNames[] = $fieldName;
+			$this->fieldNames[] = (string) $fieldName;
 		}
 	}
 

@@ -461,14 +461,12 @@ class EiFrame {
 				->ext(EiFrameController::createCmdUrlExt($result->getEiCmdPath())));
 	}
 
-	public function getApiUrl(?EiCmdPath $eiCmdPath, string $apiSection) {
-		ArgUtils::valEnum($apiSection, ApiController::getApiSections());
-		
+	public function getApiUrl(?EiCmdPath $eiCmdPath) {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCmd());
 		}
 		
-		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCmdPath])->pathExt($apiSection);
+		return $this->getBaseUrl()->ext([EiFrameController::API_PATH_PART, (string) $eiCmdPath]);
 	}
 	
 	public function getCmdUrl(EiCmdPath $eiCmdPath) {
@@ -533,9 +531,7 @@ class EiFrame {
 	 * @return \rocket\ui\si\meta\SiFrame
 	 */
 	function createSiFrame() {
-		$apUrlMap = array_combine(ApiController::getApiSections(), 
-				array_map(fn ($section) => $this->getApiUrl(null, $section), ApiController::getApiSections()));
-		return (new SiFrame($apUrlMap/*, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()*/))
+		return (new SiFrame($this->getApiUrl(null)/*, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()*/))
 				->setSortable($this->ability->getSortAbility() !== null);
 	}
 }

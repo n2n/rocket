@@ -14,7 +14,7 @@ use rocket\op\cu\gui\CuGui;
 use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\op\cu\gui\control\CuControlCallId;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use n2n\core\container\N2nContext;
 use rocket\op\cu\util\Cuu;
 

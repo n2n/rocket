@@ -23,7 +23,7 @@ namespace rocket\impl\ei\manage\gui;
 
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\si\control\SiControl;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
 use n2n\util\uri\Url;
 use rocket\ui\si\control\SiButton;
@@ -33,6 +33,7 @@ use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
+use rocket\ui\gui\control\GuiControlMap;
 
 class RefGuiControl implements GuiControl {
 	private $newWindow = false;
@@ -56,7 +57,7 @@ class RefGuiControl implements GuiControl {
 		return null;
 	}
 
-	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+	function getSiControl(/*Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId*/): SiControl {
 		if ($this->href) {
 			$this->siButton->setHref($this->url);
 		}
@@ -68,7 +69,7 @@ class RefGuiControl implements GuiControl {
 		throw new NotYetImplementedException();
 	}
 
-	public function handleCall(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
+	public function handleCall(/*EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries*/): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 
@@ -83,5 +84,9 @@ class RefGuiControl implements GuiControl {
 	public function setNewWindow(bool $newWindow) {
 		$this->newWindow = $newWindow;
 		return $this;
+	}
+
+	function getForkGuiControlMap(): ?GuiControlMap {
+		return null;
 	}
 }

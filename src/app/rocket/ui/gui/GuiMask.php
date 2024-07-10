@@ -135,7 +135,7 @@ class GuiMask {
 //	}
 
 	function getSiMask(): SiMask {
-		IllegalStateException::assertTrue($this->guiStructureDeclarations !== null, 
+		IllegalStateException::assertTrue($this->siMask->getStructureDeclarations() !== null,
 				'EiGuiMaskDeclaration has no GuiStructureDeclarations.');
 
 		return $this->siMask;

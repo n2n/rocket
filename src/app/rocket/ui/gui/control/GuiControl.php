@@ -23,7 +23,7 @@ namespace rocket\ui\gui\control;
 
 use rocket\ui\si\control\SiControl;
 use rocket\ui\gui\EiGuiDeclaration;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\field\GuiFieldMap;
 
 interface GuiControl {

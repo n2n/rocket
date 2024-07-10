@@ -23,7 +23,7 @@ namespace rocket\op\ei\manage\frame;
 
 use rocket\op\ei\manage\EiObject;
 use n2n\util\ex\IllegalStateException;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 
 interface SortAbility {
 	/**

@@ -5,7 +5,7 @@ namespace rocket\impl\ei\manage\gui;
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\si\api\request\SiInput;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\ex\NotYetImplementedException;

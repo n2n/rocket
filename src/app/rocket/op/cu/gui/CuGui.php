@@ -9,7 +9,7 @@ use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\si\input\SiInputError;
 use rocket\op\cu\gui\control\CuControlCallId;
 use n2n\core\container\N2nContext;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\op\cu\util\Cuu;
 use rocket\ui\si\content\SiValueBoundary;
 

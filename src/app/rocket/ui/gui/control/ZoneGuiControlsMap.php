@@ -5,7 +5,7 @@ namespace rocket\ui\gui\control;
 use n2n\util\type\ArgUtils;
 use n2n\util\uri\Url;
 use rocket\ui\si\err\CorruptedSiDataException;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;

@@ -9,7 +9,7 @@ use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiFrame;
@@ -28,14 +28,13 @@ class BulkyGui implements Gui {
 	private array $inputEiEntries = [];
 
 	function __construct(private ?SiFrame $siFrame, private readonly SiDeclaration $siDeclaration,
-			private readonly GuiValueBoundary $guiValueBoundary, private readonly ?GuiControlMap $generalGuiControlMap,
-			private readonly bool $entrySiControlsIncluded) {
+			private readonly GuiValueBoundary $guiValueBoundary, private readonly bool $entrySiControlsIncluded) {
 
 		$this->siGui = new BulkyEntrySiGui($this->siFrame, $this->siDeclaration,
 				$this->guiValueBoundary->getSiValueBoundary());
 		$this->siGui->setEntryControlsIncluded($this->entrySiControlsIncluded);
-		$siControls = $this->generalGuiControlMap?->getGuiControls() ?? [];
-		$this->siGui->setControls($siControls);
+//		$siControls = $this->generalGuiControlMap?->getGuiControls() ?? [];
+//		$this->siGui->setControls($siControls);
 	}
 
 	function getInputSiValueBoundaries(): array {

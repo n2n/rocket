@@ -232,7 +232,7 @@ class OpuCtrl {
 		}
 
 		$eiGui = new BulkyGui($eiFrame->createSiFrame(), new SiDeclaration([$guiMask->getSiMask()]),
-				$guiValueBoundary, $guiControlsMap, $entrySiControlsIncluded);
+				$guiValueBoundary, $entrySiControlsIncluded);
 
 		$this->forwardGui($eiGui, current($guiValueBoundary->getGuiEntries())->getSiEntry()->getQualifier()->getIdName(),
 				$zoneGuiControlsMap);

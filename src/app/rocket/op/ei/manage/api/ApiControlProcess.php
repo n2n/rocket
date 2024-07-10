@@ -46,7 +46,7 @@ use rocket\ui\gui\EiGuiDeclaration;
 use rocket\si\input\SiInputError;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\si\input\SiInputResult;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\EiGuiDeclarationFactory;
 
 class ApiControlProcess {

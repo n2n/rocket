@@ -24,6 +24,9 @@ namespace rocket\ui\si\control\impl;
 use n2n\util\uri\Url;
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\control\SiButton;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\api\response\SiCallResponse;
+use n2n\util\ex\NotYetImplementedException;
 
 class RefSiControl implements SiControl {
 	private $url;
@@ -46,5 +49,9 @@ class RefSiControl implements SiControl {
 			'button' => $this->button,
 			'newWindow' => $this->newWindow
 		];
+	}
+
+	function handleCall(N2nContext $n2nContext): SiCallResponse {
+		throw new NotYetImplementedException();
 	}
 }

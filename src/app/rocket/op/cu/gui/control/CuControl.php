@@ -3,7 +3,7 @@
 namespace rocket\op\cu\gui\control;
 
 use n2n\util\uri\Url;
-use SiCallResponse;
+use rocket\ui\si\api\response\SiCallResponse;
 use rocket\op\cu\util\Cuu;
 use rocket\ui\si\control\SiControl;
 

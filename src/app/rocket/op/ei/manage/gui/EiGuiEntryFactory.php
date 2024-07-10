@@ -37,6 +37,8 @@ use rocket\op\ei\manage\api\ApiController;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\EiCmdPath;
+use n2n\util\type\ArgUtils;
+use rocket\ui\gui\control\GuiControl;
 
 class EiGuiEntryFactory {
 
@@ -159,7 +161,7 @@ class EiGuiEntryFactory {
 
 		$guiControlMap = null;
 		if ($entryGuiControlsIncluded) {
-			$guiControlMap = $this->createEntryGuiControlsMap($eiGuiDefinition, $eiEntry);
+			$guiControlMap = $eiGuiDefinition->createEntryGuiControlsMap($this->eiFrame, $eiEntry);
 		}
 
 		$guiEntry->init($guiFieldMap, $guiControlMap);
@@ -190,26 +192,6 @@ class EiGuiEntryFactory {
 		throw new EiGuiBuildFailedException('GuiField of ' . $eiPropPath . ' must have a read-only SiField.');
 	}
 
-	function createEntryGuiControlsMap(EiGuiDefinition $eiGuiDefinition, EiEntry $eiEntry): GuiControlMap {
-		$guiControlsMap = new GuiControlMap();
-
-		$guiControls = [];
-		foreach ($eiGuiDefinition->getGuiCommands() as $eiCmdPathStr => $guiCommand) {
-//			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
-			$eiu = new Eiu($this->eiFrame, $eiGuiDefinition, $eiEntry, $eiCmdPath);
-
-			$apiUrl = $this->eiFrame->getApiUrl(EiCmdPath::create($eiCmdPathStr));
-
-			foreach ($this->extractEntryGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $entryGuiControl) {
-				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $entryGuiControl->getId()]);
-				$apiControlCallId = ApiControlCallId::create($this->eiMask, $guiControlPath, $eiEntry);
-
-				$guiControlsMap->putGuiControl($guiControlPath, $entryGuiControl, $apiControlCallId, $apiUrl);
-			}
-		}
-
-		return $guiControlsMap;
-	}
 	
 // 	static function createGuiFieldMap(EiGuiValueBoundary $eiGuiValueBoundary, DefPropPath $baseDefPropPath) {
 // 		new GuiFieldMap($eiGuiValueBoundary, $forkDefPropPath);
