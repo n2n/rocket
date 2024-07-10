@@ -56,7 +56,7 @@ class OnlineEiPropConfigurator extends AdaptableEiPropConfigurator {
 	}
 	
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column|\n2n\spec\dbo\meta\structure\Column $column = null) {
 		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		$this->attributes->set(self::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);

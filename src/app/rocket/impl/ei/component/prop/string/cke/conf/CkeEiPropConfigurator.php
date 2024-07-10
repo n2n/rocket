@@ -58,7 +58,7 @@ class CkeEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($ckeEiProp);
 	}
 
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column|\n2n\spec\dbo\meta\structure\Column $column = null) {
 		$this->attributes->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
 	}
 	

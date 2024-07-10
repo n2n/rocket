@@ -72,7 +72,7 @@ class PathPartEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	}
 	
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, ColumnPathPartEiPropConfigurator $column = null) {
 		parent::initAutoEiPropAttributes($n2nContext, $column);
 	
 		$options = $this->getBaseEiPropIdOptions();

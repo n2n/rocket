@@ -47,7 +47,7 @@ class StringEiPropConfigurator extends AlphanumericEiPropConfigurator {
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column|\n2n\spec\dbo\meta\structure\Column $column = null) {
 		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {

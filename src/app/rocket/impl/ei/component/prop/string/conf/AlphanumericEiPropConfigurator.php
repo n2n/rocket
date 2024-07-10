@@ -41,7 +41,7 @@ class AlphanumericEiPropConfigurator extends AdaptableEiPropConfigurator {
 		$this->autoRegister($alphanumericEiProp);
 	}
 	
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column|\n2n\spec\dbo\meta\structure\Column $column = null) {
 		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 		if ($column instanceof StringColumn) {
