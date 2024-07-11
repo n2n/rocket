@@ -45,6 +45,7 @@ class SiZone implements JsonSerializable {
 		}
 
 		$zoneCallResponse->setCallResponse($this->controls[$controlName]->handleCall($n2nContext));
+		return $zoneCallResponse;
 	}
 
 	function jsonSerialize(): mixed {

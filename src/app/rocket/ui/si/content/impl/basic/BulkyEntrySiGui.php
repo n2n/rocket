@@ -97,18 +97,20 @@ class BulkyEntrySiGui implements SiGui {
 
 
 	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult {
-		$entryInputs = $siInput->getValueBoundaryInputs();
-		if (count($entryInputs) > 1) {
+		$valueBoundaryInput = $siInput->getValueBoundaryInputs();
+		if (count($valueBoundaryInput) > 1) {
 			throw new CorruptedSiDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
 		}
 
-		foreach ($entryInputs as $siEntryInput) {
-			if ($this->valueBoundary->handleInput($siEntryInput, $n2nContext)) {
+		foreach ($valueBoundaryInput as $valueBoundaryInput) {
+			if ($this->valueBoundary->handleInput($valueBoundaryInput, $n2nContext)) {
 				return SiInputResult::valid([$this->valueBoundary]);
 			}
 
 			return SiInputResult::error([$this->valueBoundary]);
 		}
+
+		throw new \InvalidArgumentException();
 	}
 
 

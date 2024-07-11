@@ -78,13 +78,11 @@ class EditControllerTest extends TestCase {
 
 		$siInput = new SiInput();
 		$siEntryInput = new SiEntryInput($this->stringTestObjId);
-		$siEntryInput->putFieldInput('annoHoleradio', new SiFieldInput(['value' => 'new-value']));
-		$siEntryInput->putFieldInput('annoHoleradioObj', new SiFieldInput(['value' => 'nv']));
+		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
+		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'nv']));
 		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getId(), $siEntryInput);
 
 		$siInput->putValueBoundaryInput('0', $siValueBoundaryInput);
-
-
 
 		$result = TestEnv::http()->newRequest()->post(
 					'/admin/manage/launch-id/cmd/eecn-0/' . $this->stringTestObjId,
@@ -101,8 +99,8 @@ class EditControllerTest extends TestCase {
 		$this->assertNotNull($resultData['callResult']);
 
 		$tx = TestEnv::createTransaction(true);
-		$this->assertEquals('new-value', TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->annoHoleradio);
-		$this->assertEquals(new StrObjMock('nv'), TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->annoHoleradioObj);
+		$this->assertEquals('new-value', TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->holeradio);
+		$this->assertEquals(new StrObjMock('nv'), TestMdlTestEnv::findStringTestObj($this->stringTestObjId)->holeradioObj);
 		$tx->commit();
 	}
 

@@ -146,7 +146,7 @@ class SiEntry implements \JsonSerializable {
 	 * @throws CorruptedSiDataException
 	 */
 	function handleEntryInput(SiEntryInput $entryInput, N2nContext $n2nContext): bool {
-		$valid = true;
+	$valid = true;
 		$fields = [];
 		foreach ($this->fields as $fieldName => $field) {
 			if ($field->isReadOnly() || !$entryInput->containsFieldName($fieldName)) {
