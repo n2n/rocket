@@ -169,8 +169,11 @@ class EiuGuiFieldModel implements GuiFieldModel {
 		return false;
 	}
 
+	/**
+	 * @return Message[]
+	 */
 	function getMessages(): array {
-		return [$this->eiuField->getMessages(), ...$this->prepareMessages];
+		return [...$this->eiuField->getMessages(), ...$this->prepareMessages];
 	}
 
 	function save(N2nContext $n2nContext): void {

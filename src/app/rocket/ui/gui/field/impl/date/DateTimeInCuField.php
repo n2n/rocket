@@ -73,7 +73,7 @@ class DateTimeInCuField implements CuField, SiFieldModel {
 		return true;
 	}
 
-	function getMessages(): array {
+	function getMessageStrs(): array {
 		return $this->messageStrs;
 	}
 }

@@ -105,7 +105,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 		return false;
 	}
 
-	function getMessages(): array {
+	function getMessageStrs(): array {
 		$messageStrs = [];
 		foreach ($this->lastReadMessages as $message) {
 			$messageStrs[] = $message->t(\n2n\l10n\N2nLocale::getAdmin());

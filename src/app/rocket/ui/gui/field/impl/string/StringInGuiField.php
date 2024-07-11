@@ -61,7 +61,7 @@ class StringInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldMod
 //				$this->siField->getMaxlength());
 //	}
 
-	function getMessages(): array {
+	function getMessageStrs(): array {
 		return $this->messageStrs;
 	}
 

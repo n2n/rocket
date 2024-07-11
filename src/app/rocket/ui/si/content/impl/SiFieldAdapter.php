@@ -26,6 +26,7 @@ use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\SiFieldModel;
 use rocket\ui\si\content\BackableSiField;
 use n2n\core\container\N2nContext;
+use n2n\util\type\ArgUtils;
 
 abstract class SiFieldAdapter implements SiField, BackableSiField {
 //	use SiFieldErrorTrait;
@@ -61,7 +62,10 @@ abstract class SiFieldAdapter implements SiField, BackableSiField {
 	}
 
 	function getData(): array {
-		return ['messages' => $this->model->getMessages() ?? []];
+		$messages = $this->model->getMessageStrs();
+		ArgUtils::valArrayReturn($messages, $this->model, 'getMessages', 'string');
+
+		return ['messages' => $messages];
 	}
 
 

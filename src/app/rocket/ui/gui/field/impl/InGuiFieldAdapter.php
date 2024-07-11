@@ -9,17 +9,18 @@ use n2n\l10n\Message;
 use rocket\ui\si\content\BackableSiField;
 use n2n\util\ex\ExUtils;
 use n2n\bind\mapper\impl\Mappers;
+use n2n\l10n\N2nLocale;
 
 abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 
 	/**
 	 * @var Message[]
 	 */
-	private array $messages = [];
-	/**
-	 * @var Message[]
-	 */
-	private array $prepareForSaveMessages = [];
+	private array $messageStrs = [];
+//	/**
+//	 * @var Message[]
+//	 */
+//	private array $prepareForSaveMessages = [];
 
 	private mixed $internalValue = null;
 
@@ -39,7 +40,8 @@ abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 		$bindResult = ExUtils::try(fn () => $bindTask->exec($n2nContext));
 
 		if (!$bindResult->isValid()) {
-			$this->messages = $bindResult->getErrorMap()->getAllMessages();
+			$this->messageStrs = array_map(fn (Message $m) => $m->t($n2nContext->getN2nLocale()),
+					$bindResult->getErrorMap()->getAllMessages());
 			return false;
 		}
 
@@ -56,18 +58,18 @@ abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 	 */
 	protected abstract function createInputMappers(N2nContext $n2nContext): array;
 
-	function getMessages(): array {
-		if (!empty($this->messages)) {
-			return $this->messages;
-		} else if (!empty($this->prepareForSaveMessages)) {
-			return $this->prepareForSaveMessages;
+	function getMessageStrs(): array {
+		if (!empty($this->messageStrs)) {
+			return $this->messageStrs;
+//		} else if (!empty($this->prepareForSaveMessages)) {
+//			return $this->prepareForSaveMessages;
 		}
 
-		return parent::getMessages();
+		return parent::getMessageStrs();
 	}
 
 	protected function setInternalValue(mixed $internalValue): void {
-		$this->messages = [];
+		$this->messageStrs = [];
 		$this->internalValue = $internalValue;
 	}
 

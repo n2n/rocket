@@ -149,7 +149,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 		return true;
 	}
 
-	function getMessages(): array {
+	function getMessageStrs(): array {
 		return $this->eiu->field()->getMessagesAsStrs();
 	}
 }

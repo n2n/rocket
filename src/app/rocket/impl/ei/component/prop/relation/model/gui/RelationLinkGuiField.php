@@ -116,7 +116,7 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 		throw new UnsupportedOperationException();
 	}
 
-	function getMessages(): array {
+	function getMessageStrs(): array {
 		return $this->eiu->field()->getMessagesAsStrs();
 	}
 }

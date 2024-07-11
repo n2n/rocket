@@ -61,7 +61,7 @@ class StringValueObjectInGuiField extends InGuiFieldAdapter implements GuiField,
 	}
 
 
-	function getMessages(): array {
+	function getMessageStrs(): array {
 		return $this->messageStrs;
 	}
 

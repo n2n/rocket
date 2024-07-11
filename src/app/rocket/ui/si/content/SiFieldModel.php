@@ -13,5 +13,5 @@ interface SiFieldModel {
 	/**
 	 * @return string[]
 	 */
-	function getMessages(): array;
+	function getMessageStrs(): array;
 }
