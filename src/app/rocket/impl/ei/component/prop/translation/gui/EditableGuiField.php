@@ -44,7 +44,7 @@ class EditableGuiField implements GuiField {
 		return $this->siField;
 	}
 	
-	function save() {
+	function save(): void {
 		$this->lted->activateTranslations($this->siField->getActiveKeys());
 		
 		if ($this->forkGuiFieldMap !== null) {

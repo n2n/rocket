@@ -175,7 +175,7 @@ class DisplayConfig {
 	 * @param Eiu $eiu
 	 * @return EiGuiPropSetup|null
 	 */
-	function buildGuiPropSetup(Eiu $eiu, EiGuiField $eiGuiField) {
+	function buildGuiProp(Eiu $eiu, EiGuiField $eiGuiField) {
 
 		
 		if (!$this->isViewModeCompatible($viewMode)) {

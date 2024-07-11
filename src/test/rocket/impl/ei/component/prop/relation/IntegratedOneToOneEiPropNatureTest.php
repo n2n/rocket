@@ -9,10 +9,9 @@ use n2n\test\TestEnv;
 use testmdl\test\TestMdlTestEnv;
 use rocket\op\ei\manage\EiLaunch;
 use rocket\user\model\security\FullEiPermissionManager;
-use rocket\si\api\SiGetInstruction;
-use rocket\ui\si\meta\SiStyle;
+use rocket\ui\si\api\request\SiGetInstruction;
 use rocket\op\ei\manage\api\GetInstructionProcess;
-use rocket\ui\si\api\SiPartialContentInstruction;
+use rocket\ui\si\api\request\SiPartialContentInstruction;
 use testmdl\relation\bo\IntegratedSrcTestObj;
 use testmdl\relation\bo\IntegratedTargetTestObj;
 use n2n\util\uri\Url;
@@ -39,7 +38,7 @@ class IntegratedOneToOneEiPropNatureTest extends TestCase {
 		$eiFrame->setBaseUrl(Url::create('/admin'));
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
 
-		$siGetInstruction = new SiGetInstruction(new SiStyle(false, false));
+		$siGetInstruction = new SiGetInstruction(null);
 		$siGetInstruction->setPartialContentInstruction(new SiPartialContentInstruction(0, 10));
 		$process = new GetInstructionProcess($siGetInstruction, $eiFrame);
 

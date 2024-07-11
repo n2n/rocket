@@ -52,11 +52,11 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$this->assertNull($eiEntry->getValue(new EiPropPath(['holeradio'])));
 		$this->assertEquals('holeradio value', $eiEntry->getValue(new EiPropPath(['mandatoryHoleradio'])));
-		$this->assertNull($eiEntry->getValue(new EiPropPath(['annoHoleradio'])));
+		$this->assertEquals('asd', $eiEntry->getValue(new EiPropPath(['annoHoleradio'])));
 		$this->assertNull($eiEntry->getValue(new EiPropPath(['holeradioObj'])));
 		$this->assertEquals(new StrObjMock('value'),
 				$eiEntry->getValue(new EiPropPath(['mandatoryHoleradioObj'])));
-		$this->assertNull($eiEntry->getValue(new EiPropPath(['annoHoleradioObj'])));
+		$this->assertEquals(new StrObjMock('asd'), $eiEntry->getValue(new EiPropPath(['annoHoleradioObj'])));
 
 		$eiEntry->setValue(new EiPropPath(['holeradio']), 'new-value');
 		$this->assertFalse($eiEntry->getEiField(new EiPropPath(['annoHoleradio']))->isWritable(false));
@@ -75,7 +75,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$this->assertEquals('new-value', $stringTestObj->holeradio);
 		$this->assertEquals('holeradio value', $stringTestObj->mandatoryHoleradio);
-		$this->assertNull($stringTestObj->annoHoleradio);
+		$this->assertEquals('asd', $stringTestObj->annoHoleradio);
 		$this->assertEquals(new StrObjMock('new-v'), $stringTestObj->holeradioObj);
 		$this->assertEquals(new StrObjMock('value'), $stringTestObj->mandatoryHoleradioObj);
 		$this->assertNull($stringTestObj->annoHoleradioObj);
@@ -174,7 +174,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 
 		$eiGuiEntry = $eiType->getEiMask()->getEiEngine()
-				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null)
+				->getEiGuiDefinition(ViewMode::BULKY_EDIT)
 				->createGuiEntry($eiFrame, $eiEntry, false);
 
 

@@ -27,6 +27,10 @@ class EiGuiValueBoundaryFactory {
 			$guiValueBoundary->putGuiEntry($guiEntry);
 		}
 
+		if (count($eiEntries) === 1 && isset($guiEntry)) {
+			$guiValueBoundary->selectGuiEntryByMaskId($guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getId());
+		}
+
 		return $guiValueBoundary;
 	}
 }

@@ -3,7 +3,7 @@
 namespace rocket\impl\ei\component\cmd\common;
 
 use n2n\test\TestEnv;
-use rocket\ui\si\api\SiPartialContentInstruction;
+use rocket\ui\si\api\request\SiPartialContentInstruction;
 use testmdl\string\bo\StringTestObj;
 use rocket\op\spec\Spec;
 use rocket\test\GeneralTestEnv;

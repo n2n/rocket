@@ -30,10 +30,6 @@ use n2n\core\container\N2nContext;
 class GuiValueBoundary {
 	
 	private SiValueBoundary $value;
-	/**
-	 * @var string|null
-	 */
-	private ?string $selectedEiMaskId = null;
 	/**	 
 	 * @var GuiEntry[]
 	 */
@@ -113,7 +109,7 @@ class GuiValueBoundary {
 	 */
 	function selectGuiEntryByMaskId(string $eiMaskId): static {
 		if (isset($this->guiEntries[$eiMaskId])) {
-			$this->selectedEiMaskId = $eiMaskId;
+			$this->siValueBoundary->setSelectedMaskId($eiMaskId);
 			return $this;
 		}
 		
@@ -121,7 +117,7 @@ class GuiValueBoundary {
 	}
 	
 	function unselectGuiEntry(): void {
-		$this->selectedEiMaskId = null;
+		$this->siValueBoundary->setSelectedMaskId(null);
 	}
 	
 	/**

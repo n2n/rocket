@@ -81,14 +81,14 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 			return new EmbeddedGuiProp($this);
 		}
 
-		$eiu->engine()->onNewGuiEntry(function (Eiu $eiu) {
-			$value = $eiu->entry()->getValue($eiu->prop());
-			if ($value !== null) return;
-
-			$eiu->guiEntry()->onSave(function () use ($eiu) {
-				$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($eiu->prop()->getPath()));
-			});
-		});
+//		$eiu->engine()->onNewGuiEntry(function (Eiu $eiu) {
+//			$value = $eiu->entry()->getValue($eiu->prop());
+//			if ($value !== null) return;
+//
+//			$eiu->guiEntry()->onSave(function () use ($eiu) {
+//				$eiu->entry()->setValue($this, $eiu->entry()->fieldMap($eiu->prop()->getPath()));
+//			});
+//		});
 
 		return null;
 	}

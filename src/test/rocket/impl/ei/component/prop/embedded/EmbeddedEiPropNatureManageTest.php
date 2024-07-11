@@ -22,6 +22,9 @@ use rocket\ui\gui\field\GuiFieldPath;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
+use rocket\ui\gui\ViewMode;
+use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {
 	private Spec $spec;
@@ -76,15 +79,23 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 		$eiEntry = $this->createEiEntry();
 
 		$eiFrameUtil = new EiObjectSelector($this->eiFrame);
-		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, false, null);
-		$eiGuiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame, [$eiEntry], false);
+//		$eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), true, false, null);
 
-		$siEntryIdentifier = $eiGuiValueBoundary->getSelectedGuiEntry()->getSiEntryQualifier()->getIdentifier();
-		$siEntryInput = new SiEntryInput($siEntryIdentifier);
+//		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition(ViewMode::determine(true, false, true))
+
+		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
+		$eiGuiValueBoundary = $factory->create(null, [$eiEntry],
+				ViewMode::determine(true, false, true));
+
+//		$siEntryIdentifier = $eiGuiValueBoundary->getSelectedGuiEntry()->getSiEntryQualifier()->getIdentifier();
+		$siEntryInput = new SiEntryInput(null);
+		$siGuiValueBoundaryInput = new SiValueBoundaryInput(
+				$eiGuiValueBoundary->getSiValueBoundary()->getSelectedMaskId(),
+				$siEntryInput);
 		$guiFieldPath = new GuiFieldPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->__toString()]);
 		$siEntryInput->putFieldInput($guiFieldPath->__toString(), new SiFieldInput(['value' => 'some value']));
 
-		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleInput($siEntryInput,
+		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleInput($siGuiValueBoundaryInput,
 				$this->createMock(N2nContext::class)));
 
 //		$guiField->getSiField()->handleInput(, $this->createMock(N2nContext::class));

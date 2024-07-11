@@ -153,7 +153,7 @@ class SiGetInstruction {
 	/**
 	 * @param array $data
 	 * @throws \InvalidArgumentException
-	 * @return \rocket\si\api\SiGetInstruction
+	 * @return \rocket\ui\si\api\request\SiGetInstruction
 	 */
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);

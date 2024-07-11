@@ -46,7 +46,7 @@ abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter implem
 	
 	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
 		return $eiu->factory ()->newGuiProp (function (Eiu $eiu) {
-			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
+			return $this->getDisplayConfig()->buildGuiProp($eiu, $this);
 		})->toEiGuiProp();
 	}
 	

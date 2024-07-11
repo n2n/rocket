@@ -22,11 +22,11 @@
 namespace rocket\op\ei\manage\api;
 
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\si\api\SiGetInstruction;
+use rocket\ui\si\api\request\SiGetInstruction;
 use SiGetResult;
 use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\gui\EiGuiValueBoundary;
-use rocket\ui\si\api\SiPartialContentInstruction;
+use rocket\ui\si\api\request\SiPartialContentInstruction;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\BadRequestException;

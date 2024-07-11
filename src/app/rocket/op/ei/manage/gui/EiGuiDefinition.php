@@ -49,6 +49,7 @@ use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\field\GuiFieldPath;
 use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\ui\gui\control\GuiControl;
+use rocket\ui\gui\GuiEntry;
 
 class EiGuiDefinition {
 
@@ -449,13 +450,13 @@ class EiGuiDefinition {
 			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
 			$eiu = new Eiu($eiFrame, $this, $eiEntry, $eiCmdPath);
 
-			$apiUrl = $eiFrame->getApiUrl($eiCmdPath);
+//			$apiUrl = $eiFrame->getApiUrl($eiCmdPath);
 
 			foreach ($this->extractEntryGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $name => $entryGuiControl) {
 				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $name]);
 				$apiControlCallId = ApiControlCallId::create($this->eiMask, $guiControlPath, $eiEntry);
 
-				$guiControlsMap->putGuiControl($guiControlPath, $entryGuiControl, $apiControlCallId, $apiUrl);
+				$guiControlsMap->putGuiControl($guiControlPath, $entryGuiControl);
 			}
 		}
 

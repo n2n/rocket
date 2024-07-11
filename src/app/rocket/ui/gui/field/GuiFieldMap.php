@@ -180,12 +180,12 @@ class GuiFieldMap {
 //		return !$invalid;
 //	}
 
-	function save(N2nContext $n2nContext): void {
-		foreach ($this->guiFields as $defPropPathStr => $guiField) {
-			if (!$guiField->getSiField()->isReadOnly()
-					/*&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))*/) {
-				$guiField->save($n2nContext);
-			}
-		}
-	}
+//	function save(N2nContext $n2nContext): void {
+//		foreach ($this->guiFields as $defPropPathStr => $guiField) {
+//			if (!$guiField->getSiField()->isReadOnly()
+//					/*&& $this->eiEntry->getEiEntryAccess()->isEiPropWritable(EiPropPath::create($eiPropPathStr))*/) {
+//				$guiField->save($n2nContext);
+//			}
+//		}
+//	}
 }

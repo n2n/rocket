@@ -41,7 +41,7 @@ use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
 
-abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp, EiGuiField {
+abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp/*, EiGuiField*/ {
 	use DisplayConfigTrait;
 
 	private ?Relation $relation = null;
@@ -186,8 +186,8 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 	 * @see \rocket\op\ei\component\prop\GuiEiProp::buildGuiProp()
 	 */
 	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory()->newGuiProp(function (Eiu $eiu) {
-			return $this->getDisplayConfig()->buildGuiPropSetup($eiu, $this);
+		return $eiu->factory()->newGuiProp(function (Eiu $eiu, bool $readOnly) {
+			return $this->getDisplayConfig()->buildGuiProp($this->buildGuiField($eiu, $readOnly), $this);
 		})->toEiGuiProp();
 	}
 	
