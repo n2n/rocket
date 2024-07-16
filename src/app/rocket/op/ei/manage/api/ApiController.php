@@ -73,17 +73,16 @@ class ApiController extends ControllerAdapter {
 			throw new BadRequestException(previous: $e);
 		}
 
-
 		$siApi = new SiApi(new GuiSiApiModel(new EiGuiApiModel($this->eiFrame)));
 
 		try {
-			$siApiCallResponse = $siApi->handleCall($siApiCall);
+			$siApiCallResponse = $siApi->handleCall($siApiCall, $this->getRequest()->getUploadDefinitions(),
+					$this->getN2nContext());
 		} catch (SiException $e) {
 			throw new BadRequestException(previous: $e);
 		}
 
 		$this->sendJson($siApiCallResponse);
-
 	}
 	
 //	static function getApiSections() {

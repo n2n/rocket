@@ -7,8 +7,9 @@ use n2n\util\StringUtils;
 use rocket\op\spec\TypePath;
 use JsonException;
 use n2n\util\type\attrs\AttributesException;
+use rocket\op\ei\mask\EiMask;
 
-class EiSiMaskId {
+class EiSiMaskId implements \Stringable {
 
 	function __construct(public readonly TypePath $eiTypePath, public readonly int $viewMode) {
 
@@ -30,6 +31,6 @@ class EiSiMaskId {
 		} catch (JsonException|\InvalidArgumentException $e) {
 			throw new AttributesException('Invalid mask id: ' . $str, previous: $e);
 		}
-
 	}
+
 }

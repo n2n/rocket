@@ -26,6 +26,7 @@ use rocket\ui\si\api\request\SiFieldInput;
 use testmdl\string\bo\StrObjMock;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 use rocket\op\ei\manage\gui\EiSiMaskId;
+use rocket\op\ei\UnknownEiTypeException;
 
 class EditControllerTest extends TestCase {
 
@@ -35,17 +36,18 @@ class EditControllerTest extends TestCase {
 	private int $rocketUserId;
 	private int $stringTestObjId;
 
+	/**
+	 * @throws UnknownEiTypeException
+	 */
 	function setUp(): void {
 		GeneralTestEnv::teardown();
 		$this->spec = SpecTestEnv::setUpSpec([StringTestObj::class]);
 		$this->eiMask = $this->spec->getEiTypeByClassName(StringTestObj::class)->getEiMask();
 		$this->spec->addLaunchPad(new EiLaunchPad('launch-id', fn () => $this->eiMask));
 
-
 		$tx = TestEnv::createTransaction();
 		$rocketUser = RocketTestEnv::setUpRocketUser();
 		$stringTestObj = TestMdlTestEnv::setUpStringTestObj();
-
 		$tx->commit();
 
 		$this->rocketUserId = $rocketUser->getId();
@@ -66,7 +68,6 @@ class EditControllerTest extends TestCase {
 		$jsonData = $result->parseJson();
 
 		$this->assertEquals('bulky-entry', $jsonData['gui']['type']);
-
 	}
 
 	/**

@@ -27,8 +27,9 @@ use n2n\util\type\attrs\AttributesException;
 
 class SiApiCall {
 
-	function __construct(private ?SiInput $input, private ?SiControlCall $controlCall, private ?SiFieldCall $fieldCall,
-			private ?SiSortCall $sortCall, private SiGetRequest $getRequest, private SiValRequest $valRequest) {
+	function __construct(private ?SiInput $input = null, private ?SiControlCall $controlCall = null,
+			private ?SiFieldCall $fieldCall = null, private ?SiSortCall $sortCall = null,
+			private ?SiGetRequest $getRequest = null, private ?SiValRequest $valRequest = null) {
 
 	}
 
