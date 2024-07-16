@@ -25,7 +25,7 @@ use n2n\util\type\attrs\DataMap;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\attrs\AttributesException;
 
-class SiApiCall {
+class SiApiCall implements \JsonSerializable {
 
 	function __construct(private ?SiInput $input = null, private ?SiControlCall $controlCall = null,
 			private ?SiFieldCall $fieldCall = null, private ?SiSortCall $sortCall = null,
@@ -57,6 +57,17 @@ class SiApiCall {
 		return $this->sortCall;
 	}
 
+	public function jsonSerialize(): mixed {
+		return [
+			'input' => $this->input,
+			'controlCall' => $this->controlCall,
+			'fieldCall' => $this->fieldCall,
+			'sortCall' => $this->sortCall,
+			'getRequest' => $this->getRequest,
+			'valRequest' => $this->valRequest
+		];
+	}
+
 	/**
 	 * @param array $data
 	 * @return SiApiCall
@@ -66,12 +77,12 @@ class SiApiCall {
 		$dataMap = new DataMap($data);
 
 		try {
-			return new SiApiCall(SiInput::parse($dataMap->reqArray('input')),
-					SiControlCall::parse($dataMap->reqArray('controlCall')),
-					SiFieldCall::parse($dataMap->reqArray('fieldCall')),
-					SiSortCall::parse($dataMap->reqArray('sortCall')),
-					SiGetRequest::parse($dataMap->reqArray('getRequest')),
-					SiValRequest::parse($dataMap->reqArray('valRequest')));
+			return new SiApiCall(SiInput::parse($dataMap->optArray('input', defaultValue: null, nullAllowed: true)),
+					SiControlCall::parse($dataMap->optArray('controlCall', defaultValue: null, nullAllowed: true)),
+					SiFieldCall::parse($dataMap->optArray('fieldCall', defaultValue: null, nullAllowed: true)),
+					SiSortCall::parse($dataMap->optArray('sortCall', defaultValue: null, nullAllowed: true)),
+					SiGetRequest::parse($dataMap->optArray('getRequest', defaultValue: null, nullAllowed: true)),
+					SiValRequest::parse($dataMap->optArray('valRequest', defaultValue: null, nullAllowed: true)));
 		} catch (AttributesException $e) {
 			throw new CorruptedSiDataException('Could not parse SiApiCall.', previous: $e);
 		}

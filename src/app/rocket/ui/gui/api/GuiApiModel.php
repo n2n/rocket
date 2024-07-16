@@ -1,8 +1,11 @@
 <?php
 
-namespace rocket\ui\gui;
+namespace rocket\ui\gui\api;
 
 use rocket\ui\gui\err\UnknownGuiElementException;
+use rocket\ui\gui\GuiMask;
+use rocket\ui\gui\GuiValueBoundary;
+use rocket\ui\gui\GuiCallResponse;
 
 interface GuiApiModel {
 

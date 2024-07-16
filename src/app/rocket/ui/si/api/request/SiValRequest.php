@@ -24,6 +24,7 @@ namespace rocket\ui\si\api\request;
 use n2n\util\type\attrs\AttributesException;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiValRequest {
 	private $instructions = [];
@@ -55,10 +56,15 @@ class SiValRequest {
 
 	/**
 	 * @param array $data
-	 * @throws \InvalidArgumentException
 	 * @return \rocket\si\api\SiValRequest
+	 * @throws CorruptedSiDataException
+	 * @throws \InvalidArgumentException
 	 */
-	static function parse(array $data) {
+	static function parse(?array $data): ?SiValRequest {
+		if ($data === null) {
+			return null;
+		}
+
 		$ds = new DataSet($data);
 		
 		$getRequest = new SiValRequest();
@@ -67,7 +73,7 @@ class SiValRequest {
 				$getRequest->putInstruction($key, SiValInstruction::createFromData($instructionData));
 			}
 		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
+			throw new CorruptedSiDataException('Could not parse SiValRequest.', previous: $e);
 		}
 		return $getRequest;
 	}

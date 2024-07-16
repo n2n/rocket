@@ -137,28 +137,28 @@ class RocketController extends ControllerAdapter {
 	public function doManage(Rocket $rocket, OpState $rocketState, N2nLocale $n2nLocale, PdoPool $dbhPool,
 			MessageContainer $mc, $navItemId, array $delegateParams = array()) {
 		if (!$this->verifyUser()) return;
-		
+
 		$launchPad = null;
 		try {
 			$launchPad = $rocket->getSpec()->getLaunchPadById($navItemId);
 		} catch (UnknownLaunchPadException $e) {
 			throw new PageNotFoundException('navitem not found', 0, $e);
 		}
-		
+
 		if (!$this->loginContext->getSecurityManager()->isLaunchPadAccessible($launchPad)) {
 			throw new ForbiddenException();
 		}
-		
+
 		$rocketState->setActiveLaunchPad($launchPad);
-		
+
 		$this->beginTransaction();
-		
+
 		$delegateControllerContext = $this->createDelegateContext();
 		$delegateControllerContext->setController($launchPad->lookupController($this->getN2nContext(), 
 				$delegateControllerContext));
 
 		$this->delegateToControllerContext($delegateControllerContext);
-		
+
 		$transactionApproveAttempt = $launchPad->approveTransaction($this->getN2nContext());
 		if ($transactionApproveAttempt->isSuccessful()) {
 			$this->commit();

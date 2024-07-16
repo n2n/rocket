@@ -2,7 +2,6 @@
 
 namespace rocket\op\ei\manage\gui;
 
-use rocket\ui\gui\GuiApiModel;
 use rocket\ui\gui\GuiMask;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\type\attrs\AttributesException;
@@ -15,10 +14,9 @@ use rocket\op\spec\TypePath;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\frame\EiObjectFactory;
 use rocket\op\util\OpfControlResponse;
-use rocket\op\ei\util\EiuAnalyst;
-use rocket\op\ei\manage\ManageState;
 use rocket\ui\gui\GuiCallResponse;
 use rocket\op\ei\manage\EiObject;
+use rocket\ui\gui\api\GuiApiModel;
 
 class EiGuiApiModel implements GuiApiModel {
 
@@ -88,8 +86,8 @@ class EiGuiApiModel implements GuiApiModel {
 					. $eiSiMaskId->eiTypePath, previous: $e);
 		}
 
-		$factory = new EiGuiEntryFactory($this->eiFrame);
-		$guiValueBoundary =  $factory->createGuiValueBoundary($eiSiMaskId->viewMode, $eiEntries);
+		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
+		$guiValueBoundary =  $factory->create(null, $eiEntries, $eiSiMaskId->viewMode);
 		$this->cacheEiEntries($guiValueBoundary, $eiEntries);
 		return $guiValueBoundary;
 	}

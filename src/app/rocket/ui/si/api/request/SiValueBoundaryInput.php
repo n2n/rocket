@@ -50,7 +50,7 @@ class SiValueBoundaryInput implements \JsonSerializable {
 //			$siValueBoundary->setMaskIds($dataMap->reqArray('maskIds', 'string', true));
 			return $siValueBoundary;
 		} catch (AttributesException $e) {
-			throw new CorruptedSiDataException('SiValueBoundaryInput', previous: $e);
+			throw new CorruptedSiDataException('Could not parse SiValueBoundaryInput.', previous: $e);
 		}
 	}
 

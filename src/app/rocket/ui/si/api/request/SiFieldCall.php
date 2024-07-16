@@ -65,7 +65,11 @@ class SiFieldCall {
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data): SiFieldCall {
+	static function parse(?array $data): ?SiFieldCall {
+		if ($data === null) {
+			return null;
+		}
+
 		$dataMap = new DataMap($data);
 		try {
 			return new SiFieldCall($dataMap->reqString('maskId'), $dataMap->reqString('entryId'),

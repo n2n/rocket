@@ -24,8 +24,9 @@ namespace rocket\ui\si\api\request;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use n2n\util\type\ArgUtils;
+use rocket\ui\si\err\CorruptedSiDataException;
 
-class SiGetRequest {
+class SiGetRequest implements \JsonSerializable {
 	private $instructions = [];
 	
 	/**
@@ -54,16 +55,27 @@ class SiGetRequest {
 		$this->instructions[$key] = $instruction;
 	}
 
-	static function parse(array $data): SiGetRequest {
+	function jsonSerialize(): mixed {
+		return ['instructions' => $this->instructions];
+	}
+
+	/**
+	 * @throws CorruptedSiDataException
+	 */
+	static function parse(?array $data): ?SiGetRequest {
+		if ($data === null) {
+			return null;
+		}
+
 		$ds = new DataSet($data);
 		
 		$getRequest = new SiGetRequest();
 		try {
 			foreach ($ds->reqArray('instructions') as $key => $instructionData) {
-				$getRequest->putInstruction($key, SiGetInstruction::createFromData($instructionData));
+				$getRequest->putInstruction($key, SiGetInstruction::parse($instructionData));
 			}
 		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
+			throw new CorruptedSiDataException('Could not parse SiGetRequest.', previous: $e);
 		}
 		return $getRequest;
 	}

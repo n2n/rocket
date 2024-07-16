@@ -26,8 +26,9 @@ use n2n\util\type\attrs\AttributesException;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;
+use rocket\ui\si\err\CorruptedSiDataException;
 
-class SiGetInstruction {
+class SiGetInstruction implements \JsonSerializable {
 	private $declarationRequested = false;
 	private $generalControlsIncluded = false;
 	private $entryControlsIncluded = false;
@@ -36,7 +37,11 @@ class SiGetInstruction {
 	private bool $newEntryRequested = false;
 	private ?array $allowedFieldNames = null;
 
-	function __construct(private ?string $maskId) {
+	function __construct(private string $maskId) {
+	}
+
+	function getMaskId(): string {
+		return $this->maskId;
 	}
 
 //	function getAllowedMaskIds(): ?array {
@@ -149,22 +154,35 @@ class SiGetInstruction {
 	function getAllowedFieldNames() {
 		return $this->allowedFieldNames;
 	}
-	
+
+	function jsonSerialize(): array {
+		return [
+			'maskId' => $this->maskId,
+			'entryId' => $this->entryId,
+			'partialContentInstruction' => $this->partialContentInstruction,
+			'newEntryRequested' => $this->newEntryRequested,
+			'generalControlsIncluded' => $this->generalControlsIncluded,
+			'entryControlsIncluded' => $this->entryControlsIncluded,
+			'declarationRequested' => $this->declarationRequested
+		];
+	}
+
 	/**
 	 * @param array $data
+	 * @return SiGetInstruction
+	 * @throws CorruptedSiDataException
 	 * @throws \InvalidArgumentException
-	 * @return \rocket\ui\si\api\request\SiGetInstruction
 	 */
-	static function createFromData(array $data) {
+	static function parse(array $data): SiGetInstruction {
 		$ds = new DataSet($data);
 		
 		try {
-			$instruction = new SiGetInstruction(SiStyle::createFromData($ds->reqArray('style')));
+			$instruction = new SiGetInstruction($ds->reqString('maskId'));
 			$instruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 			$instruction->setGeneralControlsIncluded($ds->reqBool('generalControlsIncluded'));
 			$instruction->setEntryControlsIncluded($ds->reqBool('entryControlsIncluded'));
 			$instruction->setEntryId($ds->optString('entryId'));
-			$instruction->setAllowedMaskIds($ds->optArray('typeIds', 'string', null, true));
+//			$instruction->setAllowedMaskIds($ds->optArray('typeIds', 'string', null, true));
 			
 			$pcData = $ds->optArray('partialContentInstruction', null, null, true);
 			if ($pcData == null) {
@@ -174,10 +192,10 @@ class SiGetInstruction {
 			}
 			
 			$instruction->setNewEntryRequested($ds->reqBool('newEntryRequested'));
-			$instruction->setAllowedFieldNames($ds->reqScalarArray('propIds', true));
+//			$instruction->setAllowedFieldNames($ds->reqScalarArray('propIds', true));
 			return $instruction;
 		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
+			throw new CorruptedSiDataException('Could not parse SiGetInstruction.', 0, $e);
 		}
 	}
 }

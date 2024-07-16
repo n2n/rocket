@@ -58,7 +58,11 @@ class SiControlCall {
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data): SiControlCall {
+	static function parse(?array $data): ?SiControlCall {
+		if ($data === null) {
+			return null;
+		}
+
 		$dataMap = new DataMap($data);
 		try {
 			return new SiControlCall($dataMap->reqString('maskId'), $dataMap->optString('entryId'),

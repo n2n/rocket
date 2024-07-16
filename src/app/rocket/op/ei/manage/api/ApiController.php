@@ -25,25 +25,15 @@ use n2n\web\http\controller\ControllerAdapter;
 use n2n\web\http\controller\ParamPost;
 use rocket\op\ei\manage\ManageState;
 use n2n\web\http\BadRequestException;
-use n2n\web\http\controller\Param;
-use n2n\web\http\controller\ParamBody;
-use rocket\ui\si\api\SiGetRequest;
-use rocket\ui\si\api\SiGetResponse;
-use rocket\ui\si\api\SiValRequest;
-use SiValResponse;
-use rocket\ui\gui\ViewMode;
-use SiCallResult;
 use rocket\ui\si\api\request\SiApiCall;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\web\http\StatusException;
-use rocket\ui\gui\GuiSiApiModel;
 use rocket\op\ei\manage\gui\EiGuiApiModel;
 use rocket\ui\si\api\SiApi;
-use rocket\ui\si\err\UnknownSiElementException;
 use rocket\ui\si\err\SiException;
-use rocket\op\ei\manage\ManageException;
 use n2n\util\ex\ExUtils;
 use rocket\op\ei\manage\frame\EiFrame;
+use rocket\ui\gui\api\GuiSiApiModel;
 
 class ApiController extends ControllerAdapter {
 //	const API_CONTROL_SECTION = 'execcontrol';

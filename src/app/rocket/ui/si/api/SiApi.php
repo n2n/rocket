@@ -83,7 +83,11 @@ class SiApi {
 			$apiCallResponse->setValResponse($this->handleValRequest($valRequest));
 		}
 
-		if (null !== ($asfas = $call->getSortCall()))
+		if (null !== ($callResponse = $call->getSortCall())) {
+			$apiCallResponse->setCallResponse($this->handleSortCall($callResponse));
+		}
+
+		return $apiCallResponse;
 	}
 
 	/**

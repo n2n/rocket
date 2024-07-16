@@ -25,6 +25,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\api\request\SiEntryInput;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiValInstruction {
 	/**
@@ -73,11 +74,12 @@ class SiValInstruction {
 	function putGetInstruction(string $key, SiValGetInstruction $getInstruction) {
 		$this->getInstructions[$key] = $getInstruction;
 	}
-	
+
 	/**
 	 * @param array $data
 	 * @return \rocket\ui\si\api\SiValRequest
-	 *@throws \InvalidArgumentException
+	 * @throws \InvalidArgumentException
+	 * @throws CorruptedSiDataException
 	 */
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
@@ -88,7 +90,7 @@ class SiValInstruction {
 				$valInstruction->putGetInstruction($key, SiValGetInstruction::createFromData($instructionData));
 			}
 		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
+			throw new CorruptedSiDataException('Could not parse SiValInstruction.', previous: $e);
 		}
 		return $valInstruction;
 	}

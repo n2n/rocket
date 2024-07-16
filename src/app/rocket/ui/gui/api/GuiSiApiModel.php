@@ -19,9 +19,8 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\gui;
+namespace rocket\ui\gui\api;
 
-use rocket\ui\si\api\SiApiModel;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\si\content\SiField;
@@ -31,8 +30,8 @@ use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\err\UnknownGuiElementException;
 use rocket\ui\si\err\UnknownSiElementException;
 use n2n\util\type\ArgUtils;
-use rocket\op\util\OpfControlResponse;
-use rocket\op\ei\util\EiuAnalyst;
+use rocket\ui\si\api\SiApiModel;
+use rocket\ui\gui\GuiValueBoundary;
 
 class GuiSiApiModel implements SiApiModel {
 
@@ -157,7 +156,7 @@ class GuiSiApiModel implements SiApiModel {
 			return $this->guiValueBoundariesMap->offsetGet($siValueBoundary);
 		}
 
-		throw new UnknownSiElementException('Provided SiValueBoundary is unknown to GuiSiApiModel'.);
+		throw new UnknownSiElementException('Provided SiValueBoundary is unknown to GuiSiApiModel.');
 	}
 
 	function insertSiEntriesAfter(string $maskId, string $entryIds, string $afterEntryId): SiCallResponse {

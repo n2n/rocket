@@ -26,7 +26,7 @@ class EiSiMaskId implements \Stringable {
 	 */
 	static function fromString(string $str): EiSiMaskId {
 		try {
-			$dm = new DataMap(StringUtils::jsonDecode($str));
+			$dm = new DataMap(StringUtils::jsonDecode($str, true));
 			return new EiSiMaskId(TypePath::create($dm->reqString('eiTypePath')), $dm->reqInt('viewMode'));
 		} catch (JsonException|\InvalidArgumentException $e) {
 			throw new AttributesException('Invalid mask id: ' . $str, previous: $e);

@@ -53,7 +53,11 @@ class SiSortCall {
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data): SiSortCall {
+	static function parse(?array $data): ?SiSortCall {
+		if ($data === null) {
+			return null;
+		}
+
 		$dataMap = new DataMap($data);
 
 		try {

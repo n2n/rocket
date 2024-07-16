@@ -24,9 +24,9 @@ namespace rocket\ui\si\api\response;
 class SiApiCallResponse implements \JsonSerializable {
 
 	private ?SiInputResult $inputResult = null;
-	private ?SiCallResponse $callResult = null;
+	private ?SiCallResponse $callResponse = null;
 	private ?SiFieldCallResponse $fieldCallResponse = null;
-	private ?SiGetResponse $getResult = null;
+	private ?SiGetResponse $getResponse = null;
 	private ?SiValResponse $valResponse = null;
 
 	public function getInputResult(): ?SiInputResult {
@@ -38,20 +38,20 @@ class SiApiCallResponse implements \JsonSerializable {
 	}
 
 	public function getCallResponse(): ?SiCallResponse {
-		return $this->callResult;
+		return $this->callResponse;
 	}
 
-	public function setCallResponse(?SiCallResponse $callResult): static {
-		$this->callResult = $callResult;
+	public function setCallResponse(?SiCallResponse $callResponse): static {
+		$this->callResponse = $callResponse;
 		return $this;
 	}
 
 	public function getGetResponse(): ?SiGetResponse {
-		return $this->getResult;
+		return $this->getResponse;
 	}
 
-	public function setGetResponse(?SiGetResponse $getResult): static {
-		$this->getResult = $getResult;
+	public function setGetResponse(?SiGetResponse $getResponse): static {
+		$this->getResponse = $getResponse;
 		return $this;
 	}
 
@@ -75,8 +75,8 @@ class SiApiCallResponse implements \JsonSerializable {
 
 	function jsonSerialize(): mixed {
 		return [
-			'callResult' => $this->callResult,
-			'getResult' => $this->getResult
+			'callResponse' => $this->callResponse,
+			'getResponse' => $this->getResponse
 		];
 	}
 }

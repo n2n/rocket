@@ -49,7 +49,11 @@ class SiInput implements \JsonSerializable {
 	/**
 	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data): SiInput {
+	static function parse(?array $data): ?SiInput {
+		if ($data === null) {
+			return null;
+		}
+
 		$input = new SiInput();
 
 		$dataMap = new DataMap($data);

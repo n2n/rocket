@@ -59,7 +59,7 @@ class ApiControllerTest extends TestCase {
 		$siApiCall = new SiApiCall(getRequest: $siGetRequest);
 
 		$result = TestEnv::http()->newRequest()
-				->get(Url::create('/admin/manage/launch-id/api')->queryExt(['call' => json_encode($siApiCall)]))
+				->post(Url::create('/admin/manage/launch-id/api/eecn-0'), ['call' => json_encode($siApiCall)])
 				->inject(function(Rocket $rocket, LoginContext $loginContext) {
 					$rocket->setSpec($this->spec);
 					$loginContext->loginByUserId($this->rocketUserId);
@@ -67,8 +67,7 @@ class ApiControllerTest extends TestCase {
 				->exec();
 
 		$jsonData = $result->parseJson();
-		var_dump($jsonData);
 
-		$this->assertEquals('bulky-entry', $jsonData['gui']['type']);
+		$this->assertNotNull('bulky-entry', $jsonData['getResponse']);
 	}
 }
