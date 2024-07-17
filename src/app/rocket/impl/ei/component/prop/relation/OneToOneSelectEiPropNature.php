@@ -33,7 +33,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
+use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
 use n2n\reflection\property\PropertyAccessProxy;
 

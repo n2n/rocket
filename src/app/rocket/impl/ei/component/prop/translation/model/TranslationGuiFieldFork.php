@@ -274,7 +274,7 @@
 //		return array('class' => 'rocket-empty-translation');
 //	}
 //
-//	function createOutGuiField(Eiu $eiu): BackableGuiField {
+//	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 //		return new HtmlElement('span', ['class' => 'rocket-inactive'],
 //				$view->getHtmlBuilder()->getText('ei_impl_locale_not_active_label'));
 //	}

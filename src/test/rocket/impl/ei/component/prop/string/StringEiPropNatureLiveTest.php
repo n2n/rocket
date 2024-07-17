@@ -21,6 +21,7 @@ use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
+use rocket\op\ei\manage\gui\EiGuiEntryFactory;
 
 class StringEiPropNatureLiveTest extends TestCase {
 
@@ -56,7 +57,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertNull($eiEntry->getValue(new EiPropPath(['holeradioObj'])));
 		$this->assertEquals(new StrObjMock('value'),
 				$eiEntry->getValue(new EiPropPath(['mandatoryHoleradioObj'])));
-		$this->assertEquals(new StrObjMock('asd'), $eiEntry->getValue(new EiPropPath(['annoHoleradioObj'])));
+		$this->assertEquals(new StrObjMock('default'), $eiEntry->getValue(new EiPropPath(['annoHoleradioObj'])));
 
 		$eiEntry->setValue(new EiPropPath(['holeradio']), 'new-value');
 		$this->assertFalse($eiEntry->getEiField(new EiPropPath(['annoHoleradio']))->isWritable(false));
@@ -78,7 +79,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertEquals('asd', $stringTestObj->annoHoleradio);
 		$this->assertEquals(new StrObjMock('new-v'), $stringTestObj->holeradioObj);
 		$this->assertEquals(new StrObjMock('value'), $stringTestObj->mandatoryHoleradioObj);
-		$this->assertNull($stringTestObj->annoHoleradioObj);
+		$this->assertEquals(new StrObjMock('default'), $stringTestObj->getAnnoHoleradioObj());
 	}
 
 	function testEiFieldValidator(): void {
@@ -87,6 +88,8 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$eiObject = $eiType->createEiObject(StringTestEnv::findStringTestObj($this->stringTestObj1Id));
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
+		$eiEntry->setValue(new EiPropPath(['annoHoleradio']), null);
+		$eiEntry->setValue(new EiPropPath(['annoHoleradioObj']), null);
 
 		$this->assertTrue($eiEntry->getEiFieldNature(new EiPropPath(['holeradio']))->isValid());
 		$this->assertTrue($eiEntry->getEiFieldNature(new EiPropPath(['mandatoryHoleradio']))->isValid());
@@ -173,10 +176,8 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$eiObject = $eiType->createEiObject(StringTestEnv::findStringTestObj($this->stringTestObj1Id));
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 
-		$eiGuiEntry = $eiType->getEiMask()->getEiEngine()
-				->getEiGuiDefinition(ViewMode::BULKY_EDIT)
-				->createGuiEntry($eiFrame, $eiEntry, false);
-
+		$eiGuiEntry = (new EiGuiEntryFactory($eiFrame))
+				->createGuiEntry($eiEntry, ViewMode::BULKY_EDIT, false);
 
 		$siEntry = $eiGuiEntry->getSiEntry(N2nLocale::getDefault());
 		$fields = $siEntry->getFields();
@@ -185,7 +186,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertTrue(assert($fields['holeradio'] instanceof StringInSiField));
 		$this->assertFalse($fields['holeradio']->isReadOnly());
 		$this->assertFalse($fields['holeradio']->isMandatory());
-		$this->assertNull( $fields['holeradio']->getValue());
+		$this->assertNull($fields['holeradio']->getValue());
 
 		$this->assertTrue(assert($fields['mandatoryHoleradio'] instanceof StringInSiField));
 		$this->assertFalse($fields['mandatoryHoleradio']->isReadOnly());
@@ -194,7 +195,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$this->assertTrue(assert($fields['annoHoleradio'] instanceof StringInSiField));
 		$this->assertTrue($fields['annoHoleradio']->isReadOnly());
-		$this->assertNull( $fields['annoHoleradio']->getValue());
+		$this->assertEquals('asd', $fields['annoHoleradio']->getValue());
 
 		$this->assertTrue(assert($fields['holeradioObj'] instanceof StringInSiField));
 		$this->assertFalse($fields['holeradioObj']->isReadOnly());
@@ -208,7 +209,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$this->assertTrue(assert($fields['annoHoleradioObj'] instanceof StringInSiField));
 		$this->assertTrue($fields['annoHoleradioObj']->isReadOnly());
-		$this->assertNull( $fields['annoHoleradioObj']->getValue());
+		$this->assertEquals('default', $fields['annoHoleradioObj']->getValue());
 	}
 
 	/**
@@ -222,11 +223,10 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$eiObject = $eiType->createEiObject(StringTestEnv::findStringTestObj($this->stringTestObj1Id));
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 
-		$guiEntry = $eiType->getEiMask()->getEiEngine()
-				->obtainEiGuiMaskDeclaration(ViewMode::BULKY_EDIT, null)
-				->createGuiEntry($eiFrame, $eiEntry, false);
+		$guiEntry = (new EiGuiEntryFactory($eiFrame))
+				->createGuiEntry($eiEntry, ViewMode::BULKY_EDIT, false);
 
-		$siEntryInput = new SiEntryInput($guiEntry->getSiEntry()->getQualifier()->getIdentifier());
+		$siEntryInput = new SiEntryInput($guiEntry->getSiEntry()->getQualifier()->getIdentifier()->getId());
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'new-ov']));
 

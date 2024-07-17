@@ -21,10 +21,14 @@ class StringTestObj {
 	public ?StrObjMock $holeradioObj = null;
 	public StrObjMock $mandatoryHoleradioObj;
 	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true)]
-	public ?StrObjMock $annoHoleradioObj = null;
+	private ?StrObjMock $annoHoleradioObj;
 
 	function __construct() {
-		$this->mandatoryHoleradioObj = new StrObjMock('asd');
-		$this->annoHoleradioObj = new StrObjMock('asd');
+		$this->mandatoryHoleradioObj = new StrObjMock('default');
+		$this->annoHoleradioObj = new StrObjMock('default');
+	}
+
+	function getAnnoHoleradioObj(): ?StrObjMock {
+		return $this->annoHoleradioObj;
 	}
 }

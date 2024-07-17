@@ -178,7 +178,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 //		return $this->mag;
 //	}
 //
-//	function createOutGuiField(Eiu $eiu): BackableGuiField {
+//	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 //		return null;
 //	}
 //

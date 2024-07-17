@@ -99,7 +99,7 @@ namespace rocket\impl\ei\component\prop\numeric;
 // 		$this->prefix = $prefix;
 // 	}
 
-// 	public function createInGuiField(Eiu $eiu): BackableGuiField {
+// 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 // 		$numericMag = new EiDecimalMag($this->getLabelLstr(), null,
 // 				$this->isMandatory($eiu), $this->getMinValue(), $this->getMaxValue(), 
 // 				$this->getDecimalPlaces(), array('placeholder' => $this->getLabelLstr()));

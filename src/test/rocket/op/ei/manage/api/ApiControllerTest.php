@@ -68,6 +68,6 @@ class ApiControllerTest extends TestCase {
 
 		$jsonData = $result->parseJson();
 
-		$this->assertNotNull('bulky-entry', $jsonData['getResponse']);
+		$this->assertNotNull($jsonData['getResponse']);
 	}
 }

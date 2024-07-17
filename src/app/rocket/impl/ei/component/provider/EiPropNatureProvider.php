@@ -244,7 +244,8 @@ class EiPropNatureProvider {
 	}
 
 	private function detectSubTypeName(PropertyAccessProxy $propertyAccessProxy, string $superTypeName): ?string {
-		foreach ($propertyAccessProxy->getSetterConstraint()->getNamedTypeConstraints() as $namedTypeConstraint) {
+		$constraint = $propertyAccessProxy->getSetterConstraint() ?? $propertyAccessProxy->getGetterConstraint();
+		foreach ($constraint->getNamedTypeConstraints() as $namedTypeConstraint) {
 			$typeName = $namedTypeConstraint->getTypeName();
 			if (is_subclass_of($typeName, $superTypeName)) {
 				return $typeName;

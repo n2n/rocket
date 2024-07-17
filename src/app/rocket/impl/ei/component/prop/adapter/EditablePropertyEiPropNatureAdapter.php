@@ -28,52 +28,45 @@ use rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\op\ei\manage\gui\EiGuiProp;
+use rocket\impl\ei\component\prop\adapter\trait\WritableEiFieldTrait;
+use rocket\impl\ei\component\prop\adapter\trait\OutGuiPropTrait;
+use rocket\impl\ei\component\prop\adapter\trait\InGuiPropTrait;
 
 abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
-	use EditEiFieldTrait;
+	use WritableEiFieldTrait, InGuiPropTrait;
 
 	function isPrivileged(): bool {
 		return true;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::buildGuiField()
-	 */
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->isReadOnly() ||  $eiu->guiDefinition()->isReadOnly()
-				|| ($eiu->entry()->isNew() && $this->isConstant())) {
-			$guiField = $this->createOutGuiField($eiu);
-		} else {
-			$guiField = $this->createInGuiField($eiu);
-		}
 
-		if ($guiField->getModel() === null) {
-			$guiField->setModel($eiu->field()->asGuiFieldModel());
-		}
 
-		return $guiField;
-	}
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return EifGuiField
-	 */
-	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
-		throw new UnsupportedOperationException(get_class($this)
-				. ' must implement either'
-				. ' createOutGuiField(Eiu $eiu): BackableGuiField  (recommended) or'
-				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
-	}
-	
-	/**
-	 * @param Eiu $eiu
-	 * @return EifGuiField
-	 */
-	protected function createInGuiField(Eiu $eiu): BackableGuiField {
-		throw new UnsupportedOperationException(get_class($this)
-				. ' must implement either'
-				. ' createInGuiField(Eiu $eiu): BackableGuiField  (recommended) or'
-				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
-	}
+
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\impl\ei\component\prop\adapter\DisplayablePropertyEiPropAdapter::buildGuiField()
+//	 */
+
+
+//	/**
+//	 * @param Eiu $eiu
+//	 * @return EifGuiField
+//	 */
+//	protected function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
+//		throw new UnsupportedOperationException(get_class($this)
+//				. ' must implement either'
+//				. ' buildOutGuiField(Eiu $eiu): ?BackableGuiField  (recommended) or'
+//				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
+//	}
+
+//	/**
+//	 * @param Eiu $eiu
+//	 * @return EifGuiField
+//	 */
+//	protected function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+//		throw new UnsupportedOperationException(get_class($this)
+//				. ' must implement either'
+//				. ' buildInGuiField(Eiu $eiu): ?BackableGuiField  (recommended) or'
+//				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
+//	}
 }

@@ -23,7 +23,7 @@ class Iframe extends DisplayConfigTrait {
 				->addAdaption($this->iframeConfig);
 	}
 
-	function createOutGuiField(Eiu $eiu): BackableGuiField  {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$siField = null;
 
 		if (null !== $this->iframeConfig->getControllerLookupId()) {

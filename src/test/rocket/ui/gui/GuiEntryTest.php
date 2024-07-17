@@ -14,6 +14,7 @@ use rocket\ui\si\content\SiEntryQualifier;
 use rocket\ui\si\content\SiEntryIdentifier;
 use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiFieldModel;
+use rocket\ui\si\api\request\SiEntryInput;
 
 class GuiEntryTest extends TestCase {
 
@@ -42,7 +43,7 @@ class GuiEntryTest extends TestCase {
 				->setModel($guiFieldModel));
 		$guiEntry->init($guiFieldMap, null);
 
-		$siEntryInput = new \rocket\ui\si\api\request\SiEntryInput(self::$siEntryIdentifier1);
+		$siEntryInput = new SiEntryInput(self::$siEntryIdentifier1->getId());
 		$siEntryInput->putFieldInput('prop1', new SiFieldInput(['value' => 'new-value']));
 
 		$this->assertTrue($guiEntry->getSiEntry(N2nLocale::getDefault())->handleEntryInput($siEntryInput,

@@ -73,14 +73,14 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 		$this->timeStyle = $timeStyle;
 	}
 	
-	public function createOutGuiField(Eiu $eiu): BackableGuiField  {
+	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$dateTime = $eiu->field()->getValue();
 		
 		return $eiu->factory()->newGuiField(SiFields::stringOut($dateTime === null ? ''
 				: L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->getDateStyle(), $this->getTimeStyle())));
 	}
 	
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$siField = SiFields::dateTimeIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
 				->setDateChoosable($this->getDateStyle() !== DateTimeFormat::STYLE_NONE)

@@ -56,7 +56,7 @@ class TranslationDisplayable implements GuiFieldDisplayable {
 		return array();
 	}
 	
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 // 		$outputUiComponents = array();
 // 		foreach ($this->translatedDisplayables as $n2nLocaleId => $translatedDisplayable) {
 // 			$outputUiComponents[$n2nLocaleId] = $translatedDisplayable->createUiComponent($view);

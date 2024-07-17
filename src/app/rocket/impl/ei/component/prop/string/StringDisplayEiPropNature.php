@@ -38,7 +38,7 @@ class StringDisplayEiPropNature extends DisplayablePropertyEiPropNatureAdapter {
 		})->toIdNameProp();
 	}
 
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		return GuiFields::out(SiFields::stringOut(
 				StringUtils::strOf($eiu->object()->readNativeValue($eiu->prop()->getEiProp()), true)));
 	}

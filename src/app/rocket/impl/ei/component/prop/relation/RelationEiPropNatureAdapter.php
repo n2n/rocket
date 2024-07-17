@@ -24,12 +24,10 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\EiFrame;
-use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\relation\model\Relation;
-use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\impl\ei\component\prop\relation\command\TargetReadEiCommandNature;
 use n2n\l10n\Lstr;
@@ -39,10 +37,11 @@ use rocket\impl\ei\component\prop\adapter\EiPropNatureAdapter;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraints;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
+use rocket\impl\ei\component\prop\adapter\trait\DisplayConfigTrait;
+use rocket\impl\ei\component\prop\adapter\trait\InGuiPropTrait;
 
 abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp/*, EiGuiField*/ {
-	use DisplayConfigTrait;
+	use InGuiPropTrait;
 
 	private ?Relation $relation = null;
 	private PropertyAccessProxy $propertyAccessProxy;
@@ -181,15 +180,15 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 		return $this->propertyAccessProxy;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\op\ei\component\prop\GuiEiProp::buildGuiProp()
-	 */
-	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory()->newGuiProp(function (Eiu $eiu, bool $readOnly) {
-			return $this->getDisplayConfig()->buildGuiProp($this->buildGuiField($eiu, $readOnly), $this);
-		})->toEiGuiProp();
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\op\ei\component\prop\GuiEiProp::buildGuiProp()
+//	 */
+//	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
+//		return $eiu->factory()->newGuiProp(function (Eiu $eiu, bool $readOnly) {
+//			return $this->getDisplayConfig()->buildGuiProp($this->buildGuiField($eiu, $readOnly), $this);
+//		})->toEiGuiProp();
+//	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return null;

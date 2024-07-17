@@ -58,7 +58,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		$this->ckeConfig = $ckeConfig;
 	}
 	
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 	    $value = $eiu->field()->getValue();
 	    if ($value === null) {
 	    	return GuiFields::out(SiFields::stringOut(''));
@@ -72,7 +72,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 		return GuiFields::out(SiFields::stringOut((string) $value));
 	}
 	
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$ckeComposer = new CkeComposer();
 		$ckeComposer->mode($this->ckeConfig->getMode())->bbcode($this->ckeConfig->isBbcodeEnabled())
 				->table($this->ckeConfig->isTablesEnabled());

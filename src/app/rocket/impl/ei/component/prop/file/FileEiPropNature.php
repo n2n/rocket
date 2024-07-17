@@ -154,7 +154,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		}
 	}
 	
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
 		return $eiu->factory()->newGuiField(SiFields::fileOut($siFile));
@@ -209,7 +209,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 // 		return $uiComponent;
 // 	}
 	
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
 		$siField = SiFields::fileIn($siFile, $eiu->frame()->getApiFieldUrl(), $eiu->guiField()->createCallId(), 

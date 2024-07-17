@@ -60,7 +60,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
-	public function createOutGuiField(Eiu $eiu): BackableGuiField  {
+	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$value = $eiu->entry()->getValue($eiu->prop());
 		
 		return $eiu->factory()->newGuiField(SiFields
@@ -68,7 +68,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$options = $this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale());
 		$value = $eiu->field()->getValue();
 		$siField = SiFields::enumIn($options, ($value !== null ? (string) $value : null))

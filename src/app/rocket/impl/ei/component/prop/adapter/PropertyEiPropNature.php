@@ -25,19 +25,19 @@ use rocket\op\ei\component\prop\EiPropNature;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 
-interface PropertyEiPropNature extends EiPropNature {
-	/**
-	 * @param EntityProperty|null $entityProperty
-	 */
-	public function setEntityProperty(?EntityProperty $entityProperty): void;
-
-	/**
-	 * @return EntityProperty|null
-	 */
-	public function getEntityProperty(): ?EntityProperty;
-
-	/**
-	 * @return AccessProxy|null
-	 */
-	public function getPropertyAccessProxy(): ?AccessProxy;
-}
+//interface PropertyEiPropNature extends EiPropNature {
+//	/**
+//	 * @param EntityProperty|null $entityProperty
+//	 */
+//	public function setEntityProperty(?EntityProperty $entityProperty): void;
+//
+//	/**
+//	 * @return EntityProperty|null
+//	 */
+//	public function getEntityProperty(): ?EntityProperty;
+//
+//	/**
+//	 * @return AccessProxy|null
+//	 */
+//	public function getPropertyAccessProxy(): ?AccessProxy;
+//}

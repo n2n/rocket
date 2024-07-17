@@ -30,7 +30,6 @@ use rocket\op\ei\UnknownEiTypeException;
 
 class EditControllerTest extends TestCase {
 
-
 	private Spec $spec;
 	private EiMask $eiMask;
 	private int $rocketUserId;

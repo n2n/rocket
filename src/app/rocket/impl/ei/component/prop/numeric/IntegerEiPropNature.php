@@ -75,7 +75,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	}
 	
 
-	function createInGuiField(Eiu $eiu): BackableGuiField {
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		return GuiFields::numberIn(mandatory: $this->isMandatory(), min: $this->getMinValue(), max: $this->getMaxValue());
 	}
 }

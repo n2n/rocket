@@ -41,7 +41,7 @@ use rocket\op\ei\manage\security\filter\SecurityFilterProp;
 use rocket\op\ei\manage\frame\EiForkLink;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\ex\UnsupportedOperationException;
-use rocket\impl\ei\component\prop\adapter\config\LabelConfigTrait;
+use rocket\impl\ei\component\prop\adapter\trait\LabelConfigTrait;
 
 
 abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements EiPropNature {

@@ -32,7 +32,7 @@ use rocket\ui\gui\field\GuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToOneGuiField;
 use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
+use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use rocket\op\ei\manage\security\filter\SecurityFilterProp;
 use n2n\reflection\property\PropertyAccessProxy;
 

@@ -33,13 +33,11 @@ use rocket\op\ei\manage\critmod\sort\impl\SimpleSortProp;
 use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\numeric\conf\NumericAdapter;
 use rocket\op\ei\manage\idname\IdNameProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
-use rocket\op\ei\util\factory\EifGuiField;
+use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use n2n\l10n\L10nUtils;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
-use rocket\ui\gui\field\GuiField;
 use rocket\ui\gui\field\impl\GuiFields;
 use rocket\ui\gui\field\BackableGuiField;
 
@@ -65,7 +63,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::createOutSiField()
 	 */
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		$siField = SiFields::stringOut(L10nUtils::formatNumber($eiu->field()->getValue(), $eiu->getN2nLocale()));
 		return GuiFields::out($siField);
 	}

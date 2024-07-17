@@ -77,7 +77,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		$this->multiline = $multiline;
 	}
 
-	function createOutGuiField(Eiu $eiu): BackableGuiField  {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		return GuiFields::out(SiFields
 				::stringOut($this->marshalValue($eiu->field()->getValue(), $eiu)->get())
 				->setMultiline($this->isMultiline()));
@@ -132,8 +132,8 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		})->toIdNameProp();
 	}
 
-	function createInGuiField(Eiu $eiu): BackableGuiField {
-		$guiField = parent::createInGuiField($eiu);
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+		$guiField = parent::buildInGuiField($eiu);
 		assert($guiField instanceof StringInGuiField);
 
 		$guiField->getSiField()->setMultiline($this->isMultiline());

@@ -19,13 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\config;
-
-use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\LenientAttributeReader;
-use rocket\op\ei\util\Eiu;
-use n2n\impl\web\dispatch\mag\model\BoolMag;
+namespace rocket\impl\ei\component\prop\adapter\trait;
 
 trait QuickSearchConfigTrait {
 	private bool $quickSearchable = true;

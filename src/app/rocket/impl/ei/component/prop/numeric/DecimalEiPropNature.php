@@ -88,7 +88,7 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 		$this->propertyAccessProxy = $propertyAccessProxy;
 	}
 
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 
 		$guiField = GuiFields::numberIn()->setValue($eiu->field()->getValue());
 

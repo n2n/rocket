@@ -51,10 +51,10 @@ abstract class EditableEiPropNatureAdapter extends DisplayableEiPropNatureAdapte
 	 * @param Eiu $eiu
 	 * @return EifGuiField
 	 */
-	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
+	protected function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		throw new UnsupportedOperationException(get_class($this)
 				. ' must implement either'
-				. ' createOutGuiField(Eiu $eiu): BackableGuiField  (recommended) or'
+				. ' buildOutGuiField(Eiu $eiu): ?BackableGuiField  (recommended) or'
 				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
 	
@@ -62,10 +62,10 @@ abstract class EditableEiPropNatureAdapter extends DisplayableEiPropNatureAdapte
 	 * @param Eiu $eiu
 	 * @return EifGuiField
 	 */
-	protected function createInGuiField(Eiu $eiu): BackableGuiField {
+	protected function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		throw new UnsupportedOperationException(get_class($this)
 				. ' must implement either'
-				. ' createInGuiField(Eiu $eiu): BackableGuiField  (recommended) or'
+				. ' buildInGuiField(Eiu $eiu): ?BackableGuiField  (recommended) or'
 				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
 	}
 }

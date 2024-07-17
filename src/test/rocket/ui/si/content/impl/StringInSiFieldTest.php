@@ -18,6 +18,6 @@ class StringInSiFieldTest extends TestCase {
 	}
 
 	function testTypeAndData(): void {
-		// TODO
+		$this->markTestSkipped('TODO');
 	}
 }

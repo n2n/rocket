@@ -21,7 +21,6 @@
  */
 namespace rocket\op\ei\util;
 
-use rocket\op\ei\manage\ManageException;
 
-class EiuPerimeterException extends ManageException {
+class EiuPerimeterException extends \RuntimeException {
 }

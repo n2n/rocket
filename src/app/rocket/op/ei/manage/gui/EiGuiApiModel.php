@@ -92,17 +92,25 @@ class EiGuiApiModel implements GuiApiModel {
 		return $guiValueBoundary;
 	}
 
+	/**
+	 * @param string $maskId
+	 * @param int $offset
+	 * @param int $num
+	 * @param string|null $quickSearchStr
+	 * @return GuiValueBoundary[]
+	 * @throws UnknownGuiElementException
+	 */
 	function lookupGuiValueBoundaries(string $maskId, int $offset, int $num, ?string $quickSearchStr): array {
 		$eiSiMaskId = $this->parseEiSiMaskId($maskId);
 
 		$selector = new EiObjectSelector($this->eiFrame);
 		$eiEntryRecords = $selector->lookupEiEntries($offset, $num, $quickSearchStr);
 
-		$factory = new EiGuiEntryFactory($this->eiFrame);
+		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
 		$guiValueBoundaries = [];
 		foreach ($eiEntryRecords as $eiEntryRecord) {
-			$guiValueBoundaries[] = $factory->createGuiValueBoundary($eiSiMaskId->viewMode, [$eiEntryRecord->eiEntry],
-					$eiEntryRecord->treeLevel);
+			$guiValueBoundaries[] = $factory->create($eiEntryRecord->treeLevel, [$eiEntryRecord->eiEntry],
+					$eiSiMaskId->viewMode);
 		}
 		return $guiValueBoundaries;
 	}

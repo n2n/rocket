@@ -118,7 +118,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return $this->getMin() > 0;
 	}
 	
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		return new MultiSelectMag($this->getLabelCode(), $this->getOptions(), array(), 
 				$this->getMin(), $this->getMax());
 	}
@@ -141,7 +141,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	public function saveSiField(SiField $siField, Eiu $eiu) {
 	}
 
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 	}
 
 	

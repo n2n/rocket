@@ -42,14 +42,13 @@ use n2n\util\type\TypeConstraints;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\manage\idname\IdNameProp;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
-use rocket\op\ei\util\factory\EifGuiField;
 use rocket\ui\si\content\impl\EnumInSiField;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\EnumUtils;
 use rocket\ui\gui\field\BackableGuiField;
 use rocket\ui\gui\field\impl\GuiFields;
+use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	use QuickSearchConfigTrait;
@@ -201,7 +200,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return parent::buildEiField($eiu);
 	}
 	
-	public function createInGuiField(Eiu $eiu): BackableGuiField {
+	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$choicesMap = $this->getOptions();
 		foreach (array_values($choicesMap) as $value) {
 			if (!$eiu->entry()->acceptsValue($eiu->prop(), $value)) {
@@ -257,7 +256,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$eiu->field()->setValue($this->backedValueToUnitValue($siField->getValue()));
 	}
 	
-	public function createOutGuiField(Eiu $eiu): BackableGuiField {
+	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		$backedValue = $this->unitValueToBackedValue($eiu->field()->getValue());
 		$options = $this->getOptions();
 		

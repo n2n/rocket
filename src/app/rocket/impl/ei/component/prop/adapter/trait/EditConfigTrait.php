@@ -15,11 +15,11 @@
  *
  * The following people participated in this project:
  *
- * Andreas von Burg...........: Architect, Lead Developer, Concept
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\config;
+namespace rocket\impl\ei\component\prop\adapter\trait;
 
 use rocket\impl\ei\component\prop\adapter\config\EditConfig;
 

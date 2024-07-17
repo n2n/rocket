@@ -31,6 +31,7 @@ use rocket\ui\si\content\impl\SiFields;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\ui\si\content\SiFieldModel;
+use n2n\core\container\N2nContext;
 
 class RelationLinkGuiField implements GuiField, SiFieldModel {
 	/**
@@ -107,12 +108,12 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 		return null;
 	}
 	
-	function save(): void {
+	function flush(N2nContext $n2nContext): void {
 		throw new UnsupportedOperationException();
 	}
 
 
-	function handleInput(): bool {
+	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 		throw new UnsupportedOperationException();
 	}
 

@@ -142,7 +142,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 		$this->entityProperty = $entityProperty;
 	}
 
-	function createOutGuiField(Eiu $eiu): BackableGuiField  {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$value = $eiu->field()->getValue();
 		if ($value) {
 			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_CHECK));
@@ -152,7 +152,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 		return $eiu->factory()->newGuiField($siField->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
-	function createInGuiField(Eiu $eiu): BackableGuiField {
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$mapCb = function ($defPropPath) { return (string) $defPropPath; };
 
 		$siField = SiFields::boolIn((bool) $eiu->field()->getValue())

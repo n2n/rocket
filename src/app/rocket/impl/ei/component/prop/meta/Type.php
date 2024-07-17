@@ -41,7 +41,7 @@ class Type extends DisplayConfigTrait {
 				$eiu->prop()->getLabel());
 	}
 
-	public function createOutGuiField(Eiu $eiu): BackableGuiField {
+	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		$eiuMask = $eiu->context()->mask($eiu->entry()->getEiEntry()->getEiType());
 		$iconType = $eiuMask->getIconType();
 		$label = $eiuMask->getLabel();

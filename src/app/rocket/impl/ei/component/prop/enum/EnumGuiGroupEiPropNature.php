@@ -27,7 +27,7 @@ use rocket\op\ei\util\Eiu;
 
 class EnumGuiGroupEiPropNature extends DisplayableEiPropNature {
 
-	function createOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		
 	}
 	protected function prepare() {

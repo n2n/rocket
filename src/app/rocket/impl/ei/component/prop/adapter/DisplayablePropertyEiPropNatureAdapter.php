@@ -22,58 +22,53 @@
 namespace rocket\impl\ei\component\prop\adapter;
 
 use rocket\op\ei\manage\entry\EiFieldNature;
-use rocket\op\ei\manage\gui\EiGuiProp;
-use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\util\Eiu;
 use n2n\util\type\TypeConstraint;
-use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\util\factory\EifField;
-use rocket\op\ei\util\factory\EifGuiField;
-use n2n\util\ex\UnsupportedOperationException;
-use rocket\impl\ei\component\prop\adapter\config\DisplayConfigTrait;
-use rocket\ui\gui\field\BackableGuiField;
+use rocket\impl\ei\component\prop\adapter\trait\ReadableEiFieldTrait;
+use rocket\impl\ei\component\prop\adapter\trait\OutGuiPropTrait;
 
 abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapter
-		implements PropertyEiPropNature/*, EiGuiField*/ {
-	use DisplayConfigTrait, PropertyAdapter;
+		/*implements PropertyEiPropNature, EiGuiField*/ {
+	use ReadableEiFieldTrait, OutGuiPropTrait;
 
 	// EiField
 	
-	function buildEiField(Eiu $eiu): ?EiFieldNature {
-		return $this->createEifField($eiu)->toEiField();
-	}
-	
-	protected function createEifField(Eiu $eiu): EifField {
-		return $eiu->factory()
-				->newField($this->getEiFieldTypeConstraint(), function () use ($eiu) {
-					return $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
-				});
-	}	
+//	function buildEiField(Eiu $eiu): ?EiFieldNature {
+//		return $this->createEifField($eiu)->toEiField();
+//	}
+//
+//	protected function createEifField(Eiu $eiu): EifField {
+//		return $eiu->factory()
+//				->newField($this->getEiFieldTypeConstraint(), function () use ($eiu) {
+//					return $eiu->object()->readNativeValue($eiu->prop()->getEiProp());
+//				});
+//	}
 
-	private function getEiFieldTypeConstraint(): ?TypeConstraint {
-		if (null !== ($accessProxy = $this->getPropertyAccessProxy())) {
-			return $accessProxy->getGetterConstraint()->getLenientCopy();
-		}
-		
-		return null;
-	}
+//	private function getEiFieldTypeConstraint(): ?TypeConstraint {
+//		if (null !== ($accessProxy = $this->getPropertyAccessProxy())) {
+//			return $accessProxy->getGetterConstraint()->getLenientCopy();
+//		}
+//
+//		return null;
+//	}
 	
 	// GuiProp
 	
-	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory()->newGuiProp(function (Eiu $eiu, bool $readOnly) {
-			return $this->buildGuiField($eiu, $readOnly);
-		})->toEiGuiProp();
-	}
+//	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
+//		return $eiu->factory()->newGuiProp(function (Eiu $eiu, bool $readOnly) {
+//			return $this->buildGuiField($eiu, $readOnly);
+//		})->toEiGuiProp();
+//	}
 	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutGuiField($eiu);
-	}
+//	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+//		return $this->createOutGuiField($eiu);
+//	}
 	
-	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
-		throw new UnsupportedOperationException(get_class($this)
-				. ' must implement either'
-				. ' createEifGuiField(Eiu $eiu, bool $readOnly): EifGuiField or'
-				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.');
-	}
+//	protected function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
+//		throw new UnsupportedOperationException(get_class($this)
+//				. ' must implement either'
+//				. ' createEifGuiField(Eiu $eiu, bool $readOnly): EifGuiField or'
+//				. ' buildGuiProp(Eiu $eiu): ?GuiField.');
+//	}
 }

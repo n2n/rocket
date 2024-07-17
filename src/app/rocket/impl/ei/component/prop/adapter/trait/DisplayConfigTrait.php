@@ -15,30 +15,28 @@
  *
  * The following people participated in this project:
  *
- * Andreas von Burg...........: Architect, Lead Developer, Concept
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\adapter\config;
+namespace rocket\impl\ei\component\prop\adapter\trait;
 
 use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\gui\ViewMode;
-use rocket\ui\gui\field\GuiField;
-use rocket\op\ei\util\factory\EifGuiField;
 use n2n\util\ex\UnsupportedOperationException;
 use rocket\ui\gui\field\BackableGuiField;
 
 trait DisplayConfigTrait {
-	protected DisplayConfig $displayConfig;
+	protected \rocket\impl\ei\component\prop\adapter\config\DisplayConfig $displayConfig;
 
 	/**
 	 *
-	 * @return DisplayConfig
+	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
 	 */
-	function getDisplayConfig(): DisplayConfig {
+	function getDisplayConfig(): \rocket\impl\ei\component\prop\adapter\config\DisplayConfig {
 		if (!isset($this->displayConfig)) {
-			$this->displayConfig = new DisplayConfig(ViewMode::all());
+			$this->displayConfig = new \rocket\impl\ei\component\prop\adapter\config\DisplayConfig(ViewMode::all());
 		}
 
 		return $this->displayConfig;
@@ -54,23 +52,5 @@ trait DisplayConfigTrait {
 	}
 
 	
-	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory ()->newGuiProp(function (Eiu $eiu) {
-			$displayConfig = $this->getDisplayConfig();
-			return $eiu->f()->newGuiProp()
-					->setDefaultDisplayed($displayConfig->isViewModeDefaultDisplayed($eiu->guiDefinition()->getViewMode()))
-					->setSiStructureType($displayConfig->getSiStructureType())
-					->toGuiProp();
-		})->toEiGuiProp();
-	}
-	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return $this->createOutGuiField($eiu);
-	}
 
-	protected function createOutGuiField(Eiu $eiu): BackableGuiField {
-		throw new UnsupportedOperationException ( get_class ($this) . ' must implement either'
-				. ' createOutGuiField(Eiu $eiu): BackableGuiField or'
-				. ' buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField.' );
-	}
 }

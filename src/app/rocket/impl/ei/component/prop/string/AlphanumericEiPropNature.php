@@ -35,15 +35,12 @@ use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\op\ei\manage\generic\ScalarEiProperty;
 use rocket\op\ei\manage\idname\IdNameProp;
 use n2n\util\StringUtils;
-use rocket\op\ei\util\factory\EifGuiField;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\meta\AddonAdapter;
 use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
-use rocket\impl\ei\component\prop\adapter\config\QuickSearchConfigTrait;
+use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use rocket\op\ei\manage\critmod\quick\impl\QuickSearchProps;
-use rocket\ui\gui\field\GuiField;
 use rocket\ui\gui\field\impl\GuiFields;
-use n2n\bind\mapper\impl\Mappers;
 use rocket\ui\gui\field\BackableGuiField;
 
 
@@ -89,12 +86,12 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 		$this->maxlength = $maxlength;
 	}
 	
-	public function createOutGuiField(Eiu $eiu): BackableGuiField  {
+	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		return GuiFields::out(SiFields::stringOut(StringUtils::strOf($eiu->field()->getValue(), true)))
 				->setExternalMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 	}
 	
-	function createInGuiField(Eiu $eiu): BackableGuiField {
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$guiField = GuiFields::stringIn(mandatory: $this->isMandatory(),
 				minlength: $this->getMinlength() ?? 0, maxlength: $this->getMaxlength() ?? 255,
 				prefixAddons: $this->getPrefixSiCrumbGroups(), suffixAddons: $this->getSuffixSiCrumbGroups());
