@@ -1,4 +1,24 @@
 <?php
+/*
+ * Copyright (c) 2012-2016, Hofmänner New Media.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This file is part of the n2n module ROCKET.
+ *
+ * ROCKET is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * ROCKET is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details: http://www.gnu.org/licenses/
+ *
+ * The following people participated in this project:
+ *
+ * Andreas von Burg...........:	Architect, Lead Developer, Concept
+ * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
+ * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
+ */
 
 namespace rocket\op\ei\manage\gui;
 
@@ -54,8 +74,8 @@ class EiGuiApiModel implements GuiApiModel {
 		$eiSiMaskId = $this->parseEiSiMaskId($maskId);
 		$eiMask = $this->determineGuiMaskByEiTypePath($eiSiMaskId->eiTypePath);
 
-		return $eiMask->getEiEngine()->obtainEiGuiMaskDeclaration($eiSiMaskId->viewMode, null)
-				->createGuiMask($this->eiFrame);
+		$factory = new EiGuiMaskFactory($eiMask->getEiEngine()->getEiGuiDefinition($eiSiMaskId->viewMode));
+		return $factory->createGuiMask($this->eiFrame->getN2nContext()->getN2nLocale());
 	}
 
 	function lookupGuiValueBoundary(string $maskId, string $entryId): GuiValueBoundary {
@@ -68,9 +88,9 @@ class EiGuiApiModel implements GuiApiModel {
 			throw new UnknownGuiElementException(previous: $e);
 		}
 
-		$factory = new EiGuiEntryFactory($this->eiFrame);
-		$guiValueBoundary = $factory->createGuiValueBoundary($eiSiMaskId->viewMode, [$eiEntry],
-				$selector->lookupTreeLevel($eiEntry->getEiObject()));
+		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
+		$guiValueBoundary = $factory->create($selector->lookupTreeLevel($eiEntry->getEiObject()), [$eiEntry],
+				$eiSiMaskId->viewMode);
 		$this->cacheEiEntries($guiValueBoundary, [$eiEntry]);
 		return $guiValueBoundary;
 	}
@@ -130,17 +150,17 @@ class EiGuiApiModel implements GuiApiModel {
 
 		$eiEntries = $this->getCachedEiEntries($guiValueBoundary);
 
-		$factory = new EiGuiEntryFactory($this->eiFrame);
-		$copiedGuiValueBoundary =  $factory->createGuiValueBoundary($eiMaskId->viewMode, $eiEntries, $guiValueBoundary->getTreeLevel());
+		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
+		$copiedGuiValueBoundary =  $factory->create($guiValueBoundary->getTreeLevel(), $eiEntries, $eiMaskId->viewMode);
 		if ($guiValueBoundary->isEiGuiEntrySelected()) {
-			$copiedGuiValueBoundary->selectGuiEntryByMaskId($guiValueBoundary);
+			$copiedGuiValueBoundary->selectGuiEntryByMaskId($maskId);
 		}
-		$this->cacheEiEntries($guiValueBoundary, $eiEntries);
+		$this->cacheEiEntries($copiedGuiValueBoundary, $eiEntries);
 		return $copiedGuiValueBoundary;
 	}
 
 	private function cacheEiEntries(GuiValueBoundary $guiValueBoundary, array $eiEntries): void {
-		$this->cachedEiEntriesMap->offsetSet($guiValueBoundary, $eiEntries);
+		$this->cachedEiEntriesMap->offsetSet($guiValueBoundary, array_values($eiEntries));
 	}
 
 	/**
@@ -201,5 +221,9 @@ class EiGuiApiModel implements GuiApiModel {
 		} catch (UnknownEiObjectException $e) {
 			throw new UnknownGuiElementException(previous: $e);
 		}
+	}
+
+	function getCachedEiEntriesMap(): \WeakMap {
+		return $this->cachedEiEntriesMap;
 	}
 }

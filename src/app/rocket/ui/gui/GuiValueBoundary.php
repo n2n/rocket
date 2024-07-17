@@ -99,7 +99,7 @@ class GuiValueBoundary {
 	 * @return boolean
 	 */
 	function isEiGuiEntrySelected(): bool {
-		return $this->selectedEiMaskId !== null;
+		return $this->siValueBoundary->getSelectedMaskId() !== null;
 	}
 	
 	/**
@@ -112,7 +112,7 @@ class GuiValueBoundary {
 			$this->siValueBoundary->setSelectedMaskId($eiMaskId);
 			return $this;
 		}
-		
+
 		throw new \InvalidArgumentException('Unknown EiType id: ' . $eiMaskId);
 	}
 	
@@ -129,11 +129,7 @@ class GuiValueBoundary {
 	}
 
 	function getSelectedMaskId(): string {
-		if (!isset($this->guiEntries[$this->selectedEiMaskId])) {
-			throw new IllegalStateException('No selection.');
-		}
-
-		return $this->selectedEiMaskId;
+		return $this->siValueBoundary->getSelectedMaskId();
 	}
 	
 //	/**

@@ -61,7 +61,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\component\EiComponentNature::equals()
 	 */
-	public function equals($obj) {
+	public function equals(mixed $obj): bool {
 		return $obj instanceof EiPropNature && $this->getWrapper()->getEiPropPath()->equals(
 				$obj->getWrapper()->getEiPropPath());
 	}

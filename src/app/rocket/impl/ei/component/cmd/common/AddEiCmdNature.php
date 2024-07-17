@@ -32,6 +32,7 @@ use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\cmd\common\controller\AddController;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
+use rocket\ui\si\control\SiNavPoint;
 
 class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'add';
@@ -225,5 +226,9 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 						['child', $eiuEntry->getPid()]));
 		
 		return [$groupControl];
+	}
+
+	function buildAddNavPoint(Eiu $eiu): ?SiNavPoint {
+		return SiNavPoint::siref();
 	}
 }

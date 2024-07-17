@@ -6,7 +6,7 @@ use em\pgc\facade\PgcRestrictions;
 
 class GeneralTestEnv  {
 	
-	static function teardown() {
+	static function teardown(): void {
 
 		if (TestEnv::container()->tm()->hasOpenTransaction()) {
 			TestEnv::container()->tm()->getRootTransaction()->rollBack();

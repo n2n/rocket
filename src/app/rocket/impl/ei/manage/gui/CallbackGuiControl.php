@@ -35,6 +35,7 @@ use rocket\ui\gui\control\GuiControl;
 use rocket\op\util\OpfControlResponse;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\gui\control\GuiControlMap;
+use rocket\ui\gui\GuiCallResponse;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
@@ -71,7 +72,7 @@ class CallbackGuiControl implements GuiControl {
 	 */
 	private function execCall() {
 		$sifControlResponse = $callback($eiu);
-		ArgUtils::valTypeReturn($sifControlResponse, OpfControlResponse::class, null, $callback, true);
+		ArgUtils::valTypeReturn($sifControlResponse, GuiCallResponse::class, null, $callback, true);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));

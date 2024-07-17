@@ -60,7 +60,7 @@ class SiApi {
 
 		$inputResult = null;
 		if (null !== ($input = $call->getInput())) {
-			$inputResult = $this->handleInput($input);
+			$inputResult = $this->handleInput($input, $n2nContext);
 			$apiCallResponse->setInputResult($inputResult);
 			if (!$inputResult->isValid()) {
 				return $apiCallResponse;
@@ -80,7 +80,7 @@ class SiApi {
 		}
 
 		if (null !== ($valRequest = $call->getValRequest())) {
-			$apiCallResponse->setValResponse($this->handleValRequest($valRequest));
+			$apiCallResponse->setValResponse($this->handleValRequest($valRequest, $n2nContext));
 		}
 
 		if (null !== ($callResponse = $call->getSortCall())) {
@@ -94,14 +94,14 @@ class SiApi {
 	 * @throws UnknownSiElementException
 	 * @throws CorruptedSiDataException
 	 */
-	private function handleInput(SiInput $siInput): SiInputResult {
+	private function handleInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult {
 		$valueBoundaries = [];
 		$valid = true;
 		foreach ($siInput->getValueBoundaryInputs() as $valueBoundaryInput) {
 			$entryInput = $valueBoundaryInput->getEntryInput();
 			$valueBoundaries[] = $valueBoundary = $this->model
 					->lookupSiValueBoundary($valueBoundaryInput->getSelectedMaskId(), $entryInput->getEntryId(), null);
-			$entryInputValid = $valueBoundary->handleInput($valueBoundaryInput);
+			$entryInputValid = $valueBoundary->handleInput($valueBoundaryInput, $n2nContext);
 			if (!$entryInputValid) {
 				$valid = false;
 			}

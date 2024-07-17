@@ -87,7 +87,7 @@ class GuiSiApiModel implements SiApiModel {
 	}
 
 	function lookupSiValueBoundary(string $maskId, ?string $entryId, ?array $allowedFieldNames): SiValueBoundary {
-		if ($entryId !== null) {
+		if ($entryId === null) {
 			try {
 				$guiValueBoundary = $this->guiApiModel->createGuiValueBoundary($maskId);
 			} catch (UnknownGuiElementException $e) {
@@ -129,7 +129,7 @@ class GuiSiApiModel implements SiApiModel {
 	}
 
 	function copySiValueBoundary(SiValueBoundary $boundary, string $maskId): SiValueBoundary {
-		$guiValueBoundary = $this->getCachedGuiValueBoundary($boundary, $maskId);
+		$guiValueBoundary = $this->getCachedGuiValueBoundary($boundary);
 
 		try {
 			$copiedGuiValueBoundary = $this->guiApiModel->copyGuiValueBoundary($guiValueBoundary, $maskId);
@@ -151,7 +151,7 @@ class GuiSiApiModel implements SiApiModel {
 	/**
 	 * @throws UnknownSiElementException
 	 */
-	private function getCachedGuiValueBoundary(SiValueBoundary $siValueBoundary): SiValueBoundary {
+	private function getCachedGuiValueBoundary(SiValueBoundary $siValueBoundary): GuiValueBoundary {
 		if ($this->guiValueBoundariesMap->offsetExists($siValueBoundary)) {
 			return $this->guiValueBoundariesMap->offsetGet($siValueBoundary);
 		}

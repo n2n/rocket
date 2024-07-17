@@ -52,7 +52,7 @@ abstract class EiCmdNatureAdapter extends EiComponentNatureAdapter implements Ei
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\component\EiComponentNature::equals()
 	 */
-	public function equals($obj) {
+	public function equals(mixed $obj): bool {
 		return $obj instanceof EiCmdNature && parent::equals($obj);
 	}
 

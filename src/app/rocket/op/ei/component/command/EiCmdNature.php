@@ -49,9 +49,9 @@ interface EiCmdNature extends EiComponentNature {
 	
 	/**
 	 * @param mixed $obj
-	 * @return boolean
+	 * @return bool
 	 */
-	function equals($obj);
+	function equals(mixed $obj): bool;
 
 	function buildEiGuiCommand(Eiu $eiu): ?EiGuiCommand;
 

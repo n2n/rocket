@@ -57,6 +57,8 @@ class EiGuiMaskFactory {
 
 		$this->applyGuiProps($guiMask, $n2nLocale);
 
+		$this->eiGuiDefinition->createGeneralGuiControlsMap()
+
 		return $guiMask;
 	}
 

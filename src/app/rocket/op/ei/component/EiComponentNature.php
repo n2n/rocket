@@ -32,7 +32,7 @@ interface EiComponentNature {
 	 * @param mixed $obj
 	 * @return boolean
 	 */
-	public function equals($obj);
+	public function equals(mixed $obj): bool;
 	
 	/**
 	 * @return string 

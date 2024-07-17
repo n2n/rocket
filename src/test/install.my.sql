@@ -18,6 +18,16 @@ CREATE TABLE `rocket_user_rocket_user_groups` (
                                                   PRIMARY KEY (`rocket_user_id`, `rocket_user_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci ;
 
+
+
+DROP TABLE IF EXISTS `basic_test_obj`;
+CREATE TABLE `basic_test_obj` (
+     `id` INT NOT NULL AUTO_INCREMENT,
+     `holeradio` VARCHAR(255) NULL DEFAULT NULL,
+     PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci ;
+
+
 DROP TABLE IF EXISTS `sort_test_obj`;
 CREATE TABLE `sort_test_obj` (
     `id` INT NOT NULL AUTO_INCREMENT,

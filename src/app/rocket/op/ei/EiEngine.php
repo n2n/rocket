@@ -166,10 +166,10 @@ class EiEngine {
 		return $this->eiMask->getEiPropCollection()->createForkedEiFrame($eiPropPath, $eiForkLink);
 	}
 
-	private function getEiGuiMaskDeclarationEngine(): EiGuiMaskDeclarationEngine {
-		return $this->eiGuiMaskDeclarationEngine ?? $this->eiGuiMaskDeclarationEngine
-				= new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getEiGuiDefinition());
-	}
+//	private function getEiGuiMaskDeclarationEngine(): EiGuiMaskDeclarationEngine {
+//		return $this->eiGuiMaskDeclarationEngine ?? $this->eiGuiMaskDeclarationEngine
+//				= new EiGuiMaskDeclarationEngine($this->n2nContext, $this->getEiGuiDefinition());
+//	}
 
 	private array $guiDefinitions = [];
 
@@ -322,9 +322,9 @@ class EiEngine {
 //		return (new GuiFactory($this->eiMask))->createEntryGuiControls($eiGuiValueBoundary, $view);
 //	}
 
-	function obtainEiGuiMaskDeclaration(int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
-		return $this->getEiGuiMaskDeclarationEngine()->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths);
-	}
+//	function obtainEiGuiMaskDeclaration(int $viewMode, ?array $defPropPaths): EiGuiMaskDeclaration {
+//		return $this->getEiGuiMaskDeclarationEngine()->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths);
+//	}
 
 //	/**
 //	 * @param EiMask $contextEiMask
