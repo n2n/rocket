@@ -32,24 +32,17 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\mask\model\DisplayStructure;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\si\meta\SiStructureType;
-use rocket\op\ei\manage\EiLaunch;
 use n2n\l10n\Lstr;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\manage\api\ApiController;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\gui\control\GuiControlMap;
-use rocket\ui\gui\control\GuiControlPath;
 use n2n\l10n\N2nLocale;
-use rocket\ui\gui\GuiMask;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
-use rocket\ui\gui\field\GuiFieldPath;
 use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\ui\gui\control\GuiControl;
-use rocket\ui\gui\GuiEntry;
 
 class EiGuiDefinition {
 
@@ -62,9 +55,9 @@ class EiGuiDefinition {
 	 */
 	private $eiPropPaths = array();
 	/**
-	 * @var EiGuiCommand
+	 * @var EiGuiCmdWrapper[]
 	 */
-	private $guiCommands = [];
+	private array $eiGuiCmdWrappers = [];
 	/**
 	 * @var EiCmdPath[]
 	 */
@@ -90,7 +83,7 @@ class EiGuiDefinition {
 	 * @param EiPropPath $eiPropPath
 	 * @param EiGuiProp $eiGuiProp
 	 */
-	function putGuiProp(EiPropPath $eiPropPath, EiGuiProp $eiGuiProp): void {
+	function putEiGuiProp(EiPropPath $eiPropPath, EiGuiProp $eiGuiProp): void {
 		$eiPropPathStr = (string) $eiPropPath;
 
 		if (isset($this->eiGuiPropWrappers[$eiPropPathStr])) {
@@ -159,6 +152,8 @@ class EiGuiDefinition {
 
 		return $this->eiGuiPropWrappers[$eiPropPathStr];
 	}
+
+
 
 //	/**
 //	 * @return GuiPropWrapper[]
@@ -394,32 +389,32 @@ class EiGuiDefinition {
 	 * @param EiPropPath $defPropPath
 	 * @throws EiGuiException
 	 */
-	function putGuiCommand(EiCmdPath $eiCmdPath, EiGuiCommand $guiCommand): void {
+	function putEiGuiCommand(EiCmdPath $eiCmdPath, EiGuiCmd $eiGuiCmd): void {
 		$eiCmdPathStr = (string) $eiCmdPath;
 
-		if (isset($this->guiCommands[$eiCmdPathStr])) {
+		if (isset($this->eiGuiCmdWrappers[$eiCmdPathStr])) {
 			throw new EiGuiException('GuiCommand for EiCmdPath \'' . $eiCmdPathStr . '\' is already registered');
 		}
 
-		$this->guiCommands[$eiCmdPathStr] = $guiCommand;
+		$this->eiGuiCmdWrappers[$eiCmdPathStr] = $eiGuiCmd;
 		$this->eiCmdPaths[$eiCmdPathStr] = $eiCmdPath;
 	}
 
 	/**
-	 * @return EiGuiCommand[]
+	 * @return EiGuiCmd[]
 	 */
-	function getGuiCommands(): array {
-		return $this->guiCommands;
+	function getEiGuiCmdWrappers(): array {
+		return $this->eiGuiCmdWrappers;
 	}
 
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @return GuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createEntryGuiControl(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry, GuiControlPath $guiControlPath): GuiControl {
+	function createEntryGuiControl(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry, EiGuiControlName $guiControlPath): GuiControl {
 		if ($guiControlPath->size() != 2) {
 			throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
 		}
@@ -428,7 +423,7 @@ class EiGuiDefinition {
 		$cmdId = $guiControlPath->getFirstId();
 		$controlId = $guiControlPath->getLastId();
 
-		foreach ($this->guiCommands as $id => $guiCommand) {
+		foreach ($this->eiGuiCmdWrappers as $id => $guiCommand) {
 			if ($cmdId != $id) {
 				continue;
 			}
@@ -446,14 +441,14 @@ class EiGuiDefinition {
 		$guiControlsMap = new GuiControlMap();
 
 		$guiControls = [];
-		foreach ($this->guiCommands as $eiCmdPathStr => $guiCommand) {
+		foreach ($this->eiGuiCmdWrappers as $eiCmdPathStr => $guiCommand) {
 			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
 			$eiu = new Eiu($eiFrame, $this, $eiEntry, $eiCmdPath);
 
 //			$apiUrl = $eiFrame->getApiUrl($eiCmdPath);
 
 			foreach ($this->extractEntryGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $name => $entryGuiControl) {
-				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $name]);
+				$guiControlPath = new EiGuiControlName([$eiCmdPathStr, $name]);
 				$apiControlCallId = ApiControlCallId::create($this->eiMask, $guiControlPath, $eiEntry);
 
 				$guiControlsMap->putGuiControl($guiControlPath, $entryGuiControl);
@@ -464,12 +459,12 @@ class EiGuiDefinition {
 	}
 
 	/**
-	 * @param EiGuiCommand $guiCommand
+	 * @param EiGuiCmd $guiCommand
 	 * @param string $guiCommandId
 	 * @param Eiu $eiu
 	 * @return GuiControl[]
 	 */
-	private function extractEntryGuiControls(EiGuiCommand $guiCommand, string $guiCommandId, Eiu $eiu): array {
+	private function extractEntryGuiControls(EiGuiCmd $guiCommand, string $guiCommandId, Eiu $eiu): array {
 		$entryGuiControls = $guiCommand->createEntryGuiControls($eiu);
 		ArgUtils::valArrayReturn($entryGuiControls, $guiCommand, 'createEntryGuiControls', GuiControl::class);
 
@@ -477,18 +472,32 @@ class EiGuiDefinition {
 	}
 
 
+	/**
+	 * @return GuiControl[]
+	 */
+	function createGeneralGuiControls() {
+		$this->putEiGuiCommand();
+	}
+
+	/**
+	 * @return GuiControl[]
+	 */
+	private function createGeneralGuiControlsR(array $eiGui): array {
+
+	}
+
+
 	function createGeneralGuiControlsMap(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration): GuiControlMap {
 		$guiControlsMap = new GuiControlMap();
 
 		$guiControls = [];
-		foreach ($this->guiCommands as $eiCmdPathStr => $guiCommand) {
+		foreach ($this->eiGuiCmdWrappers as $eiCmdPathStr => $guiCommand) {
+
 			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
 			$eiu = new Eiu($eiFrame, $eiGuiMaskDeclaration, $eiCmdPath);
 
-			$apiUrl = $eiFrame->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
-
-			foreach ($this->extractGeneralGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $generalGuiControl) {
-				$guiControlPath = new GuiControlPath([$eiCmdPathStr, $generalGuiControl->getId()]);
+			foreach ($this->extractGeneralGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $controlName => $generalGuiControl) {
+				$guiControlPath = new EiGuiControlName([$eiCmdPathStr, $controlName]);
 
 				$guiControlsMap->putGuiControl($guiControlPath, $generalGuiControl);
 			}
@@ -532,11 +541,11 @@ class EiGuiDefinition {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @return GuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createGeneralGuiControl(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, GuiControlPath $guiControlPath) {
+	function createGeneralGuiControl(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiGuiControlName $guiControlPath) {
 		if ($guiControlPath->size() < 2) {
 			throw new UnknownGuiControlException('Unknown GuiControlPath ' . $guiControlPath);
 		}
@@ -546,7 +555,7 @@ class EiGuiDefinition {
 		$cmdId = array_shift($ids);
 		$controlId = array_shift($ids);
 
-		foreach ($this->guiCommands as $id => $guiCommand) {
+		foreach ($this->eiGuiCmdWrappers as $id => $guiCommand) {
 			if ($cmdId != $id) {
 				continue;
 			}
@@ -574,12 +583,12 @@ class EiGuiDefinition {
 	 * @param EiFrame $eiFrame
 	 * @return GuiControl[]
 	 */
-	function createGeneralGuiControls(EiFrame $eiFrame, EiGuiMaskDeclaration $eiGuiMaskDeclaration): array {
+	function createGeneralGuiControls(EiFrame $eiFrame): array {
 		$siControls = [];
-		foreach ($this->guiCommands as $eiCmdPath => $guiCommand) {
-			$eiu = new Eiu($eiFrame, $eiGuiMaskDeclaration, $this->eiCmdPaths[$eiCmdPath]);
+		foreach ($this->eiGuiCmdWrappers as $eiCmdPath => $guiCommand) {
+			$eiu = new Eiu($eiFrame, $this, $this->eiCmdPaths[$eiCmdPath]);
 			foreach ($this->extractGeneralGuiControls($guiCommand, $eiCmdPath, $eiu) as $generalGuiControl) {
-				$guiControlPath = new GuiControlPath([$eiCmdPath, $generalGuiControl->getId()]);
+				$guiControlPath = new EiGuiControlName([$eiCmdPath, $generalGuiControl->getId()]);
 				$siControls[(string) $guiControlPath] = $generalGuiControl;
 			}
 		}
@@ -587,12 +596,12 @@ class EiGuiDefinition {
 	}
 
 	/**
-	 * @param EiGuiCommand $guiCommand
+	 * @param EiGuiCmd $guiCommand
 	 * @param string $guiCommandId
 	 * @param Eiu $eiu
 	 * @return \rocket\ui\gui\control\GuiControl[]
 	 */
-	private function extractGeneralGuiControls(EiGuiCommand $guiCommand, string $guiCommandId, Eiu $eiu) {
+	private function extractGeneralGuiControls(EiGuiCmd $guiCommand, string $guiCommandId, Eiu $eiu) {
 		$generalGuiControls = $guiCommand->createGeneralGuiControls($eiu);
 		ArgUtils::valArrayReturn($generalGuiControls, $guiCommand, 'extractGeneralGuiControls', GuiControl::class);
 

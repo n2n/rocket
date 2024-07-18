@@ -26,13 +26,11 @@ use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\control\UnknownGuiControlException;
 use rocket\op\ei\manage\api\ApiControlCallId;
 use rocket\op\ei\EiPropPath;
 use rocket\ui\si\meta\SiProp;
 use n2n\l10n\N2nLocale;
-use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\mask\EiMask;
 use rocket\ui\gui\GuiEntry;
@@ -473,7 +471,7 @@ class EiGuiMaskDeclaration {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $generalGuiControl) {
-			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$guiControlPath = EiGuiControlName::create($guiControlPathStr);
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
 					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
 					new ApiControlCallId($guiControlPath,
@@ -496,11 +494,11 @@ class EiGuiMaskDeclaration {
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @return \rocket\ui\gui\control\GuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {
+	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, EiGuiControlName $guiControlPath) {
 		return $this->guiDefinition->createEntryGuiControl($eiFrame, $this, $eiEntry, $guiControlPath);
 	}
 	

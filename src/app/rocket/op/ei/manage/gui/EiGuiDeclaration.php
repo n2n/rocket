@@ -6,7 +6,6 @@ use rocket\ui\si\meta\SiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\control\UnknownGuiControlException;
 use n2n\util\ex\IllegalStateException;
 use n2n\l10n\N2nLocale;
@@ -15,9 +14,6 @@ use rocket\ui\si\control\SiControl;
 use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\gui\GuiValueBoundary;
-use rocket\ui\gui\GuiMask;
-use rocket\ui\si\meta\SiMaskIdentifier;
-use rocket\ui\si\meta\SiMaskQualifier;
 
 class EiGuiDeclaration {
 	/**
@@ -318,10 +314,10 @@ class EiGuiDeclaration {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @throws UnknownGuiControlException
 	 */
-	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
+	function createGeneralGuiControl(EiFrame $eiFrame, EiGuiControlName $guiControlPath) {
 		$contextEiTypeId = $this->contextEiMask->getEiType()->getId();
 		
 		if (isset($this->eiGuiMaskDeclarations[$contextEiTypeId])) {
@@ -333,10 +329,10 @@ class EiGuiDeclaration {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @throws UnknownGuiControlException
 	 */
-	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {
+	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, EiGuiControlName $guiControlPath) {
 		$eiTypeId = $eiEntry->getEiType()->getId();
 		
 		if (isset($this->eiGuiMaskDeclarations[$eiTypeId])) {

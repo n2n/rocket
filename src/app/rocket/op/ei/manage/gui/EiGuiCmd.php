@@ -24,7 +24,7 @@ namespace rocket\op\ei\manage\gui;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\gui\control\GuiControl;
 
-interface EiGuiCommand {
+interface EiGuiCmd {
 	/**
 	 * @param Eiu $eiu
 	 * @return GuiControl[]
@@ -42,4 +42,9 @@ interface EiGuiCommand {
 	 * @return GuiControl[]
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array;
+
+	/**
+	 * @return EiGuiCmdMap[]
+	 */
+	function getForkEiGuiCmdMap(): EiGuiCmdMap;
 }

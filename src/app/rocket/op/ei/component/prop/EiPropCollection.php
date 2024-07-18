@@ -242,7 +242,7 @@ class EiPropCollection extends EiComponentCollection {
 			$eiu = new Eiu($n2nContext, $this->eiMask, $eiPropPath, $guiDefinition);
 
 			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp($eiu))) {
-				$guiDefinition->putGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
+				$guiDefinition->putEiGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 		}
 	}

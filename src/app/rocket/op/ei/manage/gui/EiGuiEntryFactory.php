@@ -22,7 +22,6 @@
 namespace rocket\op\ei\manage\gui;
 
 use rocket\op\ei\EiPropPath;
-use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\util\Eiu;
@@ -32,13 +31,6 @@ use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\GuiEntry;
 use rocket\ui\si\content\SiEntryQualifier;
-use rocket\ui\gui\control\GuiControlMap;
-use rocket\op\ei\manage\api\ApiController;
-use rocket\ui\gui\control\GuiControlPath;
-use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\op\ei\EiCmdPath;
-use n2n\util\type\ArgUtils;
-use rocket\ui\gui\control\GuiControl;
 
 class EiGuiEntryFactory {
 

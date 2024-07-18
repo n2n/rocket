@@ -23,15 +23,15 @@ namespace rocket\op\ei\manage\gui;
 
 use n2n\l10n\N2nLocale;
 use rocket\ui\gui\GuiMask;
-use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\meta\SiProp;
 use rocket\ui\gui\GuiProp;
 use rocket\ui\gui\field\GuiFieldPath;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
-use rocket\ui\gui\GuiStructureDeclaration;
-use rocket\ui\si\meta\SiStructureDeclaration;
+use rocket\ui\gui\control\GuiControlMap;
+use rocket\op\ei\util\Eiu;
+use rocket\op\ei\manage\api\ApiController;
 
 class EiGuiMaskFactory {
 
@@ -88,6 +88,29 @@ class EiGuiMaskFactory {
 
 		/*return array_merge(*/$deter->applyContextGuiProps($guiMask, $n2nLocale)/*, $siProps)*/;
 	}
+
+	function applyGeneralGuiControlsMap(GuiMask $guiMask): GuiControlMap {
+		$guiControlsMap = new GuiControlMap();
+
+		$guiControls = [];
+		foreach ($this->eiGuiDefinition->getDefCommandPaths() as $eiCmdPathStr => $guiCommand) {
+
+			$eiCmdPath = $this->eiCmdPaths[$eiCmdPathStr];
+			$eiu = new Eiu($eiFrame, $eiGuiMaskDeclaration, $eiCmdPath);
+
+			$apiUrl = $eiFrame->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
+
+			foreach ($this->extractGeneralGuiControls($guiCommand, $eiCmdPathStr, $eiu) as $controlName => $generalGuiControl) {
+				$guiControlPath = new EiGuiControlName([$eiCmdPathStr, $controlName]);
+
+				$guiControlsMap->putGuiControl($guiControlPath, $generalGuiControl);
+			}
+		}
+
+		return $guiControlsMap;
+	}
+
+
 
 
 

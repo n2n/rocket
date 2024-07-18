@@ -6,7 +6,7 @@ use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\ui\gui\control\GuiControlPath;
+use rocket\op\ei\manage\gui\EiGuiControlName;
 use rocket\ui\gui\control\UnknownGuiControlException;
 use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\manage\api\ApiControlCallId;
@@ -96,7 +96,7 @@ class GuiMask {
 		$this->siMask->putProp((string) $guiFieldPath, $guiProp->getSiProp());
 	}
 
-	function putGuiControl(GuiControlPath $guiControlPath, GuiControl $guiControl): void {
+	function putGuiControl(EiGuiControlName $guiControlPath, GuiControl $guiControl): void {
 		$this->ensureNotInit();
 
 		$this->siMask->putControl((string) $guiControlPath, $guiControl->getSiControl());
@@ -382,7 +382,7 @@ class GuiMask {
 		$siControls = [];
 		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
 				as $guiControlPathStr => $generalGuiControl) {
-			$guiControlPath = GuiControlPath::create($guiControlPathStr);
+			$guiControlPath = EiGuiControlName::create($guiControlPathStr);
 			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
 					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
 					new ApiControlCallId($guiControlPath,
@@ -394,22 +394,22 @@ class GuiMask {
 	
 	/**
 	 * @param EiFrame $eiFrame
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @return GuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createGeneralGuiControl(EiFrame $eiFrame, GuiControlPath $guiControlPath) {
+	function createGeneralGuiControl(EiFrame $eiFrame, EiGuiControlName $guiControlPath) {
 		return $this->guiDefinition->createGeneralGuiControl($eiFrame, $this, $guiControlPath);
 	}
 	
 	/**
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
-	 * @param GuiControlPath $guiControlPath
+	 * @param EiGuiControlName $guiControlPath
 	 * @return \rocket\ui\gui\control\GuiControl
 	 * @throws UnknownGuiControlException
 	 */
-	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, GuiControlPath $guiControlPath) {
+	function createEntryGuiControl(EiFrame $eiFrame, EiEntry $eiEntry, EiGuiControlName $guiControlPath) {
 		return $this->guiDefinition->createEntryGuiControl($eiFrame, $this, $eiEntry, $guiControlPath);
 	}
 	

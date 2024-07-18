@@ -30,6 +30,7 @@ use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use n2n\core\container\N2nContext;
+use rocket\op\ei\manage\gui\EiGuiControlName;
 
 class ZoneGuiControlsMap {
 	/**
@@ -64,7 +65,7 @@ class ZoneGuiControlsMap {
 	 * @return SiCallResponse
 	 * @throws CorruptedSiDataException
 	 */
-	function handleSiCall(GuiControlPath $guiControlPath, N2nContext $n2nContext): SiCallResponse {
+	function handleSiCall(EiGuiControlName $guiControlPath, N2nContext $n2nContext): SiCallResponse {
 		$ids = $guiControlPath->toArray();
 
 		$id = array_shift($ids);
