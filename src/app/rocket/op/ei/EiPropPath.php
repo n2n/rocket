@@ -26,6 +26,7 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\op\ei\component\prop\EiProp;
+use rocket\ui\gui\field\GuiFieldKey;
 
 class EiPropPath extends IdPath {
 
@@ -47,7 +48,11 @@ class EiPropPath extends IdPath {
 		array_pop($ids);
 		return new EiPropPath($ids);
 	}
-	
+
+	function toGuiFieldKey(): GuiFieldKey {
+		return new GuiFieldKey((string) $this);
+	}
+
 	/**
 	 * @param EiPropNature $eiProp
 	 * @return EiPropPath

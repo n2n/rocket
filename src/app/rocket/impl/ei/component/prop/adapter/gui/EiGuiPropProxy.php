@@ -31,15 +31,17 @@ use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\ui\gui\GuiProp;
 use rocket\op\ei\manage\gui\DisplayDefinition;
 use rocket\op\ei\manage\DefPropPath;
+use rocket\op\ei\manage\gui\EiGuiPropMap;
 
 /**
  * Don't use this class directly. Use factory methods of {@see GuiFields}.  
  */
 class EiGuiPropProxy implements EiGuiProp {
 
-	
 	/**
-	 * @param \Closure $closure
+	 * @param GuiProp $guiProp
+	 * @param \Closure $guiFieldCallback
+	 * @param DisplayDefinition|null $displayDefinition
 	 */
 	function __construct(private GuiProp $guiProp, private \Closure $guiFieldCallback, private ?DisplayDefinition $displayDefinition) {
 	}
@@ -81,7 +83,7 @@ class EiGuiPropProxy implements EiGuiProp {
 //		return null;
 	}
 	
-	function getForkEiGuiDefinition(): ?EiGuiDefinition {
+	function getForkEiGuiPropMap(): ?EiGuiPropMap {
 		return null;
 	}
 

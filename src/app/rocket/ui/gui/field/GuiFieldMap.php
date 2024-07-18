@@ -26,6 +26,7 @@ use rocket\op\ei\EiPropPath;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\gui\EiGuiException;
 use n2n\core\container\N2nContext;
+use rocket\ui\gui\control\GuiControlKey;
 
 class GuiFieldMap {
 // 	private $eiGuiValueBoundary;
@@ -78,8 +79,8 @@ class GuiFieldMap {
 	 * @param GuiFieldPath $parentGuiPath
 	 */
 	private function rAllGuiFields(array &$guiFields, GuiFieldMap $guiFieldMap, GuiFieldPath $parentGuiPath): void {
-		foreach ($guiFieldMap->getGuiFields() as $fieldName => $guiField) {
-			$guiPath = $parentGuiPath->ext($fieldName);
+		foreach ($guiFieldMap->getGuiFields() as $guiFieldKeyStr => $guiField) {
+			$guiPath = $parentGuiPath->ext(new GuiFieldKey($guiFieldKeyStr));
 			
 			$guiFields[(string) $guiPath] = $guiField;
 			
@@ -93,23 +94,21 @@ class GuiFieldMap {
 	 * @param DefPropPath $defPropPath
 	 * @param GuiField $guiField
 	 */
-	function putGuiField(string $fieldName, GuiField $guiField): static {
+	function putGuiField(GuiFieldKey $key, GuiField $guiField): static {
 		$this->ensureNotInitialized();
 
-		GuiFieldPath::valFieldId($fieldName);
+		$keyStr = (string) $key;
 		
-		$key = (string) $fieldName;
-		
-		if (isset($this->guiFields[$key])) {
-			throw new IllegalStateException('Field id already initialized: ' . $key);
+		if (isset($this->guiFields[$keyStr])) {
+			throw new IllegalStateException('Field id already initialized: ' . $keyStr);
 		}
 		
-		$this->guiFields[$key] = $guiField;
+		$this->guiFields[$keyStr] = $guiField;
 		return $this;
 	}
 	
-	function containsFieldName(string $fieldName): bool {
-		return isset($this->guiFields[$fieldName]);
+	function containsKey(GuiFieldKey $key): bool {
+		return isset($this->guiFields[$key]);
 	}
 	
 //	/**

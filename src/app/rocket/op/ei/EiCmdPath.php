@@ -26,11 +26,16 @@ use n2n\util\type\ArgUtils;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\util\spec\EiuCmd;
 use n2n\util\ex\IllegalStateException;
+use rocket\ui\gui\control\GuiControlKey;
 
 class EiCmdPath extends IdPath {
-	
-	public function __construct(string $id) {
-		parent::__construct([$id]);
+
+	public function ext(...$args): EiCmdPath {
+		return new EiCmdPath(array_merge($this->ids, $this->argsToIds($args)));
+	}
+
+	function toGuiControlKey(): GuiControlKey {
+		return new GuiControlKey((string) $this);
 	}
 
 	public static function from(EiCmd $eiCmd): EiCmdPath {
@@ -51,7 +56,7 @@ class EiCmdPath extends IdPath {
 		}
 
 		if (is_string($expression)) {
-			return new EiCmdPath($expression);
+			return new EiCmdPath([$expression]);
 		}
 	
 		throw new IllegalStateException();

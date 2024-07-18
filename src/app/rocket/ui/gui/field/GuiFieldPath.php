@@ -25,46 +25,26 @@ namespace rocket\ui\gui\field;
 use n2n\util\col\Hashable;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use n2n\util\StringUtils;
-use rocket\ui\gui\InvalidArgumentException;
 
 class GuiFieldPath implements Hashable {
-	const FIELD_NAME_SEPARATOR = '/';
+
 
 	/**
-	 * @var string[]
+	 * @param GuiFieldKey[] $keys
 	 */
-	protected array $fieldNames = array();
-
-	/**
-	 * @param string[] $fieldNames
-	 */
-	public function __construct(array $fieldNames) {
-		ArgUtils::valArray($fieldNames, 'string');
-
-		foreach ($fieldNames as $fieldName) {
-			self::valFieldId($fieldName);
-			$this->fieldNames[] = $fieldName;
-		}
-	}
-
-	static function valFieldId(string $fieldName): void {
-		if (!StringUtils::contains(self::FIELD_NAME_SEPARATOR,  $fieldName)) {
-			return;
-		}
-
-		throw new InvalidArgumentException('GuiPath contains invalid field id:' . $fieldName);
+	public function __construct(private array $keys) {
+		ArgUtils::valArray($keys, GuiFieldKey::class);
 	}
 
 	/**
 	 * @return int
 	 */
 	public function size(): int {
-		return count($this->fieldNames);
+		return count($this->keys);
 	}
 
 	public function isEmpty(): bool {
-		return empty($this->fieldNames);
+		return empty($this->keys);
 	}
 
 	protected function ensureNotEmpty(): void {
@@ -73,22 +53,22 @@ class GuiFieldPath implements Hashable {
 		throw new IllegalStateException('GuiPath is empty.');
 	}
 
-	function ext(string $fieldName): GuiFieldPath {
-		self::valFieldId($fieldName);
+	function ext(GuiFieldKey $key): GuiFieldPath {
+		GuiFieldKey::val($key);
 		$guiPath = new GuiFieldPath([]);
-		$guiPath->fieldNames = [...$this->fieldNames, $fieldName];
+		$guiPath->keys = [...$this->keys, $key];
 		return $guiPath;
 	}
 
 	/**
-	 * @return string[]
+	 * @return GuiFieldKey[]
 	 */
-	public function toArray() {
-		return $this->fieldNames;
+	public function toArray(): array {
+		return $this->keys;
 	}
 
 	public function __toString() {
-		return implode(self::FIELD_NAME_SEPARATOR, $this->fieldNames);
+		return implode(GuiFieldKey::SEPARATOR, $this->keys);
 	}
 
 	public function hashCode(): string {

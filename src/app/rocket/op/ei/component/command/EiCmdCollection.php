@@ -64,7 +64,7 @@ class EiCmdCollection extends EiComponentCollection {
 	 * @return EiCmd
 	 */
 	public function add(?string $id, EiCmdNature $eiCmd): EiCmd {
-		$eiCmdPath = new EiCmdPath($this->makeId($id, $eiCmd));
+		$eiCmdPath = new EiCmdPath([$this->makeId($id, $eiCmd)]);
 		$eiCmd = new EiCmd($eiCmdPath, $eiCmd, $this);
 		
 		$this->addEiComponent($eiCmdPath, $eiCmd);
@@ -199,12 +199,13 @@ class EiCmdCollection extends EiComponentCollection {
 	function supplyEiGuiDefinition(EiGuiDefinition $guiDefinition) {
 		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
+		$eiGuiCmdMap = $guiDefinition->getEiGuiCmdMap();
 		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {
 			$eiCmdPath = $eiCmd->getEiCmdPath();
 
 			if (null !== ($guiCommand = $eiCmd->getNature()
 							->buildEiGuiCommand(new Eiu($this->eiMask, $eiCmdPath)))) {
-				$guiDefinition->putEiGuiCommand($eiCmdPath, $guiCommand);
+				$eiGuiCmdMap->putEiGuiCmd($eiCmdPath, $guiCommand);
 			}
 		}
 	}

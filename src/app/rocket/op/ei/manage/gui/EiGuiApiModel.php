@@ -74,8 +74,8 @@ class EiGuiApiModel implements GuiApiModel {
 		$eiSiMaskId = $this->parseEiSiMaskId($maskId);
 		$eiMask = $this->determineGuiMaskByEiTypePath($eiSiMaskId->eiTypePath);
 
-		$factory = new EiGuiMaskFactory($eiMask->getEiEngine()->getEiGuiDefinition($eiSiMaskId->viewMode));
-		return $factory->createGuiMask($this->eiFrame->getN2nContext()->getN2nLocale());
+		$eiGuiDefinition = ($eiMask->getEiEngine()->getEiGuiDefinition($eiSiMaskId->viewMode));
+		return $eiGuiDefinition->createGuiMask($this->eiFrame);
 	}
 
 	function lookupGuiValueBoundary(string $maskId, string $entryId): GuiValueBoundary {

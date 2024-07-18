@@ -27,6 +27,7 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\component\prop\EiPropNature;
 use n2n\util\col\Hashable;
 use n2n\util\type\TypeUtils;
+use rocket\ui\gui\field\GuiFieldPath;
 
 class DefPropPath implements Hashable {
 	const EI_PROP_PATH_SEPARATOR = '/';
@@ -174,6 +175,10 @@ class DefPropPath implements Hashable {
 		
 		$defPropPath->eiPropPaths[] = EiPropPath::create($ext);
 		return $defPropPath;
+	}
+
+	function toGuiFieldPath(): GuiFieldPath {
+		return new GuiFieldPath(array_map(fn (EiPropPath $p) => $p->toGuiFieldKey(), $this->eiPropPaths));
 	}
 	
 	/**

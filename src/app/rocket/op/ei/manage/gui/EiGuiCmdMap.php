@@ -29,15 +29,24 @@ use n2n\util\uri\Url;
 use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\manage\gui\EiGuiCmd;
 use rocket\op\ei\manage\gui\EiGuiCmdWrapper;
+use rocket\op\ei\manage\frame\EiFrame;
+use rocket\ui\gui\control\GuiControlMap;
+use rocket\op\ei\util\Eiu;
+use n2n\core\container\N2nContext;
+use rocket\ui\gui\control\GuiControlKey;
+use n2n\util\type\ArgUtils;
+use rocket\op\ei\EiPropPath;
+use rocket\op\ei\component\InvalidEiConfigurationException;
+use rocket\op\ei\manage\entry\EiEntry;
 
 class EiGuiCmdMap {
 
 	/**
 	 * @var EiGuiCmdWrapper[]
 	 */
-	private array $guiControlWrappers = [];
+	private array $eiGuiCmdWrappers = [];
 
-	function __construct() {
+	function __construct(private EiGuiDefinition $eiGuiDefinition) {
 
 	}
 
@@ -48,9 +57,37 @@ class EiGuiCmdMap {
 //	}
 
 	function putEiGuiCmd(EiCmdPath $eiCmdPath, EiGuiCmd $eiGuiCmd): void {
-		$this->guiControlWrappers[(string) $eiCmdPath] = new EiGuiCmdWrapper($eiCmdPath, $eiGuiCmd);
+		$this->eiGuiCmdWrappers[(string) $eiCmdPath] = new EiGuiCmdWrapper($eiCmdPath, $eiGuiCmd);
 	}
 
+
+	function createGeneralGuiControlsMap(EiFrame $eiFrame): GuiControlMap {
+		$guiControlsMap = new GuiControlMap();
+
+		foreach ($this->eiGuiCmdWrappers as $eiGuiCmdWrapper) {
+			foreach ($eiGuiCmdWrapper->createGeneralGuiControls($this->eiGuiDefinition, $eiFrame)
+					 as $key => $guiControl) {
+				$guiControlsMap->putGuiControl($eiGuiCmdWrapper->getEiCmdPath()->ext($key)->toGuiControlKey(),
+						$guiControl);
+			}
+		}
+
+		return $guiControlsMap;
+	}
+
+	function createEntryGuiControlsMap(EiFrame $eiFrame, EiEntry $eiEntry): GuiControlMap {
+		$guiControlsMap = new GuiControlMap();
+
+		foreach ($this->eiGuiCmdWrappers as $eiGuiCmdWrapper) {
+			foreach ($eiGuiCmdWrapper->createEntryGuiControls($this->eiGuiDefinition, $eiFrame, $eiEntry)
+					 as $key => $guiControl) {
+				$guiControlsMap->putGuiControl($eiGuiCmdWrapper->getEiCmdPath()->ext($key)->toGuiControlKey(),
+						$guiControl);
+			}
+		}
+
+		return $guiControlsMap;
+	}
 
 
 //	/**
@@ -63,8 +100,8 @@ class EiGuiCmdMap {
 	/**
 	 * @return GuiControl[]
 	 */
-	function getGuiControlWrappers(): array {
-		return $this->guiControlWrappers;
+	function getEiGuiCmdWrappers(): array {
+		return $this->eiGuiCmdWrappers;
 	}
 
 }

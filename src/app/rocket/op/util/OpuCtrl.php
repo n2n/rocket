@@ -65,6 +65,7 @@ use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\op\ei\manage\gui\EiGuiMaskFactory;
+use rocket\ui\gui\control\GuiControlKey;
 
 class OpuCtrl {
 
@@ -235,8 +236,7 @@ class OpuCtrl {
 
 		$viewMode = ViewMode::determine(true, $readOnly, false);
 		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($viewMode);
-		$eiGuiMaskFactory = new EiGuiMaskFactory($eiGuiDefinition);
-		$guiMask = $eiGuiMaskFactory->createGuiMask($eiFrame->getN2nContext()->getN2nLocale());
+		$guiMask = $eiGuiDefinition->createGuiMask($eiFrame);
 
 		$factory = new EiGuiValueBoundaryFactory($eiFrame);
 		$guiValueBoundary = $factory->create(null, [$eiEntry], $viewMode);
@@ -248,7 +248,7 @@ class OpuCtrl {
 
 		$zoneGuiControlsMap = new GuiControlMap();
 		foreach ($zoneGuiControls as $controlName => $guiControl) {
-			$zoneGuiControlsMap->putGuiControl($controlName, $guiControl);
+			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
 		}
 
 		$eiGui = new BulkyGui($eiFrame->createSiFrame(), new SiDeclaration([$guiMask->getSiMask()]),

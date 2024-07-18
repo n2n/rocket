@@ -43,8 +43,8 @@ class GuiControlMap {
 //				$apiUrl, $apiControlCallId);
 //	}
 
-	function putGuiControl(string $controlName, GuiControl $guiControl): void {
-		$this->guiControls[$controlName] = $guiControl;
+	function putGuiControl(GuiControlKey $guiControlKey, GuiControl $guiControl): void {
+		$this->guiControls[(string) $guiControlKey] = $guiControl;
 	}
 
 //	/**

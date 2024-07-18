@@ -17,6 +17,7 @@ use rocket\op\ei\manage\api\ApiController;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\field\GuiFieldPath;
+use rocket\ui\gui\control\GuiControlPath;
 
 /**
  * @author andreas
@@ -28,6 +29,10 @@ class GuiMask {
 	 * @var GuiStructureDeclaration[]
 	 */
 	private ?array $guiStructureDeclarations = null;
+
+
+
+	private GuiControlMap $guiControlMap;
 
 //	private array $defPropPaths = [];
 //	/**
@@ -66,10 +71,10 @@ class GuiMask {
 		$siStructureDeclarations = [];
 
 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-			if ($guiStructureDeclaration->hasDefPropPath()) {
+			if ($guiStructureDeclaration->hasGuiFieldPath()) {
 				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
 						$guiStructureDeclaration->getSiStructureType(),
-						$guiStructureDeclaration->getDefPropPath());
+						$guiStructureDeclaration->getGuiFieldPath());
 				continue;
 			}
 
@@ -96,10 +101,18 @@ class GuiMask {
 		$this->siMask->putProp((string) $guiFieldPath, $guiProp->getSiProp());
 	}
 
-	function putGuiControl(EiGuiControlName $guiControlPath, GuiControl $guiControl): void {
+	function putGuiControl(GuiControlPath $guiControlPath, GuiControl $guiControl): void {
 		$this->ensureNotInit();
 
 		$this->siMask->putControl((string) $guiControlPath, $guiControl->getSiControl());
+	}
+
+	function setGuiControlMap(GuiControlMap $guiControlMap) {
+		$this->guiControlMap = $guiControlMap;
+	}
+
+	function getGuiControlMap(): ?GuiControlMap {
+		return $this->guiControlMap;
 	}
 
 //	/**
@@ -122,7 +135,7 @@ class GuiMask {
 //	/**
 //	 * @return DefPropPath[]
 //	 */
-//	function getDefPropPaths(): array {
+//	function getGuiFieldPaths(): array {
 //		return $this->defPropPaths;
 //	}
 	
@@ -149,10 +162,10 @@ class GuiMask {
 //		$siStructureDeclarations = [];
 //
 //		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-//			if ($guiStructureDeclaration->hasDefPropPath()) {
+//			if ($guiStructureDeclaration->hasGuiFieldPath()) {
 //				$siStructureDeclarations[] = SiStructureDeclaration::createProp(
 //						$guiStructureDeclaration->getSiStructureType(),
-//						$guiStructureDeclaration->getDefPropPath());
+//						$guiStructureDeclaration->getGuiFieldPath());
 //				continue;
 //			}
 //
@@ -206,7 +219,7 @@ class GuiMask {
 	
 // 	function getRootEiPropPaths() {
 // 		$eiPropPaths = [];
-// 		foreach ($this->getDefPropPaths() as $defPropPath) {
+// 		foreach ($this->getGuiFieldPaths() as $defPropPath) {
 // 			$eiPropPath = $defPropPath->getFirstEiPropPath();
 // 			$eiPropPaths[(string) $eiPropPath] = $eiPropPath;
 // 		}
@@ -273,7 +286,7 @@ class GuiMask {
 // 	 * @return SiProp
 // 	 */
 // 	private function createSiProp(GuiStructureDeclaration $guiStructureDeclaration) {
-// 		return new SiProp($guiStructureDeclaration->getDefPropPath(),
+// 		return new SiProp($guiStructureDeclaration->getGuiFieldPath(),
 // 				$guiStructureDeclaration->getLabel(), $guiStructureDeclaration->getHelpText());
 // 	}
 	
@@ -295,9 +308,9 @@ class GuiMask {
 // 		$siStructureDeclarations = [];
 		
 // 		foreach ($guiStructureDeclarations as $guiStructureDeclaration) {
-// 			if ($guiStructureDeclaration->hasDefPropPath()) {
+// 			if ($guiStructureDeclaration->hasGuiFieldPath()) {
 // 				$siStructureDeclarations[] = new SiStructureDeclaration($guiStructureDeclaration->getSiStructureType(),
-// 						$guiStructureDeclaration->getDefPropPath(), $guiStructureDeclaration->getLabel(), 
+// 						$guiStructureDeclaration->getGuiFieldPath(), $guiStructureDeclaration->getLabel(), 
 // 						$guiStructureDeclaration->getHelpText());
 // 				continue;
 // 			}
@@ -316,7 +329,7 @@ class GuiMask {
 // 	 */
 // 	function getForkedDefPropPathsByEiPropPath(EiPropPath $forkEiPropPath) {
 // 		$forkDefPropPaths = [];
-// 		foreach ($this->getDefPropPaths() as $defPropPath) {
+// 		foreach ($this->getGuiFieldPaths() as $defPropPath) {
 // 			if ($defPropPath->getFirstEiPropPath()->equals($eiPropPath)) {
 // 				continue;
 // 			}

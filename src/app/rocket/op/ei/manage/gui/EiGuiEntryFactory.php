@@ -138,22 +138,15 @@ class EiGuiEntryFactory {
 		}
 
 		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($viewMode);
-		$eiGuiMaskFactory = new EiGuiMaskFactory($eiGuiDefinition);
-		$guiEntry = new GuiEntry(new SiEntryQualifier($eiGuiMaskFactory->createSiMaskIdentifier(), $pid, $idName));
+		$guiEntry = new GuiEntry(new SiEntryQualifier($eiGuiDefinition->createSiMaskIdentifier(), $pid, $idName));
 		$guiEntry->setModel($eiEntry);
 		
-		$guiFieldMap = new GuiFieldMap();
-		foreach ($eiGuiDefinition->getEiPropPaths() as $eiPropPath) {
-			$guiField = $this->buildGuiField($eiGuiDefinition, $guiEntry, $eiEntry, $eiPropPath);
-			
-			if ($guiField !== null) {
-				$guiFieldMap->putGuiField($eiPropPath, $guiField);	
-			}
-		}
+		$guiFieldMap = $eiGuiDefinition->getEiGuiPropMap()->createGuiFieldMap($this->eiFrame, $eiEntry);
+
 
 		$guiControlMap = null;
 		if ($entryGuiControlsIncluded) {
-			$guiControlMap = $eiGuiDefinition->createEntryGuiControlsMap($this->eiFrame, $eiEntry);
+			$guiControlMap = $eiGuiDefinition->getEiGuiCmdMap()->createEntryGuiControlsMap($this->eiFrame, $eiEntry);
 		}
 
 		$guiEntry->init($guiFieldMap, $guiControlMap);
@@ -162,27 +155,7 @@ class EiGuiEntryFactory {
 	}
 	
 
-	private function buildGuiField(EiGuiDefinition $eiGuiDefinition,
-			GuiEntry $guiEntry, EiEntry $eiEntry, EiPropPath $eiPropPath): ?GuiField {
-		$readOnly = ViewMode::isReadOnly($eiGuiDefinition->getViewMode())
-				|| !$eiEntry->getEiEntryAccess()->isEiPropWritable($eiPropPath);
-		
-		$eiu = new Eiu($this->eiFrame, $eiGuiDefinition, $eiEntry, $eiPropPath, new DefPropPath([$eiPropPath]));
-				
-		$eiGuiField = $eiGuiDefinition->getGuiPropWrapper($eiPropPath)->buildGuiField($this->eiFrame, $eiEntry, $readOnly, null);
-		
-		if ($eiGuiField === null) {
-			return null;
-		}
-				
-		$guiField = $eiGuiField/*->getGuiField()*/;
-		$siField = $guiField->getSiField();
-		if ($siField === null || !$readOnly || $siField->isReadOnly()) {
-			return $guiField;
-		}
-		
-		throw new EiGuiBuildFailedException('GuiField of ' . $eiPropPath . ' must have a read-only SiField.');
-	}
+
 
 	
 // 	static function createGuiFieldMap(EiGuiValueBoundary $eiGuiValueBoundary, DefPropPath $baseDefPropPath) {

@@ -45,7 +45,7 @@ class EditController extends ControllerAdapter {
 		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
 	
-	public function index($pid) {
+	public function index($pid): void {
 		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		
 		$this->opuCtrl->pushOverviewBreadcrumb()

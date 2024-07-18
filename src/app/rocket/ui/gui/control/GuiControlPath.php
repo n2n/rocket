@@ -28,42 +28,24 @@ use n2n\util\ex\IllegalStateException;
 use n2n\util\StringUtils;
 
 class GuiControlPath implements Hashable {
-	const FIELD_NAME_SEPARATOR = '/';
+
 
 	/**
-	 * @var string[]
+	 * @param GuiControlKey[] $keys
 	 */
-	protected array $fieldNames = array();
-
-	/**
-	 * @param string[] $fieldNames
-	 */
-	public function __construct(array $fieldNames) {
-		ArgUtils::valArray($fieldNames, 'scalar');
-
-		foreach ($fieldNames as $fieldName) {
-			self::valFieldId($fieldName);
-			$this->fieldNames[] = (string) $fieldName;
-		}
-	}
-
-	static function valFieldId(string $fieldName): void {
-		if (!StringUtils::contains(self::FIELD_NAME_SEPARATOR,  $fieldName)) {
-			return;
-		}
-
-		throw new InvalidArgumentException('GuiPath contains invalid field id:' . $fieldName);
+	public function __construct(private array $keys) {
+		ArgUtils::valArray($keys, GuiControlKey::class);
 	}
 
 	/**
 	 * @return int
 	 */
 	public function size(): int {
-		return count($this->fieldNames);
+		return count($this->keys);
 	}
 
 	public function isEmpty(): bool {
-		return empty($this->fieldNames);
+		return empty($this->keys);
 	}
 
 	protected function ensureNotEmpty(): void {
@@ -72,22 +54,22 @@ class GuiControlPath implements Hashable {
 		throw new IllegalStateException('GuiPath is empty.');
 	}
 
-	function ext(string $fieldName): GuiControlPath {
-		self::valFieldId($fieldName);
+	function ext(GuiControlKey $key): GuiControlPath {
+		GuiControlKey::val($key);
 		$guiPath = new GuiControlPath([]);
-		$guiPath->fieldNames = [...$this->fieldNames, $fieldName];
+		$guiPath->keys = [...$this->keys, $key];
 		return $guiPath;
 	}
 
 	/**
-	 * @return string[]
+	 * @return GuiControlKey[]
 	 */
-	public function toArray() {
-		return $this->fieldNames;
+	public function toArray(): array {
+		return $this->key;
 	}
 
 	public function __toString() {
-		return implode(self::FIELD_NAME_SEPARATOR, $this->fieldNames);
+		return implode(GuiControlKey::SEPARATOR, $this->fieldNames);
 	}
 
 	public function hashCode(): string {

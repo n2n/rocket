@@ -40,13 +40,7 @@ interface EiGuiProp {
 	 */
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField;
 
-
-	/**
-	 * @return \rocket\ui\gui\EiGuiDefinition|NULL
-	 */
-	function getForkEiGuiDefinition(): ?EiGuiDefinition;
-
-
+	function getForkEiGuiPropMap(): ?EiGuiPropMap;
 
 	function getDisplayDefinition(): ?DisplayDefinition;
 

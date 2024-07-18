@@ -30,6 +30,9 @@ use rocket\ui\gui\UnresolvableDefPropPathExceptionEi;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\GuiProp;
+use rocket\ui\gui\GuiEntry;
+use rocket\ui\gui\ViewMode;
 
 class EiGuiPropWrapper {
 
@@ -48,7 +51,15 @@ class EiGuiPropWrapper {
 	function getDisplayDefinition(): ?DisplayDefinition {
 		return $this->eiGuiProp->getDisplayDefinition();
 	}
-	
+
+	function getGuiProp(): GuiProp {
+		return $this->eiGuiProp->getGuiProp();
+	}
+
+	function getChildEiGuiPropMap(): ?EiGuiPropMap {
+		return $this->eiGuiProp->getForkEiGuiPropMap();
+	}
+
 //	/**
 //	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
 //	 * @return DisplayDefinition|null
@@ -79,7 +90,7 @@ class EiGuiPropWrapper {
 //	}
 	
 	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-		return $this->eiGuiProp->getForkEiGuiDefinition()->getEiGuiPropWrapperByDefPropPath($forkedDefPropPath)
+		return $this->eiGuiProp->getForkEiGuiPropMap()->getEiGuiPropWrapperByDefPropPath($forkedDefPropPath)
 				->buildDisplayDefinition($eiGuiMaskDeclaration, $defaultDisplayedRequired);
 	}
 	
@@ -87,7 +98,7 @@ class EiGuiPropWrapper {
 	 * @return DefPropPath[]
 	 */
 	function getForkedDefPropPaths() {
-		$forkEiGuiDefinition = $this->eiGuiProp->getForkEiGuiDefinition();
+		$forkEiGuiDefinition = $this->eiGuiProp->getForkEiGuiPropMap();
 		
 		if ($forkEiGuiDefinition === null) {
 			return [];
@@ -109,20 +120,30 @@ class EiGuiPropWrapper {
 		throw new UnresolvableDefPropPathExceptionEi('GuiProp ' . $defPropPath . ' not found.');
 	}
 
-	/**
-	 * @param N2nContext $n2nContext
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param array|null $forkedDefPropPaths
-	 * @return EiGuiPropSetup
-	 */
-	function buildGuiField(EiFrame $eiFrame, EiEntry $eiEntry, bool $readOnly, ?array $forkedDefPropPaths): ?GuiField {
-		return $this->eiGuiProp->buildGuiField(new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiPropPath), $readOnly);
+	function buildGuiField(EiFrame $eiFrame, EiEntry $eiEntry, ?array $forkedDefPropPaths): ?GuiField {
+		$readOnly = ViewMode::isReadOnly($this->eiGuiDefinition->getViewMode())
+				|| !$eiEntry->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
+		$eiu = new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiPropPath, new DefPropPath([$this->eiPropPath]));
+		$guiField = $this->eiGuiProp->buildGuiField($eiu, $readOnly);
+
+		if ($guiField === null) {
+			return null;
+		}
+
+		$siField = $guiField->getSiField();
+		if ($siField === null || !$readOnly || $siField->isReadOnly()) {
+			return $guiField;
+		}
+
+		throw new EiGuiBuildFailedException('GuiField of ' . $this . ' must have a read-only SiField.');
 	}
-	
 
 	function getEiProp(): EiProp {
 		return $this->eiGuiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiPropPath);
 	}
-	
+
+	function __toString(): string {
+		return (string) $this->eiPropPath;
+	}
 	
 }

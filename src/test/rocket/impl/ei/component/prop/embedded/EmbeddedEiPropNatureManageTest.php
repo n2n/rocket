@@ -112,7 +112,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 		$siGuiValueBoundaryInput = new SiValueBoundaryInput(
 				$eiGuiValueBoundary->getSiValueBoundary()->getSelectedMaskId(),
 				$siEntryInput);
-		$guiFieldPath = new GuiFieldPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->__toString()]);
+		$guiFieldPath = new GuiFieldPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->toGuiFieldKey()]);
 		$siEntryInput->putFieldInput($guiFieldPath->__toString(), new SiFieldInput(['value' => 'some value']));
 
 		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleInput($siGuiValueBoundaryInput,

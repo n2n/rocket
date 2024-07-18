@@ -237,12 +237,13 @@ class EiPropCollection extends EiComponentCollection {
 	function supplyEiGuiDefinition(EiGuiDefinition $guiDefinition, N2nContext $n2nContext): void {
 		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
+		$eiGuiPropMap = $guiDefinition->getEiGuiPropMap();
 		foreach ($this as $eiProp) {
 			$eiPropPath = $eiProp->getEiPropPath();
 			$eiu = new Eiu($n2nContext, $this->eiMask, $eiPropPath, $guiDefinition);
 
 			if (null !== ($guiProp = $eiProp->getNature()->buildGuiProp($eiu))) {
-				$guiDefinition->putEiGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
+				$eiGuiPropMap->putEiGuiProp($eiPropPath, $guiProp, EiPropPath::from($eiProp));
 			}
 		}
 	}

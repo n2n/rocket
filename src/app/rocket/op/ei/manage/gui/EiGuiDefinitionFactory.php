@@ -165,16 +165,11 @@ class EiGuiDefinitionFactory {
 // 		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
 
 		$guiStructureDeclarations = [];
-		foreach ($eiGuiDefinition->getDefPropPaths() as $defPropPath) {
-			$eiGuiPropWrapper = $eiGuiDefinition->getEiGuiPropWrapperByDefPropPath($defPropPath);
+		foreach ($eiGuiDefinition->getEiGuiPropMap()->compileAllDefaultDisplayDefinitions() as $defPropPathStr => $displayDefinition) {
+			$guiFieldPath = DefPropPath::create($defPropPathStr)->toGuiFieldPath();
 
-			$displayDefinition = $eiGuiPropWrapper->getDisplayDefinition();
-			if (null === $displayDefinition || !$displayDefinition->isDefaultDisplayed()) {
-				continue;
-			}
-
-			$guiStructureDeclarations[(string) $defPropPath] = GuiStructureDeclaration
-					::createField($defPropPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+			$guiStructureDeclarations[(string) $guiFieldPath] = GuiStructureDeclaration
+					::createField($guiFieldPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 		}
 
 		return $guiStructureDeclarations;

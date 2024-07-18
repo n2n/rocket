@@ -42,9 +42,4 @@ interface EiGuiCmd {
 	 * @return GuiControl[]
 	 */
 	public function createEntryGuiControls(Eiu $eiu): array;
-
-	/**
-	 * @return EiGuiCmdMap[]
-	 */
-	function getForkEiGuiCmdMap(): EiGuiCmdMap;
 }

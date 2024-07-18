@@ -128,7 +128,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	
 	public function createGeneralGuiControls(Eiu $eiu): array {
 		if ($eiu->frame()->isExecutedBy($eiu->cmd())
-				|| $eiu->guiMaskDeclaration()->isBulky()) {
+				|| $eiu->guiDefinition()->isBulky()) {
 			return [];
 		}
 		

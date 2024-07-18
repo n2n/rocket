@@ -22,14 +22,14 @@
 namespace rocket\ui\gui;
 
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\manage\DefPropPath;
+use rocket\ui\gui\field\GuiFieldPath ;
 use n2n\util\ex\UnsupportedOperationException;
 
 class GuiStructureDeclaration {
 	private ?string $label = null;
 	private ?string $helpText = null;
 	private ?string $siStructureType = null;
-	private ?DefPropPath $defPropPath = null;
+	private ?GuiFieldPath $guiFieldPath = null;
 	private ?array $children = null;
 	
 	private function __construct() {
@@ -39,7 +39,7 @@ class GuiStructureDeclaration {
 	 * @return string|null
 	 */
 	function getLabel() {
-		UnsupportedOperationException::assertTrue($this->defPropPath === null);
+		UnsupportedOperationException::assertTrue($this->guiFieldPath === null);
 		
 		return $this->label;
 	}
@@ -48,7 +48,7 @@ class GuiStructureDeclaration {
 	 * @return string|null
 	 */
 	function getHelpText() {
-		UnsupportedOperationException::assertTrue($this->defPropPath === null);
+		UnsupportedOperationException::assertTrue($this->guiFieldPath === null);
 		
 		return $this->helpText;
 	}
@@ -60,17 +60,17 @@ class GuiStructureDeclaration {
 		return $this->siStructureType;
 	}
 	
-	function hasDefPropPath() {
-		return $this->defPropPath !== null;
+	function hasGuiFieldPath() {
+		return $this->guiFieldPath !== null;
 	}
 	
 	/**
-	 * @return DefPropPath
+	 * @return GuiFieldPath
 	 */
-	function getDefPropPath() {
-		UnsupportedOperationException::assertTrue($this->defPropPath !== null);
+	function getGuiFieldPath() {
+		UnsupportedOperationException::assertTrue($this->guiFieldPath !== null);
 		
-		return $this->defPropPath;
+		return $this->guiFieldPath;
 	}
 	
 	
@@ -96,29 +96,29 @@ class GuiStructureDeclaration {
 		$this->children[] = $child;
 	}
 	
-	function getAllDefPropPaths() {
-		if ($this->defPropPath !== null) {
-			return [(string) $this->defPropPath => $this->defPropPath];
+	function getAllGuiFieldPaths() {
+		if ($this->guiFieldPath !== null) {
+			return [(string) $this->guiFieldPath => $this->guiFieldPath];
 		}
 		
-		$defPropPaths = [];
+		$guiFieldPaths = [];
 		foreach ($this->children as $child) {
-			$defPropPaths = array_merge($defPropPaths, $child->getAllDefPropPaths());
+			$guiFieldPaths = array_merge($guiFieldPaths, $child->getAllGuiFieldPaths());
 		}
-		return $defPropPaths;
+		return $guiFieldPaths;
 	}
 	
 	/**
 	 * @param string $siStructureType
-	 * @param DefPropPath $defPropPath
+	 * @param GuiFieldPath $guiFieldPath
 	 * @param string|null $label
 	 * @param string|null $helpText
 	 * @return GuiStructureDeclaration
 	 */
-	static function createField(DefPropPath $defPropPath, string $siStructureType) {
+	static function createField(GuiFieldPath $guiFieldPath, string $siStructureType) {
 		$gsd = new GuiStructureDeclaration();
 		$gsd->siStructureType = $siStructureType;
-		$gsd->defPropPath = $defPropPath;
+		$gsd->guiFieldPath = $guiFieldPath;
 		return $gsd;
 	}
 	

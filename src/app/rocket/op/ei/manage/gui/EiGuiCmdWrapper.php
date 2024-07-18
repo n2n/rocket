@@ -33,16 +33,16 @@ use rocket\ui\gui\field\GuiField;
 use rocket\ui\gui\control\GuiControl;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\EiCmdPath;
+use n2n\util\type\ArgUtils;
+use rocket\op\ei\component\InvalidEiConfigurationException;
+use n2n\util\type\TypeUtils;
 
 class EiGuiCmdWrapper {
 
 	function __construct(private EiCmdPath $eiCmdPath, private EiGuiCmd $eiGuiCmd) {
 	}
-	
-	/**
-	 * @return EiPropPath
-	 */
-	function getEiCmdPath(): EiPropPath {
+
+	function getEiCmdPath(): EiCmdPath {
 		return $this->eiCmdPath;
 	}
 
@@ -51,95 +51,36 @@ class EiGuiCmdWrapper {
 	 * @param N2nContext $n2nContext
 	 * @return GuiControl[]
 	 */
-	function createGeneralGuiControls(EiGuiDefinition $eiGuiDefinition, N2nContext $n2nContext): array {
-		return $this->eiGuiCmd->createGeneralGuiControls(new Eiu($eiGuiDefinition, $n2nContext));
+	function createGeneralGuiControls(EiGuiDefinition $eiGuiDefinition, EiFrame $eiFrame): array {
+		$guiControls = $this->eiGuiCmd->createGeneralGuiControls(new Eiu($this->eiCmdPath, $eiGuiDefinition, $eiFrame));
+		$this->valReturn($guiControls, 'createGeneralGuiControls');
+		return $guiControls;
 	}
 
 	/**
+	 * @param EiGuiDefinition $eiGuiDefinition
 	 * @param EiFrame $eiFrame
 	 * @param EiEntry $eiEntry
 	 * @return GuiControl[]
 	 */
-	function createEntryGuiControls(EiFrame $eiFrame, EiEntry $eiEntry): array {
-		return $this->eiGuiCmd->createEntryGuiControls(new Eiu($eiGuiDefinition, $eiFrame, $eiEntry));
+	function createEntryGuiControls(EiGuiDefinition $eiGuiDefinition, EiFrame $eiFrame, EiEntry $eiEntry): array {
+		$guiControls =  $this->eiGuiCmd->createEntryGuiControls(new Eiu($this->eiCmdPath, $eiGuiDefinition, $eiFrame, $eiEntry));
+		$this->valReturn($guiControls, 'createEntryGuiControls');
+		return $guiControls;
 	}
 
+	private function valReturn(array $guiControls, string $methodName): void {
+		ArgUtils::valArrayReturn($guiControls, $this->eiGuiCmd, $methodName);
+		foreach ($guiControls as $key => $guiControl) {
+			if (!EiPropPath::constainsSpecialIdChars($key)) {
+				continue;
+			}
 
-	
-//	/**
-//	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-//	 * @return DisplayDefinition|null
-//	 */
-//	function buildDisplayDefinition(EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-//		$displayDefinition = $this->eiGuiProp->buildDisplayDefinition(new Eiu($eiGuiMaskDeclaration, $this->eiPropPath));
-//
-//		if ($displayDefinition === null || ($defaultDisplayedRequired && !$displayDefinition->isDefaultDisplayed())) {
-//			return null;
-//		}
-//
-//		if ($displayDefinition->getOverwriteLabel() !== null && $displayDefinition->getOverwriteLabel() !== null) {
-//			return $displayDefinition;
-//		}
-//
-//		$n2nLocale = $eiGuiMaskDeclaration->getEiFrame()->getN2nContext()->getN2nLocale();
-//
-//		if ($displayDefinition->getLabel() === null) {
-//			$displayDefinition->setLabel($this->getEiProp()->getLabelLstr()->t($n2nLocale));
-//		}
-//
-//		if ($displayDefinition->getHelpText() === null
-//				&& null !== ($helpTextLstr = $this->getEiProp()->getHelpTextLstr())) {
-//			$displayDefinition->setHelpText($helpTextLstr->t($n2nLocale));
-//		}
-//
-//		return $displayDefinition;
-//	}
-	
-	function buildForkDisplayDefinition(DefPropPath $forkedDefPropPath, EiGuiMaskDeclaration $eiGuiMaskDeclaration, bool $defaultDisplayedRequired) {
-		return $this->eiGuiCmd->getForkEiGuiDefinition()->getEiGuiPropWrapperByDefPropPath($forkedDefPropPath)
-				->buildDisplayDefinition($eiGuiMaskDeclaration, $defaultDisplayedRequired);
-	}
-	
-	/**
-	 * @return DefPropPath[]
-	 */
-	function getForkedDefPropPaths() {
-		$forkEiGuiDefinition = $this->eiGuiCmd->getForkEiGuiDefinition();
-		
-		if ($forkEiGuiDefinition === null) {
-			return [];
+			throw new EiGuiException(TypeUtils::prettyMethName(get_class($guiControl), $methodName)
+					. ' return invalid GuiControl key: ' . $key);
 		}
-		
-		return $forkEiGuiDefinition->getDefPropPaths();
-	}
-	
-	/**
-	 * @param DefPropPath $defPropPath
-	 * @return \rocket\op\ei\manage\gui\GuiPropWrapper
-	 *@throws UnresolvableDefPropPathExceptionEi
-	 */
-	function getForkedGuiPropWrapper(DefPropPath $defPropPath) {
-		if (null !== ($forkEiGuiDefinition = $this->guiProp->getForkEiGuiDefinition())) {
-			return $forkEiGuiDefinition->getGuiPropWrapperByDefPropPath($defPropPath);
-		}
-		
-		throw new UnresolvableDefPropPathExceptionEi('GuiProp ' . $defPropPath . ' not found.');
 	}
 
-	/**
-	 * @param N2nContext $n2nContext
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param array|null $forkedDefPropPaths
-	 * @return EiGuiPropSetup
-	 */
-	function buildGuiField(EiFrame $eiFrame, EiEntry $eiEntry, bool $readOnly, ?array $forkedDefPropPaths): ?GuiField {
-		return $this->eiGuiCmd->buildGuiField(new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiCmdPath), $readOnly);
-	}
-	
 
-	function getEiProp(): EiProp {
-		return $this->eiGuiDefinition->getEiMask()->getEiPropCollection()->getByPath($this->eiCmdPath);
-	}
-	
 	
 }
