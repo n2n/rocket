@@ -24,40 +24,53 @@ namespace rocket\ui\si\meta;
 use n2n\util\type\attrs\DataSet;
 
 class SiMaskQualifier implements \JsonSerializable {
-
+	private $identifier;
+	private $name;
+	private $iconClass;
 	
-	function __construct(private SiMaskIdentifier $identifier, private string $maskName, private string $iconClass) {
+	function __construct(SiMaskIdentifier $identifier, string $name, string $iconClass) {
+		$this->identifier = $identifier;
+		$this->name = $name;
+		$this->iconClass = $iconClass;
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getMaskName() {
-		return $this->maskName;
+	function getName() {
+		return $this->name;
 	}
 	
 	/**
-	 * @param string $maskName
+	 * @param string $name
 	 * @return \rocket\si\meta\SiMaskQualifier
 	 */
-	function setMaskName(string $maskName) {
-		$this->maskName = $maskName;
+	function setName(string $name) {
+		$this->name = $name;
 		return $this;
 	}
-
-	function getIdentifier(): SiMaskIdentifier {
+	
+	/**
+	 * @return \rocket\ui\si\meta\SiMaskIdentifier
+	 */
+	function getIdentifier() {
 		return $this->identifier;
 	}
 	
 	function jsonSerialize(): mixed {
 		return [
 			'identifier' => $this->identifier,
-			'name' => $this->maskName,
+			'name' => $this->name,
 			'iconClass' => $this->iconClass
 		];
 	}
 
-	static function parse(array $data): SiMaskQualifier {
+	/**
+	 * @param array $data
+	 * @throws \InvalidArgumentException
+	 * @return \rocket\si\meta\SiMaskQualifier
+	 */
+	static function parse(array $data) {
 		$ds = new DataSet($data);
 	
 		try {

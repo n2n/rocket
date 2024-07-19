@@ -99,7 +99,7 @@ class EditControllerTest extends TestCase {
 		$siEntryInput = new SiEntryInput($this->stringTestObjId);
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'nv']));
-		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getMaskId(), $siEntryInput);
+		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getId(), $siEntryInput);
 
 		$siInput->putValueBoundaryInput('0', $siValueBoundaryInput);
 
