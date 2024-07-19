@@ -11,7 +11,7 @@ export class SiMask {
 	}
 
 	addProp(prop: SiProp) {
-		this.propMap.set(prop.id, prop);
+		this.propMap.set(prop.name, prop);
 	}
 
 	containsPropId(propId: string): boolean {

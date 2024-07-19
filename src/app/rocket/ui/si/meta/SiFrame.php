@@ -29,7 +29,9 @@ class SiFrame implements \JsonSerializable {
 	 * @var bool
 	 */
 	private $sortable = false;
-	
+
+	private $treeMode = false;
+
 	/**
 	 * @param Url $apiUrl
 	 * @param SiTypeContext $typeContext
@@ -55,6 +57,15 @@ class SiFrame implements \JsonSerializable {
 	function isSortable(): bool {
 		return $this->sortable;
 	}
+
+	public function isTreeMode(): bool {
+		return $this->treeMode;
+	}
+
+	public function setTreeMode(bool $treeMode): static {
+		$this->treeMode = $treeMode;
+		return $this;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -64,7 +75,8 @@ class SiFrame implements \JsonSerializable {
 		return [
 			'apiUrl' => (string) $this->apiUrl,
 //			'typeContext' => $this->typeContext,
-			'sortable' => $this->sortable
+			'sortable' => $this->sortable,
+			'treeMode' => $this->treeMode
 		];
 	}
 }

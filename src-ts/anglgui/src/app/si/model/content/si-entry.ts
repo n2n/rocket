@@ -21,7 +21,7 @@ export class SiEntry {
 	}
 
 	getMaskId(): string {
-		return this.entryQualifier.maskQualifier.identifier.id;
+		return this.entryQualifier.maskQualifier.maskIdentifier.id;
 	}
 
 	set fieldMap(fieldMap: Map<string, SiField>) {

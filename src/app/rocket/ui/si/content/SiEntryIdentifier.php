@@ -25,24 +25,16 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 use rocket\ui\si\meta\SiMaskIdentifier;
 
-class SiEntryIdentifier implements \JsonSerializable {
+class SiEntryIdentifier extends SiMaskIdentifier {
 	
-	function __construct(private readonly SiMaskIdentifier $maskIdentifier, private ?string $id) {
-	}
-	
-	/**
-	 * @return SiMaskIdentifier
-	 */
-	function getMaskIdentifier(): SiMaskIdentifier {
-		return $this->maskIdentifier;
+	function __construct(public string $typeId, public string $maskId, private ?string $entryId) {
 	}
 
-	
 	/**
 	 * @return string|null
 	 */
-	function getId(): ?string {
-		return $this->id;
+	function getEntryId(): ?string {
+		return $this->entryId;
 	}
 
 //	function setId(?string $id): static {
@@ -52,13 +44,13 @@ class SiEntryIdentifier implements \JsonSerializable {
 	
 
 	function toQualifier(?string $idName): SiEntryQualifier {
-		return new SiEntryQualifier($this->maskIdentifier, $this->id, $idName);
+		return new SiEntryQualifier($this->maskIdentifier, $this->entryId, $idName);
 	}
 	
 	function jsonSerialize(): array {
 		return [
-			'maskIdentifier' => $this->maskIdentifier,
-			'id' => $this->id,
+			...parent::jsonSerialize(),
+			'entryId' => $this->entryId,
 		];
 	}
 	
@@ -69,7 +61,6 @@ class SiEntryIdentifier implements \JsonSerializable {
 	 */
 	static function parse(array $data): SiEntryIdentifier {
 		$ds = new DataSet($data);
-		
-		return new SiEntryIdentifier(SiMaskIdentifier::parse($ds->reqArray('maskIdentifier')), $ds->optString('id'));
+		return new SiEntryIdentifier($ds->optString('typeId'), $ds->reqString('maskId'), $ds->optString('entryId'));
 	}
 }

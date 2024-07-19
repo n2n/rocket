@@ -28,27 +28,31 @@ export class SiEntryIdentifier implements SiObjectIdentifier {
 	}
 }
 
-export class SiEntryQualifier {
+export class SiEntryQualifier extends SiMaskQualifier {
 
-	constructor(readonly maskQualifier: SiMaskQualifier, readonly identifier: SiEntryIdentifier,
-			public idName: string|null) {
+	constructor(readonly entryIdentifier: SiEntryIdentifier,
+			public idName: string|null, name: string, iconClass: string) {
+		super(entryIdentifier.maskIdentifier, name, iconClass);
+	}
 
-		// if (this.maskQualifier.identifier.typeId !== identifier.typeId) {
-		// 	throw new Error('Identifiers do not match: ' + maskQualifier.identifier.typeId + ' != ' + identifier.typeId);
-		// }
+	/**
+	 * @deprecated
+	 */
+	get maskQualifier(): SiMaskQualifier {
+		return this;
 	}
 
 	getBestName(): string {
-		return this.idName || this.maskQualifier.name;
+		return this.idName || this.name;
 	}
 
 	equals(obj: any): boolean {
 		return obj instanceof SiEntryQualifier
-				&& this.identifier.equals(obj.identifier)
-				&& this.maskQualifier.identifier.matches(obj.maskQualifier.identifier);
+				&& this.entryIdentifier.equals(obj.entryIdentifier)
+				&& this.maskIdentifier.matches(obj.maskIdentifier);
 	}
 
-	toString(): string {
-		return this.idName + ' (' + this.identifier.toString() + ')';
+	override toString(): string {
+		return this.idName + ' (' + this.entryIdentifier.toString() + ')';
 	}
 }

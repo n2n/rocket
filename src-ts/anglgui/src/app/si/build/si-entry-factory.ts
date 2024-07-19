@@ -56,7 +56,7 @@ export class SiEntryFactory {
 
 		const mask = this.declaration.getMaskById(maskId);
 		const entryQualifier = new SiEntryQualifier(mask.qualifier,
-				new SiEntryIdentifier(mask.qualifier.identifier, extr.nullaString('id')),
+				new SiEntryIdentifier(mask.qualifier.maskIdentifier, extr.nullaString('id')),
 				extr.nullaString('idName'));
 
 		const entry = new SiEntry(entryQualifier);

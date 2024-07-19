@@ -50,6 +50,8 @@ use rocket\op\ei\manage\idname\IdNameProp;
 use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\impl\ei\component\prop\file\command\ThumbNatureEiCommand;
+use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
 
 class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
@@ -157,7 +159,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		$siFile = $this->buildSiFileFromEiu($eiu);
 		
-		return $eiu->factory()->newGuiField(SiFields::fileOut($siFile));
+		return GuiFields::out(SiFields::fileOut($siFile));
 		
 // 		if (!$file->isValid()) {
 // 			return $html->getEsc('[missing file]');

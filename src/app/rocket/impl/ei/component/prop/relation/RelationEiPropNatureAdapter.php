@@ -38,10 +38,10 @@ use n2n\reflection\property\PropertyAccessProxy;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\adapter\trait\DisplayConfigTrait;
-use rocket\impl\ei\component\prop\adapter\trait\InGuiPropTrait;
+use rocket\impl\ei\component\prop\adapter\trait\InEiGuiPropTrait;
 
 abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implements RelationEiProp/*, EiGuiField*/ {
-	use InGuiPropTrait;
+	use InEiGuiPropTrait;
 
 	private ?Relation $relation = null;
 	private PropertyAccessProxy $propertyAccessProxy;

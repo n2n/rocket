@@ -76,7 +76,7 @@ class EmbeddedEiPropNature extends EiPropNatureAdapter {
 				?? ReflectionUtils::createObject($this->entityProperty->getEmbeddedEntityPropertyCollection()->getClass());
 	}
 
-	public function buildGuiProp(Eiu $eiu): ?EiGuiProp {
+	public function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
 		if (!$this->isMandatory()) {
 			return new EmbeddedGuiProp($this);
 		}

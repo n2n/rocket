@@ -64,7 +64,7 @@ class GuiEntryTest extends TestCase {
 				->setModel($guiFieldModel));
 		$guiEntry->init($guiFieldMap, null);
 
-		$siEntryInput = new SiEntryInput(self::$siEntryIdentifier1->getId());
+		$siEntryInput = new SiEntryInput(self::$siEntryIdentifier1->getEntryId());
 		$siEntryInput->putFieldInput('prop1', new SiFieldInput(['value' => 'new-value']));
 
 		$this->assertTrue($guiEntry->getSiEntry(N2nLocale::getDefault())->handleEntryInput($siEntryInput,

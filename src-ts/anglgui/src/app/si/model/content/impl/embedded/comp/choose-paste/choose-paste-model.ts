@@ -51,7 +51,7 @@ export class ChoosePasteModel {
 	}
 
 	chooseAddable(siMaskQualifier: SiMaskQualifier) {
-		this.siEmbeddedEntry.selectedMaskId = siMaskQualifier.identifier.id;
+		this.siEmbeddedEntry.selectedMaskId = siMaskQualifier.maskIdentifier.id;
 		this.done$.next(this.siEmbeddedEntry);
 		this.done$.complete();
 	}

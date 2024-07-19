@@ -25,19 +25,15 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 
 class SiMaskIdentifier implements \JsonSerializable {
-    protected $id;
-    protected $typeId;
-	
-	function __construct(string $id, string $typeId) {
-		$this->id = $id;
-		$this->typeId = $typeId;
+
+	function __construct(private string $maskId, private string $typeId) {
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getId(): string {
-		return $this->id;
+	function getMaskId(): string {
+		return $this->maskId;
 	}
 
 //	function setId(string $id): static {
@@ -63,7 +59,7 @@ class SiMaskIdentifier implements \JsonSerializable {
 	
 	function jsonSerialize(): mixed {
 		return [
-		    'id' => $this->id,
+		    'maskId' => $this->maskId,
 			'typeId' => $this->typeId
 		];
 	}

@@ -38,7 +38,7 @@ export class GenericEmbeddedEntryManager {
 				});
 			}
 
-			const entryIdentifier = genericEmbeddedEntry.genericValueBoundary.selectedEntryQualifier.identifier;
+			const entryIdentifier = genericEmbeddedEntry.genericValueBoundary.selectedEntryQualifier.entryIdentifier;
 			// TODO: look for better solution
 			// this.valEntryIdentifier(entryIdentifier);
 

@@ -366,7 +366,7 @@ export class StructurePageManager {
 		for (const siProp of this.getSiProps()) {
 			const uiStructure = new UiStructure(null);
 			// uiStructure.compact = true;
-			uiStructure.model = siValueBoundary.selectedEntry.getFieldById(siProp.id).createUiStructureModel(true);
+			uiStructure.model = siValueBoundary.selectedEntry.getFieldById(siProp.name).createUiStructureModel(true);
 			uiStructures.push(uiStructure);
 		}
 

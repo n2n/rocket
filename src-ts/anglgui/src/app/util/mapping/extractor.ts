@@ -132,11 +132,27 @@ export class Extractor {
 				+ typeof this.obj[propName as keyof object]);
 	}
 
+	nullaMap(propName: string): Map<string, any>|null {
+		if (this.obj[propName as keyof object] === null) {
+			return null;
+		}
+
+		return this.reqMap(propName);
+	}
+
 	reqMap(propName: string): Map<string, any> {
 		const obj = this.reqObject(propName);
 
 		const entries = Object.keys(obj).map(k => [k, obj[k as keyof object]]);
 		return new Map(entries as any);
+	}
+
+	nullaArrayMap(propName: string): Map<string, Array<any>>|null {
+		if (this.obj[propName as keyof object] === null) {
+			return null;
+		}
+
+		return this.reqArrayMap(propName);
 	}
 
 	reqArrayMap(propName: string): Map<string, Array<any>> {

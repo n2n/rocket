@@ -24,7 +24,6 @@ export class SiControlFactory {
 
 	createControls(dataArr: any[]): SiControl[] {
 		const controls = new Array<SiControl>();
-
 		for (const controlData of dataArr) {
 			controls.push(this.createControl(controlData));
 		}

@@ -100,7 +100,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 		return null;
 	}
 
-	function buildGuiProp(Eiu $eiu): ?EiGuiProp {
+	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
 		return null;
 	}
 

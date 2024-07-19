@@ -121,7 +121,7 @@ class IntegratedOneToOneEiPropNature extends RelationEiPropNatureAdapter /*imple
 //				$targetRelationEntry->getEiEntry(), $defPropPath);
 //	}
 
-	public function buildGuiProp(Eiu $eiu): ?EiGuiProp {
+	public function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
 		return null;	
 	}
 

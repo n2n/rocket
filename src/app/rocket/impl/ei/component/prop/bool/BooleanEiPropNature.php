@@ -44,6 +44,7 @@ use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\op\ei\util\factory\EifField;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
 
 
 class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
@@ -149,7 +150,7 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 		} else {
 			$siField = SiFields::crumbOut(SiCrumb::createIcon(SiIconType::ICON_TIMES));
 		}
-		return $eiu->factory()->newGuiField($siField->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+		return GuiFields::out($siField);
 	}
 	
 	function buildInGuiField(Eiu $eiu): ?BackableGuiField {

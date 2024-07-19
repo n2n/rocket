@@ -26,11 +26,11 @@ use rocket\op\ei\util\Eiu;
 use n2n\util\type\TypeConstraint;
 use rocket\op\ei\util\factory\EifField;
 use rocket\impl\ei\component\prop\adapter\trait\ReadableEiFieldTrait;
-use rocket\impl\ei\component\prop\adapter\trait\OutGuiPropTrait;
+use rocket\impl\ei\component\prop\adapter\trait\OutEiGuiPropTrait;
 
 abstract class DisplayablePropertyEiPropNatureAdapter extends EiPropNatureAdapter
 		/*implements PropertyEiPropNature, EiGuiField*/ {
-	use ReadableEiFieldTrait, OutGuiPropTrait;
+	use ReadableEiFieldTrait, OutEiGuiPropTrait;
 
 	// EiField
 	

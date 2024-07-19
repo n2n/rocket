@@ -9,7 +9,7 @@ export class SiDeclaration {
 	}
 
 	addMask(mask: SiMask): void {
-		this.masksMap.set(mask.qualifier.identifier.id, mask);
+		this.masksMap.set(mask.qualifier.maskIdentifier.id, mask);
 	}
 
 	getBasicMask(): SiMask {

@@ -15,11 +15,11 @@ export class SiUiFactory {
 	fillZone(data: any, uiZone: UiZone): void {
 		const extr = new Extractor(data);
 
-		const comp = new SiBuildTypes.SiGuiFactory(this.injector).buildGui(extr.reqObject('comp'))!;
+		const gui = new SiBuildTypes.SiGuiFactory(this.injector).buildGui(extr.reqObject('gui'))!;
 
 		uiZone.title = extr.reqString('title');
 		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);
-		uiZone.structure = new UiStructure(null, null, comp.createUiStructureModel());
+		uiZone.structure = new UiStructure(null, null, gui.createUiStructureModel());
 		/*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
 			.map(siControl => siControl.createUiContent(zone))*/
 	}

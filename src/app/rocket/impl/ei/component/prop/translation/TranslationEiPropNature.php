@@ -123,7 +123,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 		return $this->translationsMinNum;
 	}
 	
-	public function buildGuiProp(Eiu $eiu): ?EiGuiProp {
+	public function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
 		return new TranslationGuiProp($this->getRelationModel(), $this);
 	}
 

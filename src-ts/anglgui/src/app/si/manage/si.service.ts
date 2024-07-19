@@ -14,7 +14,7 @@ import { SiValResponse } from '../model/api/si-val-response';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
-import { SiFrame, SiFrameApiSection } from '../model/meta/si-frame';
+import { SiFrame } from '../model/meta/si-frame';
 import { SiBuildTypes } from '../build/si-build-types';
 
 @Injectable({
@@ -62,7 +62,7 @@ export class SiService {
 
 	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput|null): Observable<SiControlResult> {
 		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
+			apiUrl = apiUrl.apiUrl;
 		}
 
 		const formData = new FormData();
@@ -94,7 +94,7 @@ export class SiService {
 
 	fieldCall(apiUrl: string|SiFrame, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
 		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.CONTROL);
+			apiUrl = apiUrl.apiUrl;
 		}
 
 		const formData = new FormData();
@@ -124,7 +124,7 @@ export class SiService {
 
 	apiGet(apiUrl: string|SiFrame, getRequest: SiGetRequest): Observable<SiGetResponse> {
 		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.GET);
+			apiUrl = apiUrl.apiUrl;
 		}
 
 		return this.httpClient
@@ -136,7 +136,7 @@ export class SiService {
 
 	apiVal(apiUrl: string|SiFrame, valRequest: SiValRequest): Observable<SiValResponse> {
 		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.VAL);
+			apiUrl = apiUrl.apiUrl;
 		}
 
 		return this.httpClient
@@ -148,7 +148,7 @@ export class SiService {
 
 	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiCallResponse> {
 		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.getApiUrl(SiFrameApiSection.SORT);
+			apiUrl = apiUrl.apiUrl;
 		}
 
 		const resultFactory = new SiBuildTypes.SiResultFactory(this.injector);

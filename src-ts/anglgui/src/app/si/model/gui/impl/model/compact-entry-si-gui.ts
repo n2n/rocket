@@ -12,7 +12,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
-import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
+import { SiFrame } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
@@ -64,7 +64,7 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 
 	createUiStructureModel(): UiStructureModel {
 		return new CompactUiStructureModel(this.valueBoundarySubject.asObservable(), this.declaration, this.controls,
-				new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService,
+				new SiEntryMonitor(this.siFrame.apiUrl, this.siService,
 						this.siModStateService, this.entryControlsIncluded));
 	}
 
@@ -186,7 +186,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		const fieldUiStructures = new Array<UiStructure>();
 		for (const siProp of siMaskDeclaration.getDeclaredProps()) {
 			const structure = new UiStructure(null);
-			structure.model = siEntry.getFieldById(siProp.id).createUiStructureModel(true);
+			structure.model = siEntry.getFieldById(siProp.name).createUiStructureModel(true);
 			// structure.compact = true;
 			fieldUiStructures.push(structure);
 		}

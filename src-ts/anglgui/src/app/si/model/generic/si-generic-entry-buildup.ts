@@ -9,7 +9,7 @@ export class SiGenericEntry {
 	}
 
 	get maskId(): string {
-		return this.entryQualifier.maskQualifier.identifier.id;
+		return this.entryQualifier.maskQualifier.maskIdentifier.id;
 	}
 
 	containsPropId(id: string): boolean {

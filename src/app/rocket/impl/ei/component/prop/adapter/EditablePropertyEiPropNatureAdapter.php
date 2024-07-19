@@ -30,11 +30,11 @@ use n2n\util\ex\UnsupportedOperationException;
 use rocket\ui\gui\field\BackableGuiField;
 use rocket\op\ei\manage\gui\EiGuiProp;
 use rocket\impl\ei\component\prop\adapter\trait\WritableEiFieldTrait;
-use rocket\impl\ei\component\prop\adapter\trait\OutGuiPropTrait;
-use rocket\impl\ei\component\prop\adapter\trait\InGuiPropTrait;
+use rocket\impl\ei\component\prop\adapter\trait\OutEiGuiPropTrait;
+use rocket\impl\ei\component\prop\adapter\trait\InEiGuiPropTrait;
 
 abstract class EditablePropertyEiPropNatureAdapter extends DisplayablePropertyEiPropNatureAdapter implements PrivilegedEiProp {
-	use WritableEiFieldTrait, InGuiPropTrait;
+	use WritableEiFieldTrait, InEiGuiPropTrait;
 
 	function isPrivileged(): bool {
 		return true;

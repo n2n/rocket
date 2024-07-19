@@ -12,7 +12,7 @@ import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
-import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
+import { SiFrame } from '../../../meta/si-frame';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
@@ -63,7 +63,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	createUiStructureModel(): UiStructureModel {
 		let entryMonitor: SiEntryMonitor|null = null;
 		if (this.frame) {
-			entryMonitor = new SiEntryMonitor(this.frame.getApiUrl(SiFrameApiSection.GET), this.siService,
+			entryMonitor = new SiEntryMonitor(this.frame.apiUrl, this.siService,
 					this.siModStateService, this.entryControlsIncluded);
 		}
 
@@ -215,8 +215,8 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 				!this.isBoundStructureInsideGroup()));
 
 		for (const prop of mask.getProps()) {
-			if (prop.dependantPropIds.length > 0 && this.siValueBoundary.selectedEntry.containsPropId(prop.id)) {
-				toolbarResolver.fillContext(prop, this.siValueBoundary.selectedEntry.getFieldById(prop.id));
+			if (prop.dependantPropIds.length > 0 && this.siValueBoundary.selectedEntry.containsPropId(prop.name)) {
+				toolbarResolver.fillContext(prop, this.siValueBoundary.selectedEntry.getFieldById(prop.name));
 			}
 		}
 
@@ -287,11 +287,11 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 		if (ssd.prop) {
 			uiStructure.label = ssd.prop.label;
-			if (this.siValueBoundary.selectedEntry.containsPropId(ssd.prop.id)) {
+			if (this.siValueBoundary.selectedEntry.containsPropId(ssd.prop.name)) {
 				const model = new UiStructureModelDecorator(this.createUiStructureModel(ssd.prop));
 				uiStructure.model = model;
 				toolbarResolver.registerDecorator(uiStructure, model);
-				toolbarResolver.register(ssd.prop.id, uiStructure);
+				toolbarResolver.register(ssd.prop.name, uiStructure);
 			}
 			return uiStructure;
 		}
@@ -306,9 +306,9 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
-		if (this.siValueBoundary.selectedEntry.containsPropId(siProp.id)) {
-			const siField = this.siValueBoundary.selectedEntry.getFieldById(siProp.id);
-			return this.uiStructureModelCache.obtain(this.siValueBoundary.selectedMaskId!, siProp.id, siField);
+		if (this.siValueBoundary.selectedEntry.containsPropId(siProp.name)) {
+			const siField = this.siValueBoundary.selectedEntry.getFieldById(siProp.name);
+			return this.uiStructureModelCache.obtain(this.siValueBoundary.selectedMaskId!, siProp.name, siField);
 		}
 
 		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
@@ -341,7 +341,7 @@ class TypeSelectInModel implements SelectInFieldModel {
 
 	constructor(private siValueBoundary: SiValueBoundary) {
 		for (const mq of siValueBoundary.maskQualifiers) {
-			this.options.set(mq.identifier.id, mq.name);
+			this.options.set(mq.maskIdentifier.id, mq.name);
 		}
 	}
 

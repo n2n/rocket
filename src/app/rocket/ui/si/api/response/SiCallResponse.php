@@ -97,7 +97,7 @@ class SiCallResponse implements \JsonSerializable {
 		ArgUtils::valEnum($modType, [self::EVENT_TYPE_ADDED, self::EVENT_TYPE_CHANGED, self::EVENT_TYPE_REMOVED]);
 		
 		$category = $identifier->getTypeId();
-		$id = $identifier->getId();
+		$id = $identifier->getEntryId();
 		ArgUtils::assertTrue($id !== null);
 		
 		if (!isset($this->eventMap[$category])) {

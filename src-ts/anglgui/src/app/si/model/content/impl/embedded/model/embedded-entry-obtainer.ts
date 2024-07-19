@@ -13,7 +13,7 @@ import { BulkyEntrySiGui } from 'src/app/si/model/gui/impl/model/bulky-entry-si-
 import { CompactEntrySiGui } from 'src/app/si/model/gui/impl/model/compact-entry-si-gui';
 import { SiEmbeddedEntry } from './si-embedded-entry';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
-import { SiFrame, SiFrameApiSection } from 'src/app/si/model/meta/si-frame';
+import { SiFrame } from 'src/app/si/model/meta/si-frame';
 import { SiModStateService } from 'src/app/si/model/mod/model/si-mod-state.service';
 
 export class EmbeddedEntryObtainer	{
@@ -69,7 +69,7 @@ export class EmbeddedEntryObtainer	{
 			}
 		}
 
-		return this.siService.apiGet(this.siFrame.getApiUrl(SiFrameApiSection.GET), request).pipe(map((siGetResponse) => {
+		return this.siService.apiGet(this.siFrame.apiUrl, request).pipe(map((siGetResponse) => {
 			return this.handleResponse(siGetResponse);
 		}));
 	}

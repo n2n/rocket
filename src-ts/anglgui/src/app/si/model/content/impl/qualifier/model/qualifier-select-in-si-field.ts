@@ -101,7 +101,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 			}
 
 			const pickable = this.pickables!.find(
-					(p) => p.identifier.matchesTypeAndId(siEntryQualifier.identifier))
+					(p) => p.entryIdentifier.matchesTypeAndId(siEntryQualifier.entryIdentifier))
 			if (pickable) {
 				values.push(siEntryQualifier);
 				continue;

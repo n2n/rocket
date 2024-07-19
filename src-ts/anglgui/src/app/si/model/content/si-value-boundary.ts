@@ -22,7 +22,7 @@ export class SiValueBoundary {
 	}
 
 	get identifier(): SiEntryIdentifier {
-		return this.selectedEntry.entryQualifier.identifier;
+		return this.selectedEntry.entryQualifier.entryIdentifier;
 	}
 
 	get qualifier(): SiEntryQualifier {
@@ -120,7 +120,7 @@ export class SiValueBoundary {
 	}
 
 	addEntry(entry: SiEntry) {
-		this._entriesMap.set(entry.entryQualifier.maskQualifier.identifier.id, entry);
+		this._entriesMap.set(entry.entryQualifier.maskQualifier.maskIdentifier.id, entry);
 	}
 
 	containsEntryId(id: string): boolean {
@@ -158,7 +158,7 @@ export class SiValueBoundary {
 		// 	throw new IllegalSiStateError('No input available.');
 		// }
 
-		return new SiEntryInput(this.selectedMaskId!, this.qualifier.identifier.id, fieldInputMap);
+		return new SiEntryInput(this.selectedMaskId!, this.qualifier.entryIdentifier.id, fieldInputMap);
 	}
 
 	// handleError(error: SiEntryError) {

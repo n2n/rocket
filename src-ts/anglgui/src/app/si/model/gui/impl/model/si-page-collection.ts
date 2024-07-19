@@ -11,7 +11,7 @@ import { SiGetRequest } from '../../../api/si-get-request';
 import { SiGetResponse } from '../../../api/si-get-response';
 import { SiGetResult } from '../../../api/si-get-result';
 import { SiControlBoundry } from '../../../control/si-control-bountry';
-import { SiFrame, SiFrameApiSection } from '../../../meta/si-frame';
+import { SiFrame } from '../../../meta/si-frame';
 import { SiEntryIdentifier } from '../../../content/si-entry-qualifier';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { Subscription } from 'rxjs';
@@ -85,7 +85,7 @@ export class SiPageCollection implements SiControlBoundry {
 			}
 
 			this.modSubscription = this.siModState.modEvent$.subscribe((modEvent: SiModEvent|null) => {
-				if (modEvent!.containsAddedTypeId(this.siFrame.typeContext.typeId)) {
+				if (modEvent!.containsAddedTypeId(this.declaration!.getBasicMask().qualifier.maskIdentifier.typeId)) {
 					this.clear();
 				}
 			});
@@ -185,7 +185,7 @@ export class SiPageCollection implements SiControlBoundry {
 		// 	num = this.pagesMap.get(no + 1)!.offset - offset;
 		// }
 
-		const entryMonitory = new SiEntryMonitor(this.siFrame.getApiUrl(SiFrameApiSection.GET), this.siService, this.siModState, true);
+		const entryMonitory = new SiEntryMonitor(this.siFrame.apiUrl, this.siService, this.siModState, true);
 		const page = new SiPage(entryMonitory, no, offset, entries);
 		this.pagesMap.set(no, page);
 
@@ -228,7 +228,7 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		const instruction = SiGetInstruction.partialContent(
-						this.declaration!.getBasicMask().qualifier.identifier.id,
+						this.declaration!.getBasicMask().qualifier.maskIdentifier.id,
 						siPage.offset, this.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration!)
@@ -422,7 +422,7 @@ export class SiPageCollection implements SiControlBoundry {
 		const locks = entries.map(entry => entry.createLock());
 		locks.push(afterEntry.createLock());
 
-		this.siService.apiSort(this.siFrame.getApiUrl(SiFrameApiSection.SORT),
+		this.siService.apiSort(this.siFrame.apiUrl,
 				{
 					ids: entries.map(entry => entry.identifier.id!),
 					afterId: afterEntry.identifier.id!
@@ -436,7 +436,7 @@ export class SiPageCollection implements SiControlBoundry {
 		const locks = entries.map(entry => entry.createLock());
 		locks.push(beforeEntry.createLock());
 
-		this.siService.apiSort(this.siFrame.getApiUrl(SiFrameApiSection.SORT),
+		this.siService.apiSort(this.siFrame.apiUrl,
 				{
 					ids: entries.map(entry => entry.identifier.id!),
 					beforeId: beforeEntry.identifier.id || undefined
@@ -450,7 +450,7 @@ export class SiPageCollection implements SiControlBoundry {
 		const locks = entries.map(entry => entry.createLock());
 		locks.push(parentEntry.createLock());
 
-		this.siService.apiSort(this.siFrame.getApiUrl(SiFrameApiSection.SORT),
+		this.siService.apiSort(this.siFrame.apiUrl,
 				{
 					ids: entries.map(entry => entry.identifier.id!),
 					parentId: parentEntry.identifier.id || undefined
@@ -561,7 +561,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	isTree(): boolean {
-		return this.siFrame.typeContext.treeMode;
+		return this.siFrame.treeMode;
 	}
 }
 

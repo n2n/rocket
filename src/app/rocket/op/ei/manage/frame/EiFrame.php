@@ -532,7 +532,8 @@ class EiFrame {
 	 */
 	function createSiFrame() {
 		return (new SiFrame($this->getApiUrl(null)/*, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()*/))
-				->setSortable($this->ability->getSortAbility() !== null);
+				->setSortable($this->ability->getSortAbility() !== null)
+				->setTreeMode(null !== $this->contextEiEngine->getEiMask()->getEiType()->getNestedSetStrategy());
 	}
 }
 

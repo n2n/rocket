@@ -95,7 +95,7 @@ interface EiPropNature extends EiComponentNature {
 	/**
 	 * @return GuiProp|null null if not displayable
 	 */
-	function buildGuiProp(Eiu $eiu): ?EiGuiProp;
+	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp;
 
 	/**
 	 * @return GenericEiProperty|null
