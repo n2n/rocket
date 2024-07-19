@@ -26,11 +26,9 @@ use rocket\ui\gui\control\GuiControlPath;
 class GuiMask {
 	private SiMask $siMask;
 	/**
-	 * @var GuiStructureDeclaration[]
+	 * @var GuiStructureDeclaration[]|null
 	 */
 	private ?array $guiStructureDeclarations = null;
-
-
 
 	private GuiControlMap $guiControlMap;
 
