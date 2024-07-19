@@ -26,7 +26,7 @@ use n2n\util\type\attrs\AttributesException;
 
 class SiMaskIdentifier implements \JsonSerializable {
 
-	function __construct(private string $typeId, private string $maskId) {
+	function __construct(private string $maskId, private string $typeId) {
 	}
 	
 	/**

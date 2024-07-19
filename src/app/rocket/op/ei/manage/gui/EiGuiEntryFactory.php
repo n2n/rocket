@@ -31,8 +31,6 @@ use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\GuiEntry;
 use rocket\ui\si\content\SiEntryQualifier;
-use rocket\ui\si\content\SiEntryIdentifier;
-use rocket\ui\si\content\SiEntry;
 
 class EiGuiEntryFactory {
 
@@ -126,38 +124,23 @@ class EiGuiEntryFactory {
 // 	}
 
 
-	public function createSiEntryIdentifier(EiEntry $eiEntry, int $viewMode): SiEntryIdentifier {
-		return SiEntryIdentifier::fromMaskIdentifier(
-				$eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition()->createSiMaskIdentifier(),
-				$eiEntry->getPid());
-	}
 
-	public function createSiEntryQualifier(EiEntry $eiEntry, int $viewMode): SiEntryQualifier {
+	public function createGuiEntry(EiEntry $eiEntry, int $viewMode, bool $entryGuiControlsIncluded): GuiEntry {
+
 		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
-		$eiMask = $eiEntry->getEiMask();
-		$siMaskQualifier = $eiMask->getEiEngine()->getEiGuiDefinition($viewMode)->createSiMaskQualifier($n2nLocale);
-		$siEntryIdentifier = SiEntryIdentifier::fromMaskIdentifier($siMaskQualifier->getIdentifier(), $eiEntry->getPid());
-
+		$pid = null;
 		$idName = null;
 		if (!$eiEntry->isNew()) {
-			$deterIdNameDefinition = $eiMask->getEiEngine()->getIdNameDefinition();
+			$pid = $eiEntry->getPid();
+			$deterIdNameDefinition = $eiEntry->getEiMask()->getEiEngine()->getIdNameDefinition();
 			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(),
 					$this->eiFrame->getN2nContext(), $n2nLocale);
 		}
 
-		return new SiEntryQualifier($siEntryIdentifier, $idName, $siMaskQualifier->getMaskName(),
-				$siMaskQualifier->getIconClass());
-	}
-
-
-	public function createGuiEntry(EiEntry $eiEntry, int $viewMode, bool $entryGuiControlsIncluded): GuiEntry {
-
-
-
-		$guiEntry = new GuiEntry($this->createSiEntryQualifier($eiEntry, $viewMode));
-		$guiEntry->setModel($eiEntry);
-
 		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($viewMode);
+		$guiEntry = new GuiEntry(new SiEntryQualifier($eiGuiDefinition->createSiMaskIdentifier(), $pid, $idName));
+		$guiEntry->setModel($eiEntry);
+		
 		$guiFieldMap = $eiGuiDefinition->getEiGuiPropMap()->createGuiFieldMap($this->eiFrame, $eiEntry);
 
 

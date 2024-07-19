@@ -45,10 +45,6 @@ class SiMaskQualifier implements \JsonSerializable {
 		return $this;
 	}
 
-	function getIconClass(): string {
-		return $this->iconClass;
-	}
-
 	function getIdentifier(): SiMaskIdentifier {
 		return $this->identifier;
 	}

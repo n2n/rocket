@@ -59,7 +59,7 @@ class SiValueBoundary implements \JsonSerializable {
 
 
 	function putEntry(SiEntry $entry): static {
-		$this->entries[$entry->getQualifier()->getIdentifier()->getMaskId()] = $entry;
+		$this->entries[$entry->getQualifier()->getIdentifier()->getMaskIdentifier()->getMaskId()] = $entry;
 		
 		return $this;
 	}

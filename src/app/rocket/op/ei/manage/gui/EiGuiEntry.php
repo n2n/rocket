@@ -59,7 +59,7 @@
 //		return $this->eiGuiMaskDeclaration;
 //	}
 //
-//	function getEntryName(): ?string {
+//	function getIdName(): ?string {
 //		return $this->idName;
 //	}
 //
