@@ -107,8 +107,11 @@ class GuiMask {
 		$this->siMask->putControl((string) $guiControlPath, $guiControl->getSiControl());
 	}
 
-	function setGuiControlMap(GuiControlMap $guiControlMap) {
+	function setGuiControlMap(GuiControlMap $guiControlMap): void {
 		$this->guiControlMap = $guiControlMap;
+		foreach ($guiControlMap->getGuiControls() as $controlName => $guiControl) {
+			$this->siMask->putControl($controlName, $guiControl->getSiControl());
+		}
 	}
 
 	function getGuiControlMap(): ?GuiControlMap {
@@ -388,22 +391,22 @@ class GuiMask {
 //		return $siControls;
 //	}
 	
-	/**
-	 * @return \rocket\ui\si\control\SiControl[]
-	 */
-	function createGeneralSiControls(EiFrame $eiFrame): array {
-		$siControls = [];
-		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
-				as $guiControlPathStr => $generalGuiControl) {
-			$guiControlPath = EiGuiControlName::create($guiControlPathStr);
-			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
-					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
-					new ApiControlCallId($guiControlPath,
-							$this->guiDefinition->getEiMask()->getEiTypePath(),
-							$this->viewMode, null, null));
-		}
-		return $siControls;
-	}
+//	/**
+//	 * @return \rocket\ui\si\control\SiControl[]
+//	 */
+//	function createGeneralSiControls(EiFrame $eiFrame): array {
+//		$siControls = [];
+//		foreach ($this->guiDefinition->createGeneralGuiControls($eiFrame, $this)
+//				as $guiControlPathStr => $generalGuiControl) {
+//			$guiControlPath = EiGuiControlName::create($guiControlPathStr);
+//			$siControls[$guiControlPathStr] = $generalGuiControl->toSiControl(
+//					$eiFrame->getApiUrl($guiControlPath->getEiCmdPath(), ApiController::API_CONTROL_SECTION),
+//					new ApiControlCallId($guiControlPath,
+//							$this->guiDefinition->getEiMask()->getEiTypePath(),
+//							$this->viewMode, null, null));
+//		}
+//		return $siControls;
+//	}
 	
 	/**
 	 * @param EiFrame $eiFrame

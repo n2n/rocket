@@ -161,7 +161,7 @@ class EiGuiApiModelTest extends TestCase {
 					$called = true;
 				}));
 		$eiMask->getEiCmdCollection()->add('some-cmd-id', $eiCmdNature);
-		$siApiCall = new SiApiCall(controlCall: new SiControlCall($maskId, null, 'some-cmd-id'));
+		$siApiCall = new SiApiCall(controlCall: new SiControlCall($maskId, null, 'some-cmd-id.0'));
 
 		$eiGuiApiModel = new EiGuiApiModel($eiFrame);
 		$siApi = new SiApi(new GuiSiApiModel($eiGuiApiModel));

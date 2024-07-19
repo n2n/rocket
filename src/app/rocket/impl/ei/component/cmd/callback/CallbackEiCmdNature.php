@@ -77,12 +77,12 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 	 * @param Eiu $eiu
 	 * @return GuiControl[]
 	 */
-	private function createGuiControls(array $callbacks, Eiu $eiu) {
+	private function createGuiControls(array $callbacks, Eiu $eiu): array {
 		$guiControls = [];
 
-		foreach ($callbacks as $callback) {
+		foreach ($callbacks as $key => $callback) {
 			if ($callback instanceof GuiControl) {
-				$guiControl[] = $callback;
+				$guiControls[$key] = $callback;
 				continue;
 			}
 
@@ -92,7 +92,7 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 			$invoker->setReturnTypeConstraint(TypeConstraints::namedType(GuiControl::class, true));
 
 			if (null !== ($guiControl = $invoker->invoke())) {
-				$guiControls[] = $guiControl;
+				$guiControls[$key] = $guiControl;
 			}
 		}
 
