@@ -29,6 +29,13 @@ use rocket\ui\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\meta\SiFrame;
+use rocket\ui\si\api\request\SiInput;
+use rocket\ui\si\api\request\SiZoneCall;
+use rocket\op\ei\manage\api\ZoneApiControlCallId;
+use rocket\ui\si\api\response\SiCallResponse;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\api\response\SiInputResult;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class CompactExplorerSiGui implements SiGui {
 	/**
@@ -127,7 +134,12 @@ class CompactExplorerSiGui implements SiGui {
 	function getControls() {
 		return $this->controls;
 	}
-	
+
+	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult {
+		throw new CorruptedSiDataException('BulkyEiGui can not handle multiple SiInputs.');
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiGui::getData()

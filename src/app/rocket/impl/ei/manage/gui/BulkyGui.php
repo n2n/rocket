@@ -61,11 +61,10 @@ class BulkyGui implements Gui {
 		return $this->inputSiValueBoundaries;
 	}
 
-	function handleSiGuiOperation(?SiInput $siInput, SiZoneCall $siGuiCall): SiCallResult {
-		$siInput->getValueBoundaryInputs();
-		$this->guiValueBoundary->handleSiEntryInput();
-
-	}
+//	function handleSiGuiOperation(?SiInput $siInput, SiZoneCall $siGuiCall): SiCallResult {
+//		$siInput->getValueBoundaryInputs();
+//		$this->guiValueBoundary->handleSiEntryInput();
+//	}
 
 //	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
 //		$entryInputs = $siInput->getValueBoundaryInputs();

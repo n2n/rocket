@@ -46,37 +46,38 @@ use testmdl\string\bo\StrObjMock;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 use rocket\op\ei\UnknownEiTypeException;
 use testmdl\test\string\StringTestEnv;
+use testmdl\bo\BasicTestObj;
 
-class EditControllerTest extends TestCase {
+class OverviewControllerTest extends TestCase {
 
 	private Spec $spec;
 	private EiMask $eiMask;
 	private int $rocketUserId;
-	private int $stringTestObjId;
+	private int $basicTestObjId;
 
 	/**
 	 * @throws UnknownEiTypeException
 	 */
 	function setUp(): void {
 		GeneralTestEnv::teardown();
-		$this->spec = SpecTestEnv::setUpSpec([StringTestObj::class]);
-		$this->eiMask = $this->spec->getEiTypeByClassName(StringTestObj::class)->getEiMask();
+		$this->spec = SpecTestEnv::setUpSpec([BasicTestObj::class]);
+		$this->eiMask = $this->spec->getEiTypeByClassName(BasicTestObj::class)->getEiMask();
 		$this->spec->addLaunchPad(new EiLaunchPad('launch-id', fn () => $this->eiMask));
 
 		$tx = TestEnv::createTransaction();
 		$rocketUser = RocketTestEnv::setUpRocketUser();
-		$stringTestObj = TestMdlTestEnv::setUpStringTestObj();
+		$basicTestObj = TestMdlTestEnv::setUpBasicTestObj();
 		$tx->commit();
 
 		$this->rocketUserId = $rocketUser->getId();
-		$this->stringTestObjId = $stringTestObj->id;
+		$this->basicTestObjId = $basicTestObj->getId();
 	}
 
 	/**
 	 * @throws StatusException
 	 */
 	function testGet(): void {
-		$result = TestEnv::http()->newRequest()->get('/admin/manage/launch-id/cmd/eecn-0/' . $this->stringTestObjId)
+		$result = TestEnv::http()->newRequest()->get('/admin/manage/launch-id/cmd/oecn-0/' . $this->basicTestObjId)
 				->inject(function(Rocket $rocket, LoginContext $loginContext) {
 					$rocket->setSpec($this->spec);
 					$loginContext->loginByUserId($this->rocketUserId);
@@ -85,43 +86,9 @@ class EditControllerTest extends TestCase {
 
 		$jsonData = $result->parseJson();
 
-		$this->assertEquals('bulky-entry', $jsonData['gui']['type']);
+		$this->assertEquals('compact-explorer', $jsonData['gui']['type']);
 	}
 
-	/**
-	 * @throws StatusException
-	 */
-	function testHandleSaveCall(): void {
-
-		$eiGuiDefinition = $this->eiMask->getEiEngine()->getEiGuiDefinition(ViewMode::BULKY_EDIT);
-
-		$siInput = new SiInput();
-		$siEntryInput = new SiEntryInput($this->stringTestObjId);
-		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
-		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'nv']));
-		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getId(), $siEntryInput);
-
-		$siInput->putValueBoundaryInput('0', $siValueBoundaryInput);
-
-		$result = TestEnv::http()->newRequest()->post(
-					'/admin/manage/launch-id/cmd/eecn-0/' . $this->stringTestObjId,
-					['si-zone-call' => json_encode(new SiZoneCall($siInput, EditController::CONTROL_SAVE_KEY))])
-				->inject(function(Rocket $rocket, LoginContext $loginContext) {
-					$rocket->setSpec($this->spec);
-					$loginContext->loginByUserId($this->rocketUserId);
-				})
-				->exec();
-
-		$resultData = $result->parseJson();
-
-		$this->assertNotNull($resultData['inputResult']);
-		$this->assertNotNull($resultData['callResult']);
-
-		$tx = TestEnv::createTransaction(true);
-		$this->assertEquals('new-value', StringTestEnv::findStringTestObj($this->stringTestObjId)->holeradio);
-		$this->assertEquals(new StrObjMock('nv'), StringTestEnv::findStringTestObj($this->stringTestObjId)->holeradioObj);
-		$tx->commit();
-	}
 
 //
 //		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());

@@ -155,22 +155,23 @@ class OpuCtrl {
 
 		$eiFrame = $this->frame()->getEiFrame();
 		$eiFrameUtils = new EiObjectSelector($eiFrame);
+		$records = $eiFrameUtils->lookupEiEntries(0, $pageSize, null);
 
-		$result = $eiFrameUtils->lookupEiGuiFromRange(0, $pageSize, false, true, $entryGuiControlsIncluded);
+		$factory = new EiGuiValueBoundaryFactory($eiFrame);
+		$guiValueBoundaries = [];
+		foreach ($records as $record) {
+			$guiValueBoundaries[] = $factory->create($record->treeLevel, [$record->eiEntry], ViewMode::COMPACT_READ);
 
-		$eiGuiDeclaration = $result->guiDeclaration;
-		$guiValueBoundaries = $result->guiValueBoundaries;
+		}
 		$count = $eiFrameUtils->count();
 
-		$guiControlsMap = null;
-		if ($generalSiControlsIncluded && $eiGuiDeclaration->hasSingleEiGuiMaskDeclaration()) {
-			$guiControlsMap = $eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createGeneralGuiControlsMap($eiFrame);
-		}
+		$zoneGuiControlsMap = new GuiControlMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
 
-		$zoneGuiControlsMap = new ZoneGuiControlsMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
+		$guiMask = $eiFrame->getContextEiEngine()->getEiGuiDefinition(ViewMode::COMPACT_READ)
+				->createGuiMask($eiFrame)->getSiMask();
 
-		$eiGui = new CompactExplorerGui($eiFrame, $eiGuiDeclaration, $guiValueBoundaries, $pageSize,
-				$count, $guiControlsMap);
+		$eiGui = new CompactExplorerGui($eiFrame->createSiFrame(), new SiDeclaration([$guiMask]),
+				$guiValueBoundaries, $pageSize, $count);
 
 		$this->forwardGui($eiGui,
 				$title ?? $this->frame()->contextEngine()->mask()->getPluralLabel(),

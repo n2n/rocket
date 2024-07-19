@@ -24,9 +24,13 @@ namespace rocket\ui\si\content\impl;
 
 use PHPUnit\Framework\TestCase;
 use n2n\core\container\N2nContext;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class StringInSiFieldTest extends TestCase {
 
+	/**
+	 * @throws CorruptedSiDataException
+	 */
 	function testHandleInput(): void {
 		$siField = SiFields::stringIn('holeradio1');
 
