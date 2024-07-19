@@ -48,7 +48,7 @@ class EiGuiValueBoundaryFactory {
 		}
 
 		if (count($eiEntries) === 1 && isset($guiEntry)) {
-			$guiValueBoundary->selectGuiEntryByMaskId($guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getMaskId());
+			$guiValueBoundary->selectGuiEntryByMaskId($guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskId());
 		}
 
 		return $guiValueBoundary;

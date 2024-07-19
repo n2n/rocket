@@ -39,16 +39,12 @@ use rocket\ui\gui\field\GuiFieldKey;
 
 class GuiEntryTest extends TestCase {
 
-	private static SiMaskIdentifier $siMaskIdentifier1;
-	private static SiMaskQualifier $siMaskQualifier1;
 	private static SiEntryIdentifier $siEntryIdentifier1;
 	private static SiEntryQualifier $siEntryQualifier1;
 
 	static function setUpBeforeClass(): void {
-		self::$siMaskIdentifier1 = new SiMaskIdentifier('mask-1', 'type-1');
-		self::$siMaskQualifier1 = new SiMaskQualifier(self::$siMaskIdentifier1, 'Mask 1', 'icon-1');
-		self::$siEntryIdentifier1 = new SiEntryIdentifier(self::$siMaskIdentifier1, 2);
-		self::$siEntryQualifier1 = new SiEntryQualifier(self::$siMaskIdentifier1, 2, 'entry-1');
+		self::$siEntryIdentifier1 = new SiEntryIdentifier('type-1', 'mask-1', 2);
+		self::$siEntryQualifier1 = new SiEntryQualifier(self::$siEntryIdentifier1, 'entry-1', 'Mask 1', 'icon-1');
 	}
 
 	/**

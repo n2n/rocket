@@ -54,7 +54,7 @@ class GuiValueBoundary {
 	 * @param GuiEntry $guiEntry
 	 */
 	function putGuiEntry(GuiEntry $guiEntry): void {
-		$this->guiEntries[$guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getMaskId()] = $guiEntry;
+		$this->guiEntries[$guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskId()] = $guiEntry;
 		$this->siValueBoundary->putEntry($guiEntry->getSiEntry());
 	}
 	

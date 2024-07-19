@@ -27,7 +27,8 @@ use rocket\ui\si\meta\SiMaskIdentifier;
 
 class SiEntryIdentifier extends SiMaskIdentifier {
 	
-	function __construct(public string $typeId, public string $maskId, private ?string $entryId) {
+	function __construct(string $typeId, string $maskId, private ?string $entryId) {
+		parent::__construct($typeId, $maskId);
 	}
 
 	/**
@@ -62,5 +63,9 @@ class SiEntryIdentifier extends SiMaskIdentifier {
 	static function parse(array $data): SiEntryIdentifier {
 		$ds = new DataSet($data);
 		return new SiEntryIdentifier($ds->optString('typeId'), $ds->reqString('maskId'), $ds->optString('entryId'));
+	}
+
+	static function fromMaskIdentifier(SiMaskIdentifier $maskIdentifier, ?string $entryId): SiEntryIdentifier {
+		return new SiEntryIdentifier($maskIdentifier->getTypeId(), $maskIdentifier->getMaskId(), $entryId);
 	}
 }

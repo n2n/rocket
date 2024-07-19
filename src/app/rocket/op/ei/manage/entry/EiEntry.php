@@ -72,7 +72,7 @@ class EiEntry implements GuiEntryModel {
 	/**
 	 * @return string|null
 	 */
-	public function getPid() {
+	public function getPid(): ?string {
 		$eiEntityObj = $this->eiObject->getEiEntityObj();
 		if (!$eiEntityObj->isPersistent()) return null;
 		

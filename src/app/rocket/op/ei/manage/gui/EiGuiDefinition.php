@@ -95,7 +95,7 @@ class EiGuiDefinition {
 		$eiMask = $this->getEiMask();
 
 		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $this->getViewMode());
-		return new SiMaskIdentifier($eiSiMaskId->__toString(), $eiMask->getEiType()->getSupremeEiType()->getId());
+		return new SiMaskIdentifier($eiMask->getEiType()->getSupremeEiType()->getId(), $eiSiMaskId->__toString());
 	}
 
 	public function createSiMaskQualifier(N2nLocale $n2nLocale): SiMaskQualifier {
