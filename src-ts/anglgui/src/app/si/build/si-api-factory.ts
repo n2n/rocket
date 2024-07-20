@@ -15,6 +15,7 @@ import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiBuildTypes } from './si-build-types';
 import { SiEntryFactory } from './si-entry-factory';
+import { SiControlFactory } from './si-control-factory';
 
 export class SiApiFactory {
 
@@ -55,7 +56,7 @@ export class SiApiFactory {
 
 		let controlsData: any;
 		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-			const compEssentialsFactory = new SiBuildTypes.SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
+			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
 			result.generalControls = compEssentialsFactory.createControls(controlsData);
 		}
 
@@ -65,7 +66,7 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('partialContent'))) {
-			result.partialContent = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
+			result.partialContent = new SiEntryFactory(declaration, this.apiUrl, this.injector)
 					.createPartialContent(propData);
 		}
 
@@ -122,7 +123,7 @@ export class SiApiFactory {
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createValueBoundary(propData);
+			result.valueBoundary = new SiEntryFactory(declaration, this.apiUrl, this.injector).createValueBoundary(propData);
 		}
 
 		return result;

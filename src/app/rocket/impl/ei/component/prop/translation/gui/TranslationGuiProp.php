@@ -25,8 +25,9 @@ use rocket\op\ei\manage\gui\EiGuiDefinition;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
+use rocket\op\ei\manage\gui\EiGuiProp;
 
-class TranslationGuiProp implements GuiProp {
+class TranslationGuiProp implements EiGuiProp {
 	/**
 	 * @var EiGuiDefinition
 	 */
@@ -62,7 +63,7 @@ class TranslationGuiProp implements GuiProp {
 			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
 		}
 		
-		return new TranslationEiEiGuiPropSetup($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
+		return new TranslationEiGuiProp($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
 	}
 	
 	/**

@@ -16,6 +16,8 @@ import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiBuildTypes } from '../build/si-build-types';
+import { SiResultFactory } from '../build/si-result-factory';
+import { SiUiFactory } from '../build/si-ui-factory';
 
 @Injectable({
 	providedIn: 'root'
@@ -28,7 +30,7 @@ export class SiService {
 	lookupZone(uiZone: UiZone): Promise<void> {
 		return this.httpClient.get<any>(uiZone.url!)
 				.pipe(map((data: any) => {
-					new SiBuildTypes.SiUiFactory(this.injector).fillZone(data, uiZone);
+					new SiUiFactory(this.injector).fillZone(data, uiZone);
 				}))
 				.toPromise();
 	}
@@ -60,11 +62,7 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string|SiFrame, controlName: string, input: SiInput|null): Observable<SiControlResult> {
-		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.apiUrl;
-		}
-
+	controlCall(apiUrl: string, controlName: string, input: SiInput|null): Observable<SiControlResult> {
 		const formData = new FormData();
 		formData.append('controlName', controlName);
 
@@ -83,7 +81,7 @@ export class SiService {
 
 		return this.httpClient.post<any>(apiUrl, formData, options)
 				.pipe(map(data => {
-					const resultFactory = new SiBuildTypes.SiResultFactory(this.injector);
+					const resultFactory = new SiResultFactory(this.injector, apiUrl);
 					const result = resultFactory.createControlResult(data, input?.declaration);
 					if (result.callResponse) {
 						this.handleCallResponse(result.callResponse);
@@ -138,12 +136,8 @@ export class SiService {
 				}));
 	}
 
-	apiSort(apiUrl: string|SiFrame, sortRequest: SiSortRequest): Observable<SiCallResponse> {
-		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.apiUrl;
-		}
-
-		const resultFactory = new SiBuildTypes.SiResultFactory(this.injector);
+	apiSort(apiUrl: string, sortRequest: SiSortRequest): Observable<SiCallResponse> {
+		const resultFactory = new SiResultFactory(this.injector, apiUrl);
 		return this.httpClient
 				.post(apiUrl, sortRequest)
 				.pipe(map(data => {

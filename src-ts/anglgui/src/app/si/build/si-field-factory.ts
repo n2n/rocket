@@ -40,6 +40,9 @@ import { SiService } from '../manage/si.service';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
 import { SplitContext, SplitStyle } from '../model/content/impl/split/model/split-context';
 import { SplitContent, SplitContentCollection } from '../model/content/impl/split/model/split-content-collection';
+import { SiEntryFactory } from './si-entry-factory';
+import { SiFrame } from '../model/meta/si-frame';
+import { SiGuiFactory } from './si-gui-factory';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -178,7 +181,7 @@ export class SiFieldFactory {
 			const embeddedEntryOutSiField = new EmbeddedEntriesOutSiField(prop.label, this.injector.get(SiService),
 					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
 					this.injector.get(TranslationService),
-					new SiBuildTypes.SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
+					new SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryOutSiField.config.reduced = dataExtr.reqBoolean('reduced');
 			embeddedEntryOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 
@@ -188,7 +191,7 @@ export class SiFieldFactory {
 			const embeddedEntryInSiField = new EmbeddedEntriesInSiField(prop.label, this.injector.get(SiService),
 					this.injector.get(SiModStateService), SiMetaFactory.createFrame(dataExtr.reqObject('frame')),
 					this.injector.get(TranslationService),
-					new SiBuildTypes.SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
+					new SiGuiFactory(this.injector).createEmbeddedEntries(dataExtr.reqArray('values')));
 			embeddedEntryInSiField.config.bulkyMaskId = dataExtr.reqString('bulkyMaskId');
 			embeddedEntryInSiField.config.summaryMaskId = dataExtr.nullaString('summaryMaskId');
 			embeddedEntryInSiField.config.min = dataExtr.reqNumber('min');
@@ -203,14 +206,14 @@ export class SiFieldFactory {
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_OUT:
 			const embeddedEntryPanelsOutSiField = new EmbeddedEntryPanelsOutSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
 					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
-					new SiBuildTypes.SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
+					new SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 			embeddedEntryPanelsOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return embeddedEntryPanelsOutSiField;
 
 		case SiFieldType.EMBEDDED_ENTRY_PANELS_IN:
 			const embeddedEntryPanelsInSiField = new EmbeddedEntryPanelsInSiField(this.injector.get(SiService), this.injector.get(SiModStateService),
 					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), this.injector.get(TranslationService),
-					new SiBuildTypes.SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
+					new SiGuiFactory(this.injector).createPanels(dataExtr.reqArray('panels')));
 			embeddedEntryPanelsInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
 			return embeddedEntryPanelsInSiField;
 
@@ -223,6 +226,7 @@ export class SiFieldFactory {
 			splitContextInSiField.min = dataExtr.reqNumber('min');
 			this.compileSplitContents(splitContextInSiField.collection,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
+					SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
 			splitContextInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
@@ -233,6 +237,7 @@ export class SiFieldFactory {
 			splitContextOutSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
 			this.compileSplitContents(splitContextOutSiField.collection,
 					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
+					SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);
 			splitContextOutSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
@@ -308,7 +313,7 @@ export class SiFieldFactory {
 		};
 	}
 
-	private compileSplitContents(splitContextSiField: SplitContentCollection, declaration: SiDeclaration, dataMap: Map<string, any>): void {
+	private compileSplitContents(splitContextSiField: SplitContentCollection, declaration: SiDeclaration, frame: SiFrame|null, dataMap: Map<string, any>): void {
 		for (const [key, data] of dataMap) {
 			const extr = new Extractor(data);
 
@@ -317,7 +322,7 @@ export class SiFieldFactory {
 
 			const entryData = extr.nullaObject('entry');
 			if (entryData) {
-				const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
+				const entryFactory = new SiEntryFactory(declaration, frame?.apiUrl ?? null, this.injector);
 				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,
 						entryFactory.createValueBoundary(entryData)));
 				continue;

@@ -106,9 +106,9 @@ export class SiModule { }
 // SiBuildTypes.LinkOutSiField = LinkOutSiField;
 // SiBuildTypes.SiNavPoint = SiNavPoint;
 // SiBuildTypes.QualifierSelectInSiField = QualifierSelectInSiField;
-SiBuildTypes.SiGuiFactory = SiGuiFactory;
-SiBuildTypes.SiEntryFactory = SiEntryFactory;
-SiBuildTypes.SiFieldFactory = SiFieldFactory;
-SiBuildTypes.SiControlFactory = SiControlFactory;
-SiBuildTypes.SiResultFactory = SiResultFactory;
-SiBuildTypes.SiUiFactory = SiUiFactory;
+// SiBuildTypes.SiGuiFactory = SiGuiFactory;
+// SiBuildTypes.SiEntryFactory = SiEntryFactory;
+// SiBuildTypes.SiFieldFactory = SiFieldFactory;
+// SiBuildTypes.SiControlFactory = SiControlFactory;
+// SiBuildTypes.SiResultFactory = SiResultFactory;
+// SiBuildTypes.SiUiFactory = SiUiFactory;

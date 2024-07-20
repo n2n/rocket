@@ -172,12 +172,12 @@ class SiFields {
 	 * @param SiDeclaration|null $declaration
 	 * @return SplitContextInSiField
 	 */
-	static function splitInContext(?SiDeclaration $declaration): SplitContextInSiField {
-		return new SplitContextInSiField($declaration);
+	static function splitInContext(?SiDeclaration $declaration, ?SiFrame $siFrame): SplitContextInSiField {
+		return new SplitContextInSiField($declaration, $siFrame);
 	}
 
-	static function splitOutContext(?SiDeclaration $declaration): SplitContextOutSiField {
-		return new SplitContextOutSiField($declaration);
+	static function splitOutContext(?SiDeclaration $declaration, ?SiFrame $siFrame): SplitContextOutSiField {
+		return new SplitContextOutSiField($declaration, $siFrame);
 	}
 
 	static function splitPlaceholder(string $refPropId): SplitPlaceholderSiField {

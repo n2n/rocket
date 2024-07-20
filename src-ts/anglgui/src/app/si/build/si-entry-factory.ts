@@ -1,19 +1,18 @@
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiPartialContent } from '../model/content/si-partial-content';
 import { SiValueBoundary } from '../model/content/si-value-boundary';
-import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 import { SiEntry } from '../model/content/si-entry';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
-import { SiBuildTypes } from './si-build-types';
 import { Message } from '../../util/i18n/message';
 import { SiMetaFactory } from './si-meta-factory';
+import { SiFieldFactory } from './si-field-factory';
 
 export class SiEntryFactory {
-	constructor(private declaration: SiDeclaration, private apiUrl: string, private injector: Injector) {
+	constructor(private declaration: SiDeclaration, private apiUrl: string|null, private injector: Injector) {
 	}
 
 	createPartialContent(data: any): SiPartialContent {
@@ -59,7 +58,7 @@ export class SiEntryFactory {
 		const entryQualifier = SiMetaFactory.createEntryQualifier(extr.reqObject('qualifier'));
 
 		const entry = new SiEntry(entryQualifier);
-		entry.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundary, mask, this.injector)
+		entry.fieldMap = new SiFieldFactory(controlBoundary, mask, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entry.controls = new SiControlFactory(controlBoundary, this.injector)
 				.createControls(extr.reqMap('controls'));

@@ -6,6 +6,7 @@ import { UiMenuItem, UiMenuGroup } from 'src/app/ui/structure/model/ui-menu';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiBuildTypes } from './si-build-types';
+import { SiGuiFactory } from './si-gui-factory';
 
 export class SiUiFactory {
 
@@ -15,7 +16,7 @@ export class SiUiFactory {
 	fillZone(data: any, uiZone: UiZone): void {
 		const extr = new Extractor(data);
 
-		const gui = new SiBuildTypes.SiGuiFactory(this.injector).buildGui(extr.reqObject('gui'))!;
+		const gui = new SiGuiFactory(this.injector).buildGui(extr.reqObject('gui'))!;
 
 		uiZone.title = extr.reqString('title');
 		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);

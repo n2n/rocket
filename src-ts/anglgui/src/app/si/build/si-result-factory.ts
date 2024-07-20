@@ -8,10 +8,11 @@ import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiBuildTypes } from './si-build-types';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
+import { SiEntryFactory } from './si-entry-factory';
 
 export class SiResultFactory {
 
-	constructor(private injector: Injector) {
+	constructor(private injector: Injector, private apiUrl: string) {
 
 	}
 
@@ -33,7 +34,7 @@ export class SiResultFactory {
 
 	createInputError(data: any, declaration: SiDeclaration): SiInputError {
 		const inputError = new SiInputError();
-		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
+		const entryFactory = new SiEntryFactory(declaration, this.apiUrl, this.injector);
 		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
 			inputError.errorEntries.set(eeKey, entryFactory.createValueBoundary(eeData));
 		}
@@ -46,7 +47,7 @@ export class SiResultFactory {
 		}
 
 		const inputResult = new SiInputResult();
-		const entryFactory = new SiBuildTypes.SiEntryFactory(declaration, this.injector);
+		const entryFactory = new SiEntryFactory(declaration, this.apiUrl, this.injector);
 		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
 			inputResult.valueBoundaries.set(eeKey, entryFactory.createValueBoundary(eeData));
 		}

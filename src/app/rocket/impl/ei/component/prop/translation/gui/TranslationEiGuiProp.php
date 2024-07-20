@@ -30,8 +30,9 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
+use rocket\op\ei\manage\gui\EiGuiProp;
 
-class TranslationEiEiGuiPropSetup implements EiGuiPropSetup, EiGuiField {
+class TranslationEiGuiProp implements EiGuiProp {
 	private $targetEiuGuiMaskDeclaration;
 	private $eiCmdPath;
 	private $translationConfig;

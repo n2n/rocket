@@ -45,7 +45,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 	/**
 	 * 
 	 */
-	function __construct(?SiDeclaration $declaration) {
+	function __construct(?SiDeclaration $declaration, private ?SiFrame $frame) {
 		$this->declaration = $declaration;
 		$this->style = new SplitStyle(null, null);
 	}
@@ -115,6 +115,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 		return [
 			'style' => $this->style,
 			'declaration' => $this->declaration,
+			'frame' => $this->frame,
 			'splitContents' => $this->splitContents,
 			...parent::getData()
 		];

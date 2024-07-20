@@ -31,6 +31,7 @@ use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStyle;
+use rocket\ui\si\meta\SiFrame;
 
 class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
@@ -70,7 +71,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
 	 *
 	 */
-	function __construct(?SiDeclaration $declaration) {
+	function __construct(?SiDeclaration $declaration, private ?SiFrame $frame) {
 		$this->declaration = $declaration;
 		$this->style = new SplitStyle(null, null);
 		$this->managerStyle = new SplitStyle(null, null);
@@ -210,6 +211,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			'activeKeys' => $this->activeKeys,
 			'mandatoryKeys' => $this->mandatoryKeys,
 			'declaration' => $this->declaration,
+			'frame' => $this->frame,
 			'splitContents' => $this->splitContents,
 			...parent::getData()
 		];
