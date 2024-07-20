@@ -32,6 +32,8 @@ use rocket\ui\si\content\impl\SiFields;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\impl\ei\component\prop\numeric\component\OrderEiModificator;
 use rocket\ui\gui\ViewMode;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
 
 class OrderEiPropNature extends IntegerEiPropNature {
     const ORDER_INCREMENT = 10;
@@ -54,7 +56,7 @@ class OrderEiPropNature extends IntegerEiPropNature {
 	}
 	
 	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
-		return $eiu->factory()->newGuiField(SiFields::stringOut($eiu->field()->getValue()));
+		return GuiFields::out(SiFields::stringOut($eiu->field()->getValue()));
 	}
 
 	public function getSortItem() {
@@ -65,10 +67,11 @@ class OrderEiPropNature extends IntegerEiPropNature {
 		$siField = SiFields::numberIn($eiu->field()->getValue())
 				->setMandatory($this->isMandatory())
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
-			$eiu->field()->setValue($siField->getValue());
-		});
+
+		return GuiFields::numberIn($this->isMandatory())->setValue($eiu->field()->getValue());
+//		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
+//			$eiu->field()->setValue($siField->getValue());
+//		});
 	}
 
 	public function getFilterProp() {

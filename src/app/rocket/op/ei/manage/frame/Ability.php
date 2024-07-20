@@ -28,16 +28,16 @@ class Ability {
 	private $sortAbility;
 	
 	/**
-	 * @return \rocket\op\ei\manage\frame\SortAbility
+	 * @return SortAbility
 	 */
-	function getSortAbility() {
+	function getSortAbility(): ?SortAbility {
 		return $this->sortAbility;
 	}
-	
+
 	/**
-	 * @param SortAbility $sortAbility
+	 * @param SortAbility|null $sortAbility
 	 */
-	function setSortAbility(SortAbility $sortAbility) {
+	function setSortAbility(?SortAbility $sortAbility): void {
 		$this->sortAbility = $sortAbility;
 	}
 }

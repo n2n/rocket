@@ -410,7 +410,7 @@ class EiPropNatureProvider {
 				$nature = new OnlineEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
 			case 'int':
-				if ($eiPresetProp->getEiPropPath() !== 'orderIndex' || !$eiPresetProp->isEditable()) {
+				if ($eiPresetProp->getEiPropPath()->getLastId() !== 'orderIndex' || !$eiPresetProp->isEditable()) {
 					return false;
 				}
 

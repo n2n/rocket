@@ -46,11 +46,11 @@ class OrderEiModificator extends EiModNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\mod\adapter\EiModNatureAdapter::setupEiFrame()
 	 */
-	public function setupEiFrame(Eiu $eiu) {
+	public function setupEiFrame(Eiu $eiu): void {
 		$eiu->frame()->getEiFrame()->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
-		
+
 		$eiu->frame()->setSortAbility(
 				function (array $eiuObjects, EiuObject $afterEiuObject) use ($eiu) {
 					foreach ($eiuObjects as $eiuObject) {
