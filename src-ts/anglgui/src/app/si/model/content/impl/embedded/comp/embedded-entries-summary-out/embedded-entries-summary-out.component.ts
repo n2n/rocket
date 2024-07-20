@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { EmbeddedEntriesOutModel } from '../embedded-entries-out-model';
 import { EmbeStructure } from '../../model/embe/embe-structure';
 

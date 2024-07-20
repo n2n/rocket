@@ -5,7 +5,7 @@ import { SiUiService as SiUiService } from 'src/app/si/manage/si-ui.service';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
-import { SiControlBoundry } from '../../si-control-bountry';
+import { SiControlBoundry } from '../../si-control-boundry';
 
 export class ApiCallSiControl implements SiControl {
 
@@ -13,7 +13,7 @@ export class ApiCallSiControl implements SiControl {
 	private loading = false;
 	// private entryBoundFlag: boolean;
 
-	constructor(public siUiService: SiUiService, public apiUrl: string, public apiCallId: object,
+	constructor(public siUiService: SiUiService, public controlName: string,
 			public button: SiButton, public controlBoundry: SiControlBoundry) {
 	}
 
@@ -26,7 +26,8 @@ export class ApiCallSiControl implements SiControl {
 	}
 
 	isDisabled(): boolean {
-		return !!this.controlBoundry.getBoundValueBoundaries().find(siValueBoundary => siValueBoundary.isClaimed());
+		return !!this.controlBoundry.getBoundValueBoundaries().find(siValueBoundary => siValueBoundary.isClaimed())
+				|| !this.controlBoundry.getBoundApiUrl();
 	}
 
 	// set entryBound(entryBound: boolean) {
@@ -44,8 +45,8 @@ export class ApiCallSiControl implements SiControl {
 	exec(uiZone: UiZone): void {
 		const locks = this.controlBoundry.getBoundValueBoundaries().map(entry => entry.createLock());
 
-		const obs = this.siUiService.execControl(this.apiUrl, this.apiCallId, this.controlBoundry,
-				this.inputSent, uiZone.layer);
+		const obs = this.siUiService.execControl(this.controlBoundry.getBoundApiUrl()!, this.controlName,
+				this.controlBoundry, this.inputSent, uiZone.layer);
 		this.loading = true;
 		obs.subscribe(() => {
 			locks.forEach((lock) => { lock.release(); });

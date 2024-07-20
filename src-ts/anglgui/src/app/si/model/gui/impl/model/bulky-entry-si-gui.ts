@@ -11,7 +11,7 @@ import { SiField } from '../../../content/si-field';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
-import { SiControlBoundry } from '../../../control/si-control-bountry';
+import { SiControlBoundry } from '../../../control/si-control-boundry';
 import { SiFrame } from '../../../meta/si-frame';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { SiService } from 'src/app/si/manage/si.service';
@@ -25,6 +25,7 @@ import { BulkyEntryComponent } from '../comp/bulky-entry/bulky-entry.component';
 import { SelectInFieldComponent } from '../../../content/impl/enum/comp/select-in-field/select-in-field.component';
 import { SelectInFieldModel } from '../../../content/impl/enum/comp/select-in-field-model';
 import { Message } from 'src/app/util/i18n/message';
+import { SiMaskQualifier } from '../../../meta/si-mask-qualifier';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _valueBoundary: SiValueBoundary|null = null;
@@ -42,6 +43,11 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	getBoundDeclaration(): SiDeclaration {
 		return this.declaration;
 	}
+
+	getBoundApiUrl(): string|null {
+		return this.frame?.apiUrl ?? null;
+	}
+
 	// reload() {
 	// }
 
@@ -87,13 +93,13 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		super();
 	}
 
-	getSiEntry(): SiValueBoundary {
+	getSiValueBoundary(): SiValueBoundary {
 		return this.siValueBoundary;
 	}
 
-	// getSiDeclaration(): SiDeclaration {
-	// 	return this.siDeclaration;
-	// }
+	getSiDeclaration(): SiDeclaration {
+		return this.siDeclaration;
+	}
 
 	getContentStructureBranchModel(): StructureBranchModel {
 		return this;
@@ -163,7 +169,8 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 
 	private createTypeSwitchUiStructureModel(): UiStructureModel {
 		return new SimpleUiStructureModel(new TypeUiContent(SelectInFieldComponent, (ref) => {
-			ref.instance.model = new TypeSelectInModel(this.siValueBoundary);
+			ref.instance.model = new TypeSelectInModel(this.siValueBoundary,
+					this.siDeclaration.getMaskQualifiersByIds(this.siValueBoundary.maskIds));
 		}));
 	}
 
@@ -339,8 +346,8 @@ class UiStructureModelCache {
 class TypeSelectInModel implements SelectInFieldModel {
 	private options = new Map<string, string>();
 
-	constructor(private siValueBoundary: SiValueBoundary) {
-		for (const mq of siValueBoundary.maskQualifiers) {
+	constructor(private siValueBoundary: SiValueBoundary, private siMaskQualifiers: SiMaskQualifier[]) {
+		for (const mq of siMaskQualifiers) {
 			this.options.set(mq.maskIdentifier.id, mq.name);
 		}
 	}

@@ -324,6 +324,12 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	bestNameOf(siValueBoundary: SiValueBoundary): string|null {
+		return siValueBoundary.selectedEntry.entryQualifier.idName
+				?? this.model.getStructurePageManager().declaration?.getMaskById(siValueBoundary.selectedMaskId!).qualifier.name
+				?? null;
+	}
+
 	hasSiEntrySortSelections(): boolean {
 		return this.sortSelectedMap.size > 0;
 	}

@@ -9,7 +9,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiControlResult, SiDirective } from './si-control-result';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 import { SiNavPoint } from '../model/control/si-nav-point';
 
@@ -115,7 +115,7 @@ export class SiUiService {
 	// // 	}));
 	// }
 
-	execControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, includeInput: boolean,
+	execControl(apiUrl: string, callId: string, controlBoundry: SiControlBoundry, includeInput: boolean,
 			uiLayer: UiLayer): Observable<void> {
 		let input: SiInput|null = null;
 

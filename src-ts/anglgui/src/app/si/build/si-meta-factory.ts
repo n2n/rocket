@@ -114,7 +114,7 @@ export class SiMetaFactory {
 				extr.reqStringArray('descendantPropIds'));
 	}
 
-	static createFrame(data: any): SiFrame {
+	static createFrame(data: any): SiFrame { 
 		const extr = new Extractor(data);
 
 		const siFrame = new SiFrame(extr.reqString('apiUrl')/*, this.createTypeContext(extr.reqObject('typeContext'))*/);
@@ -160,7 +160,7 @@ export class SiMetaFactory {
 	static createEntryQualifier(data: any): SiEntryQualifier {
 		const extr = new Extractor(data);
 
-		return new SiEntryQualifier(SiMetaFactory.createTypeQualifier(extr.reqObject('maskQualifier')),
-				SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')), extr.nullaString('idName'));
+		return new SiEntryQualifier(SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
+				extr.nullaString('idName'));
 	}
 }

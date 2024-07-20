@@ -11,13 +11,14 @@ import { SiMetaFactory } from './si-meta-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiBuildTypes } from './si-build-types';
+import { SiEntryFactory } from './si-entry-factory';
 
 export class SiApiFactory {
 
-	constructor(private injector: Injector) {
+	constructor(private injector: Injector, private apiUrl: string) {
 	}
 
 	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
@@ -54,13 +55,13 @@ export class SiApiFactory {
 
 		let controlsData: any;
 		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-			const compEssentialsFactory = new SiBuildTypes.SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration), this.injector);
+			const compEssentialsFactory = new SiBuildTypes.SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
 			result.generalControls = compEssentialsFactory.createControls(controlsData);
 		}
 
 		let propData: any;
 		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector).createValueBoundary(propData);
+			result.valueBoundary = new SiEntryFactory(declaration, this.apiUrl, this.injector).createValueBoundary(propData);
 		}
 
 		if (null !== (propData = extr.nullaObject('partialContent'))) {

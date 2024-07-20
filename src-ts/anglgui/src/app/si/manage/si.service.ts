@@ -60,13 +60,13 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string|SiFrame, apiCallId: object, input: SiInput|null): Observable<SiControlResult> {
+	controlCall(apiUrl: string|SiFrame, controlName: string, input: SiInput|null): Observable<SiControlResult> {
 		if (apiUrl instanceof SiFrame) {
 			apiUrl = apiUrl.apiUrl;
 		}
 
 		const formData = new FormData();
-		formData.append('apiCallId', JSON.stringify(apiCallId));
+		formData.append('controlName', controlName);
 
 		if (input) {
 			for (const [name, param] of input.toParamMap()) {
@@ -122,27 +122,19 @@ export class SiService {
 				}));
 	}
 
-	apiGet(apiUrl: string|SiFrame, getRequest: SiGetRequest): Observable<SiGetResponse> {
-		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.apiUrl;
-		}
-
+	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
 		return this.httpClient
 				.post<any>(apiUrl, getRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(this.injector).createGetResponse(data, getRequest);
+					return new SiApiFactory(this.injector, apiUrl).createGetResponse(data, getRequest);
 				}));
 	}
 
-	apiVal(apiUrl: string|SiFrame, valRequest: SiValRequest): Observable<SiValResponse> {
-		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.apiUrl;
-		}
-
+	apiVal(apiUrl: string, valRequest: SiValRequest): Observable<SiValResponse> {
 		return this.httpClient
 				.post<any>(apiUrl, valRequest)
 				.pipe(map(data => {
-					return new SiApiFactory(this.injector).createValResponse(data, valRequest);
+					return new SiApiFactory(this.injector, apiUrl).createValResponse(data, valRequest);
 				}));
 	}
 

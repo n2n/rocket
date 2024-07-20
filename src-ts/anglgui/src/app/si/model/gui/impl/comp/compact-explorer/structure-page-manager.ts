@@ -8,6 +8,7 @@ import { SiPageCollection, SiEntryPosition } from '../../model/si-page-collectio
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
+import { SiDeclaration } from '../../../../meta/si-declaration';
 
 export class StructurePage {
 	private _structureEntries = new Array<StructureEntry>();
@@ -144,6 +145,10 @@ export class StructurePageManager {
 		this.ensureDeclared();
 
 		return this.siPageCollection.declaration!.getBasicMask().getDeclaredProps();
+	}
+
+	get declaration(): SiDeclaration|null {
+		return this.siPageCollection.declaration;
 	}
 
 	get declarationRequired(): boolean {

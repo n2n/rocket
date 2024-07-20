@@ -22,8 +22,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 	public max: number|null = null;
 	public pickables: SiEntryQualifier[]|null = null;
 
-	constructor(public frame: SiFrame, public label: string,
-			public values: SiEntryQualifier[] = []) {
+	constructor(public frame: SiFrame, public label: string, public values: SiEntryQualifier[] = []) {
 		super();
 	}
 
@@ -101,7 +100,7 @@ export class QualifierSelectInSiField extends InSiFieldAdapter implements Qualif
 			}
 
 			const pickable = this.pickables!.find(
-					(p) => p.entryIdentifier.matchesTypeAndId(siEntryQualifier.entryIdentifier))
+					(p) => p.identifier.matchesTypeAndId(siEntryQualifier.identifier))
 			if (pickable) {
 				values.push(siEntryQualifier);
 				continue;

@@ -14,7 +14,7 @@ import { SplitContextInSiField } from '../model/content/impl/split/model/split-c
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';

@@ -4,7 +4,7 @@ import { ApiCallSiControl } from '../model/control/impl/model/api-call-si-contro
 import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
 import { SiNavPoint } from '../model/control/si-nav-point';
@@ -22,15 +22,15 @@ export class SiControlFactory {
 	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
 	}
 
-	createControls(dataArr: any[]): SiControl[] {
+	createControls(dataArr: Map<string, any[]>): SiControl[] {
 		const controls = new Array<SiControl>();
-		for (const controlData of dataArr) {
-			controls.push(this.createControl(controlData));
+		for (const [name, controlData] of dataArr) {
+			controls.push(this.createControl(name, controlData));
 		}
 		return controls;
 	}
 
-	createControl(data: any): SiControl {
+	createControl(controlName: string, data: any): SiControl {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 
@@ -45,8 +45,7 @@ export class SiControlFactory {
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						this.injector.get(SiUiService),
-						dataExtr.reqString('apiUrl'),
-						dataExtr.reqObject('apiCallId'),
+						controlName,
 						this.createButton(dataExtr.reqObject('button')),
 						this.controlBoundry);
 				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
@@ -54,7 +53,7 @@ export class SiControlFactory {
 			case SiControlType.GROUP:
 				const groupControl = new GroupSiControl(
 						this.createButton(dataExtr.reqObject('button')),
-						dataExtr.reqArray('controls').map(controlData => this.createControl(controlData)));
+						this.createControls(dataExtr.reqMap('controls')));
 				return groupControl;
 			case SiControlType.DEACTIVATED:
 				const deactivatedControl = new SimpleSiControl(this.createButton(dataExtr.reqObject('button')), () => {});

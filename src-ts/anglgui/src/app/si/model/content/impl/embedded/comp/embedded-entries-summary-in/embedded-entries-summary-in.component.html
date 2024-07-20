@@ -45,7 +45,9 @@
 					<div [class.invisible]="!model.isSortable()" cdkDragHandle class="rocket-handle">
 						<i class="fa fa-bars"></i>
 					</div>
-					<div class="rocket-qualifier-btn" rocketSiQualifier [siMaskQualifier]="embeStructure.embe.siValueBoundary.qualifier.maskQualifier" [iconImportant]="true"></div>
+					<div class="rocket-qualifier-btn" rocketSiQualifier
+							[siMaskQualifier]="embeStructure.embe.siMaskQualifier"
+							[iconImportant]="true"></div>
 				</ng-container>
 				
 				<ng-container post-content>

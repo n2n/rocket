@@ -11,6 +11,7 @@ import { SiGenericEntry } from '../generic/si-generic-entry-buildup';
 import { skip } from 'rxjs/operators';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
+import { SiMask } from '../meta/si-type';
 
 export class SiValueBoundary {
 
@@ -21,8 +22,12 @@ export class SiValueBoundary {
 		return this.identifier.id === null || this.identifier.id === undefined;
 	}
 
+	// getBestName(): string {
+	// 	return this.selectedEntry.entryQualifier.idName ?? this.selectedEntry.mask.qualifier.name;
+	// }
+
 	get identifier(): SiEntryIdentifier {
-		return this.selectedEntry.entryQualifier.entryIdentifier;
+		return this.selectedEntry.entryQualifier.identifier;
 	}
 
 	get qualifier(): SiEntryQualifier {
@@ -58,9 +63,13 @@ export class SiValueBoundary {
 		return this.selectedMaskIdSubject.asObservable();
 	}
 
-	get maskQualifiers(): SiMaskQualifier[] {
-		return Array.from(this._entriesMap.values())
-				.map(buildup => buildup.entryQualifier.maskQualifier);
+	// get maskQualifiers(): SiMaskQualifier[] {
+	// 	return Array.from(this._entriesMap.values())
+	// 			.map(buildup => buildup.entryQualifier.maskQualifier);
+	// }
+
+	get maskIds(): string[] {
+		return Array.from(this._entriesMap.keys());
 	}
 
 	get entryQualifiers(): SiEntryQualifier[] {
@@ -120,7 +129,7 @@ export class SiValueBoundary {
 	}
 
 	addEntry(entry: SiEntry) {
-		this._entriesMap.set(entry.entryQualifier.maskQualifier.maskIdentifier.id, entry);
+		this._entriesMap.set(entry.entryQualifier.identifier.maskIdentifier.id, entry);
 	}
 
 	containsEntryId(id: string): boolean {
@@ -158,7 +167,7 @@ export class SiValueBoundary {
 		// 	throw new IllegalSiStateError('No input available.');
 		// }
 
-		return new SiEntryInput(this.selectedMaskId!, this.qualifier.entryIdentifier.id, fieldInputMap);
+		return new SiEntryInput(this.selectedMaskId!, this.qualifier.identifier.id, fieldInputMap);
 	}
 
 	// handleError(error: SiEntryError) {

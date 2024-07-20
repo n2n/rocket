@@ -45,7 +45,7 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	}
 
 	private getTypeSelectedValues(): SiEmbeddedEntry[] {
-		return this.values.filter(ee => ee.entry.selectedMaskId);
+		return this.values.filter(ee => ee.valueBoundary.selectedMaskId);
 	}
 
 	getMessages(): Message[] {
@@ -59,7 +59,7 @@ export class SiPanel implements EmbeddedEntriesInConfig, EmbeInSource {
 	readInput(): object {
 		return {
 			name: this.name,
-			entryInputs: this.getTypeSelectedValues().map(embe => embe.entry.readInput())
+			entryInputs: this.getTypeSelectedValues().map(embe => embe.valueBoundary.readInput())
 		};
 	}
 

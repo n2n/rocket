@@ -10,6 +10,7 @@ import { SiGenericValue } from '../generic/si-generic-value';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
+import { SiMask } from '../meta/si-type';
 
 export class SiEntry {
 	public messages: Message[] = [];
@@ -20,8 +21,12 @@ export class SiEntry {
 		this.fieldMap$ = new BehaviorSubject(fieldMap);
 	}
 
+	// get mask(): SiMask {
+	// 	throw new Error();
+	// }
+
 	getMaskId(): string {
-		return this.entryQualifier.maskQualifier.maskIdentifier.id;
+		return this.entryQualifier.identifier.maskIdentifier.id;
 	}
 
 	set fieldMap(fieldMap: Map<string, SiField>) {

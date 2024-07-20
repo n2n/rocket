@@ -30,22 +30,21 @@ export class SiEntryIdentifier implements SiObjectIdentifier {
 
 export class SiEntryQualifier {
 
-	constructor(readonly maskQualifier: SiMaskQualifier, readonly identifier: SiEntryIdentifier,
-			public idName: string|null) {
+	constructor(readonly identifier: SiEntryIdentifier, public idName: string|null) {
 
 		// if (this.maskQualifier.identifier.typeId !== identifier.typeId) {
 		// 	throw new Error('Identifiers do not match: ' + maskQualifier.identifier.typeId + ' != ' + identifier.typeId);
 		// }
 	}
 
-	getBestName(): string {
-		return this.idName || this.maskQualifier.name;
-	}
+	// getBestName(): string {
+	// 	return this.idName || this.identifiermaskQualifier.name;
+	// }
 
 	equals(obj: any): boolean {
 		return obj instanceof SiEntryQualifier
 				&& this.identifier.equals(obj.identifier)
-				&& this.maskQualifier.identifier.matches(obj.maskQualifier.identifier);
+				&& this.identifier.maskIdentifier.matches(obj.identifier.maskIdentifier);
 	}
 
 	toString(): string {

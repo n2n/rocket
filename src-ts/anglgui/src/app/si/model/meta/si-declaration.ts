@@ -1,6 +1,7 @@
 
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiMask } from './si-type';
+import { SiMaskQualifier } from './si-mask-qualifier';
 
 export class SiDeclaration {
 	private masksMap = new Map<string, SiMask>();
@@ -35,5 +36,9 @@ export class SiDeclaration {
 		}
 
 		throw new IllegalSiStateError('Unknown maskId: ' + maskId);
+	}
+
+	getMaskQualifiersByIds(maskIds: string[]): SiMaskQualifier[] {
+		return maskIds.map((maskId) => this.getMaskById(maskId).qualifier);
 	}
 }

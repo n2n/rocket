@@ -10,15 +10,18 @@ export class BulkyEntryComponent /*implements OnInit, OnDestroy, DoCheck*/ {
 	public model!: BulkyEntryModel;
 
 	get typeSelected(): boolean {
-		return this.model.getSiEntry().entrySelected;
+		return this.model.getSiValueBoundary().entrySelected;
 	}
 
 	get choosableSiMaskQualifiers(): SiMaskQualifier[] {
-		return this.model.getSiEntry().entryQualifiers.map(eq => eq.maskQualifier);
+		const siDeclaration = this.model.getSiDeclaration();
+		const siValueBoundary = this.model.getSiValueBoundary();
+
+		return siValueBoundary.maskIds.map(id => siDeclaration.getMaskById(id).qualifier);
 	}
 
 	chooseSiMaskQualifier(siMaskQualifier: SiMaskQualifier) {
-		this.model.getSiEntry().selectedMaskId = siMaskQualifier.maskIdentifier.id;
+		this.model.getSiValueBoundary().selectedMaskId = siMaskQualifier.maskIdentifier.id;
 	}
 
 	// constructor() { }

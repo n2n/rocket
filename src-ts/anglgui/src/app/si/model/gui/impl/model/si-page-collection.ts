@@ -10,7 +10,7 @@ import { SiGetInstruction } from '../../../api/si-get-instruction';
 import { SiGetRequest } from '../../../api/si-get-request';
 import { SiGetResponse } from '../../../api/si-get-response';
 import { SiGetResult } from '../../../api/si-get-result';
-import { SiControlBoundry } from '../../../control/si-control-bountry';
+import { SiControlBoundry } from '../../../control/si-control-boundry';
 import { SiFrame } from '../../../meta/si-frame';
 import { SiEntryIdentifier } from '../../../content/si-entry-qualifier';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
@@ -48,6 +48,10 @@ export class SiPageCollection implements SiControlBoundry {
 	getBoundDeclaration(): SiDeclaration {
 		this.ensureDeclared();
 		return this.declaration!;
+	}
+
+	getBoundApiUrl(): string|null {
+		return this.siFrame.apiUrl;
 	}
 
 	get pages(): SiPage[] {
@@ -237,7 +241,7 @@ export class SiPageCollection implements SiControlBoundry {
 				.setEntryControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 
-		this.siService.apiGet(this.siFrame, getRequest)
+		this.siService.apiGet(this.siFrame.apiUrl, getRequest)
 				.subscribe((getResponse: SiGetResponse) => {
 					this.applyResult(getResponse.results[0], siPage);
 				});

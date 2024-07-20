@@ -4,7 +4,7 @@ import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiControlBoundry } from '../../si-control-bountry';
+import { SiControlBoundry } from '../../si-control-boundry';
 
 export class RefSiControl implements SiControl {
 

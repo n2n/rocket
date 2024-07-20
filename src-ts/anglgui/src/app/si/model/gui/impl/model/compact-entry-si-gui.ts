@@ -7,7 +7,6 @@ import { CompactEntryComponent } from '../comp/compact-entry/compact-entry.compo
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { CompactEntryModel } from '../comp/compact-entry-model';
-import { SiControlBoundry } from '../../../control/si-control-bountry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
@@ -16,6 +15,7 @@ import { SiFrame } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
+import { SiControlBoundry } from '../../../control/si-control-boundry';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private valueBoundarySubject = new BehaviorSubject<SiValueBoundary|null>(null);
@@ -44,6 +44,10 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 
 	getBoundDeclaration(): SiDeclaration {
 		return this.declaration;
+	}
+
+	getBoundApiUrl(): string|null {
+		return this.siFrame.apiUrl;
 	}
 
 	getMessages(): Message[] {

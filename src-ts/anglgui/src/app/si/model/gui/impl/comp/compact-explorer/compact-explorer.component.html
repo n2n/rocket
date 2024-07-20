@@ -25,8 +25,8 @@
 						class="rocket-tree-level-{{ structureEntry.siValueBoundary.treeLevel }} rocket-draggable">
 					<td *ngIf="selectable" class="rocket-entry-selector" (click)="toggleSelection(structureEntry.siValueBoundary.qualifier)">
 						<ng-container *ngIf="singleSelect">
-							<input type="radio" [value]="structureEntry.siValueBoundary.qualifier.entryIdentifier.toString()"
-									[ngModel]="isSelected(structureEntry.siValueBoundary.qualifier) ? structureEntry.siValueBoundary.qualifier.entryIdentifier.toString() : null" />
+							<input type="radio" [value]="structureEntry.siValueBoundary.qualifier.identifier.toString()"
+									[ngModel]="isSelected(structureEntry.siValueBoundary.qualifier) ? structureEntry.siValueBoundary.qualifier.identifier.toString() : null" />
 						</ng-container>
 						<ng-container *ngIf="!singleSelect">
 							<input type="checkbox" 
@@ -77,7 +77,7 @@
 						</div>
 					</td>
 					<td *cdkDragPreview>
-						{{structureEntry.siValueBoundary.qualifier.getBestName()}}
+						{{ bestNameOf(structureEntry.siValueBoundary) }}
 					</td>
 				</tr>
 			</ng-container>

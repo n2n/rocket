@@ -18,7 +18,7 @@ export class GenericEmbeddedEntryManager {
 	}
 
 	private findCurrentValue(entryIdentifier: SiEntryIdentifier): SiEmbeddedEntry|null {
-		return this.values.find(embeddedEntry => embeddedEntry.entry.identifier.equals(entryIdentifier)) || null;
+		return this.values.find(embeddedEntry => embeddedEntry.valueBoundary.identifier.equals(entryIdentifier)) || null;
 	}
 
 	async copyValue(): Promise<SiGenericValue> {
@@ -38,7 +38,7 @@ export class GenericEmbeddedEntryManager {
 				});
 			}
 
-			const entryIdentifier = genericEmbeddedEntry.genericValueBoundary.selectedEntryQualifier.entryIdentifier;
+			const entryIdentifier = genericEmbeddedEntry.genericValueBoundary.selectedEntryQualifier.identifier;
 			// TODO: look for better solution
 			// this.valEntryIdentifier(entryIdentifier);
 

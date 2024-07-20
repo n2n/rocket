@@ -3,6 +3,7 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiEmbeddedEntry } from '../si-embedded-entry';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
+import { SiMaskQualifier } from '../../../../../meta/si-mask-qualifier';
 
 export class Embe {
 	private _siEmbeddedEntry: SiEmbeddedEntry|null = null;
@@ -44,12 +45,17 @@ export class Embe {
 	}
 
 	isTypeSelected(): boolean {
-		return !!this._siEmbeddedEntry?.entry.selectedMaskId;
+		return !!this._siEmbeddedEntry?.valueBoundary.selectedMaskId;
 	}
 
 	get siValueBoundary(): SiValueBoundary {
 		IllegalSiStateError.assertTrue(!!this._siEmbeddedEntry);
-		return this._siEmbeddedEntry!.entry;
+		return this._siEmbeddedEntry!.valueBoundary;
+	}
+
+	get siMaskQualifier(): SiMaskQualifier {
+		IllegalSiStateError.assertTrue(!!this._siEmbeddedEntry);
+		return this._siEmbeddedEntry!.maskQualifier;
 	}
 
 	// get uiStructure(): UiStructure {

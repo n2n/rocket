@@ -62,11 +62,11 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	}
 
 	private getTypeSelectedValues(): SiEmbeddedEntry[] {
-		return this.values.filter(ee => ee.entry.selectedMaskId);
+		return this.values.filter(ee => ee.valueBoundary.selectedMaskId);
 	}
 
 	readInput(): object {
-		return { entryInputs: this.getTypeSelectedValues().map(embeddedEntry => embeddedEntry.entry.readInput() ) };
+		return { entryInputs: this.getTypeSelectedValues().map(embeddedEntry => embeddedEntry.valueBoundary.readInput() ) };
 	}
 
 	createUiStructureModel(): UiStructureModel {

@@ -64,7 +64,7 @@ export class SiGuiFactory {
 						this.injector.get(SiModStateService));
 
 				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector);
-				compactExplorerSiGui.pageCollection.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+				compactExplorerSiGui.pageCollection.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
 				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
@@ -77,7 +77,8 @@ export class SiGuiFactory {
 
 			case SiGuiType.BULKY_ENTRY:
 				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntrySiGui = new BulkyEntrySiGui(SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')), declaration,
+				const bulkyEntrySiGui = new BulkyEntrySiGui(
+						SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')), declaration,
 						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
 				bulkyEntrySiGui.entryControlsIncluded = dataExtr.reqBoolean('entryControlsIncluded');
@@ -85,7 +86,7 @@ export class SiGuiFactory {
 						.createValueBoundary(dataExtr.reqObject('valueBoundary'));
 
 				compEssentialsFactory = new SiControlFactory(bulkyEntrySiGui, this.injector);
-				bulkyEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+				bulkyEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
 
 				return bulkyEntrySiGui;
 
@@ -95,7 +96,7 @@ export class SiGuiFactory {
 						declaration, this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
 				compEssentialsFactory = new SiControlFactory(compactEntrySiGui, this.injector);
-				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqArray('controls'));
+				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
 				compactEntrySiGui.valueBoundary = new SiBuildTypes.SiEntryFactory(declaration, this.injector)
 						.createValueBoundary(dataExtr.reqObject('valueBoundary'));
 				return compactEntrySiGui;

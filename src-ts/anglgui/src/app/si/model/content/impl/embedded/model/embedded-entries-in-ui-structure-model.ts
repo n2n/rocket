@@ -314,7 +314,9 @@ export class EmbeddedEntriesInUiStructureModel extends UiStructureModelAdapter i
 			}
 
 			structureErrors.push({
-				message: Message.createText('Error in ' + embeStructure.embe.siValueBoundary.selectedEntry.entryQualifier.getBestName()),
+				message: Message.createText('Error in ' +
+						(embeStructure.embe.siValueBoundary.selectedEntry.entryQualifier.idName
+								?? embeStructure.embe.siValueBoundary.selectedEntry.entryQualifier.identifier.id)),
 				focus: () => {
 					void this.getEmbeInUiStructureManager().open(embeStructure.embe);
 				}
@@ -371,7 +373,7 @@ class EmbeInUiZoneManager {
 		this.popupUiLayer = this.getUiContainer().createLayer();
 		const zone = this.popupUiLayer.pushRoute(null, null).zone;
 
-		let bakEntry: SiInputResetPoint|null = await embe.siEmbeddedEntry!.entry.createInputResetPoint();
+		let bakEntry: SiInputResetPoint|null = await embe.siEmbeddedEntry!.valueBoundary.createInputResetPoint();
 
 		zone.title = this.popupTitle;
 		zone.breadcrumbs = [];

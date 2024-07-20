@@ -19,11 +19,15 @@ export class SiEmbeddedEntry {
 		return null;
 	}
 
-	get entry(): SiValueBoundary {
+	get maskQualifier(): SiMaskQualifier {
+		return this.comp.getBoundDeclaration().getMaskById(this.valueBoundary.selectedEntry.getMaskId()).qualifier;
+	}
+
+	get valueBoundary(): SiValueBoundary {
 		return this.comp.valueBoundary!;
 	}
 
-	set entry(entry: SiValueBoundary) {
+	set valueBoundary(entry: SiValueBoundary) {
 		this.comp.valueBoundary = entry;
 	}
 
@@ -58,11 +62,11 @@ export class SiEmbeddedEntry {
 	}
 
 	get maskQualifiers(): SiMaskQualifier[] {
-		return this.entry.maskQualifiers;
+		return this.comp.getBoundDeclaration().getMaskQualifiersByIds(this.valueBoundary.maskIds);
 	}
 
 	get selectedMaskId(): string|null {
-		return this.entry.selectedMaskId;
+		return this.valueBoundary.selectedMaskId;
 	}
 
 	set selectedMaskId(maskId: string|null) {
@@ -73,7 +77,7 @@ export class SiEmbeddedEntry {
 	}
 
 	containsMaskId(maskId: string): boolean {
-		return this.entry.containsMaskId(maskId);
+		return this.valueBoundary.containsMaskId(maskId);
 	}
 
 }

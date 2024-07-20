@@ -6,13 +6,14 @@ import { SiEntry } from '../model/content/si-entry';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
-import { SiControlBoundry } from '../model/control/si-control-bountry';
+import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 import { SiBuildTypes } from './si-build-types';
 import { Message } from '../../util/i18n/message';
+import { SiMetaFactory } from './si-meta-factory';
 
 export class SiEntryFactory {
-	constructor(private declaration: SiDeclaration, private injector: Injector) {
+	constructor(private declaration: SiDeclaration, private apiUrl: string, private injector: Injector) {
 	}
 
 	createPartialContent(data: any): SiPartialContent {
@@ -41,7 +42,7 @@ export class SiEntryFactory {
 				SiMetaFactory.createStyle(extr.reqObject('style'))*/);
 		siValueBoundary.treeLevel = extr.nullaNumber('treeLevel');
 
-		const controlBoundry = new SimpleSiControlBoundry([siValueBoundary], this.declaration);
+		const controlBoundry = new SimpleSiControlBoundry([siValueBoundary], this.declaration, this.apiUrl);
 		for (const [maskId, entryData] of extr.reqMap('entries')) {
 			siValueBoundary.addEntry(this.createEntry(maskId, entryData, controlBoundry));
 		}
@@ -55,15 +56,13 @@ export class SiEntryFactory {
 		const extr = new Extractor(data);
 
 		const mask = this.declaration.getMaskById(maskId);
-		const entryQualifier = new SiEntryQualifier(mask.qualifier,
-				new SiEntryIdentifier(mask.qualifier.maskIdentifier, extr.nullaString('id')),
-				extr.nullaString('idName'));
+		const entryQualifier = SiMetaFactory.createEntryQualifier(extr.reqObject('qualifier'));
 
 		const entry = new SiEntry(entryQualifier);
 		entry.fieldMap = new SiBuildTypes.SiFieldFactory(controlBoundary, mask, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entry.controls = new SiControlFactory(controlBoundary, this.injector)
-				.createControls(extr.reqArray('controls'));
+				.createControls(extr.reqMap('controls'));
 		entry.messages = Message.createTexts(extr.reqStringArray('messages'));
 
 		return entry;
