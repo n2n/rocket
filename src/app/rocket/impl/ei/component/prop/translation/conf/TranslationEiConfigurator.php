@@ -46,6 +46,7 @@ use n2n\core\config\WebConfig;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\type\TypeUtils;
+use n2n\core\config\RoutingConfig;
 
 class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -87,7 +88,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		$systemN2nLocaleDefsMag = new MagCollectionArrayMag('System locales',
 				$this->createN2nLocaleDefMagClosure());
 		$systemN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue($this->readModN2nLocaleDefs(
-				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(WebConfig::class)->getSupersystem()->getN2nLocales())));
+				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(RoutingConfig::class)->getAllN2nLocales())));
 		$magCollection->addMag(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $systemN2nLocaleDefsMag);
 		
 		$customN2nLocaleDefsMag = new MagCollectionArrayMag('Custom locales',
