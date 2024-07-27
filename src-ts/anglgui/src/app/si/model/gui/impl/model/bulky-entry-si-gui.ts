@@ -26,13 +26,15 @@ import { SelectInFieldComponent } from '../../../content/impl/enum/comp/select-i
 import { SelectInFieldModel } from '../../../content/impl/enum/comp/select-in-field-model';
 import { Message } from 'src/app/util/i18n/message';
 import { SiMaskQualifier } from '../../../meta/si-mask-qualifier';
+import { IllegalStateError } from '../../../../../util/err/illegal-state-error';
 
 export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	private _valueBoundary: SiValueBoundary|null = null;
 	public entryControlsIncluded = true;
 	public controls: Array<SiControl> = [];
+	public declaration?: SiDeclaration
 
-	constructor(public frame: SiFrame|null, public declaration: SiDeclaration, public siService: SiService,
+	constructor(public frame: SiFrame|null, public siService: SiService,
 			public siModStateService: SiModStateService) {
 	}
 
@@ -41,7 +43,8 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	getBoundDeclaration(): SiDeclaration {
-		return this.declaration;
+		IllegalStateError.assertTrue(this.declaration !== undefined);
+		return this.declaration!;
 	}
 
 	getBoundApiUrl(): string|null {
@@ -73,7 +76,7 @@ export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
 					this.siModStateService, this.entryControlsIncluded);
 		}
 
-		return new BulkyUiStructureModel(this.valueBoundary!, this.declaration, this.getControls(), entryMonitor);
+		return new BulkyUiStructureModel(this.valueBoundary!, this.getBoundDeclaration(), this.getControls(), entryMonitor);
 	}
 
 	private getControls(): SiControl[] {

@@ -23,6 +23,7 @@ namespace rocket\ui\si\meta;
 
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\control\SiControl;
+use rocket\ui\si\SiPayloadFactory;
 
 class SiMask implements \JsonSerializable {
 
@@ -141,7 +142,7 @@ class SiMask implements \JsonSerializable {
 		return [
 			'qualifier' => $this->qualifier,
 			'props' => $this->props,
-			'controls' => $this->controls,
+			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'structureDeclarations' => $this->structureDeclarations
 		];
 	}

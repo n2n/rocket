@@ -10,7 +10,6 @@ import { SiGenericValue } from '../generic/si-generic-value';
 import { UnknownSiElementError } from '../../util/unknown-si-element-error';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
-import { SiMask } from '../meta/si-type';
 
 export class SiEntry {
 	public messages: Message[] = [];

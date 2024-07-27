@@ -61,7 +61,7 @@ export class SiEntryFactory {
 		entry.fieldMap = new SiFieldFactory(controlBoundary, mask, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entry.controls = new SiControlFactory(controlBoundary, this.injector)
-				.createControls(extr.reqMap('controls'));
+				.createControls(maskId, entryQualifier.identifier.id, extr.reqMap('controls'));
 		entry.messages = Message.createTexts(extr.reqStringArray('messages'));
 
 		return entry;

@@ -8,10 +8,8 @@ use rocket\core\model\Rocket;
 	$html = HtmlView::html($view);
 	
 	if (isset($_SERVER['ROCKET_DEV'])) {
-		$html->meta()->bodyEnd()->addJs('angl-dev/runtime.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/polyfills.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/vendor.js');
-		$html->meta()->bodyEnd()->addJs('angl-dev/main.js');
+		$html->meta()->bodyEnd()->addJs('angl-dev/browser/polyfills.js', attrs: ['type' => 'module']);
+		$html->meta()->bodyEnd()->addJs('angl-dev/browser/main.js', attrs: ['type' => 'module']);
 	} else {
 		$html->meta()->bodyEnd()->addJs('angl/runtime.js?v=' . Rocket::VERSION, null, false, false, ['defer']);
 		$html->meta()->bodyEnd()->addJs('angl/polyfills.js?v=' . Rocket::VERSION, null, false, false, ['defer']);

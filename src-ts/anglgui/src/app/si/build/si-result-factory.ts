@@ -1,12 +1,15 @@
 import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { Message, MessageSeverity } from 'src/app/util/i18n/message';
-import { SiCallResponse, SiControlResult, SiDirective, SiInputError, SiInputResult } from '../manage/si-control-result';
+import { SiCallResponse, SiDirective, SiInputResult } from '../manage/si-control-result';
 import { SiObjectIdentifier } from '../model/content/si-entry-qualifier';
 import { SiModEvent } from '../model/mod/model/si-mod-state.service';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiEntryFactory } from './si-entry-factory';
+import { SiApiCallResponse } from '../model/api/si-api-call-response';
+import { SiInput } from '../model/input/si-input';
+import { SiApiCall } from '../model/api/si-api-call';
 
 export class SiResultFactory {
 
@@ -14,36 +17,32 @@ export class SiResultFactory {
 
 	}
 
-	createControlResult(data: any, declaration?: SiDeclaration): SiControlResult {
-		const extr = new Extractor(data);
+	// createControlResult(data: any, declaration?: SiDeclaration): SiControlResult {
+	// 	const extr = new Extractor(data);
+	//
+	// 	const inputErrorData = extr.nullaObject('inputError');
+	// 	if (inputErrorData) {
+	// 		return {
+	// 			inputError: this.createInputResult(inputErrorData, declaration!)
+	// 		};
+	// 	}
+	//
+	// 	return {
+	// 		callResponse: this.createCallResponse(extr.reqObject('callResponse')),
+	// 		inputResult: this.createInputResult(extr.nullaObject('inputResult'), declaration!)!
+	// 	};
+	// }
 
-		const inputErrorData = extr.nullaObject('inputError');
-		if (inputErrorData) {
-			return {
-				inputError: this.createInputError(inputErrorData, declaration!)
-			};
-		}
+	// createInputResult(data: any, declaration: SiDeclaration): SiInputError {
+	// 	const inputError = new SiInputError();
+	// 	const entryFactory = new SiEntryFactory(declaration, this.apiUrl, this.injector);
+	// 	for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
+	// 		inputError.errorEntries.set(eeKey, entryFactory.createValueBoundary(eeData));
+	// 	}
+	// 	return inputError;
+	// }
 
-		return {
-			callResponse: this.createCallResponse(extr.reqObject('callResponse')),
-			inputResult: this.buildInputResult(extr.nullaObject('inputResult'), declaration!)!
-		};
-	}
-
-	createInputError(data: any, declaration: SiDeclaration): SiInputError {
-		const inputError = new SiInputError();
-		const entryFactory = new SiEntryFactory(declaration, this.apiUrl, this.injector);
-		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
-			inputError.errorEntries.set(eeKey, entryFactory.createValueBoundary(eeData));
-		}
-		return inputError;
-	}
-
-	buildInputResult(data: any, declaration: SiDeclaration): SiInputResult|null {
-		if (!data) {
-			return null;
-		}
-
+	private createInputResult(data: any, declaration: SiDeclaration): SiInputResult {
 		const inputResult = new SiInputResult();
 		const entryFactory = new SiEntryFactory(declaration, this.apiUrl, this.injector);
 		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
@@ -52,7 +51,24 @@ export class SiResultFactory {
 		return inputResult;
 	}
 
-	createCallResponse(data: any): SiCallResponse {
+	createApiCallResponse(data: any, apiCall: SiApiCall): SiApiCallResponse {
+		const extr = new Extractor(data);
+
+		let inputResult: SiInputResult|undefined;
+		let callResponse: SiCallResponse|undefined;
+
+		if (extr.contains('inputResult') && apiCall.input) {
+			inputResult = this.createInputResult(extr.reqObject('inputResult'), apiCall.input.declaration);
+		}
+
+		if (extr.contains('callResponse')) {
+			callResponse = this.createCallResponse(extr.reqObject('callResponse'))
+		}
+
+		return { inputResult, callResponse }
+	}
+
+	private createCallResponse(data: any): SiCallResponse {
 		const extr = new Extractor(data);
 
 		const result = new SiCallResponse();

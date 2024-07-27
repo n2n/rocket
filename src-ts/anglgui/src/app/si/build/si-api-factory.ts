@@ -49,14 +49,15 @@ export class SiApiFactory {
 		};
 
 		if (!declaration) {
-			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'));
+			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
+					new SiControlFactory(controlBoundry!, this.injector));
 		}
 
-		let controlsData: any;
-		if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-			const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
-			result.generalControls = compEssentialsFactory.createControls(controlsData);
-		}
+		// let controlsData: any;
+		// if (null !== (controlsData = extr.nullaArray('generalControls'))) {
+		// 	const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
+		// 	result.generalControls = compEssentialsFactory.createControls(controlsData);
+		// }
 
 		let propData: any;
 		if (null !== (propData = extr.nullaObject('entry'))) {
@@ -100,13 +101,13 @@ export class SiApiFactory {
 			}
 
 			const getInstruction = instruction.getInstructions[key];
-			result.getResults[key] = this.createValGetResult(resultsData[key], getInstruction.getDeclaration());
+			result.getResults[key] = this.createValGetResult(resultsData[key], getInstruction.getDeclaration(), getInstruction.getControlBoundary()!);
 		}
 
 		return result;
 	}
 
-	private createValGetResult(data: any, declaration: SiDeclaration|null): SiValGetResult {
+	private createValGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundry): SiValGetResult {
 		const extr = new Extractor(data);
 
 		const result: SiValGetResult = {
@@ -117,7 +118,8 @@ export class SiApiFactory {
 		let propData: any;
 
 		if (!declaration) {
-			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'));
+			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
+					new SiControlFactory(controlBoundary, this.injector));
 		}
 
 		if (null !== (propData = extr.nullaObject('entry'))) {

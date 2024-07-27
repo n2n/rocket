@@ -4,7 +4,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { map } from 'rxjs/operators';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { SiInput } from '../model/input/si-input';
-import { SiCallResponse, SiControlResult } from './si-control-result';
+import { SiCallResponse, SiInputResult } from './si-control-result';
 import { IllegalSiStateError } from '../util/illegal-si-state-error';
 import { SiGetRequest } from '../model/api/si-get-request';
 import { SiGetResponse } from '../model/api/si-get-response';
@@ -15,9 +15,11 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiSortRequest } from '../model/api/si-sort-request';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { SiFrame } from '../model/meta/si-frame';
-import { SiBuildTypes } from '../build/si-build-types';
 import { SiResultFactory } from '../build/si-result-factory';
 import { SiUiFactory } from '../build/si-ui-factory';
+import { SiApiCall } from '../model/api/si-api-call';
+import { SiApiCallResponse } from '../model/api/si-api-call-response';
+import { SiControlCall } from '../model/api/si-control-call';
 
 @Injectable({
 	providedIn: 'root'
@@ -62,32 +64,35 @@ export class SiService {
 		throw new Error('not yet implemented');
 	}
 
-	controlCall(apiUrl: string, controlName: string, input: SiInput|null): Observable<SiControlResult> {
-		const formData = new FormData();
-		formData.append('controlName', controlName);
+	controlCall(apiUrl: string, maskId: string, entryId: string|null, controlName: string, input: SiInput|null): Observable<SiApiCallResponse> {
+		// const formData = new FormData();
+		// formData.append('controlName', controlName);
+		//
+		// if (input) {
+		// 	for (const [name, param] of input.toParamMap()) {
+		// 		formData.append(name, param);
+		// 	}
+		// }
+		//
+		// const params = new HttpParams();
+		//
+		// const options = {
+		// 	params,
+		// 	reportProgress: true
+		// };
 
-		if (input) {
-			for (const [name, param] of input.toParamMap()) {
-				formData.append(name, param);
-			}
-		}
+		return this.apiCall(apiUrl, { input: input || undefined, controlCall: new SiControlCall(maskId, entryId, controlName) })
+				.pipe(map((r) => r));
 
-		const params = new HttpParams();
-
-		const options = {
-			params,
-			reportProgress: true
-		};
-
-		return this.httpClient.post<any>(apiUrl, formData, options)
-				.pipe(map(data => {
-					const resultFactory = new SiResultFactory(this.injector, apiUrl);
-					const result = resultFactory.createControlResult(data, input?.declaration);
-					if (result.callResponse) {
-						this.handleCallResponse(result.callResponse);
-					}
-					return result;
-				}));
+		// return this.httpClient.post<any>(apiUrl, formData, options)
+		// 		.pipe(map(data => {
+		// 			const resultFactory = new SiResultFactory(this.injector, apiUrl);
+		// 			const result = resultFactory.createControlResult(data, input?.declaration);
+		// 			if (result.callResponse) {
+		// 				this.handleCallResponse(result.callResponse);
+		// 			}
+		// 			return result;
+		// 		}));
 	}
 
 	fieldCall(apiUrl: string|SiFrame, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
@@ -137,13 +142,30 @@ export class SiService {
 	}
 
 	apiSort(apiUrl: string, sortRequest: SiSortRequest): Observable<SiCallResponse> {
+		return this.apiCall(apiUrl, { sortCall: sortRequest })
+				.pipe(map((r) => r.callResponse!));
+	}
+
+	apiCall(apiUrl: string, apiCall: SiApiCall): Observable<SiApiCallResponse> {
+		const formData = new FormData();
+		formData.append('apiCallId', JSON.stringify(apiCall));
+
+		const httpParams = new HttpParams();
+
+		const options = {
+			httpParams,
+			reportProgress: true
+		};
+
 		const resultFactory = new SiResultFactory(this.injector, apiUrl);
 		return this.httpClient
-				.post(apiUrl, sortRequest)
+				.post(apiUrl, formData, options)
 				.pipe(map(data => {
-					const callResponse = resultFactory.createCallResponse(data);
-					this.handleCallResponse(callResponse);
-					return callResponse;
+					const apiCallResponse = resultFactory.createApiCallResponse(data, apiCall);
+					if (apiCallResponse.callResponse) {
+						this.handleCallResponse(apiCallResponse.callResponse);
+					}
+					return apiCallResponse;
 				}));
 	}
 

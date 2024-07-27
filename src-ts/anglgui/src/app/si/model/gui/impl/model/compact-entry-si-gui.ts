@@ -16,13 +16,14 @@ import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiControlBoundry } from '../../../control/si-control-boundry';
+import { SiControlFactory } from '../../../../build/si-control-factory';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private valueBoundarySubject = new BehaviorSubject<SiValueBoundary|null>(null);
 	public entryControlsIncluded = true;
-	public controls: SiControl[] = [];
+	public declaration?: SiDeclaration
 
-	constructor(public siFrame: SiFrame, public declaration: SiDeclaration, public siService: SiService,
+	constructor(public siFrame: SiFrame, public siService: SiService,
 			public siModStateService: SiModStateService) {
 	}
 
@@ -43,7 +44,8 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	getBoundDeclaration(): SiDeclaration {
-		return this.declaration;
+		IllegalStateError.assertTrue(this.declaration !== undefined);
+		return this.declaration!;
 	}
 
 	getBoundApiUrl(): string|null {
@@ -63,11 +65,12 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	getSiDeclaration(): SiDeclaration {
-		return this.declaration;
+		IllegalStateError.assertTrue(this.declaration !== undefined);
+		return this.declaration!;
 	}
 
 	createUiStructureModel(): UiStructureModel {
-		return new CompactUiStructureModel(this.valueBoundarySubject.asObservable(), this.declaration, this.controls,
+		return new CompactUiStructureModel(this.valueBoundarySubject.asObservable(), this.getSiDeclaration(), /*this.controls,*/
 				new SiEntryMonitor(this.siFrame.apiUrl, this.siService,
 						this.siModStateService, this.entryControlsIncluded));
 	}
@@ -84,7 +87,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	private subscription: Subscription|null = null;
 	private currentSiValueBoundary: SiValueBoundary|null = null;
 
-	constructor(private siValueBoundary$: Observable<SiValueBoundary|null>, private siDeclaration: SiDeclaration, private controls: SiControl[],
+	constructor(private siValueBoundary$: Observable<SiValueBoundary|null>, private siDeclaration: SiDeclaration, /*private controls: SiControl[],*/
 				private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
@@ -136,6 +139,10 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	// 	}
 	// 	return zoneErrors;
 	// }
+
+	get controls(): SiControl[] {
+		return this.siDeclaration.getBasicMask().controls!;
+	}
 
 	override bind(uiStructure: UiStructure): void {
 		super.bind(uiStructure);

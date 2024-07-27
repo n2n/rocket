@@ -1,6 +1,6 @@
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { SiMask } from './si-type';
 import { SiMaskQualifier } from './si-mask-qualifier';
+import { SiMask } from './si-mask';
 
 export class SiDeclaration {
 	private masksMap = new Map<string, SiMask>();

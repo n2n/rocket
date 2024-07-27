@@ -8,4 +8,6 @@ export interface SiControlBoundry {
 	getBoundDeclaration(): SiDeclaration;
 
 	getBoundApiUrl(): string|null;
+
+
 }

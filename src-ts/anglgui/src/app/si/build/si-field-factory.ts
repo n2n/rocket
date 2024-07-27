@@ -7,7 +7,7 @@ import { SiMetaFactory } from './si-meta-factory';
 import { BooleanInSiField } from '../model/content/impl/boolean/boolean-in-si-field';
 import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-si-field';
 import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
-import { SiMask } from '../model/meta/si-type';
+import { SiMask } from '../model/meta/si-mask';
 import { SiProp } from '../model/meta/si-prop';
 import { Observable, Subject } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
@@ -42,6 +42,7 @@ import { SplitContent, SplitContentCollection } from '../model/content/impl/spli
 import { SiEntryFactory } from './si-entry-factory';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiGuiFactory } from './si-gui-factory';
+import { SiControlFactory } from './si-control-factory';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -224,7 +225,7 @@ export class SiFieldFactory {
 			splitContextInSiField.mandatoryKeys = dataExtr.reqStringArray('mandatoryKeys');
 			splitContextInSiField.min = dataExtr.reqNumber('min');
 			this.compileSplitContents(splitContextInSiField.collection,
-					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
+					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'), new SiControlFactory(this.controlBoundry, this.injector)),
 					SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
@@ -235,7 +236,7 @@ export class SiFieldFactory {
 			const splitContextOutSiField = new SplitContextOutSiField();
 			splitContextOutSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
 			this.compileSplitContents(splitContextOutSiField.collection,
-					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration')),
+					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'), new SiControlFactory(this.controlBoundry, this.injector)),
 					SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);

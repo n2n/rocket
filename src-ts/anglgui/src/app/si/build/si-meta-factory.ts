@@ -1,23 +1,24 @@
 import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { SiMask } from '../model/meta/si-type';
+import { SiMask } from '../model/meta/si-mask';
 import { SiProp } from '../model/meta/si-prop';
 import { SiMaskIdentifier, SiMaskQualifier } from '../model/meta/si-mask-qualifier';
 import { SiTypeEssentialsFactory as SiMaskEssentialsFactory } from './si-type-essentials-factory';
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
+import { SiControlFactory } from './si-control-factory';
 
 
 export class SiMetaFactory {
-	static createDeclaration(data: any): SiDeclaration {
+	static createDeclaration(data: any, controlFactory: SiControlFactory): SiDeclaration {
 		const extr = new Extractor(data);
 
 		const declaration = new SiDeclaration(/*SiMetaFactory.createStyle(extr.reqObject('style'))*/);
 
 		let contextMask: SiMask|null = null ;
 		for (const masksData of extr.reqArray('masks')) {
-			const mask = SiMetaFactory.createMask(masksData, contextMask);
+			const mask = SiMetaFactory.createMask(masksData, contextMask, controlFactory);
 			if (!contextMask) {
 				contextMask = mask;
 			}
@@ -36,7 +37,7 @@ export class SiMetaFactory {
 	// 	};
 	// }
 
-	private static createMask(data: any, contextMask: SiMask|null): SiMask {
+	private static createMask(data: any, contextMask: SiMask|null, controlFactory: SiControlFactory): SiMask {
 		const extr = new Extractor(data);
 
 		let contextSiProps: SiProp[]|null = null;
@@ -64,6 +65,8 @@ export class SiMetaFactory {
 				mask.addProp(siProp);
 			}
 		}
+
+		mask.controls = controlFactory.createControls(mask.qualifier.maskIdentifier.id, null, extr.reqMap('controls'));
 
 		const structureDeclarationsData = extr.nullaArray('structureDeclarations');
 		if (structureDeclarationsData) {

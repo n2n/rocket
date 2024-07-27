@@ -1,7 +1,6 @@
-import { SiMask } from '../model/meta/si-type';
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
-
+import { SiMask } from '../model/meta/si-mask';
 
 export class SiTypeEssentialsFactory {
 

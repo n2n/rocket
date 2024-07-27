@@ -4,14 +4,12 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
 import { SiEntry } from './si-entry';
-import { SiMaskQualifier } from '../meta/si-mask-qualifier';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SiGenericValueBoundary } from '../generic/si-generic-value-boundary';
 import { SiGenericEntry } from '../generic/si-generic-entry-buildup';
 import { skip } from 'rxjs/operators';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
-import { SiMask } from '../meta/si-type';
 
 export class SiValueBoundary {
 

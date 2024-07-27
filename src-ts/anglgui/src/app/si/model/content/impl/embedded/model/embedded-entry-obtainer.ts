@@ -79,13 +79,15 @@ export class EmbeddedEntryObtainer	{
 
 		let result: SiGetResult|undefined;
 		while (result = response.results.shift()) {
-			const siComp = new BulkyEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
+			const siComp = new BulkyEntrySiGui(this.siFrame, this.siService, this.siModStateService);
+			siComp.declaration = result.declaration!
 			siComp.valueBoundary = result.valueBoundary;
 
 			let summarySiGui: CompactEntrySiGui|null = null;
 			if (this.summaryContextMaskId !== null) {
 				result = response.results.shift()!;
-				summarySiGui = new CompactEntrySiGui(this.siFrame, result.declaration!, this.siService, this.siModStateService);
+				summarySiGui = new CompactEntrySiGui(this.siFrame, this.siService, this.siModStateService);
+				summarySiGui.declaration = result.declaration!
 				summarySiGui.valueBoundary = result.valueBoundary;
 			}
 

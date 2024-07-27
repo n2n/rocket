@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 
 export class SiPageCollection implements SiControlBoundry {
 	public declaration: SiDeclaration|null = null;
-	public controls: SiControl[]|null = null;
+	// public controls: SiControl[]|null = null;
 
 	private pagesMap = new Map<number, SiPage>();
 	private pSize: number|null = null;
@@ -39,6 +39,10 @@ export class SiPageCollection implements SiControlBoundry {
 			}
 		}
 		return entries;
+	}
+
+	get controls(): SiControl[] {
+		return this.declaration?.getBasicMask().controls ?? [];
 	}
 
 	getBoundValueBoundaries(): SiValueBoundary[] {
@@ -104,7 +108,7 @@ export class SiPageCollection implements SiControlBoundry {
 	}
 
 	get declared(): boolean {
-		return this.pSize !== null && !!this.declaration && !!this.controls;
+		return this.pSize !== null && !!this.declaration;
 	}
 
 	private ensureDeclared() {
@@ -254,9 +258,9 @@ export class SiPageCollection implements SiControlBoundry {
 			this.declaration = result.declaration;
 		}
 
-		if (result.generalControls) {
-			this.controls = result.generalControls;
-		}
+		// if (result.generalControls) {
+		// 	this.controls = result.generalControls;
+		// }
 
 		this.pSize = result.partialContent!.count;
 

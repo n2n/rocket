@@ -66,9 +66,8 @@ export class SiGuiFactory {
 						frame, this.injector.get(SiServiceType),
 						this.injector.get(SiModStateService));
 
-				compEssentialsFactory = new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector);
-				compactExplorerSiGui.pageCollection.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
-				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
+				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(
+						dataExtr.reqObject('declaration'), new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector));
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {
@@ -80,29 +79,28 @@ export class SiGuiFactory {
 
 			case SiGuiType.BULKY_ENTRY:
 				frame = SiMetaFactory.buildFrame(dataExtr.nullaObject('frame'));
-				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const bulkyEntrySiGui = new BulkyEntrySiGui(
-						frame, declaration,
-						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
-				bulkyEntrySiGui.entryControlsIncluded = dataExtr.reqBoolean('entryControlsIncluded');
-				bulkyEntrySiGui.valueBoundary = new SiEntryFactory(declaration, frame?.apiUrl ?? null, this.injector)
+				const bulkyEntrySiGui = new BulkyEntrySiGui(
+						frame,
+						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
+				bulkyEntrySiGui.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'),
+						new SiControlFactory(bulkyEntrySiGui, this.injector));
+				bulkyEntrySiGui.valueBoundary = new SiEntryFactory(bulkyEntrySiGui.declaration!, frame?.apiUrl ?? null, this.injector)
 						.createValueBoundary(dataExtr.reqObject('valueBoundary'));
 
-				compEssentialsFactory = new SiControlFactory(bulkyEntrySiGui, this.injector);
-				bulkyEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
+				// compEssentialsFactory = new SiControlFactory(bulkyEntrySiGui, this.injector);
+				// bulkyEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
 
 				return bulkyEntrySiGui;
 
 			case SiGuiType.COMPACT_ENTRY:
 				frame = SiMetaFactory.createFrame(dataExtr.reqObject('frame'));
-				declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'));
-				const compactEntrySiGui = new CompactEntrySiGui(frame,
-						declaration, this.injector.get(SiServiceType), this.injector.get(SiModStateService));
 
-				compEssentialsFactory = new SiControlFactory(compactEntrySiGui, this.injector);
-				compactEntrySiGui.controls = compEssentialsFactory.createControls(dataExtr.reqMap('controls'));
-				compactEntrySiGui.valueBoundary = new SiEntryFactory(declaration, frame.apiUrl, this.injector)
+				const compactEntrySiGui = new CompactEntrySiGui(frame,
+						this.injector.get(SiServiceType), this.injector.get(SiModStateService));
+				compactEntrySiGui.declaration = SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'),
+						new SiControlFactory(compactEntrySiGui, this.injector));
+				compactEntrySiGui.valueBoundary = new SiEntryFactory(compactEntrySiGui.declaration, frame.apiUrl, this.injector)
 						.createValueBoundary(dataExtr.reqObject('valueBoundary'));
 				return compactEntrySiGui;
 

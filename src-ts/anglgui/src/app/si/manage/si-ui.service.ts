@@ -8,10 +8,12 @@ import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiControlResult, SiDirective } from './si-control-result';
+import { SiCallResponse, SiDirective } from './si-control-result';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 import { SiNavPoint } from '../model/control/si-nav-point';
+import { IllegalStateError } from '../../util/err/illegal-state-error';
+import { SiApiCallResponse } from '../model/api/si-api-call-response';
 
 @Injectable({
 	providedIn: 'root'
@@ -115,8 +117,8 @@ export class SiUiService {
 	// // 	}));
 	// }
 
-	execControl(apiUrl: string, callId: string, controlBoundry: SiControlBoundry, includeInput: boolean,
-			uiLayer: UiLayer): Observable<void> {
+	execControl(maskId: string, entryId: string|null, controlName: string, controlBoundry: SiControlBoundry,
+			includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 		let input: SiInput|null = null;
 
 		const valueBoundaries: SiValueBoundary[] = [];
@@ -132,11 +134,14 @@ export class SiUiService {
 			}
 		}
 
-		const obs = this.service.controlCall(apiUrl, callId, input);
+		const apiUrl = controlBoundry.getBoundApiUrl();
+		IllegalStateError.assertTrue(apiUrl !== null);
 
-		const subject =	new Subject<void>();
+		const obs = this.service.controlCall(apiUrl!, maskId, entryId, controlName, input);
+
+		const subject = new Subject<void>();
 		obs.subscribe((result) => {
-			this.handleControlResult(result, valueBoundaries, uiLayer);
+			this.handleApiCallResponse(result, valueBoundaries, uiLayer);
 			subject.next();
 			subject.complete();
 		});
@@ -144,22 +149,17 @@ export class SiUiService {
 		return subject;
 	}
 
-	private handleControlResult(result: SiControlResult, inputEntries: SiValueBoundary[], uiLayer: UiLayer): void {
-		if (result.inputError) {
-			this.replaceEntries(result.inputError.errorEntries, inputEntries);
+	private handleApiCallResponse(apiCallResponse: SiApiCallResponse, inputEntries: SiValueBoundary[], uiLayer: UiLayer): void {
+		if (apiCallResponse.inputResult) {
+			this.replaceEntries(apiCallResponse.inputResult.valueBoundaries, inputEntries);
 		}
 
-		if (result.inputResult) {
-			this.replaceEntries(result.inputResult.valueBoundaries, inputEntries);
-		}
-
-
-		switch (result.callResponse?.directive) {
+		switch (apiCallResponse.callResponse?.directive) {
 			case SiDirective.REDIRECT:
-				this.navigateByNavPoint(result.callResponse.navPoint!, uiLayer);
+				this.navigateByNavPoint(apiCallResponse.callResponse.navPoint!, uiLayer);
 				break;
 			case SiDirective.REDIRECT_BACK:
-				this.navigateBack(uiLayer, result.callResponse.navPoint!.url);
+				this.navigateBack(uiLayer, apiCallResponse.callResponse.navPoint!.url);
 				break;
 		}
 	}

@@ -13,8 +13,8 @@ export class ApiCallSiControl implements SiControl {
 	private loading = false;
 	// private entryBoundFlag: boolean;
 
-	constructor(public siUiService: SiUiService, public controlName: string,
-			public button: SiButton, public controlBoundry: SiControlBoundry) {
+	constructor(public siUiService: SiUiService, public maskId: string, public entryId: string|null,
+			public controlName: string, public button: SiButton, public controlBoundry: SiControlBoundry) {
 	}
 
 	getSiButton(): SiButton {
@@ -45,7 +45,7 @@ export class ApiCallSiControl implements SiControl {
 	exec(uiZone: UiZone): void {
 		const locks = this.controlBoundry.getBoundValueBoundaries().map(entry => entry.createLock());
 
-		const obs = this.siUiService.execControl(this.controlBoundry.getBoundApiUrl()!, this.controlName,
+		const obs = this.siUiService.execControl(this.maskId, this.entryId, this.controlName,
 				this.controlBoundry, this.inputSent, uiZone.layer);
 		this.loading = true;
 		obs.subscribe(() => {
