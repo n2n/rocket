@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, DoCheck, HostBinding } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnInit } from '@angular/core';
 import { SplitViewMenuModel } from '../split-view-menu-model';
 
 @Component({

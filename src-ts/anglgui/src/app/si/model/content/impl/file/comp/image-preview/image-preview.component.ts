@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, DoCheck, Input, ViewChild } from '@angular/core';
+import { Component, DoCheck, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { SiImageCut } from '../../model/file';
 
 @Component({

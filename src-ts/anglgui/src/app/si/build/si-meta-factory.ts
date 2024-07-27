@@ -2,7 +2,7 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiMask } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
-import { SiMaskQualifier, SiMaskIdentifier } from '../model/meta/si-mask-qualifier';
+import { SiMaskIdentifier, SiMaskQualifier } from '../model/meta/si-mask-qualifier';
 import { SiTypeEssentialsFactory as SiMaskEssentialsFactory } from './si-type-essentials-factory';
 import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';

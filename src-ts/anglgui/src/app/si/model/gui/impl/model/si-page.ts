@@ -1,7 +1,7 @@
-import { SiValueBoundary, SiEntryState } from 'src/app/si/model/content/si-value-boundary';
+import { SiEntryState, SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { Subscription, Subject, Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
 export class SiPage {
 	private _entrySubPairs: Array<{entry: SiValueBoundary, subscription: Subscription}>|null = null;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiFile } from '../../model/file';
 import { FileInFieldModel } from '../file-in-field-model';
@@ -8,7 +8,7 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { ImageEditorComponent } from '../image-editor/image-editor.component';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
-import { UploadResult, ImageEditorModel } from '../image-editor-model';
+import { ImageEditorModel, UploadResult } from '../image-editor-model';
 import { Message } from 'src/app/util/i18n/message';
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { SimpleSiControl } from 'src/app/si/model/control/impl/model/simple-si-control';

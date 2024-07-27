@@ -1,4 +1,4 @@
-import {MailItemAttachment} from './mail-item-attachment';
+import { MailItemAttachment } from './mail-item-attachment';
 
 export class MailItem {
 	contentVisible = false;

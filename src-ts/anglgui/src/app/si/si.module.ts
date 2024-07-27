@@ -87,7 +87,7 @@ import { SiUiFactory } from './build/si-ui-factory';
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, SelectInFieldComponent
-	],
+	]/*,
 	entryComponents: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
@@ -96,7 +96,7 @@ import { SiUiFactory } from './build/si-ui-factory';
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
 		SplitViewMenuComponent, CrumbGroupComponent, SplitManagerComponent, EmbeddedEntryComponent,
 		ImageEditorComponent, CrumbOutFieldComponent, SelectInFieldComponent, NumberInComponent, StringArrayInComponent, PasswordInComponent
-	]
+	]*/
 })
 export class SiModule { }
 

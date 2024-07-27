@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MessageFieldModel } from '../../../../common/comp/message-field-model';
 import { UploadResult } from '../../image-editor-model';
 

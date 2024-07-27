@@ -1,4 +1,4 @@
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SiImageCut } from '../../model/file';
 import { ElementRef } from '@angular/core';
 import Cropper from 'cropperjs';

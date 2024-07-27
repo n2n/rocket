@@ -1,14 +1,14 @@
 import { SiControl } from 'src/app/si/model/control/si-control';
 import { Message } from 'src/app/util/i18n/message';
 import { SiGui } from '../../si-gui';
-import { SiValueBoundary, SiEntryState } from '../../../content/si-value-boundary';
+import { SiEntryState, SiValueBoundary } from '../../../content/si-value-boundary';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { CompactEntryComponent } from '../comp/compact-entry/compact-entry.component';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { CompactEntryModel } from '../comp/compact-entry-model';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
 import { SiFrame } from '../../../meta/si-frame';

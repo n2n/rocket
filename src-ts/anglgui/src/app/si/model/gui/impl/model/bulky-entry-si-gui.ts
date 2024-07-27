@@ -1,6 +1,6 @@
 import { SiGui } from '../../si-gui';
 import { SiDeclaration } from '../../../meta/si-declaration';
-import { SiValueBoundary, SiEntryState } from '../../../content/si-value-boundary';
+import { SiEntryState, SiValueBoundary } from '../../../content/si-value-boundary';
 import { SiControl } from '../../../control/si-control';
 import { UiStructureModel, UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
@@ -8,7 +8,7 @@ import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiProp } from '../../../meta/si-prop';
 import { SiField } from '../../../content/si-field';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
 import { SiControlBoundry } from '../../../control/si-control-boundry';

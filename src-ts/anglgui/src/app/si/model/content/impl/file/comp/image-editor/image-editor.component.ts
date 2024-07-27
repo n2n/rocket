@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, DoCheck } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SiFile, SiImageDimension } from '../../model/file';
 import { ImageEditorModel, UploadResult } from '../image-editor-model';
 import { ImageSrc } from './image-src';

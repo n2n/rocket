@@ -1,6 +1,3 @@
-
-import { IllegalSiStateError } from '../../util/illegal-si-state-error';
-
 export class SiFrame {
 	public sortable = false;
 	public treeMode = false;

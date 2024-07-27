@@ -1,6 +1,6 @@
-import {Extractor} from '../../../util/mapping/extractor';
-import {MailItem} from '../bo/mail-item';
-import {MailItemAttachmentFactory} from './mail-item-attachment-factory';
+import { Extractor } from '../../../util/mapping/extractor';
+import { MailItem } from '../bo/mail-item';
+import { MailItemAttachmentFactory } from './mail-item-attachment-factory';
 
 export class MailItemFactory {
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SiObjectIdentifier } from '../../content/si-entry-qualifier';
 import { SiValueBoundary } from '../../content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { Message } from 'src/app/util/i18n/message';
 

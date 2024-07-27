@@ -1,4 +1,3 @@
-
 import { SiDeclaration } from '../meta/si-declaration';
 import { SiControlBoundry } from '../control/si-control-boundry';
 import { SiEntryIdentifier } from '../content/si-entry-qualifier';

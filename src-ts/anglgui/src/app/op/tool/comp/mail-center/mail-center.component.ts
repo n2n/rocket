@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolsService } from '../../model/tools.service';
 import { MailItem } from '../../bo/mail-item';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {LogFileData} from '../../bo/log-file-data';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { LogFileData } from '../../bo/log-file-data';
 
 @Component({
 selector: 'rocket-mail-center',

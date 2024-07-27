@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Inject, NgZone } from '@angular/core';
-import { Subscription, Subject } from 'rxjs';
-import { SiEntryQualifier, SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';
+import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { SiEntryIdentifier, SiEntryQualifier } from 'src/app/si/model/content/si-entry-qualifier';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { CompactExplorerModel } from '../compact-explorer-model';
 import { StructurePage, StructurePageManager } from './structure-page-manager';

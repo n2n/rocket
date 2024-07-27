@@ -1,4 +1,3 @@
-
 import { SiEntryInput } from '../input/si-entry-input';
 import { SiValGetInstruction } from './si-val-get-instruction';
 

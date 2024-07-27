@@ -1,10 +1,10 @@
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiPage } from '../../model/si-page';
-import { SiValueBoundary, SiEntryState } from 'src/app/si/model/content/si-value-boundary';
+import { SiEntryState, SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { IllegalArgumentError } from 'src/app/si/util/illegal-argument-error';
-import { SiPageCollection, SiEntryPosition } from '../../model/si-page-collection';
+import { SiEntryPosition, SiPageCollection } from '../../model/si-page-collection';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiProp } from 'src/app/si/model/meta/si-prop';
 import { SiEntryIdentifier } from 'src/app/si/model/content/si-entry-qualifier';

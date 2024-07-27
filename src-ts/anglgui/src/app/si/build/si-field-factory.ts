@@ -9,7 +9,7 @@ import { StringInSiField } from '../model/content/impl/alphanum/model/string-in-
 import { StringOutSiField } from '../model/content/impl/alphanum/model/string-out-si-field';
 import { SiMask } from '../model/meta/si-type';
 import { SiProp } from '../model/meta/si-prop';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SplitContextInSiField } from '../model/content/impl/split/model/split-context-in-si-field';
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { Injector } from '@angular/core';
@@ -32,7 +32,6 @@ import { PasswordInSiField } from '../model/content/impl/alphanum/model/password
 import { DateUtils } from 'src/app/util/date/date-utils';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
-import { SiBuildTypes } from './si-build-types';
 import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field';
 import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';

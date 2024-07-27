@@ -1,4 +1,3 @@
-
 import { SiGui } from '../../si-gui';
 import { UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
 import { CompactExplorerComponent } from '../comp/compact-explorer/compact-explorer.component';
@@ -12,12 +11,10 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
 import { UiStructureModelAdapter } from 'src/app/ui/structure/model/impl/ui-structure-model-adapter';
-import { StructureUiZoneError } from 'src/app/ui/structure/model/impl/structure-ui-zone-error';
-import { UiZoneError } from 'src/app/ui/structure/model/ui-zone-error';
 import { SiPartialContent } from '../../../content/si-partial-content';
 import { SiFrame } from '../../../meta/si-frame';
 import { StructurePageManager } from '../comp/compact-explorer/structure-page-manager';
-import { Observable, from, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Message } from 'src/app/util/i18n/message';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { PaginationModel } from '../comp/pagination-model';

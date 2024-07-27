@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { SiCrumbGroup, SiCrumb } from '../../model/si-crumb';
+import { Component, Input, OnInit } from '@angular/core';
+import { SiCrumb, SiCrumbGroup } from '../../model/si-crumb';
 
 @Component({
 	selector: 'rocket-crumb-group',

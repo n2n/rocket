@@ -1,4 +1,3 @@
-
 import { SiDeclaration } from '../meta/si-declaration';
 
 export class SiValGetInstruction {

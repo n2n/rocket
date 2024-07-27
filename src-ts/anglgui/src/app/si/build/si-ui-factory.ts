@@ -2,10 +2,9 @@ import { UiBreadcrumb, UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { Injector } from '@angular/core';
 import { Extractor } from 'src/app/util/mapping/extractor';
-import { UiMenuItem, UiMenuGroup } from 'src/app/ui/structure/model/ui-menu';
+import { UiMenuGroup, UiMenuItem } from 'src/app/ui/structure/model/ui-menu';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
-import { SiBuildTypes } from './si-build-types';
 import { SiGuiFactory } from './si-gui-factory';
 
 export class SiUiFactory {

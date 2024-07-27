@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User, UserPower } from '../bo/user';
+import { User } from '../bo/user';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Extractor } from 'src/app/util/mapping/extractor';

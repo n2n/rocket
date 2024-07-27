@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
-import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
+import { Component, ComponentFactoryResolver, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';

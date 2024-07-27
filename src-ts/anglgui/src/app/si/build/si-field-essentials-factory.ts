@@ -1,7 +1,7 @@
-import { SiCrumbGroup, SiCrumb } from '../model/content/impl/meta/model/si-crumb';
+import { SiCrumb, SiCrumbGroup } from '../model/content/impl/meta/model/si-crumb';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiGridPos } from '../model/content/impl/embedded/model/si-panel';
-import { SiImageDimension, SiFile, SiImageCut } from '../model/content/impl/file/model/file';
+import { SiFile, SiImageCut, SiImageDimension } from '../model/content/impl/file/model/file';
 import { SiNavPoint } from '../model/control/si-nav-point';
 
 export class SiEssentialsFactory {

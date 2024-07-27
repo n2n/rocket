@@ -1,4 +1,3 @@
-
 import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { SiDeclaration } from '../meta/si-declaration';
 

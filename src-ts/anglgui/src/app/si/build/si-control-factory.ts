@@ -7,7 +7,6 @@ import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
-import { SiNavPoint } from '../model/control/si-nav-point';
 import { SiUiService } from '../manage/si-ui.service';
 
 enum SiControlType {

@@ -1,5 +1,5 @@
-import { Directive, Input, ElementRef, DoCheck, OnInit, OnDestroy } from '@angular/core';
-import { SiValueBoundary, SiEntryState } from '../../content/si-value-boundary';
+import { Directive, DoCheck, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { SiEntryState, SiValueBoundary } from '../../content/si-value-boundary';
 import { SiModStateService } from '../model/si-mod-state.service';
 
 @Directive({

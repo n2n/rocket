@@ -5,9 +5,9 @@ import { SplitManagerComponent } from '../comp/split-manager/split-manager.compo
 import { SplitManagerModel } from '../comp/split-manager-model';
 import { SiGenericValue } from 'src/app/si/model/generic/si-generic-value';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {InSiFieldAdapter} from '../../common/model/in-si-field-adapter';
-import {SplitContentCollection} from './split-content-collection';
-import {SplitContextCopy} from './split-context-copy';
+import { InSiFieldAdapter } from '../../common/model/in-si-field-adapter';
+import { SplitContentCollection } from './split-content-collection';
+import { SplitContextCopy } from './split-context-copy';
 import { SiInputResetPoint } from '../../../si-input-reset-point';
 import { ManagableSplitContext, SplitStyle } from './split-context';
 import { SplitOption } from './split-option';

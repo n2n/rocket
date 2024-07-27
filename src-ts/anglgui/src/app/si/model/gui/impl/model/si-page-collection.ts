@@ -3,7 +3,7 @@ import { SiDeclaration } from '../../../meta/si-declaration';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiValueBoundary } from '../../../content/si-value-boundary';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
-import { SiModStateService, SiModEvent } from '../../../mod/model/si-mod-state.service';
+import { SiModEvent, SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiControl } from '../../../control/si-control';
 import { SiGetInstruction } from '../../../api/si-get-instruction';

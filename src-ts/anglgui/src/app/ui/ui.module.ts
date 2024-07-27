@@ -80,7 +80,7 @@ defineLocale('en', enGbLocale);
 		DatePickerComponent,
 		TimePickerComponent,
 		GlightBoxDirective
-	],
-	entryComponents: [ PlainContentComponent ]
+	]/*,
+	entryComponents: [ PlainContentComponent ]*/
 })
 export class UiModule { }

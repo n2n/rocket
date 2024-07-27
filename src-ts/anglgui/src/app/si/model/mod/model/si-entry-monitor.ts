@@ -1,5 +1,5 @@
-import { SiModStateService, SiModEvent } from './si-mod-state.service';
-import { SiValueBoundary, SiEntryState } from '../../content/si-value-boundary';
+import { SiModEvent, SiModStateService } from './si-mod-state.service';
+import { SiEntryState, SiValueBoundary } from '../../content/si-value-boundary';
 import { SiService } from 'src/app/si/manage/si.service';
 import { SiGetRequest } from '../../api/si-get-request';
 import { SiGetInstruction } from '../../api/si-get-instruction';

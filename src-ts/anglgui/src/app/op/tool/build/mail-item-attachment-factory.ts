@@ -1,5 +1,5 @@
-import {Extractor} from '../../../util/mapping/extractor';
-import {MailItemAttachment} from '../bo/mail-item-attachment';
+import { Extractor } from '../../../util/mapping/extractor';
+import { MailItemAttachment } from '../bo/mail-item-attachment';
 
 export class MailItemAttachmentFactory {
 	static createMailAttachments(datas: any[]): MailItemAttachment[] {

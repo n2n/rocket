@@ -5,7 +5,7 @@ import { SplitOption } from './split-option';
 import { SiValueBoundary } from '../../../si-value-boundary';
 import { SplitComponent } from '../comp/split/split.component';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
-import { UiStructureModelMode, UiStructureModel } from 'src/app/ui/structure/model/ui-structure-model';
+import { UiStructureModel, UiStructureModelMode } from 'src/app/ui/structure/model/ui-structure-model';
 import { SiFieldAdapter } from '../../common/model/si-field-adapter';
 import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-si-structure-model';
 import { UiStructureType } from 'src/app/si/model/meta/si-structure-declaration';
@@ -21,7 +21,7 @@ import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Subscription } from 'rxjs';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { UiStructureModelDecorator } from 'src/app/ui/structure/model/ui-structure-model-decorator';
-import {SiInputResetPoint} from '../../../si-input-reset-point';
+import { SiInputResetPoint } from '../../../si-input-reset-point';
 import { SplitContext, SplitStyle } from './split-context';
 import { skip } from 'rxjs/operators';
 

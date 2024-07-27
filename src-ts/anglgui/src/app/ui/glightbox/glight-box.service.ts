@@ -9,6 +9,7 @@ import { GlightBoxElement } from './glight-box-element';
 export class GlightBoxService {
 
 	public glightBoxElements: Array <GlightBoxElement> = [];
+	// @ts-ignore
 	public glightbox: GLightbox;
 	
  	constructor() { }
@@ -32,8 +33,9 @@ export class GlightBoxService {
 		if (this.glightbox) {
 			this.glightbox.destroy();
 		}
-		
+
 		this.glightbox = GLightbox({
+			// @ts-ignore
 	    	elements: this.glightBoxElements
 		});
 		

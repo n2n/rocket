@@ -1,10 +1,3 @@
-import { SiEntryFactory } from './si-entry-factory';
-import { SiGuiFactory } from './si-gui-factory';
-import { SiFieldFactory } from './si-field-factory';
-import { SiResultFactory } from './si-result-factory';
-import { SiControlFactory } from './si-control-factory';
-import { SiUiFactory } from './si-ui-factory';
-
 export class SiBuildTypes {
 	// static SiUiService: new (...args: any[]) => SiUiService;
 	// static SiService: new (...args: any[]) => SiService;

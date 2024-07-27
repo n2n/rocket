@@ -1,4 +1,3 @@
-
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { SiMask } from './si-type';
 import { SiMaskQualifier } from './si-mask-qualifier';

@@ -1,4 +1,4 @@
-import {SiGenericValueBoundary} from '../../../../generic/si-generic-value-boundary';
+import { SiGenericValueBoundary } from '../../../../generic/si-generic-value-boundary';
 import { SplitContent } from './split-content-collection';
 
 export class SplitContextCopy {

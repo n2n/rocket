@@ -1,4 +1,3 @@
-
 import { SiGetResponse } from 'src/app/si/model/api/si-get-response';
 import { SiGetResult } from 'src/app/si/model/api/si-get-result';
 import { SiGetRequest } from 'src/app/si/model/api/si-get-request';
@@ -13,7 +12,6 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
-import { SiBuildTypes } from './si-build-types';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiControlFactory } from './si-control-factory';
 

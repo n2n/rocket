@@ -1,6 +1,6 @@
 import { SiControlFactory } from './si-control-factory';
 import { SiDeclaration } from '../model/meta/si-declaration';
-import { ObjectMissmatchError, Extractor } from 'src/app/util/mapping/extractor';
+import { Extractor, ObjectMissmatchError } from 'src/app/util/mapping/extractor';
 import { CompactExplorerSiGui } from '../model/gui/impl/model/compact-explorer-si-gui';
 import { SiMetaFactory } from './si-meta-factory';
 import { BulkyEntrySiGui } from '../model/gui/impl/model/bulky-entry-si-gui';
@@ -13,7 +13,6 @@ import { SiService } from '../manage/si.service';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
 import { IframeSiGui } from '../model/gui/impl/model/iframe-si-gui';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
-import { SiBuildTypes } from './si-build-types';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiFrame } from '../model/meta/si-frame';
 

@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {TranslationService} from '../../../../util/i18n/translation.service';
-import {UiBreadcrumb} from '../../../../ui/structure/model/ui-zone';
-import {ToolsService} from "../../model/tools.service";
-import {Message, MessageSeverity} from "../../../../util/i18n/message";
+import { Component, OnInit } from '@angular/core';
+import { TranslationService } from '../../../../util/i18n/translation.service';
+import { UiBreadcrumb } from '../../../../ui/structure/model/ui-zone';
+import { ToolsService } from '../../model/tools.service';
+import { Message, MessageSeverity } from '../../../../util/i18n/message';
 
 @Component({
 selector: 'rocket-tools',

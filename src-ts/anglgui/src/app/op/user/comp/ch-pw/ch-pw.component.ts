@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserPower, User } from '../../bo/user';
+import { User, UserPower } from '../../bo/user';
 import { UserDaoService } from '../../model/user-dao.service';
 import { ErrorMap } from 'src/app/util/err/error-map';
 import { Message } from 'src/app/util/i18n/message';
