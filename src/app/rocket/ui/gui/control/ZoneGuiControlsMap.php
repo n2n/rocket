@@ -40,13 +40,13 @@ class ZoneGuiControlsMap {
 
 	function __construct(private Url $apiUrl, array $guiControls = []) {
 		ArgUtils::valArray($guiControls, GuiControl::class);
-		foreach ($guiControls as $guiControl) {
-			$this->addGuiControl($guiControl);
+		foreach ($guiControls as $key => $guiControl) {
+			$this->addGuiControl($key, $guiControl);
 		}
 	}
 
-	function addGuiControl(GuiControl $guiControl): void {
-		$this->guiControls[$guiControl->getId()] = $guiControl;
+	function addGuiControl(string $name, GuiControl $guiControl): void {
+		$this->guiControls[$name] = $guiControl;
 	}
 
 	function getSiControls(): array {

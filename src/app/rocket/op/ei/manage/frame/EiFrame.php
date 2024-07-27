@@ -68,10 +68,7 @@ class EiFrame {
 	
 	private $listeners = array();
 
-	/**
-	 * @param EiMask $contextEiEngine
-	 * @param ManageState $manageState
-	 */
+
 	public function __construct(private EiEngine $contextEiEngine, private EiLaunch $eiLaunch,
 			private ?EiForkLink $eiForkLink = null) {
 		$this->boundry = new Boundry();

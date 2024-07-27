@@ -31,10 +31,11 @@ use rocket\ui\si\control\SiButton;
 use rocket\op\ei\util\Eiu;
 use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
+use n2n\web\http\StatusException;
 
 class AddController extends ControllerAdapter {
 	const CONTROL_SAVE_KEY = 'save';
-	const CONTROL_CANCEL_KEY = 'canel';
+	const CONTROL_CANCEL_KEY = 'cancel';
 	
 	private $dtc;
 	private OpuCtrl $opuCtrl;
@@ -66,7 +67,10 @@ class AddController extends ControllerAdapter {
 		$this->afterEiuObject = $this->opuCtrl->lookupObject($afterPid);	
 		$this->live($copyPid);
 	}
-	
+
+	/**
+	 * @throws StatusException
+	 */
 	private function live($copyPid = null) {
 
 		$this->opuCtrl->pushOverviewBreadcrumb()
@@ -75,12 +79,12 @@ class AddController extends ControllerAdapter {
 		$this->opuCtrl->forwardNewBulkyEntryZone(true, true, true, $this->createControls());
 	}
 	
-	private function createControls() {
+	private function createControls(): array {
 		$eiuControlFactory = $this->opuCtrl->eiu()->factory()->guiControl();
 		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [
-				$eiuControlFactory->newCallback(self::CONTROL_SAVE_KEY,
+				self::CONTROL_SAVE_KEY => $eiuControlFactory->newCallback(
 								SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE),
 								function (Eiu $eiu, array $inputEius) {
 									$this->handleInput($eiu, $inputEius);
@@ -89,7 +93,7 @@ class AddController extends ControllerAdapter {
 											->highlight(...array_map(function ($eiu) { return $eiu->entry(); }, $inputEius));
 								})
 						->setInputHandled(true),
-				$eiuControlFactory->newCallback(self::CONTROL_CANCEL_KEY,
+				self::CONTROL_CANCEL_KEY => $eiuControlFactory->newCallback(
 						SiButton::primary($dtc->t('common_cancel_label'), SiIconType::ICON_ARROW_LEFT),
 						function (Eiu $eiu) {
 							return $eiu->factory()->newControlResponse()->redirectBack();

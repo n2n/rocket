@@ -36,6 +36,7 @@ class EiGuiValueBoundaryFactory {
 	/**
 	 * @param int|null $treeLevel
 	 * @param EiEntry[] $eiEntries
+	 * @param int $viewMode
 	 * @return GuiValueBoundary
 	 */
 	function create(?int $treeLevel, array $eiEntries, int $viewMode): GuiValueBoundary {

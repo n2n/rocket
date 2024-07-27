@@ -236,8 +236,7 @@ export class SiPageCollection implements SiControlBoundry {
 		}
 
 		const instruction = SiGetInstruction.partialContent(
-						this.declaration!.getBasicMask().qualifier.maskIdentifier.id,
-						siPage.offset, this.pageSize,
+						this.declaration!.getBasicMask().qualifier.maskIdentifier.id, siPage.offset, this.pageSize,
 						this.quickSearchStr)
 				.setDeclaration(this.declaration!)
 				.setGeneralControlsIncluded(!this.controls)

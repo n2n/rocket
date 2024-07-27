@@ -31,6 +31,10 @@ use rocket\op\ei\util\Eiu;
 use rocket\ui\si\control\SiIconType;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\entry\EiuEntry;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\http\StatusException;
+use n2n\web\http\BadRequestException;
+use n2n\web\http\ForbiddenException;
 
 class EditController extends ControllerAdapter {
 	const CONTROL_SAVE_KEY = 'save';
@@ -44,7 +48,13 @@ class EditController extends ControllerAdapter {
 		$this->dtc = $dtc;
 		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
-	
+
+	/**
+	 * @throws PageNotFoundException
+	 * @throws StatusException
+	 * @throws BadRequestException
+	 * @throws ForbiddenException
+	 */
 	public function index($pid): void {
 		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 		

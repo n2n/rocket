@@ -39,9 +39,11 @@ class EiObjectFactory {
 	 * @throws UnknownEiTypeExtensionException
 	 * @throws UnknownEiTypeException
 	 */
-	function createPossibleNewEiEntries(TypePath $eiTypePath): array {
-		$contextEiType = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMaskByEiTypePath($eiTypePath)
-				->getEiType();
+	function createPossibleNewEiEntries(?TypePath $contextEiTypePath): array {
+		$contextEiType = $contextEiTypePath === null
+				? $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType()
+				: $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMaskByEiTypePath($contextEiTypePath)
+						->getEiType();
 
 		$newEiEntries = [];
 
