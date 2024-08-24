@@ -29,12 +29,13 @@ use rocket\op\ei\manage\EiObject;
 use rocket\ui\si\control\SiNavPoint;
 use rocket\ui\gui\GuiCallResponse;
 use rocket\ui\si\api\response\SiCallResponse;
-use n2n\core\container\N2nContext;
-use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 use rocket\op\ei\manage\ManageState;
+use rocket\op\ei\manage\gui\factory\EiSiMaskIdentifierFactory;
+use rocket\op\ei\manage\gui\factory\EiSiEntryIdentifierFactory;
+use n2n\util\type\ArgUtils;
 
 class OpfControlResponse implements GuiCallResponse {
-	private $eiuAnalyst;
+
 	/**
 	 * @var SiCallResponse
 	 */
@@ -52,7 +53,7 @@ class OpfControlResponse implements GuiCallResponse {
 	/**
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	function __construct(private N2nContext $n2nContext) {
+	function __construct(private EiuAnalyst $eiuAnalyst) {
 		$this->siCallResponse = new SiCallResponse();
 	}
 	
@@ -208,13 +209,13 @@ class OpfControlResponse implements GuiCallResponse {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', null, true);
 		
 		$category = self::buildCategory($eiObject->getEiEntityObj()->getEiType());
+
+		$entryId = EiSiEntryIdentifierFactory::determineEntryId($eiObject);
+		ArgUtils::assertTrue($entryId !== null);
 		
-		$pid = null;
-		if ($eiObject->getEiEntityObj()->hasId()) {
-			$pid = $eiObject->getEiEntityObj()->getPid();
-		}
-		
-		$this->siCallResponse->addEvent($eiObject->createSiEntryIdentifier(), $modType);
+		$this->siCallResponse->addEvent(
+				EiSiMaskIdentifierFactory::determineTypeId($eiObject->getEiEntityObj()->getEiType()),
+				$entryId, $modType);
 	}
 	
 	/**
@@ -231,7 +232,7 @@ class OpfControlResponse implements GuiCallResponse {
 			return $this->siCallResponse;
 		}
 
-		$elm = $this->n2nContext->lookup(ManageState::class)->getEiLifecycleMonitor();
+		$elm = $this->eiuAnalyst->getN2nContext(true)->lookup(ManageState::class)->getEiLifecycleMonitor();
 		$taa = $elm->approve();
 		
 		if (!$taa->isSuccessful()) {

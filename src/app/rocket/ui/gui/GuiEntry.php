@@ -53,13 +53,18 @@ class GuiEntry implements SiEntryModel {
 	private ?GuiEntryModel $model = null;
 
 	
-	public function __construct(private readonly SiEntryQualifier $siEntryQualifier) {
-		$this->siEntry = new SiEntry($this->siEntryQualifier);
+	public function __construct(SiEntryQualifier $siEntryQualifier) {
+		$this->siEntry = new SiEntry($siEntryQualifier);
 		$this->siEntry->setModel($this);
 	}
 
+	function setSiEntryQualifier(SiEntryQualifier $siEntryQualifier): static {
+		$this->siEntry->setQualifier($siEntryQualifier);
+		return $this;
+	}
+
 	function getSiEntryQualifier(): SiEntryQualifier {
-		return $this->siEntryQualifier;
+		return $this->siEntry->getQualifier();
 	}
 
 	function setModel(GuiEntryModel $model): static {

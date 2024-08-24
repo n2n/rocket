@@ -1470,6 +1470,12 @@ class EiuAnalyst {
 //
 //		ArgUtils::valType($eiArg, self::EI_FRAME_TYPES, !$required, $argName);
 //	}
+
+	static function fromEiArgs(...$eiArgs): EiuAnalyst {
+		$eiuAnalyst = new EiuAnalyst();
+		$eiuAnalyst->applyEiArgs(...$eiArgs);
+		return $eiuAnalyst;
+	}
 	
 	/**
 	 * @param mixed $eiArg

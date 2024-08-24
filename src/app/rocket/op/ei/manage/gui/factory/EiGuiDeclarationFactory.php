@@ -1,9 +1,10 @@
 <?php
-namespace rocket\op\ei\manage\gui;
+namespace rocket\op\ei\manage\gui\factory;
 
 use n2n\core\container\N2nContext;
 use rocket\op\ei\EiType;
 use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\manage\gui\EiGuiDeclaration;
 
 class EiGuiDeclarationFactory {
 

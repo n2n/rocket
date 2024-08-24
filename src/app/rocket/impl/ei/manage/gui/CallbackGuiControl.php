@@ -36,12 +36,14 @@ use rocket\op\util\OpfControlResponse;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\GuiCallResponse;
+use n2n\reflection\magic\MagicMethodInvoker;
+use n2n\core\container\N2nContext;
+use rocket\op\ei\util\EiuAnalyst;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
 
 	function __construct(private \Closure $callback, private SiButton $siButton) {
-
 	}
 
 	
@@ -63,16 +65,16 @@ class CallbackGuiControl implements GuiControl {
 	}
 
 	function getSiControl(): SiControl {
-		return new CallbackSiControl($this->callback, $this->siButton, $this->inputHandled);
+		return new CallbackSiControl(fn (N2nContext $c) => $this->execCall($c), $this->siButton, $this->inputHandled);
 	}
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return SiCallResponse
 	 */
-	private function execCall() {
-		$sifControlResponse = $callback($eiu);
-		ArgUtils::valTypeReturn($sifControlResponse, GuiCallResponse::class, null, $callback, true);
+	private function execCall(N2nContext $n2nContext) {
+		$sifControlResponse = $this->callback->__invoke();
+		ArgUtils::valTypeReturn($sifControlResponse, GuiCallResponse::class, null, $this->callback, true);
 		
 // 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
 // 		$mmi->setMethod(new \ReflectionFunction($this->callback));
@@ -82,10 +84,10 @@ class CallbackGuiControl implements GuiControl {
 		
 // 		$eiuControlResponse = $mmi->invoke();
 		if ($sifControlResponse === null) {
-			$sifControlResponse = $eiu->factory()->newControlResponse();
+			$sifControlResponse = new OpfControlResponse(EiuAnalyst::fromEiArgs($n2nContext));
 		}
 		
-		return $sifControlResponse->toSiCallResponse($eiu->lookup(ManageState::class)->getEiLifecycleMonitor());
+		return $sifControlResponse->toSiCallResponse();
 	}
 	
 	/**

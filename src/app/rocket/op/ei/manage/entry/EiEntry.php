@@ -58,7 +58,7 @@ class EiEntry implements GuiEntryModel {
 	 */
 	private $validationResult;
 // 	private $accessible = true;
-	private $listeners = array();
+	private array $listeners = array();
 	private $listenerBindings = [];
 	private $constraintSet;
 	
@@ -454,6 +454,7 @@ class EiEntry implements GuiEntryModel {
 	}
 
 	function handleInput(): bool {
+
 		return $this->validate();
 	}
 }

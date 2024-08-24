@@ -59,6 +59,11 @@ class SiEntry implements \JsonSerializable {
 	function __construct(private SiEntryQualifier $entryQualifier) {
 	}
 
+	function setQualifier(SiEntryQualifier $entryQualifier): static {
+		$this->entryQualifier = $entryQualifier;
+		return $this;
+	}
+
 	function getQualifier(): SiEntryQualifier {
 		return $this->entryQualifier;
 	}

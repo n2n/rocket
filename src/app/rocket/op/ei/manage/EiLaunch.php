@@ -30,6 +30,7 @@ use rocket\op\ei\manage\security\EiPermissionManager;
 use rocket\op\ei\manage\gui\LazyEiGuiDeclarationStore;
 use rocket\op\ei\CachedEiDefFactory;
 use n2n\persistence\orm\EntityManager;
+use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 
 class EiLaunch {
 	/**
@@ -38,7 +39,7 @@ class EiLaunch {
 	private array $eiFrames = [];
 
 	function __construct(private N2nContext $n2nContext, private EiPermissionManager $eiPermissionManager,
-			private EntityManager $entityManager) {
+			private EntityManager $entityManager, private EiLifecycleMonitor $eiLifecycleMonitor) {
 	}
 
 	function getN2nContext(): N2nContext {
@@ -51,6 +52,10 @@ class EiLaunch {
 
 	function getEntityManager(): EntityManager {
 		return $this->entityManager;
+	}
+
+	function getEiLifecycleMonitor(): EiLifecycleMonitor {
+		return $this->eiLifecycleMonitor;
 	}
 
 	function createRootEiFrame(EiEngine $eiEngine): EiFrame {

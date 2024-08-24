@@ -19,39 +19,21 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
+namespace rocket\op\ei\manage\gui\factory;
 
-namespace rocket\op\ei\manage\gui;
-
+use rocket\op\ei\manage\EiObject;
+use rocket\ui\si\content\SiEntryIdentifier;
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\ui\gui\GuiValueBoundary;
-use rocket\op\ei\component\EiGuiMaskFactory;
-use rocket\op\ei\manage\frame\EiFrame;
 
-class EiGuiValueBoundaryFactory {
-
-	function __construct(private readonly EiFrame $eiFrame) {
-
+class EiSiEntryIdentifierFactory {
+	static function determineEntryId(EiObject $eiObject): ?string {
+		$eiEntityObj = $eiObject->getEiEntityObj();
+		return $eiEntityObj->hasId() ? $eiEntityObj->getPid() : null;
 	}
 
-	/**
-	 * @param int|null $treeLevel
-	 * @param EiEntry[] $eiEntries
-	 * @param int $viewMode
-	 * @return GuiValueBoundary
-	 */
-	function create(?int $treeLevel, array $eiEntries, int $viewMode): GuiValueBoundary {
-		$guiValueBoundary = new GuiValueBoundary($treeLevel);
-
-		$eiGuiEntryFactory = new EiGuiEntryFactory($this->eiFrame);
-		foreach ($eiEntries as $eiEntry) {
-			$guiEntry = $eiGuiEntryFactory->createGuiEntry($eiEntry, $viewMode, true);
-			$guiValueBoundary->putGuiEntry($guiEntry);
-		}
-
-		if (count($eiEntries) === 1 && isset($guiEntry)) {
-			$guiValueBoundary->selectGuiEntryByMaskId($guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getId());
-		}
-
-		return $guiValueBoundary;
+	static function create(EiEntry $eiEntry, int $viewMode): SiEntryIdentifier {
+		return new SiEntryIdentifier(
+				EiSiMaskIdentifierFactory::create($eiEntry->getEiMask(), $viewMode),
+				self::determineEntryId($eiEntry->getEiObject()));
 	}
 }

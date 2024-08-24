@@ -32,6 +32,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\StatusException;
+use rocket\op\ei\util\entry\EiuEntry;
 
 class AddController extends ControllerAdapter {
 	const CONTROL_SAVE_KEY = 'save';
@@ -43,7 +44,8 @@ class AddController extends ControllerAdapter {
 	private $parentEiuObject;
 	private $beforeEiuObject;
 	private $afterEiuObject;
-	
+	private EiuEntry $eiuEntry;
+
 	public function prepare(DynamicTextCollection $dtc, OpState $rocketState) {
 		$this->dtc = $dtc;
 		$this->opuCtrl = OpuCtrl::from($this->cu());
@@ -75,8 +77,15 @@ class AddController extends ControllerAdapter {
 
 		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
-		
-		$this->opuCtrl->forwardNewBulkyEntryZone(true, true, true, $this->createControls());
+
+		$eiuEntries = $this->opuCtrl->eiu()->frame()->newPossibleEntries();
+
+		foreach ($eiuEntries as $eiuEntry) {
+			$eiuEntry->onValidate(fn () => $this->eiuEntry = $eiuEntry);
+		}
+
+		$this->opuCtrl->forwardNewBulkyEntryZone($eiuEntries, true, true, true,
+				$this->createControls());
 	}
 	
 	private function createControls(): array {
@@ -84,13 +93,14 @@ class AddController extends ControllerAdapter {
 		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		
 		return [
-				self::CONTROL_SAVE_KEY => $eiuControlFactory->newCallback(
+				self::CONTROL_SAVE_KEY => $eiuControlFactory
+						->newCallback(
 								SiButton::primary($dtc->t('common_save_label'), SiIconType::ICON_SAVE),
-								function (Eiu $eiu, array $inputEius) {
-									$this->handleInput($eiu, $inputEius);
-									return $eiu->factory()->newControlResponse()
+								function () {
+									$this->handleInput();
+									return $this->opuCtrl->eiu()->factory()->newControlResponse()
 											->redirectBack()
-											->highlight(...array_map(function ($eiu) { return $eiu->entry(); }, $inputEius));
+											->highlight($this->eiuEntry);
 								})
 						->setInputHandled(true),
 				self::CONTROL_CANCEL_KEY => $eiuControlFactory->newCallback(
@@ -101,22 +111,18 @@ class AddController extends ControllerAdapter {
 		];
 	}
 	
-	private function handleInput(Eiu $eiu, array $inputEius) {
-		foreach ($inputEius as $inputEiu) {
-			$result = false;
+	private function handleInput(): void {
+		if ($this->parentEiuObject !== null) {
+			$result = $this->eiuEntry->insertAsChild($this->parentEiuObject);
+		} else if ($this->beforeEiuObject !== null) {
+			$result = $this->eiuEntry->insertBefore($this->beforeEiuObject);
+		} else if ($this->afterEiuObject !== null) {
+			$result = $this->eiuEntry->insertAfter($this->afterEiuObject);
+		} else {
+			$result = $this->eiuEntry->save();
+		}
 
-			if ($this->parentEiuObject !== null) {
-				$result = $inputEiu->entry()->insertAsChild($this->parentEiuObject);
-			} else if ($this->beforeEiuObject !== null) {
-				$result = $inputEiu->entry()->insertBefore($this->beforeEiuObject);
-			} else if ($this->afterEiuObject !== null) {
-				$result = $inputEiu->entry()->insertAfter($this->afterEiuObject);
-			} else {
-				$result = $inputEiu->entry()->save();
-			}
-			
-			IllegalStateException::assertTrue($result);
-		}		
+		IllegalStateException::assertTrue($result);
 	}
 	
 //	public function doDraft(ParamGet $refPath = null) {

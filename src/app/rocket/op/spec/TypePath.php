@@ -71,6 +71,14 @@ class TypePath {
 		
 		ArgUtils::valType($expression, ['string', TypePath::class]);
 	}
+
+	static function build($expression): ?TypePath {
+		if ($expression === null) {
+			return null;
+		}
+
+		return self::create($expression);
+	}
 	
 	
 }

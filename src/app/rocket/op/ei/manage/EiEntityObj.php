@@ -24,12 +24,15 @@ namespace rocket\op\ei\manage;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\EiType;
 use n2n\reflection\ReflectionUtils;
+use n2n\util\col\ArrayUtils;
 
 class EiEntityObj {
 	private $persistent; 
 	private $id;
 	private $entityObj;
 	private $eiType;
+
+	private array $idCallbacks = [];
 	
 	/**
 	 * @param bool $persistent
@@ -95,8 +98,9 @@ class EiEntityObj {
 // 		return $this->eiType->idToPid($this->getId());
 // 	}
 	
-	public function refreshId() {
+	public function refreshId(): void {
 		$this->id = $this->eiType->extractId($this->entityObj);
+		$this->triggerIdCallbacks();
 	}
 	
 	/**
@@ -112,6 +116,27 @@ class EiEntityObj {
 	
 	public function equals($obj) {
 		return $obj instanceof EiEntityObj && $this->getEntityObj() === $obj->getEntityObj();
+	}
+
+	function onId(\Closure $closure): static {
+		if ($this->isPersistent()) {
+			$closure($this->id);
+			return $this;
+		}
+
+		$this->idCallbacks[spl_object_hash($closure)] = $closure;
+		return $this;
+	}
+
+	function offId(\Closure $closure): static {
+		unset($this->idCallbacks[spl_object_hash($closure)]);
+		return $this;
+	}
+
+	private function triggerIdCallbacks(): void {
+		while (null !== ($callback = array_shift($this->idCallbacks))) {
+			$callback($this->id);
+		}
 	}
 	
 	public static function createFrom(EiType $contextEiType, object $entityObj) {

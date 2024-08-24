@@ -42,7 +42,7 @@ use rocket\op\ei\manage\EiLaunch;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\manage\EiGuiMaskDeclarationEngine;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
-use rocket\op\ei\manage\gui\EiGuiDefinitionFactory;
+use rocket\op\ei\manage\gui\factory\EiGuiDefinitionFactory;
 
 
 class EiEngine {

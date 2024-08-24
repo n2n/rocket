@@ -55,20 +55,16 @@ use rocket\op\cu\gui\control\CuControlCallId;
 use rocket\op\cu\util\gui\CufGui;
 use n2n\web\http\BadRequestException;
 use rocket\impl\ei\manage\gui\BulkyGui;
-use rocket\ui\gui\control\ZoneGuiControlsMap;
 use rocket\impl\ei\manage\gui\CompactExplorerGui;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\GuiZone;
 use rocket\ui\si\api\request\SiZoneCall;
 use n2n\web\http\StatusException;
 use rocket\ui\gui\ViewMode;
-use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
+use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\op\ei\manage\gui\EiGuiMaskFactory;
 use rocket\ui\gui\control\GuiControlKey;
-use rocket\op\ei\manage\frame\EiObjectFactory;
-use rocket\op\ei\EiException;
-use n2n\util\ex\ExUtils;
 use rocket\ui\gui\GuiMask;
 
 class OpuCtrl {
@@ -266,18 +262,18 @@ class OpuCtrl {
 	/**
 	 * @throws StatusException
 	 */
-	function forwardNewBulkyEntryZone(bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
+	function forwardNewBulkyEntryZone(array $eiuEntries = [], bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
 			array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
+		$eiEntries = array_map(fn ($eiEntryArg) => EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiuEntries[]', true),
+				$eiuEntries);
+
 		$eiFrame = $this->frame()->getEiFrame();
 
-		$factory = new EiObjectFactory($eiFrame);
-		$eiEntries = ExUtils::try(fn () => $factory->createPossibleNewEiEntries(null));
-
-		$viewMode = ViewMode::determine(true, !$editable, true);
+				$viewMode = ViewMode::determine(true, !$editable, true);
 		$factory = new EiGuiValueBoundaryFactory($eiFrame);
 		$guiValueBoundary = $factory->create(null, $eiEntries, $viewMode);
 		$eiGuiMaskFactory = new EiGuiMaskFactory($eiFrame);
@@ -288,7 +284,8 @@ class OpuCtrl {
 			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
 		}
 
-		$eiGui = new BulkyGui($eiFrame->createSiFrame(), new SiDeclaration(array_map(fn (GuiMask $m) => $m->getSiMask(), $guiMasks)),
+		$eiGui = new BulkyGui($eiFrame->createSiFrame(),
+				new SiDeclaration(array_map(fn (GuiMask $m) => $m->getSiMask(), $guiMasks)),
 				$guiValueBoundary, $entrySiControlsIncluded);
 
 		$this->forwardGui($eiGui, $this->eiu->dtc('rocket')->t('common_new_entry_label'),

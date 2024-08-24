@@ -19,8 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-
-namespace rocket\op\ei\manage\gui;
+namespace rocket\op\ei\manage\gui\factory;
 
 use n2n\core\container\N2nContext;
 use rocket\op\ei\mask\EiMask;
@@ -30,6 +29,7 @@ use rocket\ui\si\meta\SiStructureType;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiPropPath;
 use rocket\ui\gui\GuiStructureDeclaration;
+use rocket\op\ei\manage\gui\EiGuiDefinition;
 
 class EiGuiDefinitionFactory {
 

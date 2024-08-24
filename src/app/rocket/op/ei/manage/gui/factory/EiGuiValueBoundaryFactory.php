@@ -19,41 +19,38 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\op\ei\manage;
+namespace rocket\op\ei\manage\gui\factory;
 
-use rocket\op\ei\manage\draft\DraftValueMap;
-use rocket\ui\si\content\SiEntryIdentifier;
+use rocket\op\ei\manage\entry\EiEntry;
+use rocket\ui\gui\GuiValueBoundary;
+use rocket\op\ei\component\EiGuiMaskFactory;
+use rocket\op\ei\manage\frame\EiFrame;
 
-abstract class EiObjectAdapter implements EiObject {
-	public function getLiveObject() {
-		return $this->getEiEntityObj()->getEntityObj();
+class EiGuiValueBoundaryFactory {
+
+	function __construct(private readonly EiFrame $eiFrame) {
+
 	}
 
-	public function getDraftValueMap(): DraftValueMap {
-		return $this->getDraft()->getDraftValueMap();
-	}
+	/**
+	 * @param int|null $treeLevel
+	 * @param EiEntry[] $eiEntries
+	 * @param int $viewMode
+	 * @return GuiValueBoundary
+	 */
+	function create(?int $treeLevel, array $eiEntries, int $viewMode): GuiValueBoundary {
+		$guiValueBoundary = new GuiValueBoundary($treeLevel);
 
-	public function equals($obj) {
-		if (!($obj instanceof EiObject && $this->isDraft() === $obj->isDraft()
-				&& $this->getEiEntityObj()->getId() === $obj->getEiEntityObj()->getId())) {
-			return false;
+		$eiGuiEntryFactory = new EiGuiEntryFactory($this->eiFrame);
+		foreach ($eiEntries as $eiEntry) {
+			$guiEntry = $eiGuiEntryFactory->createGuiEntry($eiEntry, $viewMode, true);
+			$guiValueBoundary->putGuiEntry($guiEntry);
 		}
 
-		if ($this->isDraft()) {
-			return $this->getDraft()->getId() === $obj->getDraft()->getId();
+		if (count($eiEntries) === 1 && isset($guiEntry)) {
+			$guiValueBoundary->selectGuiEntryByMaskId($guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getId());
 		}
 
-		return true;
-	}
-
-	public function createSiEntryIdentifier(): SiEntryIdentifier {
-		$eiEntityObj = $this->getEiEntityObj();
-		$pid = null;
-		if ($eiEntityObj->hasId()) {
-			$pid = $eiEntityObj->getPid();
-		}
-
-		$eiType = $eiEntityObj->getEiType();
-		return new SiEntryIdentifier($eiType->getSupremeEiType()->getId(), $pid);
+		return $guiValueBoundary;
 	}
 }

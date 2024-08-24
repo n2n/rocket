@@ -37,6 +37,7 @@ use rocket\op\util\OpfControlResponse;
 use rocket\ui\gui\GuiCallResponse;
 use rocket\op\ei\manage\EiObject;
 use rocket\ui\gui\api\GuiApiModel;
+use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 
 class EiGuiApiModel implements GuiApiModel {
 

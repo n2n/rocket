@@ -41,11 +41,9 @@ use rocket\op\ei\manage\critmod\filter\impl\CriteriaConstraints;
 use rocket\op\ei\manage\DefPropPath;
 use ReflectionClass;
 use rocket\ui\gui\GuiEntry;
-use rocket\op\ei\manage\gui\EiGuiDeclarationFactory;
+use rocket\op\ei\manage\gui\factory\EiGuiDeclarationFactory;
 use rocket\op\ei\manage\gui\EiGuiDeclaration;
-use rocket\op\ei\manage\entry\ValidationResult;
 use rocket\ui\gui\GuiValueBoundary;
-use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
 
 class EiObjectSelector {
 //	private EiGuiDeclarationFactory $eiGuiDeclarationFactory;

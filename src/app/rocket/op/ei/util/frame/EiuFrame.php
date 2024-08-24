@@ -70,6 +70,10 @@ use rocket\op\ei\util\spec\EiuProp;
 use rocket\op\ei\component\prop\EiProp;
 use n2n\util\uri\Url;
 use rocket\ui\si\control\SiNavPoint;
+use rocket\op\ei\manage\frame\EiObjectFactory;
+use rocket\op\spec\TypePath;
+use rocket\op\ei\UnknownEiTypeExtensionException;
+use rocket\op\ei\UnknownEiTypeException;
 
 class EiuFrame {
 	private $eiFrame;
@@ -270,7 +274,24 @@ class EiuFrame {
 				$this->eiuAnalyst);
 		return new EiuEntry(null, $eiuObject, null, $this->eiuAnalyst);
 	}
-	
+
+
+	/**
+	 * @param $contextEiTypePath
+	 * @return EiuEntry[]
+	 */
+	function newPossibleEntries($contextEiTypePath = null): array {
+		$contextEiTypePath = TypePath::build($contextEiTypePath);
+		$eiObjectFactory = new EiObjectFactory($this->eiFrame);
+
+		try {
+			return array_map(fn(EiEntry $eiEntry) => new EiuEntry($eiEntry, null, null, $this->eiuAnalyst),
+					$eiObjectFactory->createPossibleNewEiEntries($contextEiTypePath));
+		} catch (UnknownEiTypeException|UnknownEiTypeExtensionException $e) {
+			throw new EiuPerimeterException($e->getMessage(), previous: $e);
+		}
+	}
+
 	private function createNewEiObject(bool $draft, ?EiType $eiType) {
 		if ($eiType === null) {
 			$eiType = $this->eiFrame->getContextEiEngine()->getEiMask()->getEiType();

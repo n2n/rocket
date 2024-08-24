@@ -97,7 +97,7 @@ class AddControllerTest extends TestCase {
 		$eiGuiDefinition = $this->eiMask->getEiEngine()->getEiGuiDefinition(ViewMode::BULKY_ADD);
 
 		$siInput = new SiInput();
-		$siEntryInput = new SiEntryInput($this->stringTestObjId);
+		$siEntryInput = new SiEntryInput(null);
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'nv']));
 		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getId(), $siEntryInput);
@@ -105,7 +105,7 @@ class AddControllerTest extends TestCase {
 		$siInput->putValueBoundaryInput('0', $siValueBoundaryInput);
 
 		$result = TestEnv::http()->newRequest()->post(
-					'/admin/manage/launch-id/cmd/aecn-0/' . $this->stringTestObjId,
+					'/admin/manage/launch-id/cmd/aecn-0',
 					['si-zone-call' => json_encode(new SiZoneCall($siInput, AddController::CONTROL_SAVE_KEY))])
 				->inject(function(Rocket $rocket, LoginContext $loginContext) {
 					$rocket->setSpec($this->spec);
@@ -118,9 +118,13 @@ class AddControllerTest extends TestCase {
 		$this->assertNotNull($resultData['inputResult']);
 		$this->assertNotNull($resultData['callResult']);
 
+		$id = $resultData['inputResult']['valueBoundaries'][0]['entries'][$siValueBoundaryInput->getSelectedMaskId()]
+				['qualifier']['identifier']['id'];
+		$this->assertNotNull($id);
+
 		$tx = TestEnv::createTransaction(true);
-		$this->assertEquals('new-value', StringTestEnv::findStringTestObj($this->stringTestObjId)->holeradio);
-		$this->assertEquals(new StrObjMock('nv'), StringTestEnv::findStringTestObj($this->stringTestObjId)->holeradioObj);
+		$this->assertEquals('new-value', StringTestEnv::findStringTestObj($id)->holeradio);
+		$this->assertEquals(new StrObjMock('nv'), StringTestEnv::findStringTestObj($id)->holeradioObj);
 		$tx->commit();
 	}
 

@@ -43,7 +43,7 @@ use n2n\core\container\N2nContext;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\gui\ViewMode;
-use rocket\op\ei\manage\gui\EiGuiValueBoundaryFactory;
+use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {

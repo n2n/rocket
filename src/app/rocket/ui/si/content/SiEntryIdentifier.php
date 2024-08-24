@@ -49,7 +49,6 @@ class SiEntryIdentifier implements \JsonSerializable {
 //		$this->id = $id;
 //		return $this;
 //	}
-	
 
 	function toQualifier(?string $idName): SiEntryQualifier {
 		return new SiEntryQualifier($this->maskIdentifier, $this->id, $idName);

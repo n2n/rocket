@@ -22,28 +22,16 @@
 
 namespace rocket\op\ei\manage\gui;
 
-use n2n\core\container\N2nContext;
-use n2n\util\StringUtils;
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\EiCmdPath;
-use rocket\op\ei\EiPropPath;
-use rocket\op\ei\IdPath;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\mask\EiMask;
-use rocket\op\ei\util\Eiu;
-use rocket\ui\si\meta\SiStructureType;
-use n2n\l10n\Lstr;
-use rocket\op\ei\manage\api\ApiControlCallId;
-use n2n\util\ex\NotYetImplementedException;
-use rocket\ui\gui\control\GuiControlMap;
 use n2n\l10n\N2nLocale;
 use rocket\ui\si\meta\SiMaskIdentifier;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\GuiStructureDeclaration;
-use rocket\ui\gui\control\GuiControl;
 use rocket\ui\gui\GuiMask;
+use rocket\op\ei\manage\gui\factory\EiSiMaskIdentifierFactory;
 
 class EiGuiDefinition {
 
@@ -92,10 +80,7 @@ class EiGuiDefinition {
 	}
 
 	function createSiMaskIdentifier(): SiMaskIdentifier {
-		$eiMask = $this->getEiMask();
-
-		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $this->getViewMode());
-		return new SiMaskIdentifier($eiSiMaskId->__toString(), $eiMask->getEiType()->getSupremeEiType()->getId());
+		return EiSiMaskIdentifierFactory::create($this->eiMask, $this->getViewMode());
 	}
 
 	public function createSiMaskQualifier(N2nLocale $n2nLocale): SiMaskQualifier {

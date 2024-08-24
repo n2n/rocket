@@ -93,18 +93,14 @@ class SiCallResponse implements \JsonSerializable {
 	 * @param string $modType
 	 * @return \rocket\si\control\SiCallResponse
 	 */
-	function addEvent(SiEntryIdentifier $identifier, string $modType) {
+	function addEvent(string $typeId, string $entryId, string $modType) {
 		ArgUtils::valEnum($modType, [self::EVENT_TYPE_ADDED, self::EVENT_TYPE_CHANGED, self::EVENT_TYPE_REMOVED]);
-		
-		$category = $identifier->getTypeId();
-		$id = $identifier->getEntryId();
-		ArgUtils::assertTrue($id !== null);
-		
-		if (!isset($this->eventMap[$category])) {
-			$this->eventMap[$category] = array('ids' => []);
+
+		if (!isset($this->eventMap[$typeId])) {
+			$this->eventMap[$typeId] = array('ids' => []);
 		}
 		
-		$this->eventMap[$category]['ids'][$id] = $modType;
+		$this->eventMap[$typeId]['ids'][$entryId] = $modType;
 		return $this;
 	}
 	

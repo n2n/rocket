@@ -19,41 +19,22 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\op\ei\manage;
+namespace rocket\op\ei\manage\gui\factory;
 
-use rocket\op\ei\manage\draft\DraftValueMap;
-use rocket\ui\si\content\SiEntryIdentifier;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\EiType;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
-abstract class EiObjectAdapter implements EiObject {
-	public function getLiveObject() {
-		return $this->getEiEntityObj()->getEntityObj();
+class EiSiMaskIdentifierFactory {
+
+	static function create(EiMask $eiMask, int $viewMode): SiMaskIdentifier {
+		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $viewMode);
+		return new SiMaskIdentifier($eiSiMaskId->__toString(), self::determineTypeId($eiMask->getEiType()));
 	}
 
-	public function getDraftValueMap(): DraftValueMap {
-		return $this->getDraft()->getDraftValueMap();
+	static function determineTypeId(EiType $eiType): string {
+		return $eiType->getSupremeEiType()->getId();
 	}
 
-	public function equals($obj) {
-		if (!($obj instanceof EiObject && $this->isDraft() === $obj->isDraft()
-				&& $this->getEiEntityObj()->getId() === $obj->getEiEntityObj()->getId())) {
-			return false;
-		}
-
-		if ($this->isDraft()) {
-			return $this->getDraft()->getId() === $obj->getDraft()->getId();
-		}
-
-		return true;
-	}
-
-	public function createSiEntryIdentifier(): SiEntryIdentifier {
-		$eiEntityObj = $this->getEiEntityObj();
-		$pid = null;
-		if ($eiEntityObj->hasId()) {
-			$pid = $eiEntityObj->getPid();
-		}
-
-		$eiType = $eiEntityObj->getEiType();
-		return new SiEntryIdentifier($eiType->getSupremeEiType()->getId(), $pid);
-	}
 }

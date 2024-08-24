@@ -19,18 +19,13 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\op\ei\manage\gui;
+namespace rocket\op\ei\manage\gui\factory;
 
-use rocket\op\ei\EiPropPath;
-use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\manage\entry\EiEntry;
-use rocket\op\ei\util\Eiu;
-use rocket\ui\gui\field\GuiFieldMap;
-use rocket\ui\gui\ViewMode;
-use rocket\ui\gui\field\GuiField;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\gui\GuiEntry;
 use rocket\ui\si\content\SiEntryQualifier;
+use rocket\op\ei\manage\entry\WrittenMappingListener;
 
 class EiGuiEntryFactory {
 
@@ -127,22 +122,13 @@ class EiGuiEntryFactory {
 
 	public function createGuiEntry(EiEntry $eiEntry, int $viewMode, bool $entryGuiControlsIncluded): GuiEntry {
 
-		$n2nLocale = $this->eiFrame->getN2nContext()->getN2nLocale();
-		$pid = null;
-		$idName = null;
-		if (!$eiEntry->isNew()) {
-			$pid = $eiEntry->getPid();
-			$deterIdNameDefinition = $eiEntry->getEiMask()->getEiEngine()->getIdNameDefinition();
-			$idName = $deterIdNameDefinition->createIdentityString($eiEntry->getEiObject(),
-					$this->eiFrame->getN2nContext(), $n2nLocale);
-		}
+		$eiSiEntryQualifierFactory = new EiSiEntryQualifierFactory($this->eiFrame->getN2nContext());
 
 		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($viewMode);
-		$guiEntry = new GuiEntry(new SiEntryQualifier($eiGuiDefinition->createSiMaskIdentifier(), $pid, $idName));
+		$guiEntry = new GuiEntry($eiSiEntryQualifierFactory->create($eiEntry, $viewMode));
 		$guiEntry->setModel($eiEntry);
 		
 		$guiFieldMap = $eiGuiDefinition->getEiGuiPropMap()->createGuiFieldMap($this->eiFrame, $eiEntry);
-
 
 		$guiControlMap = null;
 		if ($entryGuiControlsIncluded) {
@@ -150,6 +136,14 @@ class EiGuiEntryFactory {
 		}
 
 		$guiEntry->init($guiFieldMap, $guiControlMap);
+
+		$eiEntityObj = $eiEntry->getEiObject()->getEiEntityObj();
+		if ($eiEntityObj->isPersistent()) {
+			return $guiEntry;
+		}
+
+		$eiEntityObj->onId(
+				fn () => $guiEntry->setSiEntryQualifier($eiSiEntryQualifierFactory->create($eiEntry, $viewMode)));
 
 		return $guiEntry;
 	}

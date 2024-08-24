@@ -41,7 +41,7 @@ use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
-use rocket\op\ei\manage\gui\EiGuiEntryFactory;
+use rocket\op\ei\manage\gui\factory\EiGuiEntryFactory;
 
 class StringEiPropNatureLiveTest extends TestCase {
 
