@@ -54,6 +54,7 @@ use testmdl\relation\bo\IntegratedSrcTestObj;
 use n2n\util\uri\Url;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\mask\EiMask;
+use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 
 class SpecTestEnv {
 
@@ -81,13 +82,21 @@ class SpecTestEnv {
 	}
 
 	static function setUpEiFrame(Spec $spec, EiMask $eiMask): EiFrame {
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiLaunch = self::setUpEiLaunch($spec);
 
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
 		$eiFrame->setBaseUrl(Url::create('/admin'));
 		$eiFrame->exec($eiMask->getEiCmdCollection()->determineGenericOverview(true)->getEiCmd());
 
 		return $eiFrame;
+	}
+
+	static function setUpEiLaunch(Spec $spec): EiLaunch {
+		$elm = new EiLifecycleMonitor($spec);
+		$elm->initialize(TestEnv::em(), TestEnv::getN2nContext());
+		TestEnv::em()->registerLifecycleListener($elm);
+		return new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em(),
+				$elm);
 	}
 }
 

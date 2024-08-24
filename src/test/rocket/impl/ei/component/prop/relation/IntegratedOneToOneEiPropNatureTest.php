@@ -66,7 +66,7 @@ class IntegratedOneToOneEiPropNatureTest extends TestCase {
 	 * @throws UnknownEiTypeException
 	 */
 	function testBlabla() {
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiLaunch = SpecTestEnv::setUpEiLaunch($this->spec);
 		$eiMask = $this->spec->getEiTypeByClassName(IntegratedSrcTestObj::class)->getEiMask();;
 
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());

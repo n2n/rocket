@@ -129,7 +129,7 @@ class AddControllerTest extends TestCase {
 	}
 
 //
-//		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+//		$eiLaunch = SpecTestEnv::setUpEiLaunch($this->spec);
 //		$eiMask = $this->spec->getEiTypeByClassName(StringTestObj::class)->getEiMask();
 //
 //		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());

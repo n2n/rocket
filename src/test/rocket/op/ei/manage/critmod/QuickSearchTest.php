@@ -48,7 +48,7 @@ class QuickSearchTest extends TestCase {
 	}
 
 	function testQuickSearch() {
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiLaunch = SpecTestEnv::setUpEiLaunch($this->spec);
 		$eiMask = $this->spec->getEiTypeByClassName(QuickSearchTestObj::class)->getEiMask();;
 
 		$eiFrame = $eiLaunch->createRootEiFrame($eiMask->getEiEngine());
@@ -77,7 +77,7 @@ class QuickSearchTest extends TestCase {
 
 
 	function testQuickSearchDisabled() {
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiLaunch = SpecTestEnv::setUpEiLaunch($this->spec);
 		$eiMask = $this->spec->getEiTypeByClassName(QuickSearchTestObj::class)->getEiMask();
 
 		$eiMask->getEiPropCollection()->getByPath(EiPropPath::create('holeradio'))->getNature()->setQuickSearchable(false);

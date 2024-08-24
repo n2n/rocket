@@ -47,7 +47,7 @@ class SortTest extends TestCase {
 	}
 
 	function testDefaultSort() {
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiLaunch = SpecTestEnv::setUpEiLaunch($this->spec);
 		$eiMask = $this->spec->getEiTypeByClassName(SortTestObj::class)->getEiMask();;
 
 		$sortSettings = $eiMask->getDef()->getDefaultSortSettingGroup()->getSortSettings();

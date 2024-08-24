@@ -29,6 +29,11 @@ use rocket\impl\ei\manage\gui\CallbackGuiControl;
 use rocket\impl\ei\manage\gui\GroupGuiControl;
 use rocket\impl\ei\manage\gui\DeactivatedGuiControl;
 use rocket\impl\ei\manage\gui\GuiControls;
+use n2n\util\magic\impl\MagicMethodInvoker;
+use n2n\core\container\N2nContext;
+use rocket\ui\gui\GuiCallResponse;
+use n2n\util\type\TypeConstraints;
+use rocket\op\util\OpfControlResponse;
 
 class EiuGuiControlFactory {
 	private $eiuAnalyst;
@@ -64,7 +69,11 @@ class EiuGuiControlFactory {
 	 * @return CallbackGuiControl
 	 */
 	public function newCallback(SiButton $siButton, \Closure $callback): CallbackGuiControl {
-		return GuiControls::callback($siButton, $callback);
+		$mmi = new MagicMethodInvoker($this->eiuAnalyst->getN2nContext(false));
+		$mmi->setClosure($callback);
+		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(GuiCallResponse::class, true));
+
+		return GuiControls::callback($siButton, fn () => $mmi->invoke() ?? new OpfControlResponse($this->eiuAnalyst));
 	}
 	
 	/**

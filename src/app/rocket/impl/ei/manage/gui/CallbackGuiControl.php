@@ -83,11 +83,8 @@ class CallbackGuiControl implements GuiControl {
 // 		$mmi->setReturnTypeConstraint(TypeConstraints::type(RfControlResponse::class, true));
 		
 // 		$eiuControlResponse = $mmi->invoke();
-		if ($sifControlResponse === null) {
-			$sifControlResponse = new OpfControlResponse(EiuAnalyst::fromEiArgs($n2nContext));
-		}
-		
-		return $sifControlResponse->toSiCallResponse();
+
+		return $sifControlResponse?->toSiCallResponse() ?? new SiCallResponse();
 	}
 	
 	/**

@@ -56,7 +56,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 
 		$this->spec = SpecTestEnv::setUpSpec([EmbeddingContainerTestObj::class]);
 
-		$eiLaunch = new EiLaunch(TestEnv::getN2nContext(), new FullEiPermissionManager(), TestEnv::em());
+		$eiLaunch = SpecTestEnv::setUpEiLaunch($this->spec);
 		$this->eiType = $this->spec->getEiTypeByClassName(EmbeddingContainerTestObj::class);
 		$eiMask = $this->eiType->getEiMask();
 
