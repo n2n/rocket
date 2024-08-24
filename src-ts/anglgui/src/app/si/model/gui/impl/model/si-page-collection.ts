@@ -431,8 +431,9 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiSort(this.siFrame.apiUrl,
 				{
-					ids: entries.map(entry => entry.identifier.id!),
-					afterId: afterEntry.identifier.id!
+					maskId: this.declaration!.getBasicMask().qualifier.maskIdentifier.id,
+					entryIds: entries.map(entry => entry.identifier.id!),
+					afterEntryId: afterEntry.identifier.id!
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
 					this.updateOrder();
@@ -445,8 +446,9 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiSort(this.siFrame.apiUrl,
 				{
-					ids: entries.map(entry => entry.identifier.id!),
-					beforeId: beforeEntry.identifier.id || undefined
+					maskId: this.declaration!.getBasicMask().qualifier.maskIdentifier.id,
+					entryIds: entries.map(entry => entry.identifier.id!),
+					beforeEntryId: beforeEntry.identifier.id || undefined
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
 					this.updateOrder();
@@ -459,8 +461,9 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiSort(this.siFrame.apiUrl,
 				{
-					ids: entries.map(entry => entry.identifier.id!),
-					parentId: parentEntry.identifier.id || undefined
+					maskId: this.declaration!.getBasicMask().qualifier.maskIdentifier.id,
+					entryIds: entries.map(entry => entry.identifier.id!),
+					parentEntryId: parentEntry.identifier.id || undefined
 				}).subscribe(() => {
 					locks.forEach((lock) => { lock.release(); });
 					this.updateOrder();

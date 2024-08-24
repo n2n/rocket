@@ -31,6 +31,7 @@ use rocket\ui\gui\GuiCallResponse;
 use rocket\ui\si\api\response\SiCallResponse;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\veto\EiLifecycleMonitor;
+use rocket\op\ei\manage\ManageState;
 
 class OpfControlResponse implements GuiCallResponse {
 	private $eiuAnalyst;
@@ -230,7 +231,7 @@ class OpfControlResponse implements GuiCallResponse {
 			return $this->siCallResponse;
 		}
 
-		$elm = $this->n2nContext->lookup(EiLifecycleMonitor::class);
+		$elm = $this->n2nContext->lookup(ManageState::class)->getEiLifecycleMonitor();
 		$taa = $elm->approve();
 		
 		if (!$taa->isSuccessful()) {

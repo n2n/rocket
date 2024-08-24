@@ -94,18 +94,21 @@ interface SiApiModel {
 	function copySiValueBoundary(SiValueBoundary $boundary, string $maskId): SiValueBoundary;
 
 	/**
+	 * @param string[] $entryIds
 	 * @throws UnknownSiElementException
 	 */
-	function insertSiEntriesAfter(string $maskId, string $entryIds, string $afterEntryId): SiCallResponse;
+	function insertSiEntriesAfter(string $maskId, array $entryIds, string $afterEntryId): SiCallResponse;
 
 	/**
+	 * @param string[] $entryIds
 	 * @throws UnknownSiElementException
 	 */
-	function insertSiEntriesBefore(string $maskId, string $entryIds, string $beforeEntryId): SiCallResponse;
+	function insertSiEntriesBefore(string $maskId, array $entryIds, string $beforeEntryId): SiCallResponse;
 
 	/**
+	 * @param string[] $entryIds
 	 * @throws UnknownSiElementException
 	 */
-	function insertSiEntriesAsChildren(string $maskId, string $entryIds, string $parentId): SiCallResponse;
+	function insertSiEntriesAsChildren(string $maskId, array $entryIds, string $parentId): SiCallResponse;
 
 }

@@ -125,25 +125,20 @@ class EiGuiDefinitionFactory {
 	 * @param DisplayStructure $displayStructure
 	 * @return GuiStructureDeclaration
 	 */
-	private function nonAutoInitEiGuiMaskDeclaration(N2nContext $n2nContext, $eiGuiMaskDeclaration, $displayStructure): array {
-		$assemblerCache = new EiFieldAssemblerCache($n2nContext, $eiGuiMaskDeclaration, $displayStructure->getAllDefPropPaths());
-		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayStructure);
+	private function nonAutoInitEiGuiMaskDeclaration(EiGuiDefinition $eiGuiDefinition, DisplayStructure $displayStructure): array {
+		$assemblerCache = new EiFieldAssemblerCache($this->n2nContext, $eiGuiDefinition, $displayStructure->getAllDefPropPaths());
+		$guiStructureDeclarations = $this->assembleDisplayStructure($assemblerCache, $eiGuiDefinition, $displayStructure);
 //		$this->initEiGuiDefinition($eiGuiMaskDeclaration);
 		return $guiStructureDeclarations;
 	}
 
-	/**
-	 * @param \rocket\op\gui\EiFieldAssemblerCache $assemblerCache
-	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration
-	 * @param DisplayStructure $displayStructure
-	 */
-	private function assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayStructure) {
+	private function assembleDisplayStructure(EiFieldAssemblerCache $assemblerCache, EiGuiDefinition $eiGuiDefinition, DisplayStructure $displayStructure): array {
 		$guiStructureDeclarations = [];
 
 		foreach ($displayStructure->getDisplayItems() as $displayItem) {
 			if ($displayItem->hasDisplayStructure()) {
 				$guiStructureDeclarations[] = GuiStructureDeclaration::createGroup(
-						$this->assembleDisplayStructure($assemblerCache, $eiGuiMaskDeclaration, $displayItem->getDisplayStructure()),
+						$this->assembleDisplayStructure($assemblerCache, $eiGuiDefinition, $displayItem->getDisplayStructure()),
 						$displayItem->getSiStructureType(), $displayItem->getLabel(), $displayItem->getHelpText());
 				continue;
 			}
@@ -154,7 +149,7 @@ class EiGuiDefinitionFactory {
 				continue;
 			}
 
-			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($defPropPath,
+			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($defPropPath->toGuiFieldPath(),
 					$displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
 		}
 
@@ -254,14 +249,12 @@ class EiFieldAssemblerCache {
 			return $this->eiGuiPropSetups[$eiPropPathStr];
 		}
 
-		$guiDefinition = $this->eiGuiDefinition->getEiGuiDefinition();
-
-		if (!$guiDefinition->containsEiPropPath($eiPropPath)) {
+		if (!$this->guiDefinition->containsEiPropPath($eiPropPath)) {
 			$this->eiGuiPropSetups[$eiPropPathStr] = null;
 			return null;
 		}
 
-		$eiGuiPropWrapper = $this->eiGuiDefinition->getEiGuiDefinition()->getGuiPropWrapper($eiPropPath);
+		$eiGuiPropWrapper = $this->eiGuiDefinition->getGuiPropWrapper($eiPropPath);
 		$eiGuiPropSetup = $eiGuiPropWrapper->buildGuiPropSetup($this->n2nContext, $this->eiGuiDefinition,
 				$this->filterForkedDefPropPaths($eiPropPath));
 		$this->eiGuiDefinition->putEiGuiField($eiPropPath, $eiGuiPropSetup->getEiGuiField());

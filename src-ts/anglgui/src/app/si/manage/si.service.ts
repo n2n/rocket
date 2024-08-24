@@ -148,7 +148,7 @@ export class SiService {
 
 	apiCall(apiUrl: string, apiCall: SiApiCall): Observable<SiApiCallResponse> {
 		const formData = new FormData();
-		formData.append('apiCallId', JSON.stringify(apiCall));
+		formData.append('call', JSON.stringify(apiCall));
 
 		const httpParams = new HttpParams();
 

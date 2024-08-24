@@ -24,5 +24,5 @@ namespace rocket\ui\gui;
 
 interface GuiCallResponse {
 
-	function toSiControl();
+	function toSiCallResponse();
 }

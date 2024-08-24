@@ -68,28 +68,28 @@ interface GuiApiModel {
 
 	/**
 	 * @param string $maskId
-	 * @param string $entryIds
+	 * @param string[] $entryIds
 	 * @param string $afterEntryId
 	 * @return GuiCallResponse
 	 * @throws UnknownGuiElementException
 	 */
-	function insertAfter(string $maskId, string $entryIds, string $afterEntryId): GuiCallResponse;
+	function insertAfter(string $maskId, array $entryIds, string $afterEntryId): GuiCallResponse;
 
 	/**
 	 * @param string $maskId
-	 * @param string $entryIds
+	 * @param string[] $entryIds
 	 * @param string $beforeEntryId
 	 * @return GuiCallResponse
 	 * @throws UnknownGuiElementException
 	 */
-	function insertBefore(string $maskId, string $entryIds, string $beforeEntryId): GuiCallResponse;
+	function insertBefore(string $maskId, array $entryIds, string $beforeEntryId): GuiCallResponse;
 
 	/**
 	 * @param string $maskId
-	 * @param string $entryIds
+	 * @param string[] $entryIds
 	 * @param string $parentId
 	 * @return GuiCallResponse
 	 * @throws UnknownGuiElementException
 	 */
-	function insertAsChildren(string $maskId, string $entryIds, string $parentId): GuiCallResponse;
+	function insertAsChildren(string $maskId, array $entryIds, string $parentId): GuiCallResponse;
 }

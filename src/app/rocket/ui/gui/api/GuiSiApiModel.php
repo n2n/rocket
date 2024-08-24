@@ -159,7 +159,7 @@ class GuiSiApiModel implements SiApiModel {
 		throw new UnknownSiElementException('Provided SiValueBoundary is unknown to GuiSiApiModel.');
 	}
 
-	function insertSiEntriesAfter(string $maskId, string $entryIds, string $afterEntryId): SiCallResponse {
+	function insertSiEntriesAfter(string $maskId, array $entryIds, string $afterEntryId): SiCallResponse {
 		try {
 			return $this->guiApiModel->insertAfter($maskId, $entryIds, $afterEntryId)->toSiCallResponse();
 		} catch (UnknownGuiElementException $e) {
@@ -167,7 +167,7 @@ class GuiSiApiModel implements SiApiModel {
 		}
 	}
 
-	function insertSiEntriesBefore(string $maskId, string $entryIds, string $beforeEntryId): SiCallResponse {
+	function insertSiEntriesBefore(string $maskId, array $entryIds, string $beforeEntryId): SiCallResponse {
 		try {
 			return $this->guiApiModel->insertBefore($maskId, $entryIds, $beforeEntryId)->toSiCallResponse();
 		} catch (UnknownGuiElementException $e) {
@@ -175,7 +175,7 @@ class GuiSiApiModel implements SiApiModel {
 		}
 	}
 
-	function insertSiEntriesAsChildren(string $maskId, string $entryIds, string $parentId): SiCallResponse {
+	function insertSiEntriesAsChildren(string $maskId, array $entryIds, string $parentId): SiCallResponse {
 		try {
 			return $this->guiApiModel->insertAsChildren($maskId, $entryIds, $parentId)->toSiCallResponse();
 		} catch (UnknownGuiElementException $e) {

@@ -63,9 +63,9 @@ class SiSortCall {
 		try {
 			return new SiSortCall($dataMap->reqString('maskId'),
 					$dataMap->reqArray('entryIds', 'string'),
-					$dataMap->optString('afterId'),
-					$dataMap->optString('beforeId'),
-					$dataMap->optString('parentId'));
+					$dataMap->optString('afterEntryId'),
+					$dataMap->optString('beforeEntryId'),
+					$dataMap->optString('parentEntryId'));
 		} catch (AttributesException $e) {
 			throw new CorruptedSiDataException('Could not parse SiSortCall.', previous: $e);
 		}

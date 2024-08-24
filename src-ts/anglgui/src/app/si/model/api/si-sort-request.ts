@@ -1,7 +1,8 @@
 
-export class SiSortRequest {
-	public ids: string[] = [];
-	public afterId?: string;
-	public beforeId?: string;
-	public parentId?: string;
+export interface SiSortRequest {
+	maskId: string;
+	entryIds: string[];
+	afterEntryId?: string;
+	beforeEntryId?: string;
+	parentEntryId?: string;
 }

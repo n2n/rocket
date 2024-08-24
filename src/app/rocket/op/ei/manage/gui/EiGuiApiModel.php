@@ -175,7 +175,7 @@ class EiGuiApiModel implements GuiApiModel {
 				. $guiValueBoundary);
 	}
 
-	function insertAfter(string $maskId, string $entryIds, string $afterEntryId): GuiCallResponse {
+	function insertAfter(string $maskId, array $entryIds, string $afterEntryId): GuiCallResponse {
 		$this->parseEiSiMaskId($maskId);
 
 		$eiObjects = $this->lookupEiObjects([...$entryIds, $afterEntryId]);
@@ -185,7 +185,7 @@ class EiGuiApiModel implements GuiApiModel {
 		return new OpfControlResponse($this->eiFrame->getN2nContext());
 	}
 
-	function insertBefore(string $maskId, string $entryIds, string $beforeEntryId): GuiCallResponse {
+	function insertBefore(string $maskId, array $entryIds, string $beforeEntryId): GuiCallResponse {
 		$this->parseEiSiMaskId($maskId);
 
 		$eiObjects = $this->lookupEiObjects([...$entryIds, $beforeEntryId]);
@@ -195,7 +195,7 @@ class EiGuiApiModel implements GuiApiModel {
 		return new OpfControlResponse($this->eiFrame->getN2nContext());
 	}
 
-	function insertAsChildren(string $maskId, string $entryIds, string $parentId): GuiCallResponse {
+	function insertAsChildren(string $maskId, array $entryIds, string $parentId): GuiCallResponse {
 		$this->parseEiSiMaskId($maskId);
 
 		$eiObjects = $this->lookupEiObjects([...$entryIds, $parentId]);
