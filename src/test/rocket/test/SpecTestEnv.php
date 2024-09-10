@@ -173,4 +173,8 @@ class N2nContextMock extends SimpleMagicContext implements N2nContext {
 	function getMonitor(): ?N2nMonitor {
 		throw new UnsupportedOperationException();
 	}
+
+	function dispatchThrowable(\Throwable $throwable): void {
+		throw new UnsupportedOperationException();
+	}
 }
