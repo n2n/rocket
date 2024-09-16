@@ -36,7 +36,7 @@ class FieldEiHtmlBuilder {
 	private $html;
 	private $formHtml;
 	private $uiOutfitter;
-	private $eiPropInfoStrack = array();
+	private $eiPropInfoStack = array();
 	
 	public function __construct(HtmlView $view) {
 		$this->view = $view;
