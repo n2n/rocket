@@ -47,6 +47,7 @@ use rocket\ui\si\content\impl\iframe\IframeData;
 use rocket\ui\si\content\impl\date\DateTimeInSiField;
 use rocket\ui\si\content\impl\string\StringArrayInSiField;
 use rocket\ui\si\content\impl\string\PasswordInSiField;
+use n2n\io\managed\File;
 
 class SiFields {
 	
@@ -97,12 +98,9 @@ class SiFields {
 		return new FileInSiField($file, $apiFieldUrl, $apiCallId, $fileHandle);
 	}
 
-	/**
-	 * @param SiFile|null $file
-	 * @return FileOutSiField
-	 */
-	static function fileOut(?SiFile $file): FileOutSiField {
-		return new FileOutSiField($file);
+
+	static function fileOut(?File $file, SiFileFactory $siFileFactory): FileOutSiField {
+		return new FileOutSiField($file, $siFileFactory);
 	}
 
 	/**

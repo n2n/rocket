@@ -28,11 +28,12 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 * @var File|null
 	 */
 	private $value;
-		
+
 	/**
 	 * @param File|null $value
+	 * @param SiFileFactory $siFileFactory
 	 */
-	function __construct(?SiFile $value) {
+	function __construct(?File $value, private SiFileFactory $siFileFactory) {
 		$this->value = $value;	
 	}
 
@@ -62,12 +63,12 @@ class FileOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'value' => $this->value,
-			...parent::getData()
+			'value' => ($this->value === null ? null : $this->siFileFactory->createSiFile($this->value, $n2nContext)),
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 }

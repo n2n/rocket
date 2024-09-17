@@ -82,13 +82,13 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'refPropId' => $this->refPropId,
 			'copyStyle' => $this->copyStyle,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	

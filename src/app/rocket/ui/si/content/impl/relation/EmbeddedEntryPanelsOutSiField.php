@@ -72,13 +72,13 @@ class EmbeddedEntryPanelsOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'panels' => $this->panels,
 			'frame' => $this->frame,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 }

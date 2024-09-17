@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\file\conf;
+namespace rocket\ui\gui\field\impl\file;
 
 use n2n\io\managed\File;
 use n2n\io\managed\img\ImageDimension;
@@ -30,23 +30,30 @@ use n2n\io\managed\img\ImageFile;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\impl\TmpFileManager;
 use n2n\util\type\CastUtils;
-use rocket\si\content\impl\SiImageDimension;
 use n2n\util\StringUtils;
 use n2n\io\managed\FileManager;
 use n2n\io\managed\FileLocator;
 use n2n\io\managed\img\ThumbCut;
 use rocket\op\ei\EiCmdPath;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\content\impl\SiFileFactory;
+use n2n\l10n\DynamicTextCollection;
 
-class ThumbResolver {
+class GuiSiFileFactory implements SiFileFactory {
 	
-	const DIM_IMPORT_MODE_ALL = 'all';
-	const DIM_IMPORT_MODE_USED_ONLY = 'usedOnly';
+//	const DIM_IMPORT_MODE_ALL = 'all';
+//	const DIM_IMPORT_MODE_USED_ONLY = 'usedOnly';
 	
 	private $thumbEiCmdPath;
 	private $imageDimensionsImportMode = null;
-	private $extraImageDimensions = array();
+	/**
+	 * @var ImageDimension[]
+	 */
+	private array $extraImageDimensions = [];
 	private $targetFileManager;
 	private $targetFileLocator = null;
+
+	private bool $imageAllowed = true;
 
 	public function setThumbEiCmdPath(EiCmdPath $thumbEiCmdPath) {
 // 		$thumbEiCommand->setFileEiProp($this);
@@ -57,11 +64,11 @@ class ThumbResolver {
 		$this->targetFileManager = $fileManager;
 	}
 	
-	function getTargetFileManager() {
+	function getTargetFileManager(): ?FileLocator {
 		return $this->targetFileManager;
 	}
 	
-	function setTargetFileLocator(?FileLocator $fileLocator) {
+	function setTargetFileLocator(?FileLocator $fileLocator): void {
 		$this->targetFileLocator = $fileLocator;
 	}
 	
@@ -85,12 +92,20 @@ class ThumbResolver {
 	public static function getImageDimensionImportModes(): array {
 		return array(self::DIM_IMPORT_MODE_ALL, self::DIM_IMPORT_MODE_USED_ONLY);
 	}
-	
-	public function getExtraImageDimensions() {
+
+	/**
+	 * @return ImageDimension[]
+	 */
+	public function getExtraImageDimensions(): array {
 		return $this->extraImageDimensions;
 	}
-	
+
+	/**
+	 * @param array $extraImageDimensions
+	 * @return void
+	 */
 	public function setExtraImageDimensions(array $extraImageDimensions) {
+		ArgUtils::valArray($extraImageDimensions, ImageDimension::class);
 		$this->extraImageDimensions = $extraImageDimensions;
 	}
 	
@@ -99,21 +114,22 @@ class ThumbResolver {
 	 * @param Eiu $eiu
 	 * @return \rocket\ui\si\content\impl\SiFile
 	 */
-	function createSiFile(File $file, Eiu $eiu, bool $imageSupported) {
+	function createSiFile(File $file, N2nContext $n2nContext): SiFile {
 		if (!$file->isValid()) {
-			return new SiFile(FileId::create($file), $eiu->dtc('rocket')->t('missing_file_err'));
+			$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
+			return new SiFile(SiFileId::create($file), $dtc->t('missing_file_err'));
 		}
-		
+
 		$fileSource = $file->getFileSource();
-		
-		$siFile = new SiFile(FileId::create($file), $file->getOriginalName());
+
+		$siFile = new SiFile(SiFileId::create($file), $file->getOriginalName());
 
 		$tmpQualifiedName = null;
-		if ($eiu->lookup(TmpFileManager::class)
-				->containsSessionFile($file, $eiu->getN2nContext()->getHttpContext()->getSession())) {
+		if ($n2nContext->lookup(TmpFileManager::class)
+				->containsSessionFile($file, $n2nContext->getHttpContext()->getSession())) {
 			$tmpQualifiedName = $fileSource->getQualifiedName();
 		}
-		
+
 		if ($fileSource->isHttpAccessible()) {
 			$siFile->setUrl($fileSource->getUrl());
 		} else if ($tmpQualifiedName !== null) {
@@ -125,32 +141,32 @@ class ThumbResolver {
 		if (!$imageSupported) {
 			return $siFile;
 		}
-		
+
 		$thumbImageFile = $this->buildThumb($file);
-		
+
 		if ($thumbImageFile === null) {
 			return $siFile;
 		}
-		
+
 		$thumbFile = $thumbImageFile->getFile();
-		
+
 		if ($thumbFile->getFileSource()->isHttpAccessible()) {
 			$siFile->setThumbUrl($thumbFile->getFileSource()->getUrl());
 		} else if ($tmpQualifiedName !== null) {
-			$siFile->setThumbUrl($this->createTmpThumbUrl($eiu, $tmpQualifiedName, 
+			$siFile->setThumbUrl($this->createTmpThumbUrl($eiu, $tmpQualifiedName,
 					SiFile::getThumbStrategy()->getImageDimension()));
 		} else {
 			$siFile->setThumbUrl($this->createThumbUrl($eiu,
 					SiFile::getThumbStrategy()->getImageDimension()));
 		}
-		
+
 		$siFile->setMimeType($thumbImageFile->getImageSource()->getMimeType());
 		$siFile->setImageDimensions($this->createSiImageDimensions(new ImageFile($file), $this->determineImageDimensions($file)));
-		
+
 		return $siFile;
 	}
 	
-	function determineFile(FileId $fileId, Eiu $eiu): ?File {
+	function determineFile(SiFileId $fileId, Eiu $eiu): ?File {
 		if ($fileId->getFileManagerName() === TmpFileManager::class) {
 			$tfm = $eiu->lookup(TmpFileManager::class);
 			CastUtils::assertTrue($tfm instanceof TmpFileManager);
@@ -245,7 +261,7 @@ class ThumbResolver {
 	/**
 	 * @param ImageFile $imageFile
 	 * @param ImageDimension[] $imageDimensions
-	 * @return \rocket\si\content\impl\SiImageDimension[]
+	 * @return SiImageDimension[]
 	 */
 	private function createSiImageDimensions(ImageFile $imageFile, $imageDimensions) {
 		$siImageDimensions = []; 
@@ -272,7 +288,7 @@ class ThumbResolver {
 	 * @param File $file
 	 * @return ImageDimension[]
 	 */
-	function determineImageDimensions(File $file) {
+	function determineImageDimensions(File $file): array {
 		$imageDimensions = array();
 		
 		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
@@ -285,13 +301,13 @@ class ThumbResolver {
 		
 		$autoImageDimensions = array();
 		switch ($this->imageDimensionsImportMode) {
-			case self::DIM_IMPORT_MODE_ALL:
+			case ImageDimensionsImportMode::ALL:
 				if ($this->targetFileManager !== null) {
 					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
 				}
 				
 				break;
-			case self::DIM_IMPORT_MODE_USED_ONLY:
+			case ImageDimensionsImportMode::USED_ONLY:
 				$thumbEngine = $file->getFileSource()->getAffiliationEngine()->getThumbManager();
 				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
 				break;
@@ -311,4 +327,9 @@ class ThumbResolver {
 		
 		return $imageDimensions;
 	}
+
+	public function setImageDimensionsImportMode(ImageDimensionsImportMode $imageDimensionsImportMode): void {
+		$this->imageDimensionsImportMode = $imageDimensionsImportMode;
+	}
+
 }

@@ -29,6 +29,7 @@ use n2n\util\type\ArgUtils;
 use n2n\io\managed\img\ThumbCut;
 use n2n\util\type\attrs\DataMap;
 use n2n\web\http\UploadDefinition;
+use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
@@ -75,13 +76,22 @@ class FileInSiField extends InSiFieldAdapter {
 		$this->apiCallId = $apiCallId;
 		$this->fileHandler = $fileHandler;
 	}
-	
+
+	function setFileHandler(SiFileHandler $fileHandler): static {
+		$this->fileHandler = $fileHandler;
+	}
+
+	function getFileHandler(): SiFileHandler {
+		return $this->fileHandler;
+	}
+
 	/**
 	 * @param SiFile|null $value
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	function setValue(?SiFile $value) {
+	function setValue(?SiFile $value): static {
 		$this->value = $value;
+		$this->siFile = $this->fileHandler->getSiFileByRawId()
 		return $this;
 	}
 	
@@ -91,12 +101,8 @@ class FileInSiField extends InSiFieldAdapter {
 	function getValue() {
 		return $this->value;
 	}
-	
-	/**
-	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\FileInSiField
-	 */
-	function setMandatory(bool $mandatory) {
+
+	function setMandatory(bool $mandatory): static {
 		$this->mandatory = $mandatory;
 		return $this;
 	}
@@ -168,18 +174,18 @@ class FileInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(N2nContext $n2nContext): array {
 		return [
-			'value' => $this->value,
+			'value' => ($this->value === null ? null : $this->fileHandler->createSiFile($this->value, $n2nContext)),
 			'mandatory' => $this->mandatory,
 			'apiFieldUrl' => (string) $this->apiFieldUrl,
 			'apiCallId' => $this->apiCallId,
 			'maxSize' => $this->maxSize ?? IoUtils::determineFileUploadMaxSize(),
 			'acceptedExtensions' => $this->acceptedExtensions,
 			'acceptedMimeTypes' => $this->acceptedMimeTypes,
-			...parent::getData()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	
@@ -216,7 +222,7 @@ class FileInSiField extends InSiFieldAdapter {
 		return true;
 	}
 	
-	function handleCall(array $data, array $uploadDefinitions): array {
+	function handleCall(array $data, array $uploadDefinitions, N2nContext $n2nContext): array {
 		if (empty($uploadDefinitions)) {
 			$this->setValue(null);
 			return [];
@@ -232,7 +238,7 @@ class FileInSiField extends InSiFieldAdapter {
 			$uploadDefinition->setName($fileName);
 		}
 		
-		$uploadResult = $this->fileHandler->upload($uploadDefinition);
+		$uploadResult = $this->fileHandler->upload($uploadDefinition, $n2nContext);
 		
 		if (!$uploadResult->isSuccess()) {
 			return ['error' => $uploadResult->getErrorMessage()];

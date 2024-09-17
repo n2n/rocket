@@ -184,9 +184,9 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'value' => $this->value,
 			'min' => $this->min,
@@ -197,7 +197,7 @@ class NumberInSiField extends InSiFieldAdapter {
 			'fixed' => $this->fixed,
 			'prefixAddons' => $this->prefixAddons,
 			'suffixAddons' => $this->suffixAddons,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	

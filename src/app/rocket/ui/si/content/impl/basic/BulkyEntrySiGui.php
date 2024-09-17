@@ -116,13 +116,13 @@ class BulkyEntrySiGui implements SiGui {
 
 	/**
 	 * {@inheritDoc}
-	 * @see SiGui::getData
+	 * @see SiGui::toJsonStruct
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'valueBoundary' => $this->valueBoundary,
+			'valueBoundary' => $this->valueBoundary->toJsonStruct($n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls),
 			'entryControlsIncluded' => $this->entryControlsIncluded
 		];

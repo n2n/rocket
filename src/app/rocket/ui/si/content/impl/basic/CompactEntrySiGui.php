@@ -83,11 +83,11 @@ class CompactEntrySiGui implements SiGui {
 		return $this->controls;
 	}
 	
-	public function getData(): array {
+	public function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [ 
 			'frame' => $this->frame,
 			'declaration' => $this->declaration,
-			'valueBoundary' => $this->valueBoundary,
+			'valueBoundary' => $this->valueBoundary->toJsonStruct($n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

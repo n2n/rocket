@@ -29,7 +29,7 @@ use rocket\ui\si\meta\SiStyle;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 
-class SiValueBoundary implements \JsonSerializable {
+class SiValueBoundary {
 
 	private $selectedMaskId = null;
 	private $entries = [];
@@ -101,7 +101,7 @@ class SiValueBoundary implements \JsonSerializable {
 		return 'SiValueBoundary TODO: insert identifier...';
 	}
 	
-	function jsonSerialize(): mixed {
+	function toJsonStruct(N2nContext $n2NContext): array {
 		$entries = array();
 		foreach ($this->entries as $id => $buildup) {
 			$entries[$id] = $buildup;
@@ -110,7 +110,7 @@ class SiValueBoundary implements \JsonSerializable {
 		return [
 //			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
-			'entries' => $entries,
+			'entries' => array_map(fn (SiEntry $e) => $e->toJsonStruct($n2NContext), $entries),
 			'selectedMaskId' => $this->selectedMaskId
 		];
 	}

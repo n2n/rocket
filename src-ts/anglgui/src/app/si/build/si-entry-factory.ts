@@ -18,7 +18,7 @@ export class SiEntryFactory {
 	createPartialContent(data: any): SiPartialContent {
 		const extr = new Extractor(data);
 		return {
-			entries: this.createEntries(extr.reqArray('siValueBoundary')),
+			valueBoundaries: this.createEntries(extr.reqArray('siValueBoundaries')),
 			count: extr.reqNumber('count'),
 			offset: extr.reqNumber('offset')
 		};
@@ -58,7 +58,7 @@ export class SiEntryFactory {
 		const entryQualifier = SiMetaFactory.createEntryQualifier(extr.reqObject('qualifier'));
 
 		const entry = new SiEntry(entryQualifier);
-		entry.fieldMap = new SiFieldFactory(controlBoundary, mask, this.injector)
+		entry.fieldMap = new SiFieldFactory(controlBoundary, mask, entry, this.injector)
 				.createFieldMap(extr.reqMap('fieldMap'));
 		entry.controls = new SiControlFactory(controlBoundary, this.injector)
 				.createControls(maskId, entryQualifier.identifier.id, extr.reqMap('controls'));

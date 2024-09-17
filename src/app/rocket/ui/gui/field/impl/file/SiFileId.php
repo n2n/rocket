@@ -19,13 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\file\conf;
+namespace rocket\ui\gui\field\impl\file;
 
 use n2n\io\managed\File;
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
-class FileId implements \JsonSerializable {
+class SiFileId implements \JsonSerializable {
 	private $fileManagerName;
 	private $qualifiedName;
 	
@@ -68,26 +69,27 @@ class FileId implements \JsonSerializable {
 			'qualifiedName' => $this->qualifiedName
 		];
 	}
-		
+
 	/**
 	 * @param array $data
-	 * @return FileId
+	 * @return SiFileId
+	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data) {
+	static function parse(array $data): SiFileId {
 		$ds = new DataSet($data);
 		try {
-			return new FileId($ds->optString('fileManagerName'), $ds->optString('qualifiedName'));
+			return new SiFileId($ds->optString('fileManagerName'), $ds->optString('qualifiedName'));
 		} catch (AttributesException $e) {
-			throw new \InvalidArgumentException(null, 0, $e);
+			throw new CorruptedSiDataException($e->getMessage(), 0, $e);
 		}
 	}
 	
 	/**
 	 * @param File $file
-	 * @return \rocket\impl\ei\component\prop\file\conf\FileId
+	 * @return \rocket\impl\ei\component\prop\file\conf\SiFileId
 	 */
 	static function create(File $file) {
 		$fileSource = $file->getFileSource();
-		return new FileId($fileSource->getFileManagerName(), $fileSource->getQualifiedName());
+		return new SiFileId($fileSource->getFileManagerName(), $fileSource->getQualifiedName());
 	}
 }

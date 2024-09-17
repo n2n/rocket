@@ -202,9 +202,9 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'values' => $this->values,
 			'frame' => $this->frame,
@@ -214,7 +214,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'allowedSiTypeIds' => $this->allowedSiTypeIds,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	 

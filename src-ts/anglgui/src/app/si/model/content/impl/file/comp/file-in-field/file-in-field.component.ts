@@ -20,8 +20,7 @@ import { SiEssentialsFactory } from 'src/app/si/build/si-field-essentials-factor
 @Component({
 	selector: 'rocket-file-in-field',
 	templateUrl: './file-in-field.component.html',
-	styleUrls: ['./file-in-field.component.css'],
-	host: {class: 'rocket-file-in-field'}
+	host: { class: 'rocket-file-in-field' }
 })
 export class FileInFieldComponent implements OnInit {
 	private uploader!: CommonImageEditorModel;
@@ -225,8 +224,8 @@ class CommonImageEditorModel implements ImageEditorModel {
 		this.uploadingFile = file;
 		this.uploadInitiated = true;
 
-		const data = await this.siService.fieldCall(this.model.getApiFieldUrl(), this.model.getApiCallId(),
-				{ fileName }, new Map().set('upload', file)).toPromise();
+		const data = await this.siService.fieldCall(this.model.getApiUrl(), this.model.getMaskId(),
+				this.model.getEntryId(), this.model.getFieldName(), { fileName }, new Map().set('upload', file)).toPromise();
 
 		this.uploadingFile = null;
 		if (data.error) {

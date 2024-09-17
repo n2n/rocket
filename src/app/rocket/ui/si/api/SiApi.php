@@ -43,6 +43,7 @@ use rocket\ui\si\api\response\SiValGetInstructionResult;
 use rocket\ui\si\api\request\SiSortCall;
 use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\si\api\request\SiControlCall;
+use rocket\ui\si\api\request\SiFieldCall;
 
 class SiApi {
 

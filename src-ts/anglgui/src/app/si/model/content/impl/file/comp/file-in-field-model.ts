@@ -3,9 +3,13 @@ import { SiFile } from '../model/file';
 
 export interface FileInFieldModel extends FileFieldModel {
 
-	getApiFieldUrl(): string;
+	getApiUrl(): string;
 
-	getApiCallId(): object;
+	getMaskId(): string;
+
+	getEntryId(): string|null;
+
+	getFieldName(): string;
 
 	getAcceptedExtensions(): string[];
 

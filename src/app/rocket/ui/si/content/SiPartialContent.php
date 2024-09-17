@@ -22,8 +22,9 @@
 namespace rocket\ui\si\content;
 
 use n2n\util\type\ArgUtils;
+use n2n\core\container\N2nContext;
 
-class SiPartialContent implements \JsonSerializable {
+class SiPartialContent {
 	private $count;
 	private $offset = 0;
 	private $valueBoundaries;
@@ -85,14 +86,12 @@ class SiPartialContent implements \JsonSerializable {
 	function getValueBoundaries(): array {
 		return $this->valueBoundaries;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	function jsonSerialize(): mixed {
+
+	function toDataStruct(N2nContext $n2nContext): mixed {
 		return [
-			'siValueBoundary' => $this->valueBoundaries,
+			'siValueBoundaries' => $this->valueBoundaries === null
+					? null
+					: array_map(fn (SiValueBoundary $s) => $s->toJsonStruct($n2nContext), $this->valueBoundaries),
 			'count' => $this->count,
 			'offset' => $this->offset
 		];

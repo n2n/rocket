@@ -164,16 +164,16 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'value' => $this->value,
 			'minlength' => $this->minlength,
 			'maxlength' => $this->maxlength,
 			'mandatory' => $this->mandatory,
 			'styles' => $this->styles,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	 

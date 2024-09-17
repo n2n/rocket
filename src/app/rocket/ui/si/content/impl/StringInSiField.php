@@ -142,9 +142,9 @@ class StringInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'value' => $this->value,
 			'minlength' => $this->minlength,
@@ -153,7 +153,7 @@ class StringInSiField extends InSiFieldAdapter {
 			'mandatory' => $this->mandatory,
 			'prefixAddons' => $this->prefixAddons,
 			'suffixAddons' => $this->suffixAddons,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	 

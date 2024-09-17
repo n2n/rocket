@@ -144,16 +144,16 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'frame' => $this->frame,
 			'values' => $this->values,
 			'min' => $this->min,
 			'max' => $this->max,
 			'pickables' => $this->pickables,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	 

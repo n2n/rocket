@@ -22,14 +22,12 @@
 namespace rocket\ui\si\content\impl;
 
 use n2n\web\http\UploadDefinition;
+use n2n\core\container\N2nContext;
+use n2n\io\managed\File;
 
-interface SiFileHandler {
-	
-	/**
-	 * @param UploadDefinition $uploadDefinition
-	 * @return \rocket\si\content\impl\SiUploadResult
-	 */
-	function upload(UploadDefinition $uploadDefinition): \rocket\si\content\impl\SiUploadResult;
+interface SiFileHandler extends SiFileFactory {
+
+	function upload(UploadDefinition $uploadDefinition, N2nContext $n2nContext): SiUploadResult;
 	
 	/**
 	 * @param array $idData

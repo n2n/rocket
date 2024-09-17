@@ -142,14 +142,14 @@ class CompactExplorerSiGui implements SiGui {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiGui::getData()
+	 * @see \rocket\ui\si\content\SiGui::toJsonStruct()
 	 */
-	public function getData(): array {
+	public function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'frame' => $this->frame,
 			'pageSize' => $this->pageSize,
 			'declaration' => $this->declaration,
-			'partialContent' => $this->partialContent,
+			'partialContent' => $this->partialContent->toDataStruct($n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

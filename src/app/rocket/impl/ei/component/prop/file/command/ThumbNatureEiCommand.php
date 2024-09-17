@@ -25,7 +25,7 @@ use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use rocket\impl\ei\component\prop\file\command\controller\ThumbController;
 use rocket\op\ei\util\Eiu;
 use n2n\web\http\controller\Controller;
-use rocket\impl\ei\component\prop\file\conf\ThumbResolver;
+use rocket\ui\gui\field\impl\file\ThumbResolver;
 use rocket\op\ei\EiPropPath;
 
 class ThumbNatureEiCommand extends EiCmdNatureAdapter {

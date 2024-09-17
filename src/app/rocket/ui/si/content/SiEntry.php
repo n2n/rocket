@@ -30,7 +30,7 @@ use n2n\core\container\N2nContext;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\api\request\SiEntryInput;
 
-class SiEntry implements \JsonSerializable {
+class SiEntry {
 
 	/**
 	 * @var string|null
@@ -180,8 +180,8 @@ class SiEntry implements \JsonSerializable {
 		return $this->model?->handleInput($n2nContext) ?? true;
 	}
 	
-	function jsonSerialize(): mixed {
-		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields);
+	function toJsonStruct(N2nContext $n2nContext): array {
+		$fieldsArr = SiPayloadFactory::createDataFromFields($this->fields, $n2nContext);
 		$externalMessages = $this->model?->getMessages() ?? [];
 		ArgUtils::valArrayReturn($externalMessages, $this->model, 'getMessages', 'string');
 

@@ -27,6 +27,7 @@ use n2n\util\type\ArgUtils;
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\meta\SiBreadcrumb;
+use n2n\core\container\N2nContext;
 
 class SiPayloadFactory extends JsonPayload {
 	
@@ -46,19 +47,20 @@ class SiPayloadFactory extends JsonPayload {
 			'controls' => self::createDataFromControls($controls)
 		]);
 	}
-	
+
 	/**
 	 * @param SiGui|null $content
-	 * @return array
+	 * @param N2nContext $n2nContext
+	 * @return array|null
 	 */
-	static function buildDataFromComp(?SiGui $content) {
+	static function buildDataFromComp(?SiGui $content, N2nContext $n2nContext): ?array {
 		if ($content === null) {
 			return null;
 		}
 		
 		return [
 			'type' => $content->getTypeName(),
-			'data' => $content->getData()
+			'data' => $content->toJsonStruct($n2nContext)
 		];
 	}
 	
@@ -75,19 +77,20 @@ class SiPayloadFactory extends JsonPayload {
 		}
 		return $json;
 	}
-	
+
 	/**
 	 * @param SiField[] $fields
+	 * @param N2nContext $n2nContext
 	 * @return array
 	 */
-	static function createDataFromFields(array $fields) {
+	static function createDataFromFields(array $fields, N2nContext $n2nContext): array {
 		ArgUtils::valArray($fields, SiField::class);
 		
 		$fieldsArr = array();
 		foreach ($fields as $key => $field) {
 			$fieldsArr[$key] = [
 				'type' => $field->getType(),
-				'data' => $field->getData()
+				'data' => $field->toJsonStruct($n2nContext)
 			];
 		}
 		return $fieldsArr;

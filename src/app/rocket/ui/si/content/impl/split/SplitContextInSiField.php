@@ -201,9 +201,9 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'style' => $this->style,
 			'managerStyle' => $this->managerStyle,
@@ -213,7 +213,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 			'declaration' => $this->declaration,
 			'frame' => $this->frame,
 			'splitContents' => $this->splitContents,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 

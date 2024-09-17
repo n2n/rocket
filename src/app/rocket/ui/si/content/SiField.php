@@ -38,7 +38,7 @@ interface SiField {
 	/**
 	 * @return array
 	 */
-	function getData(): array;
+	function toJsonStruct(N2nContext $n2nContext): array;
 	
 	/**
 	 * @return bool

@@ -113,15 +113,15 @@ class PasswordInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \rocket\ui\si\content\SiField::getData()
+	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'minlength' => $this->minLength,
 			'maxlength' => $this->maxLength,
 			'mandatory' => $this->mandatory,
 			'passwordSet' => $this->passwordSet,
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 	 

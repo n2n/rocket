@@ -267,9 +267,9 @@ export class SiPageCollection implements SiControlBoundry {
 			return;
 		}
 
-		siPage.entries = result.partialContent!.entries;
+		siPage.entries = result.partialContent!.valueBoundaries;
 
-		if (result.partialContent!.entries.length === 0) {
+		if (result.partialContent!.valueBoundaries.length === 0) {
 			siPage.dipose();
 		}
 

@@ -308,7 +308,7 @@ class OpuCtrl {
 			throw new BadRequestException('Could not handle SiCall: ' . $e->getMessage(), previous: $e);
 		}
 
-		$this->cu->sendJson($siZone);
+		$this->cu->sendJson($siZone->toJsonStruct($this->eiu->getN2nContext()));
 	}
 
 	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null): void {

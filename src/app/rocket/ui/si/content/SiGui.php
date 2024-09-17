@@ -37,7 +37,7 @@ interface SiGui {
 	/**
 	 * @return array
 	 */
-	function getData(): array;
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array;
 
 	/**
 	 * @param SiInput $siInput

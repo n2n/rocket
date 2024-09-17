@@ -20,6 +20,7 @@ import { SiUiFactory } from '../build/si-ui-factory';
 import { SiApiCall } from '../model/api/si-api-call';
 import { SiApiCallResponse } from '../model/api/si-api-call-response';
 import { SiControlCall } from '../model/api/si-control-call';
+import { SiFieldCall } from '../model/api/si-field-call';
 
 @Injectable({
 	providedIn: 'root'
@@ -95,34 +96,33 @@ export class SiService {
 		// 		}));
 	}
 
-	fieldCall(apiUrl: string|SiFrame, apiCallId: object, data: object, uploadMap: Map<string, Blob>): Observable<any> {
-		if (apiUrl instanceof SiFrame) {
-			apiUrl = apiUrl.apiUrl;
-		}
+	fieldCall(apiUrl: string, maskId: string, entryId: string|null, fieldName: string, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+		// const formData = new FormData();
+		// formData.append('apiCallId', JSON.stringify(apiCallId));
+		// formData.append('data', JSON.stringify(data));
+		//
+		// for (const [name, param] of uploadMap) {
+		// 	if (formData.has(name)) {
+		// 		throw new IllegalSiStateError('Error illegal paramName ' + name);
+		// 	}
+		//
+		// 	formData.append(name, param);
+		// }
 
-		const formData = new FormData();
-		formData.append('apiCallId', JSON.stringify(apiCallId));
-		formData.append('data', JSON.stringify(data));
+		// const httpParams = new HttpParams();
+		//
+		// const options = {
+		// 	httpParams,
+		// 	reportProgress: true
+		// };
+		//
+		// return this.httpClient.post<any>(apiUrl, formData, options)
+		//  		.pipe(map(responseData => {
+		// 			return new Extractor(responseData).nullaObject('data');
+		// 		}));
 
-		for (const [name, param] of uploadMap) {
-			if (formData.has(name)) {
-				throw new IllegalSiStateError('Error illegal paramName ' + name);
-			}
+		return this.apiCall(apiUrl, { fieldCall: new SiFieldCall(maskId, entryId, fieldName, data) }, uploadMap);
 
-			formData.append(name, param);
-		}
-
-		const httpParams = new HttpParams();
-
-		const options = {
-			httpParams,
-			reportProgress: true
-		};
-
-		return this.httpClient.post<any>(apiUrl, formData, options)
-		 		.pipe(map(responseData => {
-					return new Extractor(responseData).nullaObject('data');
-				}));
 	}
 
 	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
@@ -146,9 +146,19 @@ export class SiService {
 				.pipe(map((r) => r.callResponse!));
 	}
 
-	apiCall(apiUrl: string, apiCall: SiApiCall): Observable<SiApiCallResponse> {
+	apiCall(apiUrl: string, apiCall: SiApiCall, uploadMap: Map<string, Blob>|null = null): Observable<SiApiCallResponse> {
 		const formData = new FormData();
 		formData.append('call', JSON.stringify(apiCall));
+
+		if (uploadMap !== null) {
+			for (const [name, param] of uploadMap) {
+				if (formData.has(name)) {
+					throw new IllegalSiStateError('Error illegal paramName ' + name);
+				}
+
+				formData.append(name, param);
+			}
+		}
 
 		const httpParams = new HttpParams();
 

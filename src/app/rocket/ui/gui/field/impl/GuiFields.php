@@ -26,6 +26,11 @@ use rocket\ui\gui\field\impl\string\StringInGuiField;
 use rocket\ui\si\content\BackableSiField;
 use rocket\ui\gui\field\impl\general\OutGuiField;
 use rocket\ui\gui\field\impl\number\NumberInGuiField;
+use rocket\ui\gui\field\impl\file\FileInGuiField;
+use rocket\ui\si\content\impl\FileOutSiField;
+use n2n\io\managed\File;
+use rocket\ui\gui\field\impl\file\GuiSiFileHandler;
+use rocket\ui\gui\field\impl\file\GuiSiFileFactory;
 
 class GuiFields {
 
@@ -70,5 +75,18 @@ class GuiFields {
 				->setEmptyLabel($emptyLabel)
 				->setMandatory($mandatory)
 				->setAssociatedPropIdsMap($associatedPropIdsMap));
+	}
+
+	static function fileOut(?File $file): OutGuiField {
+		return new OutGuiField(SiFields::fileOut($file, new GuiSiFileFactory()));
+	}
+
+	static function fileIn(bool $mandatory = false, ?int $maxSize = null, ?array $allowedExtensions = null,
+			?array $allowedMimeTypes = null): FileInGuiField {
+		return new FileInGuiField(SiFields::fileIn(null)
+				->setMandatory($mandatory)
+				->setMaxSize($maxSize)
+				->setAcceptedExtensions($allowedExtensions)
+				->setAcceptedMimeTypes($allowedMimeTypes));
 	}
 }

@@ -43,6 +43,7 @@ import { SiEntryFactory } from './si-entry-factory';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiGuiFactory } from './si-gui-factory';
 import { SiControlFactory } from './si-control-factory';
+import { SiEntry } from '../model/content/si-entry';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
@@ -70,7 +71,7 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private controlBoundry: SiControlBoundry, private mask: SiMask,
+	constructor(private controlBoundry: SiControlBoundry, private mask: SiMask, private entry: SiEntry,
 			private injector: Injector) {
 	}
 
@@ -139,8 +140,14 @@ export class SiFieldFactory {
 			return fileOutSiField;
 
 		case SiFieldType.FILE_IN:
-			const fileInSiField = new FileInSiField(dataExtr.reqString('apiFieldUrl'),
-					dataExtr.reqObject('apiCallId'), SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
+			const apiUrl = this.controlBoundry.getBoundApiUrl();
+			if (!apiUrl) {
+				throw new Error('API Url not present for FileInSiField.');
+			}
+
+			const fileInSiField = new FileInSiField(apiUrl, this.mask.qualifier.maskIdentifier.id,
+					this.entry.entryQualifier.identifier.id, prop.name,
+					SiEssentialsFactory.buildSiFile(dataExtr.nullaObject('value')));
 			fileInSiField.mandatory = dataExtr.reqBoolean('mandatory');
 			fileInSiField.maxSize = dataExtr.reqNumber('maxSize');
 			fileInSiField.acceptedMimeTypes = dataExtr.reqStringArray('acceptedMimeTypes');

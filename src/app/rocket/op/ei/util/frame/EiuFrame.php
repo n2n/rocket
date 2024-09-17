@@ -113,27 +113,27 @@ class EiuFrame {
 		return $this->eiFrame->getN2nContext()->getN2nLocale();
 	}
 
-	function getApiControlUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
-		return $this->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
-	}
+//	function getApiControlUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+//		return $this->getApiUrl($eiCmdPath, ApiController::API_CONTROL_SECTION);
+//	}
+//
+//	function getApiFieldUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+//		return $this->getApiUrl($eiCmdPath, ApiController::API_FIELD_SECTION);
+//	}
+//
+//	function getApiGetUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+//		return $this->getApiUrl($eiCmdPath, ApiController::API_GET_SECTION);
+//	}
+//
+//	function getApiValUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+//		return $this->getApiUrl($eiCmdPath, ApiController::API_VAL_SECTION);
+//	}
+//
+//	function getApiSortUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+//		return $this->getApiUrl($eiCmdPath, ApiController::API_SORT_SECTION);
+//	}
 
-	function getApiFieldUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
-		return $this->getApiUrl($eiCmdPath, ApiController::API_FIELD_SECTION);
-	}
-
-	function getApiGetUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
-		return $this->getApiUrl($eiCmdPath, ApiController::API_GET_SECTION);
-	}
-
-	function getApiValUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
-		return $this->getApiUrl($eiCmdPath, ApiController::API_VAL_SECTION);
-	}
-
-	function getApiSortUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
-		return $this->getApiUrl($eiCmdPath, ApiController::API_SORT_SECTION);
-	}
-
-	private function getApiUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null, string $apiSection = null): Url {
+	function getApiUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
 					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
@@ -141,7 +141,7 @@ class EiuFrame {
 			$eiCmdPath = EiCmdPath::create($eiCmdPath);
 		}
 		
-		return $this->eiFrame->getApiUrl($eiCmdPath, $apiSection);
+		return $this->eiFrame->getApiUrl($eiCmdPath);
 	}
 
 	public function getCmdUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {

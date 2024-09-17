@@ -21,10 +21,10 @@ class IframeOutSiField extends OutSiFieldAdapter {
 	 * @return array
 	 * @throws \n2n\util\magic\MagicObjectUnavailableException
 	 */
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			...$this->iframeData->toArray(),
-			...parent::getData()
+			...parent::toJsonStruct()
 		];
 	}
 }

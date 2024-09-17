@@ -1,0 +1,78 @@
+<?php
+
+namespace rocket\ui\gui\field\impl\file;
+
+
+use rocket\ui\si\content\impl\SiFileHandler;
+use rocket\impl\ei\component\prop\file\conf\FileVerificator;
+use rocket\ui\si\content\impl\SiFile;
+use n2n\web\http\UploadDefinition;
+use n2n\io\managed\impl\TmpFileManager;
+use n2n\io\managed\impl\FileFactory;
+use n2n\io\UploadedFileExceedsMaxSizeException;
+use n2n\validation\lang\ValidationMessages;
+use n2n\io\IncompleteFileUploadException;
+use rocket\ui\si\content\impl\SiUploadResult;
+use n2n\core\container\N2nContext;
+
+class GuiSiFileHandler implements SiFileHandler {
+	private $eiu;
+	private $thumbResolver;
+	private $fileVerificator;
+
+	function __construct(GuiSiFileFactory $guiSiFileFactory, FileVerificator $fileVerificator) {
+		$this->thumbResolver = $thumbResolver;
+		$this->fileVerificator = $fileVerificator;
+	}
+
+	function upload(UploadDefinition $uploadDefinition, N2nContext $n2nContext): SiUploadResult {
+		/**
+		 * @var TmpFileManager $tmpFileManager
+		 */
+		$tmpFileManager = $n2nContext->lookup(TmpFileManager::class);
+
+		$file = null;
+		try {
+			$file = FileFactory::createFromUploadDefinition($uploadDefinition);
+		} catch (UploadedFileExceedsMaxSizeException $e) {
+			return SiUploadResult::createError(ValidationMessages
+					::uploadMaxSize($e->getMaxSize(), $uploadDefinition->getName(), $uploadDefinition->getSize())
+					->t($n2nContext->getN2nLocale()));
+		} catch (IncompleteFileUploadException $e) {
+			return SiUploadResult::createError(ValidationMessages
+					::uploadIncomplete($uploadDefinition->getName())
+					->t($n2nContext->getN2nLocale()));
+		}
+
+		if (null !== ($message = $this->fileVerificator->validate($file))) {
+			return SiUploadResult::createError($message->t($n2nContext->getN2nLocale()));
+		}
+
+		$tmpFileManager->add($file, $n2nContext->getHttpContext()->getSession());
+
+		return SiUploadResult::createSuccess($this->thumbResolver->createSiFile($file, $this->eiu,
+				$this->fileVerificator->isImageRecognized()));
+	}
+
+	function getSiFileByRawId(array $rawId): ?SiFile {
+		$fileId = SiFileId::parse($rawId);
+
+		$file = $this->thumbResolver->determineFile($fileId, $this->eiu);
+		if ($file !== null) {
+			return $this->thumbResolver->createSiFile($file, $this->eiu, $this->fileVerificator->isImageRecognized());
+		}
+
+		return null;
+	}
+
+// 	function createTmpSiFile(File $file, string $qualifiedName) {
+// 		$siFile = new SiFile($file->getOriginalName(), $this->thumbResolver->createTmpUrl($this->eiu, $qualifiedName));
+
+// 		if (null !== ($this->thumbResolver->buildThumbFile($file))) {
+// 			$siFile->setThumbUrl($this->thumbResolver->createTmpThumbUrl($this->eiu, $qualifiedName,
+// 					SiFile::getThumbStrategy()->getImageDimension()));
+// 		}
+
+// 		return $siFile;
+// 	}
+}

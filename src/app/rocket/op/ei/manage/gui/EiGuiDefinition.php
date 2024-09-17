@@ -32,6 +32,7 @@ use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\ui\gui\GuiMask;
 use rocket\op\ei\manage\gui\factory\EiSiMaskIdentifierFactory;
+use rocket\ui\gui\GuiPropForkWrapper;
 
 class EiGuiDefinition {
 
@@ -102,6 +103,25 @@ class EiGuiDefinition {
 		return $guiMask;
 	}
 
+	function getGuiPropWrapperByPath(DefPropPath $defPropPath): EiGuiPropWrapper {
+		$eiGuiPropMap = $this->eiGuiPropMap;
+		$guiPropWrapper = null;
+
+		foreach ($defPropPath->toArray() as $eiPropPath) {
+			if ($eiGuiPropMap === null) {
+				break;
+			}
+
+			$guiPropWrapper = $eiGuiPropMap->getGuiPropWrapper($eiPropPath);
+			$eiGuiPropMap = $guiPropWrapper->getChildEiGuiPropMap();
+		}
+
+		if ($guiPropWrapper !== null) {
+			return $guiPropWrapper;
+		}
+
+		throw new EiGuiException('No GuiProp with path \'' . $defPropPath . '\' registered');
+	}
 
 
 //	/**

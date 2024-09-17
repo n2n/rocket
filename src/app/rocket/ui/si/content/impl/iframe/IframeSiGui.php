@@ -14,7 +14,7 @@ class IframeSiGui implements SiGui {
 		return 'iframe';
 	}
 
-	function getData(): array {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return $this->iframeData->toArray();
 	}
 

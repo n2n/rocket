@@ -35,7 +35,7 @@ use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\api\response\SiApiCallResponse;
 use rocket\ui\si\api\response\SiZoneCallResponse;
 
-class SiZone implements JsonSerializable {
+class SiZone {
 
 	function __construct(private SiGui $gui, private ?string $title, private array $breadcrumbs, private array $controls = []) {
 		ArgUtils::valArray($this->breadcrumbs, SiBreadcrumb::class);
@@ -68,11 +68,11 @@ class SiZone implements JsonSerializable {
 		return $zoneCallResponse;
 	}
 
-	function jsonSerialize(): mixed {
+	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'title' => $this->title,
 			'breadcrumbs' => $this->breadcrumbs,
-			'gui' => SiPayloadFactory::buildDataFromComp($this->gui),
+			'gui' => SiPayloadFactory::buildDataFromComp($this->gui, $n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
 	}

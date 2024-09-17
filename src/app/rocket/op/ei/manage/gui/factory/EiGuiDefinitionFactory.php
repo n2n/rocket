@@ -144,7 +144,8 @@ class EiGuiDefinitionFactory {
 			}
 
 			$defPropPath = $displayItem->getDefPropPath();
-			$displayDefinition = $assemblerCache->assignDefPropPath($defPropPath);
+			$guiPropWrapper = $eiGuiDefinition->getGuiPropWrapperByPath($defPropPath);
+			$displayDefinition = $guiPropWrapper->getDisplayDefinition();
 			if (null === $displayDefinition) {
 				continue;
 			}
@@ -249,7 +250,7 @@ class EiFieldAssemblerCache {
 			return $this->eiGuiPropSetups[$eiPropPathStr];
 		}
 
-		if (!$this->guiDefinition->containsEiPropPath($eiPropPath)) {
+		if (!$this->eiGuiDefinition->getEiGuiPropMap()->containsEiPropPath($eiPropPath)) {
 			$this->eiGuiPropSetups[$eiPropPathStr] = null;
 			return null;
 		}
