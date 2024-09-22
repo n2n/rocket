@@ -19,7 +19,9 @@ class EifGuiField {
 		$this->eiu = $eiu;
 		$this->siField = $siField;
 	}
-	
+
+
+
 	/**
 	 * @param \Closure $closure
 	 * @throws \InvalidArgumentException

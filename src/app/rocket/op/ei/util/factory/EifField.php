@@ -76,7 +76,7 @@ class EifField {
 	function setReadMapper(?\Closure $closure): static {
 		if ($closure === null) {
 			$this->readMapperMmi = null;
-			return this;
+			return $this;
 		}
 		
 		$this->readMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());
@@ -205,15 +205,9 @@ class FabricatedEiField extends EiFieldNatureAdapter {
 		$this->validators = $validators;
 		$this->copierClosure = $copierClosure;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::checkValue()
-	 */
-	protected function checkValue($value) {
-		if ($this->typeConstraint !== null) {
-			$this->typeConstraint->validate($value);
-		}
+
+	protected function checkValue($value): void {
+		$this->typeConstraint?->validate($value);
 	}
 	
 	/**
@@ -254,7 +248,7 @@ class FabricatedEiField extends EiFieldNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::isValueValid()
 	 */
-	protected function isValueValid($value) {
+	protected function isValueValid(mixed $value): bool {
 		if (empty($this->validators)) {
 			return true;
 		}

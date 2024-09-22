@@ -21,38 +21,38 @@
  */
 namespace rocket\op\ei\manage\draft\stmt;
 
-use n2n\persistence\meta\data\SelectStatementBuilder;
-use n2n\persistence\meta\data\QueryItem;
+use n2n\spec\dbo\meta\data\SelectStatementBuilder;
+use n2n\spec\dbo\meta\data\QueryItem;
 
 interface SelectDraftStmtBuilder extends DraftStmtBuilder {
 	
 	/**
-	 * @return \n2n\persistence\meta\data\SelectStatementBuilder 
+	 * @return \n2n\spec\dbo\meta\data\SelectStatementBuilder 
 	 */
 	public function getSelectStatementBuilder(): SelectStatementBuilder;
 	
 	/**
-	 * @return \n2n\persistence\meta\data\QueryItem 
+	 * @return \n2n\spec\dbo\meta\data\QueryItem 
 	 */
 	public function getDraftIdQueryItem(): QueryItem;
 	
 	/**
-	 * @return \n2n\persistence\meta\data\QueryItem
+	 * @return \n2n\spec\dbo\meta\data\QueryItem
 	 */
 	public function getLastModQueryItem(): QueryItem;
 	
 	/**
-	 * @return \n2n\persistence\meta\data\QueryItem
+	 * @return \n2n\spec\dbo\meta\data\QueryItem
 	 */
 	public function getEntityObjIdQueryItem(): QueryItem;
 	
 	/**
-	 * @return \n2n\persistence\meta\data\QueryItem
+	 * @return \n2n\spec\dbo\meta\data\QueryItem
 	 */
 	public function getTypeQueryItem(): QueryItem;
 	
 	/**
-	 * @return \n2n\persistence\meta\data\QueryItem
+	 * @return \n2n\spec\dbo\meta\data\QueryItem
 	 */
 	public function getUserIdQueryItem(): QueryItem;
 }

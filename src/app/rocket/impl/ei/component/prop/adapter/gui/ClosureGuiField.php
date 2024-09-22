@@ -45,22 +45,22 @@ class ClosureGuiField implements GuiField {
 	/**
 	 * @param Eiu $eiu
 	 * @param SiField $siField
-	 * @param \Closure|null $writeClosure
+	 * @param \Closure|null $saveClosure
 	 */
-	public function __construct(Eiu $eiu, SiField $siField, \Closure $writeClosure = null) {
+	public function __construct(Eiu $eiu, SiField $siField, \Closure $saveClosure = null) {
 		$this->eiu = $eiu;
 		$this->siField = $siField;
 		
-		if ($siField->isReadOnly() && $writeClosure !== null) {
+		if ($siField->isReadOnly() && $saveClosure !== null) {
 			throw new \InvalidArgumentException('SiField is not writable. No write closure allowed.');
 		}
 		
-		if ($writeClosure !== null) {
+		if ($saveClosure !== null) {
 			$this->writeMmi = new MagicMethodInvoker($eiu->getN2nContext()); 
 			$this->writeMmi->setClassParamObject(Eiu::class, $eiu);
 			$this->writeMmi->setClassParamObject(SiField::class, $siField);
 			$this->writeMmi->setClassParamObject(get_class($siField), $siField);
-			$this->writeMmi->setMethod(new \ReflectionFunction($writeClosure));
+			$this->writeMmi->setMethod(new \ReflectionFunction($saveClosure));
 		}
 	}
 	

@@ -249,6 +249,10 @@ class CkeHtmlBuilder {
 		$linkN2nLocale = (null !== $linkN2nLocale) ? $linkN2nLocale : $this->view->getN2nLocale();
 		$linkConfigData = array();
 		foreach ($ckeLinkProviders as $providerName => $ckeLinkProvider) {
+			if (is_numeric($providerName)) {
+				$providerName = get_class($ckeLinkProvider);
+			}
+
 			CastUtils::assertTrue($ckeLinkProvider instanceof CkeLinkProvider);
 			$title = $ckeLinkProvider->getTitle();
 			$linkConfigData[$title] = array();

@@ -209,7 +209,7 @@ class EiGuiEntry {
 			try {
 				$siField->handleInput($siEntryInput->getFieldInput($defPropPathStr)->getData());
 			} catch (AttributesException $e) {
-				throw new \InvalidArgumentException(null, 0, $e);
+				throw new \InvalidArgumentException($e->getMessage(), previous: $e);
 			}
 		}
 	}

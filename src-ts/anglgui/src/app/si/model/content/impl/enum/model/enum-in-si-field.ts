@@ -99,9 +99,18 @@ export class EnumInSiField extends InSiFieldAdapter implements SelectInFieldMode
 	}
 
 	private updateAssociates(): void {
+		const disabledFields: SiField[] = [];
+		const enabledFields: SiField[] = [];
+
 		for (const [aKey, aFields] of this.associatedFieldsMap) {
-			const disabled = aKey !== this.value;
-			aFields.forEach(field => field.setDisabled(disabled));
+			if (aKey === this.value) {
+				enabledFields.push(...aFields);
+			} else {
+				disabledFields.push(...aFields);
+			}
 		}
+
+		disabledFields.forEach(field => field.setDisabled(true));
+		enabledFields.forEach(field => field.setDisabled(false));
 	}
 }

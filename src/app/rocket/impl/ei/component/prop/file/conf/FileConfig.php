@@ -25,7 +25,7 @@ use rocket\impl\ei\component\prop\file\FileEiPropNature;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use rocket\impl\ei\component\prop\file\command\ThumbNatureEiCommand;
-use n2n\persistence\meta\structure\Column;
+use n2n\spec\dbo\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\io\managed\img\ImageDimension;
 use n2n\util\type\attrs\LenientAttributeReader;

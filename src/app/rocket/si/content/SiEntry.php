@@ -165,7 +165,7 @@ class SiEntry implements \JsonSerializable {
 			try {
 				$field->handleInput($entryInput->getFieldInput($propId)->getData());
 			} catch (\InvalidArgumentException|AttributesException $e) {
-				throw new CorruptedSiInputDataException(null, 0, $e);
+				throw new CorruptedSiInputDataException($e->getMessage(), previous: $e);
 			}
 		}
 	}

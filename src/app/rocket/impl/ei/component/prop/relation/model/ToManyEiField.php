@@ -103,7 +103,7 @@ class ToManyEiField extends EiFieldNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::isValueValid()
 	 */
-	protected function isValueValid($value) {
+	protected function isValueValid(mixed $value): bool {
 		ArgUtils::assertTrue(is_array($value));
 		
 		$min = $this->relationModel->getMin();

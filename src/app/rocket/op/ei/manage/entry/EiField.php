@@ -24,24 +24,23 @@ namespace rocket\op\ei\manage\entry;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\security\InaccessibleEiFieldException;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
 
 class EiField implements EiFieldAbstraction {
 	private $eiFieldMap;
 	private $eiPropPath;
-	private $eiField;
 	private $ignored = false;
 	
 	private $orgValueLoaded = false;
 	private $orgValue;
 	
-	function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, EiFieldNature $eiFieldNature) {
+	function __construct(EiFieldMap $eiFieldMap, EiPropPath $eiPropPath, private readonly EiFieldNature $eiFieldNature) {
 		$this->eiFieldMap = $eiFieldMap;
 		$this->eiPropPath = $eiPropPath;
-		$this->eiField = $eiFieldNature;
 	}
 
 	function getEiFieldNature(): EiFieldNature {
-		return $this->eiField;
+		return $this->eiFieldNature;
 	}
 	
 	/**
@@ -86,18 +85,18 @@ class EiField implements EiFieldAbstraction {
 			return;
 		}
 		
-		$this->eiField->setValue($this->orgValue);
+		$this->eiFieldNature->setValue($this->orgValue);
 	}
 	
 	/**
 	 * @return boolean
 	 */
 	final function hasChanges() {
-		return $this->eiField->hasChanges();
+		return $this->eiFieldNature->hasChanges();
 	}
 	
 	final function read() {
-		$this->eiField->read();
+		$this->eiFieldNature->read();
 	}
 	
 	private function ensureOrgLoaded() {
@@ -105,23 +104,24 @@ class EiField implements EiFieldAbstraction {
 			return;
 		}
 		
-		$this->orgValue = $this->eiField->getValue();
+		$this->orgValue = $this->eiFieldNature->getValue();
 		$this->orgValueLoaded = true;
 	}
-	
+
 	/**
 	 * @param mixed $value
-	 * @param bool $ignoreSecurity
+	 * @param bool $regardSecurity
 	 * @throws InaccessibleEiFieldException
+	 * @throws ValueIncompatibleWithConstraintsException
 	 */
-	function setValue($value, bool $regardSecurity = true) {
+	function setValue($value, bool $regardSecurity = true): void {
 		if ($regardSecurity && !$this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
 				->isEiPropWritable($this->eiPropPath)) {
 			throw new InaccessibleEiFieldException('User has no write access of on field ' . $this->eiPropPath . '.');
 		}
 		
 		$this->ensureOrgLoaded();
-		$this->eiField->setValue($value);
+		$this->eiFieldNature->setValue($value);
 	}
 	
 	/**
@@ -130,7 +130,7 @@ class EiField implements EiFieldAbstraction {
 	function getValue() {
 		$this->ensureOrgLoaded();
 		
-		return $this->eiField->getValue();
+		return $this->eiFieldNature->getValue();
 	}
 	
 	/**
@@ -138,7 +138,7 @@ class EiField implements EiFieldAbstraction {
 	 * @return bool
 	 */
 	function isWritable(bool $regardSecurity) {
-		return $this->eiField->isWritable() 
+		return $this->eiFieldNature->isWritable()
 				&& (!$regardSecurity || $this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
 						->isEiPropWritable($this->eiPropPath));
 	}
@@ -146,11 +146,11 @@ class EiField implements EiFieldAbstraction {
 	 * @param EiFieldValidationResult $eiEiFieldValidationResult
 	 */
 	function validate(EiFieldValidationResult $eiEiFieldValidationResult) {
-		$this->eiField->validate($eiEiFieldValidationResult);
+		$this->eiFieldNature->validate($eiEiFieldValidationResult);
 	}
 	
 	function write() {
-		$this->eiField->write();
+		$this->eiFieldNature->write();
 	}
 	
 // 	/**

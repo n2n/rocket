@@ -123,7 +123,7 @@ class EiuProp {
 	}
 
 	function isNativeWritable(): bool {
-		return (bool) $this->getEiProp()->getNature()->getNativeAccessProxy()?->isReadable();
+		return (bool) $this->getEiProp()->getNature()->getNativeAccessProxy()?->isWritable();
 	}
 
 	/**
