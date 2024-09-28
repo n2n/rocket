@@ -34,7 +34,7 @@ class StringInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldMod
 	private array $messageStrs = [];
 
 	function __construct(private StringInSiField $siField) {
-		$this->siField->setModel($this);
+		parent::__construct($this->siField);
 	}
 
 	protected function createInputMappers(N2nContext $n2nContext): array {

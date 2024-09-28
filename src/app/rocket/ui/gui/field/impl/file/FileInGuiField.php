@@ -15,8 +15,8 @@ class FileInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel
 	private GuiSiFileFactory $guiSiFileFactory;
 
 	function __construct(private readonly FileInSiField $siField) {
-		$this->siField->setModel($this);
-		$this->siField->setFileHandler(new GuiSiFileHandler($this->guiSiFileFactory = new GuiSiFileFactory()));
+		parent::__construct($siField);
+		$this->siField->setFileHandler(new GuiSiFileHandler($this->guiSiFileFactory = new GuiSiFileFactory(), new GuiFileVerificator()));
 	}
 
 	function setValue(?File $file): static {

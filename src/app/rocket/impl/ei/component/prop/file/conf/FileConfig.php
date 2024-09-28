@@ -47,6 +47,7 @@ use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\op\ei\util\spec\EiuMask;
 use rocket\ui\gui\field\impl\file\ThumbResolver;
+use rocket\ui\gui\field\impl\file\FileVerificator;
 
 class FileConfig {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';

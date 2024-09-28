@@ -94,8 +94,8 @@ class SiFields {
 		return new DateTimeInSiField($value);
 	}
 
-	static function fileIn(?SiFile $file, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandle): FileInSiField {
-		return new FileInSiField($file, $apiFieldUrl, $apiCallId, $fileHandle);
+	static function fileIn(?SiFile $file, SiFileHandler $fileHandle): FileInSiField {
+		return new FileInSiField($file, $fileHandle);
 	}
 
 

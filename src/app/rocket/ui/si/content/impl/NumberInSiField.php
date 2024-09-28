@@ -75,7 +75,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	/**
 	 * @return float|null
 	 */
-	function getValue() {
+	function getValue(): mixed {
 		return $this->value;
 	}
 	

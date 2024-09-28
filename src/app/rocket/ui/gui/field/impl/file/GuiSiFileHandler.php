@@ -4,7 +4,6 @@ namespace rocket\ui\gui\field\impl\file;
 
 
 use rocket\ui\si\content\impl\SiFileHandler;
-use rocket\impl\ei\component\prop\file\conf\FileVerificator;
 use rocket\ui\si\content\impl\SiFile;
 use n2n\web\http\UploadDefinition;
 use n2n\io\managed\impl\TmpFileManager;
@@ -14,15 +13,12 @@ use n2n\validation\lang\ValidationMessages;
 use n2n\io\IncompleteFileUploadException;
 use rocket\ui\si\content\impl\SiUploadResult;
 use n2n\core\container\N2nContext;
+use n2n\io\managed\File;
 
 class GuiSiFileHandler implements SiFileHandler {
 	private $eiu;
-	private $thumbResolver;
-	private $fileVerificator;
 
-	function __construct(GuiSiFileFactory $guiSiFileFactory, FileVerificator $fileVerificator) {
-		$this->thumbResolver = $thumbResolver;
-		$this->fileVerificator = $fileVerificator;
+	function __construct(private GuiSiFileFactory $guiSiFileFactory, private GuiFileVerificator $fileVerificator) {
 	}
 
 	function upload(UploadDefinition $uploadDefinition, N2nContext $n2nContext): SiUploadResult {
@@ -50,8 +46,12 @@ class GuiSiFileHandler implements SiFileHandler {
 
 		$tmpFileManager->add($file, $n2nContext->getHttpContext()->getSession());
 
-		return SiUploadResult::createSuccess($this->thumbResolver->createSiFile($file, $this->eiu,
+		return SiUploadResult::createSuccess($this->guiSiFileFactory->createSiFile($file, $n2nContext,
 				$this->fileVerificator->isImageRecognized()));
+	}
+
+	function createSiFile(File $file, N2nContext $n2NContext): SiFile {
+		return $this->guiSiFileFactory->createSiFile($file, $n2NContext);
 	}
 
 	function getSiFileByRawId(array $rawId): ?SiFile {

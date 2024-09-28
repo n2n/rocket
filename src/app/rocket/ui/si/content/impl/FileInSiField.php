@@ -33,9 +33,9 @@ use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
 	/**
-	 * @var SiFile|null
+	 * @var File|null
 	 */
-	private $value;
+	private ?File $value;
 	/**
 	 * @var Url
 	 */
@@ -70,15 +70,14 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?SiFile $value, Url $apiFieldUrl, \JsonSerializable $apiCallId, SiFileHandler $fileHandler) {
-		$this->value = $value;	
-		$this->apiFieldUrl = $apiFieldUrl;
-		$this->apiCallId = $apiCallId;
+	function __construct(?SiFile $value, SiFileHandler $fileHandler) {
+		$this->value = $value;
 		$this->fileHandler = $fileHandler;
 	}
 
 	function setFileHandler(SiFileHandler $fileHandler): static {
 		$this->fileHandler = $fileHandler;
+		return $this;
 	}
 
 	function getFileHandler(): SiFileHandler {
@@ -89,16 +88,15 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @param SiFile|null $value
 	 * @return \rocket\si\content\impl\FileInSiField
 	 */
-	function setValue(?SiFile $value): static {
+	function setValue(?File $value): static {
 		$this->value = $value;
-		$this->siFile = $this->fileHandler->getSiFileByRawId()
 		return $this;
 	}
 	
 	/**
-	 * @return SiFile|null
+	 * @return File|null
 	 */
-	function getValue() {
+	function getValue(): ?File {
 		return $this->value;
 	}
 
@@ -180,8 +178,8 @@ class FileInSiField extends InSiFieldAdapter {
 		return [
 			'value' => ($this->value === null ? null : $this->fileHandler->createSiFile($this->value, $n2nContext)),
 			'mandatory' => $this->mandatory,
-			'apiFieldUrl' => (string) $this->apiFieldUrl,
-			'apiCallId' => $this->apiCallId,
+//			'apiFieldUrl' => (string) $this->apiFieldUrl,
+//			'apiCallId' => $this->apiCallId,
 			'maxSize' => $this->maxSize ?? IoUtils::determineFileUploadMaxSize(),
 			'acceptedExtensions' => $this->acceptedExtensions,
 			'acceptedMimeTypes' => $this->acceptedMimeTypes,

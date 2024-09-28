@@ -31,6 +31,7 @@ use rocket\ui\si\content\impl\FileOutSiField;
 use n2n\io\managed\File;
 use rocket\ui\gui\field\impl\file\GuiSiFileHandler;
 use rocket\ui\gui\field\impl\file\GuiSiFileFactory;
+use rocket\ui\gui\field\impl\file\GuiFileVerificator;
 
 class GuiFields {
 
@@ -83,10 +84,10 @@ class GuiFields {
 
 	static function fileIn(bool $mandatory = false, ?int $maxSize = null, ?array $allowedExtensions = null,
 			?array $allowedMimeTypes = null): FileInGuiField {
-		return new FileInGuiField(SiFields::fileIn(null)
+		return new FileInGuiField(SiFields::fileIn(null, new GuiSiFileHandler(new GuiSiFileFactory(), new GuiFileVerificator()))
 				->setMandatory($mandatory)
 				->setMaxSize($maxSize)
-				->setAcceptedExtensions($allowedExtensions)
-				->setAcceptedMimeTypes($allowedMimeTypes));
+				->setAcceptedExtensions($allowedExtensions ?? [])
+				->setAcceptedMimeTypes($allowedMimeTypes ?? []));
 	}
 }

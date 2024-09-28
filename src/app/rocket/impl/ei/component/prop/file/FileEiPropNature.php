@@ -32,7 +32,7 @@ use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
 use rocket\ui\gui\field\impl\file\SiFileId;
-use rocket\impl\ei\component\prop\file\conf\FileVerificator;
+use rocket\ui\gui\field\impl\file\FileVerificator;
 use rocket\ui\gui\field\impl\file\ThumbResolver;
 use rocket\ui\si\content\impl\FileInSiField;
 use rocket\ui\si\content\impl\SiFile;
@@ -57,14 +57,14 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	/**
 	 * @var FileVerificator
 	 */
-	private $fileVerificator;
+//	private $fileVerificator;
 	
 	
 	function __construct(PropertyAccessProxy $propertyAccessProxy) {
 		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::namedType(File::class, true)));
 		
 //		$this->thumbResolver = new ThumbResolver();
-		$this->fileVerificator = new FileVerificator();
+//		$this->fileVerificator = new FileVerificator();
 	}
 
 	function setup(Eiu $eiu): void {
@@ -74,31 +74,31 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
 	/**
 	 * @return ThumbResolver
-	 */
-	public function getThumbResolver() {
-		return $this->thumbResolver;
-	}
-	
-	/**
-	 * @param ThumbResolver $thumbResolver
-	 */
-	public function setThumbResolver(ThumbResolver $thumbResolver) {
-		$this->thumbResolver = $thumbResolver;
-	}
-	
-	/**
-	 * @return FileVerificator
-	 */
-	public function getFileVerificator() {
-		return $this->fileVerificator;
-	}
-	
-	/**
-	 * @param FileVerificator $fileVerificator
-	 */
-	public function setFileVerificator(FileVerificator $fileVerificator) {
-		$this->fileVerificator = $fileVerificator;
-	}
+//	 */
+//	public function getThumbResolver() {
+//		return $this->thumbResolver;
+//	}
+//
+//	/**
+//	 * @param ThumbResolver $thumbResolver
+//	 */
+//	public function setThumbResolver(ThumbResolver $thumbResolver) {
+//		$this->thumbResolver = $thumbResolver;
+//	}
+//
+//	/**
+//	 * @return FileVerificator
+//	 */
+//	public function getFileVerificator() {
+//		return $this->fileVerificator;
+//	}
+//
+//	/**
+//	 * @param FileVerificator $fileVerificator
+//	 */
+//	public function setFileVerificator(FileVerificator $fileVerificator) {
+//		$this->fileVerificator = $fileVerificator;
+//	}
 		
 
 // 	public function setMultiUploadEiCommand(MultiUploadEiCommand $multiUploadEiCommand) {
@@ -203,7 +203,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 // 	}
 	
 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		$siFile = $this->buildSiFileFromEiu($eiu);
+//		$siFile = $this->buildSiFileFromEiu($eiu);
 		
 //		$siField = SiFields::fileIn($siFile, $eiu->frame()->getApiUrl(), $eiu->guiField()->createCallId())
 //				->setMandatory($this->isMandatory())
@@ -305,7 +305,7 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	 * @param Eiu $eiu
 	 * @return SiFile|null
 	 */
-	private function buildSiFileFromEiu(Eiu $eiu) {
+	private function buildSiFileFromEiu(Eiu $eiu): ?SiFile {
 		$file = $eiu->field()->getValue();
 		if ($file === null) {
 			return null;

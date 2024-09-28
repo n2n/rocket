@@ -19,7 +19,7 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\impl\ei\component\prop\file\conf;
+namespace rocket\ui\gui\field\impl\file;
 
 use n2n\l10n\Message;
 use n2n\validation\lang\ValidationMessages;
@@ -27,7 +27,7 @@ use n2n\io\managed\File;
 use n2n\io\managed\img\ImageFile;
 use n2n\validation\validator\impl\ValidationUtils;
 
-class FileVerificator {
+class GuiFileVerificator {
 	
 	private $imageRecognized = true;
 	private $allowedExtensions = [];
