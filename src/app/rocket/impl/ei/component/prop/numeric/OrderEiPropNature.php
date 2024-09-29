@@ -64,9 +64,9 @@ class OrderEiPropNature extends IntegerEiPropNature {
 	}
 
 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		$siField = SiFields::numberIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+//		$siField = SiFields::numberIn($eiu->field()->getValue())
+//				->setMandatory($this->isMandatory())
+//				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 
 		return GuiFields::numberIn($this->isMandatory())->setValue($eiu->field()->getValue());
 //		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {

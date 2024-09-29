@@ -101,7 +101,7 @@ class EmbeddedEntriesOutSiField extends OutSiFieldAdapter {
 			'values' => $this->values,
 			'frame' => $this->frame,
 			'reduced' => $this->reduced,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 }

@@ -153,7 +153,7 @@ class StringInSiField extends InSiFieldAdapter {
 			'mandatory' => $this->mandatory,
 			'prefixAddons' => $this->prefixAddons,
 			'suffixAddons' => $this->suffixAddons,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	 

@@ -88,7 +88,7 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 		return [
 			'refPropId' => $this->refPropId,
 			'copyStyle' => $this->copyStyle,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	

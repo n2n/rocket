@@ -24,7 +24,7 @@ class IframeOutSiField extends OutSiFieldAdapter {
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			...$this->iframeData->toArray(),
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 }

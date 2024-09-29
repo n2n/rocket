@@ -98,7 +98,7 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'crumbGroups' => $this->groups,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 }

@@ -92,7 +92,7 @@ class LinkOutSiField extends OutSiFieldAdapter {
 			'navPoint' => $this->navPoint,
 			'label' => $this->label,
 			'lytebox' => $this->lytebox,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 }

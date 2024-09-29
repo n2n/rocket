@@ -214,7 +214,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'allowedSiTypeIds' => $this->allowedSiTypeIds,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	 

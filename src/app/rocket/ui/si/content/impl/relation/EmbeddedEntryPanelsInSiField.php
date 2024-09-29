@@ -89,7 +89,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 		return [
 			'panels' => $this->panels,
 			'frame' => $this->frame,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 

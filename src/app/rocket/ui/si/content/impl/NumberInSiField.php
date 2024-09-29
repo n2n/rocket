@@ -197,7 +197,7 @@ class NumberInSiField extends InSiFieldAdapter {
 			'fixed' => $this->fixed,
 			'prefixAddons' => $this->prefixAddons,
 			'suffixAddons' => $this->suffixAddons,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	

@@ -22,13 +22,12 @@
 namespace rocket\ui\si\meta;
 
 class SiProp implements \JsonSerializable {
-	private $id;
+//	private $id;
 	private $label;
 	private $helpText;
 	private $descendantPropIds = [];
 
 	/**
-	 * @param string|null $id
 	 * @param string|null $label
 	 */
 	function __construct(/*?string $id, */?string $label) {
@@ -106,14 +105,10 @@ class SiProp implements \JsonSerializable {
 	 */
 	function jsonSerialize(): mixed {
 		return [
-			'id' => $this->id,
+//			'id' => $this->id,
 			'label' => $this->label,
 			'helpText' => $this->helpText,
 			'descendantPropIds' => $this->descendantPropIds
 		];
 	}
-
-	
-	
-	
 }

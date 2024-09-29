@@ -133,7 +133,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 			'mandatory' => $this->mandatory,
 			'dateChoosable' => $this->dateChoosable,
 			'timeChoosable' => $this->timeChoosable,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	

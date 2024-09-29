@@ -109,7 +109,7 @@ class StringArrayInSiField extends InSiFieldAdapter {
 			'values' => $this->values,
 			'min' => $this->min,
 			'max' => $this->max,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	 

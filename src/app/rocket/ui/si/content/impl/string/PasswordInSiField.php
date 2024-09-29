@@ -121,7 +121,7 @@ class PasswordInSiField extends InSiFieldAdapter {
 			'maxlength' => $this->maxLength,
 			'mandatory' => $this->mandatory,
 			'passwordSet' => $this->passwordSet,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	 

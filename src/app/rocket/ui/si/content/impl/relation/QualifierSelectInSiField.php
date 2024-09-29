@@ -153,7 +153,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 			'min' => $this->min,
 			'max' => $this->max,
 			'pickables' => $this->pickables,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 	 

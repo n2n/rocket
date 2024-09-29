@@ -42,7 +42,7 @@ class IframeInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
-		$data = [...parent::toJsonStruct(), ...$this->iframeData->toArray()];
+		$data = [...parent::toJsonStruct($n2nContext), ...$this->iframeData->toArray()];
 		$data['params'] = $this->getParams();
 //		$data['messages'] = $this->getMessageStrs();
 		return $data;

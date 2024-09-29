@@ -78,7 +78,7 @@ class EmbeddedEntryPanelsOutSiField extends OutSiFieldAdapter {
 		return [
 			'panels' => $this->panels,
 			'frame' => $this->frame,
-			...parent::toJsonStruct()
+			...parent::toJsonStruct($n2nContext)
 		];
 	}
 }
