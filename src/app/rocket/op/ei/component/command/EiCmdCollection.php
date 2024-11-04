@@ -197,7 +197,7 @@ class EiCmdCollection extends EiComponentCollection {
 	}
 
 	function supplyEiGuiDefinition(EiGuiDefinition $guiDefinition) {
-		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
+//		ArgUtils::assertTrue($guiDefinition->getEiMask() === $this->eiMask);
 
 		$eiGuiCmdMap = $guiDefinition->getEiGuiCmdMap();
 		foreach ($this->eiMask->getEiCmdCollection() as $eiCmd) {

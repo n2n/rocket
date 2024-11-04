@@ -656,7 +656,7 @@ class EiuAnalyst {
 		$this->eiuGuiDefinition = null;
 		$this->eiGuiDefinition = $eiGuiDefinition;
 		
-		$this->assignEiMask($eiGuiDefinition->getEiMask());
+//		$this->assignEiMask($eiGuiDefinition->getEiMask());
 		
 // 		$eiGuiValueBoundaries = $eiGuiDefinition->getEiGuiValueBoundaries();
 // 		if (count($eiGuiValueBoundaries) == 1) {

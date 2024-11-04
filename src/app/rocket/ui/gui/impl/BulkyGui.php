@@ -20,23 +20,17 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace rocket\impl\ei\manage\gui;
+namespace rocket\ui\gui\impl;
 
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
-use rocket\ui\si\api\request\SiInput;
-use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\SiValueBoundary;
-use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
-use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiFrame;
-use rocket\ui\si\api\request\SiZoneCall;
 use SiCallResult;
 use rocket\ui\si\input\SiInputError;
-use rocket\ui\gui\control\GuiControlMap;
 
 class BulkyGui implements Gui {
 
@@ -48,7 +42,7 @@ class BulkyGui implements Gui {
 	private array $inputEiEntries = [];
 
 	function __construct(private ?SiFrame $siFrame, private readonly SiDeclaration $siDeclaration,
-			private readonly GuiValueBoundary $guiValueBoundary, private readonly bool $entrySiControlsIncluded) {
+			private readonly GuiValueBoundary $guiValueBoundary, private readonly bool $entrySiControlsIncluded = true) {
 
 		$this->siGui = new BulkyEntrySiGui($this->siFrame, $this->siDeclaration,
 				$this->guiValueBoundary->getSiValueBoundary());
@@ -59,6 +53,10 @@ class BulkyGui implements Gui {
 
 	function getInputSiValueBoundaries(): array {
 		return $this->inputSiValueBoundaries;
+	}
+
+	function getGuiValueBoundary(): GuiValueBoundary {
+		return $this->guiValueBoundary;
 	}
 
 //	function handleSiGuiOperation(?SiInput $siInput, SiZoneCall $siGuiCall): SiCallResult {
@@ -93,13 +91,13 @@ class BulkyGui implements Gui {
 //		throw new IllegalStateException();
 //	}
 
-	/**
-	 * @throws CorruptedSiDataException
-	 */
-	function handleSiCall(ZoneApiControlCallId $zoneControlCallId): SiCallResponse {
-		return $this->zoneGuiControlsMap->handleSiCall($zoneControlCallId, $this->eiFrame, $this->eiGuiDeclaration,
-				$this->inputEiEntries);
-	}
+//	/**
+//	 * @throws CorruptedSiDataException
+//	 */
+//	function handleSiCall(ZoneApiControlCallId $zoneControlCallId): SiCallResponse {
+//		return $this->zoneGuiControlsMap->handleSiCall($zoneControlCallId, $this->eiFrame, $this->eiGuiDeclaration,
+//				$this->inputEiEntries);
+//	}
 
 
 	function getSiGui(): SiGui {

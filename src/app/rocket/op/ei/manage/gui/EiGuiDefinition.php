@@ -36,7 +36,6 @@ use rocket\ui\gui\GuiPropForkWrapper;
 
 class EiGuiDefinition {
 
-
 	private EiGuiPropMap $eiGuiPropMap;
 	private EiGuiCmdMap $eiGuiCmdMap;
 	/**
@@ -49,9 +48,9 @@ class EiGuiDefinition {
 		$this->eiGuiCmdMap = new EiGuiCmdMap($this);
 	}
 	
-	function getEiMask(): EiMask {
-		return $this->eiMask;
-	}
+//	function getEiMask(): EiMask {
+//		return $this->eiMask;
+//	}
 
 	function getViewMode(): int {
 		return $this->viewMode;
@@ -86,7 +85,7 @@ class EiGuiDefinition {
 
 	public function createSiMaskQualifier(N2nLocale $n2nLocale): SiMaskQualifier {
 		return new SiMaskQualifier($this->createSiMaskIdentifier(),
-				$this->getEiMask()->getLabelLstr()->t($n2nLocale), $this->getEiMask()->getIconType());
+				$this->eiMask->getLabelLstr()->t($n2nLocale), $this->eiMask->getIconType());
 	}
 
 	function createGuiMask(EiFrame $eiFrame): GuiMask {
