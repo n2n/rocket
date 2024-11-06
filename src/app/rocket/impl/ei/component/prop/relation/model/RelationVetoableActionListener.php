@@ -42,6 +42,7 @@ class RelationVetoableActionListener implements EiLifecycleListener {
 	const STRATEGY_PREVENT = 'prevent';
 	const STRATEGY_UNSET = 'unset';
 	const STRATEGY_SELF_REMOVE = 'selfRemove';
+	const STRATEGY_IGNORE = 'ignore';
 	
 	private $relationEiProp;
 	private $strategy = true;
@@ -78,7 +79,7 @@ class RelationVetoableActionListener implements EiLifecycleListener {
 	
 	
 	public static function getStrategies(): array {
-		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET, self::STRATEGY_SELF_REMOVE);
+		return array(self::STRATEGY_PREVENT, self::STRATEGY_UNSET, self::STRATEGY_SELF_REMOVE, self::STRATEGY_IGNORE);
 	}
 
 }

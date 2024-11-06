@@ -193,7 +193,8 @@ class RelationEiPropConfigurator extends AdaptableEiPropConfigurator {
 			$magCollection->addMag(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, new EnumMag('Target removal startegy', 
 					array(RelationVetoableActionListener::STRATEGY_UNSET => 'Unset target',
 							RelationVetoableActionListener::STRATEGY_PREVENT => 'Prevent removal',
-							RelationVetoableActionListener::STRATEGY_SELF_REMOVE => 'Self remove'),
+							RelationVetoableActionListener::STRATEGY_SELF_REMOVE => 'Self remove',
+							RelationVetoableActionListener::STRATEGY_IGNORE => 'Ignore'),
 					$lar->getEnum(self::ATTR_TARGET_REMOVAL_STRATEGY_KEY, RelationVetoableActionListener::getStrategies(),
 							RelationVetoableActionListener::STRATEGY_PREVENT),
 					false));
