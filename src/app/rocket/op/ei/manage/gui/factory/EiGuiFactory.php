@@ -27,7 +27,7 @@ class EiGuiFactory {
 		$guiMasks = [];
 
 		if (!$populateFirstPage) {
-			return new CompactExplorerGui($this->eiFrame->createSiFrame(), new SiDeclaration([]), null);
+			return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize, new SiDeclaration([]), null);
 		}
 
 		$eiObjectSelector = new EiObjectSelector($this->eiFrame);
