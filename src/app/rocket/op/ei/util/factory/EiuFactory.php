@@ -9,6 +9,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\ui\si\content\SiField;
 use rocket\op\ei\util\control\EiuGuiControlFactory;
 use rocket\ui\gui\GuiProp;
+use rocket\op\ei\util\gui\EiuGuiFactory;
 
 class EiuFactory {
 	private $eiu;

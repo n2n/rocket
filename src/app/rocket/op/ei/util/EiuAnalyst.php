@@ -1644,6 +1644,19 @@ class EiuAnalyst {
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, self::EI_ENTRY_TYPES)) . '; '
 				. TypeUtils::getTypeInfo($eiTypeArg) . ' given.');
 	}
+
+	/**
+	 * @param array $eiEntryArgs
+	 * @param string|null $argName
+	 * @return EiEntry[]
+	 */
+	static function buildEiEntriesFromEiArg(array $eiEntryArgs, string $argName = null): array {
+		$eiEntries = [];
+		foreach ($eiEntryArgs as $eiEntryArg) {
+			$eiEntries[] = self::buildEiEntryFromEiArg($eiEntryArg, $argName, true);
+		}
+		return $eiEntries;
+	}
 	
 	/**
 	 * @param mixed $eiEntryArg

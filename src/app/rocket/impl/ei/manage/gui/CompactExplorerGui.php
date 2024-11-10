@@ -42,11 +42,11 @@ class CompactExplorerGui implements Gui {
 
 	private SiGui $siGui;
 
-	function __construct(private SiFrame $siFrame, private SiDeclaration $siDeclaration,
+	function __construct(private SiFrame $siFrame, private int $pageSize, private SiDeclaration $siDeclaration,
 			private ?SiPartialContent $partialContent) {
 
-		$this->siGui = new CompactExplorerSiGui($this->siFrame, $this->pageSize, $this->siDeclaration,
-				new SiPartialContent($this->count, array_map(fn (GuiValueBoundary $b) => $b->getSiValueBoundary(), $this->guiValueBoundaries)));
+		$this->siGui = new CompactExplorerSiGui($this->siFrame, $pageSize, $this->siDeclaration,
+				$this->partialContent);
 
 	}
 

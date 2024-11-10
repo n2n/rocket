@@ -118,6 +118,7 @@ class AddControllerTest extends TestCase {
 		$this->assertNotNull($resultData['inputResult']);
 		$this->assertNotNull($resultData['callResult']);
 
+		var_dump($resultData);
 		$id = $resultData['inputResult']['valueBoundaries'][0]['entries'][$siValueBoundaryInput->getSelectedMaskId()]
 				['qualifier']['identifier']['id'];
 		$this->assertNotNull($id);

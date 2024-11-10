@@ -13,7 +13,8 @@ class EiuGuiFactory {
 	public function __construct(private EiuAnalyst $eiuAnalyst) {
 	}
 
-	public function createBulkyGui(array $eiEntries, bool $readOnly): Gui {
+	public function createBulkyGui(array $eiEntryArgs, bool $readOnly): Gui {
+		$eiEntries = EiuAnalyst::buildEiEntriesFromEiArg($eiEntryArgs);
 		$factory = new EiGuiFactory($this->eiuAnalyst->getEiFrame(true));
 		return $factory->createBulkyGui($eiEntries, $readOnly);
 	}

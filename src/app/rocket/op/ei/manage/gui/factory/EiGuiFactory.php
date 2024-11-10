@@ -45,7 +45,7 @@ class EiGuiFactory {
 
 		$count = $eiObjectSelector->count();
 
-		return new CompactExplorerGui($this->eiFrame->createSiFrame(),
+		return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize,
 				new SiDeclaration(array_map(fn (GuiMask $m) => $m->getSiMask(), $guiMasks)),
 				new SiPartialContent($count,
 						array_map(fn (GuiValueBoundary $b) => $b->getSiValueBoundary(), $guiValueBoundaries)));
