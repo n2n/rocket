@@ -7,9 +7,7 @@ use rocket\op\ei\util\EiuAnalyst;
 use n2n\util\type\TypeConstraint;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\si\content\SiField;
-use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\op\ei\util\control\EiuGuiControlFactory;
-use rocket\op\ei\util\si\EiuSiFactory;
 use rocket\ui\gui\GuiProp;
 
 class EiuFactory {
@@ -43,7 +41,7 @@ class EiuFactory {
 	/**
 	 * @return EiuGuiControlFactory
 	 */
-	function guiControl() {
+	function guiControl(): EiuGuiControlFactory {
 		return new EiuGuiControlFactory($this->eiuAnalyst);
 	}
 
@@ -52,6 +50,14 @@ class EiuFactory {
 	 */
 	function gc(): EiuGuiControlFactory {
 		return $this->guiControl();
+	}
+
+	function g(): EiuGuiFactory {
+		return new EiuGuiFactory($this->eiuAnalyst);
+	}
+
+	function gui(): EiuGuiFactory {
+		return new EiuGuiFactory($this->eiuAnalyst);
 	}
 
 	function si(): EiuSiFactory {

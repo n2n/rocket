@@ -33,6 +33,8 @@ use rocket\core\model\Rocket;
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\StatusException;
 use rocket\op\ei\util\entry\EiuEntry;
+use n2n\web\http\PageNotFoundException;
+use n2n\web\http\ForbiddenException;
 
 class AddController extends ControllerAdapter {
 	const CONTROL_SAVE_KEY = 'save';
@@ -50,22 +52,40 @@ class AddController extends ControllerAdapter {
 		$this->dtc = $dtc;
 		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
-		
-	public function index($copyPid = null, ParamGet $refPath = null) {	
+
+	/**
+	 * @throws StatusException
+	 */
+	public function index($copyPid = null, ParamGet $refPath = null): void {
 		$this->live($copyPid);
 	}
-	
-	public function doChild($parentPid, $copyPid = null, ParamGet $refPath = null) {
+
+	/**
+	 * @throws PageNotFoundException
+	 * @throws StatusException
+	 * @throws ForbiddenException
+	 */
+	public function doChild($parentPid, $copyPid = null, ParamGet $refPath = null): void {
 		$this->parentEiuObject = $this->opuCtrl->lookupObject($parentPid);	
 		$this->live($copyPid);	
 	}
-	
-	public function doBefore($beforePid, $copyPid = null, ParamGet $refPath = null) {
+
+	/**
+	 * @throws StatusException
+	 * @throws PageNotFoundException
+	 * @throws ForbiddenException
+	 */
+	public function doBefore($beforePid, $copyPid = null, ParamGet $refPath = null): void {
 		$this->beforeEiuObject = $this->opuCtrl->lookupObject($beforePid);	
 		$this->live($copyPid);
 	}
-	
-	public function doAfter($afterPid, $copyPid = null, ParamGet $refPath = null) {
+
+	/**
+	 * @throws PageNotFoundException
+	 * @throws StatusException
+	 * @throws ForbiddenException
+	 */
+	public function doAfter($afterPid, $copyPid = null, ParamGet $refPath = null): void {
 		$this->afterEiuObject = $this->opuCtrl->lookupObject($afterPid);	
 		$this->live($copyPid);
 	}
@@ -73,18 +93,20 @@ class AddController extends ControllerAdapter {
 	/**
 	 * @throws StatusException
 	 */
-	private function live($copyPid = null) {
+	private function live($copyPid = null): void {
 
 		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
 
-		$eiuEntries = $this->opuCtrl->eiu()->frame()->newPossibleEntries();
+		$eiu = $this->opuCtrl->eiu();
+		$eiuEntries = $eiu->frame()->newPossibleEntries();
 
 		foreach ($eiuEntries as $eiuEntry) {
 			$eiuEntry->onValidate(fn () => $this->eiuEntry = $eiuEntry);
 		}
 
-		$this->opuCtrl->forwardNewBulkyEntryZone($eiuEntries, true, true, true,
+		$this->opuCtrl->forwardGui($eiu->f()->g()->createBulkyGui($eiuEntries, false),
+				$eiu->dtc('rocket')->t('common_new_entry_label'),
 				$this->createControls());
 	}
 	

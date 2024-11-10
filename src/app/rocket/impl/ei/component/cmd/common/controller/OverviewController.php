@@ -26,6 +26,7 @@ use rocket\op\ei\manage\critmod\save\CritmodSaveDao;
 use n2n\web\http\controller\impl\ScrRegistry;
 use n2n\web\http\controller\ParamQuery;
 use rocket\op\util\OpuCtrl;
+use n2n\web\http\StatusException;
 
 class OverviewController extends ControllerAdapter {
 	private $listSize;
@@ -33,7 +34,7 @@ class OverviewController extends ControllerAdapter {
 // 	private $rocketState;
 	private $scrRegistry;
 	
-	private $opuCtrl;
+	private OpuCtrl $opuCtrl;
 	
 	public function __construct(int $listSize) {
 		$this->listSize = $listSize;
@@ -45,11 +46,19 @@ class OverviewController extends ControllerAdapter {
 		$this->scrRegistry = $scrRegistry;
 		$this->opuCtrl = OpuCtrl::from($this->cu());
 	}
-	
-	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
+
+	/**
+	 * @throws StatusException
+	 */
+	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null): void {
 		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->opuCtrl->eiu()->frame()->mask()->getPluralLabel());
-		
-		$this->opuCtrl->forwardCompactExplorerZone($this->listSize);
+
+		$eiu = $this->opuCtrl->eiu();
+		$gui = $eiu->f()->g()->createCompactExploreGui();
+
+
+		$this->opuCtrl->forwardGui($gui, $eiu->frame()->contextEngine()->mask()->getPluralLabel());
+
 		
 // 		$eiuFrame = $this->opuCtrl->frame();
 // 		$eiFrame = $eiuFrame->getEiFrame();

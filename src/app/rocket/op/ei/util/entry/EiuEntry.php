@@ -29,9 +29,7 @@ use rocket\op\ei\manage\entry\WrittenMappingListener;
 use rocket\op\ei\manage\entry\OnValidateMappingListener;
 use rocket\op\ei\manage\entry\ValidatedMappingListener;
 use rocket\op\ei\manage\entry\EiFieldOperationFailedException;
-use rocket\ui\gui\EiGuiSiFactory;
 use rocket\op\ei\manage\DefPropPath;
-use rocket\ui\gui\GuiException;
 use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\util\EiuAnalyst;
@@ -39,7 +37,6 @@ use rocket\op\ei\util\spec\EiuMask;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
 use rocket\op\ei\component\prop\EiPropNature;
-use n2n\util\ex\NotYetImplementedException;
 use rocket\op\ei\component\prop\EiProp;
 use rocket\op\launch\TransactionApproveAttempt;
 use n2n\persistence\orm\util\NestedSetUtils;
@@ -48,9 +45,10 @@ use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\gui\EiuGuiEntry;
 use rocket\op\ei\manage\frame\EiObjectSelector;
-use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiFieldAbstraction;
 use rocket\op\ei\util\spec\EiuProp;
+use rocket\ui\gui\impl\BulkyGui;
+use rocket\op\ei\manage\gui\factory\EiGuiFactory;
 
 
 class EiuEntry {
@@ -826,7 +824,7 @@ class EiuEntry {
 	/**
 	 * @return \rocket\ui\si\content\SiEntryQualifier
 	 */
-	function createSiEntryQualifier() {
+	function createSiEntryQualifier(): \rocket\ui\si\content\SiEntryQualifier {
 		$siMaskQualifier = $this->mask()->createSiMaskQualifier();
 		$idName = $this->createIdentityString();
 		
@@ -861,6 +859,11 @@ class EiuEntry {
 	function getMessagesAsStrs($eiPropPath = null, bool $recursive = false) {
 		return array_map(fn ($m) => $m->t($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()), 
 				$this->getMessages($eiPropPath));
+	}
+
+	function createBulkyGui(bool $readOnly): BulkyGui {
+		$factory = new EiGuiFactory($this->eiuAnalyst->getEiFrame(true));
+		return $factory->createBulkyGui([$this->getEiEntry()], $readOnly);
 	}
 }  
 

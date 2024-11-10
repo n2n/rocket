@@ -35,6 +35,7 @@ use n2n\web\http\PageNotFoundException;
 use n2n\web\http\StatusException;
 use n2n\web\http\BadRequestException;
 use n2n\web\http\ForbiddenException;
+use rocket\ui\si\control\SiControl;
 
 class EditController extends ControllerAdapter {
 	const CONTROL_SAVE_KEY = 'save';
@@ -61,14 +62,16 @@ class EditController extends ControllerAdapter {
 		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushDetailBreadcrumb($eiuEntry)
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_edit_label'));
-		
-// 		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'), true, $eiuEntry);
 
-		$this->opuCtrl->forwardBulkyEntryZone($eiuEntry, false, true, false,
-				$this->createControls($eiuEntry));
+		$this->opuCtrl->forwardGui($eiuEntry->createBulkyGui(false),
+				$eiuEntry->createIdentityString(), $this->createControls($eiuEntry));
 	}
-	
-	private function createControls(EiuEntry $eiuEntry) {
+
+	/**
+	 * @param EiuEntry $eiuEntry
+	 * @return SiControl[]
+	 */
+	private function createControls(EiuEntry $eiuEntry): array {
 		$eiuControlFactory = $this->opuCtrl->eiu()->factory()->guiControl();
 		$dtc = $this->opuCtrl->eiu()->dtc(Rocket::NS);
 		

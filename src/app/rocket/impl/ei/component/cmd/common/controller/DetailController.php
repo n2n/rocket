@@ -42,8 +42,9 @@ class DetailController extends ControllerAdapter {
 		
 		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_detail_label'));
-		
-		$this->opuCtrl->forwardBulkyEntryZone($eiuEntry, true, true, true);
+
+		$this->opuCtrl->forwardGui($eiuEntry->createBulkyGui(true),
+				$eiuEntry->createIdentityString());
 	}
 	
 	public function doDraft($draftId) { 

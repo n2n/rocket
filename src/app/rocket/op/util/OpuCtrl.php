@@ -123,7 +123,9 @@ class OpuCtrl {
 	}
 
 
-
+	/**
+	 * @throws PageNotFoundException
+	 */
 	function lookupPreviewController(string $previewType, $eiObjectArg) {
 		try {
 			return $this->frame()->lookupPreviewController($previewType, $eiObjectArg);
@@ -148,36 +150,29 @@ class OpuCtrl {
 		return false;
 	}
 
-	function forwardCompactExplorerZone(int $pageSize = 30, string $title = null, bool $generalSiControlsIncluded = true,
-			bool $entryGuiControlsIncluded = true, array $zoneGuiControls = []): void {
-		if ($this->forwardHtml()) {
-			return;
-		}
-
-		$eiFrame = $this->frame()->getEiFrame();
-		$eiFrameUtils = new EiObjectSelector($eiFrame);
-		$records = $eiFrameUtils->lookupEiEntries(0, $pageSize, null);
-
-		$factory = new EiGuiValueBoundaryFactory($eiFrame);
-		$guiValueBoundaries = [];
-		foreach ($records as $record) {
-			$guiValueBoundaries[] = $factory->create($record->treeLevel, [$record->eiEntry], ViewMode::COMPACT_READ);
-
-		}
-		$count = $eiFrameUtils->count();
-
-		$zoneGuiControlsMap = new GuiControlMap($this->cu->getRequest()->getPath()->toUrl(), $zoneGuiControls);
-
-		$guiMask = $eiFrame->getContextEiEngine()->getEiGuiDefinition(ViewMode::COMPACT_READ)
-				->createGuiMask($eiFrame)->getSiMask();
-
-		$eiGui = new CompactExplorerGui($eiFrame->createSiFrame(), new SiDeclaration([$guiMask]),
-				$guiValueBoundaries, $pageSize, $count);
-
-		$this->forwardGui($eiGui,
-				$title ?? $this->frame()->contextEngine()->mask()->getPluralLabel(),
-				$zoneGuiControlsMap);
-	}
+	/**
+	 * @throws StatusException
+	 */
+//	function forwardCompactExplorerZone(int $pageSize = 30, string $title = null, bool $generalSiControlsIncluded = true,
+//			bool $entryGuiControlsIncluded = true, array $zoneGuiControls = []): void {
+//		if ($this->forwardHtml()) {
+//			return;
+//		}
+//
+//		$eiFrame = $this->frame()->getEiFrame();
+//
+//		$eiGuiFactory = new EiGuiFactory($eiFrame);
+//		$gui = $eiGuiFactory->createCompactExplorerGui($pageSize);
+//
+//		$zoneGuiControlsMap = new GuiControlMap();
+//		foreach ($zoneGuiControls as $controlName => $guiControl) {
+//			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
+//		}
+//
+//		$this->forwardGui($gui,
+//				$title ?? $this->frame()->contextEngine()->mask()->getPluralLabel(),
+//				$zoneGuiControlsMap);
+//	}
 
 
 //	private function composeEiuGuiForList($eiGui, $limit) {
@@ -218,27 +213,27 @@ class OpuCtrl {
 	 * @throws BadRequestException
 	 * @throws StatusException
 	 */
-	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
-			bool $entrySiControlsIncluded = true, array $zoneGuiControls = []): void {
-		if ($this->forwardHtml()) {
-			return;
-		}
-
-		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiEntryArg', true);
-
-		$eiFrame = $this->frame()->getEiFrame();
-
-		$eiGuiFactory = new EiGuiFactory($eiFrame);
-		$gui = $eiGuiFactory->createBulkyGui([$eiEntry], $readOnly);
-
-		$zoneGuiControlsMap = new GuiControlMap();
-		foreach ($zoneGuiControls as $controlName => $guiControl) {
-			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
-		}
-
-		$this->forwardGui($gui, current($gui->getGuiValueBoundary()->getGuiEntries())->getSiEntry()->getQualifier()->getIdName(),
-				$zoneGuiControlsMap);
-	}
+//	function forwardBulkyEntryZone($eiEntryArg, bool $readOnly, bool $generalSiControlsIncluded,
+//			bool $entrySiControlsIncluded = true, array $zoneGuiControls = []): void {
+//		if ($this->forwardHtml()) {
+//			return;
+//		}
+//
+//		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiEntryArg', true);
+//
+//		$eiFrame = $this->frame()->getEiFrame();
+//
+//		$eiGuiFactory = new EiGuiFactory($eiFrame);
+//		$gui = $eiGuiFactory->createBulkyGui([$eiEntry], $readOnly);
+//
+//		$zoneGuiControlsMap = new GuiControlMap();
+//		foreach ($zoneGuiControls as $controlName => $guiControl) {
+//			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
+//		}
+//
+//		$this->forwardGui($gui, current($gui->getGuiValueBoundary()->getGuiEntries())->getSiEntry()->getQualifier()->getIdName(),
+//				$zoneGuiControlsMap);
+//	}
 
 	/**
 	 * @throws StatusException
@@ -269,8 +264,17 @@ class OpuCtrl {
 	/**
 	 * @throws StatusException
 	 */
-	private function forwardGui(Gui $eiGui, string $title = null, GuiControlMap $zoneGuiControlMap = null): void {
-		$guiZone = new GuiZone($eiGui, $title, $this->opState->getBreadcrumbs(), $zoneGuiControlMap);
+	function forwardGui(Gui $eiGui, string $title = null, array $zoneGuiControls = []): void {
+		if ($this->forwardHtml()) {
+			return;
+		}
+
+		$zoneGuiControlsMap = new GuiControlMap();
+		foreach ($zoneGuiControls as $controlName => $guiControl) {
+			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
+		}
+
+		$guiZone = new GuiZone($eiGui, $title, $this->opState->getBreadcrumbs(), $zoneGuiControlsMap);
 		$siZone = $guiZone->getSiZone();
 		try {
 			$siZoneCall = SiZoneCall::fromCu($this->cu);

@@ -24,6 +24,7 @@ namespace rocket\op\ei\manage\gui;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\gui\GuiMask;
+use n2n\util\ex\NotYetImplementedException;
 
 class EiGuiMaskFactory {
 
@@ -31,7 +32,7 @@ class EiGuiMaskFactory {
 	}
 
 	function createPossibleGuiMasks(): array {
-
+		throw new NotYetImplementedException();
 	}
 
 	/**
@@ -52,6 +53,7 @@ class EiGuiMaskFactory {
 		}
 		return $guiMasks;
 	}
+
 
 //
 //
