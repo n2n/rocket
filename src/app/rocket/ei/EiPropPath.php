@@ -68,6 +68,10 @@ class EiPropPath extends IdPath {
 		if (is_array($expression)) {
 			return new EiPropPath($expression);
 		}
+
+		if ($expression === null) {
+			return new EiPropPath([]);
+		}
 	
 		return new EiPropPath(explode(self::ID_SEPARATOR, $expression));
 	}
