@@ -24,8 +24,13 @@ namespace rocket\ui\si\api\response;
 
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\content\SiValueBoundary;
+use n2n\core\container\N2nContext;
 
-class SiInputResult implements \JsonSerializable {
+class SiInputResult {
+	/**
+	 * @param SiValueBoundary[] $valueBoundaries
+	 * @param bool $valid
+	 */
 	function __construct(private readonly array $valueBoundaries, private readonly bool $valid) {
 		ArgUtils::valArray($this->valueBoundaries, SiValueBoundary::class, true);
 	}
@@ -38,10 +43,11 @@ class SiInputResult implements \JsonSerializable {
 		return $this->valueBoundaries;
 	}
 
-	function jsonSerialize(): mixed {
+	function toJsonStruct(N2nContext $n2nContext): mixed {
 		return [
 			'valid' => $this->valid,
-			'valueBoundaries' => $this->valueBoundaries
+			'valueBoundaries' => array_map(
+					fn (SiValueBoundary $b) => $b->toJsonStruct($n2nContext), $this->valueBoundaries)
 		];
 	}
 

@@ -49,24 +49,16 @@ use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\util\entry\EiuObject;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\op\cu\gui\CuGui;
-use rocket\ui\si\input\SiInputFactory;
-use rocket\si\input\SiInputResult;
 use rocket\op\cu\gui\control\CuControlCallId;
 use rocket\op\cu\util\gui\CufGui;
 use n2n\web\http\BadRequestException;
-use rocket\ui\gui\impl\BulkyGui;
-use rocket\impl\ei\manage\gui\CompactExplorerGui;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\GuiZone;
 use rocket\ui\si\api\request\SiZoneCall;
 use n2n\web\http\StatusException;
-use rocket\ui\gui\ViewMode;
-use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
-use rocket\ui\si\meta\SiDeclaration;
-use rocket\op\ei\manage\gui\EiGuiMaskFactory;
 use rocket\ui\gui\control\GuiControlKey;
-use rocket\ui\gui\GuiMask;
 use rocket\op\ei\manage\gui\factory\EiGuiFactory;
+use rocket\op\ei\manage\ManageException;
 
 class OpuCtrl {
 
@@ -79,6 +71,7 @@ class OpuCtrl {
 	/**
 	 * Private so future backwards compatible changes can be made.
 	 * @param ControllingUtils $cu
+	 * @throws ManageException
 	 */
 	private function __construct(private ControllingUtils $cu) {
 		$manageState = $cu->getN2nContext()->lookup(ManageState::class);
@@ -235,31 +228,31 @@ class OpuCtrl {
 //				$zoneGuiControlsMap);
 //	}
 
-	/**
-	 * @throws StatusException
-	 */
-	function forwardNewBulkyEntryZone(array $eiuEntries = [], bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
-			array $zoneGuiControls = []): void {
-		if ($this->forwardHtml()) {
-			return;
-		}
-
-		$eiEntries = array_map(fn ($eiEntryArg) => EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiuEntries', true),
-				$eiuEntries);
-
-		$eiFrame = $this->frame()->getEiFrame();
-
-		$eiGuiFactory = new EiGuiFactory($eiFrame);
-		$gui = $eiGuiFactory->createBulkyGui($eiEntries, !$editable);
-
-		$zoneGuiControlsMap = new GuiControlMap();
-		foreach ($zoneGuiControls as $controlName => $guiControl) {
-			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
-		}
-
-		$this->forwardGui($gui, $this->eiu->dtc('rocket')->t('common_new_entry_label'),
-				$zoneGuiControlsMap);
-	}
+//	/**
+//	 * @throws StatusException
+//	 */
+//	function forwardNewBulkyEntryZone(array $eiuEntries = [], bool $editable = true, bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
+//			array $zoneGuiControls = []): void {
+//		if ($this->forwardHtml()) {
+//			return;
+//		}
+//
+//		$eiEntries = array_map(fn ($eiEntryArg) => EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg,'eiuEntries', true),
+//				$eiuEntries);
+//
+//		$eiFrame = $this->frame()->getEiFrame();
+//
+//		$eiGuiFactory = new EiGuiFactory($eiFrame);
+//		$gui = $eiGuiFactory->createBulkyGui($eiEntries, !$editable);
+//
+//		$zoneGuiControlsMap = new GuiControlMap();
+//		foreach ($zoneGuiControls as $controlName => $guiControl) {
+//			$zoneGuiControlsMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
+//		}
+//
+//		$this->forwardGui($gui, $this->eiu->dtc('rocket')->t('common_new_entry_label'),
+//				$zoneGuiControlsMap);
+//	}
 
 	/**
 	 * @throws StatusException
@@ -279,7 +272,7 @@ class OpuCtrl {
 		try {
 			$siZoneCall = SiZoneCall::fromCu($this->cu);
 			if ($siZoneCall !== null && null !== ($siResult = $siZone->handleSiZoneCall($siZoneCall, $this->cu->getN2nContext()))) {
-				$this->cu->sendJson($siResult);
+				$this->cu->sendJson($siResult->toJsonStruct($this->cu->getN2nContext()));
 				return;
 			}
 		} catch (CorruptedSiDataException $e) {
