@@ -13,7 +13,7 @@ export class ApiCallSiControl implements SiControl {
 	private loading = false;
 	// private entryBoundFlag: boolean;
 
-	constructor(public siUiService: SiUiService, public maskId: string, public entryId: string|null,
+	constructor(public siUiService: SiUiService, public maskId: string|null, public entryId: string|null,
 			public controlName: string, public button: SiButton, public controlBoundry: SiControlBoundry) {
 	}
 

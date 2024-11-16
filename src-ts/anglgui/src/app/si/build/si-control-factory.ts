@@ -21,7 +21,7 @@ export class SiControlFactory {
 	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
 	}
 
-	createControls(maskId: string, entryId: string|null, dataArr: Map<string, any[]>): SiControl[] {
+	createControls(maskId: string|null, entryId: string|null, dataArr: Map<string, any>): SiControl[] {
 		const controls = new Array<SiControl>();
 		for (const [name, controlData] of dataArr) {
 			controls.push(this.createControl(maskId, entryId, name, controlData));
@@ -29,7 +29,7 @@ export class SiControlFactory {
 		return controls;
 	}
 
-	createControl(maskId: string, entryId: string|null, controlName: string, data: any): SiControl {
+	createControl(maskId: string|null, entryId: string|null, controlName: string, data: any): SiControl {
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
 
@@ -50,10 +50,9 @@ export class SiControlFactory {
 				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
 				return apiControl;
 			case SiControlType.GROUP:
-				const groupControl = new GroupSiControl(
+				return new GroupSiControl(
 						this.createButton(dataExtr.reqObject('button')),
 						this.createControls(maskId, entryId, dataExtr.reqMap('controls')));
-				return groupControl;
 			case SiControlType.DEACTIVATED:
 				const deactivatedControl = new SimpleSiControl(this.createButton(dataExtr.reqObject('button')), () => {});
 				deactivatedControl.disabled = true;

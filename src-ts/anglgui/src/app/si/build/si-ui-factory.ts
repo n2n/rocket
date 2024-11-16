@@ -6,6 +6,8 @@ import { UiMenuGroup, UiMenuItem } from 'src/app/ui/structure/model/ui-menu';
 import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiGuiFactory } from './si-gui-factory';
+import { SiControlFactory } from './si-control-factory';
+import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
 
 export class SiUiFactory {
 
@@ -20,8 +22,11 @@ export class SiUiFactory {
 		uiZone.title = extr.reqString('title');
 		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);
 		uiZone.structure = new UiStructure(null, null, gui.createUiStructureModel());
-		/*new SiControlFactory(comp, this.injector).createControls(extr.reqArray('controls'))
-			.map(siControl => siControl.createUiContent(zone))*/
+
+		const controlBoundary = new SimpleSiControlBoundry(gui.getBoundValueBoundaries(), gui.getBoundDeclaration(), uiZone.url);
+		uiZone.mainCommandContents = new SiControlFactory(controlBoundary, this.injector)
+				.createControls(null, null, extr.reqMap('controls'))
+				.map(siControl => siControl.createUiContent(() => uiZone))
 	}
 
 	createBreadcrumbs(dataArr: Array<any>, uiLayer: UiLayer|null): UiBreadcrumb[] {

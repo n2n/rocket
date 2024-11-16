@@ -133,7 +133,7 @@ class OpuCtrl {
 //	}
 
 
-	private function forwardHtml(): bool {
+	function forwardHtml(): bool {
 		if ('text/html' == $this->httpContext->getRequest()->getAcceptRange()
 						->bestMatch(['text/html', 'application/json'])) {
 			$this->cu->forward('\rocket\core\view\anglTemplate.html');

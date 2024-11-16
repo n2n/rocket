@@ -30,17 +30,20 @@ class FileInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel
 
 	function setExtraImageDimensions(array $extraImageDimensions): static {
 		$this->guiSiFileFactory->setExtraImageDimensions($extraImageDimensions);
+		return $this;
 	}
 
 	function setImageDimensionsImportMode(ImageDimensionsImportMode $imageDimensionsImportMode): static {
 		$this->guiSiFileFactory->setImageDimensionsImportMode($imageDimensionsImportMode);
+		return $this;
 	}
 
 	function setTargetFileLocator(?FileLocator $fileLocator): static {
 		$this->guiSiFileFactory->setTargetFileLocator($fileLocator);
+		return $this;
 	}
 
 	protected function createInputMappers(N2nContext $n2nContext): array {
-		// TODO: Implement createInputMappers() method.
+		return [];
 	}
 }

@@ -8,7 +8,7 @@ import { SiService } from './si.service';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
-import { SiCallResponse, SiDirective } from './si-control-result';
+import { SiDirective } from './si-control-result';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 import { SiNavPoint } from '../model/control/si-nav-point';
@@ -117,7 +117,7 @@ export class SiUiService {
 	// // 	}));
 	// }
 
-	execControl(maskId: string, entryId: string|null, controlName: string, controlBoundry: SiControlBoundry,
+	execControl(maskId: string|null, entryId: string|null, controlName: string, controlBoundry: SiControlBoundry,
 			includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 		let input: SiInput|null = null;
 
@@ -130,7 +130,7 @@ export class SiUiService {
 				// }
 
 				valueBoundaries.push(valueBoundary);
-				input.entryInputs.push(valueBoundary.readInput());
+				input.valueBoundaryInputs.push(valueBoundary.readInput());
 			}
 		}
 

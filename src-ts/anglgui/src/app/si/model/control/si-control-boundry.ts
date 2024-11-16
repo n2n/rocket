@@ -9,5 +9,4 @@ export interface SiControlBoundry {
 
 	getBoundApiUrl(): string|null;
 
-
 }

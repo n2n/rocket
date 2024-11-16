@@ -1,11 +1,11 @@
-import { SiEntryInput } from '../input/si-entry-input';
 import { SiValGetInstruction } from './si-val-get-instruction';
+import { SiValueBoundaryInput } from '../input/si-input';
 
 export class SiValInstruction {
 
 	public getInstructions: SiValGetInstruction[];
 
-	constructor(public entryInput: SiEntryInput, ...getInstructions: SiValGetInstruction[]) {
+	constructor(public valueBoundaryInput: SiValueBoundaryInput, ...getInstructions: SiValGetInstruction[]) {
 		this.getInstructions = getInstructions;
 	}
 }

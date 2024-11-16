@@ -18,6 +18,8 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Message } from 'src/app/util/i18n/message';
 import { UiStructureError } from 'src/app/ui/structure/model/ui-structure-error';
 import { PaginationModel } from '../comp/pagination-model';
+import { SiDeclaration } from '../../../meta/si-declaration';
+import { SiValueBoundary } from '../../../content/si-value-boundary';
 
 export class CompactExplorerSiGui implements SiGui {
 
@@ -33,6 +35,18 @@ export class CompactExplorerSiGui implements SiGui {
 
 	createUiStructureModel(): UiStructureModel {
 		return new CompactExplorerListModelImpl(this, this.partialContent);
+	}
+
+	getBoundDeclaration(): SiDeclaration {
+		return this.pageCollection.declaration ?? new SiDeclaration()
+	}
+
+	getBoundValueBoundaries(): SiValueBoundary[] {
+		return this.pageCollection.getBoundValueBoundaries();
+	}
+
+	getBoundApiUrl(): string | null {
+		return this.pageCollection.siFrame.apiUrl;
 	}
 }
 
@@ -90,8 +104,8 @@ class CompactExplorerListModelImpl extends UiStructureModelAdapter implements Co
 			ref.instance.model = this;
 		});
 
-		this.asideUiContents = [new TypeUiContent(PaginationComponent, (aisdeRef) => {
-			aisdeRef.instance.model = this;
+		this.asideUiContents = [new TypeUiContent(PaginationComponent, (asideRef) => {
+			asideRef.instance.model = this;
 		})];
 	}
 

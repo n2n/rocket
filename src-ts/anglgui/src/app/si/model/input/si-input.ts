@@ -1,33 +1,45 @@
-import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { SiDeclaration } from '../meta/si-declaration';
 
 export class SiInput {
 
-	constructor(public declaration: SiDeclaration, public entryInputs: SiEntryInput[] = []) {
+	constructor(public declaration: SiDeclaration, public valueBoundaryInputs: SiValueBoundaryInput[] = []) {
 
 	}
 
-	toParamMap(): Map<string, string|Blob> {
-		const map = new Map<string, string|Blob>();
+	toJsonStruct(): object[] {
+		return this.valueBoundaryInputs.map((i: SiValueBoundaryInput) => i.toJsonStruct())
+	}
+}
 
-		if (this.entryInputs.length === 0) {
-			return map;
+
+export class SiValueBoundaryInput {
+	constructor(private selectedMaskId: string, private entryInput: SiEntryInput) {
+	}
+
+	toJsonStruct(): object {
+		return {
+			selectedMaskId: this.selectedMaskId,
+			entryInput: this.entryInput.toJsonStruct()
+		};
+	}
+}
+
+export class SiEntryInput {
+
+	constructor(public entryId: string|null,
+			readonly fieldInputMap: Map<string, object>) {
+
+	}
+
+	toJsonStruct(): object {
+		const fieldInputObj: any = {};
+		for (const [propId, inputObj] of this.fieldInputMap) {
+			fieldInputObj[propId] = inputObj;
 		}
 
-		const entryInputMaps: Array<any> = [];
-
-		for (const entryInput of this.entryInputs) {
-			const fieldInputObj: any = {};
-
-			for (const [propId, inputObj] of entryInput.fieldInputMap) {
-				fieldInputObj[propId] = inputObj;
-			}
-
-			entryInputMaps.push(entryInput.toJSON());
-		}
-
-		map.set('entryInputMaps', JSON.stringify(entryInputMaps));
-
-		return map;
+		return {
+			entryId: this.entryId,
+			fieldInputMap: fieldInputObj,
+		};
 	}
 }

@@ -8,7 +8,6 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiApiCallResponse } from '../model/api/si-api-call-response';
-import { SiInput } from '../model/input/si-input';
 import { SiApiCall } from '../model/api/si-api-call';
 
 export class SiResultFactory {
@@ -45,7 +44,7 @@ export class SiResultFactory {
 	private createInputResult(data: any, declaration: SiDeclaration): SiInputResult {
 		const inputResult = new SiInputResult();
 		const entryFactory = new SiEntryFactory(declaration, this.apiUrl, this.injector);
-		for (const [eeKey, eeData] of new Extractor(data).reqMap('siValueBoundary')) {
+		for (const [eeKey, eeData] of new Extractor(data).reqMap('valueBoundaries')) {
 			inputResult.valueBoundaries.set(eeKey, entryFactory.createValueBoundary(eeData));
 		}
 		return inputResult;

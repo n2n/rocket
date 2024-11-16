@@ -77,7 +77,7 @@ export class SplitContent implements SplitOption {
 		return splitContent;
 	}
 
-	getLoadedSiEntry(): SiValueBoundary|null {
+	getLoadedSiValueBoundary(): SiValueBoundary|null {
 		return this.loadedEntry;
 	}
 

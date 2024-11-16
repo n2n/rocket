@@ -91,7 +91,7 @@ class SiEntryInput implements \JsonSerializable {
 	 */
 	static function parse(array $data): SiEntryInput {
 		$dataSet = new DataSet($data);
-		
+
 		try {
 			$siEntryInput = new SiEntryInput($dataSet->optString('entryId'));
 			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $propId => $fielData) {
@@ -135,17 +135,15 @@ class SiFieldInput implements \JsonSerializable {
 		];
 	}
 
-	/**
-	 * @throws CorruptedSiDataException
-	 */
+//	/**
+//	 * @throws CorruptedSiDataException
+//	 */
 	static function parse(array $data): SiFieldInput {
-		$dataSet = new DataSet($data);
-
-		try {
-			return new SiFieldInput($dataSet->reqArray('data'));
-		} catch (AttributesException $e) {
-			throw new CorruptedSiDataException($e->getMessage(), 0, $e);
-		}
+//		try {
+			return new SiFieldInput($data);
+//		} catch (AttributesException $e) {
+//			throw new CorruptedSiDataException($e->getMessage(), 0, $e);
+//		}
 	}
 }
 

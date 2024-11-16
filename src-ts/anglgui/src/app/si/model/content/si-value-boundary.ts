@@ -1,5 +1,4 @@
 
-import { SiEntryInput } from 'src/app/si/model/input/si-entry-input';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEntryIdentifier, SiEntryQualifier } from './si-entry-qualifier';
@@ -10,6 +9,7 @@ import { SiGenericEntry } from '../generic/si-generic-entry-buildup';
 import { skip } from 'rxjs/operators';
 import { SiInputResetPoint } from './si-input-reset-point';
 import { CallbackInputResetPoint } from './impl/common/model/callback-si-input-reset-point';
+import { SiEntryInput, SiValueBoundaryInput } from '../input/si-input';
 
 export class SiValueBoundary {
 
@@ -146,7 +146,7 @@ export class SiValueBoundary {
 // 		return this.selectedEntry.getFieldById(id);
 // 	}
 
-	readInput(): SiEntryInput {
+	readInput(): SiValueBoundaryInput {
 		if (this.replacementValueBoundary) {
 			throw new IllegalSiStateError('SiEntry already replaced!');
 		}
@@ -165,7 +165,8 @@ export class SiValueBoundary {
 		// 	throw new IllegalSiStateError('No input available.');
 		// }
 
-		return new SiEntryInput(this.selectedMaskId!, this.qualifier.identifier.id, fieldInputMap);
+		return new SiValueBoundaryInput(this.selectedMaskId!,
+				new SiEntryInput(this.qualifier.identifier.id, fieldInputMap));
 	}
 
 	// handleError(error: SiEntryError) {

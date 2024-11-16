@@ -24,7 +24,6 @@ namespace rocket\ui\si\api\request;
 
 use n2n\web\http\controller\impl\ControllingUtils;
 use n2n\web\http\Method;
-use rocket\ui\si\input\SiInputFactory;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\web\http\StatusException;
 use n2n\web\http\BadRequestException;
@@ -52,14 +51,24 @@ class SiZoneCall implements \JsonSerializable {
 			return null;
 		}
 
-		$param = $cu->getParamPost('si-zone-call');
+		$param = $cu->getParamPost('call');
 		if ($param === null) {
 			return null;
 		}
 
 		$httpData = $param->parseJsonToHttpData();
-		$zoneControlName = $httpData->reqString('zoneControlName');
+		try {
+			$siControlCall = SiControlCall::parse($httpData->reqArray('controlCall'));
+		} catch (CorruptedSiDataException $e) {
+			throw new BadRequestException(previous: $e);
+		}
 
+		if ($siControlCall->getMaskId() !== null || $siControlCall->getEntryId() !== null) {
+			throw new BadRequestException('ZoneCall can not handle controls of specific masks oder entries.'
+					. 'Problem: maskId or entryId was provided.');
+		}
+
+		$zoneControlName = $siControlCall->getControlName();
 
 		$siInput = null;
 		if (null !== ($inputData = $httpData->optArray('input'))) {

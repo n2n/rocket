@@ -110,6 +110,7 @@ class SiApi {
 			$valueBoundaries[] = $valueBoundary;
 		}
 
+
 		return new SiInputResult($valueBoundaries, $valid);
 	}
 
@@ -117,6 +118,12 @@ class SiApi {
 	 * @throws UnknownSiElementException
 	 */
 	private function handleControlCall(SiControlCall $controlCall, N2nContext $n2nContext): SiCallResponse {
+		$maskId =  $controlCall->getMaskId();
+
+		if ($maskId === null) {
+			throw new UnknownSiElementException('Could not find control because no maskId was provided.');
+		}
+
 		$entryId = $controlCall->getEntryId();
 		if ($entryId !== null) {
 			return $this->model->getSiEntryControl($controlCall->getMaskId(), $entryId, $controlCall->getControlName())

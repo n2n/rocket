@@ -28,14 +28,14 @@ use n2n\util\type\attrs\AttributesException;
 class SiControlCall {
 
 	/**
-	 * @param string $maskId
+	 * @param string|null $maskId
 	 * @param string|null $entryId if not null the call is meant for an entry control
 	 * @param string $controlName
 	 */
-	function __construct(private string $maskId, private ?string $entryId, private string $controlName) {
+	function __construct(private ?string $maskId, private ?string $entryId, private string $controlName) {
 	}
 
-	function getMaskId(): string {
+	function getMaskId(): ?string {
 		return $this->maskId;
 	}
 
@@ -65,7 +65,7 @@ class SiControlCall {
 
 		$dataMap = new DataMap($data);
 		try {
-			return new SiControlCall($dataMap->reqString('maskId'), $dataMap->optString('entryId'),
+			return new SiControlCall($dataMap->optString('maskId'), $dataMap->optString('entryId'),
 					$dataMap->reqString('controlName'));
 		} catch (AttributesException $e) {
 			throw new CorruptedSiDataException(previous: $e);

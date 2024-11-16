@@ -1,5 +1,5 @@
 
 export class SiControlCall {
-	constructor(public maskId: string, public entryId: string|null, public controlName: string) {
+	constructor(public maskId: string|null, public entryId: string|null, public controlName: string) {
 	}
 }

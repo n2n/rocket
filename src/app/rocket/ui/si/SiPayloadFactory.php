@@ -104,8 +104,8 @@ class SiPayloadFactory extends JsonPayload {
 		ArgUtils::valArray($controls, SiControl::class);
 		
 		$controlsArr = array();
-		foreach ($controls as $control) {
-			$controlsArr[] = [
+		foreach ($controls as $controlName => $control) {
+			$controlsArr[$controlName] = [
 				'type' => $control->getType(),
 				'data' => $control->getData()
 			];

@@ -9,7 +9,7 @@ export class SplitContextCopy {
 
 		const promises = new Array<Promise<void>>();
 		for (const [key, value] of map) {
-			const entry = value.getLoadedSiEntry();
+			const entry = value.getLoadedSiValueBoundary();
 			if (entry) {
 				continue;
 			}
@@ -28,7 +28,7 @@ export class SplitContextCopy {
 		const promises = new Array<Promise<boolean>>();
 
 		for (const [key, genericEntry] of this.genericMap) {
-			const siValueBoundary = splitContentMap.get(key)?.getLoadedSiEntry();
+			const siValueBoundary = splitContentMap.get(key)?.getLoadedSiValueBoundary();
 			if (siValueBoundary) {
 				promises.push(siValueBoundary.paste(genericEntry));
 			}

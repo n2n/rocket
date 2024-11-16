@@ -94,6 +94,9 @@ class AddController extends ControllerAdapter {
 	 * @throws StatusException
 	 */
 	private function live($copyPid = null): void {
+		if ($this->opuCtrl->forwardHtml()) {
+			return;
+		}
 
 		$this->opuCtrl->pushOverviewBreadcrumb()
 				->pushCurrentAsSirefBreadcrumb($this->dtc->t('common_add_label'));
