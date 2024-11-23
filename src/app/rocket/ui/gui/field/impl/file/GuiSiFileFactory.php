@@ -38,6 +38,8 @@ use rocket\op\ei\EiCmdPath;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\content\impl\SiFileFactory;
 use n2n\l10n\DynamicTextCollection;
+use rocket\ui\gui\res\GuiResourceRegistry;
+use rocket\ui\gui\res\GuiResourceController;
 
 class GuiSiFileFactory implements SiFileFactory {
 	
@@ -114,7 +116,7 @@ class GuiSiFileFactory implements SiFileFactory {
 	 * @param Eiu $eiu
 	 * @return \rocket\ui\si\content\impl\SiFile
 	 */
-	function createSiFile(File $file, N2nContext $n2nContext): SiFile {
+	function createSiFile(File $file, bool $imageSupported, N2nContext $n2nContext): SiFile {
 		if (!$file->isValid()) {
 			$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
 			return new SiFile(SiFileId::create($file), $dtc->t('missing_file_err'));
@@ -133,9 +135,15 @@ class GuiSiFileFactory implements SiFileFactory {
 		if ($fileSource->isHttpAccessible()) {
 			$siFile->setUrl($fileSource->getUrl());
 		} else if ($tmpQualifiedName !== null) {
-			$siFile->setUrl($this->createTmpUrl($eiu, $tmpQualifiedName));
+			$fileAccessToken = $n2nContext->lookup(GuiResourceRegistry::class)
+					->registerFile(TmpFileManager::class, $tmpQualifiedName);
+			$siFile->setUrl(GuiResourceController::determineFileUrl($fileAccessToken, $n2nContext));
 		} else {
-			$siFile->setUrl($this->createFileUrl($eiu, $eiu->entry()->getPid()));
+			$fileAccessToken = $n2nContext->lookup(GuiResourceRegistry::class)->registerFile(
+					$file->getFileSource()->getFileManagerName(),
+					$file->getFileSource()->getQualifiedName());
+
+			$siFile->setUrl(GuiResourceController::determineFileUrl($fileAccessToken, $n2nContext));
 		}
 
 		if (!$imageSupported) {
@@ -153,11 +161,17 @@ class GuiSiFileFactory implements SiFileFactory {
 		if ($thumbFile->getFileSource()->isHttpAccessible()) {
 			$siFile->setThumbUrl($thumbFile->getFileSource()->getUrl());
 		} else if ($tmpQualifiedName !== null) {
-			$siFile->setThumbUrl($this->createTmpThumbUrl($eiu, $tmpQualifiedName,
-					SiFile::getThumbStrategy()->getImageDimension()));
+			$fileAccessToken = $n2nContext->lookup(GuiResourceRegistry::class)->registerFile(
+					TmpFileManager::class,
+					$file->getFileSource()->getQualifiedName(),
+					SiFile::getThumbStrategy()->getImageDimension());
+			$siFile->setThumbUrl(GuiResourceController::determineFileUrl($fileAccessToken, $n2nContext));
 		} else {
-			$siFile->setThumbUrl($this->createThumbUrl($eiu,
-					SiFile::getThumbStrategy()->getImageDimension()));
+			$fileAccessToken = $n2nContext->lookup(GuiResourceRegistry::class)->registerFile(
+					$file->getFileSource()->getFileManagerName(),
+					$file->getFileSource()->getQualifiedName(),
+					SiFile::getThumbStrategy()->getImageDimension());
+			$siFile->setThumbUrl(GuiResourceController::determineFileUrl($fileAccessToken, $n2nContext));
 		}
 
 		$siFile->setMimeType($thumbImageFile->getImageSource()->getMimeType());

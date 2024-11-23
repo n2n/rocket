@@ -19,6 +19,7 @@ import { SiApiCall } from '../model/api/si-api-call';
 import { SiApiCallResponse } from '../model/api/si-api-call-response';
 import { SiControlCall } from '../model/api/si-control-call';
 import { SiFieldCall } from '../model/api/si-field-call';
+import { SiFieldCallResponse } from '../model/api/si-field-call-response';
 
 @Injectable({
 	providedIn: 'root'
@@ -94,7 +95,7 @@ export class SiService {
 		// 		}));
 	}
 
-	fieldCall(apiUrl: string, maskId: string, entryId: string|null, fieldName: string, data: object, uploadMap: Map<string, Blob>): Observable<any> {
+	fieldCall(apiUrl: string, maskId: string, entryId: string|null, fieldName: string, data: object, uploadMap: Map<string, Blob>): Observable<SiFieldCallResponse> {
 		// const formData = new FormData();
 		// formData.append('apiCallId', JSON.stringify(apiCallId));
 		// formData.append('data', JSON.stringify(data));
@@ -119,7 +120,8 @@ export class SiService {
 		// 			return new Extractor(responseData).nullaObject('data');
 		// 		}));
 
-		return this.apiCall(apiUrl, SiApiCall.fieldCall(new SiFieldCall(maskId, entryId, fieldName, data)), uploadMap);
+		return this.apiCall(apiUrl, SiApiCall.fieldCall(new SiFieldCall(maskId, entryId, fieldName, data)), uploadMap)
+				.pipe(map((r) => r.fieldCallResponse!));
 
 	}
 

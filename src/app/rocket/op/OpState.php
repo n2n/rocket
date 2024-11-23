@@ -25,10 +25,13 @@ use n2n\context\RequestScoped;
 use rocket\op\launch\LaunchPad;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiBreadcrumb;
+use n2n\util\uri\Url;
+use n2n\util\ex\IllegalStateException;
 
 class OpState implements RequestScoped {
 	private $breadcrumbs = array();
 	private $activeLaunchPad;
+	private ?Url $guiResourceUrl = null;
 	
 	public function __construct() {
 	}
@@ -68,5 +71,15 @@ class OpState implements RequestScoped {
 	 */
 	public function addBreadcrumb(SiBreadcrumb $breadcrumb) {
 		$this->breadcrumbs[] = $breadcrumb;
+	}
+
+	function setGuiResourceUrl(Url $url): void {
+		$this->guiResourceUrl = $url;
+	}
+
+	function getGuiResourceUrl(): Url {
+		IllegalStateException::assertTrue($this->guiResourceUrl !== null);
+
+		return $this->guiResourceUrl;
 	}
 }

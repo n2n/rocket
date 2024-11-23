@@ -32,10 +32,8 @@ use n2n\web\http\UploadDefinition;
 use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
-	/**
-	 * @var File|null
-	 */
-	private ?File $value;
+
+	private ?SiFile $value;
 	/**
 	 * @var Url
 	 */
@@ -84,19 +82,12 @@ class FileInSiField extends InSiFieldAdapter {
 		return $this->fileHandler;
 	}
 
-	/**
-	 * @param SiFile|null $value
-	 * @return \rocket\si\content\impl\FileInSiField
-	 */
-	function setValue(?File $value): static {
+	function setValue(?SiFile $value): static {
 		$this->value = $value;
 		return $this;
 	}
-	
-	/**
-	 * @return File|null
-	 */
-	function getValue(): ?File {
+
+	function getValue(): ?SiFile {
 		return $this->value;
 	}
 

@@ -34,6 +34,7 @@ use rocket\op\ei\manage\veto\EiLifecycleMonitor;
 use rocket\op\ei\manage\frame\EiFrame;
 use n2n\persistence\orm\util\NestedSetUtils;
 use n2n\util\ex\NotYetImplementedException;
+use n2n\util\uri\Url;
 
 class ManageState implements RequestScoped {
 	private $n2nContext;
@@ -46,6 +47,7 @@ class ManageState implements RequestScoped {
 	private $draftManager;
 	private $eiGuiDeclarationCache;
 	private $eiLifecycleMonitor;
+
 	
 	function __construct() {
 	}
@@ -218,7 +220,7 @@ class ManageState implements RequestScoped {
 	/**
 	 * @return \rocket\op\launch\TransactionApproveAttempt
 	 */
-	function flush() {
+	function flush(): \rocket\op\launch\TransactionApproveAttempt {
 		return $this->getEiLifecycleMonitor()
 				->approve($this->getN2nContext());
 	}

@@ -101,7 +101,7 @@ class SiValueBoundary {
 		return 'SiValueBoundary TODO: insert identifier...';
 	}
 	
-	function toJsonStruct(N2nContext $n2NContext): array {
+	function toJsonStruct(N2nContext $n2nContext): array {
 		$entries = array();
 		foreach ($this->entries as $id => $buildup) {
 			$entries[$id] = $buildup;
@@ -110,7 +110,7 @@ class SiValueBoundary {
 		return [
 //			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
-			'entries' => array_map(fn (SiEntry $e) => $e->toJsonStruct($n2NContext), $entries),
+			'entries' => array_map(fn (SiEntry $e) => $e->toJsonStruct($n2nContext), $entries),
 			'selectedMaskId' => $this->selectedMaskId
 		];
 	}

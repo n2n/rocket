@@ -76,7 +76,7 @@ class GuiSiApiModel implements SiApiModel {
 		return $siControl;
 	}
 
-	function lookupSiField(string $maskId, string $entryId, string $fieldName): SiField {
+	function lookupSiField(string $maskId, ?string $entryId, string $fieldName): SiField {
 		$entry = $this->lookupSiValueBoundary($maskId, $entryId, null)->getSelectedEntry();
 		if ($entry->containsFieldName($fieldName)) {
 			return $entry->getField($fieldName);

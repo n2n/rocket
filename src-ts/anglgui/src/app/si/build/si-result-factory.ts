@@ -9,6 +9,7 @@ import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiApiCallResponse } from '../model/api/si-api-call-response';
 import { SiApiCall } from '../model/api/si-api-call';
+import { SiFieldCallResponse } from '../model/api/si-field-call-response';
 
 export class SiResultFactory {
 
@@ -55,16 +56,21 @@ export class SiResultFactory {
 
 		let inputResult: SiInputResult|undefined;
 		let callResponse: SiCallResponse|undefined;
+		let fieldCallResponse: SiFieldCallResponse|undefined;
 
 		if (extr.contains('inputResult') && apiCall.input) {
 			inputResult = this.createInputResult(extr.reqObject('inputResult'), apiCall.input.declaration);
 		}
 
-		if (extr.contains('callResponse')) {
+		if (data.callResponse) {
 			callResponse = this.createCallResponse(extr.reqObject('callResponse'))
 		}
 
-		return { inputResult, callResponse }
+		if (data.fieldCallResponse) {
+			fieldCallResponse = this.createFieldCallResponse(extr.reqObject('fieldCallResponse'))
+		}
+
+		return { inputResult, callResponse, fieldCallResponse }
 	}
 
 	private createCallResponse(data: any): SiCallResponse {
@@ -136,5 +142,12 @@ export class SiResultFactory {
 
 	// 	return fieldError;
 	// }
+
+	private createFieldCallResponse(data: any): SiFieldCallResponse {
+		const extr = new Extractor(data);
+		return  {
+			data: extr.reqObject('data')
+		}
+	}
 
 }

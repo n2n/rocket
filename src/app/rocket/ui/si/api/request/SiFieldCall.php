@@ -29,11 +29,11 @@ class SiFieldCall {
 
 	/**
 	 * @param string $maskId
-	 * @param string $entryId if not null the call is meant for an entry control
+	 * @param string|null $entryId if not null the call is meant for an entry control
 	 * @param string $fieldName
 	 * @param array $data
 	 */
-	function __construct(private string $maskId, private string $entryId, private string $fieldName,
+	function __construct(private string $maskId, private ?string $entryId, private string $fieldName,
 			private array $data)	 {
 	}
 
@@ -72,7 +72,7 @@ class SiFieldCall {
 
 		$dataMap = new DataMap($data);
 		try {
-			return new SiFieldCall($dataMap->reqString('maskId'), $dataMap->reqString('entryId'),
+			return new SiFieldCall($dataMap->reqString('maskId'), $dataMap->optString('entryId'),
 					$dataMap->reqString('fieldName'), $dataMap->reqArray('data'));
 		} catch (AttributesException $e) {
 			throw new CorruptedSiDataException(previous: $e);

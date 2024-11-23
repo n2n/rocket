@@ -58,12 +58,12 @@ interface SiApiModel {
 
 	/**
 	 * @param string $maskId
-	 * @param string $entryId
+	 * @param string|null $entryId
 	 * @param string $fieldName
 	 * @return SiField
 	 * @throws UnknownSiElementException
 	 */
-	function lookupSiField(string $maskId, string $entryId, string $fieldName): SiField;
+	function lookupSiField(string $maskId, ?string $entryId, string $fieldName): SiField;
 
 	/**
 	 * @param string $maskId

@@ -22,11 +22,11 @@
 
 namespace rocket\ui\si\api\response;
 
-class SiFieldCallResponse {
+use hangar\ui\json\JsonData;
 
+class SiFieldCallResponse implements \JsonSerializable {
 
 	function __construct(private array $data) {
-
 	}
 
 	/**

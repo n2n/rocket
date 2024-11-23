@@ -46,12 +46,12 @@ class GuiSiFileHandler implements SiFileHandler {
 
 		$tmpFileManager->add($file, $n2nContext->getHttpContext()->getSession());
 
-		return SiUploadResult::createSuccess($this->guiSiFileFactory->createSiFile($file, $n2nContext,
-				$this->fileVerificator->isImageRecognized()));
+		return SiUploadResult::createSuccess($this->guiSiFileFactory->createSiFile($file,
+				$this->fileVerificator->isImageRecognized(), $n2nContext));
 	}
 
-	function createSiFile(File $file, N2nContext $n2NContext): SiFile {
-		return $this->guiSiFileFactory->createSiFile($file, $n2NContext);
+	function createSiFile(File $file, N2nContext $n2nContext): SiFile {
+		return $this->guiSiFileFactory->createSiFile($file, $this->fileVerificator->isImageRecognized(), $n2nContext);
 	}
 
 	function getSiFileByRawId(array $rawId): ?SiFile {

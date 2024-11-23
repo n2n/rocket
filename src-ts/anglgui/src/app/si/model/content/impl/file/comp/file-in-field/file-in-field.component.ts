@@ -224,13 +224,16 @@ class CommonImageEditorModel implements ImageEditorModel {
 		this.uploadingFile = file;
 		this.uploadInitiated = true;
 
-		const data = await this.siService.fieldCall(this.model.getApiUrl(), this.model.getMaskId(),
+		const fieldCallResponse = await this.siService.fieldCall(this.model.getApiUrl(), this.model.getMaskId(),
 				this.model.getEntryId(), this.model.getFieldName(), { fileName }, new Map().set('upload', file)).toPromise();
+
+		const data = fieldCallResponse?.data;
 
 		this.uploadingFile = null;
 		if (data.error) {
 			return { uploadErrorMessage: data.error };
 		}
+		console.log(data);
 		const siFile = SiEssentialsFactory.buildSiFile(data.file);
 		this.model.setSiFile(siFile);
 		return { siFile: siFile || undefined };

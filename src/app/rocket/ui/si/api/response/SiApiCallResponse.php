@@ -76,7 +76,8 @@ class SiApiCallResponse implements \JsonSerializable {
 	function jsonSerialize(): mixed {
 		return [
 			'callResponse' => $this->callResponse,
-			'getResponse' => $this->getResponse
+			'getResponse' => $this->getResponse,
+			'fieldCallResponse' => $this->fieldCallResponse
 		];
 	}
 }

@@ -40,6 +40,7 @@ use n2n\web\http\controller\impl\ScrBaseController;
 use n2n\l10n\MessageContainer;
 use n2n\core\N2N;
 use n2n\web\http\NoHttpRefererGivenException;
+use rocket\ui\gui\res\GuiResourceController;
 
 class RocketController extends ControllerAdapter {
 	const NAME = 'rocket';
@@ -149,6 +150,8 @@ class RocketController extends ControllerAdapter {
 			throw new ForbiddenException();
 		}
 
+		$rocketState->setGuiResourceUrl($this->getUrlToController('guires'));
+
 		$rocketState->setActiveLaunchPad($launchPad);
 
 		$this->beginTransaction();
@@ -193,6 +196,10 @@ class RocketController extends ControllerAdapter {
 		if (!$this->verifyUser()) return;
 		
 		$this->delegate($scrBaseController);
+	}
+
+	function doGuiRes(GuiResourceController $controller, array $params = null): void {
+		$this->delegate($controller);
 	}
 	
 	public function notFound() {
