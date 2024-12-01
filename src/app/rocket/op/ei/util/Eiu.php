@@ -15,7 +15,7 @@ use rocket\op\ei\util\spec\EiuCmd;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
 use rocket\op\ei\util\gui\EiuGuiDefinition;
 
-class Eiu implements Lookupable {
+class Eiu /*implements Lookupable*/ {
 	private $eiuAnalyst;
 	private $eiuContext;
 	private $eiuEngine;

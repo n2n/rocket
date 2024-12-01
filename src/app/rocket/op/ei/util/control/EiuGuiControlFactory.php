@@ -34,6 +34,7 @@ use n2n\core\container\N2nContext;
 use rocket\ui\gui\GuiCallResponse;
 use n2n\util\type\TypeConstraints;
 use rocket\op\util\OpfControlResponse;
+use rocket\op\ei\util\Eiu;
 
 class EiuGuiControlFactory {
 	private $eiuAnalyst;

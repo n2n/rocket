@@ -79,7 +79,7 @@ class GuiFields {
 	}
 
 	static function fileOut(?File $file): OutGuiField {
-		return new OutGuiField(SiFields::fileOut($file, new GuiSiFileFactory()));
+		return new OutGuiField(SiFields::fileOut($file, new GuiSiFileHandler(new GuiSiFileFactory(), new GuiFileVerificator())));
 	}
 
 	static function fileIn(bool $mandatory = false, ?int $maxSize = null, ?array $allowedExtensions = null,

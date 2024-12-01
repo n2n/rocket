@@ -64,7 +64,7 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 	    	return GuiFields::out(SiFields::stringOut(''));
 	    }
 	    
-		if ($eiu->guiMaskDeclaration()->isCompact()) {
+		if ($eiu->guiDefinition()->isCompact()) {
 			return GuiFields::out(SiFields
 					::stringOut(StringUtils::reduce(html_entity_decode(strip_tags($value), encoding: N2N::CHARSET), 50, '...')));
 		}

@@ -26,7 +26,7 @@ use n2n\core\container\N2nContext;
 class SiZoneCallResponse {
 
 	private ?SiInputResult $inputResult = null;
-	private ?SiCallResponse $callResult = null;
+	private ?SiCallResponse $callResponse = null;
 
 	public function getInputResult(): ?SiInputResult {
 		return $this->inputResult;
@@ -37,18 +37,18 @@ class SiZoneCallResponse {
 	}
 
 	public function getCallResponse(): ?SiCallResponse {
-		return $this->callResult;
+		return $this->callResponse;
 	}
 
 	public function setCallResponse(?SiCallResponse $callResult): static {
-		$this->callResult = $callResult;
+		$this->callResponse = $callResult;
 		return $this;
 	}
 
 	function toJsonStruct(N2nContext $n2nContext): mixed {
 		return [
-			'callResult' => $this->callResult,
-			'inputResult' => $this->inputResult->toJsonStruct($n2nContext),
+			'callResponse' => $this->callResponse,
+			'inputResult' => $this->inputResult?->toJsonStruct($n2nContext),
 		];
 	}
 }

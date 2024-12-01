@@ -110,7 +110,7 @@ class BulkyEntrySiGui implements SiGui {
 			return SiInputResult::error([$this->valueBoundary]);
 		}
 
-		throw new \InvalidArgumentException();
+		throw new CorruptedSiDataException('No ValueBoundaryInputs provided.');
 	}
 
 

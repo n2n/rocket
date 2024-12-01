@@ -35,6 +35,8 @@ interface SiFileHandler {
 	 * @return SiFile|null
 	 */
 	function getSiFileByRawId(array $rawId): ?SiFile;
+
+	function createSiFile(File $file, N2nContext $n2nContext): SiFile;
 }
 
 class SiUploadResult {

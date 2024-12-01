@@ -27,13 +27,13 @@ class FileOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @var File|null
 	 */
-	private $value;
+	private ?File $value = null;
 
 	/**
 	 * @param File|null $value
-	 * @param SiFileFactory $siFileFactory
+	 * @param SiFileHandler $siFileHandler
 	 */
-	function __construct(?File $value, private SiFileFactory $siFileFactory) {
+	function __construct(?File $value, private SiFileHandler $siFileHandler) {
 		$this->value = $value;	
 	}
 
@@ -41,7 +41,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 * @param File|null $value
 	 * @return FileOutSiField
 	 */
-	function setValue(?File $value) {
+	function setValue(?File $value): static {
 		$this->value = $value;
 		return $this;
 	}
@@ -67,7 +67,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'value' => ($this->value === null ? null : $this->siFileFactory->createSiFile($this->value, $n2nContext)),
+			'value' => ($this->value === null ? null : $this->siFileHandler->createSiFile($this->value, $n2nContext)),
 			...parent::toJsonStruct($n2nContext)
 		];
 	}
