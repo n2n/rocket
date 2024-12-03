@@ -52,7 +52,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->propertyAccessProxy = $propertyAccessProxy;

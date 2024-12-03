@@ -35,7 +35,7 @@ class CompactEntrySiGui implements SiGui {
 	private $valueBoundary;
 	private $controls;
 	
-	function __construct(SiFrame $frame, SiDeclaration $declaration, SiValueBoundary $valueBoundary = null, array $controls = []) {
+	function __construct(SiFrame $frame, SiDeclaration $declaration, ?SiValueBoundary $valueBoundary = null, array $controls = []) {
 		$this->frame = $frame;
 		$this->declaration = $declaration;
 		$this->setValueBoundary($valueBoundary);

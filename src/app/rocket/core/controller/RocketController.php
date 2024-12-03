@@ -198,7 +198,7 @@ class RocketController extends ControllerAdapter {
 		$this->delegate($scrBaseController);
 	}
 
-	function doGuiRes(GuiResourceController $controller, array $params = null): void {
+	function doGuiRes(GuiResourceController $controller, ?array $params = null): void {
 		$this->delegate($controller);
 	}
 	

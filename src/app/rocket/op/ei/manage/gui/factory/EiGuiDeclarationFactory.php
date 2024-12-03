@@ -59,7 +59,7 @@ class EiGuiDeclarationFactory {
 	 * @param array|null $defPropPaths
 	 * @return void
 	 */
-	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, array $defPropPaths = null): void {
+	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, ?array $defPropPaths = null): void {
 		$contextEiMask = $this->contextEiMask;
 				
 		if (!$this->testIfAllowed($contextEiMask->getEiType(), $nonAbstractOnly, null)) {
@@ -72,7 +72,7 @@ class EiGuiDeclarationFactory {
 	}
 
 	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractsOnly,
-			array $allowedEiTypes = null, array $defPropPaths = null): void {
+			?array $allowedEiTypes = null, ?array $defPropPaths = null): void {
 		$contextEiMask = $this->contextEiMask;
 		$contextEiType = $contextEiMask->getEiType();
 		

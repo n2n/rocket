@@ -39,8 +39,8 @@ class CkeMag extends StringMag {
 	private $ckeCssConfig;
 
 	public function __construct($label, $value = null, bool $mandatory = false, 
-			int $maxlength = null, array $inputAttrs = null, string $mode = CkeEiPropNature::MODE_NORMAL, bool $bbcode = false,
-			bool $tableEditing = false, array $ckeLinkProviders, CkeCssConfig $ckeCssConfig = null) {
+			?int $maxlength = null, ?array $inputAttrs = null, string $mode = CkeEiPropNature::MODE_NORMAL, bool $bbcode = false,
+			bool $tableEditing = false, array $ckeLinkProviders, ?CkeCssConfig $ckeCssConfig = null) {
 		ArgUtils::valArray($ckeLinkProviders, CkeLinkProvider::class);
 		
 		parent::__construct($label, $value, $mandatory, $maxlength, true, $inputAttrs);

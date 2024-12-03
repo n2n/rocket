@@ -65,8 +65,8 @@ class CompactExplorerSiGui implements SiGui {
 	 * @param SiDeclaration|null $declaration
 	 * @param SiPartialContent|null $partialContent
 	 */
-	public function __construct(SiFrame $frame, int $pageSize, SiDeclaration $declaration = null,
-			SiPartialContent $partialContent = null) {
+	public function __construct(SiFrame $frame, int $pageSize, ?SiDeclaration $declaration = null,
+			?SiPartialContent $partialContent = null) {
 		$this->frame = $frame;
 		$this->pageSize = $pageSize;
 		$this->declaration = $declaration;

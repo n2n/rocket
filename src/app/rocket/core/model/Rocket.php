@@ -146,7 +146,7 @@ class Rocket implements RequestScoped {
 		return $this->draftManagers[$emObjHash];
 	}
 	
-// 	private function getTranslationModel($entity, EntityManager $em = null) {
+// 	private function getTranslationModel($entity, ?EntityManager $em = null) {
 // 		$className = get_class($entity);
 // 		if (isset($this->translationModels[$className])) {
 // 			return $this->translationModels[$className];
@@ -166,7 +166,7 @@ class Rocket implements RequestScoped {
 // 		return $this->translationModels[$className];
 // 	}
 	
-// 	public function translate($entity, N2nLocale $n2nLocale, EntityManager $em = null) {
+// 	public function translate($entity, N2nLocale $n2nLocale, ?EntityManager $em = null) {
 // 		if (N2nLocale::getDefault()->equals($n2nLocale)) {
 // 			return $entity;
 // 		}
@@ -183,7 +183,7 @@ class Rocket implements RequestScoped {
 // 				->getTranslatedEntity();
 // 	}
 	
-// 	public function translateArray($entries, N2nLocale $n2nLocale, EntityManager $em = null) {		
+// 	public function translateArray($entries, N2nLocale $n2nLocale, ?EntityManager $em = null) {
 // 		$translatedEntries = array();
 // 		if ($entries instanceof \ArrayObject) {
 // 			$translatedEntries = new \ArrayObject();

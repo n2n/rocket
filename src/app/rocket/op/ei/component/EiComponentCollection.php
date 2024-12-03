@@ -72,7 +72,7 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	/**
 	 * @param EiComponentCollection $inheritedCollection
 	 */
-	public function setInheritedCollection(EiComponentCollection $inheritedCollection = null) {
+	public function setInheritedCollection(?EiComponentCollection $inheritedCollection = null) {
 		$this->ensureNoEiEngine();
 
 		$this->inheritedCollection = $inheritedCollection;

@@ -28,7 +28,7 @@ class LaunchPadExtraction {
 	private $moduleNamespace;
 	private $label;
 	
-	public function __construct(TypePath $typePath, string $moduleNamespace, string $label = null) {
+	public function __construct(TypePath $typePath, string $moduleNamespace, ?string $label = null) {
 		$this->typePath = $typePath;
 		$this->moduleNamespace = $moduleNamespace;
 		$this->label = $label;

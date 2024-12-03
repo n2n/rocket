@@ -28,7 +28,7 @@ class IframeConfig {
 		$this->setUseTemplate($dataSet->optBool(self::ATTR_USE_TEMPLATE_KEY, true));
 	}
 
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 		$dataSet->set(self::ATTR_USE_TEMPLATE_KEY, true);
 	}
 
@@ -108,7 +108,7 @@ class IframeConfig {
 	/**
 	 * @param string|null $controllerLookupId
 	 */
-	public function setControllerLookupId(string $controllerLookupId = null) {
+	public function setControllerLookupId(?string $controllerLookupId = null) {
 		$this->controllerLookupId = $controllerLookupId;
 	}
 }

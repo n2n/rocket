@@ -133,7 +133,7 @@
 ////	 * @param bool $guiStructureDeclarationsRequired
 ////	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration
 ////	 */
-////	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, array $defPropPaths = null,
+////	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, ?array $defPropPaths = null,
 ////			bool $guiStructureDeclarationsRequired = true) {
 ////		$contextEiMask = $eiGuiDeclaration->getContextEiMask();
 ////
@@ -154,7 +154,7 @@
 ////	 * @param bool $guiStructureDeclarationsRequired
 ////	 * @return \rocket\op\ei\manage\gui\EiGuiMaskDeclaration[]
 ////	 */
-////	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $creatablesOnly, array $allowedTypes = null,
+////	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $creatablesOnly, ?array $allowedTypes = null,
 ////			array $defPropPaths = null, bool $guiStructureDeclarationsRequired = true) {
 ////		$contextEiMask = $eiGuiDeclaration->getContextEiMask();
 ////		$contextEiType = $contextEiMask->getEiType();

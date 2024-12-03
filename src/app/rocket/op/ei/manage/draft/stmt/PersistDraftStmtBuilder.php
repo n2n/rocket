@@ -31,7 +31,7 @@ interface PersistDraftStmtBuilder extends DraftStmtBuilder {
 	 * @param string $rawValue
 	 * @return string
 	 */
-	public function registerColumnRawValue(EiPropPath $eiPropPath, string $rawValue = null);
+	public function registerColumnRawValue(EiPropPath $eiPropPath, ?string $rawValue = null);
 	
 	/**
 	 * @param EiPropPath $eiPropPath

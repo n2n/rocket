@@ -38,7 +38,7 @@ class SiFile implements \JsonSerializable {
 	 * @param string $name
 	 * @param Url|null $url
 	 */
-	function __construct(\JsonSerializable $id, string $name, Url $url = null) {
+	function __construct(\JsonSerializable $id, string $name, ?Url $url = null) {
 		$this->id = $id;
 		$this->name = $name;
 		$this->url = $url;

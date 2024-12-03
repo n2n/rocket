@@ -22,7 +22,7 @@ class EiuContext {
 	 * @param Spec $spec
 	 * @param N2nContext $n2nContext
 	 */
-	function __construct(Spec $spec, EiuAnalyst $eiuAnalyst = null) {
+	function __construct(Spec $spec, ?EiuAnalyst $eiuAnalyst = null) {
 		$this->spec = $spec;
 		$this->eiuAnalyst = $eiuAnalyst;
 	}

@@ -39,7 +39,7 @@ class Draft {
 	private $draftValueMap = array();
 	
 	public function __construct(?int $id, EiEntityObj $eiEntityObj, \DateTime $lastMod, 
-			int $userId = null, DraftValueMap $draftValueMap = null) {
+			?int $userId = null, ?DraftValueMap $draftValueMap = null) {
 		$this->id = $id;
 		$this->eiEntityObj = $eiEntityObj;
 		$this->lastMod = $lastMod;
@@ -107,7 +107,7 @@ class Draft {
 		return $this->userId;
 	}
 	
-	public function setUserId(int $userId = null) {
+	public function setUserId(?int $userId = null) {
 		$this->userId = $userId;
 	}
 	

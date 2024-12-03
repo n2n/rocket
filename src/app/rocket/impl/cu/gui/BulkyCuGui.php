@@ -130,7 +130,7 @@ class BulkyCuGui implements CuGui {
 		throw new CorruptedSiDataException('Unknown control id: ' . $controlId);
 	}
 
-	function toSiGui(Url $zoneApiUrl = null): SiGui {
+	function toSiGui(?Url $zoneApiUrl = null): SiGui {
 		IllegalStateException::assertTrue(empty($this->cuControls) || $zoneApiUrl !== null,
 				'Zone api url not available, but controls of this gui requires one.');
 

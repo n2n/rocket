@@ -42,7 +42,7 @@ class RocketUserForm implements Dispatchable {
 	private $availableRocketUserGroups;
 	private $maxPower = null;
 	
-	public function __construct(RocketUser $user, array $availableRocketUserGroups = null) {
+	public function __construct(RocketUser $user, ?array $availableRocketUserGroups = null) {
 		$this->rocketUser = $user;
 		$this->power = $user->getPower();
 		$this->setAvailableRocketUserGroups($availableRocketUserGroups);
@@ -73,7 +73,7 @@ class RocketUserForm implements Dispatchable {
 		return $powerOptions;
 	}
 		
-	public function setAvailableRocketUserGroups(array $availableRocketUserGroups = null) {
+	public function setAvailableRocketUserGroups(?array $availableRocketUserGroups = null) {
 		if ($availableRocketUserGroups === null) {
 			$this->availableRocketUserGroups = null;
 			return;

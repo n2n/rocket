@@ -26,7 +26,7 @@ class GuiResourceRegistry {
 	#[Inject]
 	private N2nContext $n2nContext;
 
-	function registerFile(string $fileManagerLookupId, string $qualifiedName, ImageDimension $imageDimension = null): string {
+	function registerFile(string $fileManagerLookupId, string $qualifiedName, ?ImageDimension $imageDimension = null): string {
 		$key = $this->createKey($fileManagerLookupId, $qualifiedName, $imageDimension);
 		if (isset($this->fileAccessTokens[$key])) {
 			return $this->fileAccessTokens[$key];

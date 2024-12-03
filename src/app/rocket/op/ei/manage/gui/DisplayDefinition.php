@@ -16,7 +16,7 @@ class DisplayDefinition {
 	 * @param string $siStructureType
 	 * @param bool $defaultDisplayed
 	 */
-	public function __construct(string $siStructureType, bool $defaultDisplayed, string $overwriteLabel = null, string $overwriteHelpText = null) {
+	public function __construct(string $siStructureType, bool $defaultDisplayed, ?string $overwriteLabel = null, ?string $overwriteHelpText = null) {
 		ArgUtils::valEnum($siStructureType, SiStructureType::all());
 		
 		$this->siStructureType = $siStructureType;

@@ -30,7 +30,7 @@ class StringArrayEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return false;
 	}
 
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		parent::setPropertyAccessProxy($propertyAccessProxy);
 
 		$propertyAccessProxy->setConstraint(TypeConstraint::createArrayLike('array', false,

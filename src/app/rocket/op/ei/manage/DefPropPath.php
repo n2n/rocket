@@ -57,7 +57,7 @@ class DefPropPath implements Hashable {
 	 * @param int|null $length
 	 * @return DefPropPath
 	 */
-	public function subDefPropPath(int $offset, int $length = null) {
+	public function subDefPropPath(int $offset, ?int $length = null) {
 		return new DefPropPath(array_slice($this->eiPropPaths, $offset, $length));
 	}
 	

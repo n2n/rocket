@@ -49,7 +49,7 @@
 //		return $this->searchStr;
 //	}
 //
-//	public function setSearchStr(string $searchStr = null) {
+//	public function setSearchStr(?string $searchStr = null) {
 //		$this->searchStr = $searchStr;
 //	}
 //
@@ -80,7 +80,7 @@
 //		}
 //	}
 //
-//	public static function create(EiuFrame $eiuFrame, CritmodSaveDao $critmodSaveDao, string $stateKey = null) {
+//	public static function create(EiuFrame $eiuFrame, CritmodSaveDao $critmodSaveDao, ?string $stateKey = null) {
 //		if ($stateKey === null) {
 //			$stateKey = uniqid();
 //		}

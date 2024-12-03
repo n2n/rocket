@@ -318,7 +318,7 @@ class EiFrame {
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
 	 */
-	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0): EiEntry {
+	public function createEiEntry(EiObject $eiObject, ?EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0): EiEntry {
 		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
 				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
 		$eiEntry->setEiEntryAccess($this->getEiExecution()->createEiEntryAccess($eiEntry));
@@ -476,7 +476,7 @@ class EiFrame {
 	 * @param EiEntry|null $eiEntry
 	 * @return \n2n\util\uri\Url
 	 */
-	public function getForkUrl(?EiCmdPath $eiCmdPath, EiPropPath $eiPropPath, string $mode, EiObject $eiObject = null) {
+	public function getForkUrl(?EiCmdPath $eiCmdPath, EiPropPath $eiPropPath, string $mode, ?EiObject $eiObject = null) {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = EiCmdPath::from($this->getEiExecution()->getEiCmd());
 		}
@@ -550,7 +550,7 @@ class EiForkLink {
 	private $mode;
 	private $parentEiObject;
 	
-	function __construct(EiFrame $parent, string $mode, EiObject $parentEiObject = null) {
+	function __construct(EiFrame $parent, string $mode, ?EiObject $parentEiObject = null) {
 		$this->parent = $parent;
 		ArgUtils::valEnum($mode, self::getModes());
 		$this->mode = $mode;

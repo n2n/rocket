@@ -32,7 +32,7 @@
 // 	private $cancelUrl;
 // 	private $eiuEntry;
 	
-// 	public function __construct(EiuFrame $eiuFrame, Url $cancelUrl = null, EiuEntry $eiuEntry = null) {
+// 	public function __construct(EiuFrame $eiuFrame, ?Url $cancelUrl = null, ?EiuEntry $eiuEntry = null) {
 // 		$this->eiuFrame = $eiuFrame;
 // 		$this->cancelUrl = $cancelUrl;
 // 		$this->eiuEntry = $eiuEntry;
@@ -167,7 +167,7 @@
 // // 	private $previewController;
 // // 	private $title;
 	
-// // 	public function __construct(CommandEntryModel $commandEntryModel = null, EntryModel $entryModel, PreviewController $previewController = null, $title = null) {
+// // 	public function __construct(?CommandEntryModel $commandEntryModel = null, EntryModel $entryModel, ?PreviewController $previewController = null, $title = null) {
 // // 		$this->eiFrame = $entryModel->getEiFrame();
 // // 		$this->commandEntryModel = $commandEntryModel;
 // // 		$this->entryModel = $entryModel;

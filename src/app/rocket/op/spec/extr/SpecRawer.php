@@ -230,7 +230,7 @@ class SpecRawer {
 		return $rawData;
 	}
 	
-	private function buildDisplayStructureRawData(DisplayStructure $displayStructure = null) {
+	private function buildDisplayStructureRawData(?DisplayStructure $displayStructure = null) {
 		if ($displayStructure === null) return null;
 	
 		$displaStructureData = array();

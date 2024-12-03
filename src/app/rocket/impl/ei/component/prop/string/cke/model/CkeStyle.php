@@ -29,7 +29,7 @@ class CkeStyle {
 	private $attrs;
 	private $styles;
 
-	public function __construct($name, $element, array $attrs = null, array $styles = null) {
+	public function __construct($name, $element, ?array $attrs = null, ?array $styles = null) {
 		$this->name = $name;
 		$this->element = strval($element);
 		$this->attrs = ArgUtils::toArray($attrs);

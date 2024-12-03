@@ -105,7 +105,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 		return $this->n2nLocaleDefs;
 	}
 
-// 	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
+// 	public function setCopyCommand(?TranslationCopyCommand $translationCopyCommand = null) {
 // 		$this->copyCommand = $translationCopyCommand;
 // 	}
 

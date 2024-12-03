@@ -12,7 +12,7 @@ class EiModificatorError {
 	private $t;
 	
 	public function __construct(TypePath $eiTypePath, EiModPath $eiModificatorPath, \Throwable $t,
-			EiModNature $eiModificator = null) {
+			?EiModNature $eiModificator = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiModificatorPath = $eiModificatorPath;
 		$this->t = $t;

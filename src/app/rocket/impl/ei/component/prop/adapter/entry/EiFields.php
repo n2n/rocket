@@ -27,7 +27,7 @@
 // class EiFields {
 	
 // 	static function statless(Eiu $eiu, ?TypeConstraint $typeConstraint, StatelessEiFieldReader $reader, 
-// 			StatelessEiFieldWriter $writer = null, StatelessEiFieldValidator $validator = null, 
+// 			StatelessEiFieldWriter $writer = null, ?StatelessEiFieldValidator $validator = null,
 // 			StatelessEiFieldCopier $copier = null) {
 // 		return new RwvcEiField($eiu, $typeConstraint, $reader, $writer, $validator, $copier);
 // 	}

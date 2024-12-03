@@ -241,7 +241,7 @@ class GuiSiFileFactory implements SiFileFactory {
 	 * @param ImageDimension $thumbImgDim
 	 * @return \n2n\util\uri\Url
 	 */
-	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim/*, ImageDimension $variationImgDim = null*/) {
+	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim/*, ?ImageDimension $variationImgDim = null*/) {
 		$query = ['qn' => $qualifiedName, 'imgDim' => $thumbImgDim->__toString()];
 		
 // 		if ($variationImgDim !== null) {

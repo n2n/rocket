@@ -79,7 +79,7 @@ class MailCenterController extends ControllerAdapter {
 		$this->sendFile($attachment);
 	}
 
-	public function doMails($filename, int $currentPageNum = null) {
+	public function doMails($filename, ?int $currentPageNum = null) {
 		$mailCenter = $this->createMailCenter($currentPageNum, $filename);
 
 		$currentItems = $mailCenter->getCurrentItems();
@@ -109,7 +109,7 @@ class MailCenterController extends ControllerAdapter {
 		$this->sendJson($mailLogFileData);
 	}
 
-	private function createMailCenter(int $currentPageNum = null, string $filename = null) {
+	private function createMailCenter(?int $currentPageNum = null, ?string $filename = null) {
 
 		if (!AdminMailCenter::logFileExists($filename)) {
 			throw new PageNotFoundException();

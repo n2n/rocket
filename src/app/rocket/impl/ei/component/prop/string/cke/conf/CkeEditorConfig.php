@@ -89,7 +89,7 @@ class CkeEditorConfig {
 		return $this->ckeCssConfig;
 	}
 	
-	function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
+	function setCkeCssConfig(?CkeCssConfig $ckeCssConfig = null) {
 		$this->ckeCssConfig = $ckeCssConfig;
 	}
 	
@@ -112,7 +112,7 @@ class CkeEditorConfig {
 		$this->bbcode = $bbcode;
 	}
 	
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 		$dataSet->set(self::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);	
 	}
 	

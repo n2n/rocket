@@ -82,7 +82,7 @@ class PathPartConfig {
 		return $this->baseScalarEiProperty;
 	}
 	
-	public function setBaseScalarEiProperty(ScalarEiProperty $baseScalarEiProperty = null) {
+	public function setBaseScalarEiProperty(?ScalarEiProperty $baseScalarEiProperty = null) {
 		$this->baseScalarEiProperty = $baseScalarEiProperty;
 	}
 	
@@ -93,7 +93,7 @@ class PathPartConfig {
 		return $this->uniquePerGenericEiProperty;
 	}
 	
-	public function setUniquePerGenericEiProperty(GenericEiProperty $uniquePerCriteriaProperty = null) {
+	public function setUniquePerGenericEiProperty(?GenericEiProperty $uniquePerCriteriaProperty = null) {
 		$this->uniquePerGenericEiProperty = $uniquePerCriteriaProperty;
 	}
 	
@@ -109,7 +109,7 @@ class PathPartConfig {
 		return $this->criticalMessage;
 	}
 	
-	public function setCriticalMessage(string $criticalMessage = null) {
+	public function setCriticalMessage(?string $criticalMessage = null) {
 		$this->criticalMessage = $criticalMessage;
 	}
 	
@@ -123,7 +123,7 @@ class PathPartConfig {
 	}
 	
 	
-	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 		$options = $this->getBaseEiPropIdOptions();
 		if (empty($options)) return;
 		

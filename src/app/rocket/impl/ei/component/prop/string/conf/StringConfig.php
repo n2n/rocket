@@ -59,7 +59,7 @@ class StringConfig {
 	
 	private static $multilineNeedles = array('description', 'lead', 'intro', 'content');
 	
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 		if (StringUtils::contains(self::$multilineNeedles, $this->requirePropertyName(), false)) {
 			$dataSet->set(self::ATTR_MULTILINE_KEY, true);
 			$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);

@@ -586,7 +586,7 @@ class TargetPropInfo {
 	 */
 	public $masterAccessProxy;
 	
-	function __construct(EiPropPath $eiPropPath = null, AccessProxy $masterAccessProxy = null) {
+	function __construct(?EiPropPath $eiPropPath = null, ?AccessProxy $masterAccessProxy = null) {
 		$this->eiPropPath = $eiPropPath;
 		$this->masterAccessProxy = $masterAccessProxy;
 	}

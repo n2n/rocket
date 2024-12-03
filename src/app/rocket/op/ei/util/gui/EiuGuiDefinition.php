@@ -78,7 +78,7 @@ class EiuGuiDefinition {
 		return $this->eiGuiDefinition->getViewMode();
 	}
 //
-//	public function getPropLabel(DefPropPath|string $defPropPath, N2nLocale $n2nLocale = null, bool $required = false): ?string {
+//	public function getPropLabel(DefPropPath|string $defPropPath, ?N2nLocale $n2nLocale = null, bool $required = false): ?string {
 //		$defPropPath = DefPropPath::create($defPropPath);
 //		if ($n2nLocale === null) {
 //			$n2nLocale = $this->eiuAnalyst->getN2nContext()->getN2nLocale();

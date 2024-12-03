@@ -82,7 +82,7 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropNatureAdapter::setPropertyAccessProxy()
 	 */
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 		$this->propertyAccessProxy = $propertyAccessProxy;
@@ -124,7 +124,7 @@ class EiDecimalMag extends NumericMag {
 	/**
 	 * @param string $inputPrefix
 	 */
-	public function setInputPrefix(string $inputPrefix = null) {
+	public function setInputPrefix(?string $inputPrefix = null) {
 		$this->inputPrefix = $inputPrefix;
 	}
 	

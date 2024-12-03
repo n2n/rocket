@@ -51,7 +51,7 @@ class DecimalConfig {
 // 	/**
 // 	 * @param string $prefix
 // 	 */
-// 	public function setPrefix(string $prefix = null) {
+// 	public function setPrefix(?string $prefix = null) {
 // 	    $this->prefix = $prefix;
 // 	}
 	

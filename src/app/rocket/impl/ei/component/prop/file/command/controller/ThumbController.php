@@ -56,7 +56,7 @@
 //// 		$this->thumbResolver = $thumbResolver;
 //// 	}
 //
-//// 	public function index($pid, ParamQuery $refPath, ParamQuery $selected = null) {
+//// 	public function index($pid, ParamQuery $refPath, ?ParamQuery $selected = null) {
 //// 		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 //// 		$eiuEntry = $this->opuCtrl->lookupEntry($pid);
 //

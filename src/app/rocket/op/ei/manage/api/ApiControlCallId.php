@@ -109,7 +109,7 @@ class ApiControlCallId implements \JsonSerializable {
 		}
 	}
 
-	static function create(EiMask $eiMask, GuiControlPath $guiControlPath, EiEntry $eiEntry = null): ApiControlCallId {
+	static function create(EiMask $eiMask, GuiControlPath $guiControlPath, ?EiEntry $eiEntry = null): ApiControlCallId {
 		return new ApiControlCallId($guiControlPath,
 				$eiMask->getEiTypePath(), $eiEntry?->getPid(),
 				($eiEntry?->isNew() ? $eiEntry?->getEiType()->getId() : null));

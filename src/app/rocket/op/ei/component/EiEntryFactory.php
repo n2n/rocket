@@ -114,7 +114,7 @@ class EiEntryFactory {
 		return $eiFieldMap;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
+	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, ?EiEntry $fromEiEntry = null) {
 // 		$eiObject = $eiEntry->getEiObject();
 		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
 
@@ -153,7 +153,7 @@ class EiEntryFactory {
 	
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry,
-			array $eiPropPaths = null) {
+			?array $eiPropPaths = null) {
 		if ($eiPropPaths === null) {
 			$this->copyAllValues($eiFrame, $fromEiEntry, $toEiEntry);
 		} else {

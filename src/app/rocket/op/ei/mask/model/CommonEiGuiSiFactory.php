@@ -10,7 +10,7 @@ class CommonEiGuiSiFactory implements EiGuiSiFactory {
 	private $guiDefinition;
 	private $displayStructure;
 	
-	public function __construct(EiGuiMaskDeclaration $eiGuiMaskDeclaration, DisplayStructure $displayStructure = null) {
+	public function __construct(EiGuiMaskDeclaration $eiGuiMaskDeclaration, ?DisplayStructure $displayStructure = null) {
 		$this->eiGuiMaskDeclaration = $eiGuiMaskDeclaration;
 		$this->displayStructure = $displayStructure;
 	}

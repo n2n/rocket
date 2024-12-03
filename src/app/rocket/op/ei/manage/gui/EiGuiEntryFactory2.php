@@ -20,7 +20,7 @@
 ////	 * @throws UnknownEiTypeExtensionException
 ////	 * @throws UnknownEiTypeException
 ////	 */
-////	function createGuiValueBoundaryForEiMask(TypePath $eiTypePath, int $viewMode, EiEntry $eiEntry, int $treeLevel = null): GuiValueBoundary {
+////	function createGuiValueBoundaryForEiMask(TypePath $eiTypePath, int $viewMode, EiEntry $eiEntry, ?int $treeLevel = null): GuiValueBoundary {
 ////		$eiGuiMaskDeclaration = $this->eiFrame->getContextEiEngine()->getEiMask()->determineEiMaskByEiTypePath($eiTypePath)
 ////				->getEiEngine()->obtainEiGuiMaskDeclaration($viewMode, null);
 ////
@@ -42,7 +42,7 @@
 //	 * @param bool $entryControlsIncluded
 //	 * @return GuiValueBoundary
 //	 */
-//	function createGuiValueBoundary(int $viewMode, array $eiEntries, int $treeLevel = null,
+//	function createGuiValueBoundary(int $viewMode, array $eiEntries, ?int $treeLevel = null,
 //			bool $entryControlsIncluded = true): GuiValueBoundary {
 //		$guiValueBoundary = new GuiValueBoundary($treeLevel);
 //
@@ -104,7 +104,7 @@
 //	 * @param array|null $defPropPaths
 //	 * @return void
 //	 */
-//	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, array $defPropPaths = null): void {
+//	private function applyEiGuiMaskDeclaration(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractOnly, ?array $defPropPaths = null): void {
 //		$contextEiMask = $this->getContextEiMask();
 //
 //		if (!$this->testIfAllowed($contextEiMask->getEiType(), $nonAbstractOnly, null)) {
@@ -117,7 +117,7 @@
 //	}
 //
 //	private function applyPossibleEiGuiMaskDeclarations(EiGuiDeclaration $eiGuiDeclaration, bool $nonAbstractsOnly,
-//			array $allowedEiTypes = null, array $defPropPaths = null): void {
+//			array $allowedEiTypes = null, ?array $defPropPaths = null): void {
 //		$contextEiMask = $this->getContextEiMask();
 //		$contextEiType = $contextEiMask->getEiType();
 //

@@ -82,11 +82,11 @@ class EiuMask  {
 	/**
 	 * @return string
 	 */
-	public function getLabel(N2nLocale $n2nLocale = null) {
+	public function getLabel(?N2nLocale $n2nLocale = null) {
 		return $this->eiMask->getLabelLstr()->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
-	public function getPluralLabel(N2nLocale $n2nLocale = null) {
+	public function getPluralLabel(?N2nLocale $n2nLocale = null) {
 		return $this->eiMask->getPluralLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
@@ -108,7 +108,7 @@ class EiuMask  {
 	 * @param bool $includeAbstractTypes
 	 * @return \rocket\op\ei\util\spec\EiuMask[]
 	 */
-	public function possibleMasks(array $allowedSubEiTypeIds = null, bool $includeAbstractTypes = false) {
+	public function possibleMasks(?array $allowedSubEiTypeIds = null, bool $includeAbstractTypes = false) {
 		$eiuMasks = [];
 		
 		if ($this->eiTypeMatches($this->eiMask->getEiType(), $allowedSubEiTypeIds, $includeAbstractTypes)) {
@@ -147,7 +147,7 @@ class EiuMask  {
 	 * @param bool $prepend
 	 * @return EiuProp
 	 */
-	public function addProp(EiPropNature $eiProp, string $id = null) {
+	public function addProp(EiPropNature $eiProp, ?string $id = null) {
 		return new EiuProp($this->eiMask->getEiPropCollection()->add($id, $eiProp)->getEiPropPath(), $this,
 				$this->eiuAnalyst);
 	}
@@ -157,7 +157,7 @@ class EiuMask  {
 	 * @param bool $prepend
 	 * @return EiuCmd
 	 */
-	public function addCmd(EiCmdNature $eiCmdNature, string $id = null) {
+	public function addCmd(EiCmdNature $eiCmdNature, ?string $id = null) {
 		return new EiuCmd($this->eiMask->getEiCmdCollection()->add($id, $eiCmdNature)->getEiCmdPath(), $this);
 	}
 	
@@ -166,7 +166,7 @@ class EiuMask  {
 	 * @param bool $prepend
 	 * @return EiuMask
 	 */
-	public function addMod(EiModNature $eiModificator, string $id = null) {
+	public function addMod(EiModNature $eiModificator, ?string $id = null) {
 		$this->eiMask->getEiModCollection()->add($id, $eiModificator);
 		return $this;
 	}
@@ -188,7 +188,7 @@ class EiuMask  {
 		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuAnalyst);
 	}
 	
-	public function getPropLabel(EiPropPath|EiuProp|EiProp|array|string  $eiPropPath, N2nLocale $n2nLocale = null): string {
+	public function getPropLabel(EiPropPath|EiuProp|EiProp|array|string  $eiPropPath, ?N2nLocale $n2nLocale = null): string {
 		return $this->getPropLabelLstr($eiPropPath)
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
@@ -197,12 +197,12 @@ class EiuMask  {
 		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getNature()->getLabelLstr();
 	}
 	
-//	public function getPropPluralLabel($eiPropPath, N2nLocale $n2nLocale = null) {
+//	public function getPropPluralLabel($eiPropPath, ?N2nLocale $n2nLocale = null) {
 //		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getNature()->getPluralLabelLstr()
 //				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 //	}
 	
-	public function getPropHelpText($eiPropPath, N2nLocale $n2nLocale = null) {
+	public function getPropHelpText($eiPropPath, ?N2nLocale $n2nLocale = null) {
 		$helpTextLstr = $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))
 				->getNature()->getHelpTextLstr();
 		
@@ -257,7 +257,7 @@ class EiuMask  {
 	/**
 	 * @return SiMaskQualifier
 	 */
-	public function createSiMaskQualifier(N2nLocale $n2nLocale = null) {
+	public function createSiMaskQualifier(?N2nLocale $n2nLocale = null) {
 		return $this->eiMask->createSiMaskQualifier($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 }

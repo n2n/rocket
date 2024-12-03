@@ -27,7 +27,7 @@ class DisplayItem {
 	 * @return DisplayItem
 	 */
 	public static function create(DefPropPath $defPropPath, ?string $siStructureType/*, bool $autonomic = false*/,
-			string $label = null) {
+			?string $label = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 		$orderItem->siStructureType = $siStructureType;
@@ -42,7 +42,7 @@ class DisplayItem {
 // 	 * @return DisplayItem
 // 	 * @deprecated
 // 	 */
-// 	public static function createFromDefPropPath(DefPropPath $defPropPath, string $siStructureType = null) {
+// 	public static function createFromDefPropPath(DefPropPath $defPropPath, ?string $siStructureType = null) {
 // 		$orderItem = new DisplayItem();
 // 		ArgUtils::valEnum($siStructureType, SiStructureType::all(), null, true);
 // 		$orderItem->siStructureType = $siStructureType;
@@ -55,7 +55,7 @@ class DisplayItem {
 	 * @return DisplayItem
 	 */
 	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $siStructureType/*, bool $autonomic = false*/,
-			string $label = null, string $helpText = null, string $moduleNamespace = null) {
+			?string $label = null, ?string $helpText = null, ?string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
 		ArgUtils::valEnum($siStructureType, SiStructureType::all());
@@ -71,7 +71,7 @@ class DisplayItem {
 	 * @param string|null $labelLstr
 	 * @return DisplayItem
 	 */
-	public function copy(string $siStructureType = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
+	public function copy(?string $siStructureType = null, ?array $attrs = null/*, ?Lstr $labelLstr = null*/) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->defPropPath = $this->defPropPath;

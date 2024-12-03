@@ -65,7 +65,7 @@ namespace rocket\impl\ei\component\prop\numeric;
 // 	 * {@inheritDoc}
 // 	 * @see \rocket\impl\ei\component\prop\numeric\NumericEiPropAdapter::setPropertyAccessProxy()
 // 	 */
-// 	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+// 	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 // 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
 // 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 // 		$this->propertyAccessProxy = $propertyAccessProxy;
@@ -95,7 +95,7 @@ namespace rocket\impl\ei\component\prop\numeric;
 // 	/**
 // 	 * @param string $prefix
 // 	 */
-// 	public function setPrefix(string $prefix = null) {
+// 	public function setPrefix(?string $prefix = null) {
 // 		$this->prefix = $prefix;
 // 	}
 

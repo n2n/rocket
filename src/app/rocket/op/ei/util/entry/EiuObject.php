@@ -185,7 +185,7 @@ class EiuObject {
 	 * @param string $name
 	 * @return SiEntryQualifier
 	 */
-	function createSiEntryQualifier(string $name = null): SiEntryQualifier {
+	function createSiEntryQualifier(?string $name = null): SiEntryQualifier {
 		$name = $name ?? $this->createIdentityString();
 		
 		$siMaskQualifier = $this->eiuAnalyst->getEiuFrame(true)->mask($this->eiObject)->createSiMaskQualifier();

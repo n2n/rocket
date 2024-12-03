@@ -44,7 +44,7 @@ class SpecFactory {
 		$this->eiTypeFactory = new EiTypeFactory($specConfigLoader, $entityModelManager);
 	}
 
-	function create(Spec $spec = null, array $entityClasses = null) {
+	function create(?Spec $spec = null, ?array $entityClasses = null) {
 		ArgUtils::valArray($entityClasses, \ReflectionClass::class, true);
 
 		$spec = $spec ?? new Spec();

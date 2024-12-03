@@ -33,7 +33,7 @@ class EiCommandError {
 	private $t;
 	
 	public function __construct(TypePath $eiTypePath, EiCmdPath $eiCmdPath, \Throwable $t,
-			EiCmdNature $eiCmd = null) {
+			?EiCmdNature $eiCmd = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiCmdPath = $eiCmdPath;
 		$this->eiCmd = $eiCmd;

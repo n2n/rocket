@@ -50,7 +50,7 @@ class OverviewController extends ControllerAdapter {
 	/**
 	 * @throws StatusException
 	 */
-	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null): void {
+	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ?ParamQuery $numPages = null, ?ParamQuery $stateKey = null): void {
 		$this->opuCtrl->pushCurrentAsSirefBreadcrumb($this->opuCtrl->eiu()->frame()->mask()->getPluralLabel());
 
 		$eiu = $this->opuCtrl->eiu();

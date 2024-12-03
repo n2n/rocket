@@ -41,7 +41,7 @@ class MultiUploadEiCommandNature extends EiCmdNatureAdapter {
 	private $fileModel;
 	private $namingEiPropPath;
 	
-	public function __construct(FileModel $fileModel, EiPropPath $namingEiPropPath = null, string $order = null) {
+	public function __construct(FileModel $fileModel, ?EiPropPath $namingEiPropPath = null, ?string $order = null) {
 		$this->fileModel = $fileModel;
 		$this->namingEiPropPath = $namingEiPropPath;
 		$this->order = $order;

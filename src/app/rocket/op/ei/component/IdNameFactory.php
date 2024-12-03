@@ -41,7 +41,7 @@ class IdNameFactory {
 // 	 * @param array $eiPropPaths
 // 	 * @return EiGuiValueBoundary
 // 	 */
-// 	public static function createEiGuiValueBoundary(EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry, array $defPropPaths, int $treeLevel = null) {
+// 	public static function createEiGuiValueBoundary(EiGuiMaskDeclaration $eiGuiMaskDeclaration, EiEntry $eiEntry, array $defPropPaths, ?int $treeLevel = null) {
 // 		ArgUtils::valArrayLike($defPropPaths, DefPropPath::class);
 		
 // 		$eiGuiValueBoundary = new EiGuiValueBoundary($eiGuiMaskDeclaration, $eiEntry, $treeLevel);

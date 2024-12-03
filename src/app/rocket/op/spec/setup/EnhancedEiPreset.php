@@ -122,8 +122,8 @@ class EnhancedEiPreset {
 	}
 
 
-	function createEiPresetAttributeError(string $propertyPath, Throwable $previous = null,
-			string $message = null): ConfigurationError {
+	function createEiPresetAttributeError(string $propertyPath, ?Throwable $previous = null,
+			?string $message = null): ConfigurationError {
 		$attrPropName = $this->containsEditProp($propertyPath) ? 'editProps' : 'readProps';
 
 		return $this->createAttributeError('Could not assign property \'' . $propertyPath
@@ -137,7 +137,7 @@ class EnhancedEiPreset {
 	 * @param Throwable|null $previous
 	 * @return ConfigurationError
 	 */
-	function createAttributeError(?string $message, Throwable $previous = null): ConfigurationError {
+	function createAttributeError(?string $message, ?Throwable $previous = null): ConfigurationError {
 		return new ConfigurationError($message, $this->eiPresetAttribute->getFile(),
 				$this->eiPresetAttribute->getLine(), previous: $previous);
 	}

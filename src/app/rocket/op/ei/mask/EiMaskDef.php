@@ -92,7 +92,7 @@ class EiMaskDef {
 	/**
 	 * @param string $identityStringPattern
 	 */
-	public function setIdentityStringPattern(string $identityStringPattern = null) {
+	public function setIdentityStringPattern(?string $identityStringPattern = null) {
 		$this->identityStringPattern = $identityStringPattern;
 	}
 	
@@ -106,7 +106,7 @@ class EiMaskDef {
 //	/**
 //	 * @param bool $draftingAllowed
 //	 */
-//	public function setDraftingAllowed(bool $draftingAllowed = null) {
+//	public function setDraftingAllowed(?bool $draftingAllowed = null) {
 //		$this->draftingAllowed = $draftingAllowed;
 //	}
 //
@@ -164,7 +164,7 @@ class EiMaskDef {
 	/**
 	 * @param FilterSettingGroup $filterSettingGroup
 	 */
-	public function setFilterSettingGroup(FilterSettingGroup $filterSettingGroup = null) {
+	public function setFilterSettingGroup(?FilterSettingGroup $filterSettingGroup = null) {
 		$this->filterSettingGroup = $filterSettingGroup;
 	}
 	
@@ -178,7 +178,7 @@ class EiMaskDef {
 	/**
 	 * @param SortSettingGroup $defaultSortSettingGroup
 	 */
-	public function setDefaultSortSettingGroup(SortSettingGroup $defaultSortSettingGroup = null) {
+	public function setDefaultSortSettingGroup(?SortSettingGroup $defaultSortSettingGroup = null) {
 		$this->defaultSortSettingGroup = $defaultSortSettingGroup;
 	}
 	

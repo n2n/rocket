@@ -38,7 +38,7 @@ class EiuField {
 	private $eiuAnalyst;
 	private $eiuProp;
 	
-	public function __construct(EiPropPath $eiPropPath, EiuEntry $eiuEntry, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiPropPath $eiPropPath, EiuEntry $eiuEntry, ?EiuAnalyst $eiuAnalyst = null) {
 		$this->eiPropPath = $eiPropPath;
 		$this->eiuEntry = $eiuEntry;
 		$this->eiuAnalyst = $eiuAnalyst;
@@ -120,7 +120,7 @@ class EiuField {
 		return $this;
 	}
 
-	function asGuiFieldModel(Mapper $valueMapper = null): GuiFieldModel {
+	function asGuiFieldModel(?Mapper $valueMapper = null): GuiFieldModel {
 		return new EiuGuiFieldModel($this, $valueMapper);
 	}
 }

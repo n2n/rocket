@@ -86,7 +86,7 @@ class QuickSearchDefinition {
 	 * @param DefPropPath[]|null $defPropPaths
 	 * @return null|ComparatorConstraintGroup
 	 */
-	public function buildCriteriaConstraint(string $searchStr, array $defPropPaths = null): ?ComparatorConstraintGroup {
+	public function buildCriteriaConstraint(string $searchStr, ?array $defPropPaths = null): ?ComparatorConstraintGroup {
 		if (!RecursionAsserters::unique(self::class)->tryPush((string) $this->eiMask->getEiTypePath())) {
 			return null;
 		}

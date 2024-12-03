@@ -34,7 +34,7 @@ class CustomLaunchPad implements LaunchPad {
 
 	private int $orderIndex = 99999;
 
-	public function __construct(string $id, CustomType $customSpec, string $label = null) {
+	public function __construct(string $id, CustomType $customSpec, ?string $label = null) {
 		$this->id = $id;
 		$this->customSpec = $customSpec;
 		$this->label = $label;

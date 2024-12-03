@@ -34,7 +34,7 @@ class PlaceholderGuiField implements GuiField {
 	private $forkGuiFieldMap;
 	
 	function __construct(/*LazyTranslationEssentialsDeterminer $lted, DefPropPath $defPropPath, */ 
-			SplitPlaceholderSiField $siField, GuiFieldMap $forkGuiFieldMap = null) {
+			SplitPlaceholderSiField $siField, ?GuiFieldMap $forkGuiFieldMap = null) {
 // 		$this->lted = $lted;
 // 		$this->defPropPath = $defPropPath;
 		$this->siField =  $siField;

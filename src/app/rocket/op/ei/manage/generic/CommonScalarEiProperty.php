@@ -32,7 +32,7 @@ class CommonScalarEiProperty implements ScalarEiProperty {
 	private $eiFieldValueBuilder;
 
 	public function __construct(private readonly EiPropPath $eiPropPath, private readonly Lstr $labelLstr,
-			\Closure $scalarValueBuilder = null, \Closure $eiFieldValueBuilder = null) {
+			?\Closure $scalarValueBuilder = null, ?\Closure $eiFieldValueBuilder = null) {
 		$this->scalarValueBuilder = $scalarValueBuilder;
 		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
 	}

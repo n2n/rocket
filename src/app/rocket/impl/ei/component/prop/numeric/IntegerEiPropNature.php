@@ -61,7 +61,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 //		$this->entityProperty = $entityProperty;
 //	}
 //
-//	function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+//	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 //		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('int',
 //				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
 //

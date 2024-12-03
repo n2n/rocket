@@ -16,7 +16,7 @@ class IframeData {
 	 * @param string|null $url
 	 * @param string|null $srcDoc
 	 */
-	private function __construct(string $url = null, string $srcDoc = null) {
+	private function __construct(?string $url = null, ?string $srcDoc = null) {
 		$this->url = $url;
 		$this->srcDoc = $srcDoc;
 	}

@@ -39,7 +39,7 @@ class OpState implements RequestScoped {
 	/**
 	 * @param LaunchPad $activeLaunchPad
 	 */
-	public function setActiveLaunchPad(LaunchPad $activeLaunchPad = null) {
+	public function setActiveLaunchPad(?LaunchPad $activeLaunchPad = null) {
 		$this->activeLaunchPad = $activeLaunchPad;
 	}
 	

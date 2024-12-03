@@ -75,7 +75,7 @@ class ToolController extends ControllerAdapter {
 		throw new StatusException(Response::STATUS_406_NOT_ACCEPTABLE);
 	}
 	
-	public function backupOverview(array $params = null) {
+	public function backupOverview(?array $params = null) {
 		$this->verifyAdmin();
 		
 		if ($this->verifyHtml()) {
@@ -85,7 +85,7 @@ class ToolController extends ControllerAdapter {
 		$this->delegate(new BackupController());
 	}
 	
-	public function mailCenter(MailCenterController $mailCenterController, array $params = null) {
+	public function mailCenter(MailCenterController $mailCenterController, ?array $params = null) {
 		$this->verifyAdmin();
 		
 		if (empty($params) && $this->verifyHtml()) {

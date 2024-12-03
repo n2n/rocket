@@ -28,7 +28,7 @@ class SiNavPoint implements \JsonSerializable {
 	private $url;
 	private $siref;
 	
-	function __construct(Url $url = null, bool $siref = true) {
+	function __construct(?Url $url = null, bool $siref = true) {
 		$this->url = $url;
 		$this->siref = $siref;
 	}
@@ -75,7 +75,7 @@ class SiNavPoint implements \JsonSerializable {
 	 * @param Url $urlExt
 	 * @return \rocket\si\control\SiNavPoint
 	 */
-	static function href(Url $url = null) {
+	static function href(?Url $url = null) {
 		return new SiNavPoint($url, false);
 	}
 	
@@ -83,7 +83,7 @@ class SiNavPoint implements \JsonSerializable {
 	 * @param Url $urlExt
 	 * @return \rocket\si\control\SiNavPoint
 	 */
-	static function siref(Url $url = null) {
+	static function siref(?Url $url = null) {
 		return new SiNavPoint($url, true);
 	}
 }

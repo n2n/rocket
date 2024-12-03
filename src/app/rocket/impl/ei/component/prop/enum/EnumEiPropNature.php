@@ -152,7 +152,7 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return $this->emptyLabel;
 	}
 
-	public function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null): void {
+	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null): void {
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {

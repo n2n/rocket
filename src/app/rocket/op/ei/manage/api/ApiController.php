@@ -164,7 +164,7 @@ class ApiController extends ControllerAdapter {
 //
 //	}
 //
-//	function doExecControl(ParamPost $style, ParamPost $apiCallId, ParamPost $entryInputMaps = null): void {
+//	function doExecControl(ParamPost $style, ParamPost $apiCallId, ?ParamPost $entryInputMaps = null): void {
 //		$siApiCallId = $this->parseApiControlCallId($apiCallId);
 //
 //		$callProcess = new ApiControlProcess($this->eiFrame);

@@ -50,7 +50,7 @@ class PasswordConfig {
 // 		$this->algorithm = $algorithm;
 // 	}
 	
-	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 	}
 
 	public function setup(Eiu $eiu, DataSet $dataSet) {

@@ -60,7 +60,7 @@ class UrlConfig {
 		return $level;
 	}
 	
-	public function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	public function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 		$dataSet->set(self::ATTR_AUTO_SCHEME_KEY, 'https');
 	}
 	

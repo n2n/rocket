@@ -46,7 +46,7 @@ class DisplayScheme {
 	/**
 	 * @param DisplayStructure|null $overviewDisplayStructure
 	 */
-	public function setOverviewDisplayStructure(DisplayStructure $overviewDisplayStructure = null) {
+	public function setOverviewDisplayStructure(?DisplayStructure $overviewDisplayStructure = null) {
 		$this->overviewDisplayStructure = $overviewDisplayStructure;
 	}
 	
@@ -60,7 +60,7 @@ class DisplayScheme {
 	/**
 	 * @param DisplayStructure|null $bulkyDisplayStructure
 	 */
-	public function setBulkyDisplayStructure(DisplayStructure $bulkyDisplayStructure = null) {
+	public function setBulkyDisplayStructure(?DisplayStructure $bulkyDisplayStructure = null) {
 		$this->bulkyDisplayStructure = $bulkyDisplayStructure;
 	}
 	
@@ -74,7 +74,7 @@ class DisplayScheme {
 	/**
 	 * @param DisplayStructure|null $detailDisplayStructure
 	 */
-	public function setDetailDisplayStructure(DisplayStructure $detailDisplayStructure = null) {
+	public function setDetailDisplayStructure(?DisplayStructure $detailDisplayStructure = null) {
 		$this->detailDisplayStructure = $detailDisplayStructure;
 	}
 	
@@ -88,7 +88,7 @@ class DisplayScheme {
 	/**
 	 * @param DisplayStructure|null $editDisplayStructure
 	 */
-	public function setEditDisplayStructure(DisplayStructure $editDisplayStructure = null) {
+	public function setEditDisplayStructure(?DisplayStructure $editDisplayStructure = null) {
 		$this->editDisplayStructure = $editDisplayStructure;
 	}
 	
@@ -102,7 +102,7 @@ class DisplayScheme {
 	/**
 	 * @param DisplayStructure|null $addDisplayStructure
 	 */
-	public function setAddDisplayStructure(DisplayStructure $addDisplayStructure = null) {
+	public function setAddDisplayStructure(?DisplayStructure $addDisplayStructure = null) {
 		$this->addDisplayStructure = $addDisplayStructure;
 	}
 	
@@ -121,7 +121,7 @@ class DisplayScheme {
 	/**
 	 * @param ControlOrder|null $partialControlOrder
 	 */
-	public function setPartialControlOrder(ControlOrder $partialControlOrder = null) {
+	public function setPartialControlOrder(?ControlOrder $partialControlOrder = null) {
 		$this->partialControlOrder = $partialControlOrder;
 	}
 	
@@ -135,7 +135,7 @@ class DisplayScheme {
 	/**
 	 * @param ControlOrder|null $overallControlOrder
 	 */
-	public function setOverallControlOrder(ControlOrder $overallControlOrder = null) {
+	public function setOverallControlOrder(?ControlOrder $overallControlOrder = null) {
 		$this->overallControlOrder = $overallControlOrder;
 	}
 	
@@ -149,7 +149,7 @@ class DisplayScheme {
 	/**
 	 * @param ControlOrder|null $entryControlOrder
 	 */
-	public function setEntryGuiControlOrder(ControlOrder $entryControlOrder = null) {
+	public function setEntryGuiControlOrder(?ControlOrder $entryControlOrder = null) {
 		$this->entryControlOrder = $entryControlOrder;
 	}
 	

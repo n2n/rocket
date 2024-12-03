@@ -32,7 +32,7 @@ class EiRelation {
 	 * @param EiFrame $targetEiFrame
 	 * @param EiObject $targetEiObject
 	 */
-	public function __construct(EiFrame $targetEiFrame, EiObject $targetEiObject = null) {
+	public function __construct(EiFrame $targetEiFrame, ?EiObject $targetEiObject = null) {
 		$this->targetEiFrame = $targetEiFrame;
 		$this->targetEiObject = $targetEiObject;
 	}

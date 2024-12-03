@@ -142,7 +142,7 @@ class EmbeddedEiPropRelation extends EiPropRelation {
 // 	}
 	
 	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
-			EiObject $eiObject = null, $editCommandRequired = null) {
+			?EiObject $eiObject = null, $editCommandRequired = null) {
 		parent::configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
 		
 		$targetEiFrame->setOverviewDisabled(true);

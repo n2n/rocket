@@ -26,5 +26,5 @@
 
 // interface RestrictionEiProp extends ObjectPropertyEiProp {
 	
-// 	public function createRestrictionSelectorItem(N2nContext $n2nContext, EiFrame $eiFrame = null);	
+// 	public function createRestrictionSelectorItem(N2nContext $n2nContext, ?EiFrame $eiFrame = null);
 // }

@@ -74,7 +74,7 @@ class EiuGuiDeclaration  {
 //	/**
 //	 * @return \rocket\op\ei\util\gui\EiuGui
 //	 */
-//	function copy(bool $bulky, bool $readOnly, array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+//	function copy(bool $bulky, bool $readOnly, ?array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
 //		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($this->eiGuiDeclaration->getViewMode()));
 //		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 //
@@ -92,7 +92,7 @@ class EiuGuiDeclaration  {
 //		return new EiuGuiDeclaration ($newEiGuiDeclaration, $this->eiuAnalyst);
 //	}
 	
-	function newGuiValueBoundary(array $eiEntryArgs = null, bool $entryGuiControlsIncluded = false): EiuGuiValueBoundary {
+	function newGuiValueBoundary(?array $eiEntryArgs = null, bool $entryGuiControlsIncluded = false): EiuGuiValueBoundary {
 		$eiEntries = null;
 		if ($eiEntryArgs !== null) {
 			$eiEntries = array_map(fn($a) => EiuAnalyst::buildEiEntryFromEiArg($a, 'eiEntryArg', true),

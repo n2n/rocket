@@ -12,7 +12,7 @@ class EiPropError {
 	private $eiProp;
 	private $t;
 	
-	public function __construct(TypePath $eiTypePath, EiPropPath $eiPropPath, \Throwable $t, EiPropNature $eiProp = null) {
+	public function __construct(TypePath $eiTypePath, EiPropPath $eiPropPath, \Throwable $t, ?EiPropNature $eiProp = null) {
 		$this->eiTypePath = $eiTypePath;
 		$this->eiPropPath = $eiPropPath;
 		$this->eiProp = $eiProp;

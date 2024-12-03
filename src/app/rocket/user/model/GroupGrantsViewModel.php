@@ -133,7 +133,7 @@ class GroupGrantsViewModel {
 class Item {
 	private $grant;
 	
-	public function __construct(Grant $grant = null) {
+	public function __construct(?Grant $grant = null) {
 		$this->grant = $grant;
 	}
 	
@@ -160,7 +160,7 @@ class EiTypeItem extends Item {
 	 */
 	private $label;
 	
-	public function __construct(int $level, TypePath $eiTypePath, string $label, EiGrant $eiGrant = null) {
+	public function __construct(int $level, TypePath $eiTypePath, string $label, ?EiGrant $eiGrant = null) {
 		parent::__construct($eiGrant);
 		$this->level = $level;
 		$this->eiTypePath = $eiTypePath;
@@ -199,7 +199,7 @@ class EiTypeItem extends Item {
 class CustomTypeItem extends Item {
 	private $customSpec;
 	
-	public function __construct(CustomType $customSpec, CustomGrant $customGrant = null) {
+	public function __construct(CustomType $customSpec, ?CustomGrant $customGrant = null) {
 		parent::__construct($customGrant);
 		$this->customSpec = $customSpec;
 	}

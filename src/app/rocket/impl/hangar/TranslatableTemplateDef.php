@@ -22,7 +22,7 @@ class TranslatableTemplateDef implements HangarTemplateDef {
 		return 'Translatable';
 	}
 	
-	public function applyTemplate(Huo $huo, PhpClass $phpClass, MagDispatchable $magDispatchable = null) {
+	public function applyTemplate(Huo $huo, PhpClass $phpClass, ?MagDispatchable $magDispatchable = null) {
 		$phpClass->addInterfacePhpTypeDef(PhpTypeDef::fromTypeName(Translatable::class));
 		$phpClass->createPhpProperty('id');
 		$phpClass->createPhpGetterAndSetter('id', new PhpTypeDef('int'));

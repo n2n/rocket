@@ -744,7 +744,7 @@ class EiGuiDefinition {
 //// 	 * @param DefPropPath[]|null $defPropPaths
 //// 	 * @return \rocket\op\ei\manage\gui\EiGuiDeclaration
 //// 	 */
-//// 	function createEiGuiDeclaration(N2nContext $n2nContext, int $viewMode, array $defPropPaths = null) {
+//// 	function createEiGuiDeclaration(N2nContext $n2nContext, int $viewMode, ?array $defPropPaths = null) {
 //// 		$eiGuiMaskDeclaration = new EiGuiMaskDeclaration($this, $viewMode);
 //
 //

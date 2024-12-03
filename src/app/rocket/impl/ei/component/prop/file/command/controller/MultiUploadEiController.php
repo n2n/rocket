@@ -44,7 +44,7 @@ class MultiUploadEiController extends ControllerAdapter {
 		$this->fileModel = $fileEiProp;
 	}
 	
-	public function setOrder(string $order = null) {
+	public function setOrder(?string $order = null) {
 		ArgUtils::valEnum($order, self::getOrders());
 		$this->order = $order;
 	}

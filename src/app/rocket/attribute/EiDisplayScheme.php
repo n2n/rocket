@@ -36,8 +36,8 @@ class EiDisplayScheme {
 	public ?DisplayStructure $bulkyEditDisplayStructure;
 
 	function __construct(
-			array $compact = null, array $compactDetail = null, array $compactAdd = null, array $compactEdit = null,
-			array $bulky = null, array $bulkyDetail = null, array $bulkyAdd = null, array $bulkyEdit = null) {
+			?array $compact = null, ?array $compactDetail = null, ?array $compactAdd = null, ?array $compactEdit = null,
+			?array $bulky = null, ?array $bulkyDetail = null, ?array $bulkyAdd = null, ?array $bulkyEdit = null) {
 		$this->compactDisplayStructure = $this->parseDisplayStructure($compact);
 		$this->bulkyDisplayStructure = $this->parseDisplayStructure($bulky);
 		$this->bulkyDetailDisplayStructure = $this->parseDisplayStructure($bulkyDetail);

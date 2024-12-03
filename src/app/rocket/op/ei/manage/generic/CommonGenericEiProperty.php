@@ -36,7 +36,7 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	private $eiFieldValueBuilder;
 	
 	public function __construct(EiPropNature $eiProp, CriteriaProperty $criteriaProperty,
-			\Closure $entityValueBuilder = null, \Closure $eiFieldValueBuilder = null) {
+			?\Closure $entityValueBuilder = null, ?\Closure $eiFieldValueBuilder = null) {
 		$this->eiProp = $eiProp;
 		$this->criteriaProperty = $criteriaProperty;
 		$this->entityValueBuilder = $entityValueBuilder;

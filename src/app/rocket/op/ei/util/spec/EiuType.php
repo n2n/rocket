@@ -129,7 +129,7 @@ class EiuType  {
 	 * @param object $entityObj
 	 * @return \rocket\op\ei\util\entry\EiuObject
 	 */
-	function newObject(object $entityObj = null/*, bool $draft = false*/) {
+	function newObject(?object $entityObj = null/*, bool $draft = false*/) {
 		$eiObject = null;
 		if ($entityObj === null) {
 			$eiObject = $this->eiType->createNewEiObject(false /*$draft*/);
@@ -169,7 +169,7 @@ class EiuType  {
 	 * @param bool $includeAbstracts
 	 * @return \rocket\op\ei\util\spec\EiuType[]
 	 */
-	function possibleTypes(array $allowedSubEiTypeIds = null, bool $includeAbstracts = false) {
+	function possibleTypes(?array $allowedSubEiTypeIds = null, bool $includeAbstracts = false) {
 		$eiuTypes = [];
 		
 		if ($this->eiTypeMatches($this->eiType, $allowedSubEiTypeIds, $includeAbstracts)) {

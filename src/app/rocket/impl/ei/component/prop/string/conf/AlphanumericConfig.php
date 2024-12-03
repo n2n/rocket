@@ -40,7 +40,7 @@ class AlphanumericConfig {
 	 * @param Eiu $eiu
 	 * @param Column $column
 	 */
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 		if ($column instanceof StringColumn) {
 			$dataSet->set(self::ATTR_MAXLENGTH_KEY, $column->getLength());
 		}

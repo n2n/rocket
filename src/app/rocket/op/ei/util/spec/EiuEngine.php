@@ -98,7 +98,7 @@ class EiuEngine {
 //		return $this->eiEngine->getDraftDefinition()->containsEiPropPath(EiPropPath::create($eiPropArg));
 //	}
 	
-	public function getGuiPropOptions(N2nLocale $n2nLocale = null) {
+	public function getGuiPropOptions(?N2nLocale $n2nLocale = null) {
 		/**
 		 * @var ManageState $ms
 		 */
@@ -275,7 +275,7 @@ class EiuEngine {
 	 * @return string
 	 */
 	public function createIdentityString($eiObjectArg, bool $determineEiMask = true,
-			N2nLocale $n2nLocale = null): string {
+			?N2nLocale $n2nLocale = null): string {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->getEiType());
 				
 		$eiMask = $this->getEiEngine()->getEiMask();
@@ -317,7 +317,7 @@ class EiuEngine {
 //	 * @param FilterSettingGroup|null $rootGroup
 //	 * @return \rocket\op\ei\util\filter\EiuFilterForm
 //	 */
-//	public function newFilterForm(FilterSettingGroup $rootGroup = null) {
+//	public function newFilterForm(?FilterSettingGroup $rootGroup = null) {
 //		return $this->createEiuFilterForm(
 //				$this->getFilterDefinition(),
 //				ScrFilterPropController::buildFilterJhtmlHook(
@@ -330,7 +330,7 @@ class EiuEngine {
 	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\op\ei\util\filter\EiuFilterForm
 	 */
-	public function newSecurityFilterForm(FilterSettingGroup $rootGroup = null) {
+	public function newSecurityFilterForm(?FilterSettingGroup $rootGroup = null) {
 		return $this->createEiuFilterForm(
 				$this->getSecurityFilterDefinition()->toFilterDefinition(),
 				ScrFilterPropController::buildSecurityFilterJhtmlHook(
@@ -347,7 +347,7 @@ class EiuEngine {
 	 * @return EiuFilterForm
 	 */
 	private function createEiuFilterForm(FilterDefinition $fd, FilterJhtmlHook $fjh, 
-			FilterSettingGroup $rg = null) {
+			?FilterSettingGroup $rg = null) {
 		return new EiuFilterForm($fd, $fjh, $rg, $this->eiuAnalyst);
 	}
 	
@@ -356,7 +356,7 @@ class EiuEngine {
 //	 * @param SortSettingGroup|null $sortSetting
 //	 * @return \rocket\op\ei\util\sort\EiuSortForm
 //	 */
-//	public function newSortForm(SortSettingGroup $sortSetting = null) {
+//	public function newSortForm(?SortSettingGroup $sortSetting = null) {
 //		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
 //	}
 //
@@ -371,7 +371,7 @@ class EiuEngine {
 	 * @param PrivilegeSetting|null $privilegeSetting
 	 * @return \rocket\op\ei\util\privilege\EiuPrivilegeForm
 	 */
-	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
+	public function newPrivilegeForm(?PrivilegeSetting $privilegeSetting = null) {
 		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);	
 	}
 	
@@ -380,7 +380,7 @@ class EiuEngine {
 // 	 * @param N2nLocale $n2nLocale
 // 	 * @return string
 // 	 */
-// 	public function createIdentityString(object $eiObjectArg, N2nLocale $n2nLocale = null): string {
+// 	public function createIdentityString(object $eiObjectArg, ?N2nLocale $n2nLocale = null): string {
 // 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->eiuMask->getEiMask()->getEiType());
 // 		return $this->getEiGuiDefinition()
 // 				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),
@@ -401,7 +401,7 @@ class EiuEngine {
 	 * @param array|null $defPropPathsArg
 	 * @return EiuGuiDeclaration
 	 */
-	function newGuiDeclaration(int $viewMode, array $defPropPathsArg = null): EiuGuiDeclaration {
+	function newGuiDeclaration(int $viewMode, ?array $defPropPathsArg = null): EiuGuiDeclaration {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 
 		$eiGuiDeclaration = new EiGuiDeclaration($this->eiEngine->getEiMask(), $viewMode);
@@ -416,14 +416,14 @@ class EiuEngine {
 	 * @param array|null $defPropPaths
 	 * @return EiuGuiMaskDeclaration
 	 */
-	function newGuiMaskDeclaration(int $viewMode, array $defPropPaths = null): EiuGuiMaskDeclaration {
+	function newGuiMaskDeclaration(int $viewMode, ?array $defPropPaths = null): EiuGuiMaskDeclaration {
 		$defPropPaths = DefPropPath::buildArray($defPropPaths);
 		return new EiuGuiMaskDeclaration($this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths),
 				$this->eiuAnalyst);
 	}
 
 	function newMultiGuiDeclaration(bool $bulky = true, bool $readOnly = false, bool $nonAbstractsOnly = true,
-			array $allowedEiTypesArg = null, array $defPropPathsArg = null): EiuGuiDeclaration {
+			?array $allowedEiTypesArg = null, ?array $defPropPathsArg = null): EiuGuiDeclaration {
 		$viewMode = ViewMode::determine($bulky, $readOnly, true);
 
 		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);

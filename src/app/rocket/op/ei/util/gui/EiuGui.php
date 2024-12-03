@@ -92,7 +92,7 @@
 //// 	 * @param int $treeLevel
 //// 	 * @return EiuGuiEntry
 //// 	 */
-//// 	public function appendNewEntryGui($eiEntryArg, int $treeLevel = null) {
+//// 	public function appendNewEntryGui($eiEntryArg, ?int $treeLevel = null) {
 //// 		$eiEntry = null;
 //// 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getContextEiType(), true,
 //// 				$eiEntry);
@@ -146,7 +146,7 @@
 //	/**
 //	 * @return \rocket\op\ei\util\gui\EiuGui
 //	 */
-//	function copy(bool $bulky, bool $readOnly, array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
+//	function copy(bool $bulky, bool $readOnly, ?array $defPropPathsArg = null, bool $guiStructureDeclarationsRequired = true) {
 //		$eiGuiDeclaration = $this->eiGui->getEiGuiDeclaration();
 //		$viewMode = ViewMode::determine($bulky, $readOnly, ViewMode::isAdd($eiGuiDeclaration->getViewMode()));
 //

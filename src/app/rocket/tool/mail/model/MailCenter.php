@@ -42,7 +42,7 @@ class MailCenter {
 	private $numItemsTotal = 0;
 	private $currentItems;
 	
-	public function __construct(FsPath $mailXmlFilePath = null) {
+	public function __construct(?FsPath $mailXmlFilePath = null) {
 		$this->mailXmlFilePath = $mailXmlFilePath;
 	}
 

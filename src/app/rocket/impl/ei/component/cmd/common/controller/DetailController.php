@@ -87,7 +87,7 @@ class DetailController extends ControllerAdapter {
 		$this->delegate($previewController);
 	}
 	
-// 	public function doHistoryPublish($id, $draftId, $httpN2nLocaleId = null, ParamGet $previewtype = null) {
+// 	public function doHistoryPublish($id, $draftId, $httpN2nLocaleId = null, ?ParamGet $previewtype = null) {
 // 		$detailModel = $this->utils->createHistoryDetailModel($id, $draftId, $httpN2nLocaleId);
 // 		$detailModel->publish();
 		
@@ -131,7 +131,7 @@ class DetailController extends ControllerAdapter {
 		$this->delegate($previewController);
 	}
 	
-	private function applyBreadcrumbs(EiObject $eiObject, string $previewType = null) {
+	private function applyBreadcrumbs(EiObject $eiObject, ?string $previewType = null) {
 		$this->opuCtrl->applyCommonBreadcrumbs();
 		
 		$eiFrame = $this->opuCtrl->frame()->getEiFrame();

@@ -86,7 +86,7 @@ class TreeMoveEiModificator extends EiModNatureAdapter {
 // 		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 // 	}
 
-	private function move(Eiu $eiu, string $pid, string $targetPid, bool $before = null) {
+	private function move(Eiu $eiu, string $pid, string $targetPid, ?bool $before = null) {
 		if ($pid === $targetPid) return;
 		
 		$eiuFrame = $eiu->frame();

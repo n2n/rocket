@@ -45,7 +45,7 @@
 // 		return null;
 // 	}
 	
-// 	public function setTmpFilterData($eiTypeId, FilterData $filterData = null) {
+// 	public function setTmpFilterData($eiTypeId, ?FilterData $filterData = null) {
 // 		$this->filterDatas[$eiTypeId] = $filterData;
 // 	}	
 	
@@ -57,7 +57,7 @@
 // 		return null;
 // 	}
 	
-// 	public function setTmpSortDirections($eiTypeId, array $sortDirections = null) {
+// 	public function setTmpSortDirections($eiTypeId, ?array $sortDirections = null) {
 // 		$this->sortDirections[$eiTypeId] = $sortDirections;
 // 	}	
 	

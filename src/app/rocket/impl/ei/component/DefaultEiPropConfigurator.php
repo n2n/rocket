@@ -33,7 +33,7 @@ class DefaultEiPropConfigurator extends EiConfiguratorAdapter implements EiPropC
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\component\prop\indepenent\EiPropConfigurator::initAutoEiPropAttributes($column)
 	 */
-	public function initAutoEiPropAttributes(N2nContext $n2nContext, Column $column = null) {
+	public function initAutoEiPropAttributes(N2nContext $n2nContext, ?Column $column = null) {
 	}
 
 	public function getPropertyAssignation(): PropertyAssignation {

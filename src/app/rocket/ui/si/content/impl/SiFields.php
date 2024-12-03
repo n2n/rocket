@@ -120,7 +120,7 @@ class SiFields {
 	 * @param SiEntryQualifier[]|null $pickables
 	 * @return QualifierSelectInSiField
 	 */
-	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, int $max = null, array $pickables = null): QualifierSelectInSiField {
+	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, ?int $max = null, ?array $pickables = null): QualifierSelectInSiField {
 		return (new QualifierSelectInSiField($frame, $values))->setMin($min)->setMax($max)->setPickables($pickables);
 	}
 
@@ -142,7 +142,7 @@ class SiFields {
 	 * @return EmbeddedEntriesInSiField
 	 */
 	static function embeddedEntriesIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
-			int $min = 0, int $max = null): EmbeddedEntriesInSiField {
+			int $min = 0, ?int $max = null): EmbeddedEntriesInSiField {
 		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
 	}
 	
@@ -195,7 +195,7 @@ class SiFields {
 	 * @param N2nContext $templateN2nContext
 	 * @return \rocket\ui\si\content\impl\iframe\IframeOutSiField
 	 */
-	static function iframeOut(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
+	static function iframeOut(UiComponent $uiComponent, ?N2nContext $templateN2nContext = null) {
 		return new IframeOutSiField($templateN2nContext === null 
 				? IframeData::createFromUiComponent($uiComponent)
 				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
@@ -214,7 +214,7 @@ class SiFields {
 	 * @param N2nContext $templateN2nContext
 	 * @return \rocket\ui\si\content\impl\iframe\IframeInSiField
 	 */
-	static function iframeIn(UiComponent $uiComponent, N2nContext $templateN2nContext = null) {
+	static function iframeIn(UiComponent $uiComponent, ?N2nContext $templateN2nContext = null) {
 		return new IframeInSiField($templateN2nContext === null
 				? IframeData::createFromUiComponent($uiComponent)
 				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));

@@ -44,7 +44,7 @@ class CufBulkyGui implements CufGui {
 		$this->bulkyCuGui->setSelectedMaskId($maskId);
 	}
 
-	function addField(string $propId, string $label, CuField $cuField, string $helpText = null,
+	function addField(string $propId, string $label, CuField $cuField, ?string $helpText = null,
 			string $siStructureType = SiStructureType::ITEM): static {
 		$this->cuMaskedEntry->structure()->addCuField($propId, $label, $cuField, $helpText, $siStructureType);
 		return $this;

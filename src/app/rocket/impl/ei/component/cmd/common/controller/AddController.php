@@ -56,7 +56,7 @@ class AddController extends ControllerAdapter {
 	/**
 	 * @throws StatusException
 	 */
-	public function index($copyPid = null, ParamGet $refPath = null): void {
+	public function index($copyPid = null, ?ParamGet $refPath = null): void {
 		$this->live($copyPid);
 	}
 
@@ -65,7 +65,7 @@ class AddController extends ControllerAdapter {
 	 * @throws StatusException
 	 * @throws ForbiddenException
 	 */
-	public function doChild($parentPid, $copyPid = null, ParamGet $refPath = null): void {
+	public function doChild($parentPid, $copyPid = null, ?ParamGet $refPath = null): void {
 		$this->parentEiuObject = $this->opuCtrl->lookupObject($parentPid);	
 		$this->live($copyPid);	
 	}
@@ -75,7 +75,7 @@ class AddController extends ControllerAdapter {
 	 * @throws PageNotFoundException
 	 * @throws ForbiddenException
 	 */
-	public function doBefore($beforePid, $copyPid = null, ParamGet $refPath = null): void {
+	public function doBefore($beforePid, $copyPid = null, ?ParamGet $refPath = null): void {
 		$this->beforeEiuObject = $this->opuCtrl->lookupObject($beforePid);	
 		$this->live($copyPid);
 	}
@@ -85,7 +85,7 @@ class AddController extends ControllerAdapter {
 	 * @throws StatusException
 	 * @throws ForbiddenException
 	 */
-	public function doAfter($afterPid, $copyPid = null, ParamGet $refPath = null): void {
+	public function doAfter($afterPid, $copyPid = null, ?ParamGet $refPath = null): void {
 		$this->afterEiuObject = $this->opuCtrl->lookupObject($afterPid);	
 		$this->live($copyPid);
 	}
@@ -150,7 +150,7 @@ class AddController extends ControllerAdapter {
 		IllegalStateException::assertTrue($result);
 	}
 	
-//	public function doDraft(ParamGet $refPath = null) {
+//	public function doDraft(?ParamGet $refPath = null) {
 //		$redirectUrl = $this->opuCtrl->parseRefUrl($refPath);
 //
 //		$eiuEntryForm = $this->opuCtrl->frame()->newEntryForm(true);

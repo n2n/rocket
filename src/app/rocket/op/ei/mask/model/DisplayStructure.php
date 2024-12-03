@@ -37,7 +37,7 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDefPropPath(DefPropPath $defPropPath, string $type, string $label = null) {
+	public function addDefPropPath(DefPropPath $defPropPath, string $type, ?string $label = null) {
 		$this->displayItems[] = DisplayItem::create($defPropPath, $type, $label);
 	}
 	
@@ -47,8 +47,8 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $type/*, bool $autonomic = false*/, string $label = null, 
-			string $helpText = null, string $moduleNamespace = null) {
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type/*, bool $autonomic = false*/, ?string $label = null,
+			?string $helpText = null, ?string $moduleNamespace = null) {
 		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type/*, $autonomic*/, $label, $helpText, $moduleNamespace);
 	}
 	
@@ -194,7 +194,7 @@ class DisplayStructure {
 // 		}
 // 	}
 	
-// 	public function withContainer(string $type, string $label, string $helpText = null,  array $attrs = null) {
+// 	public function withContainer(string $type, string $label, ?string $helpText = null,  ?array $attrs = null) {
 // 		if (count($this->displayItems) != 1 
 // 				|| $this->displayItems[0]->getType() != $type) {
 // 			$ds = new DisplayStructure();

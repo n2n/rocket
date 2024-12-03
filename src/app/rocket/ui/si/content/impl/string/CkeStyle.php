@@ -26,7 +26,7 @@ class CkeStyle implements \JsonSerializable {
 	private $tag;
 	private $class;
 	
-	public function __construct(string $name, string $tag, string $class = null) {
+	public function __construct(string $name, string $tag, ?string $class = null) {
 		$this->name = $name;
 		$this->tag = $tag;
 		$this->class = $class;

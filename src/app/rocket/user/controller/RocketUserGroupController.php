@@ -308,7 +308,7 @@ class RocketUserGroupController extends ControllerAdapter {
 		$this->forward('..\view\grantEdit.html', array('eiGrantForm' => $eiGrantForm, 'label' => $label));
 	}	
 	
-	private function applyBreadcrumbs(RocketUserGroupForm $userGroupForm = null) {
+	private function applyBreadcrumbs(?RocketUserGroupForm $userGroupForm = null) {
 		$httpContext = $this->getHttpContext();
 	
 		$this->rocketState->addBreadcrumb(new Breadcrumb(

@@ -18,7 +18,7 @@ class PrivilegeSetting {
 	 * @param EiCmdPath[] $executableEiCmdPaths
 	 * @param EiCmdPath[] $writableEiPropPaths
 	 */
-	function __construct(array $executableEiCmdPaths = array(), array $writableEiPropPaths = null) {
+	function __construct(array $executableEiCmdPaths = array(), ?array $writableEiPropPaths = null) {
 		$this->setExecutableEiCmdPaths($executableEiCmdPaths);
 		$this->setWritableEiPropPaths($writableEiPropPaths ?? new DataSet());
 	}

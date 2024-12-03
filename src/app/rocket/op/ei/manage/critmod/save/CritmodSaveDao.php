@@ -53,7 +53,7 @@ class CritmodSaveDao implements RequestScoped {
 		return $stateKey . '?' . $eiTypePath;
 	}
 
-	public function setQuickSearchString(string $categoryKey, string $quickSearchString = null) {
+	public function setQuickSearchString(string $categoryKey, ?string $quickSearchString = null) {
 		$this->quickSearchStrings[$categoryKey] = $quickSearchString;
 	}
 	
@@ -65,7 +65,7 @@ class CritmodSaveDao implements RequestScoped {
 		return null;
 	}
 	
-	public function setTmpCritmodSave(string $categoryKey, CritmodSave $critmodSave = null) {
+	public function setTmpCritmodSave(string $categoryKey, ?CritmodSave $critmodSave = null) {
 		$this->tmpCritmodSaves[$categoryKey] = $critmodSave;
 		$this->selectedCritmodSaveIds[$categoryKey] = null;
 	}
@@ -82,7 +82,7 @@ class CritmodSaveDao implements RequestScoped {
 		return null;
 	}
 	
-	public function setSelectedCritmodSave(string $categoryKey, CritmodSave $critmodSave = null) {
+	public function setSelectedCritmodSave(string $categoryKey, ?CritmodSave $critmodSave = null) {
 		$this->tmpCritmodSaves[$categoryKey] = null;
 		$this->selectedCritmodSaveIds[$categoryKey] = ($critmodSave !== null ? $critmodSave->getId() : null);
 	}
@@ -99,7 +99,7 @@ class CritmodSaveDao implements RequestScoped {
 		return $this->em->find(CritmodSave::getClass(), $this->selectedCritmodSaveIds[$categoryKey]);
 	}
 	
-	public function buildUniqueCritmodSaveName(TypePath $eiTypePath, string $filterName, CritmodSave $exceptCritmodSave = null) {
+	public function buildUniqueCritmodSaveName(TypePath $eiTypePath, string $filterName, ?CritmodSave $exceptCritmodSave = null) {
 		$realFilterName = $filterName;
 		
 		for ($i = 2; $this->containsCritmodSaveName($eiTypePath, $realFilterName, $exceptCritmodSave); $i++) {
@@ -109,7 +109,7 @@ class CritmodSaveDao implements RequestScoped {
 		return $realFilterName;
 	}
 	
-	public function containsCritmodSaveName(TypePath $eiTypePath, string $filterName, CritmodSave $exceptCritmodSave = null) {
+	public function containsCritmodSaveName(TypePath $eiTypePath, string $filterName, ?CritmodSave $exceptCritmodSave = null) {
 		$criteria = $this->em->createCriteria();
 		$criteria->select('COUNT(cs)')->from(CritmodSave::getClass(), 'cs')->where(
 				array('cs.eiTypePath' => (string) $eiTypePath, 'cs.name' => $filterName));

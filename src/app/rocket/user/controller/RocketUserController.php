@@ -211,7 +211,7 @@ class RocketUserController extends ControllerAdapter {
 		return $powerOptions;
 	}
 	
-	function getDoChPw(array $params = null) {
+	function getDoChPw(?array $params = null) {
 		$this->verifyAdmin();
 		if ($this->verifyHtml()) {
 			return;

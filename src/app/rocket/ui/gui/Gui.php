@@ -98,7 +98,7 @@ interface Gui {
 //	 * @return \rocket\op\ei\manage\gui\EiGuiValueBoundary
 //	 *@throws \InvalidArgumentException
 //	 */
-//	function appendEiGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
+//	function appendEiGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, ?int $treeLevel = null) {
 //		return $this->eiGuiValueBoundaries[] = $this->eiGuiDeclaration->createEiGuiValueBoundary($eiFrame, $eiEntries, $this, $treeLevel);
 //	}
 //
@@ -107,7 +107,7 @@ interface Gui {
 //	 * @param int $treeLevel
 //	 * @throws InaccessibleEiEntryException
 //	 */
-//	function appendNewEiGuiValueBoundary(EiFrame $eiFrame, int $treeLevel = null) {
+//	function appendNewEiGuiValueBoundary(EiFrame $eiFrame, ?int $treeLevel = null) {
 //		return $this->eiGuiValueBoundaries[] = $this->eiGuiDeclaration->createNewEiGuiValueBoundary($eiFrame, $this, $treeLevel);
 //	}
 //

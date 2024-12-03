@@ -43,7 +43,7 @@ enum TranslationTestEnv {
 	}
 
 	static function setUpTranslationTestObj(TranslatableTestObj $translationContainerTestObj,
-			N2nLocale|string $n2nLocale, string $name = null): TranslationTestObj {
+			N2nLocale|string $n2nLocale, ?string $name = null): TranslationTestObj {
 		$obj = new TranslationTestObj();
 		$obj->setN2nLocale(N2nLocale::create($n2nLocale));
 		$obj->name = $name ?? HashUtils::base36Uniqid();

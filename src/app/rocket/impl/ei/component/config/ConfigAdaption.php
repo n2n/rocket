@@ -53,7 +53,7 @@ abstract class ConfigAdaption implements EiConfiguratorAdaption {
 		
 	}
 	
-	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 	}
 	
 	protected function mandatoryRequired() {

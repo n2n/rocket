@@ -134,8 +134,8 @@ class EiTypeSetup {
 
 
 
-	function createPropertyAttributeError(PropertyAttribute $propertyAttribute, \Throwable $previous = null,
-			string $message = null): ConfigurationError {
+	function createPropertyAttributeError(PropertyAttribute $propertyAttribute, ?\Throwable $previous = null,
+			?string $message = null): ConfigurationError {
 
 		throw new ConfigurationError(
 				$message ?? 'Could not initialize EiProp for '

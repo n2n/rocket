@@ -245,7 +245,7 @@ class EditController extends ControllerAdapter {
 // 						->getEntryGuiModel(), $redirectUrl)));
 // 	}
 	
-// 	public function doPreview($pid, $previewType = null, ParamGet $refPath = null) {
+// 	public function doPreview($pid, $previewType = null, ?ParamGet $refPath = null) {
 // 		$redirectUrl = $this->buildRedirectUrl($refPath);
 		
 // 		$eiEntry = $this->controllingUtils->lookupEiEntry($pid, true, $draftId);

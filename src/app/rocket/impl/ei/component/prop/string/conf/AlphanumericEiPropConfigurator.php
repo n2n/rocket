@@ -43,7 +43,7 @@
 // 		$this->autoRegister($alphanumericEiProp);
 // 	}
 	
-// 	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+// 	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 // 		parent::initAutoEiPropAttributes($n2nContext, $column);
 		
 // 		if ($column instanceof StringColumn) {

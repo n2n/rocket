@@ -89,7 +89,7 @@
 // 	/* (non-PHPdoc)
 // 	 * @see \n2n\persistence\orm\criteria\querypoint\QueryPoint::setMetaGenerator()
 // 	 */
-// 	public function setMetaGenerator(MetaGenerator $metaGenerator = null) {
+// 	public function setMetaGenerator(?MetaGenerator $metaGenerator = null) {
 // 		$this->decoratedTreePointMeta->setMetaGenerator($metaGenerator);
 // 	}	
 // }

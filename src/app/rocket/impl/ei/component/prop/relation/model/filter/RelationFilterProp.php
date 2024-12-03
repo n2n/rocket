@@ -236,7 +236,7 @@ class RelationFilterMagForm extends MagForm {
 	private $filterGroupMag;
 	
 	public function __construct(bool $toMany, EiuFrame $targetEiuFrame, FilterDefinition $targetFilterDefinition, 
-			FilterJhtmlHook $filterJhtmlHook, \Closure $targetSelectUrlCallback = null) {
+			FilterJhtmlHook $filterJhtmlHook, ?\Closure $targetSelectUrlCallback = null) {
 		$this->toMany = $toMany;
 				
 		if ($targetSelectUrlCallback !== null) {

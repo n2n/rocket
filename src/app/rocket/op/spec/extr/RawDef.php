@@ -115,7 +115,7 @@ class RawDef {
 // 		return $idParts;
 // 	}
 	
-// 	public static function buildEiTypeMaskId(string $eiTypeId, string $maskId = null) {
+// 	public static function buildEiTypeMaskId(string $eiTypeId, ?string $maskId = null) {
 // 		if (null === $maskId) return $eiTypeId;
 		
 // 		return $eiTypeId . self::ID_EI_TYPE_MASK_DELIMITER . $maskId;

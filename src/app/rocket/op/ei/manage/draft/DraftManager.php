@@ -81,7 +81,7 @@ class DraftManager {
 				->getOrCreateDefault()->getDraftDefinition();		
 	}
 	
-	public function find(\ReflectionClass $class, $draftId, DraftDefinition $draftDefinition = null) {
+	public function find(\ReflectionClass $class, $draftId, ?DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
 		$eiType = $this->spec->getEiTypeByClass($class);
@@ -98,8 +98,8 @@ class DraftManager {
 		return $draftFetcher->fetchSingle();
 	}
 	
-	public function findByEntityObjId(\ReflectionClass $class, $entityObjId, int $limit = null, int $num = null, 
-			DraftDefinition $draftDefinition = null) {
+	public function findByEntityObjId(\ReflectionClass $class, $entityObjId, ?int $limit = null, ?int $num = null,
+			?DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
 		$eiType = $this->spec->getEiTypeByClass($class);
@@ -118,8 +118,8 @@ class DraftManager {
 		return $draftFetcher->fetch();
 	}
 	
-	public function findByFilter(\ReflectionClass $class, $entityObjId = null, int $type = null,
-			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
+	public function findByFilter(\ReflectionClass $class, $entityObjId = null, ?int $type = null,
+			?int $userId = null, ?int $limit = null, ?int $num = null, ?DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 
 		$eiType = $this->spec->getEiTypeByClass($class);
@@ -149,7 +149,7 @@ class DraftManager {
 		return $draftFetcher->fetch();
 	}
 
-	public function countUnbounds(\ReflectionClass $class, DraftDefinition $draftDefinition = null) {
+	public function countUnbounds(\ReflectionClass $class, ?DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
 		if ($draftDefinition === null) {
@@ -168,7 +168,7 @@ class DraftManager {
 		return $stmtBuilder->buildResult();
 	}
 	
-	public function findUnbounds(\ReflectionClass $class, int $limit, int $num = null, DraftDefinition $draftDefinition = null) {
+	public function findUnbounds(\ReflectionClass $class, int $limit, ?int $num = null, ?DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 		
 		$eiType = $this->spec->getEiTypeByClass($class);
@@ -191,7 +191,7 @@ class DraftManager {
 		return new DraftFetcher($fetchDraftStmtBuilder, $eiType, $draftDefinition, $this->draftingContext, $this->em);
 	}
 	
-	public function persist(Draft $draft, DraftDefinition $draftDefinition = null) {
+	public function persist(Draft $draft, ?DraftDefinition $draftDefinition = null) {
 		$this->ensureTransactionOpen('Perist');
 		
 		if ($draftDefinition === null && $draft->isNew()) {

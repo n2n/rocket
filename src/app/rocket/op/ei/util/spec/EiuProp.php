@@ -46,7 +46,7 @@ class EiuProp {
 	 * @param N2nLocale|null $n2nLocale
 	 * @return string
 	 */
-	public function getLabel(N2nLocale $n2nLocale = null) {
+	public function getLabel(?N2nLocale $n2nLocale = null) {
 		return $this->eiuMask->getPropLabel($this->eiPropPath, $n2nLocale);
 	}
 
@@ -58,7 +58,7 @@ class EiuProp {
 //	 * @param N2nLocale|null $n2nLocale
 //	 * @return string
 //	 */
-//	public function getPluralLabel(N2nLocale $n2nLocale = null) {
+//	public function getPluralLabel(?N2nLocale $n2nLocale = null) {
 //		return $this->eiuMask->getPropPluralLabel($this->eiPropPath, $n2nLocale);
 //	}
 	
@@ -66,7 +66,7 @@ class EiuProp {
 	 * @param N2nLocale|null $n2nLocale
 	 * @return string
 	 */
-	public function getHelpText(N2nLocale $n2nLocale = null) {
+	public function getHelpText(?N2nLocale $n2nLocale = null) {
 		return $this->eiuMask->getPropHelpText($this->eiPropPath, $n2nLocale);
 	}
 	
@@ -102,7 +102,7 @@ class EiuProp {
 	 * @param Throwable|null $previous
 	 * @return mixed
 	 */
-	function createConfigException(string $message = null, Throwable $previous = null) {
+	function createConfigException(?string $message = null, ?Throwable $previous = null) {
 		throw new InvalidEiConfigurationException('Invalid configuration for EiProp ' . $this->getEiProp()
 				. ' Reason: ' . ($message ?? $previous?->getMessage() ?? 'unknown'), $previous);
 	}
@@ -118,7 +118,7 @@ class EiuProp {
 	/**
 	 * @throws PropertyAccessException
 	 */
-	function readNativeValue(EiuObject $eiuObject = null) {
+	function readNativeValue(?EiuObject $eiuObject = null) {
 		return ($eiuObject ?? $this->eiuAnalyst->getEiuObject(true))->readNativeValue($this->getEiProp());
 	}
 
@@ -129,7 +129,7 @@ class EiuProp {
 	/**
 	 * @throws PropertyAccessException
 	 */
-	function writeNativeValue(mixed $value, EiuObject $eiuObject = null): static {
+	function writeNativeValue(mixed $value, ?EiuObject $eiuObject = null): static {
 		($eiuObject ?? $this->eiuAnalyst->getEiuObject(true))->writeNativeValue($value, $this->getEiProp());
 		return $this;
 	}

@@ -85,7 +85,7 @@
 //		return $this->eiGuiValueBoundary->isEiGuiEntrySelected();
 //	}
 //
-//	function copy(bool $bulky = null, bool $readOnly = null, array $defPropPathsArg = null,
+//	function copy(?bool $bulky = null, ?bool $readOnly = null, ?array $defPropPathsArg = null,
 //			bool $entryGuiControlsIncluded = null): EiuGuiValueBoundary {
 //		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 //

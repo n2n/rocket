@@ -93,7 +93,7 @@ class EiErrorResult {
 // 		return ArrayUtils::first($this->getEiCommandErrors($typePath, $eiCmdPath));
 // 	}
 	
-	public function getThrowables(TypePath $typePath = null) {
+	public function getThrowables(?TypePath $typePath = null) {
 		$throwables = [];
 		array_walk($this->eiPropErrors, function (EiPropError $eiPropError) use ($typePath, $throwables) {
 			if ($typePath === null || !$eiPropError->getEiTypePath()->equals($typePath)) return;
@@ -114,7 +114,7 @@ class EiErrorResult {
 		return $throwables;
 	}
 	
-	public function hasErrors(TypePath $typePath = null) {
+	public function hasErrors(?TypePath $typePath = null) {
 		return !empty($this->getThrowables($typePath));
 	}
 	
@@ -122,7 +122,7 @@ class EiErrorResult {
 	 * @param TypePath $typePath
 	 * @return EiPropError[]
 	 */
-	public function getEiPropErrors(TypePath $typePath, EiPropPath $eiPropPath = null) {
+	public function getEiPropErrors(TypePath $typePath, ?EiPropPath $eiPropPath = null) {
 		return array_filter($this->eiPropErrors, function (EiPropError $eiPropError) use ($typePath, $eiPropPath) {
 			return $eiPropError->getEiTypePath()->equals($typePath) 
 					&& (null === $eiPropPath || $eiPropError->getEiPropPath()->equals($eiPropPath));
@@ -133,7 +133,7 @@ class EiErrorResult {
 	 * @param TypePath $typePath
 	 * @return EiModificatorError[]
 	 */
-	public function getEiModificatorErrors(TypePath $typePath, EiModPath $eiModificatorPath = null) {
+	public function getEiModificatorErrors(TypePath $typePath, ?EiModPath $eiModificatorPath = null) {
 		return array_filter($this->eiModificatorErrors, function (EiModificatorError $eiModificatorError) use ($typePath, $eiModificatorPath) {
 			return $eiModificatorError->getEiTypePath()->equals($typePath) 
 					&& (null === $eiModificatorPath || $eiModificatorError->getEiModificatorPath()->equals($eiModificatorPath));
@@ -144,7 +144,7 @@ class EiErrorResult {
 	 * @param TypePath $typePath
 	 * @return EiCommandError[]
 	 */
-	public function getEiCommandErrors(TypePath $typePath, EiCmdPath $eiCmdPath = null) {
+	public function getEiCommandErrors(TypePath $typePath, ?EiCmdPath $eiCmdPath = null) {
 		return array_filter($this->eiCmdErrors, function (EiCommandError $eiCmdError) use ($typePath, $eiCmdPath) {
 			return $eiCmdError->getEiTypePath()->equals($typePath) 
 					&& (null === $eiCmdPath || $eiCmdError->getEiCmdPath()->equals($eiCmdPath));

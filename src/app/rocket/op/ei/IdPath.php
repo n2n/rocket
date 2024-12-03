@@ -64,7 +64,7 @@ abstract class IdPath implements Hashable {
 	 * @param int $length
 	 * @return string[]
 	 */
-	public function sliceIds(int $offset, int $length = null) {
+	public function sliceIds(int $offset, ?int $length = null) {
 		return array_slice($this->ids, $offset, $length);
 	}
 	

@@ -57,7 +57,7 @@ class GuiFields {
 				->setTimeChoosable($timeChoosable));
 	}
 
-	static function numberIn(bool $mandatory = false, float $min = null, float $max = null, float $step = 1, bool $fixed = false,
+	static function numberIn(bool $mandatory = false, ?float $min = null, ?float $max = null, float $step = 1, bool $fixed = false,
 			float $arrowStep = 1, array $prefixAddons = [], array $suffixAddons = []): NumberInGuiField {
 		return new NumberInGuiField(SiFields::numberIn(null)
 				->setMandatory($mandatory)
@@ -70,8 +70,8 @@ class GuiFields {
 				->setSuffixAddons($suffixAddons));
 	}
 
-	static function enumIn(bool $mandatory = false, array $options = [], string $defaultValue = null,
-			string $emptyLabel = null, array $associatedPropIdsMap = []): EnumInCuField {
+	static function enumIn(bool $mandatory = false, array $options = [], ?string $defaultValue = null,
+			?string $emptyLabel = null, array $associatedPropIdsMap = []): EnumInCuField {
 		return new EnumInCuField(SiFields::enumIn($options, $defaultValue)
 				->setEmptyLabel($emptyLabel)
 				->setMandatory($mandatory)

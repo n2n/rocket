@@ -24,7 +24,7 @@ class IframeController extends ControllerAdapter {
 		$this->iframeConfig = $iframeConfig;
 	}
 
-	function index(int $pid = null) {
+	function index(?int $pid = null) {
 		$opuCtrl = OpuCtrl::from($this->cu());
 
 		$this->verifyPid($pid);

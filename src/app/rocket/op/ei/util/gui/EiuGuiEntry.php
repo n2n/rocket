@@ -73,7 +73,7 @@ class EiuGuiEntry {
 //	 * @throws GuiException
 //	 * @return string|null
 //	 */
-//	function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+//	function getFieldLabel($eiPropPath, ?N2nLocale $n2nLocale = null, bool $required = false) {
 //		return $this->guiFrame()->getPropLabel($eiPropPath, $n2nLocale, $required);
 //	}
 	
@@ -235,7 +235,7 @@ class EiuGuiEntry {
 		$this->eiGuiEntry->save();
 	}
 
-	function copy(bool $bulky = null, bool $readOnly = null, array $defPropPathsArg = null, bool $entryGuiControlsIncluded = null): EiuGuiEntry {
+	function copy(?bool $bulky = null, ?bool $readOnly = null, ?array $defPropPathsArg = null, ?bool $entryGuiControlsIncluded = null): EiuGuiEntry {
 		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
 
 		$eiGuiMaskDeclaration = $this->eiGuiEntry->getEiGuiMaskDeclaration();
@@ -304,8 +304,8 @@ class ClosureGuiListener implements EiGuiEntryListener {
 	 * @param \Closure $onSaveClosure
 	 * @param \Closure $savedClosure
 	 */
-	function __construct(Eiu $eiu, \Closure $whenReadyClosure = null, \Closure $onSaveClosure = null,
-			\Closure $savedClosure = null) {
+	function __construct(Eiu $eiu, ?\Closure $whenReadyClosure = null, ?\Closure $onSaveClosure = null,
+			?\Closure $savedClosure = null) {
 		$this->eiu = $eiu;
 		$this->whenReadyClosure = $whenReadyClosure;
 		$this->onSaveClosure = $onSaveClosure;

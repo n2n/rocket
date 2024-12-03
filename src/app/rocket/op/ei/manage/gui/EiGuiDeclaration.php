@@ -190,7 +190,7 @@ class EiGuiDeclaration {
 		return $filtereds;
 	}
 	
-// 	function appendEiGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, int $treeLevel = null) {
+// 	function appendEiGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, ?int $treeLevel = null) {
 // 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		
 // 		$eiGuiValueBoundary = new EiGuiValueBoundary($this->contextEiMask->getEiType(), $treeLevel);
@@ -214,7 +214,7 @@ class EiGuiDeclaration {
 // 	}
 
 	function createGuiValueBoundary(EiFrame $eiFrame, array $eiEntries, bool $entryGuiControlsIncluded,
-			int $treeLevel = null): GuiValueBoundary {
+			?int $treeLevel = null): GuiValueBoundary {
 		ArgUtils::valArray($eiEntries, EiEntry::class);
 		
 		$guiValueBoundary = new GuiValueBoundary($treeLevel);
@@ -273,7 +273,7 @@ class EiGuiDeclaration {
 	 * @param int|null $treeLevel
 	 * @return GuiValueBoundary
 	 */
-	function createNewGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, int $treeLevel = null): GuiValueBoundary {
+	function createNewGuiValueBoundary(EiFrame $eiFrame, bool $entryGuiControlsIncluded, ?int $treeLevel = null): GuiValueBoundary {
 		$eiGuiValueBoundary = new GuiValueBoundary($this, $treeLevel);
 
 		$eiGuiValueBoundary = new GuiValueBoundary($this, $treeLevel);

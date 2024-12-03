@@ -613,7 +613,7 @@ class EiMask {
 	 * @param EiEntry $eiEntry
 	 * @return string[]
 	 */
-	public function getPreviewTypeOptions(N2nContext $n2nContext, EiFrame $eiFrame, EiObject $eiObject, EiEntry $eiEntry = null) {
+	public function getPreviewTypeOptions(N2nContext $n2nContext, EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $eiEntry = null) {
 		$previewController = $this->lookupPreviewController($n2nContext);
 
 		$options = $previewController->getPreviewTypeOptions(new Eiu($eiFrame, $eiObject, $eiEntry));
@@ -630,7 +630,7 @@ class EiMask {
 	 * @throws UnknownGuiControlException
 	 * @return PreviewController
 	 */
-	public function lookupPreviewController(N2nContext $n2nContext, PreviewModel $previewModel = null): PreviewController {
+	public function lookupPreviewController(N2nContext $n2nContext, ?PreviewModel $previewModel = null): PreviewController {
 		$lookupId = $this->eiMaskDef->getPreviewControllerLookupId();
 		if (null === $lookupId) {
 			$lookupId = $this->eiType->getEiMask()->getPreviewControllerLookupId();

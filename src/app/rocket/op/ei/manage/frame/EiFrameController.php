@@ -194,7 +194,7 @@ class EiFrameController extends ControllerAdapter {
 		} 
 	}
 	
-	public function doApi($eiCmdPathStr, ApiController $apiController, array $delegateParams = null) {
+	public function doApi($eiCmdPathStr, ApiController $apiController, ?array $delegateParams = null) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
 		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		
@@ -203,7 +203,7 @@ class EiFrameController extends ControllerAdapter {
 		$this->delegate($apiController);
 	}
 	
-	public function doCmd($eiCmdPathStr, array $delegateCmds = null) {
+	public function doCmd($eiCmdPathStr, ?array $delegateCmds = null) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
 		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		$this->pushEiFrame($eiCmd);

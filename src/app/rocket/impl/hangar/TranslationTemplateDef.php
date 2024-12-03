@@ -28,7 +28,7 @@ class TranslationTemplateDef extends WebTemplateDef {
 		return 'Translation Container';
 	}
 	
-	public function applyTemplate(Huo $huo, PhpClass $phpClass, MagDispatchable $magDispatchable = null) {
+	public function applyTemplate(Huo $huo, PhpClass $phpClass, ?MagDispatchable $magDispatchable = null) {
 		parent::applyTemplate($huo, $phpClass, $magDispatchable);
 		
 		self::applyTranslatableValues($phpClass, $magDispatchable);
@@ -53,7 +53,7 @@ class TranslationTemplateDef extends WebTemplateDef {
 		
 	}
 	
-	public static function applyTranslatableValues(PhpClass $phpClass, MagDispatchable $magDispatchable = null) {
+	public static function applyTranslatableValues(PhpClass $phpClass, ?MagDispatchable $magDispatchable = null) {
 		if (null === $magDispatchable) return;
 		
 		$phpClass->createPhpUse(Translator::class);

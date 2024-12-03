@@ -53,7 +53,7 @@
 //		return $level;
 //	}
 //
-//	function autoAttributes(Eiu $eiu, DataSet $dataSet, Column $column = null) {
+//	function autoAttributes(Eiu $eiu, DataSet $dataSet, ?Column $column = null) {
 //		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_ADD_VIEW_KEY, false);
 //		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_EDIT_VIEW_KEY, false);
 //		$dataSet->set(DisplayConfig::ATTR_DISPLAY_IN_OVERVIEW_KEY, false);

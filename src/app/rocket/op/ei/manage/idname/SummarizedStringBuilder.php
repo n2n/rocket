@@ -43,7 +43,7 @@ class SummarizedStringBuilder {
 		return $usedDefPropPaths;
 	}
 
-	public function replaceFields(array $baseEiPropPaths, IdNameDefinition $idNameDefinition, EiObject $eiObject = null) {
+	public function replaceFields(array $baseEiPropPaths, IdNameDefinition $idNameDefinition, ?EiObject $eiObject = null) {
 		if (!RecursionAsserters::unique(self::class)->tryPush((string) $idNameDefinition->getEiMask()->getEiTypePath())) {
 			return;
 		}

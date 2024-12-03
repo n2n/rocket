@@ -57,7 +57,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return $this->definedN2nLocales;
 	}
 
-	public function setDefinedN2nLocales(array $definedN2nLocales = null) {
+	public function setDefinedN2nLocales(?array $definedN2nLocales = null) {
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
@@ -165,12 +165,12 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
 	public function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($eiu->prop()->getPath(), $eiu->prop()->getLabelLstr(),
-				function (N2nLocale $n2nLocale = null) {
+				function (?N2nLocale $n2nLocale = null) {
 					if ($n2nLocale === null) return null;
 
 					return (string) $n2nLocale;
 				},
-				function (string $n2nLocaleId = null) {
+				function (?string $n2nLocaleId = null) {
 					if ($n2nLocaleId === null) return null;
 
 					try {

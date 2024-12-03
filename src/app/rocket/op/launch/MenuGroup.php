@@ -75,7 +75,7 @@ class MenuGroup {
 	 * @param LaunchPad $launchPad
 	 * @param string $label
 	 */
-	public function addLaunchPad(LaunchPad $launchPad, string $label = null) {
+	public function addLaunchPad(LaunchPad $launchPad, ?string $label = null) {
 		$this->launchPads[$launchPad->getId()] = $launchPad;
 		$this->labels[$launchPad->getId()] = $label;
 	}

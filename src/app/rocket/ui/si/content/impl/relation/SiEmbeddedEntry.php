@@ -39,7 +39,7 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	 * @param BulkyEntrySiGui $content
 	 * @param CompactEntrySiGui|null $summaryContent
 	 */
-	function __construct(BulkyEntrySiGui $content, CompactEntrySiGui $summaryContent = null) {
+	function __construct(BulkyEntrySiGui $content, ?CompactEntrySiGui $summaryContent = null) {
 		$this->content = $content;
 		$this->summaryContent = $summaryContent;
 	}

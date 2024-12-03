@@ -36,7 +36,7 @@ class CuStructure {
 			private readonly ?SiStructureDeclaration $siStructureDeclaration) {
 	}
 
-	function addCuField(string $propId, string $label, CuField $cuField, string $helpText = null,
+	function addCuField(string $propId, string $label, CuField $cuField, ?string $helpText = null,
 			string $siStructureType = SiStructureType::ITEM): static {
 		if ($this->cuGuiEntry->containsCuField($propId)) {
 			throw new DuplicateElementException('Property id already exist: ' . $propId);

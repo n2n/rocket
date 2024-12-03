@@ -28,7 +28,7 @@ class N2nLocaleDef {
 	private $mandatory;
 	private $label;
 	
-	public function __construct(N2nLocale $n2nLocale, bool $mandatory, string $label = null) {
+	public function __construct(N2nLocale $n2nLocale, bool $mandatory, ?string $label = null) {
 		$this->n2nLocale = $n2nLocale;
 		$this->mandatory = $mandatory;
 		$this->label = $label;

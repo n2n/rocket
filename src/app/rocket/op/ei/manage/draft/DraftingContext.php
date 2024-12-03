@@ -30,7 +30,7 @@ class DraftingContext {
 	private $draftValuesResults = array();
 	private $draftMap = array();
 	
-	public function add(DraftDefinition $draftDefinition, Draft $draft, DraftValuesResult $draftValuesResult = null) {
+	public function add(DraftDefinition $draftDefinition, Draft $draft, ?DraftValuesResult $draftValuesResult = null) {
 		$objHash = spl_object_hash($draft);
 		$this->drafts[$objHash] = $draft;
 		$this->draftDefinitions[$objHash] = $draftDefinition;

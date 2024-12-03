@@ -26,7 +26,7 @@ class ContentItemTemplateDef implements HangarTemplateDef {
 		return 'ContentItem';
 	}
 	
-	public function applyTemplate(Huo $huo, PhpClass $phpClass, MagDispatchable $magDispatchable = null) {
+	public function applyTemplate(Huo $huo, PhpClass $phpClass, ?MagDispatchable $magDispatchable = null) {
 		$phpClass->setSuperClassTypeDef(PhpTypeDef::fromTypeName(ContentItem::class));
 		WebTemplateDef::applyResponseCacheClearerValue($phpClass, $magDispatchable);
 		

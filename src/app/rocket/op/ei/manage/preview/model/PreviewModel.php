@@ -30,7 +30,7 @@ class PreviewModel {
 	private $previewType;
 	private $eiu;
 	
-	public function __construct(string $previewType, EiFrame $eiFrame, EiObject $eiObject, EiEntry $eiEntry = null) {
+	public function __construct(string $previewType, EiFrame $eiFrame, EiObject $eiObject, ?EiEntry $eiEntry = null) {
 		$this->previewType = $previewType;
 		$this->eiu = new Eiu($eiFrame, $eiObject, $eiEntry);
 	}

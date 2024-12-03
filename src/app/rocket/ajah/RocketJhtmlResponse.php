@@ -52,7 +52,7 @@
 //	 * @param JhtmlExec $jhtmlExec
 //	 * @return BufferedPayload
 //	 */
-//	public static function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $eventInfo = null,
+//	public static function redirectBack(string $fallbackUrl, ?EiJhtmlEventInfo $eventInfo = null,
 //			JhtmlExec $jhtmlExec = null) {
 //		$attrs = array();
 //
@@ -69,7 +69,7 @@
 //	 * @param JhtmlExec $jhtmlExec
 //	 * @return BufferedPayload
 //	 */
-//	public static function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null,
+//	public static function redirectToReferer(string $fallbackUrl, ?EiJhtmlEventInfo $ajahEventInfo = null,
 //            JhtmlExec $jhtmlExec = null) {
 //        $attrs = array();
 //
@@ -86,7 +86,7 @@
 //	 * @param JhtmlExec $jhtmlExec
 //	 * @return BufferedPayload
 //	 */
-//	public static function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
+//	public static function redirect(string $url, ?EiJhtmlEventInfo $ajahEventInfo = null, ?JhtmlExec $jhtmlExec = null) {
 //		$attrs = array();
 //
 //		if ($ajahEventInfo !== null) {
@@ -105,7 +105,7 @@
 //				self::ATTR_EI_EVENT => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
 //	}
 //
-//	public static function view(HtmlView $htmlView, EiJhtmlEventInfo $ajahEventInfo = null) {
+//	public static function view(HtmlView $htmlView, ?EiJhtmlEventInfo $ajahEventInfo = null) {
 //		return JhtmlResponse::view($htmlView,
 //				($ajahEventInfo !== null ? array(self::ATTR_EI_EVENT => $ajahEventInfo->toAttrs()) : array()));
 //	}

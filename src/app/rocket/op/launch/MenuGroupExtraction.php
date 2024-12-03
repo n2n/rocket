@@ -19,7 +19,7 @@
 //		return $this->label;
 //	}
 //
-//	public function addLaunchPad(string $launchPadId, string $label = null) {
+//	public function addLaunchPad(string $launchPadId, ?string $label = null) {
 //		$this->launchPadLabels[$launchPadId] = $label;
 //	}
 //

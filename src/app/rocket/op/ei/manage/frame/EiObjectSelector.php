@@ -195,7 +195,7 @@ class EiObjectSelector {
 //	 * @param DefPropPath[] $defPropPaths
 //	 * @return EiGuiMaskDeclaration
 //	 */
-//	private function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode, array $defPropPaths = null): EiGuiMaskDeclaration {
+//	private function createEiGuiMaskDeclaration(EiMask $eiMask, int $viewMode, ?array $defPropPaths = null): EiGuiMaskDeclaration {
 //		$guiDefinition = $eiMask->getEiEngine()->getEiGuiDefinition();
 //
 ////		if ($defPropPaths === null) {
@@ -212,7 +212,7 @@ class EiObjectSelector {
 	 * @param DefPropPath[] $defPropPaths
 	 * @return EiGuiDeclaration
 	 */
-	function createEiGuiDeclaration(EiMask $eiMask, bool $bulky, bool $readOnly, array $defPropPaths = null): EiGuiDeclaration {
+	function createEiGuiDeclaration(EiMask $eiMask, bool $bulky, bool $readOnly, ?array $defPropPaths = null): EiGuiDeclaration {
 		$viewMode = ViewMode::determine($bulky, $readOnly, false);
 
 
@@ -270,8 +270,8 @@ class EiObjectSelector {
 //	}
 
 
-	function copyEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary, int $viewMode = null, array $defPropPaths = null,
-			bool $entryGuiControlsIncluded = null): EiGuiValueBoundary {
+	function copyEiGuiValueBoundary(EiGuiValueBoundary $eiGuiValueBoundary, ?int $viewMode = null, ?array $defPropPaths = null,
+			?bool $entryGuiControlsIncluded = null): EiGuiValueBoundary {
 		$newViewMode = $viewMode ?? $eiGuiValueBoundary->getEiGuiDeclaration();
 		$newEiGuiDeclaration = new EiGuiDeclaration($this->getEiFrame()->getContextEiEngine()->getEiMask(), $newViewMode);
 		$newEiGuiValueBoundary = new EiGuiValueBoundary($newEiGuiDeclaration, $eiGuiValueBoundary->getTreeLevel());
@@ -299,8 +299,8 @@ class EiObjectSelector {
 
 	}
 
-	function copyEiGuiEntry(GuiEntry $eiGuiEntry, int $viewMode = null, array $defPropPaths = null,
-			bool $entryGuiControlsIncluded = null): GuiEntry {
+	function copyEiGuiEntry(GuiEntry $eiGuiEntry, ?int $viewMode = null, ?array $defPropPaths = null,
+			?bool $entryGuiControlsIncluded = null): GuiEntry {
 		ArgUtils::valArray($defPropPaths, DefPropPath::class, nullAllowed: true);
 
 		$eiGuiMaskDeclaration = $eiGuiEntry->getEiGuiMaskDeclaration();
@@ -322,12 +322,12 @@ class EiObjectSelector {
 	 * @param string $quickSearchStr
 	 * @return int
 	 */
-	function count(string $quickSearchStr = null) {
+	function count(?string $quickSearchStr = null) {
 		return $this->createCriteria('e', 0, $quickSearchStr)
 				->select('COUNT(1)')->toQuery()->fetchSingle();
 	}
 
-	function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, string $quickSearchStr = null): Criteria {
+	function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0, ?string $quickSearchStr = null): Criteria {
 		$criteria = $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes);
 		
 		if ($quickSearchStr !== null) {
@@ -378,7 +378,7 @@ class EiObjectSelector {
 
 
 	function lookupEiGuiFromRange(int $offset, int $num, bool $bulky, bool $readOnly, bool $entryGuiControlsIncluded,
-			array $defPropPaths = null, string $quickSearchStr = null): RangeResult {
+			?array $defPropPaths = null, ?string $quickSearchStr = null): RangeResult {
 
 		$eiGuiDeclaration = $this->eiGuiDeclarationFactory->createEiGuiDeclaration(
 				ViewMode::determine($bulky, $readOnly, false), true, $defPropPaths);
@@ -471,7 +471,7 @@ class EiObjectSelector {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, N2nLocale $n2nLocale = null): string {
+	function createIdentityString(EiObject $eiObject, bool $determineEiMask = true, ?N2nLocale $n2nLocale = null): string {
 		$eiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		if ($determineEiMask) {
 			$eiMask = $eiMask->determineEiMask($eiObject->getEiEntityObj()->getEiType());

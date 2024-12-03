@@ -52,7 +52,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 //		$this->entityProperty = $entityProperty;
 //	}
 //
-//	function setPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+//	function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 //		ArgUtils::assertTrue($propertyAccessProxy !== null);
 //		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 //				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
@@ -68,7 +68,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 		return GuiFields::out($siField);
 	}
 	
-// 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
+// 	function createPreviewUiComponent(?EiFrame $eiFrame = null, HtmlView $view, $value) {
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
@@ -93,7 +93,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 	}
 
 // 	function createEditablePreviewUiComponent(PreviewModel $previewModel, PropertyPath $propertyPath,
-// 			HtmlView $view, \Closure $createCustomUiElementCallback = null) {
+// 			HtmlView $view, ?\Closure $createCustomUiElementCallback = null) {
 // 		return $view->getFormHtmlBuilder()->getInputField($propertyPath, 
 // 				array('class' => 'rocket-preview-inpage-component'));
 // 	}

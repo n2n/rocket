@@ -54,7 +54,7 @@ class GuiFileVerificator {
 		$this->allowedMimeTypes = $allowedMimeTypes;
 	}
 	
-	function setMaxSize(int $maxSize = null) {
+	function setMaxSize(?int $maxSize = null) {
 		$this->maxSize = $maxSize;
 	}
 	

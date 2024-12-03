@@ -129,7 +129,7 @@ class GuiStructureDeclaration {
 	 * @param string|null $helpText
 	 * @return GuiStructureDeclaration
 	 */
-	static function createGroup(array $children, string $siStructureType, ?string $label, string $helpText = null) {
+	static function createGroup(array $children, string $siStructureType, ?string $label, ?string $helpText = null) {
 		ArgUtils::valArray($children, GuiStructureDeclaration::class);
 		$gsd = new GuiStructureDeclaration();
 		$gsd->siStructureType = $siStructureType;

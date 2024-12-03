@@ -127,7 +127,7 @@ class OpuCtrl {
 		}
 	}
 
-//	function redirectToOverview(int $status = null) {
+//	function redirectToOverview(?int $status = null) {
 //		$this->httpContext->getResponse()->send(
 //				new Redirect($this->frame()->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 //	}
@@ -146,7 +146,7 @@ class OpuCtrl {
 	/**
 	 * @throws StatusException
 	 */
-//	function forwardCompactExplorerZone(int $pageSize = 30, string $title = null, bool $generalSiControlsIncluded = true,
+//	function forwardCompactExplorerZone(int $pageSize = 30, ?string $title = null, bool $generalSiControlsIncluded = true,
 //			bool $entryGuiControlsIncluded = true, array $zoneGuiControls = []): void {
 //		if ($this->forwardHtml()) {
 //			return;
@@ -257,7 +257,7 @@ class OpuCtrl {
 	/**
 	 * @throws StatusException
 	 */
-	function forwardGui(Gui $eiGui, string $title = null, array $zoneGuiControls = []): void {
+	function forwardGui(Gui $eiGui, ?string $title = null, array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -282,7 +282,7 @@ class OpuCtrl {
 		$this->cu->sendJson($siZone->toJsonStruct($this->eiu->getN2nContext()));
 	}
 
-	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, string $title = null): void {
+	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, ?string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -300,7 +300,7 @@ class OpuCtrl {
 						$title ?? 'Iframe'));
 	}
 
-	function forwardIframeUrlZone(Url $url, string $title = null): void {
+	function forwardIframeUrlZone(Url $url, ?string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -340,7 +340,7 @@ class OpuCtrl {
 //				$siInputResult);
 //	}
 
-	function forwardUrlIframeZone(Url $url, string $title = null): void {
+	function forwardUrlIframeZone(Url $url, ?string $title = null): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
@@ -363,7 +363,7 @@ class OpuCtrl {
 		return $this;
 	}
 
-	public function pushOverviewBreadcrumb(string $label = null, bool $required = false): static {
+	public function pushOverviewBreadcrumb(?string $label = null, bool $required = false): static {
 		$navPoint = $this->frame()->getOverviewNavPoint($required);
 
 		if ($navPoint === null) {
@@ -380,7 +380,7 @@ class OpuCtrl {
 		return $this;
 	}
 
-	public function pushDetailBreadcrumb($eiObjectArg, string $label = null, bool $required = false): static {
+	public function pushDetailBreadcrumb($eiObjectArg, ?string $label = null, bool $required = false): static {
 		$eiFrame = $this->frame()->getEiFrame();
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
 				$eiFrame->getContextEiEngine()->getEiMask()->getEiType());
@@ -400,7 +400,7 @@ class OpuCtrl {
 		return $this;
 	}
 
-	public function pushEditBreadcrumb($eiObjectArg, string $label = null, bool $required = false): static {
+	public function pushEditBreadcrumb($eiObjectArg, ?string $label = null, bool $required = false): static {
 		$eiFrame = $this->frame()->getEiFrame();
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, '$eiObjectArg',
 				$eiFrame->getContextEiEngine()->getEiMask()->getEiType());
@@ -421,7 +421,7 @@ class OpuCtrl {
 		return $this;
 	}
 
-	public function pushAddBreadcrumb(string $label = null, bool $required = false): static {
+	public function pushAddBreadcrumb(?string $label = null, bool $required = false): static {
 		$navPoint = $this->frame()->getAddNavPoint($required);
 
 		if ($navPoint === null) {
