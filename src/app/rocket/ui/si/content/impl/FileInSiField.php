@@ -33,7 +33,7 @@ use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
 
-	private ?File $value;
+	private ?File $value = null;
 	/**
 	 * @var Url
 	 */
@@ -87,7 +87,7 @@ class FileInSiField extends InSiFieldAdapter {
 		return $this;
 	}
 
-	function getValue(): ?SiFile {
+	function getValue(): ?File {
 		return $this->value;
 	}
 

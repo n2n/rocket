@@ -24,17 +24,20 @@ namespace rocket\ui\si\content\impl;
 use n2n\web\http\UploadDefinition;
 use n2n\core\container\N2nContext;
 use n2n\io\managed\File;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 interface SiFileHandler {
 
 	function upload(UploadDefinition $uploadDefinition, N2nContext $n2nContext): SiUploadResult;
 	
 	/**
-	 * @param array $idData
-	 * @throws \InvalidArgumentException
-	 * @return SiFile|null
+	 * @param array $siFileId
+	 * @param File|null $currentValue
+	 * @param N2nContext $n2nContext
+	 * @return File|null $currentValue
+ 	 * @throws CorruptedSiDataException if id is corrupted
 	 */
-	function determineFileByRawId(array $rawId, ?File $currentValue, N2nContext $n2nContext): ?File;
+	function determineFileByRawId(array $siFileId, ?File $currentValue, N2nContext $n2nContext): ?File;
 
 	function createSiFile(File $file, N2nContext $n2nContext): SiFile;
 }
