@@ -34,7 +34,7 @@ interface SiFileHandler {
 	 * @throws \InvalidArgumentException
 	 * @return SiFile|null
 	 */
-	function getSiFileByRawId(array $rawId): ?SiFile;
+	function determineFileByRawId(array $rawId, ?File $currentValue, N2nContext $n2nContext): ?File;
 
 	function createSiFile(File $file, N2nContext $n2nContext): SiFile;
 }

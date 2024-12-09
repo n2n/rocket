@@ -222,7 +222,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInputValue(array $data): bool {
+	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
 		$siEntryInputs = [];
 		foreach ((new DataSet($data))->reqArray('entryInputs', 'array') as $entryInputData) {
 			$siEntryInputs[] = SiEntryInput::parse($entryInputData);

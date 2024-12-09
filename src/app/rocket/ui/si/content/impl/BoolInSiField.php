@@ -23,6 +23,7 @@ namespace rocket\ui\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 use n2n\util\type\ArgUtils;
+use n2n\core\container\N2nContext;
 
 class BoolInSiField extends InSiFieldAdapter {
 	/**
@@ -136,9 +137,11 @@ class BoolInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
+	 * @param array $data
+	 * @param N2nContext $n2nContext
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInputValue(array $data): bool {
+	function handleInputValue(array $data, N2nContext $n2nContext): bool {
 		$this->value = (new DataSet($data))->reqBool('value', true);
 		return true;
 	}

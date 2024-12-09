@@ -37,7 +37,7 @@ abstract class InSiFieldAdapter extends SiFieldAdapter {
 	abstract function getValue(): mixed;
 
 	final function handleInput(array $data, N2nContext $n2nContext): bool {
-		$valueValid = $this->handleInputValue($data);
+		$valueValid = $this->handleInputValue($data, $n2nContext);
 		$valid = $this->getModel()?->handleInput($this->getValue(), $n2nContext);
 
 		return $valueValid && $valid;
@@ -49,9 +49,10 @@ abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	/**
 	 * @param array $data
+	 * @param N2nContext $n2nContext
 	 * @return bool
 	 * @throws CorruptedSiDataException
 	 */
-	protected abstract function handleInputValue(array $data): bool;
+	protected abstract function handleInputValue(array $data, N2nContext $n2nContext): bool;
 }
 

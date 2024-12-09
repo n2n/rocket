@@ -141,7 +141,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInputValue(array $data): bool {
+	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
 		$this->value = DateUtils::sqlToDateTime((new DataSet($data))->reqString('value', true));
 		return true;
 	}

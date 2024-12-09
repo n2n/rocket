@@ -33,7 +33,7 @@ use n2n\core\container\N2nContext;
 
 class FileInSiField extends InSiFieldAdapter {
 
-	private ?SiFile $value;
+	private ?File $value;
 	/**
 	 * @var Url
 	 */
@@ -68,7 +68,7 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?SiFile $value, SiFileHandler $fileHandler) {
+	function __construct(?File $value, SiFileHandler $fileHandler) {
 		$this->value = $value;
 		$this->fileHandler = $fileHandler;
 	}
@@ -182,14 +182,14 @@ class FileInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInputValue(array $data): bool {
+	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
 		$valueId = (new DataSet($data))->optArray('valueId', null, [], true);
 		if ($valueId === null) {
 			$this->value = null;
 			return true;
 		}
 
-		$this->value = $this->fileHandler->getSiFileByRawId($valueId);
+		$this->value = $this->fileHandler->determineFileByRawId($valueId, $this->value, $n2nContext);
 		if ($this->value === null || !isset($data['imageCuts'])) {
 			return true;
 		}

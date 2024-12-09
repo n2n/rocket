@@ -23,6 +23,7 @@ namespace rocket\ui\si\content\impl;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\content\impl\meta\AddonsSiFieldTrait;
+use n2n\core\container\N2nContext;
 
 class StringInSiField extends InSiFieldAdapter {
 	use AddonsSiFieldTrait;
@@ -159,9 +160,11 @@ class StringInSiField extends InSiFieldAdapter {
 	 
 	/**
 	 * {@inheritDoc}
+	 * @param array $data
+	 * @param N2nContext $n2nContext
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInputValue(array $data): bool {
+	function handleInputValue(array $data, N2nContext $n2nContext): bool {
 		$this->value = (new DataSet($data))->reqString('value', true);
 		return true;
 	}

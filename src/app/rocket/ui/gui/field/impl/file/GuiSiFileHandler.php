@@ -54,12 +54,18 @@ class GuiSiFileHandler implements SiFileHandler {
 		return $this->guiSiFileFactory->createSiFile($file, $this->fileVerificator->isImageRecognized(), $n2nContext);
 	}
 
-	function getSiFileByRawId(array $rawId): ?SiFile {
+	function determineFileByRawId(array $rawId, ?File $currentValue, N2nContext $n2nContext): ?File {
 		$fileId = SiFileId::parse($rawId);
 
-		$file = $this->thumbResolver->determineFile($fileId, $this->eiu);
+		$file = $this->guiSiFileFactory->determineTmpFile($fileId, $n2nContext);
 		if ($file !== null) {
-			return $this->thumbResolver->createSiFile($file, $this->eiu, $this->fileVerificator->isImageRecognized());
+			return $file;
+		}
+
+		if ($currentValue !== null
+				&& $currentValue->getFileSource()->getFileManagerName() === $fileId->getFileManagerName()
+				&& $currentValue->getFileSource()->getQualifiedName() === $fileId->getQualifiedName()) {
+			return $currentValue;
 		}
 
 		return null;

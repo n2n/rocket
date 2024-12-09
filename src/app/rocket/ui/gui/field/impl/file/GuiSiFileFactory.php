@@ -180,23 +180,23 @@ class GuiSiFileFactory implements SiFileFactory {
 		return $siFile;
 	}
 	
-	function determineFile(SiFileId $fileId, Eiu $eiu): ?File {
-		if ($fileId->getFileManagerName() === TmpFileManager::class) {
-			$tfm = $eiu->lookup(TmpFileManager::class);
-			CastUtils::assertTrue($tfm instanceof TmpFileManager);
-			
-			$file = $tfm->getSessionFile($fileId->getQualifiedName(), 
-					$eiu->getN2nContext()->getHttpContext()->getSession());
-			// Could be a FileId of unupdated but already save frontend entry. In this case there will be no matching 
-			// session file and the current field value should be returned.
-			if ($file !== null) {
-				return $file;
-			}
+	function determineTmpFile(SiFileId $fileId, N2nContext $n2nContext): ?File {
+		if ($fileId->getFileManagerName() !== TmpFileManager::class) {
+			return null;
 		}
-		
-		$file = $eiu->field()->getValue();
-		CastUtils::assertTrue($file instanceof File || $file === null);
-		return $file;
+
+		$tfm = $n2nContext->lookup(TmpFileManager::class);
+		CastUtils::assertTrue($tfm instanceof TmpFileManager);
+
+		$file = $tfm->getSessionFile($fileId->getQualifiedName(),
+				$n2nContext->getHttpContext()->getSession());
+		// Could be a FileId of unupdated but already save frontend entry. In this case there will be no matching
+		// session file and the current field value should be returned.
+		if ($file !== null) {
+			return $file;
+		}
+
+		return null;
 	}
 		
 	/**
