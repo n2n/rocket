@@ -75,7 +75,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
 	}
 	
-// 	function createPreviewUiComponent(EiFrame $eiFrame = null, HtmlView $view, $value) {
+// 	function createPreviewUiComponent(?EiFrame $eiFrame, HtmlView $view, $value) {
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	
