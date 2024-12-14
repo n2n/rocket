@@ -82,7 +82,7 @@ class FileInSiField extends InSiFieldAdapter {
 		return $this->fileHandler;
 	}
 
-	function setValue(?SiFile $value): static {
+	function setValue(?File $value): static {
 		$this->value = $value;
 		return $this;
 	}
@@ -233,8 +233,8 @@ class FileInSiField extends InSiFieldAdapter {
 			return ['error' => $uploadResult->getErrorMessage()];
 		}
 		
-		$siFile = $uploadResult->getSiFile();
-		$this->setValue($siFile);
-		return ['file' => $siFile];
+		$file = $uploadResult->getFile();
+		$this->setValue($file);
+		return ['file' => $this->fileHandler->createSiFile($file, $n2nContext)];
 	}
 }

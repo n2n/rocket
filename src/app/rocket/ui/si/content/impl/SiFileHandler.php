@@ -31,33 +31,33 @@ interface SiFileHandler {
 	function upload(UploadDefinition $uploadDefinition, N2nContext $n2nContext): SiUploadResult;
 	
 	/**
-	 * @param array $siFileId
+	 * @param array $fileId
 	 * @param File|null $currentValue
 	 * @param N2nContext $n2nContext
 	 * @return File|null $currentValue
  	 * @throws CorruptedSiDataException if id is corrupted
 	 */
-	function determineFileByRawId(array $siFileId, ?File $currentValue, N2nContext $n2nContext): ?File;
+	function determineFileByRawId(array $fileId, ?File $currentValue, N2nContext $n2nContext): ?File;
 
 	function createSiFile(File $file, N2nContext $n2nContext): SiFile;
 }
 
 class SiUploadResult {
 	/**
-	 * @var SiFile|null
+	 * @var File|null
 	 */
-	private $siFile;
+	private $file;
 	/**
 	 * @var string|null
 	 */
 	private $errorMessage;
 	
 	/**
-	 * @param SiFile|null $siFile
+	 * @param File|null $file
 	 * @param string|null $errorMessage
 	 */
-	private function __construct($siFile, $errorMessage) {
-		$this->siFile = $siFile;
+	private function __construct($file, $errorMessage) {
+		$this->file = $file;
 		$this->errorMessage = $errorMessage;
 	}
 	
@@ -65,14 +65,12 @@ class SiUploadResult {
 	 * @return boolean
 	 */
 	function isSuccess() {
-		return $this->siFile !== null;
+		return $this->file !== null;
 	}
 	
-	/**
-	 * @return \rocket\ui\si\content\impl\SiFile|null
-	 */
-	function getSiFile() {
-		return $this->siFile;
+
+	function getFile(): ?File {
+		return $this->file;
 	}
 	
 	/**
@@ -83,11 +81,11 @@ class SiUploadResult {
 	}
 	
 	/**
-	 * @param SiFile $siFile
+	 * @param File $file
 	 * @return \rocket\si\content\impl\SiUploadResult
 	 */
-	static function createSuccess(SiFile $siFile) {
-		return new SiUploadResult($siFile, null);
+	static function createSuccess(File $file) {
+		return new SiUploadResult($file, null);
 	}
 	
 	/**
