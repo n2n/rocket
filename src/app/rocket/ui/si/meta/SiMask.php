@@ -83,8 +83,8 @@ class SiMask implements \JsonSerializable {
 		return $this->props !== null;
 	}
 
-	function putProp(string $controlName, SiProp $prop): static {
-		$this->props[$controlName] = $prop;
+	function putProp(string $propName, SiProp $prop): static {
+		$this->props[$propName] = $prop;
 		return $this;
 	}
 

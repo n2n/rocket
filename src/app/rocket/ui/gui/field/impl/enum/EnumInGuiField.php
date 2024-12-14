@@ -27,12 +27,13 @@ use n2n\validation\build\impl\Validate;
 use n2n\validation\validator\impl\Validators;
 use rocket\ui\si\content\impl\EnumInSiField;
 use rocket\ui\si\content\SiFieldModel;
+use rocket\ui\gui\field\impl\InGuiFieldAdapter;
+use n2n\bind\mapper\impl\Mappers;
 
-class EnumInCuField implements CuField, SiFieldModel {
-	private array $messageStrs = [];
+class EnumInGuiField extends InGuiFieldAdapter {
 
 	function __construct(private readonly EnumInSiField $siField) {
-		$this->siField->setModel($this);
+		parent::__construct($this->siField);
 	}
 
 	function setValue(?string $value): static {
@@ -48,28 +49,18 @@ class EnumInCuField implements CuField, SiFieldModel {
 		return $this->siField;
 	}
 
-	function validate(N2nContext $n2nContext): bool {
+
+	function createInputMappers(N2nContext $n2nContext): array {
+		$mappers = [];
+
 		$val = Validate::value($this->getValue());
 
 		if ($this->siField->isMandatory()) {
-			$val->val(Validators::mandatory());
+			$mappers[] = Validators::mandatory();
 		}
 
-		$validationResult = $val->exec($n2nContext);
+		$mappers[] = Validators::enum($this->siField->getOptions());
 
-		if (!$validationResult->hasErrors()) {
-			return true;
-		}
-
-		$this->messageStrs = $validationResult->getErrorMap()->tAllMessages($n2nContext->getN2nLocale());
-		return false;
-	}
-
-	function handleInput(): bool {
-		return true;
-	}
-
-	function getMessageStrs(): array {
-		return $this->messageStrs;
+		return $mappers;
 	}
 }

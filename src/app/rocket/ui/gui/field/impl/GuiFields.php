@@ -32,6 +32,8 @@ use n2n\io\managed\File;
 use rocket\ui\gui\field\impl\file\GuiSiFileHandler;
 use rocket\ui\gui\field\impl\file\GuiSiFileFactory;
 use rocket\ui\gui\field\impl\file\GuiFileVerificator;
+use rocket\ui\gui\field\impl\enum\EnumInGuiField;
+use rocket\ui\gui\field\impl\date\DateTimeInGuiField;
 
 class GuiFields {
 
@@ -50,8 +52,8 @@ class GuiFields {
 				->setSuffixAddons($suffixAddons));
 	}
 
-	static function dateTimeIn(bool $mandatory, bool $dateChoosable = true, bool $timeChoosable = true): DateTimeInCuField {
-		return new DateTimeInCuField(SiFields::dateTimeIn(null)
+	static function dateTimeIn(bool $mandatory, bool $dateChoosable = true, bool $timeChoosable = true): DateTimeInGuiField {
+		return new DateTimeInGuiField(SiFields::dateTimeIn(null)
 				->setMandatory($mandatory)
 				->setDateChoosable($dateChoosable)
 				->setTimeChoosable($timeChoosable));
@@ -71,8 +73,8 @@ class GuiFields {
 	}
 
 	static function enumIn(bool $mandatory = false, array $options = [], ?string $defaultValue = null,
-			?string $emptyLabel = null, array $associatedPropIdsMap = []): EnumInCuField {
-		return new EnumInCuField(SiFields::enumIn($options, $defaultValue)
+			?string $emptyLabel = null, array $associatedPropIdsMap = []): EnumInGuiField {
+		return new EnumInGuiField(SiFields::enumIn($options, $defaultValue)
 				->setEmptyLabel($emptyLabel)
 				->setMandatory($mandatory)
 				->setAssociatedPropIdsMap($associatedPropIdsMap));

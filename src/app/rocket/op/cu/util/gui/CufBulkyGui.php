@@ -28,35 +28,63 @@ use rocket\ui\si\meta\SiStructureType;
 use rocket\impl\cu\gui\BulkyCuGui;
 use rocket\op\cu\gui\CuGui;
 use rocket\op\cu\gui\control\CuControl;
+use rocket\ui\gui\impl\BulkyGui;
+use rocket\ui\si\meta\SiDeclaration;
+use rocket\ui\si\meta\SiMask;
+use rocket\ui\si\meta\SiMaskQualifier;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\ui\si\control\SiIconType;
+use rocket\ui\gui\GuiValueBoundary;
+use rocket\ui\gui\GuiEntry;
+use rocket\ui\si\content\SiEntryQualifier;
+use rocket\ui\si\content\SiEntryIdentifier;
+use rocket\ui\gui\field\GuiFieldMap;
+use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\field\GuiFieldKey;
+use rocket\ui\si\meta\SiProp;
+use rocket\ui\si\meta\SiStructureDeclaration;
 
 class CufBulkyGui implements CufGui {
 
-	private CuMaskedEntry $cuMaskedEntry;
-	private BulkyCuGui $bulkyCuGui;
+	private BulkyGui $bulkyGui;
+
+	private SiMask $siMask;
+	private GuiEntry $guiEntry;
+	private GuiFieldMap $guiFieldMap;
 
 	function __construct(bool $readOnly) {
 		$maskId = 'mask-cuf-bulky-gui';
 		$typeId = 'type-cuf-bulky-gui';
 
-		$this->cuMaskedEntry = new CuMaskedEntry($maskId, $typeId, 'Unnamed Boundary');
-		$this->bulkyCuGui = new BulkyCuGui($readOnly);
-		$this->bulkyCuGui->addCuMaskedEntry($this->cuMaskedEntry);
-		$this->bulkyCuGui->setSelectedMaskId($maskId);
+		$siMaskIdentifier = new SiMaskIdentifier($maskId, $typeId);
+		$this->siMask = new SiMask(new SiMaskQualifier($siMaskIdentifier, 'Custom Mask',
+				SiIconType::ICON_ROCKET));
+
+		$guiValueBoundary = new GuiValueBoundary();
+		$this->guiEntry = new GuiEntry(new SiEntryQualifier(new SiEntryIdentifier($siMaskIdentifier, null)));
+		$guiValueBoundary->putGuiEntry($this->guiEntry);
+		$this->guiEntry->init($this->guiFieldMap = new GuiFieldMap(), null);
+
+		$this->bulkyGui = new BulkyGui(null, new SiDeclaration([$this->siMask]), $guiValueBoundary);
 	}
 
-	function addField(string $propId, string $label, CuField $cuField, ?string $helpText = null,
+	function addField(string $propId, string $label, GuiField $guiField, ?string $helpText = null,
 			string $siStructureType = SiStructureType::ITEM): static {
-		$this->cuMaskedEntry->structure()->addCuField($propId, $label, $cuField, $helpText, $siStructureType);
+
+		$this->guiFieldMap->putGuiField(new GuiFieldKey($propId), $guiField);
+		$this->siMask->putProp($propId, (new SiProp($label))->setHelpText($helpText));
+		$this->siMask->addStructureDeclaration(SiStructureDeclaration::createProp($siStructureType, $propId));
 		return $this;
 	}
 
 	function addControl(CuControl $cuControl): static {
-		$this->bulkyCuGui->addCuControl($cuControl);
+		$this->bulkyGui->addCuControl($cuControl);
+
 		return $this;
 	}
 
 	function getCuGui(): CuGui {
-		return $this->bulkyCuGui;
+		return $this->bulkyGui;
 	}
 
 }

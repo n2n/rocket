@@ -74,11 +74,7 @@ class SiProp implements \JsonSerializable {
 		return $this->helpText;
 	}
 
-	/**
-	 * @param string|null $helpText
-	 * @return \rocket\si\meta\SiProp
-	 */
-	function setHelpText(?string $helpText) {
+	function setHelpText(?string $helpText): static {
 		$this->helpText = $helpText;
 		return $this;
 	}

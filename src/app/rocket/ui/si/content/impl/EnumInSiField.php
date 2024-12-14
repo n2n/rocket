@@ -71,12 +71,12 @@ class EnumInSiField extends InSiFieldAdapter {
 	function getOptions() {
 		return $this->options;
 	}
-	
+
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\EnumInSiField
+	 * @return EnumInSiField
 	 */
-	function setValue(?string $value) {
+	function setValue(?string $value): static {
 		$this->value = $value;
 		return $this;
 	}
@@ -84,7 +84,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	/**
 	 * @return string|null
 	 */
-	function getValue() {
+	function getValue(): ?string {
 		return $this->value;
 	}
 	
@@ -111,12 +111,12 @@ class EnumInSiField extends InSiFieldAdapter {
 	function getType(): string {
 		return 'enum-in';
 	}
-	
+
 	/**
 	 * @param string[][] $associatedPropIdsMap
-	 * @return \rocket\si\content\impl\EnumInSiField
+	 * @return EnumInSiField
 	 */
-	function setAssociatedPropIdsMap(array $associatedPropIdsMap) {
+	function setAssociatedPropIdsMap(array $associatedPropIdsMap): static {
 		ArgUtils::valArray($associatedPropIdsMap, TypeConstraints::array(false, 'string'));
 		$this->associatedPropIdsMap = $associatedPropIdsMap;
 		return $this;
