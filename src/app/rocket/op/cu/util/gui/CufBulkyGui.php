@@ -65,7 +65,7 @@ class CufBulkyGui implements Gui {
 		$guiValueBoundary = new GuiValueBoundary();
 		$this->guiEntry = new GuiEntry(new SiEntryQualifier(new SiEntryIdentifier($siMaskIdentifier, null)));
 		$guiValueBoundary->putGuiEntry($this->guiEntry);
-		$this->guiEntry->init($this->guiFieldMap = new GuiFieldMap(), null);
+		$this->guiFieldMap = new GuiFieldMap();
 		$guiValueBoundary->selectGuiEntryByMaskId($maskId);
 		$this->bulkyGui = new BulkyGui(null, new SiDeclaration([$this->siMask]), $guiValueBoundary);
 	}
@@ -80,7 +80,15 @@ class CufBulkyGui implements Gui {
 	}
 
 	function getSiGui(): SiGui {
+		if (!$this->guiEntry->isInitialized()) {
+			$this->guiEntry->init($this->guiFieldMap, null);
+		}
+
 		return $this->bulkyGui->getSiGui();
+	}
+
+	function getValue(string $propId): mixed {
+		return $this->guiFieldMap->getGuiField($propId)->getValue();
 	}
 
 }

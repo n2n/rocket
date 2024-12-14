@@ -47,7 +47,7 @@ interface GuiField {
 	 * @return mixed
 	 *
 	 */
-//	function getValue(): mixed;
+	function getValue(): mixed;
 
 //	function prepareForSave(N2nContext $n2nContext): bool;
 

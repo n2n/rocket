@@ -59,7 +59,7 @@ class EnumInGuiField extends InGuiFieldAdapter {
 			$mappers[] = Validators::mandatory();
 		}
 
-		$mappers[] = Validators::enum($this->siField->getOptions());
+		$mappers[] = Validators::enum(array_keys($this->siField->getOptions()));
 
 		return $mappers;
 	}

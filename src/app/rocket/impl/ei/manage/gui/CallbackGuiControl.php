@@ -27,18 +27,14 @@ use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\si\control\impl\CallbackSiControl;
 use rocket\ui\si\control\SiButton;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\ManageState;
-use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
-use n2n\util\type\ArgUtils;
 use rocket\ui\gui\control\GuiControl;
-use rocket\op\util\OpfControlResponse;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\gui\control\GuiControlMap;
 use rocket\ui\gui\GuiCallResponse;
 use n2n\reflection\magic\MagicMethodInvoker;
 use n2n\core\container\N2nContext;
-use rocket\op\ei\util\EiuAnalyst;
+use n2n\util\type\TypeConstraints;
 
 class CallbackGuiControl implements GuiControl {
 	private $inputHandled = false;
@@ -72,17 +68,12 @@ class CallbackGuiControl implements GuiControl {
 	 * @param Eiu $eiu
 	 * @return SiCallResponse
 	 */
-	private function execCall(N2nContext $n2nContext) {
-		$sifControlResponse = $this->callback->__invoke();
-		ArgUtils::valTypeReturn($sifControlResponse, GuiCallResponse::class, null, $this->callback, true);
-		
-// 		$mmi = new MagicMethodInvoker($eiu->getN2nContext());
-// 		$mmi->setMethod(new \ReflectionFunction($this->callback));
-// 		$mmi->setClassParamObject(Eiu::class, $eiu);
-// 		$mmi->setClassParamObject($className, $obj)
-// 		$mmi->setReturnTypeConstraint(TypeConstraints::type(RfControlResponse::class, true));
-		
-// 		$eiuControlResponse = $mmi->invoke();
+	private function execCall(N2nContext $n2nContext): SiCallResponse {
+		$mmi = new MagicMethodInvoker($n2nContext);
+ 		$mmi->setClosure($this->callback);
+ 		$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiCallResponse::class, true));
+
+		$sifControlResponse = $mmi->invoke();
 
 		return $sifControlResponse?->toSiCallResponse() ?? new SiCallResponse();
 	}

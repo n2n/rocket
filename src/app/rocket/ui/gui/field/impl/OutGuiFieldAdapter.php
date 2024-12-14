@@ -49,4 +49,8 @@ abstract class OutGuiFieldAdapter extends GuiFieldAdapter {
 	function flush(N2nContext $n2nContext): void {
 		throw new UnsupportedOperationException('GuiField is read only.');
 	}
+
+	function getValue(): mixed {
+		throw new UnsupportedOperationException('GuiField does not contains a value.');
+	}
 }

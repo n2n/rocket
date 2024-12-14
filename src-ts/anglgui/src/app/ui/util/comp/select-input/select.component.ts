@@ -112,12 +112,7 @@ export class SelectComponent implements OnInit {
 
 	@Input()
 	set value(value: string|null) {
-		if (this._value === value) {
-			return;
-		}
-
 		this._value = value;
-		this.valueChange.emit(value);
 	}
 
 	selectValue(value: string|null): void {
@@ -125,7 +120,12 @@ export class SelectComponent implements OnInit {
 			this.closePopup();
 		}
 
+		if (this._value === value) {
+			return;
+		}
+
 		this.value = value;
+		this.valueChange.emit(value);
 	}
 }
 

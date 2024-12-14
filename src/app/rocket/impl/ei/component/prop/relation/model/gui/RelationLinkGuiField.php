@@ -58,7 +58,7 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 		}
 	}
 	
-	private function createToManySiField() {
+	private function createToManySiField(): \rocket\ui\si\content\impl\StringOutSiField|\rocket\ui\si\content\impl\LinkOutSiField {
 		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry())->frame();
 		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCmdPath());
 		
@@ -99,7 +99,11 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 	function getSiField(): SiField {
 		return $this->siField;
 	}
-	
+
+	function getValue(): mixed {
+		return $this->siField->getValue();
+	}
+
 	function getContextSiFields(): array {
 		return [];
 	}
@@ -111,7 +115,6 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 	function flush(N2nContext $n2nContext): void {
 		throw new UnsupportedOperationException();
 	}
-
 
 	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 		throw new UnsupportedOperationException();
