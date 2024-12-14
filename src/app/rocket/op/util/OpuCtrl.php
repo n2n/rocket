@@ -59,6 +59,8 @@ use n2n\web\http\StatusException;
 use rocket\ui\gui\control\GuiControlKey;
 use rocket\op\ei\manage\gui\factory\EiGuiFactory;
 use rocket\op\ei\manage\ManageException;
+use n2n\util\type\ArgUtils;
+use rocket\ui\gui\control\GuiControl;
 
 class OpuCtrl {
 
@@ -258,6 +260,8 @@ class OpuCtrl {
 	 * @throws StatusException
 	 */
 	function forwardGui(Gui $eiGui, ?string $title = null, array $zoneGuiControls = []): void {
+		ArgUtils::valArray($zoneGuiControls, GuiControl::class);
+
 		if ($this->forwardHtml()) {
 			return;
 		}

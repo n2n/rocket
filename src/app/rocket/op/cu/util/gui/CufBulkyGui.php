@@ -43,8 +43,10 @@ use rocket\ui\gui\field\GuiField;
 use rocket\ui\gui\field\GuiFieldKey;
 use rocket\ui\si\meta\SiProp;
 use rocket\ui\si\meta\SiStructureDeclaration;
+use rocket\ui\gui\Gui;
+use rocket\ui\si\content\SiGui;
 
-class CufBulkyGui implements CufGui {
+class CufBulkyGui implements Gui {
 
 	private BulkyGui $bulkyGui;
 
@@ -64,7 +66,7 @@ class CufBulkyGui implements CufGui {
 		$this->guiEntry = new GuiEntry(new SiEntryQualifier(new SiEntryIdentifier($siMaskIdentifier, null)));
 		$guiValueBoundary->putGuiEntry($this->guiEntry);
 		$this->guiEntry->init($this->guiFieldMap = new GuiFieldMap(), null);
-
+		$guiValueBoundary->selectGuiEntryByMaskId($maskId);
 		$this->bulkyGui = new BulkyGui(null, new SiDeclaration([$this->siMask]), $guiValueBoundary);
 	}
 
@@ -77,14 +79,8 @@ class CufBulkyGui implements CufGui {
 		return $this;
 	}
 
-	function addControl(CuControl $cuControl): static {
-		$this->bulkyGui->addCuControl($cuControl);
-
-		return $this;
-	}
-
-	function getCuGui(): CuGui {
-		return $this->bulkyGui;
+	function getSiGui(): SiGui {
+		return $this->bulkyGui->getSiGui();
 	}
 
 }
