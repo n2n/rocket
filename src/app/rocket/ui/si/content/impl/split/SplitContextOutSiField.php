@@ -27,6 +27,7 @@ use rocket\ui\si\content\impl\OutSiFieldAdapter;
 use rocket\ui\si\meta\SiDeclaration;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\meta\SiStyle;
+use rocket\ui\si\meta\SiFrame;
 
 class SplitContextOutSiField extends OutSiFieldAdapter {
 	/**

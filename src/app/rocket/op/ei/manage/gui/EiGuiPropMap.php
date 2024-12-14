@@ -39,6 +39,13 @@ class EiGuiPropMap {
 	}
 
 	/**
+	 * @return EiPropPath[]
+	 */
+	function getEiPropPaths(): array {
+		return array_map(fn (EiGuiPropWrapper $w) => $w->getEiPropPath(), $this->eiGuiPropWrappers);
+	}
+
+	/**
 	 * @param EiPropPath $eiPropPath
 	 */
 	function removeGuiProp(EiPropPath $eiPropPath): void {
@@ -130,6 +137,55 @@ class EiGuiPropMap {
 		return $guiFieldMap;
 	}
 
+	/**
+	 * @param DefPropPath $defPropPath
+	 * @return boolean
+	 */
+	function containsDefPropPath(DefPropPath $defPropPath): bool {
+		$eiPropPaths = $defPropPath->toArray();
+		$guiDefinition = $this;
+		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
+			if (empty($eiPropPaths)) {
+				return $guiDefinition->containsEiPropPath($eiPropPath);
+			}
+
+			$guiDefinition = $guiDefinition->getGuiPropFork($eiPropPath)->getForkedEiGuiDefinition();
+		}
+
+		return true;
+	}
+
+	function getEiGuiPropByDefPropPath(DefPropPath $defPropPath): EiGuiProp {
+		$eiPropPaths = $defPropPath->toArray();
+
+		$eiGuiPropMap = $this;
+		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
+			$guiEiProp = $eiGuiPropMap->getGuiPropWrapper($eiPropPath)->getEiGuiProp();
+			if (empty($eiPropPaths)) {
+				return $guiEiProp;
+			}
+
+			$eiGuiPropMap = $guiEiProp->getForkEiGuiPropMap();
+		}
+
+		throw new EiGuiException('No GuiProp with for path \'' . $defPropPath . '\' registered');
+	}
+
+	/**
+	 * @return DefPropPath[]
+	 */
+	function compileAllDefPropPaths(): array {
+		$defPropPaths = [];
+		foreach ($this->eiGuiPropWrappers as $eiGuiPropWrapper) {
+			$defPropPath = new DefPropPath([$eiGuiPropWrapper->getEiPropPath()]);
+			$defPropPaths[] = $defPropPath;
+
+			foreach ($eiGuiPropWrapper->getEiGuiProp()->getForkEiGuiPropMap()?->compileAllDefPropPaths() as $forkDefPropPath) {
+				$defPropPaths[] = $defPropPath->ext($forkDefPropPath);
+			}
+		}
+		return $defPropPaths;
+	}
 
 }
 

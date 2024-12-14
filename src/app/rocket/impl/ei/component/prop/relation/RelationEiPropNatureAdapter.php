@@ -68,7 +68,6 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 		$targetClass = $this->relationModel->getRelationEntityProperty()->getTargetEntityModel()->getClass();
 		$targetEiuType = $eiu->context()->type($targetClass);
 
-
 //		$targetExtensionId = $dataSet->optString(self::ATTR_TARGET_EXTENSION_ID_KEY);
 //		$targetEiuMask = null;
 //		if ($targetExtensionId !== null) {

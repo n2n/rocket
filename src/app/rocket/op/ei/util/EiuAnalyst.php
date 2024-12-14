@@ -88,7 +88,7 @@ class EiuAnalyst {
 	protected $n2nContext;
 	protected $eiType;
 	protected $eiLaunch;
-	protected $eiFrame;
+	protected ?EiFrame $eiFrame = null;
 	protected $eiObject;
 	protected $eiEntry;
 	protected $eiGuiDeclaration;
@@ -652,7 +652,11 @@ class EiuAnalyst {
 		if ($this->eiGuiDefinition === $eiGuiDefinition) {
 			return;
 		}
-		
+
+		if ($this->eiFrame !== null && !$this->eiFrame->getContextEiEngine()->getEiMask()->matchesTypePath($eiGuiDefinition->getEiTypePath(), false, true)) {
+			throw new EiuPerimeterException('EiGuiDefinition is not compatible with EiFrame');
+		}
+
 		$this->eiuGuiDefinition = null;
 		$this->eiGuiDefinition = $eiGuiDefinition;
 		
@@ -966,11 +970,19 @@ class EiuAnalyst {
 				. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
-	public function getEiCmdPath(bool $required) {
+	public function getEiCmdPath(bool $required): ?EiCmdPath {
 		$this->ensureAppied();
 
-		if (!$required || $this->eiCmdPath !== null) {
+		if ($this->eiCmdPath !== null) {
 			return $this->eiCmdPath;
+		}
+
+		if ($this->eiFrame !== null && $this->eiFrame->hasEiExecution()) {
+			return $this->eiFrame->getEiExecution()->getEiCmd()->getEiCmdPath();
+		}
+
+		if (!$required) {
+			return null;
 		}
 		
 		throw new EiuPerimeterException(
@@ -1470,6 +1482,12 @@ class EiuAnalyst {
 //
 //		ArgUtils::valType($eiArg, self::EI_FRAME_TYPES, !$required, $argName);
 //	}
+
+	function looseCopy(): EiuAnalyst {
+		$eiuAnalyst = new EiuAnalyst();
+		$eiuAnalyst->applyEiArgs($this->n2nContext);
+		return $eiuAnalyst;
+	}
 
 	static function fromEiArgs(...$eiArgs): EiuAnalyst {
 		$eiuAnalyst = new EiuAnalyst();

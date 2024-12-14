@@ -44,6 +44,8 @@ use rocket\ui\si\content\impl\SiFields;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
+use n2n\bind\mapper\impl\Mappers;
 
 
 class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
@@ -63,23 +65,26 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
 	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$value = $eiu->entry()->getValue($eiu->prop());
-		
-		return $eiu->factory()->newGuiField(SiFields
-				::stringOut($value === null ? '' : $this->generateDisplayNameForN2nLocale($value, $eiu->getN2nLocale()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+
+		return GuiFields::out(SiFields
+				::stringOut($value === null ? '' : $this->generateDisplayNameForN2nLocale($value, $eiu->getN2nLocale())));
 	}
 
 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$options = $this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale());
 		$value = $eiu->field()->getValue();
-		$siField = SiFields::enumIn($options, ($value !== null ? (string) $value : null))
-				->setMandatory($this->isMandatory())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($siField, $eiu) {
-					$eiu->field()->setValue(N2nLocale::build($siField->getValue()));
-				});
+
+		GuiFields::enumIn($this->isMandatory(), $options, ($value !== null ? (string) $value : null))
+				->setModel($eiu->field()->asGuiFieldModel(Mappers::n2nLocale()));
+
+//		$siField = SiFields::enumIn($options, )
+//				->setMandatory($this->isMandatory())
+//				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+//
+//		return $eiu->factory()->newGuiField($siField)
+//				->setSaver(function () use ($siField, $eiu) {
+//					$eiu->field()->setValue(N2nLocale::build($siField->getValue()));
+//				});
 	}
 	
 	

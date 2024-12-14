@@ -195,8 +195,31 @@ class EiType extends Type {
 
 		return $this->subEiTypes;
 	}
-	
-	public function containsSubEiTypeId(string $eiTypeId, bool $deepCheck = false) {
+
+	function containsSuperEiTypeId(string $eiTypeId, bool $deepCheck): bool {
+		if ($this->superEiType === null) {
+			return false;
+		}
+
+		if ($this->superEiType->getId() === $eiTypeId) {
+			return true;
+		}
+
+		if (!$deepCheck) {
+			return false;
+		}
+
+		$eiType = $this;
+		while (null !== ($eiType = $eiType->getSuperEiType())) {
+			if ($eiType->getId() === $eiTypeId) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function containsSubEiTypeId(string $eiTypeId, bool $deepCheck = false): bool {
 		$this->ensureInitialized();
 
 		if (isset($this->subEiTypes[$eiTypeId])) return true;

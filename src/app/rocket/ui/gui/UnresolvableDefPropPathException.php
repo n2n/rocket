@@ -23,5 +23,5 @@ namespace rocket\ui\gui;
 
 use rocket\op\ei\manage\gui\EiGuiException;
 
-class UnresolvableDefPropPathExceptionEi extends EiGuiException {
+class UnresolvableDefPropPathException extends EiGuiException {
 }

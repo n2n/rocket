@@ -19,14 +19,14 @@ class EiuCmd {
 	/**
 	 * @return EiCmdPath
 	 */
-	function getEiCmdPath() {
+	function getEiCmdPath(): EiCmdPath {
 		return $this->eiCmdPath;
 	}
 
 	/**
 	 * @return EiCmd
 	 */
-	function getEiCmd() {
+	function getEiCmd(): EiCmd {
 		return $this->eiCmd
 				?? $this->eiCmd = $this->eiuMask->getEiMask()->getEiCmdCollection()->getByPath($this->eiCmdPath);
 	}

@@ -62,7 +62,7 @@ class TranslationGuiProp implements EiGuiProp {
 		} else {
 			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
 		}
-		
+
 		return new TranslationEiGuiProp($targetEiuGuiDeclaration, $eiCmdPath, $this->translationConfig);
 	}
 	

@@ -22,6 +22,7 @@
 namespace rocket\ui\si\content\impl\split;
 
 use rocket\ui\si\content\impl\SiFieldAdapter;
+use n2n\core\container\N2nContext;
 
 class SplitPlaceholderSiField extends SiFieldAdapter {
 	/**
@@ -102,9 +103,11 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	
 	/**
 	 * {@inheritDoc}
+	 * @param array $data
+	 * @param N2nContext $n2nContext
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInput(array $data): bool {
+	function handleInput(array $data, N2nContext $n2nContext): bool {
 //		$dataMap = (new DataSet($data))->reqArray('value', 'array');
 //
 //		foreach ($this->inputHandlers as $key => $inputHandler) {
@@ -113,5 +116,9 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 //			}
 //		}
 		return true;
+	}
+
+	function flush(N2nContext $n2nContext): void {
+		// TODO: Implement flush() method.
 	}
 }

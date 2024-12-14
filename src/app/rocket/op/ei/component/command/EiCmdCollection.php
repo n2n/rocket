@@ -66,9 +66,9 @@ class EiCmdCollection extends EiComponentCollection {
 	public function add(?string $id, EiCmdNature $eiCmd): EiCmd {
 		$eiCmdPath = new EiCmdPath([$this->makeId($id, $eiCmd)]);
 		$eiCmd = new EiCmd($eiCmdPath, $eiCmd, $this);
-		
+
 		$this->addEiComponent($eiCmdPath, $eiCmd);
-		
+
 		return $eiCmd;
 	}
 	

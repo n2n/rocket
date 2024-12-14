@@ -31,15 +31,16 @@ use rocket\op\ei\EiCmdPath;
 use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
 use rocket\op\ei\manage\gui\EiGuiProp;
+use rocket\op\ei\util\gui\EiuGuiDefinition;
+use rocket\ui\gui\GuiProp;
+use rocket\op\ei\manage\gui\EiGuiPropMap;
 
 class TranslationEiGuiProp implements EiGuiProp {
-	private $targetEiuGuiMaskDeclaration;
-	private $eiCmdPath;
-	private $translationConfig;
+
 	
-	function __construct(private EiuGuiDeclaration $targetEiuGuiDeclaration, EiCmdPath $eiCmdPath,
-			TranslationEiPropNature $translationConfig) {
-		$this->targetEiuGuiMaskDeclaration = $targetEiuGuiDeclaration->singleMaskDeclaration();
+	function __construct(private EiuGuiDefinition $targetEiuGuiDefinition, private EiCmdPath $eiCmdPath,
+			private TranslationEiPropNature $translationConfig) {
+//		$this->targetEiuGuiMaskDeclaration = $targetEiuGuiDefinition->singleMaskDeclaration();
 		$this->eiCmdPath = $eiCmdPath;
 		$this->translationConfig = $translationConfig;
 	}
@@ -47,9 +48,13 @@ class TranslationEiGuiProp implements EiGuiProp {
 	function getDisplayDefinition(): ?DisplayDefinition {
 		return null;
 	}
-	
-	function getEiGuiField(): EiGuiField {
-		return $this;
+
+	function getGuiProp(): GuiProp {
+		return new GuiProp('Not required label');
+	}
+
+	function getForkEiGuiPropMap(): ?EiGuiPropMap {
+		return null;
 	}
 	
 	/**
@@ -57,12 +62,11 @@ class TranslationEiGuiProp implements EiGuiProp {
 	 * @see \rocket\op\ei\manage\gui\EiGuiPropSetup::getForkedDisplayDefinition()
 	 */
 	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition {
-		return $this->targetEiuGuiMaskDeclaration->getDisplayDefinition($defPropPath);
+		return $this->targetEiuGuiDefinition->getDisplayDefinition($defPropPath);
 	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiDeclaration,
-				$this->targetEiuGuiMaskDeclaration);
+		$targetEiu = $eiu->frame()->forkDiscover($eiu->prop()->getPath(), $eiu->object(), $this->targetEiuGuiDefinition);
 		$targetEiu->frame()->exec($this->eiCmdPath);
 		
 		$lted = new LazyTranslationEssentialsDeterminer($eiu, $targetEiu, $this->translationConfig);

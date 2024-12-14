@@ -23,11 +23,11 @@ namespace rocket\impl\ei\component\prop\translation\gui;
 
 
 use rocket\ui\gui\field\GuiFieldMap;
-use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\split\SplitPlaceholderSiField;
+use rocket\ui\gui\field\impl\OutGuiFieldAdapter;
 
-class PlaceholderGuiField implements GuiField {
+class PlaceholderGuiField extends OutGuiFieldAdapter {
 // 	private $lted;
 // 	private $defPropPath;
 	private $siField;
@@ -35,27 +35,24 @@ class PlaceholderGuiField implements GuiField {
 	
 	function __construct(/*LazyTranslationEssentialsDeterminer $lted, DefPropPath $defPropPath, */ 
 			SplitPlaceholderSiField $siField, ?GuiFieldMap $forkGuiFieldMap = null) {
+		parent::__construct($siField);
 // 		$this->lted = $lted;
 // 		$this->defPropPath = $defPropPath;
 		$this->siField =  $siField;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
-	function getSiField(): ?SiField {
-		return $this->siField;
-	}
-	
-	function save() {
-// 		if ($this->siField->isReadOnly()) {
-// 			throw new IllegalStateException('Can not save ready only GuiField');
-// 		}
-		
-// 		$this->forkGuiFieldMap->save();
-		
-// 		$this->lted->save();
-	}
+//	function save() {
+//// 		if ($this->siField->isReadOnly()) {
+//// 			throw new IllegalStateException('Can not save ready only GuiField');
+//// 		}
+//
+//// 		$this->forkGuiFieldMap->save();
+//
+//// 		$this->lted->save();
+//	}
 
-	function setForkGuiFieldMap(?GuiFieldMap $forkGuiFieldMap) {
+	function setForkGuiFieldMap(?GuiFieldMap $forkGuiFieldMap): void {
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	

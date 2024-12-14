@@ -33,6 +33,7 @@ use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\ui\gui\GuiMask;
 use rocket\op\ei\manage\gui\factory\EiSiMaskIdentifierFactory;
 use rocket\ui\gui\GuiPropForkWrapper;
+use rocket\op\spec\TypePath;
 
 class EiGuiDefinition {
 
@@ -51,6 +52,10 @@ class EiGuiDefinition {
 //	function getEiMask(): EiMask {
 //		return $this->eiMask;
 //	}
+
+	function getEiTypePath(): TypePath {
+		return $this->eiMask->getEiTypePath();
+	}
 
 	function getViewMode(): int {
 		return $this->viewMode;
@@ -171,23 +176,7 @@ class EiGuiDefinition {
 //		return $this->eiGuiPropWrappers;
 //	}
 
-//	/**
-//	 * @param DefPropPath $defPropPath
-//	 * @return boolean
-//	 */
-//	function containsGuiProp(DefPropPath $defPropPath): bool {
-//		$eiPropPaths = $defPropPath->toArray();
-//		$guiDefinition = $this;
-//		while (null !== ($eiPropPath = array_shift($eiPropPaths))) {
-//			if (empty($eiPropPaths)) {
-//				return $guiDefinition->containsEiPropPath($eiPropPath);
-//			}
-//
-//			$guiDefinition = $guiDefinition->getGuiPropFork($eiPropPath)->getForkedEiGuiDefinition();
-//		}
-//
-//		return true;
-//	}
+
 
 // 	/**
 // 	 * @param string $eiPropPath
@@ -250,38 +239,32 @@ class EiGuiDefinition {
 // 		return $eiGuiProps;
 // 	}
 
-// 	/**
-// 	 * @param DefPropPath[] $defPropPaths
-// 	 * @return DefPropPath[]
-// 	 */
-// 	function filterDefPropPaths(array $defPropPaths) {
-// 		return array_filter($defPropPaths, function (DefPropPath $defPropPath) {
-// 			return $this->containsGuiProp($defPropPath);
-// 		});
-// 	}
 
 
 
-	/**
-	 * @return DefPropPath[]
-	 */
-	function getDefPropPaths(): array {
-		$defPropPaths = array();
 
-		foreach ($this->eiPropPaths as $eiPropPath) {
-			$eiPropPathStr = (string) $eiPropPath;
-			$defPropPath = new DefPropPath([$eiPropPath]);
+//	/**
+//	 * @return DefPropPath[]
+//	 */
+//	function getDefPropPaths(): array {
+//		$defPropPaths = array();
+//
+//		foreach ($this->eiPropPaths as $eiPropPath) {
+//			$eiPropPathStr = (string) $eiPropPath;
+//			$defPropPath = new DefPropPath([$eiPropPath]);
+//
+//			$defPropPaths[] = $defPropPath;
+//
+//			foreach ($this->eiGuiPropWrappers[$eiPropPathStr]->getForkedDefPropPaths()
+//					 as $forkedDefPropPath) {
+//				$defPropPaths[] = $defPropPath->ext($forkedDefPropPath);
+//			}
+//		}
+//
+//		return $defPropPaths;
+//	}
 
-			$defPropPaths[] = $defPropPath;
 
-			foreach ($this->eiGuiPropWrappers[$eiPropPathStr]->getForkedDefPropPaths()
-					 as $forkedDefPropPath) {
-				$defPropPaths[] = $defPropPath->ext($forkedDefPropPath);
-			}
-		}
-
-		return $defPropPaths;
-	}
 
 // 	function assembleDefaultGuiProps() {
 // 		$eiGuiPropAssemblies = [];

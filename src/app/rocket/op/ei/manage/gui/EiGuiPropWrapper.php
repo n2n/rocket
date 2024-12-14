@@ -26,7 +26,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\component\prop\EiProp;
-use rocket\ui\gui\UnresolvableDefPropPathExceptionEi;
+use rocket\ui\gui\UnresolvableDefPropPathException;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\gui\field\GuiField;
@@ -46,6 +46,10 @@ class EiGuiPropWrapper {
 	 */
 	function getEiPropPath(): EiPropPath {
 		return $this->eiPropPath;
+	}
+
+	function getEiGuiProp(): EiGuiProp {
+		return $this->eiGuiProp;
 	}
 
 	function getDisplayDefinition(): ?DisplayDefinition {
@@ -110,14 +114,14 @@ class EiGuiPropWrapper {
 	/**
 	 * @param DefPropPath $defPropPath
 	 * @return GuiPropWrapper
-	 *@throws UnresolvableDefPropPathExceptionEi
+	 *@throws UnresolvableDefPropPathException
 	 */
 	function getForkedGuiPropWrapper(DefPropPath $defPropPath) {
 		if (null !== ($forkEiGuiDefinition = $this->guiProp->getForkEiGuiDefinition())) {
 			return $forkEiGuiDefinition->getGuiPropWrapperByDefPropPath($defPropPath);
 		}
 		
-		throw new UnresolvableDefPropPathExceptionEi('GuiProp ' . $defPropPath . ' not found.');
+		throw new UnresolvableDefPropPathException('GuiProp ' . $defPropPath . ' not found.');
 	}
 
 	function buildGuiField(EiFrame $eiFrame, EiEntry $eiEntry, ?array $forkedDefPropPaths): ?GuiField {

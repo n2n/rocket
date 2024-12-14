@@ -102,7 +102,7 @@ class EiFrameController extends ControllerAdapter {
 	 * @return EiCmd
 	 *@throws PageNotFoundException
 	 */
-	private function lookupEiCmd($eiCmdPath) {
+	private function lookupEiCmd($eiCmdPath): EiCmd {
 		try {
 			return $this->eiFrame->getContextEiEngine()->getEiMask()->getEiCmdCollection()
 					->getByPath($eiCmdPath);
@@ -202,8 +202,13 @@ class EiFrameController extends ControllerAdapter {
 		
 		$this->delegate($apiController);
 	}
-	
-	public function doCmd($eiCmdPathStr, ?array $delegateCmds = null) {
+
+	/**
+	 * @throws PageNotFoundException
+	 * @throws BadRequestException
+	 * @throws ForbiddenException
+	 */
+	public function doCmd($eiCmdPathStr, ?array $delegateCmds = null): void {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
 		$eiCmd = $this->lookupEiCmd($eiCmdPath);
 		$this->pushEiFrame($eiCmd);

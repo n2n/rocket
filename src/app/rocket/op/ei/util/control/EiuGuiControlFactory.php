@@ -49,7 +49,7 @@ class EiuGuiControlFactory {
 	 * @param mixed|null $urlExt
 	 * @return RefGuiControl
 	 */
-	public function newCmdRef(string $id, SiButton $siButton, $urlExt = null) {
+	public function newCmdRef(string $id, SiButton $siButton, $urlExt = null): RefGuiControl {
 		return GuiControls::ref($id, $this->eiuAnalyst->getEiuFrame(true)->getCmdUrl()->ext($urlExt), $siButton);
 	}
 	

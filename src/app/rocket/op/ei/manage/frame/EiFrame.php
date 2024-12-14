@@ -42,6 +42,7 @@ use rocket\ui\si\meta\SiFrame;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\op\ei\component\command\EiCmd;
 use rocket\op\ei\manage\EiLaunch;
+use rocket\op\spec\TypePath;
 
 class EiFrame {
 	/**
@@ -527,7 +528,7 @@ class EiFrame {
 	/**
 	 * @return \rocket\ui\si\meta\SiFrame
 	 */
-	function createSiFrame() {
+	function createSiFrame(): SiFrame {
 		return (new SiFrame($this->getApiUrl(null)/*, $this->contextEiEngine->getEiMask()->getEiType()->createSiTypeContext()*/))
 				->setSortable($this->ability->getSortAbility() !== null)
 				->setTreeMode(null !== $this->contextEiEngine->getEiMask()->getEiType()->getNestedSetStrategy());

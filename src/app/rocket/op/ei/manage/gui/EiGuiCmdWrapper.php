@@ -26,7 +26,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\DefPropPath;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\component\prop\EiProp;
-use rocket\ui\gui\UnresolvableDefPropPathExceptionEi;
+use rocket\ui\gui\UnresolvableDefPropPathException;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\ui\gui\field\GuiField;
@@ -48,7 +48,7 @@ class EiGuiCmdWrapper {
 
 	/**
 	 * @param EiGuiDefinition $eiGuiDefinition
-	 * @param N2nContext $n2nContext
+	 * @param EiFrame $eiFrame
 	 * @return GuiControl[]
 	 */
 	function createGeneralGuiControls(EiGuiDefinition $eiGuiDefinition, EiFrame $eiFrame): array {
@@ -64,7 +64,7 @@ class EiGuiCmdWrapper {
 	 * @return GuiControl[]
 	 */
 	function createEntryGuiControls(EiGuiDefinition $eiGuiDefinition, EiFrame $eiFrame, EiEntry $eiEntry): array {
-		$guiControls =  $this->eiGuiCmd->createEntryGuiControls(new Eiu($this->eiCmdPath, $eiGuiDefinition, $eiFrame, $eiEntry));
+		$guiControls = $this->eiGuiCmd->createEntryGuiControls(new Eiu($this->eiCmdPath, $eiGuiDefinition, $eiFrame, $eiEntry));
 		$this->valReturn($guiControls, 'createEntryGuiControls');
 		return $guiControls;
 	}

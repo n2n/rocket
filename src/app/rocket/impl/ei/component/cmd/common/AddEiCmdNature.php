@@ -48,7 +48,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	const PRIVILEGE_LIVE_ENTRY_KEY = 'eiEntityObj';
 	const PRIVILEGE_DRAFT_KEY = 'draft';
 
-	private $duplicatingAllowed = true;
+	private bool $duplicatingAllowed = true;
 	private ?string $controlLabel = null;
 	
 	protected function prepare() {
@@ -58,7 +58,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 		return self::ID_BASE;
 	}
 
-	public function isDuplicatingAllowed() {
+	public function isDuplicatingAllowed(): bool {
 		return $this->duplicatingAllowed;
 	}
 
@@ -66,7 +66,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	 * @param bool $duplicatingAllowed
 	 * @return $this
 	 */
-	public function setDuplicatingAllowed(bool $duplicatingAllowed) {
+	public function setDuplicatingAllowed(bool $duplicatingAllowed): static {
 		$this->duplicatingAllowed = $duplicatingAllowed;
 		return $this;
 	}
@@ -127,8 +127,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 // 	}
 	
 	public function createGeneralGuiControls(Eiu $eiu): array {
-		if ($eiu->frame()->isExecutedBy($eiu->cmd())
-				|| $eiu->guiDefinition()->isBulky()) {
+		if ($eiu->frame()->isExecutedBy($eiu->cmd()) || $eiu->guiDefinition()->isBulky()) {
 			return [];
 		}
 		

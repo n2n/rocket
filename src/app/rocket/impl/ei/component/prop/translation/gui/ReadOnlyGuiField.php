@@ -26,23 +26,24 @@ use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\SiField;
 use n2n\util\ex\UnsupportedOperationException;
+use rocket\ui\gui\field\impl\OutGuiFieldAdapter;
+use rocket\ui\si\content\BackableSiField;
 
-class ReadOnlyGuiField implements GuiField {
+class ReadOnlyGuiField extends OutGuiFieldAdapter {
 	private $siField;
 	private $forkGuiFieldMap;
 	
-	function __construct(SiField $siField, ?GuiFieldMap $forkGuiFieldMap) {
+	function __construct(BackableSiField $siField, ?GuiFieldMap $forkGuiFieldMap) {
+		parent::__construct($siField);
 		$this->siField = $siField;
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
-	function getSiField(): ?SiField {
-		return $this->siField;
-	}
+
 	
-	function save() {
-		throw new UnsupportedOperationException();
-	}
+//	function save() {
+//		throw new UnsupportedOperationException();
+//	}
 	
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return $this->forkGuiFieldMap;

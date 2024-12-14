@@ -57,7 +57,7 @@ class SplitGuiFieldFactory {
 			
 			if ($this->lted->isN2nLocaleIdActive($n2nLocaleId)) {
 				$siField->putValueBoundary($n2nLocaleId, $label,
-								$this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary())
+								$this->lted->getTargetGuiValueBoundary($n2nLocaleId)->getSiValueBoundary())
 						->setShortLabel($n2nLocale->toPrettyId());
 			} else {
 				$siField->putUnavailable($n2nLocaleId, $label)->setShortLabel($n2nLocale->toPrettyId());
@@ -77,9 +77,9 @@ class SplitGuiFieldFactory {
 		$targetEiuGuiMaskDeclaration = $this->lted->getTargetEiuGuiMaskDeclaration();
 		$apiUrl = $this->lted->getTargetEiuFrame()->getApiGetUrl();
 		
-		$propIds = array_map(
-				function ($defPropPath) { return (string) $defPropPath; }, 
-				$targetEiuGuiMaskDeclaration->getDefPropPaths());
+//		$propIds = array_map(
+//				function ($defPropPath) { return (string) $defPropPath; },
+//				$targetEiuGuiMaskDeclaration->getDefPropPaths());
 		
 		foreach ($this->lted->getN2nLocales() as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
@@ -88,7 +88,7 @@ class SplitGuiFieldFactory {
 			$pid = null;
 			if (null !== ($activeTargetEiuEntry = $this->lted->getActiveTargetEiuEntry($n2nLocaleId))) {
 				if ($activeTargetEiuEntry->isNew() || $activeTargetEiuEntry->isUnsaved()) {
-					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)
+					$siField->putEntry($n2nLocaleId, $label, $this->lted->getTargetGuiValueBoundary($n2nLocaleId)
 									->createSiValueBoundary())
 							->setShortLabel($n2nLocale->toPrettyId());
 					continue;
@@ -99,10 +99,10 @@ class SplitGuiFieldFactory {
 			
 			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiMaskDeclaration->isBulky(), false,
 							function () use ($n2nLocaleId) {
-								return $this->lted->getTargetEiuGuiValueBoundary($n2nLocaleId)->createSiValueBoundary();
+								return $this->lted->getTargetGuiValueBoundary($n2nLocaleId)->createSiValueBoundary();
 							})
 					->setShortLabel($n2nLocale->toPrettyId())
-					->setPropIds($propIds);
+					/*->setPropIds($propIds)*/;
 		}
 		
 // 		$guiFieldMap = new GuiFieldMap();
@@ -149,9 +149,9 @@ class SplitGuiFieldFactory {
 	private function buildPlaceholderGuiFieldMap($forkDefPropPath) {
 		$eiPropPaths = [];
 		if ($forkDefPropPath->isEmpty()) {
-			$eiPropPaths = $this->lted->getTargetEiuGuiMaskDeclaration()->getEiPropPaths();
+			$eiPropPaths = $this->lted->getTargetEiuGuiDefinition()->getEiPropPaths();
 		} else {
-			$eiPropPaths = $this->lted->getTargetEiuGuiMaskDeclaration()->getForkedEiPropPaths($forkDefPropPath);
+			$eiPropPaths = $this->lted->getTargetEiuGuiDefinition()->getForkedEiPropPaths($forkDefPropPath);
 		}
 		
 		if (empty($eiPropPaths)) {
@@ -160,7 +160,7 @@ class SplitGuiFieldFactory {
 		
 		$guiFieldMap = new GuiFieldMap();
 		foreach ($eiPropPaths as $eiPropPath) {
-			$guiFieldMap->putGuiField($eiPropPath,
+			$guiFieldMap->putGuiField($eiPropPath->toGuiFieldKey(),
 					$this->createPlaceholderGuiField($forkDefPropPath->ext($eiPropPath)));
 		}
 		return $guiFieldMap;

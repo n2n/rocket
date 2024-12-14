@@ -36,7 +36,7 @@ class EiuGuiEntry {
 //	private $eiuGuiMaskDeclaration;
 	
 	function __construct(private GuiEntry $eiGuiEntry,
-			private ?EiuEntry $eiuEntry, private ?EiuGuiMaskDeclaration $eiuGuiMaskDeclaration,
+			private ?EiuEntry $eiuEntry, private ?EiuGuiDefinition $eiuGuiDefinition,
 			private readonly EiuAnalyst $eiuAnalyst) {
 	}
 	
@@ -208,10 +208,10 @@ class EiuGuiEntry {
 		return $this->eiuEntry;
 	}
 
-	function guiMaskDeclaration(): EiuGuiMaskDeclaration {
-		return $this->eiuGuiMaskDeclaration ?? $this->eiuGuiMaskDeclaration
-				= new EiuGuiMaskDeclaration($this->eiGuiEntry->getEiGuiMaskDeclaration(), $this->eiuAnalyst);
-	}
+//	function guiDefinition(): EiuGuiDefinitionn {
+//		return $this->eiuGuiDefinition ?? $this->eiuGuiDefinition
+//				= new EiuGuiMaskDeclaration($this->eiGuiEntry->getEiGuiMaskDeclaration(), $this->eiuAnalyst);
+//	}
 	
 	/**
 	 * @param string|DefPropPath $defPropPath

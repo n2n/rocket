@@ -62,8 +62,8 @@ class EiuContext {
 	 */
 	function type($eiTypeId, bool $required = true) {
 		$eiType = EiuAnalyst::lookupEiTypeFromEiArg($eiTypeId, $this->spec);
-		
-		return new EiuType($eiType, $this->eiuAnalyst);
+
+		return new EiuType($eiType, $this->eiuAnalyst->looseCopy());
 	}
 	
 	/**
@@ -77,44 +77,44 @@ class EiuContext {
 		ArgUtils::valType($eiTypeArg, ['string', 'object', TypePath::class, \ReflectionClass::class, EiType::class, EiComponentNature::class]);
 		
 		if ($eiTypeArg instanceof EiMask) {
-			return new EiuMask($eiTypeArg, null, $this->eiuAnalyst);
+			return new EiuMask($eiTypeArg, null, $this->eiuAnalyst->looseCopy());
 		}
 		
 		if ($eiTypeArg instanceof EiType) {
-			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
+			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst->looseCopy());
 		}
 		
 		if ($eiTypeArg instanceof EiComponentNature) {
-			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
+			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst->looseCopy());
 		}
 		
 		if ($eiTypeArg instanceof EiTypeExtension) {
-			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst);
+			return new EiuMask($eiTypeArg->getEiMask(), null, $this->eiuAnalyst->looseCopy());
 		}
 		
 		try {
 			if ($eiTypeArg instanceof TypePath) {
 				return new EiuMask($this->getEiMaskByEiTypePath($eiTypeArg), null,
-						$this->eiuAnalyst);
+						$this->eiuAnalyst->looseCopy());
 			}
 			
 			if ($eiTypeArg instanceof \ReflectionClass) {
 				return new EiuMask($this->spec->getEiTypeByClass($eiTypeArg)->getEiMask(), null,
-						$this->eiuAnalyst);
+						$this->eiuAnalyst->looseCopy());
 			}
 			
 			if (is_object($eiTypeArg)) {
 				return new EiuMask($this->spec->getEiTypeOfObject($eiTypeArg)->getEiMask(), 
-						null, $this->eiuAnalyst);
+						null, $this->eiuAnalyst->looseCopy());
 			}
 			
 			if (class_exists($eiTypeArg, false)) {
 				return new EiuMask($this->spec->getEiTypeByClassName($eiTypeArg)->getEiMask(), null,
-						$this->eiuAnalyst);
+						$this->eiuAnalyst->looseCopy());
 			}
 						
 			return new EiuMask($this->spec->getEiTypeById($eiTypeArg)->getEiMask(), null,
-					$this->eiuAnalyst);
+					$this->eiuAnalyst->looseCopy());
 		} catch (UnknownTypeException $e) {
 			if (!$required) return null;
 			

@@ -49,6 +49,7 @@ use rocket\impl\ei\component\prop\translation\model\TranslationIdNamePropFork;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\impl\ei\component\prop\translation\conf\N2nLocaleDef;
 use n2n\core\config\WebConfig;
+use rocket\impl\ei\component\prop\translation\gui\TranslationEiGuiProp;
 
 
 class TranslationEiPropNature extends RelationEiPropNatureAdapter {
@@ -66,7 +67,7 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	}
 
 	/**
-	 * @var array
+	 * @var N2nLocaleDef[] $n2nLocaleDefs
 	 */
 	private array $n2nLocaleDefs = array();
 	/**
@@ -124,7 +125,16 @@ class TranslationEiPropNature extends RelationEiPropNatureAdapter {
 	}
 	
 	public function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
-		return new TranslationGuiProp($this->getRelationModel(), $this);
+//		$targetEiuGuiDeclaration = $this->relationModel->getTargetEiuEngine()
+//				->newGuiDeclaration($eiu->guiDefinition()->getViewMode(), null);
+		if ($eiu->guiDefinition()->isReadOnly()) {
+			$eiCmdPath = $this->relationModel->getTargetReadEiCmdPath();
+		} else {
+			$eiCmdPath = $this->relationModel->getTargetEditEiCmdPath();
+		}
+
+		return new TranslationEiGuiProp($this->relationModel->getTargetEiuEngine()
+				->guiDefinition($eiu->guiDefinition()->getViewMode()), $eiCmdPath, $this);
 	}
 
 	public function buildIdNamePropFork(Eiu $eiu): ?IdNamePropFork {

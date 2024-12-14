@@ -31,13 +31,15 @@ use rocket\op\ei\util\gui\EiuGuiMaskDeclaration;
 use rocket\op\ei\util\gui\EiuGuiValueBoundary;
 use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
+use rocket\op\ei\util\gui\EiuGuiDefinition;
+use rocket\ui\gui\GuiValueBoundary;
 
 class LazyTranslationEssentialsDeterminer {
 	private $eiu;
 	private $targetEiuFrame;
-	private EiuGuiDeclaration $targetEiuGuiDeclaration;
-	private EiuGuiMaskDeclaration $targetEiuGuiMaskDeclaration;
-	private $translationConfig;
+	private EiuGuiDefinition $targetEiuGuiDefinition;
+//	private EiuGuiDeclaration $targetEiuGuiDeclaration;
+//	private EiuGuiMaskDeclaration $targetEiuGuiMaskDeclaration;
 	private $readOnly;
 	
 	private $targetSiDeclaration = null;
@@ -47,16 +49,16 @@ class LazyTranslationEssentialsDeterminer {
 
 	private array $targetEiuEntries = [];
 	/**
-	 * @var EiuGuiValueBoundary[]
+	 * @var GuiValueBoundary[]
 	 */
-	private array $targetEiuGuiValueBoundaries = [];
+	private array $targetGuiValueBoundaries = [];
 	
-	function __construct(Eiu $eiu, Eiu $targetEiu, TranslationEiPropNature $translationConfig) {
+	function __construct(Eiu $eiu, Eiu $targetEiu, private TranslationEiPropNature $translationConfig) {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiu->frame();
-		$this->targetEiuGuiDeclaration = $targetEiu->guiDeclaration();
-		$this->targetEiuGuiMaskDeclaration = $this->targetEiuGuiDeclaration->singleMaskDeclaration();
-		$this->translationConfig = $translationConfig;
+		$this->targetEiuGuiDefinition = $targetEiu->guiDefinition();
+//		$this->targetEiuGuiDeclaration = $targetEiu->guiDeclaration();
+//		$this->targetEiuGuiMaskDeclaration = $this->targetEiuGuiDeclaration->singleMaskDeclaration();
 	}
 	
 	function getDefPropPath() {
@@ -91,13 +93,14 @@ class LazyTranslationEssentialsDeterminer {
 	/**
 	 * @return \rocket\ui\si\meta\SiDeclaration
 	 */
-	function getTargetSiDeclaration() {
+	function getTargetSiDeclaration(): \rocket\ui\si\meta\SiDeclaration {
 		if ($this->targetSiDeclaration === null) {
-			$this->targetSiDeclaration = $this->targetEiuGuiDeclaration->createSiDeclaration();
+			$this->targetSiDeclaration = $this->targetEiuGuiDefinition->createSiDeclaration();
 		}
 		
 		return $this->targetSiDeclaration;
 	}
+
 	
 	/**
 	 * @return N2nLocale[]
@@ -137,12 +140,13 @@ class LazyTranslationEssentialsDeterminer {
 		return $this->eiu->getN2nLocale();
 	}
 
-	function getTargetEiuGuiDeclaration(): EiuGuiDeclaration {
-		return $this->targetEiuGuiDeclaration;
-	}
 
-	function getTargetEiuGuiMaskDeclaration(): EiuGuiMaskDeclaration {
-		return $this->targetEiuGuiMaskDeclaration;
+//	function getTargetEiuGuiMaskDeclaration(): EiuGuiMaskDeclaration {
+//		return $this->targetEiuGuiMaskDeclaration;
+//	}
+
+	function getTargetEiuGuiDefinition(): EiuGuiDefinition {
+		return $this->targetEiuGuiDefinition;
 	}
 	
 	/**
@@ -210,8 +214,8 @@ class LazyTranslationEssentialsDeterminer {
 		$this->ensureActiveTargetEiuEntries();
 		
 		foreach (array_keys($this->activeTargetEiuEntries) as $n2nLocaleId) {
-			if (isset($this->targetEiuGuiValueBoundaries[$n2nLocaleId])) {
-				$this->targetEiuGuiValueBoundaries[$n2nLocaleId]->selectedGuiEntry()->save();
+			if (isset($this->targetGuiValueBoundaries[$n2nLocaleId])) {
+				$this->targetGuiValueBoundaries[$n2nLocaleId]->selectedGuiEntry()->save();
 			}
 		}
 		
@@ -237,19 +241,15 @@ class LazyTranslationEssentialsDeterminer {
 		}
 	}
 
-	/**
-	 * @param string $n2nLocaleId
-	 * @return EiuGuiValueBoundary
-	 */
-	function getTargetEiuGuiValueBoundary(string $n2nLocaleId): EiuGuiValueBoundary {
+	function getTargetGuiValueBoundary(string $n2nLocaleId): GuiValueBoundary {
 		$this->ensureActiveTargetEiuEntries();
 		
-		if (isset($this->targetEiuGuiValueBoundaries[$n2nLocaleId])) {
-			return $this->targetEiuGuiValueBoundaries[$n2nLocaleId];
+		if (isset($this->targetGuiValueBoundaries[$n2nLocaleId])) {
+			return $this->targetGuiValueBoundaries[$n2nLocaleId];
 		}
 		
-		return $this->targetEiuGuiValueBoundaries[$n2nLocaleId] = $this->targetEiuGuiDeclaration
-				->newGuiValueBoundary([$this->getTargetEiuEntry($n2nLocaleId)]);
+		return $this->targetGuiValueBoundaries[$n2nLocaleId] = $this->targetEiuGuiDefinition
+				->createGuiValueBoundary($this->getTargetEiuEntry($n2nLocaleId));
 	}
 	
 	/**

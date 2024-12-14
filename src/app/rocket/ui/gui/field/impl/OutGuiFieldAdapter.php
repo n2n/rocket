@@ -38,9 +38,9 @@ abstract class OutGuiFieldAdapter extends GuiFieldAdapter {
 		throw new UnsupportedOperationException('GuiField is read only.');
 	}
 
-	function save(N2nContext $n2nContext): void {
-		throw new UnsupportedOperationException('GuiField is read only.');
-	}
+//	function save(N2nContext $n2nContext): void {
+//		throw new UnsupportedOperationException('GuiField is read only.');
+//	}
 
 	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 		throw new UnsupportedOperationException('GuiField is read only.');

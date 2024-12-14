@@ -34,6 +34,7 @@ use rocket\ui\gui\EiGuiDeclarationFactory;
 use n2n\l10n\Lstr;
 use rocket\ui\gui\EiGuiDeclaration;
 use InvalidArgumentException;
+use rocket\op\ei\util\gui\EiuGuiDefinition;
 
 class EiuEngine {
 
@@ -396,44 +397,48 @@ class EiuEngine {
 		return new EiuFrame($newEiFrame, $newEiuAnalyst);
 	}
 
-	/**
-	 * @param int $viewMode
-	 * @param array|null $defPropPathsArg
-	 * @return EiuGuiDeclaration
-	 */
-	function newGuiDeclaration(int $viewMode, ?array $defPropPathsArg = null): EiuGuiDeclaration {
-		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//	/**
+//	 * @param int $viewMode
+//	 * @param array|null $defPropPathsArg
+//	 * @return EiuGuiDeclaration
+//	 */
+//	function newGuiDeclaration(int $viewMode, ?array $defPropPathsArg = null): EiuGuiDeclaration {
+//		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//
+//		$eiGuiDeclaration = new EiGuiDeclaration($this->eiEngine->getEiMask(), $viewMode);
+//		$eiGuiDeclaration->putEiGuiMaskDeclaration(
+//				$this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths));
+//
+//		return new EiuGuiDeclaration($eiGuiDeclaration, $this->eiuAnalyst);
+//	}
 
-		$eiGuiDeclaration = new EiGuiDeclaration($this->eiEngine->getEiMask(), $viewMode);
-		$eiGuiDeclaration->putEiGuiMaskDeclaration(
-				$this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths));
-		
-		return new EiuGuiDeclaration($eiGuiDeclaration, $this->eiuAnalyst);
-	}
+//	/**
+//	 * @param int $viewMode
+//	 * @param array|null $defPropPaths
+//	 * @return EiuGuiMaskDeclaration
+//	 */
+//	function newGuiMaskDeclaration(int $viewMode, ?array $defPropPaths = null): EiuGuiMaskDeclaration {
+//		$defPropPaths = DefPropPath::buildArray($defPropPaths);
+//		return new EiuGuiMaskDeclaration($this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths),
+//				$this->eiuAnalyst);
+//	}
+//
+//	function newMultiGuiDeclaration(bool $bulky = true, bool $readOnly = false, bool $nonAbstractsOnly = true,
+//			?array $allowedEiTypesArg = null, ?array $defPropPathsArg = null): EiuGuiDeclaration {
+//		$viewMode = ViewMode::determine($bulky, $readOnly, true);
+//
+//		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
+//		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//
+//		$eiGuiDeclarationFactory = new EiGuiDeclarationFactory($this->eiEngine->getEiMask(),
+//				$this->eiuAnalyst->getN2nContext(true));
+//		$eiGuiDeclaration =  $eiGuiDeclarationFactory->createMultiEiGuiDeclaration($viewMode, $nonAbstractsOnly,
+//				$allowedEiTypes, $defPropPaths);
+//		return new EiuGuiDeclaration($eiGuiDeclaration, $this->eiuAnalyst);
+//	}
 
-	/**
-	 * @param int $viewMode
-	 * @param array|null $defPropPaths
-	 * @return EiuGuiMaskDeclaration
-	 */
-	function newGuiMaskDeclaration(int $viewMode, ?array $defPropPaths = null): EiuGuiMaskDeclaration {
-		$defPropPaths = DefPropPath::buildArray($defPropPaths);
-		return new EiuGuiMaskDeclaration($this->eiEngine->obtainEiGuiMaskDeclaration($viewMode, $defPropPaths),
-				$this->eiuAnalyst);
-	}
-
-	function newMultiGuiDeclaration(bool $bulky = true, bool $readOnly = false, bool $nonAbstractsOnly = true,
-			?array $allowedEiTypesArg = null, ?array $defPropPathsArg = null): EiuGuiDeclaration {
-		$viewMode = ViewMode::determine($bulky, $readOnly, true);
-
-		$allowedEiTypes = EiuAnalyst::buildEiTypesFromEiArg($allowedEiTypesArg);
-		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-
-		$eiGuiDeclarationFactory = new EiGuiDeclarationFactory($this->eiEngine->getEiMask(),
-				$this->eiuAnalyst->getN2nContext(true));
-		$eiGuiDeclaration =  $eiGuiDeclarationFactory->createMultiEiGuiDeclaration($viewMode, $nonAbstractsOnly,
-				$allowedEiTypes, $defPropPaths);
-		return new EiuGuiDeclaration($eiGuiDeclaration, $this->eiuAnalyst);
+	function guiDefinition(int $viewMode): EiuGuiDefinition {
+		return new EiuGuiDefinition($this->eiEngine->getEiGuiDefinition($viewMode), $this->eiuAnalyst);
 	}
 }
 

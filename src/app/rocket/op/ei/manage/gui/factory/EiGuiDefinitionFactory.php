@@ -79,13 +79,13 @@ class EiGuiDefinitionFactory {
 	/**
 	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiDefinition
 	 */
-	private function initEiGuiDefinition(EiGuiDefinition $eiGuiDefinition): void {
-		$this->eiMask->getEiPropCollection()->supplyEiGuiDefinition($eiGuiDefinition);
-		$this->eiMask->getEiCmdCollection()->supplyEiGuiDefinition($eiGuiDefinition);
-		$this->eiMask->getEiModCollection()->setupEiGuiMaskDeclaration($eiGuiDefinition);
-
-		$eiGuiDefinition->markInitialized();
-	}
+//	private function initEiGuiDefinition(EiGuiDefinition $eiGuiDefinition): void {
+//		$this->eiMask->getEiPropCollection()->supplyEiGuiDefinition($eiGuiDefinition);
+//		$this->eiMask->getEiCmdCollection()->supplyEiGuiDefinition($eiGuiDefinition);
+//		$this->eiMask->getEiModCollection()->setupEiGuiMaskDeclaration($eiGuiDefinition);
+//
+//		$eiGuiDefinition->markInitialized();
+//	}
 
 	/**
 	 * @param \rocket\ui\gui\EiGuiMaskDeclaration $eiGuiMaskDeclaration

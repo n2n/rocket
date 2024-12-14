@@ -8,6 +8,9 @@ use rocket\op\ei\util\EiuAnalyst;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiMask;
 use rocket\op\ei\EiPropPath;
+use rocket\op\ei\manage\gui\factory\EiGuiEntryFactory;
+use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
+use rocket\ui\gui\GuiValueBoundary;
 
 class EiuGuiDefinition {
 	
@@ -107,50 +110,62 @@ class EiuGuiDefinition {
 	/**
 	 * @return EiPropPath[]
 	 */
-	function getEiPropPaths() {
-		return $this->eiGuiDefinition->getEiPropPaths();
+	function getEiPropPaths(): array {
+		return $this->eiGuiDefinition->getEiGuiPropMap()->getEiPropPaths();
 	}
 	
 	function getDefPropPaths() {
 		return $this->eiGuiDefinition->getDefPropPaths();
 	}
 	
- 	function newEntryGui($eiEntryArg, bool $entryGuiControlsIncluded = false): EiuGuiEntry {
- 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
-		
- 		$eiGuiEntry = $this->eiGuiDefinition->createGuiEntry($this->eiuAnalyst->getEiFrame(true),
-				$eiEntry, $entryGuiControlsIncluded);
-		
- 		return new EiuGuiEntry($eiGuiEntry, null, $this, $this->eiuAnalyst);
- 	}
+// 	function newEntryGui($eiEntryArg): EiuGuiEntry {
+//		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
+//
+//		$eiGuiEntryFactory = new EiGuiEntryFactory($this->eiuAnalyst->getEiFrame(true));
+//		$eiGuiEntry = $eiGuiEntryFactory->createGuiEntry($eiEntry, $this->eiGuiDefinition->getViewMode(), true);
+//
+// 		return new EiuGuiEntry($eiGuiEntry, null, $this, $this->eiuAnalyst);
+// 	}
+
+	function createGuiValueBoundary($eiEntryArg, ?int $treeLevel = null): GuiValueBoundary {
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg, 'eiEntryArg');
+
+		$eiGuiEntryFactory = new EiGuiValueBoundaryFactory($this->eiuAnalyst->getEiFrame(true));
+		return $eiGuiEntryFactory->create($treeLevel, [$eiEntry], $this->eiGuiDefinition->getViewMode());
+	}
+
+
+
 	
 	/**
 	 * @param DefPropPath|string $prefixDefPropPath
 	 * @return DefPropPath[]
 	 */
-	function getForkedDefPropPaths($prefixDefPropPath) {
-		$prefixDefPropPath = DefPropPath::create($prefixDefPropPath);
+	function getForkedDefPropPaths(DefPropPath|string $prefixDefPropPathArg): array {
+		$prefixDefPropPath = DefPropPath::create($prefixDefPropPathArg);
 		$size = $prefixDefPropPath->size();
 		
 		$forkedDefPropPaths = [];
-		foreach ($this->eiGuiDefinition->filterDefPropPaths($prefixDefPropPath) as $defPropPath) {
+		foreach ($this->eiGuiDefinition->getEiGuiPropMap()->getEiGuiPropByDefPropPath($prefixDefPropPath)
+						 ->getForkEiGuiPropMap()->compileAllDefPropPaths() as $defPropPath) {
 			$forkedDefPropPaths[] = $defPropPath->subDefPropPath($size);
 		}
 		return $forkedDefPropPaths;
 	}
 	
 	/**
-	 * @param DefPropPath|string $prefixDefPropPath
+	 * @param DefPropPath|string $prefixDefPropPathArg
 	 * @return EiPropPath[]
 	 */
-	function getForkedEiPropPaths($prefixDefPropPath) {
-		$prefixDefPropPath = DefPropPath::create($prefixDefPropPath);
-		
-		$forkedEiPropPaths = [];
-		foreach ($this->getForkedDefPropPaths($prefixDefPropPath) as $defPropPath) {
-			$forkedEiPropPaths[] = $defPropPath->getFirstEiPropPath();
+	function getForkedEiPropPaths(DefPropPath|string $prefixDefPropPathArg): array {
+		$prefixDefPropPath = DefPropPath::create($prefixDefPropPathArg);
+
+		if ($prefixDefPropPath->isEmpty()) {
+			return $this->eiGuiDefinition->getEiGuiPropMap()->getEiPropPaths();
 		}
-		return $forkedEiPropPaths;
+
+		return $this->eiGuiDefinition->getEiGuiPropMap()->getEiGuiPropByDefPropPath($prefixDefPropPath)
+				->getForkEiGuiPropMap()?->compileAllDefPropPaths() ?? [];
 	}
 	
 //	/**
@@ -229,12 +244,12 @@ class EiuGuiDefinition {
 // 	}
 
 	/**
-	 * @return \rocket\ui\si\meta\SiDeclaration
+	 * @return SiDeclaration
 	 */
-	function createSiDeclaration() {
-		return new SiDeclaration(ViewMode::createSiStyle($this->getViewMode()), [new SiMask(
-				$this->eiGuiDefinition->createGuiMask($this->eiuAnalyst->getN2nContext(true)->getN2nLocale()),
-				null)]);
+	function createSiDeclaration(): SiDeclaration {
+		$guiMask = $this->eiGuiDefinition->createGuiMask($this->eiuAnalyst->getEiFrame(true));
+
+		return new SiDeclaration([$guiMask->getSiMask()]);
 	}
 }
 //

@@ -33,10 +33,9 @@ class EiuType  {
 	private $eiuAnalyst;
 	private $supremeEiuType = null;
 	private $allSubEiuTypes = null;
-	
+
 	/**
 	 * @param EiType $eiType
-	 * @param EiuMask $eiuMask
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
 	function __construct(EiType $eiType, EiuAnalyst $eiuAnalyst) {

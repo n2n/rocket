@@ -475,6 +475,22 @@ class EiMask {
 // 	}
 
 
+	function matchesTypePath(TypePath $typePath, bool $checkSuper = false, bool $checkSub = false): bool {
+		if ($this->eiType->getId() === $typePath->getTypeId()) {
+			return true;
+		}
+
+		if ($checkSuper && $this->eiType->containsSuperEiTypeId($typePath->getTypeId(), true)) {
+			return true;
+		}
+
+		if ($checkSub && $this->eiType->containsSubEiTypeId($typePath->getTypeId(), true)) {
+			return true;
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * @return \rocket\op\ei\mask\EiMask
