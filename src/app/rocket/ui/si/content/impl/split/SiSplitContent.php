@@ -24,8 +24,9 @@ namespace rocket\ui\si\content\impl\split;
 use n2n\util\uri\Url;
 use rocket\ui\si\content\SiValueBoundary;
 use rocket\ui\si\meta\SiStyle;
+use n2n\core\container\N2nContext;
 
-class SiSplitContent implements \JsonSerializable {
+class SiSplitContent {
 	private $label;
 	private $shortLabel;
 	
@@ -91,7 +92,7 @@ class SiSplitContent implements \JsonSerializable {
 		return $this->entry;
 	}
 	
-	function jsonSerialize(): mixed {
+	function toJsonStruct(N2nContext $n2nContext): mixed {
 		$data = [ 'label' => $this->label, 'shortLabel' => $this->shortLabel ?? $this->label ];
 		
 // 		if ($this->apiUrl !== null) {
@@ -103,7 +104,7 @@ class SiSplitContent implements \JsonSerializable {
 		
 // 		if ($this->entry !== null) {
 // 			$data['declaration'] = $this->declaration;
-			$data['entry'] = $this->entry;
+			$data['valueBoundary'] = $this->entry?->toJsonStruct($n2nContext);
 // 		}
 		
 		return $data;

@@ -133,8 +133,8 @@ abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 //		return false;
 //	}
 
-	function save(N2nContext $n2nContext): void {
-		$this->model?->save($n2nContext);
-	}
+//	function save(N2nContext $n2nContext): void {
+//		$this->model?->save($n2nContext);
+//	}
 
 }

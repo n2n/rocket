@@ -327,7 +327,7 @@ export class SiFieldFactory {
 			const label = extr.reqString('label');
 			const shortLabel = extr.reqString('shortLabel');
 
-			const entryData = extr.nullaObject('entry');
+			const entryData = extr.nullaObject('valueBoundary');
 			if (entryData) {
 				const entryFactory = new SiEntryFactory(declaration, frame?.apiUrl ?? null, this.injector);
 				splitContextSiField.putSplitContent(SplitContent.createEntry(key, label, shortLabel,

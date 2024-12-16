@@ -117,7 +117,7 @@ class SplitContextOutSiField extends OutSiFieldAdapter {
 			'style' => $this->style,
 			'declaration' => $this->declaration,
 			'frame' => $this->frame,
-			'splitContents' => $this->splitContents,
+			'splitContents' => array_map(fn (SiSplitContent $c) => $c->toJsonStruct($n2nContext), $this->splitContents),
 			...parent::toJsonStruct($n2nContext)
 		];
 	}

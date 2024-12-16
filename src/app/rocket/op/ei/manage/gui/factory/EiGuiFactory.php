@@ -43,6 +43,11 @@ class EiGuiFactory {
 		$guiMasks = $eiGuiMaskFactory->createGuiMasksOfEiEntries(array_map(fn ($r) => $r->eiEntry, $records),
 				ViewMode::COMPACT_READ);
 
+		if (empty($guiMasks)) {
+			$guiMasks[] = $this->eiFrame->getContextEiEngine()->getEiGuiDefinition(ViewMode::COMPACT_READ)
+					->createGuiMask($this->eiFrame);
+		}
+
 		$count = $eiObjectSelector->count();
 
 		return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize,

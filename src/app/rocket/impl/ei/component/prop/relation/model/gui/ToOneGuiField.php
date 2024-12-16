@@ -30,8 +30,14 @@ use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
+use n2n\util\ex\NotYetImplementedException;
+use rocket\ui\gui\field\impl\InGuiFieldAdapter;
+use n2n\core\container\N2nContext;
+use n2n\util\type\ArgUtils;
+use rocket\ui\si\content\SiEntryQualifier;
+use rocket\op\ei\manage\entry\UnknownEiObjectException;
 
-class ToOneGuiField implements GuiField {
+class ToOneGuiField extends InGuiFieldAdapter {
 	/**
 	 * @var Eiu
 	 */
@@ -59,8 +65,10 @@ class ToOneGuiField implements GuiField {
 		
 		$this->siField = SiFields::qualifierSelectIn($this->targetEiu->frame()->createSiFrame(),
 						$values, ($relationModel->isMandatory() ? 1 : 0), 1, 
-						$this->readPickableQualifiers($relationModel->getMaxPicksNum()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+						$this->readPickableQualifiers($relationModel->getMaxPicksNum()));
+
+
+		parent::__construct($this->siField);
 	}
 	
 	private function readPickableQualifiers(int $maxNum) {
@@ -79,9 +87,15 @@ class ToOneGuiField implements GuiField {
 		}
 		return $siEntryQualifiers;
 	}
+
+	function getValue(): mixed {
+		throw new NotYetImplementedException();
+	}
 	
-	function save() {
-		$siQualifiers = $this->siField->getValues();
+	function handleInput(mixed $value, N2nContext $n2nContext): void {
+//		$siQualifiers = $this->siField->getValues();
+		ArgUtils::valArray($value, SiEntryQualifier::class);
+		$siQualifiers = $value;
 		
 		if (empty($siQualifiers)) {
 			$this->eiu->field()->setValue(null);
@@ -89,8 +103,11 @@ class ToOneGuiField implements GuiField {
 		}
 		
 		$id = $this->targetEiu->frame()->siQualifierToId(current($siQualifiers));
-		$value = $this->targetEiu->frame()->lookupEntry($id);
-		$this->eiu->field()->setValue($value);
+		try {
+			$value = $this->targetEiu->frame()->lookupEntry($id);
+		} catch (UnknownEiObjectException $e) {
+			$this->eiu->field()->setValue($value);
+		}
 	}
 
 	function getSiField(): SiField {
@@ -100,5 +117,8 @@ class ToOneGuiField implements GuiField {
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
 	}
-	
+
+	protected function createInputMappers(N2nContext $n2nContext): array {
+		return [];
+	}
 }

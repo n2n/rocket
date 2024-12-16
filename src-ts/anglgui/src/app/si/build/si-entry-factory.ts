@@ -18,13 +18,13 @@ export class SiEntryFactory {
 	createPartialContent(data: any): SiPartialContent {
 		const extr = new Extractor(data);
 		return {
-			valueBoundaries: this.createEntries(extr.reqArray('siValueBoundaries')),
+			valueBoundaries: this.createValueBoundaries(extr.reqArray('siValueBoundaries')),
 			count: extr.reqNumber('count'),
 			offset: extr.reqNumber('offset')
 		};
 	}
 
-	createEntries(data: Array<any>): SiValueBoundary[] {
+	createValueBoundaries(data: Array<any>): SiValueBoundary[] {
 		const entries: Array<SiValueBoundary> = [];
 		for (const entryData of data) {
 			entries.push(this.createValueBoundary(entryData));

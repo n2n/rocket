@@ -23,9 +23,16 @@
 namespace rocket\ui\si\content;
 
 use n2n\core\container\N2nContext;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 interface SiFieldModel {
 
+	/**
+	 * @param mixed $value
+	 * @param N2nContext $n2nContext
+	 * @return bool
+	 * @throws CorruptedSiDataException if data is corrupt
+	 */
 	function handleInput(mixed $value, N2nContext $n2nContext): bool;
 
 	function flush(N2nContext $n2nContext): void;

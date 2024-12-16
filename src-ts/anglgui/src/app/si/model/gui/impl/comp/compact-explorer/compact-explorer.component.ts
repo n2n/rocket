@@ -13,8 +13,7 @@ import { SiValueBoundary } from 'src/app/si/model/content/si-value-boundary';
 
 @Component({
 	selector: 'rocket-ui-compact-explorer',
-	templateUrl: './compact-explorer.component.html',
-	styleUrls: ['./compact-explorer.component.css']
+	templateUrl: './compact-explorer.component.html'
 })
 export class CompactExplorerComponent implements OnInit, OnDestroy {
 
