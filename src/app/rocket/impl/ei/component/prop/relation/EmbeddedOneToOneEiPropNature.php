@@ -38,6 +38,7 @@ use rocket\ui\si\content\impl\meta\SiCrumb;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\entry\EiuEntry;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\ui\gui\field\impl\GuiFields;
 
 class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 
@@ -61,7 +62,6 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		return $field;
 	}
 	
-	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 // 		if ($readOnly || $this->isReadOnly()) {
 // 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
@@ -72,7 +72,7 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		
 		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
 		
-		if ($readOnly && $eiu->guiMaskDeclaration()->isCompact()) {
+		if ($readOnly && $eiu->guiDefinition()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
 		
@@ -88,28 +88,25 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
 	}
 	
-	
-	
 	/**
 	 * @param Eiu $eiu
 	 * @return GuiField
 	 */
-	private function createCompactGuiField(Eiu $eiu) {
+	private function createCompactGuiField(Eiu $eiu): GuiField {
 		$eiuEntry = $eiu->field()->getValue();
 		
 		if ($eiuEntry === null) {
-			return $eiu->factory()->newGuiField(SiFields
-					::crumbOut(SiCrumb::createLabel('0')
-							->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT))
-					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
+			return GuiFields
+					::out(SiCrumb::createLabel('0')->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT))
+					->setModel($eiu->field()->asGuiFieldModel());
 		}
 		
 		CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
 		
-		return $eiu->factory()->newGuiField(SiFields
+		return GuiFields::out(SiFields
 				::crumbOut(
 						SiCrumb::createIcon($eiuEntry->mask()->getIconType())->setSeverity(SiCrumb::SEVERITY_IMPORTANT),
-						SiCrumb::createLabel($eiuEntry->object()->createIdentityString()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
+						SiCrumb::createLabel($eiuEntry->object()->createIdentityString())))
+				->setModel($eiu->field()->asGuiFieldModel());
 	}
 }

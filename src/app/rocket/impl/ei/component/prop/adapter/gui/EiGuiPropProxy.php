@@ -69,7 +69,6 @@ class EiGuiPropProxy implements EiGuiProp {
 		$mmi->setParamValue('readOnly', $readOnly);
 		$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiField::class));
 		$mmi->setClosure($this->guiFieldCallback);
-
 		return $mmi->invoke();
 
 //		if ($this->eiGuiField !== null) {

@@ -30,6 +30,7 @@ use n2n\util\ex\UnsupportedOperationException;
 use rocket\op\ei\manage\gui\EiGuiField;
 use rocket\impl\ei\component\prop\adapter\trait\DisplayConfigTrait;
 use rocket\impl\ei\component\prop\adapter\trait\OutEiGuiPropTrait;
+use rocket\ui\gui\field\BackableGuiField;
 
 abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter {
 	use OutEiGuiPropTrait;
@@ -44,11 +45,11 @@ abstract class DisplayableEiPropNatureAdapter extends EiPropNatureAdapter {
 	}
 
 	
-	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
-		return $eiu->factory ()->newGuiProp(function (Eiu $eiu) {
-			return $this->getDisplayConfig()->buildGuiProp($eiu, $this);
-		})->toEiGuiProp();
-	}
+//	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
+//		return $eiu->factory ()->newGuiProp(function (Eiu $eiu) {
+//			return $this->getDisplayConfig()->buildGuiProp($eiu, $this);
+//		})->toEiGuiProp();
+//	}
 	
 	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		return $this->createOutEifGuiField( $eiu, $readOnly )->toGuiField();

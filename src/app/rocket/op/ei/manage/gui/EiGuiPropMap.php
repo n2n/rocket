@@ -91,7 +91,7 @@ class EiGuiPropMap {
 			}
 
 			if (null !== ($childEiGuiPropMap = $eiGuiPropWrapper->getChildEiGuiPropMap())) {
-				array_push($displayDefinitions, ...$this->rCompileDefaultDisplayDefinitions($defPropPath, $childEiGuiPropMap));
+				$displayDefinitions = array_merge($displayDefinitions, $this->rCompileDefaultDisplayDefinitions($defPropPath, $childEiGuiPropMap));
 			}
 		}
 
@@ -118,7 +118,7 @@ class EiGuiPropMap {
 			$deter->reportDefPropPath($defPropPath);
 
 			if (null !== ($childEiGuiPropMap = $eiGuiPropWrapper->getChildEiGuiPropMap())) {
-				array_push($guiProps, ...$this->rCompileGuiProps($defPropPath, $childEiGuiPropMap, $deter));
+				$guiProps = array_merge($guiProps, $this->rCompileGuiProps($defPropPath, $childEiGuiPropMap, $deter));
 			}
 		}
 		return $guiProps;

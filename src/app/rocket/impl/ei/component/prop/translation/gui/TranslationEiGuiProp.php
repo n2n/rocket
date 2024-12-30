@@ -54,7 +54,7 @@ class TranslationEiGuiProp implements EiGuiProp {
 	}
 
 	function getForkEiGuiPropMap(): ?EiGuiPropMap {
-		return null;
+		return $this->targetEiuGuiDefinition->getEiGuiDefinition()->getEiGuiPropMap();
 	}
 	
 	/**

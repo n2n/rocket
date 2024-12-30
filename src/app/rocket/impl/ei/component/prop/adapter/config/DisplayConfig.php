@@ -22,12 +22,9 @@
 namespace rocket\impl\ei\component\prop\adapter\config;
 
 use n2n\util\type\ArgUtils;
-use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\ui\gui\ViewMode;
 use rocket\ui\si\meta\SiStructureType;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\gui\EiGuiPropSetup;
-use rocket\op\ei\manage\gui\EiGuiField;
 
 class DisplayConfig {
 	private $compatibleViewModes;
@@ -176,7 +173,7 @@ class DisplayConfig {
 	 * @return EiGuiPropSetup|null
 	 */
 	function buildGuiProp(Eiu $eiu, EiGuiField $eiGuiField) {
-
+		$viewMode = $eiu->guiDefinition()->getViewMode();
 		
 		if (!$this->isViewModeCompatible($viewMode)) {
 			return null;

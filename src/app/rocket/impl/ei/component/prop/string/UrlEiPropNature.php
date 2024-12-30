@@ -36,6 +36,7 @@ use n2n\reflection\property\PropertyAccessProxy;
 use n2n\util\type\TypeConstraints;
 use n2n\util\type\ArgUtils;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
 
 class UrlEiPropNature extends AlphanumericEiPropNature {
 
@@ -174,15 +175,13 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$value = $eiu->field()->getValue();
 		if ($value === null) {
-			return $eiu->factory()->newGuiField(SiFields::stringOut(null)
-					->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+			return GuiFields::out(SiFields::stringOut(null));
 		}
 		
 		$label = $this->buildLabel(Url::create($value, true), $eiu->guiEntry()->isBulky());
-		return $eiu->factory()->newGuiField(
+		return GuiFields::out(
 				SiFields::linkOut(SiNavPoint::href(Url::create($value, true)), $label)
-						->setLytebox($this->isLytebox())
-						->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()));
+						->setLytebox($this->isLytebox()));
 	}
 	
 
