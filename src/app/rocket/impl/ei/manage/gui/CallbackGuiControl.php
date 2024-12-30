@@ -71,7 +71,7 @@ class CallbackGuiControl implements GuiControl {
 	private function execCall(N2nContext $n2nContext): SiCallResponse {
 		$mmi = new MagicMethodInvoker($n2nContext);
  		$mmi->setClosure($this->callback);
- 		$mmi->setReturnTypeConstraint(TypeConstraints::type(GuiCallResponse::class, true));
+ 		$mmi->setReturnTypeConstraint(TypeConstraints::namedType(GuiCallResponse::class, true));
 
 		$sifControlResponse = $mmi->invoke();
 

@@ -58,6 +58,7 @@ use rocket\ui\si\control\SiButton;
 use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\si\api\response\SiApiCallResponse;
 use rocket\ui\si\api\request\SiControlCall;
+use rocket\ui\gui\GuiCallResponse;
 
 class EiGuiApiModelTest extends TestCase {
 
@@ -159,6 +160,7 @@ class EiGuiApiModelTest extends TestCase {
 		$eiCmdNature = EiCmdNatures::callback()
 				->addGeneralGuiControl(GuiControls::callback(SiButton::info('holeradio'), function () use (&$called) {
 					$called = true;
+
 				}));
 		$eiMask->getEiCmdCollection()->add('some-cmd-id', $eiCmdNature);
 		$siApiCall = new SiApiCall(controlCall: new SiControlCall($maskId, null, 'some-cmd-id.0'));

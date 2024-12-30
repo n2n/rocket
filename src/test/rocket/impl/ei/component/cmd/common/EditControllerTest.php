@@ -105,7 +105,7 @@ class EditControllerTest extends TestCase {
 
 		$result = TestEnv::http()->newRequest()->post(
 					'/admin/manage/launch-id/cmd/eecn-0/' . $this->stringTestObjId,
-					['si-zone-call' => json_encode(new SiZoneCall($siInput, EditController::CONTROL_SAVE_KEY))])
+					['call' => json_encode(new SiZoneCall($siInput, EditController::CONTROL_SAVE_KEY))])
 				->inject(function(Rocket $rocket, LoginContext $loginContext) {
 					$rocket->setSpec($this->spec);
 					$loginContext->loginByUserId($this->rocketUserId);
@@ -115,7 +115,7 @@ class EditControllerTest extends TestCase {
 		$resultData = $result->parseJson();
 
 		$this->assertNotNull($resultData['inputResult']);
-		$this->assertNotNull($resultData['callResult']);
+		$this->assertNotNull($resultData['callResponse']);
 
 		$tx = TestEnv::createTransaction(true);
 		$this->assertEquals('new-value', StringTestEnv::findStringTestObj($this->stringTestObjId)->holeradio);

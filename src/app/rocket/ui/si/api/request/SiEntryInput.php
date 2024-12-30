@@ -27,6 +27,9 @@ use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiEntryInput implements \JsonSerializable {
 
+	/**
+	 * @var SiFieldInput[] $fieldInputs
+	 */
 	private array $fieldInputs = [];
 
 	/**
@@ -130,9 +133,7 @@ class SiFieldInput implements \JsonSerializable {
 	}
 
 	function jsonSerialize(): mixed {
-		return [
-			'data' => $this->data
-		];
+		return $this->data;
 	}
 
 //	/**

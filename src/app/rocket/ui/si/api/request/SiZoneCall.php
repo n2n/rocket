@@ -57,18 +57,7 @@ class SiZoneCall implements \JsonSerializable {
 		}
 
 		$httpData = $param->parseJsonToHttpData();
-		try {
-			$siControlCall = SiControlCall::parse($httpData->reqArray('controlCall'));
-		} catch (CorruptedSiDataException $e) {
-			throw new BadRequestException(previous: $e);
-		}
-
-		if ($siControlCall->getMaskId() !== null || $siControlCall->getEntryId() !== null) {
-			throw new BadRequestException('ZoneCall can not handle controls of specific masks oder entries.'
-					. 'Problem: maskId or entryId was provided.');
-		}
-
-		$zoneControlName = $siControlCall->getControlName();
+		$zoneControlName = $httpData->reqString('zoneControlName');
 
 		$siInput = null;
 		if (null !== ($inputData = $httpData->optArray('input', null, null))) {

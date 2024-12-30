@@ -106,7 +106,7 @@ class AddControllerTest extends TestCase {
 
 		$result = TestEnv::http()->newRequest()->post(
 					'/admin/manage/launch-id/cmd/aecn-0',
-					['si-zone-call' => json_encode(new SiZoneCall($siInput, AddController::CONTROL_SAVE_KEY))])
+					['call' => json_encode(new SiZoneCall($siInput, AddController::CONTROL_SAVE_KEY))])
 				->inject(function(Rocket $rocket, LoginContext $loginContext) {
 					$rocket->setSpec($this->spec);
 					$loginContext->loginByUserId($this->rocketUserId);
@@ -116,9 +116,8 @@ class AddControllerTest extends TestCase {
 		$resultData = $result->parseJson();
 
 		$this->assertNotNull($resultData['inputResult']);
-		$this->assertNotNull($resultData['callResult']);
+		$this->assertNotNull($resultData['callResponse']);
 
-		var_dump($resultData);
 		$id = $resultData['inputResult']['valueBoundaries'][0]['entries'][$siValueBoundaryInput->getSelectedMaskId()]
 				['qualifier']['identifier']['id'];
 		$this->assertNotNull($id);
