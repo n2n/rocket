@@ -39,11 +39,10 @@ use rocket\op\ei\manage\gui\EiGuiPropMap;
 class EiGuiPropProxy implements EiGuiProp {
 
 	/**
-	 * @param GuiProp $guiProp
 	 * @param \Closure $guiFieldCallback
-	 * @param DisplayDefinition|null $displayDefinition
+	 * @param DisplayDefinition $displayDefinition
 	 */
-	function __construct(private GuiProp $guiProp, private \Closure $guiFieldCallback, private ?DisplayDefinition $displayDefinition) {
+	function __construct(private \Closure $guiFieldCallback, private DisplayDefinition $displayDefinition) {
 	}
 
 	/**

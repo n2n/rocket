@@ -39,6 +39,16 @@ use testmdl\bo\TranslationTestObj;
 use testmdl\bo\TranslatableTestObj;
 use n2n\l10n\N2nLocale;
 use rocket\op\ei\manage\LiveEiObject;
+use testmdl\string\bo\StringTestObj;
+use testmdl\test\string\StringTestEnv;
+use rocket\op\ei\manage\gui\factory\EiGuiEntryFactory;
+use rocket\ui\gui\ViewMode;
+use rocket\op\ei\UnknownEiTypeException;
+use rocket\ui\si\content\impl\StringInSiField;
+use rocket\impl\ei\component\prop\translation\gui\EditableGuiField;
+use rocket\ui\si\content\impl\split\SplitContextInSiField;
+use rocket\ui\si\content\impl\split\SplitPlaceholderSiField;
+use rocket\op\ei\manage\gui\factory\EiGuiFactory;
 
 class TranslationEiPropNatureLiveTest extends TestCase {
 
@@ -61,6 +71,9 @@ class TranslationEiPropNatureLiveTest extends TestCase {
 //		$this->translationTestObj1Id = $translationTestObj->id;
 	}
 
+	/**
+	 * @throws UnknownEiTypeException
+	 */
 	function testIdentityString() {
 		$eiType = $this->spec->getEiTypeByClassName(TranslatableTestObj::class);
 
@@ -71,6 +84,58 @@ class TranslationEiPropNatureLiveTest extends TestCase {
 				N2nLocale::getDefault());
 
 		$this->assertEquals('hui: holeradio', $is);
+	}
+
+	/**
+	 * @throws UnknownEiTypeException
+	 */
+	function testSiEntry(): void {
+		$eiType = $this->spec->getEiTypeByClassName(TranslatableTestObj::class);
+		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiType->getEiMask());
+
+		$eiObject = $eiType->createEiObject(TranslationTestEnv::findTranslatableTestObj($this->translatableTestObj1Id));
+		$eiEntry = $eiFrame->createEiEntry($eiObject);
+
+		$eiGuiEntry = (new EiGuiEntryFactory($eiFrame))
+				->createGuiEntry($eiEntry, ViewMode::BULKY_EDIT, false);
+
+		$siEntry = $eiGuiEntry->getSiEntry();
+		$fields = $siEntry->getFields();
+
+		$this->assertCount(6, $fields);
+
+		$this->assertInstanceOf(SplitContextInSiField::class, $fields['translatableTestObjs']);
+
+		$this->assertInstanceOf(SplitPlaceholderSiField::class, $fields['translatableTestObjs/name']);
+	}
+
+	function testSiGui(): void {
+		$eiType = $this->spec->getEiTypeByClassName(TranslatableTestObj::class);
+		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiType->getEiMask());
+
+		$eiObject = $eiType->createEiObject(TranslationTestEnv::findTranslatableTestObj($this->translatableTestObj1Id));
+		$eiEntry = $eiFrame->createEiEntry($eiObject);
+
+		$bulkyGui = (new EiGuiFactory($eiFrame))
+				->createBulkyGui([$eiEntry], false);
+
+		$bulkySiGui = $bulkyGui->getSiGui();
+
+		$siDeclaration = $bulkySiGui->getDeclaration();
+		$siMasks = $siDeclaration->getMasks();
+		$this->assertCount(1, $siMasks);
+
+		$siMask = $siMasks[0];
+		$siProps = $siMask->getProps();
+		$this->assertCount(6, $siProps);
+
+		$this->assertTrue(isset($siProps['translatableTestObjs/name']));
+
+
+		$this->assertTrue(isset($siProps['translatableTestObjs']));
+		$this->assertNotEmpty($siProps['translatableTestObjs']->getDescendantPropIds());
+		$this->assertCount(3, $siProps['translatableTestObjs']->getDescendantPropIds());
+		$this->assertContains('translatableTestObjs/name', $siProps['translatableTestObjs']->getDescendantPropIds());
 	}
 
 }

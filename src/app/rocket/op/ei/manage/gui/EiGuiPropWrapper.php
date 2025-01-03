@@ -57,6 +57,8 @@ class EiGuiPropWrapper {
 	}
 
 	function getGuiProp(): GuiProp {
+
+
 		return $this->eiGuiProp->getGuiProp();
 	}
 

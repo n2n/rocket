@@ -49,9 +49,10 @@ class TranslationEiGuiProp implements EiGuiProp {
 		return null;
 	}
 
-	function getGuiProp(): GuiProp {
-		return new GuiProp('Not required label');
-	}
+//	function getGuiProp(): GuiProp {
+//		$guiProp = new GuiProp('Not required label');
+//		$guiProp->setDescendantGuiPropNames($this->targetEiuGuiDefinition->getDefPropPaths())
+//	}
 
 	function getForkEiGuiPropMap(): ?EiGuiPropMap {
 		return $this->targetEiuGuiDefinition->getEiGuiDefinition()->getEiGuiPropMap();

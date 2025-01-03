@@ -49,20 +49,17 @@ class BoolInSiField extends InSiFieldAdapter {
 	function __construct(bool $value) {
 		$this->value = $value;	
 	}
-	
+
 	/**
-	 * @param int|null $value
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @param bool|null $value
+	 * @return BoolInSiField
 	 */
-	function setValue(?int $value) {
+	function setValue(bool $value): static {
 		$this->value = $value;
 		return $this;
 	}
-	
-	/**
-	 * @return int|null
-	 */
-	function getValue() {
+
+	function getValue(): bool {
 		return $this->value;
 	}
 	

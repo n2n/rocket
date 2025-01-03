@@ -74,8 +74,8 @@ class SplitGuiFieldFactory {
 				->setMin($this->lted->getMinNum())
 				->setActiveKeys($this->lted->getActiveN2nLocaleIds())
 				->setMandatoryKeys($this->lted->getMandatoryN2nLocaleIds());
-		$targetEiuGuiMaskDeclaration = $this->lted->getTargetEiuGuiMaskDeclaration();
-		$apiUrl = $this->lted->getTargetEiuFrame()->getApiGetUrl();
+		$targetEiuGuiDefinition = $this->lted->getTargetEiuGuiDefinition();
+		$apiUrl = $this->lted->getTargetEiuFrame()->getApiUrl();
 		
 //		$propIds = array_map(
 //				function ($defPropPath) { return (string) $defPropPath; },
@@ -97,7 +97,7 @@ class SplitGuiFieldFactory {
 				$pid = $activeTargetEiuEntry->getPid();
 			}
 			
-			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiMaskDeclaration->isBulky(), false,
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiDefinition->isBulky(), false,
 							function () use ($n2nLocaleId) {
 								return $this->lted->getTargetGuiValueBoundary($n2nLocaleId)->createSiValueBoundary();
 							})

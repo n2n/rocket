@@ -99,7 +99,7 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @return bool
 	 */
-	function isMandatory() {
+	function isMandatory(): bool {
 		return $this->mandatory;
 	}
 	

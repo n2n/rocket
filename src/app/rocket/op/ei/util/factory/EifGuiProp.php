@@ -18,10 +18,11 @@ class EifGuiProp {
 	private $overwriteHelpText = null;
 
 	/**
-	 * @param GuiProp $guiProp
+	 * @param string $label
+	 * @param string|null $helpText
 	 * @param Closure $guiFieldCallback
 	 */
-	function __construct(private GuiProp $guiProp, private Closure $guiFieldCallback) {
+	function __construct(private string $label, private ?string $helpText = null, private Closure $guiFieldCallback) {
 	}
 
 	/**
@@ -89,8 +90,8 @@ class EifGuiProp {
 	function toEiGuiProp(): EiGuiProp {
 
 		$displayDefinition = new DisplayDefinition($this->siStructureType, $this->defaultDisplayed,
-				$this->overwriteLabel, $this->overwriteHelpText);
+				$this->overwriteLabel ?? $this->label, $this->overwriteHelpText ?? $this->helpText);
 
-		return new EiGuiPropProxy($this->guiProp, $this->guiFieldCallback, $displayDefinition);
+		return new EiGuiPropProxy($this->guiFieldCallback, $displayDefinition);
 	}
 }

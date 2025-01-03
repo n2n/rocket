@@ -114,7 +114,8 @@ class EiGuiPropMap {
 		$guiProps = [];
 		foreach ($eiGuiPropMap->eiGuiPropWrappers as $eiGuiPropWrapper) {
 			$defPropPath = $parentDefPropPath->ext($eiGuiPropWrapper->getEiPropPath());
-			$guiProps[(string) $defPropPath] = $eiGuiPropWrapper->getGuiProp();
+			$guiProps[(string) $defPropPath] = $this->createGuiProp($defPropPath, $eiGuiPropWrapper->getEiGuiProp());
+
 			$deter->reportDefPropPath($defPropPath);
 
 			if (null !== ($childEiGuiPropMap = $eiGuiPropWrapper->getChildEiGuiPropMap())) {
@@ -122,6 +123,24 @@ class EiGuiPropMap {
 			}
 		}
 		return $guiProps;
+	}
+
+	private function createGuiProp(DefPropPath $defPropPath, EiGuiProp $eiGuiProp): GuiProp {
+		$displayDefinition = $eiGuiProp->getDisplayDefinition();
+		$guiProp = new GuiProp($displayDefinition?->getOverwriteLabel() ?? 'unused label TODO', $displayDefinition?->getOverwriteHelpText());
+
+		$forkEiGuiPropMap = $eiGuiProp->getForkEiGuiPropMap();
+		if ($forkEiGuiPropMap === null) {
+			return $guiProp;
+		}
+
+		$descendantGuiPropNames = [];
+		foreach ($forkEiGuiPropMap->getEiPropPaths() ?? [] as $eiPropPath) {
+			$descendantGuiPropNames[] = (string) $defPropPath->ext($eiPropPath)->toGuiFieldPath();
+		}
+
+		$guiProp->setDescendantGuiPropNames($descendantGuiPropNames);
+		return $guiProp;
 	}
 
 

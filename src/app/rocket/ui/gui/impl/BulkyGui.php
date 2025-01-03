@@ -34,7 +34,7 @@ use rocket\ui\si\input\SiInputError;
 
 class BulkyGui implements Gui {
 
-	private SiGui $siGui;
+	private BulkyEntrySiGui $siGui;
 	/**
 	 * @var SiValueBoundary[]
 	 */
@@ -100,7 +100,7 @@ class BulkyGui implements Gui {
 //	}
 
 
-	function getSiGui(): SiGui {
+	function getSiGui(): BulkyEntrySiGui {
 		return $this->siGui;
 	}
 

@@ -29,7 +29,7 @@ use rocket\ui\gui\GuiProp;
 
 interface EiGuiProp {
 
-	function getGuiProp(): GuiProp;
+//	function getGuiProp(): GuiProp;
 
 	/**
 	 * <p>Tests if this GuiProp is compatible with the passed EiGuiMaskDeclaration and returns an {@see DisplayDefinition}
@@ -48,5 +48,5 @@ interface EiGuiProp {
 	 * @param DefPropPath $defPropPath
 	 * @return DisplayDefinition|NULL
 	 */
-	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition;
+//	function getForkedDisplayDefinition(DefPropPath $defPropPath): ?DisplayDefinition;
 }

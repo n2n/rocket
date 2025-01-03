@@ -63,7 +63,7 @@ class EiuEntry {
 	 * @param EiuMask|null $eiuMask
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(?EiEntry $eiEntry = null, ?EiuObject $eiuObject = null, ?EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
+	public function __construct(?EiEntry $eiEntry, ?EiuObject $eiuObject, ?EiuMask $eiuMask, EiuAnalyst $eiuAnalyst) {
 		ArgUtils::assertTrue($eiEntry !== null || $eiuObject !== null);
 		$this->eiEntry = $eiEntry;
 		$this->eiuObject = $eiuObject;

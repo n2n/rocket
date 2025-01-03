@@ -217,6 +217,10 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 		];
 	}
 
+	function getValue(): array {
+		return $this->activeKeys;
+	}
+
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
 		$ds = (new DataSet($data));
 		

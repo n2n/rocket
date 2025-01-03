@@ -87,9 +87,7 @@ class EiuFactory {
 	 * @return \rocket\op\ei\util\factory\EifGuiProp
 	 */
 	function newGuiProp(\Closure $closure) {
-		$guiProp = new GuiProp($this->eiu->prop()->getLabel(), $this->eiu->prop()->getHelpText());
-
-		return new EifGuiProp($guiProp, $closure);
+		return new EifGuiProp($this->eiu->prop()->getLabel(), $this->eiu->prop()->getHelpText(), $closure);
 	}
 	
 //	/**

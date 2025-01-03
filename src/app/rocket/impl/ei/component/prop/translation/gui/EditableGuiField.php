@@ -25,6 +25,7 @@ use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\SiField;
 use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\si\content\impl\split\SplitContextInSiField;
+use n2n\util\ex\NotYetImplementedException;
 
 class EditableGuiField implements GuiField {
 	private $lted;
@@ -43,7 +44,11 @@ class EditableGuiField implements GuiField {
 	function getSiField(): ?SiField {
 		return $this->siField;
 	}
-	
+
+	function getValue(): mixed {
+		throw new NotYetImplementedException();
+	}
+
 	function save(): void {
 		$this->lted->activateTranslations($this->siField->getActiveKeys());
 		

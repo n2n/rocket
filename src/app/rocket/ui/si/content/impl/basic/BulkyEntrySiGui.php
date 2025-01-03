@@ -51,6 +51,10 @@ class BulkyEntrySiGui implements SiGui {
 		return 'bulky-entry';
 	}
 
+	function getDeclaration(): SiDeclaration {
+		return $this->declaration;
+	}
+
 	function setValueBoundary(?SiValueBoundary $entry): static {
 		$this->valueBoundary = $entry;
 		return $this;
