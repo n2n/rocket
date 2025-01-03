@@ -27,6 +27,8 @@ use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiField;
 use rocket\ui\si\content\impl\split\SplitStyle;
 use rocket\ui\si\control\SiIconType;
+use rocket\op\ei\manage\gui\EiSiMaskId;
+use rocket\ui\gui\ViewMode;
 
 class SplitGuiFieldFactory {
 	private $lted;
@@ -96,8 +98,11 @@ class SplitGuiFieldFactory {
 				
 				$pid = $activeTargetEiuEntry->getPid();
 			}
-			
-			$siField->putLazy($n2nLocaleId, $label, $apiUrl, $pid, $targetEiuGuiDefinition->isBulky(), false,
+
+			$eiSiMaskId = new EiSiMaskId($targetEiuGuiDefinition->getEiGuiDefinition()->getEiTypePath(),
+					ViewMode::determine($targetEiuGuiDefinition->isBulky(), false, $pid === null));
+
+			$siField->putLazy($n2nLocaleId, $label, $apiUrl, (string) $eiSiMaskId, $pid, /* $targetEiuGuiDefinition->isBulky(), false,*/
 							function () use ($n2nLocaleId) {
 								return $this->lted->getTargetGuiValueBoundary($n2nLocaleId)->createSiValueBoundary();
 							})

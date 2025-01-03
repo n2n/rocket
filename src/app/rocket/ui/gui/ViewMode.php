@@ -56,7 +56,7 @@ class ViewMode {
 		return 0;
 	}
 	
-	public static function determine(bool $bulky, bool $readOnly, bool $new) {
+	public static function determine(bool $bulky, bool $readOnly, bool $new): int {
 		if ($readOnly) {
 			return $bulky ? self::BULKY_READ : self::COMPACT_READ;
 		} else if ($new) {

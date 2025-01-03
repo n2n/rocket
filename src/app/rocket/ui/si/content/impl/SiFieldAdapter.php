@@ -62,7 +62,7 @@ abstract class SiFieldAdapter implements SiField, BackableSiField {
 	}
 
 	function toJsonStruct(N2nContext $n2nContext): array {
-		$messages = $this->model->getMessageStrs();
+		$messages = $this->model?->getMessageStrs() ?? [];
 		ArgUtils::valArrayReturn($messages, $this->model, 'getMessages', 'string');
 
 		return ['messages' => $messages];

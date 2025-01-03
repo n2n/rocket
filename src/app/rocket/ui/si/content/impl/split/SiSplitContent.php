@@ -31,6 +31,7 @@ class SiSplitContent {
 	private $shortLabel;
 	
 	private $apiGetUrl;
+	private string $maskId;
 	private $entryId;
 	private $style;
 	private $propIds = null;
@@ -97,9 +98,10 @@ class SiSplitContent {
 		
 // 		if ($this->apiUrl !== null) {
 			$data['apiGetUrl'] = (string) $this->apiGetUrl;
+			$data['maskId'] = $this->maskId;
 			$data['entryId'] = $this->entryId;
 			$data['propIds'] = $this->propIds;
-			$data['style'] = $this->style;
+//			$data['style'] = $this->style;
 // 		}
 		
 // 		if ($this->entry !== null) {
@@ -115,20 +117,21 @@ class SiSplitContent {
 		$split->label = $label;
 		return $split;
 	}
-	
+
 	/**
 	 * @param string $label
 	 * @param Url $apiGetUrl
-	 * @param string $entryId
-	 * @param bool $bulky
+	 * @param string|null $entryId
+	 * @param SiStyle $style
 	 * @return SiSplitContent
 	 */
-	static function createLazy(string $label, Url $apiGetUrl, ?string $entryId, SiStyle $style) {
+	static function createLazy(string $label, Url $apiGetUrl, string $maskId, ?string $entryId/*, SiStyle $style*/) {
 		$split = new SiSplitContent();
 		$split->label = $label;
 		$split->apiGetUrl = $apiGetUrl;
+		$split->maskId = $maskId;
 		$split->entryId = $entryId;
-		$split->style = $style;
+//		$split->style = $style;
 		return $split;
 	}
 	
