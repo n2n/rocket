@@ -45,8 +45,9 @@ class TranslationEiGuiProp implements EiGuiProp {
 		$this->translationConfig = $translationConfig;
 	}
 	
-	function getDisplayDefinition(): ?DisplayDefinition {
-		return null;
+	function getDisplayDefinition(): DisplayDefinition {
+		return new DisplayDefinition(null, false, $this->translationConfig->getLabel(),
+				$this->translationConfig->getHelpText());
 	}
 
 //	function getGuiProp(): GuiProp {

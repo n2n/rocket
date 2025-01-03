@@ -6,44 +6,37 @@ use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiStructureType;
 
 class DisplayDefinition {
-	private $siStructureType;
-	private $defaultDisplayed;
-	private $overwriteLabel;
-	private $overwriteHelpText;
-	
+
 	/**
-	 * @param Lstr $labelLstr
-	 * @param string $siStructureType
+	 * @param string|null $siStructureType
 	 * @param bool $defaultDisplayed
+	 * @param string|null $label
+	 * @param string|null $helpText
 	 */
-	public function __construct(string $siStructureType, bool $defaultDisplayed, ?string $overwriteLabel = null, ?string $overwriteHelpText = null) {
-		ArgUtils::valEnum($siStructureType, SiStructureType::all());
-		
-		$this->siStructureType = $siStructureType;
-		$this->defaultDisplayed = $defaultDisplayed;
-		$this->overwriteLabel = $overwriteLabel;
-		$this->overwriteHelpText = $overwriteHelpText;
+	public function __construct(private ?string $siStructureType, private bool $defaultDisplayed,
+			private ?string $label = null, private ?string $helpText = null) {
+		ArgUtils::valEnum($siStructureType, SiStructureType::all(), nullAllowed: true);
 	}
-	
+
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getSiStructureType(): string {
+	public function getSiStructureType(): ?string {
 		return $this->siStructureType;
 	}
 	
 	/**
 	 * @return bool
 	 */
-	public function isDefaultDisplayed() {
+	public function isDefaultDisplayed(): bool {
 		return $this->defaultDisplayed;
 	}
 	
-	public function getOverwriteLabel() {
-		return $this->overwriteLabel;
+	public function getLabel(): ?string {
+		return $this->label;
 	}
 	
-	public function getOverwriteHelpText() {
-		return $this->overwriteHelpText;
+	public function getHelpText(): ?string {
+		return $this->helpText;
 	}
 }

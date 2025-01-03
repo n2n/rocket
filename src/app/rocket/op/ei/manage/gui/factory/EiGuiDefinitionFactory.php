@@ -146,12 +146,13 @@ class EiGuiDefinitionFactory {
 			$defPropPath = $displayItem->getDefPropPath();
 			$guiPropWrapper = $eiGuiDefinition->getGuiPropWrapperByPath($defPropPath);
 			$displayDefinition = $guiPropWrapper->getDisplayDefinition();
-			if (null === $displayDefinition) {
+			$siStructureType = $displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType();
+			if (null === $siStructureType) {
 				continue;
 			}
 
 			$guiStructureDeclarations[] = GuiStructureDeclaration::createField($defPropPath->toGuiFieldPath(),
-					$displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+					$siStructureType);
 		}
 
 		return $guiStructureDeclarations;
@@ -162,10 +163,16 @@ class EiGuiDefinitionFactory {
 
 		$guiStructureDeclarations = [];
 		foreach ($eiGuiDefinition->getEiGuiPropMap()->compileAllDefaultDisplayDefinitions() as $defPropPathStr => $displayDefinition) {
+			$siStructureType = $displayDefinition->getSiStructureType();
+
+			if ($siStructureType === null) {
+				continue;
+			}
+
 			$guiFieldPath = DefPropPath::create($defPropPathStr)->toGuiFieldPath();
 
 			$guiStructureDeclarations[(string) $guiFieldPath] = GuiStructureDeclaration
-					::createField($guiFieldPath, $displayDefinition->getSiStructureType() ?? SiStructureType::ITEM);
+					::createField($guiFieldPath, $siStructureType);
 		}
 
 		return $guiStructureDeclarations;

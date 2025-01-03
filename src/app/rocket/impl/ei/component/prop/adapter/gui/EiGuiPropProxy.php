@@ -53,7 +53,7 @@ class EiGuiPropProxy implements EiGuiProp {
 		return $this->guiProp;
 	}
 
-	function getDisplayDefinition(): ?DisplayDefinition {
+	function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 

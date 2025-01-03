@@ -127,7 +127,7 @@ class EiGuiPropMap {
 
 	private function createGuiProp(DefPropPath $defPropPath, EiGuiProp $eiGuiProp): GuiProp {
 		$displayDefinition = $eiGuiProp->getDisplayDefinition();
-		$guiProp = new GuiProp($displayDefinition?->getOverwriteLabel() ?? 'unused label TODO', $displayDefinition?->getOverwriteHelpText());
+		$guiProp = new GuiProp($displayDefinition?->getLabel() ?? 'unused label TODO', $displayDefinition?->getHelpText());
 
 		$forkEiGuiPropMap = $eiGuiProp->getForkEiGuiPropMap();
 		if ($forkEiGuiPropMap === null) {

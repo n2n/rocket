@@ -50,7 +50,7 @@ class SimpleEiGuiProp implements EiGuiProp {
 		throw new NotYetImplementedException();
 	}
 
-	public function getDisplayDefinition(): ?DisplayDefinition {
+	public function getDisplayDefinition(): DisplayDefinition {
 		return $this->displayDefinition;
 	}
 	

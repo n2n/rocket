@@ -42,7 +42,7 @@ interface EiGuiProp {
 
 	function getForkEiGuiPropMap(): ?EiGuiPropMap;
 
-	function getDisplayDefinition(): ?DisplayDefinition;
+	function getDisplayDefinition(): DisplayDefinition;
 
 	/**
 	 * @param DefPropPath $defPropPath
