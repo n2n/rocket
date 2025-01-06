@@ -174,7 +174,7 @@ class ReloadJob {
 
 		this.siService.apiGet(this.apiGetUrl, new SiGetRequest(...getInstructions))
 				.subscribe((response: SiGetResponse) => {
-					this.handleResults(response.results, entries);
+					this.handleResults(response.instructionResults, entries);
 				});
 	}
 

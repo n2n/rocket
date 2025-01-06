@@ -33,7 +33,6 @@ interface SiGui {
 	 */
 	function getTypeName(): string;
 	
-	
 	/**
 	 * @return array
 	 */

@@ -72,7 +72,7 @@ class ApiController extends ControllerAdapter {
 			throw new BadRequestException(previous: $e);
 		}
 
-		$this->sendJson($siApiCallResponse);
+		$this->sendJson($siApiCallResponse->toJsonStruct($this->getN2nContext()));
 	}
 	
 //	static function getApiSections() {

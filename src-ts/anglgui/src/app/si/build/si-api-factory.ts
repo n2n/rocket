@@ -11,7 +11,7 @@ import { SiDeclaration } from '../model/meta/si-declaration';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
-import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
+import { SimpleSiControlBoundary } from '../model/control/impl/model/simple-si-control-boundary';
 import { SiEntryFactory } from './si-entry-factory';
 import { SiControlFactory } from './si-control-factory';
 
@@ -20,57 +20,57 @@ export class SiApiFactory {
 	constructor(private injector: Injector, private apiUrl: string) {
 	}
 
-	createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
-		const extr = new Extractor(data);
-
-		const response = new SiGetResponse();
-
-		const resultsData = extr.reqArray('results');
-		for (const key of request.instructions.keys()) {
-			if (!resultsData[key]) {
-				throw new Error('No result for key: ' + key);
-			}
-
-			response.results[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(),
-					request.instructions[key].getGeneralControlsBoundry());
-		}
-
-		return response;
-	}
-
-	private createGetResult(data: any, declaration: SiDeclaration|null, controlBoundry: SiControlBoundry|null): SiGetResult {
-		const extr = new Extractor(data);
-
-		const result: SiGetResult = {
-			declaration: null,
-			generalControls: null,
-			valueBoundary: null,
-			partialContent: null
-		};
-
-		if (!declaration) {
-			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
-					new SiControlFactory(controlBoundry!, this.injector));
-		}
-
-		// let controlsData: any;
-		// if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-		// 	const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
-		// 	result.generalControls = compEssentialsFactory.createControls(controlsData);
-		// }
-
-		let propData: any;
-		if (null !== (propData = extr.nullaObject('entry'))) {
-			result.valueBoundary = new SiEntryFactory(declaration, this.apiUrl, this.injector).createValueBoundary(propData);
-		}
-
-		if (null !== (propData = extr.nullaObject('partialContent'))) {
-			result.partialContent = new SiEntryFactory(declaration, this.apiUrl, this.injector)
-					.createPartialContent(propData);
-		}
-
-		return result;
-	}
+	// createGetResponse(data: any, request: SiGetRequest): SiGetResponse {
+	// 	const extr = new Extractor(data);
+	//
+	// 	const response = new SiGetResponse();
+	//
+	// 	const resultsData = extr.reqArray('results');
+	// 	for (const key of request.instructions.keys()) {
+	// 		if (!resultsData[key]) {
+	// 			throw new Error('No result for key: ' + key);
+	// 		}
+	//
+	// 		response.instructionResults[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(),
+	// 				request.instructions[key].getGeneralControlsBoundry());
+	// 	}
+	//
+	// 	return response;
+	// }
+	//
+	// private createGetResult(data: any, declaration: SiDeclaration|null, controlBoundry: SiControlBoundry|null): SiGetResult {
+	// 	const extr = new Extractor(data);
+	//
+	// 	const result: SiGetResult = {
+	// 		declaration: null,
+	// 		valueBoundary: null,
+	// 		partialContent: null
+	// 	};
+	//
+	// 	if (!declaration) {
+	// 		declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
+	// 				new SiControlFactory(controlBoundry!, this.injector));
+	// 	}
+	//
+	// 	// let controlsData: any;
+	// 	// if (null !== (controlsData = extr.nullaArray('generalControls'))) {
+	// 	// 	const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
+	// 	// 	result.generalControls = compEssentialsFactory.createControls(controlsData);
+	// 	// }
+	//
+	// 	let propData: any;
+	// 	if (null !== (propData = extr.nullaObject('entry'))) {
+	// 		result.valueBoundary = new SiEntryFactory(declaration, this.apiUrl, this.injector)
+	// 				.createValueBoundary(propData);
+	// 	}
+	//
+	// 	if (null !== (propData = extr.nullaObject('partialContent'))) {
+	// 		result.partialContent = new SiEntryFactory(declaration, this.apiUrl, this.injector)
+	// 				.createPartialContent(propData);
+	// 	}
+	//
+	// 	return result;
+	// }
 
 	createValResponse(data: any, request: SiValRequest): SiValResponse {
 		const extr = new Extractor(data);

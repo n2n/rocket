@@ -29,7 +29,7 @@ export class SplitContentCollection {
 
 	getEntry$(key: string): Promise<SiValueBoundary|null> {
 		if (this.splitContentMap.has(key)) {
-			return this.splitContentMap.get(key)!.getSiEntry$();
+			return this.splitContentMap.get(key)!.getSiValueBoundary$();
 		}
 
 		throw new Error('Unknown key.');
@@ -81,7 +81,7 @@ export class SplitContent implements SplitOption {
 		return this.loadedEntry;
 	}
 
-	getLoadedSiEntry$(): Observable<SiValueBoundary|null> {
+	getLoadedSiValueBoundary$(): Observable<SiValueBoundary|null> {
 		if (this.loadedEntrySubject) {
 			return this.loadedEntrySubject.asObservable();
 		}
@@ -89,7 +89,7 @@ export class SplitContent implements SplitOption {
 		return of(this.loadedEntry);
 	}
 
-	getSiEntry$(): Promise<SiValueBoundary|null> {
+	getSiValueBoundary$(): Promise<SiValueBoundary|null> {
 		if (this.entry$) {
 			return this.entry$;
 		}
@@ -105,7 +105,7 @@ export class SplitContent implements SplitOption {
 		return this.entry$ = this.lazyDef!.siService
 				.apiGet(this.lazyDef!.apiGetUrl, new SiGetRequest(instruction))
 				.pipe(map((response: SiGetResponse) => {
-					return this.loadedEntry = response.results[0].valueBoundary as any;
+					return this.loadedEntry = response.instructionResults[0].valueBoundary as any;
 				}))
 				.toPromise();
 	}

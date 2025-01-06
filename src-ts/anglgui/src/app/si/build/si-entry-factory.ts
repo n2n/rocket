@@ -6,7 +6,7 @@ import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
 import { SiControlBoundry } from '../model/control/si-control-boundry';
-import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
+import { SimpleSiControlBoundary } from '../model/control/impl/model/simple-si-control-boundary';
 import { Message } from '../../util/i18n/message';
 import { SiMetaFactory } from './si-meta-factory';
 import { SiFieldFactory } from './si-field-factory';
@@ -41,7 +41,7 @@ export class SiEntryFactory {
 				SiMetaFactory.createStyle(extr.reqObject('style'))*/);
 		siValueBoundary.treeLevel = extr.nullaNumber('treeLevel');
 
-		const controlBoundry = new SimpleSiControlBoundry([siValueBoundary], this.declaration, this.apiUrl);
+		const controlBoundry = new SimpleSiControlBoundary([siValueBoundary], this.declaration, this.apiUrl);
 		for (const [maskId, entryData] of extr.reqMap('entries')) {
 			siValueBoundary.addEntry(this.createEntry(maskId, entryData, controlBoundry));
 		}

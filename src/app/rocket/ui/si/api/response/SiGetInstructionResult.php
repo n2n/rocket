@@ -27,8 +27,9 @@ use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\control\SiControl;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\SiPayloadFactory;
+use n2n\core\container\N2nContext;
 
-class SiGetInstructionResult implements \JsonSerializable {
+class SiGetInstructionResult {
 	/**
 	 * @var SiDeclaration|null
 	 */
@@ -124,11 +125,11 @@ class SiGetInstructionResult implements \JsonSerializable {
 	 * {@inheritDoc}
 	 * @see \JsonSerializable::jsonSerialize()
 	 */
-	public function jsonSerialize(): mixed {
+	public function toJsonStruct(N2nContext $n2nContext): mixed {
 		return [
 			'declaration' => $this->declaration,
 			'generalControls' => ($this->generalControls !== null ? SiPayloadFactory::createDataFromControls($this->generalControls) : null),
-			'entry' => $this->valueBoundary,
+			'entry' => $this->valueBoundary->toJsonStruct($n2nContext),
 			'partialContent' => $this->partialContent
 		];
 	}	

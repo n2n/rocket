@@ -7,7 +7,7 @@ import { UiStructure } from 'src/app/ui/structure/model/ui-structure';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { SiGuiFactory } from './si-gui-factory';
 import { SiControlFactory } from './si-control-factory';
-import { SimpleSiControlBoundry } from '../model/control/impl/model/simple-si-control-boundry';
+import { SimpleSiControlBoundary } from '../model/control/impl/model/simple-si-control-boundary';
 
 export class SiUiFactory {
 
@@ -23,7 +23,7 @@ export class SiUiFactory {
 		uiZone.breadcrumbs = this.createBreadcrumbs(extr.reqArray('breadcrumbs'), uiZone.layer);
 		uiZone.structure = new UiStructure(null, null, gui.createUiStructureModel());
 
-		const controlBoundary = new SimpleSiControlBoundry(gui.getBoundValueBoundaries(), gui.getBoundDeclaration(), uiZone.url);
+		const controlBoundary = new SimpleSiControlBoundary(gui.getBoundValueBoundaries(), gui.getBoundDeclaration(), uiZone.url);
 		uiZone.mainCommandContents = new SiControlFactory(controlBoundary, this.injector)
 				.createControls(null, null, extr.reqMap('controls'))
 				.map(siControl => siControl.createUiContent(() => uiZone))

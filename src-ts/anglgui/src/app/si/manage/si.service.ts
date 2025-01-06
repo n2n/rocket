@@ -126,11 +126,17 @@ export class SiService {
 	}
 
 	apiGet(apiUrl: string, getRequest: SiGetRequest): Observable<SiGetResponse> {
-		return this.httpClient
-				.post<any>(apiUrl, getRequest)
-				.pipe(map(data => {
-					return new SiApiFactory(this.injector, apiUrl).createGetResponse(data, getRequest);
-				}));
+		// const formData = new FormData();
+		// formData.append('call', JSON.stringify(apiCall.toJsonStruct()));
+		//
+		// return this.httpClient
+		// 		.post<any>(apiUrl, getRequest)
+		// 		.pipe(map(data => {
+		// 			return new SiApiFactory(this.injector, apiUrl).createGetResponse(data, getRequest);
+		// 		}));
+
+		return this.apiCall(apiUrl, SiApiCall.getRequest(getRequest))
+				.pipe(map(r => { console.log(r); return r.getResponse! }));
 	}
 
 	apiVal(apiUrl: string, valRequest: SiValRequest): Observable<SiValResponse> {

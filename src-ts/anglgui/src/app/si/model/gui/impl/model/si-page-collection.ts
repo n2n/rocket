@@ -246,7 +246,7 @@ export class SiPageCollection implements SiControlBoundry {
 
 		this.siService.apiGet(this.siFrame.apiUrl, getRequest)
 				.subscribe((getResponse: SiGetResponse) => {
-					this.applyResult(getResponse.results[0], siPage);
+					this.applyResult(getResponse.instructionResults[0], siPage);
 				});
 
 		return siPage;

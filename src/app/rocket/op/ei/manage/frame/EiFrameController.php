@@ -197,7 +197,7 @@ class EiFrameController extends ControllerAdapter {
 	public function doApi($eiCmdPathStr, ApiController $apiController, ?array $delegateParams = null) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
 		$eiCmd = $this->lookupEiCmd($eiCmdPath);
-		
+
 		$this->pushEiFrame($eiCmd);
 		
 		$this->delegate($apiController);
@@ -242,14 +242,12 @@ class EiFrameController extends ControllerAdapter {
 	public function doForkEntry($eiCmdPathStr, $pid, $eiPropPathStr, $mode, array $deleteCmds) {
 		$eiCmdPath = $this->parseEiCmdPath($eiCmdPathStr);
 		$eiCmd = $this->lookupEiCmd($eiCmdPath);
-		
 		$this->pushEiFrame($eiCmd);
 		
 		$eiPropPath = $this->parseEiPropPath($eiPropPathStr);
 		$eiObject = $this->lookupEiObject($pid);
 		$eiType = $eiObject->getEiEntityObj()->getEiType();
 		$eiForkLink = $this->createEiForkLink($mode, $eiObject);
-		
 		$this->delegate(new EiFrameController($this->createForked($eiType, $eiPropPath, $eiForkLink)));
 	}
 	

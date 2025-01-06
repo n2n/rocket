@@ -35,10 +35,10 @@ use n2n\core\container\N2nContext;
 
 class ClosureGuiField implements GuiField, SiFieldModel {
 
-	private ?MagicMethodInvoker $messagesMmi;
-	private ?MagicMethodInvoker $readMmi;
+	private ?MagicMethodInvoker $messagesMmi = null;
+	private ?MagicMethodInvoker $readMmi = null;
 
-	private ?MagicMethodInvoker $saveMmi;
+	private ?MagicMethodInvoker $saveMmi = null;
 	private mixed $lastReadSiFieldValue = null;
 	/**
 	 * @var array<Message>
@@ -111,22 +111,26 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 			$messageStrs[] = $message->t(\n2n\l10n\N2nLocale::getAdmin());
 		}
 
-		if (empty($messageStrs)) {
+		if (empty($messageStrs) && $this->messagesMmi !== null) {
 			$messageStrs = $this->messagesMmi->invoke();
 		}
 
 		return $messageStrs;
 	}
 
-	function prepareForSave(N2nContext $n2nContext): bool {
-		return true;
+//	function prepareForSave(N2nContext $n2nContext): bool {
+//		return true;
+//	}
+
+	function getValue(): mixed {
+		return $this->lastReadSiFieldValue;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ui\gui\field\GuiField::save()
 	 */
-	public function save(N2nContext $n2nContext): void {
+	public function flush(N2nContext $n2nContext): void {
 		if ($this->siField->isReadOnly()) {
 			throw new IllegalStateException('Can not save ready only GuiField');
 		}

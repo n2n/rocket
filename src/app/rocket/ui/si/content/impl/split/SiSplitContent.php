@@ -31,7 +31,7 @@ class SiSplitContent {
 	private $shortLabel;
 	
 	private $apiGetUrl;
-	private string $maskId;
+	private ?string $maskId = null;
 	private $entryId;
 	private $style;
 	private $propIds = null;

@@ -20,7 +20,7 @@ export class SplitContextInputResetPoint implements SiInputResetPoint {
 
 			scrp.activeKeys.push(key);
 
-			splitContent.getLoadedSiEntry$().subscribe(async (entry: SiValueBoundary|null) => {
+			splitContent.getLoadedSiValueBoundary$().subscribe(async (entry: SiValueBoundary|null) => {
 				if (entry) {
 					scrp.inputResetPointsMap.set(key, await entry.createInputResetPoint());
 				}

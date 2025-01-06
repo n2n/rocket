@@ -21,7 +21,9 @@
  */
 namespace rocket\ui\si\api\response;
 
-class SiApiCallResponse implements \JsonSerializable {
+use n2n\core\container\N2nContext;
+
+class SiApiCallResponse {
 
 	private ?SiInputResult $inputResult = null;
 	private ?SiCallResponse $callResponse = null;
@@ -73,10 +75,10 @@ class SiApiCallResponse implements \JsonSerializable {
 		return $this;
 	}
 
-	function jsonSerialize(): mixed {
+	function toJsonStruct(N2nContext $n2nContext): mixed {
 		return [
 			'callResponse' => $this->callResponse,
-			'getResponse' => $this->getResponse,
+			'getResponse' => $this->getResponse->toJsonStruct($n2nContext),
 			'fieldCallResponse' => $this->fieldCallResponse
 		];
 	}

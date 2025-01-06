@@ -23,8 +23,9 @@ namespace rocket\ui\si\api\response;
 
 use n2n\util\type\ArgUtils;
 use SiGetResult;
+use n2n\core\container\N2nContext;
 
-class SiGetResponse implements \JsonSerializable {
+class SiGetResponse {
 	/**
 	 * @var SiGetInstructionResult[]
 	 */
@@ -47,7 +48,7 @@ class SiGetResponse implements \JsonSerializable {
 		return $this;
 	}
 	
-	public function jsonSerialize(): mixed {
-		return ['instructionResults' => $this->instructionResults];
+	public function toJsonStruct(N2nContext $n2nContext): mixed {
+		return ['instructionResults' => array_map(fn ($i) => $i->toJsonStruct($n2nContext), $this->instructionResults)];
 	}	
 }
