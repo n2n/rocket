@@ -22,7 +22,7 @@ class EifGuiProp {
 	 * @param string|null $helpText
 	 * @param Closure $guiFieldCallback
 	 */
-	function __construct(private string $label, private ?string $helpText = null, private Closure $guiFieldCallback) {
+	function __construct(private string $label, private ?string $helpText, private Closure $guiFieldCallback) {
 	}
 
 	/**

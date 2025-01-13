@@ -85,9 +85,9 @@ class EiuFrame {
 	}
 	
 	/**
-	 * @return \rocket\op\ei\manage\frame\EiFrame
+	 * @return EiFrame
 	 */
-	public function getEiFrame() {
+	public function getEiFrame(): EiFrame {
 		return $this->eiFrame;
 	}
 	
@@ -133,7 +133,7 @@ class EiuFrame {
 //		return $this->getApiUrl($eiCmdPath, ApiController::API_SORT_SECTION);
 //	}
 
-	function getApiUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+	function getApiUrl(EiCmdPath|EiCmd|EiuCmd|string|null $eiCmdPath = null): Url {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
 					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());
@@ -144,7 +144,7 @@ class EiuFrame {
 		return $this->eiFrame->getApiUrl($eiCmdPath);
 	}
 
-	public function getCmdUrl(EiCmdPath|EiCmd|EiuCmd|string $eiCmdPath = null): Url {
+	public function getCmdUrl(EiCmdPath|EiCmd|EiuCmd|string|null $eiCmdPath = null): Url {
 		if ($eiCmdPath === null) {
 			$eiCmdPath = $this->eiuAnalyst->getEiCmdPath(false)
 					?? EiCmdPath::from($this->eiFrame->getEiExecution()->getEiCmd());

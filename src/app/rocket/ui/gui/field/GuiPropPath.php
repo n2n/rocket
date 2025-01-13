@@ -26,14 +26,14 @@ use n2n\util\col\Hashable;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 
-class GuiFieldPath implements Hashable {
+class GuiPropPath implements Hashable {
 
 
 	/**
-	 * @param GuiFieldKey[] $keys
+	 * @param GuiPropKey[] $keys
 	 */
 	public function __construct(private array $keys) {
-		ArgUtils::valArray($keys, GuiFieldKey::class);
+		ArgUtils::valArray($keys, GuiPropKey::class);
 	}
 
 	/**
@@ -53,22 +53,26 @@ class GuiFieldPath implements Hashable {
 		throw new IllegalStateException('GuiPath is empty.');
 	}
 
-	function ext(GuiFieldKey $key): GuiFieldPath {
-		GuiFieldKey::val($key);
-		$guiPath = new GuiFieldPath([]);
-		$guiPath->keys = [...$this->keys, $key];
+	function ext(GuiPropKey|GuiPropPath $keyOrPath): GuiPropPath {
+		$guiPath = new GuiPropPath([]);
+		if ($keyOrPath instanceof GuiPropPath) {
+			$guiPath->keys = [...$this->keys, ...$keyOrPath->keys];
+			return $guiPath;
+		}
+
+		$guiPath->keys = [...$this->keys, $keyOrPath];
 		return $guiPath;
 	}
 
 	/**
-	 * @return GuiFieldKey[]
+	 * @return GuiPropKey[]
 	 */
 	public function toArray(): array {
 		return $this->keys;
 	}
 
 	public function __toString() {
-		return implode(GuiFieldKey::SEPARATOR, $this->keys);
+		return implode(GuiPropKey::SEPARATOR, $this->keys);
 	}
 
 	public function hashCode(): string {

@@ -38,7 +38,7 @@ use rocket\op\ei\EiType;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\attrs\AttributesException;
-use rocket\ui\gui\field\GuiFieldPath;
+use rocket\ui\gui\field\GuiPropPath;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\api\request\SiFieldInput;
@@ -112,7 +112,7 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 		$siGuiValueBoundaryInput = new SiValueBoundaryInput(
 				$eiGuiValueBoundary->getSiValueBoundary()->getSelectedMaskId(),
 				$siEntryInput);
-		$guiFieldPath = new GuiFieldPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->toGuiFieldKey()]);
+		$guiFieldPath = new GuiPropPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->toGuiFieldKey()]);
 		$siEntryInput->putFieldInput($guiFieldPath->__toString(), new SiFieldInput(['value' => 'some value']));
 
 		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleInput($siGuiValueBoundaryInput,

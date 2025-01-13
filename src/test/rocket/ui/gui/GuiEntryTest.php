@@ -35,7 +35,7 @@ use rocket\ui\si\content\SiEntryIdentifier;
 use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiFieldModel;
 use rocket\ui\si\api\request\SiEntryInput;
-use rocket\ui\gui\field\GuiFieldKey;
+use rocket\ui\gui\field\GuiPropKey;
 
 class GuiEntryTest extends TestCase {
 
@@ -60,7 +60,7 @@ class GuiEntryTest extends TestCase {
 		$guiFieldModel = new GuiFieldModelMock();
 
 		$guiFieldMap = new GuiFieldMap();
-		$guiFieldMap->putGuiField(new GuiFieldKey('prop1'), GuiFields::stringIn(true)->setValue('old-value')
+		$guiFieldMap->putGuiField(new GuiPropKey('prop1'), GuiFields::stringIn(true)->setValue('old-value')
 				->setModel($guiFieldModel));
 		$guiEntry->init($guiFieldMap, null);
 

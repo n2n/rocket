@@ -112,8 +112,8 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 		return null;
 	}
 	
-	function flush(N2nContext $n2nContext): void {
-		throw new UnsupportedOperationException();
+	function save(N2nContext $n2nContext): void {
+//		throw new UnsupportedOperationException();
 	}
 
 	function handleInput(mixed $value, N2nContext $n2nContext): bool {

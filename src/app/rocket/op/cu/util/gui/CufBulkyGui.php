@@ -40,7 +40,7 @@ use rocket\ui\si\content\SiEntryQualifier;
 use rocket\ui\si\content\SiEntryIdentifier;
 use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\gui\field\GuiField;
-use rocket\ui\gui\field\GuiFieldKey;
+use rocket\ui\gui\field\GuiPropKey;
 use rocket\ui\si\meta\SiProp;
 use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\ui\gui\Gui;
@@ -73,7 +73,7 @@ class CufBulkyGui implements Gui {
 	function addField(string $propId, string $label, GuiField $guiField, ?string $helpText = null,
 			string $siStructureType = SiStructureType::ITEM): static {
 
-		$this->guiFieldMap->putGuiField(new GuiFieldKey($propId), $guiField);
+		$this->guiFieldMap->putGuiField(new GuiPropKey($propId), $guiField);
 		$this->siMask->putProp($propId, (new SiProp($label))->setHelpText($helpText));
 		$this->siMask->addStructureDeclaration(SiStructureDeclaration::createProp($siStructureType, $propId));
 		return $this;

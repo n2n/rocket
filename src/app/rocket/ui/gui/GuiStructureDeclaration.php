@@ -22,14 +22,14 @@
 namespace rocket\ui\gui;
 
 use n2n\util\type\ArgUtils;
-use rocket\ui\gui\field\GuiFieldPath ;
+use rocket\ui\gui\field\GuiPropPath ;
 use n2n\util\ex\UnsupportedOperationException;
 
 class GuiStructureDeclaration {
 	private ?string $label = null;
 	private ?string $helpText = null;
 	private ?string $siStructureType = null;
-	private ?GuiFieldPath $guiFieldPath = null;
+	private ?GuiPropPath $guiFieldPath = null;
 	private ?array $children = null;
 	
 	private function __construct() {
@@ -65,7 +65,7 @@ class GuiStructureDeclaration {
 	}
 	
 	/**
-	 * @return GuiFieldPath
+	 * @return GuiPropPath
 	 */
 	function getGuiFieldPath() {
 		UnsupportedOperationException::assertTrue($this->guiFieldPath !== null);
@@ -110,12 +110,12 @@ class GuiStructureDeclaration {
 	
 	/**
 	 * @param string $siStructureType
-	 * @param GuiFieldPath $guiFieldPath
+	 * @param GuiPropPath $guiFieldPath
 	 * @param string|null $label
 	 * @param string|null $helpText
 	 * @return GuiStructureDeclaration
 	 */
-	static function createField(GuiFieldPath $guiFieldPath, string $siStructureType) {
+	static function createField(GuiPropPath $guiFieldPath, string $siStructureType) {
 		$gsd = new GuiStructureDeclaration();
 		$gsd->siStructureType = $siStructureType;
 		$gsd->guiFieldPath = $guiFieldPath;

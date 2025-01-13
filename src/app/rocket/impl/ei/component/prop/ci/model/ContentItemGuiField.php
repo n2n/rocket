@@ -41,6 +41,9 @@ use rocket\op\ei\EiPropPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\content\SiFieldModel;
+use n2n\core\container\N2nContext;
+use rocket\op\ei\manage\gui\EiSiMaskId;
+use rocket\ui\gui\ViewMode;
 
 class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, SiFieldModel {
 	/**
@@ -128,6 +131,10 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 		$this->eiu->field()->setValue($this->currentPool->save());
 		return $this->currentPool->createSiPanels();
 	}
+
+	function getValue(): mixed {
+		return null;
+	}
 	
 	function save(): void {
 // 		IllegalStateException::assertTrue(!$this->readOnly);
@@ -145,7 +152,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 		return null;
 	}
 
-	function handleInput(): bool {
+	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 		return true;
 	}
 
@@ -160,7 +167,6 @@ class EiuGuiEntryPool {
 	 * @var PanelDeclaration[]
 	 */
 	private $panelDeclarations;
-	private $reduced;
 	/**
 	 * @var EmbeddedGuiCollection[]
 	 */
@@ -171,15 +177,13 @@ class EiuGuiEntryPool {
 	/**
 	 * @param PanelDeclaration[] $panelDeclarations
 	 */
-	function __construct(array $panelDeclarations, bool $readOnly, bool $reduced, EiuFrame $eiuFrame) {
+	function __construct(array $panelDeclarations, private bool $readOnly, private bool $reduced, private EiuFrame $eiuFrame) {
 		$this->orderEiPropPath = new EiPropPath(['orderIndex']);
 		$this->panelEiPropPath = new EiPropPath(['panel']);
 		
-		$this->reduced = $reduced;
-		
 		$this->panelLayout = new PanelLayout();
 		$this->panelLayout->assignConfigs($panelDeclarations);
-		
+
 		foreach ($panelDeclarations as $panelDeclaration) {
 			$panelName = $panelDeclaration->getName();
 			$this->panelDeclarations[$panelName] = $panelDeclaration;
@@ -239,12 +243,18 @@ class EiuGuiEntryPool {
 	 */
 	function createSiPanels() {
 		$siPanels = [];
+
+		$bulkySiMaskId = (string) new EiSiMaskId($this->eiuFrame->mask()->getEiTypePath(), $this->readOnly ? ViewMode::BULKY_READ : ViewMode::BULKY_EDIT);
+		$compactSiMaskId = null;
+		if ($this->reduced) {
+			$compactSiMaskId = (string) new EiSiMaskId($this->eiuFrame->mask()->getEiTypePath(), ViewMode::COMPACT_READ);
+		}
 		
 		foreach ($this->embeddedGuiCollections as $panelName => $collection) {
 			$panelDeclaration = $this->panelDeclarations[$panelName];
 			$allowedSiTypeIds = $panelDeclaration->isRestricted() ? $panelDeclaration->getAllowedContentItemIds() : null;
 			
-			$siPanels[] = $siPanel = new SiPanel($panelName, $panelDeclaration->getLabel());
+			$siPanels[] = $siPanel = new SiPanel($panelName, $panelDeclaration->getLabel(), $bulkySiMaskId, $compactSiMaskId);
 			$siPanel->setEmbeddedEntries($collection->createSiEmbeddedEntries())
 					->setAllowedTypeIds($allowedSiTypeIds)
 					->setGridPos($this->panelLayout->getSiGridPos($panelName))

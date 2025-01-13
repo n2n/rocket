@@ -40,7 +40,6 @@ abstract class GuiFieldAdapter implements BackableGuiField, SiFieldModel {
 		$this->siField->setModel($this);
 	}
 
-
 	function getSiField(): SiField {
 		return $this->siField;
 	}

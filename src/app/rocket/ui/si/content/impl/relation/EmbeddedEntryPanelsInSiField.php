@@ -107,4 +107,8 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 		$this->panels = $panels;
 		return true;
 	}
+
+	function getValue(): array {
+		return $this->panels;
+	}
 }

@@ -31,6 +31,7 @@ use rocket\op\ei\util\entry\EiuEntry;
 use n2n\validation\lang\ValidationMessages;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\util\frame\EiuFrame;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
 
 class ToManyEiField extends EiFieldNatureAdapter {
 	/**
@@ -69,16 +70,16 @@ class ToManyEiField extends EiFieldNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::checkValue()
 	 */
-	protected function checkValue($value) {
+	protected function checkValue($value): mixed {
 		ArgUtils::assertTrue(is_array($value));
 		foreach ($value as $eiuEntry) {
 			ArgUtils::assertTrue($eiuEntry instanceof EiuEntry);
 			if (!$this->relationModel->getTargetEiuEngine()->type()->matches($eiuEntry)) {
-				return false;
+				throw new ValueIncompatibleWithConstraintsException();
 			}
 		}
 		
-		return true; 
+		return $value;
 	}
 	
 	/**

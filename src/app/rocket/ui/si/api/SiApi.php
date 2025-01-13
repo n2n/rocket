@@ -148,8 +148,12 @@ class SiApi {
 //							->handleCall($data, $uploadDefinitions, $n2nContext);
 //		}
 
-		return new SiFieldCallResponse($this->model->lookupSiField($fieldCall->getMaskId(), $fieldCall->getEntryId(), $fieldCall->getFieldName())
-				->handleCall($data, $uploadDefinitions, $n2nContext));
+		$siField = $this->model->lookupSiField($fieldCall->getMaskId(), $fieldCall->getEntryId(), $fieldCall->getFieldName());
+		if (!$siField->isCallable()) {
+			throw new UnknownSiElementException(get_class($siField) . ' not callable.');
+		}
+
+		return new SiFieldCallResponse($siField->handleCall($data, $uploadDefinitions, $n2nContext));
 	}
 
 	/**

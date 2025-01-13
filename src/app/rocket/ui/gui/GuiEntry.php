@@ -33,7 +33,7 @@ use n2n\core\container\N2nContext;
 use n2n\util\magic\impl\MagicMethodInvoker;
 use n2n\util\type\TypeConstraints;
 use rocket\ui\gui\field\GuiFieldMap;
-use rocket\ui\gui\field\GuiFieldPath;
+use rocket\ui\gui\field\GuiPropPath;
 use rocket\ui\si\content\SiEntryModel;
 
 class GuiEntry implements SiEntryModel {
@@ -84,7 +84,7 @@ class GuiEntry implements SiEntryModel {
 		return $this->guiControlMap;
 }
 	
-	function getGuiFieldByGuiFieldPath(GuiFieldPath $guiFieldPath): field\GuiField {
+	function getGuiFieldByGuiFieldPath(GuiPropPath $guiFieldPath): field\GuiField {
 		$guiFieldMap = $this->guiFieldMap;
 		
 		$eiPropPaths = $guiFieldPath->toArray();
@@ -180,7 +180,7 @@ class GuiEntry implements SiEntryModel {
 			$eiGuiValueBoundaryListener->onSave($this);
 		}
 
-//		$this->getGuiFieldMap()->save($n2nContext);
+		$this->guiFieldMap->save($n2nContext);
 
 		if ($this->model !== null && !$this->model->handleInput()) {
 			return false;

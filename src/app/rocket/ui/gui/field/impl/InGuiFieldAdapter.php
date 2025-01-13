@@ -68,7 +68,7 @@ abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 		return $this->model?->handleInput($this->getInternalValue(), $n2nContext) ?? true;
 	}
 
-	function flush(N2nContext $n2nContext): void {
+	function save(N2nContext $n2nContext): void {
 		$this->model?->save($n2nContext);
 	}
 

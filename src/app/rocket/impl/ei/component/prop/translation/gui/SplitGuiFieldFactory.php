@@ -104,7 +104,7 @@ class SplitGuiFieldFactory {
 
 			$siField->putLazy($n2nLocaleId, $label, $apiUrl, (string) $eiSiMaskId, $pid, /* $targetEiuGuiDefinition->isBulky(), false,*/
 							function () use ($n2nLocaleId) {
-								return $this->lted->getTargetGuiValueBoundary($n2nLocaleId)->createSiValueBoundary();
+								return $this->lted->getTargetGuiValueBoundary($n2nLocaleId)->getSiValueBoundary();
 							})
 					->setShortLabel($n2nLocale->toPrettyId())
 					/*->setPropIds($propIds)*/;

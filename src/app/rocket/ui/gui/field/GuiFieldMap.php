@@ -64,26 +64,49 @@ class GuiFieldMap {
 
 	}
 
+//	function getAllSiFields(): array {
+//		$guiPropPath = new GuiPropPath([]);
+//
+//		$siFields = [];
+//		foreach ($this->guiFields as $guiPropKeyStr => $guiField) {
+//			$guiPropKeyStr = $guiField->getSiField();
+//			$siFields[$guiPropKeyStr] = $guiField;
+//
+//			foreach ($guiField->getForkSiFields() as $forkGuiPropPathStr => $siField) {
+//				$guiPropPath = (new GuiPropPath([new GuiPropKey($guiPropKeyStr)]))->ext(new GuiPropPath($forkGuiPropPathStr));
+//				$siFields[(string) $guiPropPath] = $siField;
+//			}
+//		}
+//		return $siFields;
+//	}
+
 	/**
 	 * @return GuiField[]
 	 */
 	function getAllGuiFields(): array {
 		$guiFields = [];
-		$this->rAllGuiFields($guiFields, $this, new GuiFieldPath([]));
+		$this->rAllGuiFields($guiFields, $this, new GuiPropPath([]));
 		return $guiFields;
 	}
-	
+
+	function save(N2nContext $n2nContext): void {
+		foreach ($this->guiFields as $guiField) {
+			$guiField->getForkGuiFieldMap()?->save($n2nContext);
+			$guiField->save($n2nContext);
+		}
+	}
+
 	/**
 	 * @param GuiField[] $guiFields
 	 * @param GuiFieldMap $guiFieldMap
-	 * @param GuiFieldPath $parentGuiPath
+	 * @param GuiPropPath $parentGuiPath
 	 */
-	private function rAllGuiFields(array &$guiFields, GuiFieldMap $guiFieldMap, GuiFieldPath $parentGuiPath): void {
+	private function rAllGuiFields(array &$guiFields, GuiFieldMap $guiFieldMap, GuiPropPath $parentGuiPath): void {
 		foreach ($guiFieldMap->getGuiFields() as $guiFieldKeyStr => $guiField) {
-			$guiPath = $parentGuiPath->ext(new GuiFieldKey($guiFieldKeyStr));
-			
+			$guiPath = $parentGuiPath->ext(new GuiPropKey($guiFieldKeyStr));
+
 			$guiFields[(string) $guiPath] = $guiField;
-			
+
 			if (null !== ($forkGuiFieldMap = $guiField->getForkGuiFieldMap())) {
 				$this->rAllGuiFields($guiFields, $forkGuiFieldMap, $guiPath);
 			}
@@ -94,7 +117,7 @@ class GuiFieldMap {
 	 * @param DefPropPath $defPropPath
 	 * @param GuiField $guiField
 	 */
-	function putGuiField(GuiFieldKey $key, GuiField $guiField): static {
+	function putGuiField(GuiPropKey $key, GuiField $guiField): static {
 		$this->ensureNotInitialized();
 
 		$keyStr = (string) $key;
@@ -107,7 +130,7 @@ class GuiFieldMap {
 		return $this;
 	}
 	
-	function containsKey(GuiFieldKey $key): bool {
+	function containsKey(GuiPropKey $key): bool {
 		return isset($this->guiFields[$key]);
 	}
 	

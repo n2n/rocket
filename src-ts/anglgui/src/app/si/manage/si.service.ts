@@ -136,7 +136,7 @@ export class SiService {
 		// 		}));
 
 		return this.apiCall(apiUrl, SiApiCall.getRequest(getRequest))
-				.pipe(map(r => { console.log(r); return r.getResponse! }));
+				.pipe(map(r => { return r.getResponse! }));
 	}
 
 	apiVal(apiUrl: string, valRequest: SiValRequest): Observable<SiValResponse> {

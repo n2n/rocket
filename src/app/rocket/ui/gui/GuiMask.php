@@ -16,7 +16,7 @@ use rocket\ui\si\meta\SiStructureDeclaration;
 use rocket\op\ei\manage\api\ApiController;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\gui\control\GuiControlMap;
-use rocket\ui\gui\field\GuiFieldPath;
+use rocket\ui\gui\field\GuiPropPath;
 use rocket\ui\gui\control\GuiControlPath;
 
 /**
@@ -92,7 +92,7 @@ class GuiMask {
 //		return $this->guiStructureDeclarations;
 //	}
 	
-	function putGuiProp(GuiFieldPath $guiFieldPath, GuiProp $guiProp): void {
+	function putGuiProp(GuiPropPath $guiFieldPath, GuiProp $guiProp): void {
 		$this->ensureNotInit();
 
 //		$this->guiProps[(string) $guiFieldPath] = $guiProp;

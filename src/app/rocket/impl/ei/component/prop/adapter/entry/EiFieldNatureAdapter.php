@@ -46,9 +46,9 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	/**
 	 * @throws ValueIncompatibleWithConstraintsException
 	 */
-	private function assetConstraints($value): void {
+	private function assetConstraints($value): mixed {
 		try {
-			$this->checkValue($value);
+			return $this->checkValue($value);
 		} catch (\InvalidArgumentException|ValueIncompatibleWithConstraintsException $e) {
 			throw new ValueIncompatibleWithConstraintsException('EiField can not adopt passed value.', 0, $e);
 		}
@@ -60,7 +60,7 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	 * @param mixed $value
 	 * @throws ValueIncompatibleWithConstraintsException
 	 */
-	protected abstract function checkValue(mixed $value);
+	protected abstract function checkValue(mixed $value): mixed;
 
 	/**
 	 * @return bool
@@ -93,7 +93,7 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	 * @see \rocket\op\ei\manage\entry\EiFieldNature::setValue()
 	 */
 	public final function setValue(mixed $value): void {
-		$this->assetConstraints($value);
+		$value = $this->assetConstraints($value);
 
 		$this->value = $value;
 		$this->valueLoaded = true;

@@ -33,6 +33,7 @@ use rocket\op\ei\manage\gui\EiGuiMaskDeclaration;
 use rocket\op\ei\util\gui\EiuGuiDeclaration;
 use rocket\op\ei\util\gui\EiuGuiDefinition;
 use rocket\ui\gui\GuiValueBoundary;
+use n2n\core\container\N2nContext;
 
 class LazyTranslationEssentialsDeterminer {
 	private $eiu;
@@ -177,7 +178,7 @@ class LazyTranslationEssentialsDeterminer {
 		return $localeIds;
 	}
 	
-	private function ensureActiveTargetEiuEntries() {
+	private function ensureActiveTargetEiuEntries(): void {
 		if ($this->activeTargetEiuEntries !== null) {
 			return;
 		}
@@ -215,7 +216,7 @@ class LazyTranslationEssentialsDeterminer {
 		
 		foreach (array_keys($this->activeTargetEiuEntries) as $n2nLocaleId) {
 			if (isset($this->targetGuiValueBoundaries[$n2nLocaleId])) {
-				$this->targetGuiValueBoundaries[$n2nLocaleId]->selectedGuiEntry()->save();
+				$this->targetGuiValueBoundaries[$n2nLocaleId]->getSelectedGuiEntry()->getGuiFieldMap()->save($this->eiu->getN2nContext());
 			}
 		}
 		

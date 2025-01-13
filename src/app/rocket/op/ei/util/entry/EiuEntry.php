@@ -49,6 +49,9 @@ use rocket\op\ei\manage\gui\EiFieldAbstraction;
 use rocket\op\ei\util\spec\EiuProp;
 use rocket\ui\gui\impl\BulkyGui;
 use rocket\op\ei\manage\gui\factory\EiGuiFactory;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
+use rocket\op\ei\util\EiuPerimeterException;
+use rocket\op\ei\manage\security\InaccessibleEiFieldException;
 
 
 class EiuEntry {
@@ -432,7 +435,13 @@ class EiuEntry {
 	}
 	
 	public function setValue($eiPropPath, $value): static {
-		$this->getEiEntry()->setValue(EiPropPath::create($eiPropPath), $value);
+		try {
+			$this->getEiEntry()->setValue(EiPropPath::create($eiPropPath), $value);
+		} catch (ValueIncompatibleWithConstraintsException|InaccessibleEiFieldException $e) {
+			throw new EiuPerimeterException('Could not write value to EiField "' . $eiPropPath
+					. '" of ' . $this->getEiEntry(), previous: $e);
+		}
+
 		return $this;
 	}
 	
@@ -667,7 +676,7 @@ class EiuEntry {
 	 * @return mixed
 	 * @throws EiFieldOperationFailedException
 	 */
-	public function readNativeValue(EiPropPath|EiuProp|EiProp|array|string $eiPropPath = null): mixed {
+	public function readNativeValue(EiPropPath|EiuProp|EiProp|array|string|null $eiPropPath = null): mixed {
 		$eiPropPath = EiPropPath::build($eiPropPath) ?? $this->eiuAnalyst->getEiPropPath(true);
 		
 //		if ($this->isDraftProp($eiPropPath)) {

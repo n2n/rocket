@@ -88,8 +88,8 @@ class SiEntry {
 		return $this;
 	}
 
-	function putField(string $nName, SiField $field): static {
-		$this->fields[$nName] = $field;
+	function putField(string $name, SiField $field): static {
+		$this->fields[$name] = $field;
 		return $this;
 	}
 
@@ -97,8 +97,8 @@ class SiEntry {
 		return isset($this->fields[$name]);
 	}
 
-	function getField(string $nName): SiField {
-		return $this->fields[$nName];
+	function getField(string $name): SiField {
+		return $this->fields[$name];
 	}
 	
 // 	/**
@@ -151,7 +151,7 @@ class SiEntry {
 	 * @throws CorruptedSiDataException
 	 */
 	function handleEntryInput(SiEntryInput $entryInput, N2nContext $n2nContext): bool {
-	$valid = true;
+		$valid = true;
 		$fields = [];
 		foreach ($this->fields as $fieldName => $field) {
 			if ($field->isReadOnly() || !$entryInput->containsFieldName($fieldName)) {
@@ -171,10 +171,6 @@ class SiEntry {
 
 		if (!$valid) {
 			return false;
-		}
-
-		foreach ($fields as $field) {
-			$field->flush($n2nContext);
 		}
 
 		return $this->model?->handleInput($n2nContext) ?? true;

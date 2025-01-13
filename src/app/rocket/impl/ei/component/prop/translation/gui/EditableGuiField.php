@@ -26,8 +26,10 @@ use rocket\ui\si\content\SiField;
 use rocket\ui\gui\field\GuiFieldMap;
 use rocket\ui\si\content\impl\split\SplitContextInSiField;
 use n2n\util\ex\NotYetImplementedException;
+use rocket\ui\si\content\SiFieldModel;
+use n2n\core\container\N2nContext;
 
-class EditableGuiField implements GuiField {
+class EditableGuiField implements GuiField, SiFieldModel {
 	private $lted;
 	private $forkGuiFieldMap;
 	/**
@@ -38,6 +40,7 @@ class EditableGuiField implements GuiField {
 	function __construct(LazyTranslationEssentialsDeterminer $lted, SplitContextInSiField $siField, ?GuiFieldMap $forkGuiFieldMap) {
 		$this->lted = $lted;
 		$this->siField = $siField;
+		$siField->setModel($this);
 		$this->forkGuiFieldMap = $forkGuiFieldMap;
 	}
 	
@@ -49,12 +52,10 @@ class EditableGuiField implements GuiField {
 		throw new NotYetImplementedException();
 	}
 
-	function save(): void {
+	function save(N2nContext $n2nContext): void {
 		$this->lted->activateTranslations($this->siField->getActiveKeys());
-		
-		if ($this->forkGuiFieldMap !== null) {
-			$this->forkGuiFieldMap->save();
-		}
+
+//		$this->forkGuiFieldMap?->save($n2nContext);
 		
 		$this->lted->save();
 	}
@@ -63,4 +64,13 @@ class EditableGuiField implements GuiField {
 		return $this->forkGuiFieldMap;
 	}
 
+	function handleInput(mixed $value, N2nContext $n2nContext): bool {
+		return true;
+	}
+
+	function getMessageStrs(): array {
+
+
+		return [];
+	}
 }

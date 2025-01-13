@@ -22,10 +22,9 @@
 namespace rocket\ui\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
-use rocket\si\content\impl\SiFieldErrorTrait;
 
 class SiPanel implements \JsonSerializable {
-	use SiFieldErrorTrait;
+//	use SiFieldErrorTrait;
 	
 	/**
 	 * @var string
@@ -72,7 +71,8 @@ class SiPanel implements \JsonSerializable {
 	 * @param string $name
 	 * @param string $label
 	 */
-	function __construct(string $name, string $label) {
+	function __construct(string $name, string $label, private string $bulkyMaskId,
+			private ?string $summaryMaskId = null) {
 		$this->name = $name;
 		$this->label = $label;
 	}
@@ -247,6 +247,10 @@ class SiPanel implements \JsonSerializable {
 		$this->values[] = $embeddedEntry;
 		return $this;
 	}
+
+	function getValue(): array {
+		return $this->values;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -256,6 +260,8 @@ class SiPanel implements \JsonSerializable {
 		return [
 			'name' => $this->name,
 			'label' => $this->label,
+			'bulkyMaskId' => $this->bulkyMaskId,
+			'summaryMaskId' => $this->summaryMaskId,
 			'min' => $this->min,
 			'max' => $this->max,
 			'reduced' => $this->reduced,

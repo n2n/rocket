@@ -73,19 +73,19 @@ class EifField {
 		return $this;
 	}
 
-	function setReadMapper(?\Closure $closure): static {
-		if ($closure === null) {
-			$this->readMapperMmi = null;
-			return $this;
-		}
-		
-		$this->readMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());
-		$this->readMapperMmi->setClassParamObject(Eiu::class, $this->eiu);
-		$this->readMapperMmi->setReturnTypeConstraint($this->typeConstraint);
-		$this->readMapperMmi->setMethod(new \ReflectionFunction($closure));
-		
-		return $this;
-	}
+//	function setReadMapper(?\Closure $closure): static {
+//		if ($closure === null) {
+//			$this->readMapperMmi = null;
+//			return $this;
+//		}
+//
+//		$this->readMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());
+//		$this->readMapperMmi->setClassParamObject(Eiu::class, $this->eiu);
+//		$this->readMapperMmi->setReturnTypeConstraint($this->typeConstraint);
+//		$this->readMapperMmi->setMethod(new \ReflectionFunction($closure));
+//
+//		return $this;
+//	}
 
 	function setWriter(?\Closure $closure): static {
 		if ($closure === null) {
@@ -100,22 +100,22 @@ class EifField {
 		return $this;
 	}
 	
-	/**
-	 * @param \Closure $closure
-	 * @return EifField
-	 */
-	function setWriteMapper(?\Closure $closure) {
-		if ($closure === null) {
-			$this->writeMapperMmi = null; 
-		}
-		
-		$this->writeMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());
-		$this->writeMapperMmi->setClassParamObject(Eiu::class, $this->eiu);
-		$this->writeMapperMmi->setReturnTypeConstraint($this->typeConstraint);
-		$this->writeMapperMmi->setMethod(new \ReflectionFunction($closure));
-		
-		return $this;
-	}
+//	/**
+//	 * @param \Closure $closure
+//	 * @return EifField
+//	 */
+//	function setWriteMapper(?\Closure $closure) {
+//		if ($closure === null) {
+//			$this->writeMapperMmi = null;
+//		}
+//
+//		$this->writeMapperMmi = new MagicMethodInvoker($this->eiu->getN2nContext());
+//		$this->writeMapperMmi->setClassParamObject(Eiu::class, $this->eiu);
+//		$this->writeMapperMmi->setReturnTypeConstraint($this->typeConstraint);
+//		$this->writeMapperMmi->setMethod(new \ReflectionFunction($closure));
+//
+//		return $this;
+//	}
 	
 	function setCopier(?\Closure $closure) {
 		$this->copierClosure = $closure;
@@ -206,8 +206,8 @@ class FabricatedEiField extends EiFieldNatureAdapter {
 		$this->copierClosure = $copierClosure;
 	}
 
-	protected function checkValue($value): void {
-		$this->typeConstraint?->validate($value);
+	protected function checkValue($value): mixed {
+		return $this->typeConstraint?->validate($value);
 	}
 	
 	/**

@@ -26,11 +26,11 @@ export class SplitContextInSiField extends InSiFieldAdapter implements SplitMana
 	}
 
 	readInput(): object {
-		const entryInputObj: { [key: string]: SiValueBoundaryInput } = {};
+		const entryInputObj: { [key: string]: object } = {};
 		for (const splitContent of this.collection.getSplitContents()) {
 			let valueBoundary = splitContent.getLoadedSiValueBoundary();
 			if (valueBoundary) {
-				entryInputObj[splitContent.key] = valueBoundary.readInput();
+				entryInputObj[splitContent.key] = valueBoundary.readInput().toJsonStruct();
 			}
 		}
 		return {

@@ -130,7 +130,7 @@ class ClosureGuiField implements GuiField, SiFieldModel {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\gui\field\GuiField::save()
 	 */
-	public function flush(N2nContext $n2nContext): void {
+	public function save(N2nContext $n2nContext): void {
 		if ($this->siField->isReadOnly()) {
 			throw new IllegalStateException('Can not save ready only GuiField');
 		}

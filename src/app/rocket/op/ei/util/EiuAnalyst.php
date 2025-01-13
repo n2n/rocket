@@ -659,8 +659,8 @@ class EiuAnalyst {
 
 		$this->eiuGuiDefinition = null;
 		$this->eiGuiDefinition = $eiGuiDefinition;
-		
-//		$this->assignEiMask($eiGuiDefinition->getEiMask());
+
+		$this->assignEiMask($eiGuiDefinition->getEiMask());
 		
 // 		$eiGuiValueBoundaries = $eiGuiDefinition->getEiGuiValueBoundaries();
 // 		if (count($eiGuiValueBoundaries) == 1) {
@@ -1760,7 +1760,7 @@ class EiuAnalyst {
 				. TypeUtils::getTypeInfo($eiGuiDefinitionArg) . ' given.');
 	}
 	
-	public static function buildEiObjectFromEiArg($eiObjectObj, ?string $argName = null, EiType|Spec $eiTypeOrSpec = null,
+	public static function buildEiObjectFromEiArg($eiObjectObj, ?string $argName = null, EiType|Spec|null $eiTypeOrSpec = null,
 			bool $required = true, &$eiEntry = null, &$eiGuiDefinitionArg = null) {
 		if (!$required && $eiObjectObj === null) {
 			return null;

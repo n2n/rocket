@@ -38,7 +38,7 @@ export class EmbeddedEntryObtainer	{
 		// 	return SiGetInstruction.entryFromIdentifier(eiEntryIdentifier);
 		// }
 
-		return SiGetInstruction.newEntry(this.bulkyContextMaskId).setAllowedMaskIds(this.allowedMaskIds);
+		return SiGetInstruction.newEntry(this.summaryContextMaskId!).setAllowedMaskIds(this.allowedMaskIds);
 	}
 
 	preloadNew(): void {

@@ -35,7 +35,7 @@ interface SiFieldModel {
 	 */
 	function handleInput(mixed $value, N2nContext $n2nContext): bool;
 
-	function flush(N2nContext $n2nContext): void;
+//	function save(N2nContext $n2nContext): void;
 
 	/**
 	 * @return string[]

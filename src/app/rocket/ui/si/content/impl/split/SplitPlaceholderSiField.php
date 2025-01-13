@@ -25,10 +25,7 @@ use rocket\ui\si\content\impl\SiFieldAdapter;
 use n2n\core\container\N2nContext;
 
 class SplitPlaceholderSiField extends SiFieldAdapter {
-	/**
-	 * @var string
-	 */
-	private $refPropId;
+
 	/**
 	 * @var SplitStyle
 	 */
@@ -40,10 +37,9 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 // 	private $saveCallback = null;
 	
 	/**
-	 * @param string $refPropId
+	 * @param string $refPropName
 	 */
-	function __construct(string $refPropId) {
-		$this->refPropId = $refPropId;
+	function __construct(private string $refPropName) {
 		$this->copyStyle = new SplitStyle(null, null);
 	}
 
@@ -87,7 +83,7 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'refPropId' => $this->refPropId,
+			'refPropId' => $this->refPropName,
 			'copyStyle' => $this->copyStyle,
 			...parent::toJsonStruct($n2nContext)
 		];

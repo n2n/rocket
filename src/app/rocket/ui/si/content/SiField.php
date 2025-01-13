@@ -44,24 +44,26 @@ interface SiField {
 	 * @return bool
 	 */
 	function isReadOnly(): bool;
-	
+
 	/**
 	 * @param array $data
-	 * @throws IllegalStateException if readonly ({@see self::isReadyOnly()} returns true).
+	 * @param N2nContext $n2nContext
+	 * @throws IllegalStateException if readonly ({@link self::isReadyOnly()} returns true).
 	 * @throws CorruptedSiDataException if data is corrupt
 	 */
 	function handleInput(array $data, N2nContext $n2nContext): bool;
 
-	function flush(N2nContext $n2nContext): void;
+//	function flush(N2nContext $n2nContext): void;
 	
 	/**
 	 * @return bool
 	 */
 	function isCallable(): bool;
-	
+
 	/**
 	 * @param array $data
 	 * @param UploadDefinition[] $uploadDefinitions
+	 * @param N2nContext $n2nContext
 	 * @return array
 	 * @throws CorruptedSiDataException
 	 */

@@ -57,7 +57,12 @@ class SiZoneCall implements \JsonSerializable {
 		}
 
 		$httpData = $param->parseJsonToHttpData();
-		$zoneControlName = $httpData->reqString('zoneControlName');
+
+		try {
+			$zoneControlName = SiControlCall::parse($httpData->reqArray('controlCall'))->getControlName();
+		} catch (CorruptedSiDataException $e) {
+			throw new BadRequestException(previous: $e);
+		}
 
 		$siInput = null;
 		if (null !== ($inputData = $httpData->optArray('input', null, null))) {

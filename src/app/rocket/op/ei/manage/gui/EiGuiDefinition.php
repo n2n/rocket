@@ -49,9 +49,9 @@ class EiGuiDefinition {
 		$this->eiGuiCmdMap = new EiGuiCmdMap($this);
 	}
 	
-//	function getEiMask(): EiMask {
-//		return $this->eiMask;
-//	}
+	function getEiMask(): EiMask {
+		return $this->eiMask;
+	}
 
 	function getEiTypePath(): TypePath {
 		return $this->eiMask->getEiTypePath();

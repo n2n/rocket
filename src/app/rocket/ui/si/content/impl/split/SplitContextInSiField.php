@@ -31,6 +31,7 @@ use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\meta\SiFrame;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class SplitContextInSiField extends InSiFieldAdapter  {
 	/**
@@ -222,7 +223,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
 		$ds = (new DataSet($data));
-		
+
 		$this->activeKeys = [];
 		foreach ($ds->reqArray('activeKeys', 'string') as $key) {
 			if (!isset($this->splitContents[$key])) {
@@ -251,7 +252,7 @@ class SplitContextInSiField extends InSiFieldAdapter  {
 				throw new CorruptedSiDataException('No SiEntry available for key: ' . $key);
 			}
 			
-			if (!$siValueBoundary->handleInput(SiEntryInput::parse($entryInputData))) {
+			if (!$siValueBoundary->handleInput(SiValueBoundaryInput::parse($entryInputData), $n2nContext)) {
 				$valid = false;
 			}
 

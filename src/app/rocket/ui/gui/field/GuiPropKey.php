@@ -5,7 +5,7 @@ namespace rocket\ui\gui\field;
 use n2n\util\StringUtils;
 use n2n\util\type\ArgUtils;
 
-class GuiFieldKey implements \Stringable {
+class GuiPropKey implements \Stringable {
 
 	const SEPARATOR = '/';
 

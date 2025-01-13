@@ -40,7 +40,7 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 	const INT_SIGNED_MAX = 2147483647;
 
 	function __construct(PropertyAccessProxy $propertyAccessProxy) {
-		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::int(true)));
+		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::int(true, convertable: true)));
 	}
 	
 	/**
@@ -68,8 +68,8 @@ class IntegerEiPropNature extends NumericEiPropNatureAdapter {
 //		$this->propertyAccessProxy = $propertyAccessProxy;
 //	}
 	
-	function createEifField(Eiu $eiu): EifField {
-		return parent::createEifField($eiu)
+	function buildEifField(Eiu $eiu): EifField {
+		return parent::buildEifField($eiu)
 				->val(Validators::min($this->getMinValue() ?? self::INT_SIGNED_MIN),
 						Validators::max($this->getMaxValue() ?? self::INT_SIGNED_MAX));
 	}

@@ -33,6 +33,7 @@ use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
 
 class ToOneEiField extends EiFieldNatureAdapter {
 	/**
@@ -85,12 +86,16 @@ class ToOneEiField extends EiFieldNatureAdapter {
 		return $this->mandatory;
 	}
 	
-	protected function checkValue($value) {
-		if ($value === null) return true;
+	protected function checkValue($value): mixed {
+		if ($value === null) return null;
 		
 		CastUtils::assertTrue($value instanceof EiuEntry);
 		
-		return $this->relationModel->getTargetEiuEngine()->type()->matches($value);
+		if (!$this->relationModel->getTargetEiuEngine()->type()->matches($value)) {
+			throw new ValueIncompatibleWithConstraintsException();
+		}
+
+		return $value;
 	}
 	
 	protected function readValue() {
