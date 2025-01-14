@@ -22,8 +22,9 @@
 namespace rocket\ui\si\api\response;
 
 use n2n\util\type\ArgUtils;
+use n2n\core\container\N2nContext;
 
-class SiValResponse implements \JsonSerializable {
+class SiValResponse {
 	/**
 	 * @var SiValInstructionResult[]
 	 */
@@ -53,11 +54,14 @@ class SiValResponse implements \JsonSerializable {
 	function putInstructionResult(string $key, SiValInstructionResult $instructionResult): void {
 		$this->instructionResults[$key] = $instructionResult;
 	}
-	
-	/** 
+
+	/**
+	 * @param N2nContext $n2nContext
 	 * @return array
 	 */
-	public function jsonSerialize(): mixed {
-		return ['instructionResults' => $this->instructionResults];
+	public function toJsonStruct(N2nContext $n2nContext): array {
+		return ['instructionResults' => array_map(
+				fn (SiValInstructionResult $r) => $r->toJsonStruct($n2nContext),
+				$this->instructionResults)];
 	}	
 }

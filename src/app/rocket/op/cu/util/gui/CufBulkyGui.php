@@ -66,7 +66,7 @@ class CufBulkyGui implements Gui {
 		$this->guiEntry = new GuiEntry(new SiEntryQualifier(new SiEntryIdentifier($siMaskIdentifier, null)));
 		$guiValueBoundary->putGuiEntry($this->guiEntry);
 		$this->guiFieldMap = new GuiFieldMap();
-		$guiValueBoundary->selectGuiEntryByMaskId($maskId);
+		$guiValueBoundary->selectGuiEntryByTypeId($maskId);
 		$this->bulkyGui = new BulkyGui(null, new SiDeclaration([$this->siMask]), $guiValueBoundary);
 	}
 

@@ -25,6 +25,7 @@ use rocket\ui\si\api\request\SiEntryInput;
 use n2n\util\type\ArgUtils;
 use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\err\CorruptedSiDataException;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class SiPanelInput {
 	/**
@@ -32,9 +33,9 @@ class SiPanelInput {
 	 */
 	private $name;
 	/**
-	 * @var SiEntryInput[]
+	 * @var SiValueBoundaryInput[]
 	 */
-	private $entryInputs = [];
+	private $valueBoundaryInputs = [];
 
 	/**
 	 * @param string $name
@@ -56,31 +57,34 @@ class SiPanelInput {
 	function setName(string $name) {
 		$this->name = $name;
 	}
-	
-	function getEntryInputs() {
-		return $this->entryInputs;
+
+	/**
+	 * @return SiValueBoundaryInput[]
+	 */
+	function getValueBoundaryInputs(): array {
+		return $this->valueBoundaryInputs;
 	}
 	
-	function setEntryInputs(array $entryInputs) {
-		ArgUtils::valArray($entryInputs, SiEntryInput::class);
-		$this->entryInputs = $entryInputs;
+	function setValueBoundaryInputs(array $valueBoundaryInputs): void {
+		ArgUtils::valArray($valueBoundaryInputs, SiValueBoundaryInput::class);
+		$this->valueBoundaryInputs = $valueBoundaryInputs;
 	}
 	
 	/**
 	 * @param array $data
-	 * @return SiEntryInput
+	 * @return SiPanelInput
 	 * @throws CorruptedSiDataException
 	 */
-	static function parse(array $data) {
+	static function parse(array $data): SiPanelInput {
 		$dataSet = new DataSet($data);
 		
 		try {
 			$panelInput = new SiPanelInput($dataSet->reqString('name'));
-			$entryInputs = [];
-			foreach ($dataSet->reqArray('entryInputs', 'array') as $entryInputData) {
-				$entryInputs[] = SiEntryInput::parse($entryInputData);
+			$valueBoundaryInputs = [];
+			foreach ($dataSet->reqArray('valueBoundaryInputs', 'array') as $entryInputData) {
+				$valueBoundaryInputs[] = SiValueBoundaryInput::parse($entryInputData);
 			}
-			$panelInput->setEntryInputs($entryInputs);
+			$panelInput->setValueBoundaryInputs($valueBoundaryInputs);
 			return $panelInput;
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new CorruptedSiDataException(null, 0, $e);

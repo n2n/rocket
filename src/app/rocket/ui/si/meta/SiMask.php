@@ -71,7 +71,7 @@ class SiMask implements \JsonSerializable {
 
 	/**
 	 * @param SiProp[] $props
-	 * @return \rocket\ui\si\meta\SiProp
+	 * @return SiMask
 	 */
 	function setProps(?array $props): static {
 		ArgUtils::valArray($props, SiProp::class, true);

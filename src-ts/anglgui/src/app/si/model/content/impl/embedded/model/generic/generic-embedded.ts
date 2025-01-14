@@ -13,7 +13,7 @@ export class SiGenericEmbeddedEntry {
 	}
 
 	get selectedTypeId(): string|null {
-		return this.genericValueBoundary.selectedMaskId;
+		return this.genericValueBoundary.selectedTypeId;
 	}
 
 	get entryQualifier(): SiEntryQualifier {

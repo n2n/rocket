@@ -13,12 +13,12 @@ export class SiInput {
 
 
 export class SiValueBoundaryInput {
-	constructor(private selectedMaskId: string, private entryInput: SiEntryInput) {
+	constructor(private selectedTypeId: string, private entryInput: SiEntryInput) {
 	}
 
 	toJsonStruct(): object {
 		return {
-			selectedMaskId: this.selectedMaskId,
+			selectedTypeId: this.selectedTypeId,
 			entryInput: this.entryInput.toJsonStruct()
 		};
 	}
@@ -26,7 +26,7 @@ export class SiValueBoundaryInput {
 
 export class SiEntryInput {
 
-	constructor(public entryId: string|null,
+	constructor(public maskId: string, public entryId: string|null,
 			readonly fieldInputMap: Map<string, object>) {
 
 	}
@@ -38,6 +38,7 @@ export class SiEntryInput {
 		}
 
 		return {
+			maskId: this.maskId,
 			entryId: this.entryId,
 			fieldInputMap: fieldInputObj,
 		};

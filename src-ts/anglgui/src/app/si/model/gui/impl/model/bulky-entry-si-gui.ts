@@ -125,7 +125,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 			this.rebuildStructures();
 		}
 
-		this.subscription.add(this.siValueBoundary.selectedMaskId$.subscribe(() => {
+		this.subscription.add(this.siValueBoundary.selectedTypeId$.subscribe(() => {
 			this.rebuildStructures();
 		}));
 
@@ -218,7 +218,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 		this.asideUiContents = this.siValueBoundary.selectedEntry.controls
 				.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
 
-		const mask = this.siDeclaration.getMaskById(this.siValueBoundary!.selectedMaskId!);
+		const mask = this.siDeclaration.getMaskById(this.siValueBoundary!.selectedEntry.getMaskId());
 		const toolbarResolver = new ToolbarResolver();
 
 		this.uiStructureSubject.next(this.createStructures(mask!.structureDeclarations!, toolbarResolver,
@@ -318,7 +318,7 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	private createUiStructureModel(siProp: SiProp): UiStructureModel {
 		if (this.siValueBoundary.selectedEntry.containsPropId(siProp.name)) {
 			const siField = this.siValueBoundary.selectedEntry.getFieldById(siProp.name);
-			return this.uiStructureModelCache.obtain(this.siValueBoundary.selectedMaskId!, siProp.name, siField);
+			return this.uiStructureModelCache.obtain(this.siValueBoundary.selectedTypeId!, siProp.name, siField);
 		}
 
 		return new SimpleUiStructureModel(new TypeUiContent(PlainContentComponent, () => {}));
@@ -351,7 +351,7 @@ class TypeSelectInModel implements SelectInFieldModel {
 
 	constructor(private siValueBoundary: SiValueBoundary, private siMaskQualifiers: SiMaskQualifier[]) {
 		for (const mq of siMaskQualifiers) {
-			this.options.set(mq.maskIdentifier.id, mq.name);
+			this.options.set(mq.maskIdentifier.typeId, mq.name);
 		}
 	}
 
@@ -364,11 +364,11 @@ class TypeSelectInModel implements SelectInFieldModel {
 	}
 
 	getValue(): string {
-		return this.siValueBoundary.selectedMaskId!;
+		return this.siValueBoundary.selectedTypeId!;
 	}
 
 	setValue(value: string): void {
-		this.siValueBoundary.selectedMaskId = value;
+		this.siValueBoundary.selectedTypeId = value;
 	}
 
 	getOptions(): Map<string, string> {

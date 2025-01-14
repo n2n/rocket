@@ -244,7 +244,7 @@ class EiObjectSelector {
 
 		$eiGuiDeclaration = $eiGuiDeclarationFactory->createEiGuiDeclaration($viewMode, false, $defPropPaths);
 		$eiGuiValueBoundary = $eiGuiDeclaration->createGuiValueBoundary($this->eiFrame, [$eiEntry], $entryGuiControlsIncluded, $treeLevel);
-		$eiGuiValueBoundary->selectGuiEntryByMaskId($eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createSiMaskIdentifier()->getId());
+		$eiGuiValueBoundary->selectGuiEntryByTypeId($eiGuiDeclaration->getSingleEiGuiMaskDeclaration()->createSiMaskIdentifier()->getId());
 		return $eiGuiValueBoundary;
 	}
 

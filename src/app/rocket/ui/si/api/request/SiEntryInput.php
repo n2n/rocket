@@ -35,7 +35,11 @@ class SiEntryInput implements \JsonSerializable {
 	/**
 	 * @param string|null $entryId
 	 */
-	function __construct(private readonly ?string $entryId) {
+	function __construct(private readonly string $maskId, private readonly ?string $entryId) {
+	}
+
+	function getMaskId(): string {
+		return $this->maskId;
 	}
 
 	/**
@@ -94,11 +98,10 @@ class SiEntryInput implements \JsonSerializable {
 	 */
 	static function parse(array $data): SiEntryInput {
 		$dataSet = new DataSet($data);
-
 		try {
-			$siEntryInput = new SiEntryInput($dataSet->optString('entryId'));
-			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $propId => $fielData) {
-				$siEntryInput->putFieldInput($propId, SiFieldInput::parse($fielData));
+			$siEntryInput = new SiEntryInput($dataSet->reqString('maskId'), $dataSet->optString('entryId'));
+			foreach ($dataSet->reqArray('fieldInputMap', 'array') as $propId => $fieldData) {
+				$siEntryInput->putFieldInput($propId, SiFieldInput::parse($fieldData));
 			}
 			return $siEntryInput;
 		} catch (AttributesException $e) {

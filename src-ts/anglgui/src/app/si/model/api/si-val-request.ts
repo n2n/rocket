@@ -6,4 +6,10 @@ export class SiValRequest {
 	constructor(...instructions: SiValInstruction[]) {
 		this.instructions = instructions;
 	}
+
+	toJsonStruct(): object {
+		return {
+			instructions: this.instructions.map(i => i.toJsonStruct())
+		}
+	}
 }

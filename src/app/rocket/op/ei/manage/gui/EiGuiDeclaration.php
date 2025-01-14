@@ -293,7 +293,7 @@ class EiGuiDeclaration {
 	 */
 	private function finalizeGuiValueBoundary(GuiValueBoundary $eiGuiValueBoundary): void {
 		if ($this->hasSingleEiGuiMaskDeclaration()) {
-			$eiGuiValueBoundary->selectGuiEntryByMaskId(current($this->eiGuiMaskDeclarations)->createSiMaskIdentifier()->getId());
+			$eiGuiValueBoundary->selectGuiEntryByTypeId(current($this->eiGuiMaskDeclarations)->createSiMaskIdentifier()->getId());
 		}
 	}
 

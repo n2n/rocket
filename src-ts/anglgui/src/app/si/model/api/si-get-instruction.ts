@@ -103,7 +103,7 @@ export class SiGetInstruction {
 		return this;
 	}
 
-	toJSON(): object {
+	toJsonStruct(): object {
 		return {
 			maskId: this.contextMaskId,
 			declarationRequested: !this.declaration,

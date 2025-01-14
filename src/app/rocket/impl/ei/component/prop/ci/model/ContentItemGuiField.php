@@ -277,7 +277,7 @@ class EiuGuiEntryPool {
 			
 			$panelName = $siPanelInput->getName();
 			if (isset($this->embeddedGuiCollections[$panelName])) {
-				$this->embeddedGuiCollections[$panelName]->handleSiEntryInputs($siPanelInput->getEntryInputs());
+				$this->embeddedGuiCollections[$panelName]->handleSiEntryInputs($siPanelInput->getValueBoundaryInputs());
 			}
 		}
 	}

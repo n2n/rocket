@@ -77,7 +77,7 @@ class SiValGetInstruction {
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
 		
-		$getInstruction = new SiValGetInstruction(SiStyle::createFromData($ds->reqArray('style')));
+		$getInstruction = new SiValGetInstruction($ds->reqString('maskId'));
 		$getInstruction->setDeclarationRequested($ds->reqBool('declarationRequested'));
 		$getInstruction->setControlsIncluded($ds->reqBool('controlsIncluded'));
 		return $getInstruction;

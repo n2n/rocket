@@ -84,7 +84,7 @@ class SiValInstruction {
 	static function createFromData(array $data) {
 		$ds = new DataSet($data);
 		
-		$valInstruction = new SiValInstruction(SiEntryInput::parse($ds->reqArray('entryInput')));
+		$valInstruction = new SiValInstruction(SiValueBoundaryInput::parse($ds->reqArray('valueBoundaryInput')));
 		try {
 			foreach ($ds->reqArray('getInstructions') as $key => $instructionData) {
 				$valInstruction->putGetInstruction($key, SiValGetInstruction::createFromData($instructionData));

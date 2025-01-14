@@ -92,7 +92,7 @@ class BulkyCuGui implements CuGui {
 		}
 
 		foreach ($entryInputs as $entryInput) {
-			$maskId = $entryInput->getSelectedMaskId();
+			$maskId = $entryInput->getSelectedTypeId();
 			if (!isset($this->cuMaskedEntries[$maskId])) {
 				throw new CorruptedSiDataException('BulkyEntrySiGui has no entry of maskId: ' . $maskId);
 			}
@@ -116,7 +116,7 @@ class BulkyCuGui implements CuGui {
 		foreach ($this->cuMaskedEntries as $id => $cuMaskedEntry) {
 			$siValueBoundary->putEntry($id, $cuMaskedEntry->getSiEntry());
 		}
-		$siValueBoundary->setSelectedMaskId($this->selectedMaskId);
+		$siValueBoundary->setSelectedTypeId($this->selectedMaskId);
 		return $siValueBoundary;
 	}
 
@@ -141,7 +141,7 @@ class BulkyCuGui implements CuGui {
 			$siDeclaration->addMaskDeclaration($cuMaskedEntry->getSiMask());
 			$siValueBoundary->putEntry($id, $cuMaskedEntry->getSiEntry());
 		}
-		$siValueBoundary->setSelectedMaskId($this->selectedMaskId);
+		$siValueBoundary->setSelectedTypeId($this->selectedMaskId);
 
 		$siGui = new BulkyEntrySiGui(null, $siDeclaration, $siValueBoundary);
 

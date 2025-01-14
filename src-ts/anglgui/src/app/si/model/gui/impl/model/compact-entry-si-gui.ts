@@ -189,7 +189,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 
 	private buildStructures(siValueBoundary: SiValueBoundary) {
 		const siEntry = siValueBoundary.selectedEntry;
-		const siMaskDeclaration = this.siDeclaration.getMaskById(siValueBoundary.selectedMaskId!);
+		const siMaskDeclaration = this.siDeclaration.getMaskById(siValueBoundary.selectedEntry.getMaskId());
 
 		this.asideUiContents = siEntry.controls
 					.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));

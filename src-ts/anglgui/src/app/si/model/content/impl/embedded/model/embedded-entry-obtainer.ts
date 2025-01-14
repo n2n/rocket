@@ -124,11 +124,11 @@ export class EmbeddedEntryObtainer	{
 	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
 		const instruction = new SiValInstruction(siEmbeddedEntry.valueBoundary.readInput());
 
-		instruction.getInstructions[0] = SiValGetInstruction.create();
+		instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.valueBoundary.qualifier.identifier.maskIdentifier.id);
 
 		if (siEmbeddedEntry.summaryComp) {
+			instruction.getInstructions[1] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp.valueBoundary!.qualifier.identifier.maskIdentifier.id);
 			siEmbeddedEntry.summaryComp.valueBoundary = null;
-			instruction.getInstructions[1] = SiValGetInstruction.create();
 		}
 
 		return instruction;

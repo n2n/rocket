@@ -31,7 +31,7 @@ use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class SiValueBoundary {
 
-	private $selectedMaskId = null;
+	private $selectedTypeId = null;
 	private $entries = [];
 	private $treeLevel;
 
@@ -59,7 +59,7 @@ class SiValueBoundary {
 
 
 	function putEntry(SiEntry $entry): static {
-		$this->entries[$entry->getQualifier()->getIdentifier()->getMaskIdentifier()->getId()] = $entry;
+		$this->entries[$entry->getQualifier()->getIdentifier()->getMaskIdentifier()->getTypeId()] = $entry;
 		
 		return $this;
 	}
@@ -68,16 +68,16 @@ class SiValueBoundary {
 	 * @return SiEntry
 	 */
 	function getSelectedEntry(): SiEntry {
-		return $this->entries[$this->getSelectedMaskId()];
+		return $this->entries[$this->getSelectedTypeId()];
 	}
 	
 	/**
 	 * @param string $maskId
 	 * @return SiValueBoundary
 	 */
-	function setSelectedMaskId(?string $maskId): static {
+	function setSelectedTypeId(?string $maskId): static {
 		ArgUtils::valEnum($maskId, array_keys($this->entries), nullAllowed: true);
-		$this->selectedMaskId = $maskId;
+		$this->selectedTypeId = $maskId;
 		return $this;
 	}
 
@@ -85,16 +85,17 @@ class SiValueBoundary {
 	 * @return string[]
 	 */
 	function getMaskIds(): array {
-		return array_keys($this->entries);
+		return array_map(fn (SiEntry $e) => $e->getQualifier()->getIdentifier()->getMaskIdentifier()->getId(),
+				$this->entries);
 	}
 	
 	/**
 	 * @throws IllegalStateException
 	 */
-	function getSelectedMaskId(): ?string {
-		IllegalStateException::assertTrue($this->selectedMaskId !== null);
+	function getSelectedTypeId(): ?string {
+		IllegalStateException::assertTrue($this->selectedTypeId !== null);
 		
-		return $this->selectedMaskId;
+		return $this->selectedTypeId;
 	}
 
 	function __toString() {
@@ -111,7 +112,7 @@ class SiValueBoundary {
 //			'identifier' => $this->identifier,
 			'treeLevel' => $this->treeLevel,
 			'entries' => array_map(fn (SiEntry $e) => $e->toJsonStruct($n2nContext), $entries),
-			'selectedMaskId' => $this->selectedMaskId
+			'selectedTypeId' => $this->selectedTypeId
 		];
 	}
 
@@ -122,12 +123,12 @@ class SiValueBoundary {
 	 * @throws CorruptedSiDataException
 	 */
 	function handleInput(SiValueBoundaryInput $input, N2nContext $n2nContext): bool {
-		$maskId = $input->getSelectedMaskId();
+		$typeId = $input->getSelectedTypeId();
 		
 		try {
-			$this->setSelectedMaskId($maskId);
+			$this->setSelectedTypeId($typeId);
 		} catch (\InvalidArgumentException $e) {
-			throw new CorruptedSiDataException('Invalid mask id: ' . $maskId, 0, $e);
+			throw new CorruptedSiDataException('Invalid type id: ' . $typeId, 0, $e);
 		}
 		
 		return $this->getSelectedEntry()->handleEntryInput($input->getEntryInput(), $n2nContext);

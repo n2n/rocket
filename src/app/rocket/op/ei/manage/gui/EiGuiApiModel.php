@@ -154,7 +154,7 @@ class EiGuiApiModel implements GuiApiModel {
 		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
 		$copiedGuiValueBoundary =  $factory->create($guiValueBoundary->getTreeLevel(), $eiEntries, $eiMaskId->viewMode);
 		if ($guiValueBoundary->isEiGuiEntrySelected()) {
-			$copiedGuiValueBoundary->selectGuiEntryByMaskId($maskId);
+			$copiedGuiValueBoundary->selectGuiEntryByTypeId((string) $eiMaskId->eiTypePath);
 		}
 		$this->cacheEiEntries($copiedGuiValueBoundary, $eiEntries);
 		return $copiedGuiValueBoundary;

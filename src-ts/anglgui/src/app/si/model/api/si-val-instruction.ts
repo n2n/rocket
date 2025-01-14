@@ -8,6 +8,13 @@ export class SiValInstruction {
 	constructor(public valueBoundaryInput: SiValueBoundaryInput, ...getInstructions: SiValGetInstruction[]) {
 		this.getInstructions = getInstructions;
 	}
+
+	toJsonStruct(): object {
+		return {
+			valueBoundaryInput: this.valueBoundaryInput.toJsonStruct(),
+			getInstructions: this.getInstructions.map(i => i.toJsonStruct())
+		}
+	}
 }
 
 // export interface SiPartialContentInstruction {

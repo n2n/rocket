@@ -54,7 +54,7 @@ class GuiValueBoundary {
 	 * @param GuiEntry $guiEntry
 	 */
 	function putGuiEntry(GuiEntry $guiEntry): void {
-		$this->guiEntries[$guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getId()] = $guiEntry;
+		$this->guiEntries[$guiEntry->getSiEntryQualifier()->getIdentifier()->getMaskIdentifier()->getTypeId()] = $guiEntry;
 		$this->siValueBoundary->putEntry($guiEntry->getSiEntry());
 	}
 	
@@ -99,25 +99,25 @@ class GuiValueBoundary {
 	 * @return boolean
 	 */
 	function isEiGuiEntrySelected(): bool {
-		return $this->siValueBoundary->getSelectedMaskId() !== null;
+		return $this->siValueBoundary->getSelectedTypeId() !== null;
 	}
 	
 	/**
-	 * @param string $eiMaskId
+	 * @param string $typeId
 	 * @return GuiValueBoundary
 	 * @throws \InvalidArgumentException
 	 */
-	function selectGuiEntryByMaskId(string $eiMaskId): static {
-		if (isset($this->guiEntries[$eiMaskId])) {
-			$this->siValueBoundary->setSelectedMaskId($eiMaskId);
+	function selectGuiEntryByTypeId(string $typeId): static {
+		if (isset($this->guiEntries[$typeId])) {
+			$this->siValueBoundary->setSelectedTypeId($typeId);
 			return $this;
 		}
 
-		throw new \InvalidArgumentException('Unknown EiType id: ' . $eiMaskId);
+		throw new \InvalidArgumentException('Unknown EiType id: ' . $typeId);
 	}
 	
 	function unselectGuiEntry(): void {
-		$this->siValueBoundary->setSelectedMaskId(null);
+		$this->siValueBoundary->setSelectedTypeId(null);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ class GuiValueBoundary {
 	}
 
 	function getSelectedMaskId(): string {
-		return $this->siValueBoundary->getSelectedMaskId();
+		return $this->siValueBoundary->getSelectedTypeId();
 	}
 	
 //	/**

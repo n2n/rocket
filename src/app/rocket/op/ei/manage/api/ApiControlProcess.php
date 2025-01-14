@@ -217,7 +217,7 @@ class ApiControlProcess {
 				if (null !== $entryInput->getIdentifier()->getId()) {
 					$eiObject = $this->eiFrameUtil->lookupEiObject($entryInput->getIdentifier()->getId());
 				} else {
-					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getSelectedMaskId());
+					$eiObject = $this->eiFrameUtil->createNewEiObject($entryInput->getSelectedTypeId());
 				}
 				
 				$this->inputEiEntries[$key] = $eiEntry = $this->eiFrame->createEiEntry($eiObject);

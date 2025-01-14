@@ -34,24 +34,24 @@ class SiValueBoundaryInput implements \JsonSerializable {
 	 * Ent
 	 * @var string[]|null
 	 */
-	private ?array $maskIds = null;
+	private ?array $typeIds = null;
 
-	function __construct(private readonly string $selectedMaskId, private readonly SiEntryInput $entryInput) {
+	function __construct(private readonly string $selectedTypeId, private readonly SiEntryInput $entryInput) {
 
 	}
 
-	function getSelectedMaskId(): string {
-		return $this->selectedMaskId;
+	function getSelectedTypeId(): string {
+		return $this->selectedTypeId;
 	}
 
-	function setMaskIds(?array $maskIds): static {
-		ArgUtils::valArray($maskIds, 'string');
-		$this->maskIds = $maskIds;
+	function setTypeIds(?array $typeIds): static {
+		ArgUtils::valArray($typeIds, 'string');
+		$this->typeIds = $typeIds;
 		return $this;
 	}
 
-	function getMaskIds(): ?array {
-		return $this->maskIds;
+	function getTypeIds(): ?array {
+		return $this->typeIds;
 	}
 
 	function getEntryInput(): SiEntryInput {
@@ -65,7 +65,7 @@ class SiValueBoundaryInput implements \JsonSerializable {
 		$dataMap = new DataMap($data);
 
 		try {
-			$siValueBoundary = new SiValueBoundaryInput($dataMap->reqString('selectedMaskId'),
+			$siValueBoundary = new SiValueBoundaryInput($dataMap->reqString('selectedTypeId'),
 					SiEntryInput::parse($dataMap->reqArray('entryInput')));
 //			$siValueBoundary->setMaskIds($dataMap->reqArray('maskIds', 'string', true));
 			return $siValueBoundary;
@@ -76,7 +76,7 @@ class SiValueBoundaryInput implements \JsonSerializable {
 
 	function jsonSerialize(): mixed {
 		return [
-			'selectedMaskId' => $this->selectedMaskId,
+			'selectedTypeId' => $this->selectedTypeId,
 //			'maskIds' => $this->maskIds,
 			'entryInput' => $this->entryInput
 		];

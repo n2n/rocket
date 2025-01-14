@@ -45,7 +45,7 @@ export class Embe {
 	}
 
 	isTypeSelected(): boolean {
-		return !!this._siEmbeddedEntry?.valueBoundary.selectedMaskId;
+		return !!this._siEmbeddedEntry?.valueBoundary.selectedTypeId;
 	}
 
 	get siValueBoundary(): SiValueBoundary {

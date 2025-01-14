@@ -8,7 +8,6 @@ import { SiCallResponse } from './si-control-result';
 import { IllegalSiStateError } from '../util/illegal-si-state-error';
 import { SiGetRequest } from '../model/api/si-get-request';
 import { SiGetResponse } from '../model/api/si-get-response';
-import { SiApiFactory } from '../build/si-api-factory';
 import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { SiSortRequest } from '../model/api/si-sort-request';
@@ -140,11 +139,14 @@ export class SiService {
 	}
 
 	apiVal(apiUrl: string, valRequest: SiValRequest): Observable<SiValResponse> {
-		return this.httpClient
-				.post<any>(apiUrl, valRequest)
-				.pipe(map(data => {
-					return new SiApiFactory(this.injector, apiUrl).createValResponse(data, valRequest);
-				}));
+		return this.apiCall(apiUrl, SiApiCall.valRequest(valRequest))
+				.pipe(map(r => r.valResponse!));
+
+		// return this.httpClient
+		// 		.post<any>(apiUrl, valRequest)
+		// 		.pipe(map(data => {
+		// 			return new SiApiFactory(this.injector, apiUrl).createValResponse(data, valRequest);
+		// 		}));
 	}
 
 	apiSort(apiUrl: string, sortRequest: SiSortRequest): Observable<SiCallResponse> {

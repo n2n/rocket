@@ -8,12 +8,12 @@ export class SiGenericValueBoundary {
 
 	private entriesMap = new Map<string, SiGenericEntry>()
 
-	constructor(public selectedMaskId: string|null, entries: SiGenericEntry[]) {
+	constructor(public selectedTypeId: string|null, entries: SiGenericEntry[]) {
 		entries.forEach((e) => this.putEntry(e));
 	}
 
 	get selected(): boolean {
-		return this.selectedMaskId !== null;
+		return this.selectedTypeId !== null;
 	}
 
 	putEntry(genericEntry: SiGenericEntry): void {
@@ -25,7 +25,7 @@ export class SiGenericValueBoundary {
 	}
 
 	get selectedEntryQualifier(): SiEntryQualifier {
-		IllegalSiStateError.assertTrue(this.entriesMap.has(this.selectedMaskId!));
-		return this.entriesMap.get(this.selectedMaskId!)!.entryQualifier;
+		IllegalSiStateError.assertTrue(this.entriesMap.has(this.selectedTypeId!));
+		return this.entriesMap.get(this.selectedTypeId!)!.entryQualifier;
 	}
 }

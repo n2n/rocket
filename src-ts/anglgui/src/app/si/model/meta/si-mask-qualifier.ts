@@ -1,5 +1,5 @@
 export class SiMaskIdentifier {
-	constructor(readonly id: string, readonly typeId: string) {
+	constructor(readonly id: string, readonly typeId: string, readonly superTypeId: string) {
 
 	}
 

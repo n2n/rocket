@@ -24,8 +24,9 @@ namespace rocket\ui\si\api\response;
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\content\SiValueBoundary;
 use n2n\util\type\ArgUtils;
+use n2n\core\container\N2nContext;
 
-class SiValInstructionResult implements \JsonSerializable {
+class SiValInstructionResult {
 	/**
 	 * @var bool
 	 */
@@ -33,7 +34,7 @@ class SiValInstructionResult implements \JsonSerializable {
 	/** 
 	 * @var SiValGetInstructionResult[]
 	 */
-	private $getResults = [];
+	private array $getResults = [];
 
 	function __construct(bool $valid) {
 		$this->valid = $valid;
@@ -58,18 +59,14 @@ class SiValInstructionResult implements \JsonSerializable {
 	 * @param string $key
 	 * @param SiValGetInstructionResult $getResult
 	 */
-	function putGetResult(string $key, SiValGetInstructionResult $getResult) {
+	function putGetResult(string $key, SiValGetInstructionResult $getResult): void {
 		$this->getResults[$key] = $getResult;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	public function jsonSerialize(): mixed {
+	public function toJsonStruct(N2nContext $n2nContext): array {
 		return [
 			'valid' => $this->valid,
-			'getResults' => $this->getResults
+			'getResults' => array_map(fn (SiValGetInstructionResult $r) => $r->toJsonStruct($n2nContext), $this->getResults)
 		];
 	}
 }

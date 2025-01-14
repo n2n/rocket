@@ -25,12 +25,13 @@ use n2n\util\type\attrs\DataSet;
 use n2n\util\type\attrs\AttributesException;
 
 class SiMaskIdentifier implements \JsonSerializable {
-    protected $id;
-    protected $typeId;
-	
-	function __construct(string $id, string $typeId) {
-		$this->id = $id;
-		$this->typeId = $typeId;
+
+	/**
+	 * @param string $id
+	 * @param string $typeId used to find a similar summary SiEntry of bulky SiEntry
+	 * @param string $superTypeId
+	 */
+	function __construct(private string $id, private string $typeId, private string $superTypeId) {
 	}
 	
 	/**
@@ -51,7 +52,11 @@ class SiMaskIdentifier implements \JsonSerializable {
 	function getTypeId(): string {
 		return $this->typeId;
 	}
-	
+
+	function getSuperTypeId(): string {
+		return $this->superTypeId;
+	}
+
 //	/**
 //	 * @param string $typeId
 //	 * @return \rocket\si\meta\SiMaskIdentifier
@@ -64,7 +69,8 @@ class SiMaskIdentifier implements \JsonSerializable {
 	function jsonSerialize(): mixed {
 		return [
 		    'id' => $this->id,
-			'typeId' => $this->typeId
+			'typeId' => $this->typeId,
+			'superTypeId' => $this->superTypeId
 		];
 	}
 
@@ -76,7 +82,7 @@ class SiMaskIdentifier implements \JsonSerializable {
 	static function parse(array $data): SiMaskIdentifier {
 		$ds = new DataSet($data);
 		
-		return new SiMaskIdentifier($ds->reqString('id'), $ds->reqString('typeId'));
+		return new SiMaskIdentifier($ds->reqString('id'), $ds->reqString('kindId'), $ds->reqString('typeId'));
 
 	}
 }

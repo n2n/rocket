@@ -78,7 +78,8 @@ class SiApiCallResponse {
 	function toJsonStruct(N2nContext $n2nContext): mixed {
 		return [
 			'callResponse' => $this->callResponse,
-			'getResponse' => $this->getResponse->toJsonStruct($n2nContext),
+			'getResponse' => $this->getResponse?->toJsonStruct($n2nContext),
+			'valResponse' => $this->valResponse?->toJsonStruct($n2nContext),
 			'fieldCallResponse' => $this->fieldCallResponse
 		];
 	}

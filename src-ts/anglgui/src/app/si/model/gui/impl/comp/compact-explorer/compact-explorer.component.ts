@@ -325,7 +325,7 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 
 	bestNameOf(siValueBoundary: SiValueBoundary): string|null {
 		return siValueBoundary.selectedEntry.entryQualifier.idName
-				?? this.model.getStructurePageManager().declaration?.getMaskById(siValueBoundary.selectedMaskId!).qualifier.name
+				?? this.model.getStructurePageManager().declaration?.getMaskById(siValueBoundary.selectedTypeId!).qualifier.name
 				?? null;
 	}
 

@@ -101,7 +101,7 @@ class SiApi {
 		foreach ($siInput->getValueBoundaryInputs() as $valueBoundaryInput) {
 			$entryInput = $valueBoundaryInput->getEntryInput();
 			$valueBoundaries[] = $valueBoundary = $this->model
-					->lookupSiValueBoundary($valueBoundaryInput->getSelectedMaskId(), $entryInput->getEntryId(), null);
+					->lookupSiValueBoundary($valueBoundaryInput->getSelectedTypeId(), $entryInput->getEntryId(), null);
 			$entryInputValid = $valueBoundary->handleInput($valueBoundaryInput, $n2nContext);
 			if (!$entryInputValid) {
 				$valid = false;
@@ -227,12 +227,12 @@ class SiApi {
 		foreach ($valRequest->getInstructions() as $key => $valInstruction) {
 			$valueBoundaryInput = $valInstruction->getValueBoundaryInput();
 
-			$valueBoundary = $this->model->lookupSiValueBoundary($valueBoundaryInput->getSelectedMaskId(),
+			$valueBoundary = $this->model->lookupSiValueBoundary($valueBoundaryInput->getEntryInput()->getMaskId(),
 					$valueBoundaryInput->getEntryInput()->getEntryId(), null);
 
 			$valInstructionResult = new SiValInstructionResult($valueBoundary->handleInput($valueBoundaryInput, $n2nContext));
 
-			foreach ($valInstruction->getGetInstructions() as $getInstruction) {
+			foreach ($valInstruction->getGetInstructions() as $iKey => $getInstruction) {
 				$valGetInstructionResult = new SiValGetInstructionResult();
 				$copyValueBoundary = $this->model->copySiValueBoundary($valueBoundary, $getInstruction->getMaskId());
 				$valGetInstructionResult->setValueBoundary($copyValueBoundary);
@@ -242,7 +242,7 @@ class SiApi {
 					$valGetInstructionResult->setDeclaration(new SiDeclaration($masks));
 				}
 
-				$valInstructionResult->putGetResult($key, $valGetInstructionResult);
+				$valInstructionResult->putGetResult($iKey, $valGetInstructionResult);
 			}
 
 			$valResponse->putInstructionResult($key, $valInstructionResult);

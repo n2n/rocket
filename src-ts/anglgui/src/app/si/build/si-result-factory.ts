@@ -19,6 +19,12 @@ import { SiGetInstruction } from '../model/api/si-get-instruction';
 import { SimpleSiControlBoundary } from '../model/control/impl/model/simple-si-control-boundary';
 import { SiValueBoundary } from '../model/content/si-value-boundary';
 import { SiPartialContent } from '../model/content/si-partial-content';
+import { SiValRequest } from '../model/api/si-val-request';
+import { SiValResponse } from '../model/api/si-val-response';
+import { SiValInstruction } from '../model/api/si-val-instruction';
+import { SiValResult } from '../model/api/si-val-result';
+import { SiControlBoundry } from '../model/control/si-control-boundry';
+import { SiValGetResult } from '../model/api/si-val-get-result';
 
 export class SiResultFactory {
 
@@ -67,6 +73,7 @@ export class SiResultFactory {
 		let callResponse: SiCallResponse|undefined;
 		let fieldCallResponse: SiFieldCallResponse|undefined;
 		let getResponse: SiGetResponse|undefined;
+		let valResponse: SiValResponse|undefined;
 
 		if (extr.contains('inputResult') && apiCall.input) {
 			inputResult = this.createInputResult(extr.reqObject('inputResult'), apiCall.input.declaration);
@@ -84,7 +91,11 @@ export class SiResultFactory {
 			getResponse = this.createGetResponse(extr.reqObject('getResponse'), apiCall.getRequest);
 		}
 
-		return { inputResult, callResponse, fieldCallResponse, getResponse }
+		if (data.valResponse && apiCall.valRequest) {
+			valResponse = this.createValResponse(extr.reqObject('valResponse'), apiCall.valRequest);
+		}
+
+		return { inputResult, callResponse, fieldCallResponse, getResponse, valResponse }
 	}
 
 	private createCallResponse(data: any): SiCallResponse {
@@ -217,6 +228,63 @@ export class SiResultFactory {
 			valueBoundary,
 			partialContent
 		}
+	}
+
+	private createValResponse(data: any, request: SiValRequest): SiValResponse {
+		const extr = new Extractor(data);
+
+		const response = new SiValResponse();
+
+		const resultsData = extr.reqArray('instructionResults');
+		request.instructions.forEach((_value, key) => {
+			if (!resultsData[key]) {
+				throw new Error('No result for key: ' + key);
+			}
+
+			response.results[key] = this.createValResult(resultsData[key], request.instructions[key]);
+		});
+
+		return response;
+	}
+
+	private createValResult(data: any, instruction: SiValInstruction): SiValResult {
+		const extr = new Extractor(data);
+
+		const result = new SiValResult(extr.reqBoolean('valid'));
+
+		const resultsData = extr.reqArray('getResults');
+		for (const key of instruction.getInstructions.keys()) {
+			if (!resultsData[key]) {
+				throw new Error('No result for key: ' + key);
+			}
+
+			const getInstruction = instruction.getInstructions[key];
+			result.getResults[key] = this.createValGetResult(resultsData[key], getInstruction.getDeclaration(), getInstruction.getControlBoundary()!);
+		}
+
+		return result;
+	}
+
+	private createValGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundry): SiValGetResult {
+		const extr = new Extractor(data);
+
+		const result: SiValGetResult = {
+			declaration: null,
+			valueBoundary: null
+		};
+
+		let propData: any;
+
+		if (!declaration) {
+			declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
+					new SiControlFactory(controlBoundary, this.injector));
+		}
+
+		if (null !== (propData = extr.nullaObject('valueBoundary'))) {
+			result.valueBoundary = new SiEntryFactory(declaration, this.apiUrl, this.injector).createValueBoundary(propData);
+		}
+
+		return result;
 	}
 
 }

@@ -7,23 +7,23 @@ export class SiValGetInstruction {
 	protected controlBoundary: SiControlBoundry|null = null;
 	protected controlsIncluded = false;
 
-	constructor() {
+	constructor(protected maskId: string) {
 	}
 
 	// static create(bulky: boolean, readOnly: boolean): SiValGetInstruction {
 	// 	return new SiValGetInstruction({ bulky, readOnly });
 	// }
 
-	static create(): SiValGetInstruction {
-		return new SiValGetInstruction();
+	static create(maskId: string): SiValGetInstruction {
+		return new SiValGetInstruction(maskId);
 	}
 
-	static createFromDeclaration(declaration: SiDeclaration, controlBoundary: SiControlBoundry): SiValGetInstruction {
-		const instruction = new SiValGetInstruction();
-		instruction.declaration = declaration;
-		instruction.controlBoundary = controlBoundary;
-		return instruction;
-	}
+	// static createFromDeclaration(declaration: SiDeclaration, controlBoundary: SiControlBoundry): SiValGetInstruction {
+	// 	const instruction = new SiValGetInstruction();
+	// 	instruction.declaration = declaration;
+	// 	instruction.controlBoundary = controlBoundary;
+	// 	return instruction;
+	// }
 
 	getDeclaration(): SiDeclaration|null {
 		return this.declaration;
@@ -43,8 +43,9 @@ export class SiValGetInstruction {
 		return this;
 	}
 
-	toJSON(): object {
+	toJsonStruct(): object {
 		return {
+			maskId: this.maskId,
 			declarationRequested: !this.declaration,
 			controlsIncluded: this.controlsIncluded
 		};

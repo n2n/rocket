@@ -89,7 +89,7 @@ export class SiMetaFactory {
 	static createMaskIdentifier(data: any): SiMaskIdentifier {
 		const extr = new Extractor(data);
 
-		return new SiMaskIdentifier(extr.reqString('id'), extr.reqString('typeId'));
+		return new SiMaskIdentifier(extr.reqString('id'), extr.reqString('typeId'), extr.reqString('superTypeId'));
 	}
 
 	static createTypeQualifier(data: any): SiMaskQualifier {
@@ -98,7 +98,7 @@ export class SiMetaFactory {
 		const identifierExtr = extr.reqExtractor('identifier');
 		return new SiMaskQualifier(
 				new SiMaskIdentifier(identifierExtr.reqString('id'),
-						identifierExtr.reqString('typeId')),
+						identifierExtr.reqString('typeId'), identifierExtr.reqString('typeId')),
 				extr.reqString('name'), extr.reqString('iconClass'));
 	}
 

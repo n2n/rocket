@@ -93,7 +93,7 @@ export class SiPageCollection implements SiControlBoundry {
 			}
 
 			this.modSubscription = this.siModState.modEvent$.subscribe((modEvent: SiModEvent|null) => {
-				if (modEvent!.containsAddedTypeId(this.declaration!.getBasicMask().qualifier.maskIdentifier.typeId)) {
+				if (modEvent!.containsAddedTypeId(this.declaration!.getBasicMask().qualifier.maskIdentifier.superTypeId)) {
 					this.clear();
 				}
 			});

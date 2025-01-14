@@ -32,6 +32,8 @@ use n2n\persistence\orm\attribute\Inheritance;
 use n2n\persistence\orm\attribute\Table;
 use rocket\attribute\EiPreset;
 use n2n\util\ex\IllegalStateException;
+use rocket\attribute\impl\EiPropDecimal;
+use rocket\attribute\impl\EiPropString;
 
 #[Table('rocket_content_item')]
 #[Inheritance(InheritanceType::JOINED)]
@@ -44,6 +46,7 @@ abstract class ContentItem extends ObjectAdapter {
 	}
 
 	private $id;
+	#[EiPropString(readOnly: true, mandatory: false)]
 	private string $panel;
 	private int $orderIndex;
 // 	private $online;

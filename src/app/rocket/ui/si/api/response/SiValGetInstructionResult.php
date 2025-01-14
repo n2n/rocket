@@ -23,8 +23,9 @@ namespace rocket\ui\si\api\response;
 
 use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\content\SiValueBoundary;
+use n2n\core\container\N2nContext;
 
-class SiValGetInstructionResult implements \JsonSerializable {
+class SiValGetInstructionResult {
 	/**
 	 * @var SiDeclaration|null
 	 */
@@ -32,7 +33,7 @@ class SiValGetInstructionResult implements \JsonSerializable {
 	/**
 	 * @var SiValueBoundary|null
 	 */
-	private $entry = null;
+	private $valueBoundary = null;
 
 	function __construct() {
 	}
@@ -54,25 +55,21 @@ class SiValGetInstructionResult implements \JsonSerializable {
 	/**
 	 * @return \rocket\ui\si\content\SiValueBoundary
 	 */
-	public function getEntry() {
-		return $this->entry;
+	public function getValueBoundary() {
+		return $this->valueBoundary;
 	}
 
 	/**
 	 * @param \rocket\ui\si\content\SiValueBoundary|null $entries
 	 */
 	public function setValueBoundary(?SiValueBoundary $entry) {
-		$this->entry = $entry;
+		$this->valueBoundary = $entry;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	public function jsonSerialize(): mixed {
+	public function toJsonStruct(N2nContext $n2nContext): array {
 		return [
-				'declaration' => $this->declaration,
-				'entry' => $this->entry
+			'declaration' => $this->declaration,
+			'valueBoundary' => $this->valueBoundary->toJsonStruct($n2nContext)
 		];
 	}
 }

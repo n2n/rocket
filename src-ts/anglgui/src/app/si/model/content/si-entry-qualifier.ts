@@ -1,4 +1,4 @@
-import { SiMaskIdentifier, SiMaskQualifier } from '../meta/si-mask-qualifier';
+import { SiMaskIdentifier } from '../meta/si-mask-qualifier';
 
 export interface SiObjectIdentifier {
 	typeId: string;
@@ -10,7 +10,7 @@ export class SiEntryIdentifier implements SiObjectIdentifier {
 	}
 
 	get typeId(): string {
-		return this.maskIdentifier.typeId;
+		return this.maskIdentifier.superTypeId;
 	}
 
 	equals(obj: any): boolean {
@@ -20,7 +20,7 @@ export class SiEntryIdentifier implements SiObjectIdentifier {
 	}
 
 	matchesTypeAndId(otherIdentifier: SiEntryIdentifier): boolean {
-		return this.id === otherIdentifier.id && this.maskIdentifier.typeId === otherIdentifier.maskIdentifier.typeId;
+		return this.id === otherIdentifier.id && this.maskIdentifier.superTypeId === otherIdentifier.maskIdentifier.superTypeId;
 	}
 
 	toString(): string {
