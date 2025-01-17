@@ -46,7 +46,7 @@ use n2n\core\config\WebConfig;
 use rocket\impl\ei\component\prop\translation\command\TranslationCopyCommand;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\type\TypeUtils;
-use n2n\core\config\RoutingConfig;
+use n2n\core\config\AppConfig;
 
 class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_USE_SYSTEM_LOCALES_KEY = 'useSystemN2nLocales';
@@ -56,53 +56,53 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 	const ATTR_LOCALE_LABEL_KEY = 'label';
 	const ATTR_LOCALE_MANDATORY_KEY = 'mandatory';
 	const ATTR_MIN_NUM_TRANSLATIONS_KEY = 'min';
-	
+
 	private $translationEiProp;
-	
+
 	public function __construct(TranslationEiProp $translationEiProp) {
 		parent::__construct($translationEiProp);
-				
+
 		$this->autoRegister($translationEiProp);
-		
+
 		$this->translationEiProp = $translationEiProp;
 	}
-	
+
 	public function testCompatibility(PropertyAssignation $propertyAssignation): int {
 		$level = parent::testCompatibility($propertyAssignation);
 		if (CompatibilityLevel::NOT_COMPATIBLE == $level) {
 			return CompatibilityLevel::NOT_COMPATIBLE;
 		}
-		
+
 		return CompatibilityLevel::EXTREMELY_COMMON;
 	}
-	
+
 	public function createMagDispatchable(N2nContext $n2nContext): MagDispatchable {
 		$magDispatchable = parent::createMagDispatchable($n2nContext);
 		$lar = new LenientAttributeReader($this->attributes);
-		
+
 		$magCollection = $magDispatchable->getMagCollection();
-		
+
 		$magCollection->addMag(self::ATTR_USE_SYSTEM_LOCALES_KEY, new BoolMag('Use system locales',
 				$lar->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, true)));
-		
+
 		$systemN2nLocaleDefsMag = new MagCollectionArrayMag('System locales',
 				$this->createN2nLocaleDefMagClosure());
 		$systemN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue($this->readModN2nLocaleDefs(
-				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(RoutingConfig::class)->getAllN2nLocales())));
+				self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, $n2nContext->lookup(AppConfig::class)->routing()->getAllN2nLocales())));
 		$magCollection->addMag(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $systemN2nLocaleDefsMag);
-		
+
 		$customN2nLocaleDefsMag = new MagCollectionArrayMag('Custom locales',
 				$this->createN2nLocaleDefMagClosure());
 		$customN2nLocaleDefsMag->setValue($this->n2nLocaleDefsToMagValue(
 				$this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar)));
 		$magCollection->addMag(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $customN2nLocaleDefsMag);
-		
+
 		$magCollection->addMag(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, new NumericMag('Min translations number',
 				$lar->getNumeric(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0)));
-		
+
 		return $magDispatchable;
 	}
-	
+
 	private function createN2nLocaleDefMagClosure() {
 		return function () {
 			$magCollection = new MagCollection();
@@ -112,15 +112,15 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			return new MagForm($magCollection);
 		};
 	}
-	
+
 	public function saveMagDispatchable(MagDispatchable $magDispatchable, N2nContext $n2nContext) {
 		parent::saveMagDispatchable($magDispatchable, $n2nContext);
-		
+
 		$this->attributes->appendAll($magDispatchable->getMagCollection()->readValues(
-				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY, 
+				array(self::ATTR_USE_SYSTEM_LOCALES_KEY, self::ATTR_SYSTEM_LOCALE_DEFS_KEY,
 						self::ATTR_CUSTOM_LOCALE_DEFS_KEY, self::ATTR_MIN_NUM_TRANSLATIONS_KEY)), true);
 	}
-	
+
 	private function n2nLocaleDefsToMagValue(array $n2nLocaleDefs) {
 		$magValue = array();
 		foreach ($n2nLocaleDefs as $n2nLocaleDef) {
@@ -131,28 +131,28 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		}
 		return $magValue;
 	}
-	
+
 	private function readModN2nLocaleDefs($key, LenientAttributeReader $lar, array $n2nLocales): array {
 		$modN2nLocaleDefs = $this->readN2nLocaleDefs($key, $lar);
-		
+
 		$n2nLocaleDefs = array();
-		foreach ($n2nLocales as $n2nLocale) {			
+		foreach ($n2nLocales as $n2nLocale) {
 			$n2nLocaleId = $n2nLocale->getId();
-			
+
 			if (isset($modN2nLocaleDefs[$n2nLocaleId])) {
 				$n2nLocaleDefs[$n2nLocaleId] = $modN2nLocaleDefs[$n2nLocaleId];
 				continue;
 			}
-			
+
 			$n2nLocaleDefs[$n2nLocaleId] = new N2nLocaleDef($n2nLocale, false, null);
 		}
 
 		return $n2nLocaleDefs;
 	}
-	
+
 	private function readN2nLocaleDefs($key, LenientAttributeReader $lar): array {
 		$n2nLocaleDefs = array();
-		foreach ($lar->getArray($key, TypeConstraint::createArrayLike('array', false, 
+		foreach ($lar->getArray($key, TypeConstraint::createArrayLike('array', false,
 				TypeConstraint::createSimple('scalar'))) as $n2nLocaleDefAttr) {
 			if (!isset($n2nLocaleDefAttr[self::ATTR_LOCALE_ID_KEY])) continue;
 			$n2nLocale = null;
@@ -161,75 +161,75 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 			} catch (IllegalN2nLocaleFormatException $e) {
 				continue;
 			}
-			
+
 			$n2nLocaleDefs[$n2nLocale->getId()] = new N2nLocaleDef($n2nLocale,
-					(isset($n2nLocaleDefAttr[self::ATTR_LOCALE_MANDATORY_KEY]) 
+					(isset($n2nLocaleDefAttr[self::ATTR_LOCALE_MANDATORY_KEY])
 							? (bool) $n2nLocaleDefAttr[self::ATTR_LOCALE_MANDATORY_KEY] : false),
-					(isset($n2nLocaleDefAttr[self::ATTR_LOCALE_LABEL_KEY]) 
+					(isset($n2nLocaleDefAttr[self::ATTR_LOCALE_LABEL_KEY])
 							? $n2nLocaleDefAttr[self::ATTR_LOCALE_LABEL_KEY] : null));
 		}
 		return $n2nLocaleDefs;
 	}
-	
+
 	private function writeN2nLocaleDefs($key, array $n2nLocaleDefs, bool $modOnly) {
 		$n2nLocaleDefsAttrs = array();
-		
+
 		foreach ($n2nLocaleDefs as $n2nLocaleDef) {
 			$attrs = array(self::ATTR_LOCALE_ID_KEY => $n2nLocaleDef->getN2nLocale()->getId());
 			if ($n2nLocaleDef->isMandatory()) {
 				$attrs[self::ATTR_LOCALE_MANDATORY_KEY] = $n2nLocaleDef->isMandatory();
 			}
 			if (null !== ($label = $n2nLocaleDef->getLabel())) {
-				$attrs[self::ATTR_LOCALE_LABEL_KEY] = $n2nLocaleDef->getLabel();
+				$attrs[self::ATTR_LOCALE_LABEL_KEY] = $label;
 			}
 			$n2nLocaleDefsAttrs[] = $attrs;
 		}
-		
+
 		$this->attributes->set($key, $n2nLocaleDefsAttrs);
 	}
-	
+
 	public function setup(EiSetup $eiSetupProcess) {
 		$eiu = $eiSetupProcess->eiu();
-		
+
 		$lar = new LenientAttributeReader($this->attributes);
-		
+
 		$n2nLocaleDefs = array();
 		if ($this->attributes->getBool(self::ATTR_USE_SYSTEM_LOCALES_KEY, false, true)) {
-			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar, 
+			$n2nLocaleDefs = $this->readModN2nLocaleDefs(self::ATTR_SYSTEM_LOCALE_DEFS_KEY, $lar,
 					$eiu->lookup(WebConfig::class)->getAllN2nLocales());
-		} 
-		
+		}
+
 		$n2nLocaleDefs = array_merge($n2nLocaleDefs, $this->readN2nLocaleDefs(self::ATTR_CUSTOM_LOCALE_DEFS_KEY, $lar));
 		if (empty($n2nLocaleDefs)) {
 			$n2nLocaleDefs = array(N2nLocale::getDefault()->getId() => new N2nLocaleDef(N2nLocale::getDefault(), false));
 		}
 		$this->translationEiProp->setN2nLocaleDefs($n2nLocaleDefs);
-		
+
 		$this->translationEiProp->setMinNumTranslations($this->attributes->optInt(self::ATTR_MIN_NUM_TRANSLATIONS_KEY, 0));
-		
+
 		$this->addMandatory = true;
-		
+
 		// @todo combine with relation eifields
 		$eiPropRelation = $this->translationEiProp->getEiPropRelation();
 		$relationProperty = $eiPropRelation->getRelationEntityProperty();
 		$targetEntityClass = $relationProperty->getRelation()->getTargetEntityModel()->getClass();
 		try {
 			$targetEiType = $eiSetupProcess->eiu()->context()->mask($targetEntityClass)->getEiType();
-				
+
 			$targetEiMask = null;
 // 			if (null !== ($eiMaskId = $this->attributes->get(self::OPTION_TARGET_MASK_KEY))) {
 // 				$targetEiMask = $target->getEiTypeExtensionCollection()->getById($eiMaskId);
 // 			} else {
-				$targetEiMask = $targetEiType->getEiMask();
+			$targetEiMask = $targetEiType->getEiMask();
 // 			}
 
 			$entityProperty = $this->getPropertyAssignation()->getEntityProperty(true);
 			if (CascadeType::ALL !== $entityProperty->getRelation()->getCascadeType()) {
-				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: ' 
+				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which cascades all: '
 						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
 								$entityProperty->getName()));
 			}
-			
+
 			if (!$entityProperty->getRelation()->isOrphanRemoval()) {
 				throw $eiSetupProcess->createException('EiProp requires an EntityProperty which removes orphans: '
 						. TypeUtils::prettyPropName($entityProperty->getEntityModel()->getClass(),
@@ -246,7 +246,7 @@ class TranslationEiConfigurator extends AdaptableEiPropConfigurator {
 		} catch (InvalidEiComponentConfigurationException $e) {
 			throw $eiSetupProcess->createException(null, $e);
 		}
-		
+
 		$copyCommand = new TranslationCopyCommand();
 		$targetEiMask->getEiCommandCollection()->add($copyCommand);
 		$this->translationEiProp->setCopyCommand($copyCommand);
@@ -257,34 +257,34 @@ class N2nLocaleDef {
 	private $n2nLocale;
 	private $mandatory;
 	private $label;
-	
+
 	public function __construct(N2nLocale $n2nLocale, bool $mandatory, string $label = null) {
 		$this->n2nLocale = $n2nLocale;
 		$this->mandatory = $mandatory;
 		$this->label = $label;
 	}
-	
+
 	public function getN2nLocaleId() {
 		return $this->n2nLocale->getId();
 	}
-	
+
 	public function getN2nLocale() {
 		return $this->n2nLocale;
 	}
-	
+
 	public function isMandatory(): bool {
 		return $this->mandatory;
 	}
-	
+
 	public function getLabel() {
 		return $this->label;
 	}
-	
+
 	public function buildLabel(N2nLocale $n2nLocale) {
 		if ($this->label !== null) {
 			return $this->label;
 		}
-		
+
 		return $this->n2nLocale->getName($n2nLocale);
 	}
 }
