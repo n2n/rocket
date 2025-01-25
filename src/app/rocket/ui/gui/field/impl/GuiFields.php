@@ -34,6 +34,10 @@ use rocket\ui\gui\field\impl\file\GuiSiFileFactory;
 use rocket\ui\gui\field\impl\file\GuiFileVerificator;
 use rocket\ui\gui\field\impl\enum\EnumInGuiField;
 use rocket\ui\gui\field\impl\date\DateTimeInGuiField;
+use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntryFactory;
+use rocket\ui\si\meta\SiFrame;
+use rocket\ui\gui\field\impl\relation\EmbeddedEntriesInGuiField;
+use rocket\ui\gui\field\impl\relation\EmbeddedEntriesOutGuiField;
 
 class GuiFields {
 
@@ -91,5 +95,30 @@ class GuiFields {
 				->setMaxSize($maxSize)
 				->setAcceptedExtensions($allowedExtensions ?? [])
 				->setAcceptedMimeTypes($allowedMimeTypes ?? []));
+	}
+
+	static function guiEmbeddedEntriesIn(SiFrame $siFrame, GuiEmbeddedEntryFactory $embeddedEntryFactory,
+			bool $reduced = false, bool $nonNewRemovable = true, bool $sortable = true, int $min = 0, ?int $max = null): EmbeddedEntriesInGuiField {
+		$guiField = new EmbeddedEntriesInGuiField($siFrame, $embeddedEntryFactory);
+
+		$guiField->getSiField()
+				->setReduced($reduced)
+				->setNonNewRemovable($nonNewRemovable)
+				->setSortable($sortable)
+				->setMin($min)
+				->setMax($max);
+
+		return $guiField;
+	}
+
+	static function guiEmbeddedEntriesOut(SiFrame $siFrame,
+			bool $reduced = false, array $guiEmbeddedEntries = []): EmbeddedEntriesOutGuiField {
+		$guiField = new EmbeddedEntriesOutGuiField($siFrame);
+		$guiField->setValue($guiEmbeddedEntries);
+
+		$guiField->getSiField()
+				->setReduced($reduced);
+
+		return $guiField;
 	}
 }

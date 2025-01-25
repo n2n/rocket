@@ -225,7 +225,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return SiEmbeddedEntry[]
 	 */
-	function getEmbedddedEntries() {
+	function getEmbedddedEntries(): array {
 		return $this->values;
 	}
 	
@@ -233,7 +233,7 @@ class SiPanel implements \JsonSerializable {
 	 * @param SiEmbeddedEntry[] $embeddedEntries
 	 * @return SiPanel
 	 */
-	function setEmbeddedEntries(array $embeddedEntries) {
+	function setEmbeddedEntries(array $embeddedEntries): static {
 		ArgUtils::valArray($embeddedEntries, SiEmbeddedEntry::class);
 		$this->values = $embeddedEntries;
 		return $this;

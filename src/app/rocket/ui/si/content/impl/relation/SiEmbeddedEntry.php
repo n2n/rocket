@@ -24,6 +24,8 @@ namespace rocket\ui\si\content\impl\relation;
 use rocket\ui\si\content\impl\basic\BulkyEntrySiGui;
 use rocket\ui\si\content\impl\basic\CompactEntrySiGui;
 use rocket\ui\si\SiPayloadFactory;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
+use rocket\ui\si\content\SiEntryQualifier;
 
 class SiEmbeddedEntry implements \JsonSerializable {
 	/**
@@ -70,6 +72,10 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	 */
 	function setSummaryContent(CompactEntrySiGui $summaryContent) {
 		$this->summaryContent = $summaryContent;
+	}
+
+	function handleInput(SiEntryQualifier $qualifier): SiValueBoundaryInput {
+		$qualifier->getIdentifier()->getId()
 	}
 
 	function jsonSerialize(): mixed {		

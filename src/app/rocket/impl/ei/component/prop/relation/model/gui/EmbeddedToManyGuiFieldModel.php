@@ -19,15 +19,14 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content\impl\relation;
+namespace rocket\impl\ei\component\prop\relation\model\gui;
 
-use rocket\ui\si\api\request\SiEntryInput;
-use rocket\ui\si\content\SiValueBoundary;
+use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntry;
 
-interface EmbeddedEntryInputHandler {
-	/**
-	 * @param SiEntryInput[] $siEntryInputs
-	 * @return SiValueBoundary[]
-	 */
-	function handleInput(array $siEntryInputs): array;
+class EmbeddedToManyGuiFieldModel {
+
+
+	function lookupGuiEmbeddedEntry(string $maskId, ?string $entryId): ?GuiEmbeddedEntry {
+
+	}
 }

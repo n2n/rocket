@@ -31,13 +31,18 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\ui\gui\field\GuiField;
-use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToManyGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\SiEmbeddedToManyGuiField;
 use n2n\util\type\CastUtils;
 use rocket\ui\si\content\impl\meta\SiCrumb;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\entry\EiuEntry;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\ui\si\meta\SiStructureType;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntriesCollection;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationGuiEmbeddedEntryFactory;
+use n2n\bind\mapper\impl\Mappers;
+use rocket\ui\gui\field\BackableGuiField;
 
 class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 
@@ -58,27 +63,47 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
-	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
-		
-		if ($readOnly && $eiu->guiMaskDeclaration()->isCompact()) {
+
+
+	function buildOutGuiField(Eiu $eiu): BackableGuiField {
+		if ($eiu->guiDefinition()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
-		
-		$targetEiuFrame = null; 
-		if ($readOnly){
-			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
-		} else {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
-		}
-		
-		return new EmbeddedToManyGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
+
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
+				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+
+		$factory = new RelationGuiEmbeddedEntryFactory($targetEiuFrame, $this->relationModel->isReduced());
+
+		return GuiFields::guiEmbeddedEntriesOut($targetEiuFrame->createSiFrame(), $this->relationModel->isReduced(),
+				$factory->createGuiEmbeddedEntriesFromEiuEntries($eiu->field()->getValue()));
 	}
 
-	private function createCompactGuiField(Eiu $eiu): GuiField {
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
+				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+
+		$sortable = ($this->relationModel->getMax() === null || $this->relationModel->getMax() > 1)
+				&& $this->relationModel->getTargetOrderEiPropPath() !== null;
+
+		$factory = new RelationGuiEmbeddedEntryFactory($targetEiuFrame, $this->relationModel->isReduced());
+
+		$guiField = GuiFields::guiEmbeddedEntriesIn($targetEiuFrame->createSiFrame(), $factory,
+				$this->relationModel->isReduced(), $this->relationModel->isRemovable(), $sortable,
+				$this->relationModel->getMin(), $this->relationModel->getMax());
+
+		$guiField->setValue($factory->createGuiEmbeddedEntriesFromEiuEntries($eiu->field()->getValue()));
+
+		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::valueClosure(
+				function (array $guiEmbeddedEntries) use ($factory) {
+					return $factory->retrieveEiuEntries($guiEmbeddedEntries);
+				})));
+
+		return $guiField;
+	}
+
+	private function createCompactGuiField(Eiu $eiu): BackableGuiField {
 		$siCrumbs = [];
 		foreach ($eiu->field()->getValue() as $eiuEntry) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
@@ -87,7 +112,6 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 					->setSeverity(SiCrumb::SEVERITY_IMPORTANT);
 		}
 		
-		return $eiu->factory()->newGuiField(SiFields::crumbOut(...$siCrumbs)
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs()))->toGuiField();
+		return GuiFields::out(SiFields::crumbOut(...$siCrumbs));
 	}
 }

@@ -63,6 +63,18 @@ class SiValueBoundary {
 		
 		return $this;
 	}
+
+	function containsEntryWith(string $maskId, ?string $entryId): bool {
+		foreach ($this->entries as $entry) {
+			$identifier = $entry->getQualifier()->getIdentifier();
+			if ($identifier->getMaskIdentifier()->geId() === $maskId
+					&& $identifier->getId() === $entryId) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	/**
 	 * @return SiEntry

@@ -27,6 +27,7 @@ use n2n\util\uri\Url;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\meta\SiFrame;
+use rocket\ui\si\api\request\SiValueBoundaryInput;
 
 class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	/**
@@ -34,9 +35,9 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 */
 	private $frame;
 	/**
-	 * @var EmbeddedEntryInputHandler
+	 * @var SiEmbeddedEntryFactory
 	 */
-	private $inputHandler;
+	private SiEmbeddedEntryFactory $embeddedEntryFactory;
 	/**
 	 * @var SiEmbeddedEntry[]
 	 */
@@ -69,20 +70,20 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	/**
 	 * @param string $typeCateogry
 	 * @param Url $apiUrl
-	 * @param EmbeddedEntryInputHandler $inputHandler
+	 * @param SiEmbeddedEntryFactory $embeddedEntryFactory
 	 * @param SiEmbeddedEntry[] $values
 	 */
-	function __construct(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = []) {
+	function __construct(SiFrame $frame, SiEmbeddedEntryFactory $embeddedEntryFactory, array $values = []) {
 		$this->frame = $frame;
-		$this->inputHandler = $inputHandler;
-		$this->setValues($values);
+		$this->embeddedEntryFactory = $embeddedEntryFactory;
+		$this->setValue($values);
 	}
-	
+
 	/**
 	 * @param SiEmbeddedEntry[] $values
-	 * @return \rocket\si\content\impl\relation\EmbeddedEntriesInSiField
+	 * @return EmbeddedEntriesInSiField
 	 */
-	function setValues(array $values) {
+	function setValue(array $values): static {
 		ArgUtils::valArray($values, SiEmbeddedEntry::class);
 		$this->values = $values;
 		return $this;
@@ -91,7 +92,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	/**
 	 * @return SiEmbeddedEntry[]
 	 */
-	function getValues() {
+	function getValue(): array {
 		return $this->values;
 	}
 	
@@ -217,18 +218,45 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 			...parent::toJsonStruct($n2nContext)
 		];
 	}
+
+	private function findExisting(string $maskId, string $entryId): ?SiEmbeddedEntry {
+		foreach ($this->values as $value) {
+			if ($value->getContent()->getValueBoundary()->containsEntryWith($maskId, $entryId)) {
+				return $value;
+			}
+		}
+
+		return null;
+	}
 	 
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
-		$siEntryInputs = [];
-		foreach ((new DataSet($data))->reqArray('entryInputs', 'array') as $entryInputData) {
-			$siEntryInputs[] = SiEntryInput::parse($entryInputData);
+		$values = [];
+		foreach ((new DataSet($data))->reqArray('valueBoundaryInputs', 'array') as $entryInputData) {
+			$valueBoundaryInput = SiValueBoundaryInput::parse($entryInputData);
+			$entryInput = $valueBoundaryInput->getEntryInput();
+			$maskId = $entryInput->getMaskId();
+			$entryId = $entryInput->getEntryId();
+
+			if ($entryId !== null) {
+				$siEmbeddedEntry = $this->findExisting($maskId, $entryId);
+			} else {
+				$siEmbeddedEntry = $this->embeddedEntryFactory->createSiEmbeddedEntry($entryInput->getMaskId(), $entryInput->getEntryId());
+			}
+
+			if ($siEmbeddedEntry === null) {
+				continue;
+			}
+
+			$siEmbeddedEntry->getContent()->getValueBoundary()->handleInput($valueBoundaryInput, $n2nContext);
+			$values[] = $siEmbeddedEntry;
 		}
-		$values = $this->inputHandler->handleInput($siEntryInputs);
-		ArgUtils::valArrayReturn($values, $this->inputHandler, 'handleInput', SiEmbeddedEntry::class);
+
+
+		ArgUtils::valArrayReturn($values, $this->embeddedEntryFactory, 'handleInput', SiEmbeddedEntry::class);
 		$this->values = $values;
 		return true;
 	}

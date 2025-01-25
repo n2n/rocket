@@ -30,7 +30,7 @@ use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
-use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
+use rocket\ui\si\content\impl\relation\SiEmbeddedEntryFactory;
 use rocket\ui\si\content\impl\split\SplitContextInSiField;
 use rocket\ui\si\content\impl\split\SplitContextOutSiField;
 use rocket\ui\si\content\impl\split\SplitPlaceholderSiField;
@@ -135,13 +135,13 @@ class SiFields {
 
 	/**
 	 * @param SiFrame $frame
-	 * @param EmbeddedEntryInputHandler $inputHandler
+	 * @param SiEmbeddedEntryFactory $inputHandler
 	 * @param array $values
 	 * @param int $min
 	 * @param int|null $max
 	 * @return EmbeddedEntriesInSiField
 	 */
-	static function embeddedEntriesIn(SiFrame $frame, EmbeddedEntryInputHandler $inputHandler, array $values = [], 
+	static function embeddedEntriesIn(SiFrame $frame, SiEmbeddedEntryFactory $inputHandler, array $values = [],
 			int $min = 0, ?int $max = null): EmbeddedEntriesInSiField {
 		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
 	}

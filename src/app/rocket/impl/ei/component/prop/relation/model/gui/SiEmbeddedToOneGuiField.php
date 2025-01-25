@@ -28,16 +28,14 @@ use rocket\op\ei\util\frame\EiuFrame;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\ui\si\content\impl\SiFields;
-use n2n\util\type\CastUtils;
-use rocket\op\ei\util\entry\EiuEntry;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
-use rocket\ui\si\content\impl\relation\EmbeddedEntryInputHandler;
+use rocket\ui\si\content\impl\relation\SiEmbeddedEntryFactory;
 use rocket\ui\gui\field\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
-use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
+use n2n\util\col\ArrayUtils;
 
-class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
+class SiEmbeddedToOneGuiField implements GuiField, SiEmbeddedEntryFactory {
 	/**
 	 * @var RelationModel
 	 */
@@ -57,7 +55,7 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	/**
 	 * @var EmbeddedGuiCollection
 	 */
-	private $embeddedGuiCollection;
+	private $emebeddedGuiCollection;
 	/**
 	 * @var bool
 	 */
@@ -67,8 +65,8 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 		$this->eiu = $eiu;
 		$this->targetEiuFrame = $targetEiuFrame;
 		$this->relationModel = $relationModel;
-		$this->embeddedGuiCollection = new EmbeddedGuiCollection($readOnly, $relationModel->isReduced(), 
-				$relationModel->getMin(), $targetEiuFrame, null);
+		$this->emebeddedGuiCollection = new EmbeddedGuiCollection($readOnly, $relationModel->isReduced(), 
+				$this->relationModel->getMin(), $targetEiuFrame, null);
 		$this->readOnly = $readOnly;
 		
 		if ($readOnly) {
@@ -81,77 +79,48 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
 				->setReduced($this->relationModel->isReduced())
 				->setNonNewRemovable($this->relationModel->isRemovable())
-				->setSortable(($relationModel->getMax() === null || $relationModel->getMax() > 1) 
-						&& $relationModel->getTargetOrderEiPropPath() !== null)
 				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-				
 	}
 	
 	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\ui\si\content\impl\relation\SiEmbeddedEntry[]
+	 * @return \rocket\ui\si\content\impl\relation\SiEmbeddedEntry
 	 */
 	private function readValues() {
-		$this->embeddedGuiCollection->clear();
+		$this->emebeddedGuiCollection->clear();
 		
-		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
-			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$this->embeddedGuiCollection->add($eiuEntry);
-		}
-	
-		if (null !== ($targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath())) {
-			$this->embeddedGuiCollection->sort($targetOrderEiPropPath);
+		if (null !== ($eiuEntry = $this->eiu->field()->getValue())) {
+			$this->emebeddedGuiCollection->add($eiuEntry);
 		}
 		
 		if (!$this->readOnly) {
-			$this->embeddedGuiCollection->fillUp();
+			$this->emebeddedGuiCollection->fillUp();
 		}
 		
-		return $this->embeddedGuiCollection->createSiEmbeddedEntries(); 
+		return $this->emebeddedGuiCollection->createSiEmbeddedEntries();
 	}
 	
-	
-	
-// 	/**
-// 	 * @param EiuGuiEntryTypeDef $eiuGuiEntryMulti
-// 	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
-// 	 */
-// 	private function createSiEmbeddeEntryFromMulti($eiuGuiEntryMulti) {
-// 		return new SiEmbeddedEntry(
-// 				$eiuGuiEntryMulti->createBulkyEntrySiGui(false, false),
-// 				($this->relationModel->isReduced() ?
-// 						$eiuGuiEntryMulti->entry()->newGui(false, false)->createCompactEntrySiGui(false, false):
-// 						null));
-// 	}
-	
-	
-	
 	/**
-	 * @param SiEntryInput $siEntryInputs
-	 * @return SiEmbeddedEntry[]
+	 * @param SiEntryInput[] $siEntryInputs
 	 * @throws CorruptedSiDataException
 	 */
 	function handleInput(array $siEntryInputs): array {
 		IllegalStateException::assertTrue(!$this->readOnly);
 		
-		$this->embeddedGuiCollection->handleSiEntryInputs($siEntryInputs);
-		$this->embeddedGuiCollection->fillUp();
+		if (count($siEntryInputs) > 1) {
+			throw new CorruptedSiDataException('Too many SiEntryInputs for EmbeddedToOneGuiField.');
+		}
 		
-		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
-		$targetEiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
-		$this->eiu->field()->setValue($targetEiuEntries);
-		
-		return $this->embeddedGuiCollection->createSiEmbeddedEntries();
+		$this->emebeddedGuiCollection->handleSiEntryInputs($siEntryInputs);
+		$this->emebeddedGuiCollection->fillUp();
+		return $this->emebeddedGuiCollection->createSiEmbeddedEntries();
 	}
 	
 	function save() {
-// 		IllegalStateException::assertTrue(!$this->readOnly);
+		IllegalStateException::assertTrue(!$this->readOnly);
 		
-// 		$targetOrderEiPropPath = $this->relationModel->getTargetOrderEiPropPath();
+		$value = ArrayUtils::first($this->emebeddedGuiCollection->save($this->relationModel->getTargetOrderEiPropPath()));
 		
-// 		$eiuEntries = $this->embeddedGuiCollection->save($targetOrderEiPropPath);
-		
-// 		$this->eiu->field()->setValue($eiuEntries);
+		$this->eiu->field()->setValue($value);
 	}
 	
 	function getSiField(): SiField {
@@ -160,5 +129,9 @@ class EmbeddedToManyGuiField implements GuiField, EmbeddedEntryInputHandler {
 	
 	function getForkGuiFieldMap(): ?GuiFieldMap {
 		return null;
+	}
+
+	function getMessages(): array {
+
 	}
 }

@@ -31,11 +31,11 @@ class SiPanelInput {
 	/**
 	 * @var string
 	 */
-	private $name;
+	private string $name;
 	/**
 	 * @var SiValueBoundaryInput[]
 	 */
-	private $valueBoundaryInputs = [];
+	private array $valueBoundaryInputs = [];
 
 	/**
 	 * @param string $name
@@ -47,14 +47,14 @@ class SiPanelInput {
 	/**
 	 * @return string
 	 */
-	function getName() {
+	function getName(): string {
 		return $this->name;
 	}
 	
 	/**
 	 * @param string $name
 	 */
-	function setName(string $name) {
+	function setName(string $name): void {
 		$this->name = $name;
 	}
 

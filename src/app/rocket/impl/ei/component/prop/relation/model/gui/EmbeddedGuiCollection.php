@@ -28,10 +28,12 @@ use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\util\ex\IllegalStateException;
 use rocket\op\ei\manage\entry\EiEntry;
 use n2n\util\type\CastUtils;
-use rocket\ui\si\api\request\SiEntryInput;
 use rocket\op\ei\util\spec\EiuType;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
+use rocket\ui\gui\GuiValueBoundary;
+use rocket\ui\gui\ViewMode;
+use rocket\op\ei\util\Eiu;
 
 class EmbeddedGuiCollection {
 	/**
@@ -53,7 +55,7 @@ class EmbeddedGuiCollection {
 	/** 
 	 * @var EiuGuiValueBoundary[]
 	 */
-	private array $eiuGuiValueBoundaries = [];
+	private array $guiValueBoundaries = [];
 	/**
 	 * 
 	 * @var EiuType[]
@@ -80,16 +82,16 @@ class EmbeddedGuiCollection {
 	 * 
 	 */
 	function clear(): void {
-		$this->eiuGuiValueBoundaries = [];
+		$this->guiValueBoundaries = [];
 	}
 
 
-	function add(EiuEntry $eiuEntry): EiuGuiValueBoundary {
-		return $this->eiuGuiValueBoundaries[] = $eiuEntry->newGuiValueBoundary(true, $this->readOnly);
+	function add(EiuEntry $eiuEntry): GuiValueBoundary {
+		return $this->guiValueBoundaries[] = $eiuEntry->createGuiValueBoundary(ViewMode::determine(true, $this->readOnly, $eiuEntry->isNew()), $this->readOnly);
 	}
 	
 	function fillUp(): void {
-		$num = $this->min - count($this->eiuGuiValueBoundaries);
+		$num = $this->min - count($this->guiValueBoundaries);
 		
 		if ($num <= 0) {
 			return;
@@ -99,19 +101,22 @@ class EmbeddedGuiCollection {
 		$eiuGuiDeclaration  = $this->eiuFrame->contextEngine()->newMultiGuiDeclaration(true, $this->readOnly,
 				true, $this->allowedEiuTypes);
 		for ($i = 0; $i < $num; $i++) {
-			$this->eiuGuiValueBoundaries[] = $eiuGuiDeclaration->newGuiValueBoundary();
+			$eiuEntries = $this->eiuFrame->newPossibleEntries();
+			$this->guiValueBoundaries[] = $this->eiuFrame->createGuiValueBoundary($eiuEntries,
+					ViewMode::determine(true, $this->readOnly, true));
 		}
 	}
 	
-	function addNew(): EiuGuiValueBoundary {
+	function addNew(): GuiValueBoundary {
 		IllegalStateException::assertTrue($this->eiuFrame !== null);
-		return $this->eiuGuiValueBoundaries[] = $this->eiuFrame->contextEngine()
-				->newMultiGuiDeclaration(true, $this->readOnly, true)
-				->newGuiValueBoundary();
+
+		$eiuEntries = $this->eiuFrame->newPossibleEntries();
+		return $this->guiValueBoundaries[] = $this->eiuFrame->createGuiValueBoundary($eiuEntries,
+				ViewMode::determine(true, $this->readOnly, true));
 	}
 	
 	function sort(EiPropPath $orderEiPropPath): void {
-		uasort($this->eiuGuiValueBoundaries, function(EiuGuiValueBoundary $a, $b) use ($orderEiPropPath) {
+		uasort($this->guiValueBoundaries, function(EiuGuiValueBoundary $a, $b) use ($orderEiPropPath) {
 			$aValue = $a->selectedGuiEntry()->entry()->getScalarValue($orderEiPropPath);
 			$bValue = $b->selectedGuiEntry()->entry()->getScalarValue($orderEiPropPath);
 			
@@ -127,7 +132,7 @@ class EmbeddedGuiCollection {
 	 * @return int
 	 */
 	function count() {
-		return count($this->eiuGuiValueBoundaries);
+		return count($this->guiValueBoundaries);
 	}
 	
 // 	/**
@@ -151,12 +156,13 @@ class EmbeddedGuiCollection {
 	function createSiEmbeddedEntries(): array {
 		return array_values(array_map(
 				function ($eiuGuiValueBoundary) { return $this->createSiEmbeddedEntry($eiuGuiValueBoundary); },
-				$this->eiuGuiValueBoundaries));
+				$this->guiValueBoundaries));
 	}
 
-	private function createSiEmbeddedEntry(EiuGuiValueBoundary $eiuGuiValueBoundary): SiEmbeddedEntry {
+	private function createSiEmbeddedEntry(GuiValueBoundary $guiValueBoundary): SiEmbeddedEntry {
+		$eiu = new Eiu($this->eiuFrame);
 		return new SiEmbeddedEntry(
-				$eiuGuiValueBoundary->createBulkyEntrySiGui(false, false),
+				$eiu->f()->gui()->createBulkyGui(),
 				($this->summaryRequired ?
 						$eiuGuiValueBoundary->copy(false, true, entryGuiControlsIncluded: false)->createCompactEntrySiGui(false):
 						null));
@@ -167,7 +173,7 @@ class EmbeddedGuiCollection {
 	 * @return EiuGuiValueBoundary|null
 	 */
 	function find(string $id): ?EiuGuiValueBoundary {
-		foreach ($this->eiuGuiValueBoundaries as $eiuGuiValueBoundary) {
+		foreach ($this->guiValueBoundaries as $eiuGuiValueBoundary) {
 			if ($eiuGuiValueBoundary->isGuiEntrySelected()
 					&& $id === $eiuGuiValueBoundary->selectedGuiEntry()->entry()->getPid(false)) {
 				return $eiuGuiValueBoundary;
@@ -178,27 +184,27 @@ class EmbeddedGuiCollection {
 	}
 	
 	/**
-	 * @param SiEntryInput[] $siEntryInputs
+	 * @param SiValueBoundaryInput[] $siValueBoundaryInputs
 	 * @throws CorruptedSiDataException
 	 */
-	function handleSiEntryInputs(array $siEntryInputs): void {
+	function handleSiEntryInputs(array $siValueBoundaryInputs): void {
 		$newEiuGuiEntrys = [];
-		foreach ($siEntryInputs as $siEntryInput) {
-			CastUtils::assertTrue($siEntryInput instanceof SiValueBoundaryInput);
+		foreach ($siValueBoundaryInputs as $siValueBoundaryInput) {
+			CastUtils::assertTrue($siValueBoundaryInput instanceof SiValueBoundaryInput);
 			
 			$eiuGuiEntry = null;
-			$id = $siEntryInput->getEntryId()->getId();
+			$id = $siValueBoundaryInput->getEntryInput()->getId();
 			
 			if ($id !== null && null !== ($eiuGuiEntry = $this->find($id))) {
-				$eiuGuiEntry->handleSiEntryInput($siEntryInput);
+				$eiuGuiEntry->handleSiEntryInput($siValueBoundaryInput);
 				$newEiuGuiEntrys[] = $eiuGuiEntry;
 				continue;
 			}
 			
-			$newEiuGuiEntrys[] = $this->addNew()->handleSiEntryInput($siEntryInput);
+			$newEiuGuiEntrys[] = $this->addNew()->handleSiEntryInput($siValueBoundaryInput);
 		}
 		
-		$this->eiuGuiValueBoundaries = $newEiuGuiEntrys;
+		$this->guiValueBoundaries = $newEiuGuiEntrys;
 	}
 
 	/**
@@ -208,7 +214,7 @@ class EmbeddedGuiCollection {
 	function save(?EiPropPath $orderEiPropPath): array {
 		$values = [];
 		$i = 0;
-		foreach ($this->eiuGuiValueBoundaries as $eiuGuiValueBoundary) {
+		foreach ($this->guiValueBoundaries as $eiuGuiValueBoundary) {
 			if (!$eiuGuiValueBoundary->isGuiEntrySelected()) {
 				continue;
 			}

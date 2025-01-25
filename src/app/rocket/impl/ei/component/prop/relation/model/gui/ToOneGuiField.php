@@ -92,21 +92,21 @@ class ToOneGuiField extends InGuiFieldAdapter {
 		throw new NotYetImplementedException();
 	}
 	
-	function handleInput(mixed $value, N2nContext $n2nContext): void {
+	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 //		$siQualifiers = $this->siField->getValues();
 		ArgUtils::valArray($value, SiEntryQualifier::class);
 		$siQualifiers = $value;
 		
 		if (empty($siQualifiers)) {
 			$this->eiu->field()->setValue(null);
-			return;
+			return true;
 		}
 		
 		$id = $this->targetEiu->frame()->siQualifierToId(current($siQualifiers));
 		try {
-			$value = $this->targetEiu->frame()->lookupEntry($id);
+			$this->eiu->field()->setValue($this->targetEiu->frame()->lookupEntry($id));
 		} catch (UnknownEiObjectException $e) {
-			$this->eiu->field()->setValue($value);
+			$this->eiu->field()->setValue(null);
 		}
 	}
 

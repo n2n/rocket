@@ -20,23 +20,17 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace rocket\impl\ei\manage\gui;
+namespace rocket\ui\gui\impl;
 
 use rocket\ui\gui\Gui;
 use rocket\ui\si\content\SiGui;
-use rocket\op\ei\manage\api\ZoneApiControlCallId;
-use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\si\api\request\SiInput;
-use rocket\op\ei\manage\frame\EiFrame;
 use n2n\util\ex\NotYetImplementedException;
-use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\si\content\impl\basic\CompactExplorerSiGui;
-use rocket\ui\gui\control\GuiControlMap;
-use rocket\op\ei\manage\gui\EiGuiDeclaration;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\meta\SiDeclaration;
-use rocket\ui\gui\GuiValueBoundary;
+use rocket\impl\ei\manage\gui\SiInputError;
 
 class CompactExplorerGui implements Gui {
 

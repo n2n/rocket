@@ -32,13 +32,16 @@ use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\ui\gui\field\GuiField;
-use rocket\impl\ei\component\prop\relation\model\gui\EmbeddedToOneGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\SiEmbeddedToOneGuiField;
 use n2n\util\type\CastUtils;
 use rocket\ui\si\content\impl\meta\SiCrumb;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\op\ei\util\entry\EiuEntry;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\ui\gui\field\impl\GuiFields;
+use rocket\impl\ei\component\prop\relation\model\gui\RelationGuiEmbeddedEntryFactory;
+use n2n\bind\mapper\impl\Mappers;
+use n2n\util\col\ArrayUtils;
 
 class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 
@@ -61,31 +64,49 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		$field->setMandatory($this->getRelationModel()->isMandatory());
 		return $field;
 	}
-	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-// 		if ($readOnly || $this->isReadOnly()) {
-// 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
-// 		}
-		
-// 		$targetEiuFrame = $eiu->frame()->forkDiscover($this, $eiu->object())->frame()
-// 				->exec($this->getRelationModel()->getTargetEditEiCmdPath());
-		
-		$readOnly = $readOnly || $this->getRelationModel()->isReadOnly();
-		
-		if ($readOnly && $eiu->guiDefinition()->isCompact()) {
+
+	function buildOutGuiField(Eiu $eiu): GuiField {
+		if ($eiu->guiDefinition()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
-		
-		$targetEiuFrame = null;
-		if ($readOnly) {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
-		} else {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetEditEiCmdPath());
+
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
+				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+
+		$factory = new RelationGuiEmbeddedEntryFactory($targetEiuFrame, $this->relationModel->isReduced());
+
+		$targetEiuEntry = $eiu->field()->getValue();
+		$guiEmbeddedEntry = null;
+		if ($targetEiuEntry !== null) {
+			$guiEmbeddedEntry = $factory->createGuiEmbeddedEntryFromEiuEntry($targetEiuEntry)
 		}
 
-		return new EmbeddedToOneGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), $readOnly);
+		return GuiFields::guiEmbeddedEntriesOut($targetEiuFrame->createSiFrame(), $this->relationModel->isReduced(),
+				[$guiEmbeddedEntry]);
+	}
+
+	function buildInGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
+				->exec($this->getRelationModel()->getTargetEditEiCmdPath());
+
+
+		$factory = new RelationGuiEmbeddedEntryFactory($targetEiuFrame, $this->relationModel->isReduced());
+
+		$guiField = GuiFields::guiEmbeddedEntriesIn($targetEiuFrame->createSiFrame(), $factory,
+				$this->relationModel->isReduced(), $this->relationModel->isRemovable(), false,
+				$this->relationModel->getMin(), $this->relationModel->getMax());
+
+		$targetEiuEntry = $eiu->field()->getValue();
+		if ($targetEiuEntry !== null) {
+			$guiField->setValue([$factory->createGuiEmbeddedEntryFromEiuEntry($targetEiuEntry)]);
+		}
+
+		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::valueClosure(
+				function (array $guiEmbeddedEntries) use ($factory) {
+					return ArrayUtils::current($factory->retrieveEiuEntries($guiEmbeddedEntries));
+				})));
+
+		return $guiField;
 	}
 	
 	/**

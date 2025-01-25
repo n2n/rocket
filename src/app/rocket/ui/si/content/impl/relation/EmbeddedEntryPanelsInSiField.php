@@ -47,12 +47,10 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param Url $apiUrl
-	 * @param EmbeddedEntryPanelInputHandler $inputHandler
 	 * @param SiPanel[] $panels
 	 */
-	function __construct(SiFrame $frame, EmbeddedEntryPanelInputHandler $inputHandler, array $panels = []) {
+	function __construct(SiFrame $frame, array $panels = []) {
 		$this->frame = $frame;
-		$this->inputHandler = $inputHandler;
 		$this->setPanels($panels);
 	}
 

@@ -97,6 +97,10 @@ abstract class InGuiFieldAdapter extends GuiFieldAdapter {
 		return $this->internalValue;
 	}
 
+	function getValue(): mixed {
+		return $this->internalValue;
+	}
+
 //	function setPrepareForSaveMappers(Mapper ...$mappers): static {
 //		$this->prepareForSaveMappers = $mappers;
 //		return $this;

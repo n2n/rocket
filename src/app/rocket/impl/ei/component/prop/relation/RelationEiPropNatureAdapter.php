@@ -189,10 +189,15 @@ abstract class RelationEiPropNatureAdapter extends EiPropNatureAdapter implement
 //		})->toEiGuiProp();
 //	}
 	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		return null;
+//	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+//		return null;
+//	}
+
+
+	function isReadOnly(): bool {
+		return $this->getEditConfig()->isReadOnly() || $this->relationModel->isReadOnly();
 	}
-	
+
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		if ($this->getRelationModel()->isTargetMany()) {
 			return null;

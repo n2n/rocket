@@ -1675,7 +1675,7 @@ class EiuAnalyst {
 		}
 		return $eiEntries;
 	}
-	
+
 	/**
 	 * @param mixed $eiEntryArg
 	 * @param string $argName

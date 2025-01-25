@@ -52,6 +52,9 @@ use rocket\op\ei\manage\gui\factory\EiGuiFactory;
 use n2n\util\type\ValueIncompatibleWithConstraintsException;
 use rocket\op\ei\util\EiuPerimeterException;
 use rocket\op\ei\manage\security\InaccessibleEiFieldException;
+use rocket\ui\gui\GuiValueBoundary;
+use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
+use rocket\ui\gui\impl\CompactGui;
 
 
 class EiuEntry {
@@ -300,43 +303,48 @@ class EiuEntry {
 		return $this->accessible = true;
 	}
 
-	function newGuiValueBoundary(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
-			?array $defPropPathsArg = null, bool $contextEiMaskUsed = false, ?int $treeLevel = null): EiuGuiValueBoundary {
-		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
-
-		$eiMaskId = $contextEiMaskUsed
-				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
-				: null;
-
-		$eiGuiValueBoundary = $eiFrameUtil->createEiGuiValueBoundaryFromEiEntry($this->getEiEntry(), $bulky, $readOnly,
-				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths, $treeLevel);
-
-		return new EiuGuiValueBoundary($eiGuiValueBoundary, null, $this->eiuAnalyst);
+	function createGuiValueBoundary(int $viewMode, ?int $treeLevel = null): GuiValueBoundary {
+		$eiGuiEntryFactory = new EiGuiValueBoundaryFactory($this->eiuAnalyst->getEiFrame(true));
+		return $eiGuiEntryFactory->create($treeLevel, [$this->eiEntry], $viewMode);
 	}
 
-	/**
-	 * @param bool $bulky
-	 * @param bool $readOnly
-	 * @param bool $entryGuiControlsIncluded
-	 * @param array|null $defPropPathsArg
-	 * @param bool $contextEiMaskUsed
-	 * @return EiuGuiEntry
-	 */
-	function newGuiEntry(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
-			?array $defPropPathsArg = null, bool $contextEiMaskUsed = false): EiuGuiEntry {
-		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
-		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
-
-		$eiMaskId = $contextEiMaskUsed
-				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
-				: null;
-
-		$eiGuiEntry = $eiFrameUtil->createEiGuiEntry($this->eiEntry, $bulky, $readOnly,
-				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths);
-
-		return new EiuGuiEntry($eiGuiEntry, $this, null, $this->eiuAnalyst);
-	}
+//	function newGuiValueBoundary(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
+//			?array $defPropPathsArg = null, bool $contextEiMaskUsed = false, ?int $treeLevel = null): EiuGuiValueBoundary {
+//		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
+//
+//		$eiMaskId = $contextEiMaskUsed
+//				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
+//				: null;
+//
+//		$eiGuiValueBoundary = $eiFrameUtil->createEiGuiValueBoundaryFromEiEntry($this->getEiEntry(), $bulky, $readOnly,
+//				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths, $treeLevel);
+//
+//		return new EiuGuiValueBoundary($eiGuiValueBoundary, null, $this->eiuAnalyst);
+//	}
+//
+//	/**
+//	 * @param bool $bulky
+//	 * @param bool $readOnly
+//	 * @param bool $entryGuiControlsIncluded
+//	 * @param array|null $defPropPathsArg
+//	 * @param bool $contextEiMaskUsed
+//	 * @return EiuGuiEntry
+//	 */
+//	function newGuiEntry(bool $bulky = true, bool $readOnly = true, bool $entryGuiControlsIncluded = false,
+//			?array $defPropPathsArg = null, bool $contextEiMaskUsed = false): EiuGuiEntry {
+//		$defPropPaths = DefPropPath::buildArray($defPropPathsArg);
+//		$eiFrameUtil = new EiObjectSelector($this->eiuAnalyst->getEiFrame(true));
+//
+//		$eiMaskId = $contextEiMaskUsed
+//				? (string) $eiFrameUtil->getEiFrame()->getContextEiEngine()->getEiTypePath()
+//				: null;
+//
+//		$eiGuiEntry = $eiFrameUtil->createEiGuiEntry($this->eiEntry, $bulky, $readOnly,
+//				$entryGuiControlsIncluded, $eiMaskId, $defPropPaths);
+//
+//		return new EiuGuiEntry($eiGuiEntry, $this, null, $this->eiuAnalyst);
+//	}
 	
 // 	/**
 // 	 * @param bool $eiObjectObj
@@ -873,6 +881,11 @@ class EiuEntry {
 	function createBulkyGui(bool $readOnly): BulkyGui {
 		$factory = new EiGuiFactory($this->eiuAnalyst->getEiFrame(true));
 		return $factory->createBulkyGui([$this->getEiEntry()], $readOnly);
+	}
+
+	function createCompactGui(bool $readOnly): CompactGui {
+		$factory = new EiGuiFactory($this->eiuAnalyst->getEiFrame(true));
+		return $factory->createCompactGui([$this->getEiEntry()], $readOnly);
 	}
 }  
 

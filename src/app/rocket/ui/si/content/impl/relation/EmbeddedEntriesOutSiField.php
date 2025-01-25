@@ -43,7 +43,7 @@ class EmbeddedEntriesOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @param string $typeCateogry
 	 * @param Url $apiUrl
-	 * @param EmbeddedEntryInputHandler $inputHandler
+	 * @param SiEmbeddedEntryFactory $inputHandler
 	 * @param SiEmbeddedEntry[] $values
 	 */
 	function __construct(SiFrame $frame, array $values = []) {

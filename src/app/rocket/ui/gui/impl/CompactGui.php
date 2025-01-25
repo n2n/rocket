@@ -31,10 +31,11 @@ use rocket\ui\si\meta\SiDeclaration;
 use rocket\ui\si\meta\SiFrame;
 use SiCallResult;
 use rocket\ui\si\input\SiInputError;
+use rocket\ui\si\content\impl\basic\CompactEntrySiGui;
 
-class BulkyGui implements Gui {
+class CompactGui implements Gui {
 
-	private BulkyEntrySiGui $siGui;
+	private CompactEntrySiGui $siGui;
 	/**
 	 * @var SiValueBoundary[]
 	 */
@@ -43,11 +44,8 @@ class BulkyGui implements Gui {
 	function __construct(private ?SiFrame $siFrame, private readonly SiDeclaration $siDeclaration,
 			private readonly GuiValueBoundary $guiValueBoundary, private readonly bool $entrySiControlsIncluded = true) {
 
-		$this->siGui = new BulkyEntrySiGui($this->siFrame, $this->siDeclaration,
+		$this->siGui = new CompactEntrySiGui($this->siFrame, $this->siDeclaration,
 				$this->guiValueBoundary->getSiValueBoundary());
-		$this->siGui->setEntryControlsIncluded($this->entrySiControlsIncluded);
-//		$siControls = $this->generalGuiControlMap?->getGuiControls() ?? [];
-//		$this->siGui->setControls($siControls);
 	}
 
 	function getInputSiValueBoundaries(): array {
@@ -99,7 +97,7 @@ class BulkyGui implements Gui {
 //	}
 
 
-	function getSiGui(): BulkyEntrySiGui {
+	function getSiGui(): CompactEntrySiGui {
 		return $this->siGui;
 	}
 

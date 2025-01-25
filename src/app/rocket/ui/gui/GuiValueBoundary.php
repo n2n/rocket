@@ -125,10 +125,10 @@ class GuiValueBoundary {
 	 * @throws IllegalStateException
 	 */
 	function getSelectedGuiEntry(): GuiEntry {
-		return $this->guiEntries[$this->getSelectedMaskId()];
+		return $this->guiEntries[$this->getSelectedTypeId()];
 	}
 
-	function getSelectedMaskId(): string {
+	function getSelectedTypeId(): string {
 		return $this->siValueBoundary->getSelectedTypeId();
 	}
 	

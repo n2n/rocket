@@ -74,6 +74,8 @@ use rocket\op\ei\manage\frame\EiObjectFactory;
 use rocket\op\spec\TypePath;
 use rocket\op\ei\UnknownEiTypeExtensionException;
 use rocket\op\ei\UnknownEiTypeException;
+use rocket\ui\gui\GuiValueBoundary;
+use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 
 class EiuFrame {
 	private $eiFrame;
@@ -1166,6 +1168,13 @@ class EiuFrame {
 	
 	function getQuickSearchDefinition() {
 		return $this->eiFrame->getQuickSearchDefinition();
+	}
+
+	function createGuiValueBoundary($eiEntriesArg, int $viewMode, ?int $treeLevel = null): GuiValueBoundary {
+		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntriesArg, 'eiEntriesArg');
+
+		$eiGuiEntryFactory = new EiGuiValueBoundaryFactory($this->eiuAnalyst->getEiFrame(true));
+		return $eiGuiEntryFactory->create($treeLevel, [$eiEntry], $viewMode);
 	}
 }
 
