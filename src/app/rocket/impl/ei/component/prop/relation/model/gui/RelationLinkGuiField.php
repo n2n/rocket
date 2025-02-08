@@ -58,43 +58,9 @@ class RelationLinkGuiField implements GuiField, SiFieldModel {
 		}
 	}
 	
-	private function createToManySiField(): \rocket\ui\si\content\impl\StringOutSiField|\rocket\ui\si\content\impl\LinkOutSiField {
-		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry())->frame();
-		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCmdPath());
-		
-		$num = $targetEiuFrame->count();
-		$label = null;
-		if ($num == 1) {
-			$label = $num . ' ' . $targetEiuFrame->engine()->mask()->getLabel();
-		} else {
-			$label = $num . ' ' . $targetEiuFrame->engine()->mask()->getPluralLabel();
-		}
-		
-		if (null !== ($overviewNavPoint = $targetEiuFrame->getOverviewNavPoint(false))) {
-			return SiFields::linkOut($overviewNavPoint, $label, false)->setModel($this);
-		}
-		
-		return SiFields::stringOut($label)->setModel($this);
-	}
+
 	
-	private function createToOneSiField(): SiField {
-		$value = $this->eiu->field()->getValue();
-		if ($value === null) {
-			return SiFields::stringOut(null)->setModel($this);
-		}
-		
-		CastUtils::assertTrue($value instanceof EiuEntry);
-		$label = $value->createIdentityString();
-		
-		$targetEiuFrame = $this->eiu->frame()->forkDiscover($this->eiu->prop(), $this->eiu->entry())->frame();
-		$targetEiuFrame->exec($this->relationModel->getTargetReadEiCmdPath());
-		
-		if (null !== ($detailNavPoint = $targetEiuFrame->getDetailNavPoint($value, false))) {
-			return SiFields::linkOut($detailNavPoint, $label)->setModel($this);
-		}
-		
-		return SiFields::stringOut($label)->setModel($this);
-	}
+
 	
 	function getSiField(): SiField {
 		return $this->siField;

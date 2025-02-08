@@ -29,7 +29,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
-use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiField;
+use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiFieldFactory;
 use rocket\ui\gui\field\GuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 
@@ -57,6 +57,6 @@ class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 			return new RelationLinkGuiField($eiu, $this->getRelationModel());
 		}
 		
-		return new ToManyGuiField($eiu, $this->getRelationModel());
+		return new ToManyGuiFieldFactory($eiu, $this->getRelationModel());
 	}
 }

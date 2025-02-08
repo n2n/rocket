@@ -11,6 +11,7 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\gui\factory\EiGuiEntryFactory;
 use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 use rocket\ui\gui\GuiValueBoundary;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EiuGuiDefinition {
 	
@@ -25,7 +26,11 @@ class EiuGuiDefinition {
 	function getEiGuiDefinition(): EiGuiDefinition {
 		return $this->eiGuiDefinition;
 	}
-	
+
+	function createSiMaskId(): string {
+		return new EiSiMaskId($this->eiGuiDefinition->getEiTypePath(), $this->eiGuiDefinition->getViewMode());
+	}
+
 //	/**
 //	 * @return EiuGuiDeclaration
 //	 */

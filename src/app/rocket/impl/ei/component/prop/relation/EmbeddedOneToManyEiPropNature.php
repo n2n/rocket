@@ -65,7 +65,7 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 	}
 
 
-	function buildOutGuiField(Eiu $eiu): BackableGuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		if ($eiu->guiDefinition()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
@@ -80,7 +80,6 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 	}
 
 	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 
@@ -89,8 +88,14 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 
 		$factory = new RelationGuiEmbeddedEntryFactory($targetEiuFrame, $this->relationModel->isReduced());
 
-		$guiField = GuiFields::guiEmbeddedEntriesIn($targetEiuFrame->createSiFrame(), $factory,
-				$this->relationModel->isReduced(), $this->relationModel->isRemovable(), $sortable,
+		$bulkyMaskId = $targetEiuFrame->mask()->createSiMaskId(ViewMode::BULKY_EDIT);
+		$summaryMaskId = null;
+		if ($this->relationModel->isReduced()) {
+			$summaryMaskId = $targetEiuFrame->mask()->createSiMaskId(ViewMode::COMPACT_READ);
+		}
+
+		$guiField = GuiFields::guiEmbeddedEntriesIn($targetEiuFrame->createSiFrame(), $factory, $bulkyMaskId,
+				$summaryMaskId, $this->relationModel->isRemovable(), $sortable,
 				$this->relationModel->getMin(), $this->relationModel->getMax());
 
 		$guiField->setValue($factory->createGuiEmbeddedEntriesFromEiuEntries($eiu->field()->getValue()));

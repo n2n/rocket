@@ -7,6 +7,7 @@ use rocket\ui\gui\impl\CompactGui;
 use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 
 class GuiEmbeddedEntry {
+	private SiEmbeddedEntry $siEmbeddedEntry;
 
 	function __construct(private BulkyGui $gui, private ?CompactGui $summaryGui = null) {
 		$this->siEmbeddedEntry = new SiEmbeddedEntry($this->gui->getSiGui(), $this->summaryGui?->getSiGui());

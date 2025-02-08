@@ -31,6 +31,8 @@ use rocket\op\ei\component\prop\EiProp;
 use n2n\reflection\property\PropertyAccessException;
 use n2n\reflection\property\AccessProxy;
 use rocket\op\ei\util\EiuPerimeterException;
+use rocket\ui\si\content\SiObjectQualifier;
+use rocket\op\ei\manage\gui\factory\EiSiObjectQualifierFactory;
 
 class EiuObject {
 	private $eiObject;
@@ -180,16 +182,24 @@ class EiuObject {
 	function createIdentityString(): string {
 		return $this->eiuAnalyst->getEiuFrame(true)->engine()->createIdentityString($this->eiObject);
 	}
-	
+
 	/**
-	 * @param string $name
+	 * @param string|null $name
 	 * @return SiEntryQualifier
 	 */
 	function createSiEntryQualifier(?string $name = null): SiEntryQualifier {
+
+
 		$name = $name ?? $this->createIdentityString();
 		
 		$siMaskQualifier = $this->eiuAnalyst->getEiuFrame(true)->mask($this->eiObject)->createSiMaskQualifier();
 		
 		return $this->eiObject->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $name);
+	}
+
+	function createSiObjectQualifier(): SiObjectQualifier {
+		$factory = new EiSiObjectQualifierFactory($this->eiuAnalyst->getN2nContext(true));
+		return $factory->create($this->eiObject, $this->eiuAnalyst->getEiFrame(true)->getContextEiEngine()
+				->getEiMask()->determineEiMask($this->eiObject->getEiEntityObj()->getEiType()));
 	}
 }

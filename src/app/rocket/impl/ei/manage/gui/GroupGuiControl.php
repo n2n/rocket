@@ -30,6 +30,8 @@ use rocket\ui\si\control\impl\GroupSiControl;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 use n2n\util\uri\Url;
 use rocket\ui\gui\control\GuiControlMap;
+use rocket\ui\si\api\response\SiCallResponse;
+use rocket\ui\gui\control\GuiControlKey;
 
 class GroupGuiControl implements GuiControl {
 	private $id;
@@ -54,16 +56,23 @@ class GroupGuiControl implements GuiControl {
 	}
 
 	function putGuiControl(string $controlName, GuiControl $guiControl): static {
-		$this->forkGuiControlMap->putGuiControl($controlName, $guiControl);
+		$this->forkGuiControlMap->putGuiControl(new GuiControlKey($controlName), $guiControl);
 		return $this;
 	}
 
-	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+	function getSiControl(): SiControl {
 		return new GroupSiControl($this->siButton, 
-				array_map(function ($child) use ($apiUrl, $siApiCallId) {
-					return $child->toSiControl($apiUrl, $siApiCallId->guiControlPathExt($child->getId()));
-				}, $this->childrean));;
+				array_map(function ($child) {
+					return $child->getSiControl();
+				}, $this->forkGuiControlMap->getGuiControls()));
 	}
 
 
+	function handleCall(): SiCallResponse {
+		// TODO: Implement handleCall() method.
+	}
+
+	function getForkGuiControlMap(): ?GuiControlMap {
+		return $this->forkGuiControlMap;
+	}
 }

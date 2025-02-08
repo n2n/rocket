@@ -35,6 +35,8 @@ use rocket\impl\ei\component\prop\relation\model\filter\ToOneQuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use rocket\op\ei\manage\security\filter\SecurityFilterProp;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\ui\gui\field\BackableGuiField;
+use rocket\impl\ei\component\prop\relation\model\ToOneGuiFieldFactory;
 
 class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 	use QuickSearchConfigTrait;
@@ -56,14 +58,19 @@ class ManyToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 		$field->setMandatory($this->relationModel->isMandatory());
 		return $field;
 	}
-	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->relationModel->isReadOnly()) {
-			return new RelationLinkGuiField($eiu, $this->getRelationModel());
-		}
-		
-		return new ToOneGuiField($eiu, $this->getRelationModel());
+
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
+		$factory = new ToOneGuiFieldFactory($this->relationModel);
+
+		return $factory->createOutGuiField($eiu);
 	}
+
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+		$factory = new ToOneGuiFieldFactory($this->relationModel);
+
+		return $factory->createInGuiField($eiu);
+	}
+
 	
 	public function buildSecurityFilterProp(Eiu $eiu): ?SecurityFilterProp {
 		return null;

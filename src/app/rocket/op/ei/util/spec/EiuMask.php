@@ -34,6 +34,7 @@ use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\op\ei\EiType;
 use rocket\op\ei\component\prop\EiProp;
 use n2n\l10n\Lstr;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EiuMask  {
 	private $eiMask;
@@ -60,7 +61,11 @@ class EiuMask  {
 	function getEiTypePath() {
 		return $this->eiMask->getEiTypePath();
 	}
-	
+
+	function createSiMaskId(int $viewMode): string {
+		return new EiSiMaskId($this->eiMask->getEiTypePath(), $viewMode);
+	}
+
 	/**
 	 * @return \rocket\op\ei\util\spec\EiuType
 	 */
@@ -253,10 +258,7 @@ class EiuMask  {
 			$readyCallback($this->engine());
 		});
 	}
-	
-	/**
-	 * @return SiMaskQualifier
-	 */
+
 	public function createSiMaskQualifier(?N2nLocale $n2nLocale = null): SiMaskQualifier {
 		return $this->eiMask->createSiMaskQualifier($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}

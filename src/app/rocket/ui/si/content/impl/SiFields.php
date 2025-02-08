@@ -26,7 +26,7 @@ use n2n\util\uri\Url;
 use n2n\web\ui\UiComponent;
 use rocket\ui\si\content\impl\iframe\IframeOutSiField;
 use rocket\ui\si\content\impl\iframe\IframeInSiField;
-use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
+use rocket\ui\si\content\impl\relation\ObjectQualifiersSelectInSiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntriesInSiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelInputHandler;
@@ -118,10 +118,12 @@ class SiFields {
 	 * @param int $min
 	 * @param int|null $max
 	 * @param SiEntryQualifier[]|null $pickables
-	 * @return QualifierSelectInSiField
+	 * @return ObjectQualifiersSelectInSiField
 	 */
-	static function qualifierSelectIn(SiFrame $frame, array $values = [], int $min = 0, ?int $max = null, ?array $pickables = null): QualifierSelectInSiField {
-		return (new QualifierSelectInSiField($frame, $values))->setMin($min)->setMax($max)->setPickables($pickables);
+	static function objectQualifiersSelectIn(SiFrame $frame, array $values = [], int $min = 0, ?int $max = null,
+			?array $pickables = null): ObjectQualifiersSelectInSiField {
+		return (new ObjectQualifiersSelectInSiField($frame, $values))->setMin($min)->setMax($max)
+				->setPickables($pickables);
 	}
 
 	/**

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { SiObjectIdentifier } from '../../content/si-entry-qualifier';
 import { SiValueBoundary } from '../../content/si-value-boundary';
 import { IllegalSiStateError } from 'src/app/si/util/illegal-si-state-error';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { Message } from 'src/app/util/i18n/message';
+import { SiObjectIdentifier } from '../../content/si-object-qualifier';
 
 @Injectable({
 	providedIn: 'root'
@@ -99,28 +99,28 @@ export class SiModEvent {
 		this.addedEventMap.clear();
 		for (const ei of this.added) {
 			IllegalSiStateError.assertTrue(ei.id !== null);
-			this.reqEiMap(this.addedEventMap, ei.typeId).set(ei.id!, ei);
+			this.reqEiMap(this.addedEventMap, ei.superTypeId).set(ei.id!, ei);
 		}
 
 		this.updatedEventMap.clear();
 		for (const ei of this.updated) {
 			IllegalSiStateError.assertTrue(ei.id !== null);
-			this.reqEiMap(this.updatedEventMap, ei.typeId).set(ei.id!, ei);
+			this.reqEiMap(this.updatedEventMap, ei.superTypeId).set(ei.id!, ei);
 		}
 
 		this.removedEventMap.clear();
 		for (const ei of this.removed) {
 			IllegalSiStateError.assertTrue(ei.id !== null);
-			this.reqEiMap(this.removedEventMap, ei.typeId).set(ei.id!, ei);
+			this.reqEiMap(this.removedEventMap, ei.superTypeId).set(ei.id!, ei);
 		}
 	}
 
-	private reqEiMap(map: Map<string, Map<string, SiObjectIdentifier>>, typeId: string): Map<string, SiObjectIdentifier> {
-		if (!map.has(typeId)) {
-			map.set(typeId, new Map());
+	private reqEiMap(map: Map<string, Map<string, SiObjectIdentifier>>, superTypeId: string): Map<string, SiObjectIdentifier> {
+		if (!map.has(superTypeId)) {
+			map.set(superTypeId, new Map());
 		}
 
-		return map.get(typeId)!;
+		return map.get(superTypeId)!;
 	}
 
 	containsModEntryIdentifier(ei: SiObjectIdentifier): boolean {
@@ -128,9 +128,9 @@ export class SiModEvent {
 			return false;
 		}
 
-		return (this.addedEventMap.has(ei.typeId) && this.addedEventMap.get(ei.typeId)!.has(ei.id))
-				|| (this.updatedEventMap.has(ei.typeId) && this.updatedEventMap.get(ei.typeId)!.has(ei.id))
-				|| (this.removedEventMap.has(ei.typeId) && this.removedEventMap.get(ei.typeId)!.has(ei.id));
+		return (this.addedEventMap.has(ei.superTypeId) && this.addedEventMap.get(ei.superTypeId)!.has(ei.id))
+				|| (this.updatedEventMap.has(ei.superTypeId) && this.updatedEventMap.get(ei.superTypeId)!.has(ei.id))
+				|| (this.removedEventMap.has(ei.superTypeId) && this.removedEventMap.get(ei.superTypeId)!.has(ei.id));
 	}
 
 	containsAddedTypeId(typeId: string): boolean {

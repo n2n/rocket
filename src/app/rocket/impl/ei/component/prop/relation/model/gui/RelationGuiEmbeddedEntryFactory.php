@@ -58,6 +58,8 @@ class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 		foreach ($eiuEntries as $eiuEntry) {
 			$eiuEntry->onValidate(fn () => $this->eiuEntriesMap->offsetSet($guiEmbeddedEntry, $eiuEntry));
 		}
+
+		return $guiEmbeddedEntry;
 	}
 
 	/**

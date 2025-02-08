@@ -214,7 +214,7 @@ class OpfControlResponse implements GuiCallResponse {
 		ArgUtils::assertTrue($entryId !== null);
 		
 		$this->siCallResponse->addEvent(
-				EiSiMaskIdentifierFactory::determineTypeId($eiObject->getEiEntityObj()->getEiType()),
+				EiSiMaskIdentifierFactory::determineSuperTypeId($eiObject->getEiEntityObj()->getEiType()),
 				$entryId, $modType);
 	}
 	

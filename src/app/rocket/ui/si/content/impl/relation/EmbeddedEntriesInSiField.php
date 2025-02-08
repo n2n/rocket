@@ -28,6 +28,7 @@ use rocket\ui\si\content\impl\InSiFieldAdapter;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
+use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntry;
 
 class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	/**
@@ -53,7 +54,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	/**
 	 * @var bool
 	 */
-	private $reduced = false;
+	private ?string $summaryMaskId = null;
 	/**
 	 * @var bool
 	 */
@@ -73,7 +74,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * @param SiEmbeddedEntryFactory $embeddedEntryFactory
 	 * @param SiEmbeddedEntry[] $values
 	 */
-	function __construct(SiFrame $frame, SiEmbeddedEntryFactory $embeddedEntryFactory, array $values = []) {
+	function __construct(SiFrame $frame, SiEmbeddedEntryFactory $embeddedEntryFactory, private string $bulkyMaskId, array $values = []) {
 		$this->frame = $frame;
 		$this->embeddedEntryFactory = $embeddedEntryFactory;
 		$this->setValue($values);
@@ -94,6 +95,15 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 */
 	function getValue(): array {
 		return $this->values;
+	}
+
+	function setSummaryMaskId(?string $summaryMaskId): static {
+		$this->summaryMaskId = $summaryMaskId;
+		return $this;
+	}
+
+	function getSummaryMaskId(): ?string {
+		return $this->summaryMaskId;
 	}
 	
 	/**
@@ -207,11 +217,13 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'values' => $this->values,
+			'values' => array_map(fn (SiEmbeddedEntry $v) => $v->toJsonStruct($n2nContext), $this->values),
 			'frame' => $this->frame,
 			'min' => $this->min,
 			'max' => $this->max,
-			'reduced' => $this->reduced,
+			'reduced' => $this->summaryMaskId !== null,
+			'bulkyMaskId' => $this->bulkyMaskId,
+			'summaryMaskId' => $this->summaryMaskId,
 			'nonNewRemovable' => $this->nonNewRemovable,
 			'sortable' => $this->sortable,
 			'allowedSiTypeIds' => $this->allowedSiTypeIds,

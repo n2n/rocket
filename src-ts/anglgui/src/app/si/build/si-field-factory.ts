@@ -33,7 +33,7 @@ import { DateUtils } from 'src/app/util/date/date-utils';
 import { Message } from 'src/app/util/i18n/message';
 import { SiEssentialsFactory } from './si-field-essentials-factory';
 import { FileInSiField } from '../model/content/impl/file/model/file-in-si-field';
-import { QualifierSelectInSiField } from '../model/content/impl/qualifier/model/qualifier-select-in-si-field';
+import { ObjectQualifiersSelectInSiField } from '../model/content/impl/qualifier/model/object-qualifiers-select-in-si-field';
 import { LinkOutSiField } from '../model/content/impl/alphanum/model/link-out-si-field';
 import { SiService } from '../manage/si.service';
 import { SplitSiField } from '../model/content/impl/split/model/split-si-field';
@@ -54,7 +54,7 @@ enum SiFieldType {
 	FILE_IN = 'file-in',
 	LINK_OUT = 'link-out',
 	ENUM_IN = 'enum-in',
-	QUALIFIER_SELECT_IN = 'qualifier-select-in',
+	OBJECT_QUALIFIERS_SELECT_IN = 'object-qualifiers-select-in',
 	EMBEDDED_ENTRIES_OUT = 'embedded-entries-out',
 	EMBEDDED_ENTRIES_IN = 'embedded-entries-in',
 	EMBEDDED_ENTRY_PANELS_OUT = 'embedded-entries-panels-out',
@@ -174,15 +174,15 @@ export class SiFieldFactory {
 
 			return enumInSiField;
 
-		case SiFieldType.QUALIFIER_SELECT_IN:
-			const qualifierSelectInSiField = new QualifierSelectInSiField(
+		case SiFieldType.OBJECT_QUALIFIERS_SELECT_IN:
+			const objectQualifiersSelectInSiField = new ObjectQualifiersSelectInSiField(
 					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), prop.label,
-					SiMetaFactory.buildEntryQualifiers(dataExtr.reqArray('values')));
-			qualifierSelectInSiField.min = dataExtr.reqNumber('min');
-			qualifierSelectInSiField.max = dataExtr.nullaNumber('max');
-			qualifierSelectInSiField.pickables = SiMetaFactory.buildEntryQualifiers(dataExtr.nullaArray('pickables'));
-			qualifierSelectInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
-			return qualifierSelectInSiField;
+					SiMetaFactory.buildObjectQualifiers(dataExtr.reqArray('values')));
+			objectQualifiersSelectInSiField.min = dataExtr.reqNumber('min');
+			objectQualifiersSelectInSiField.max = dataExtr.nullaNumber('max');
+			objectQualifiersSelectInSiField.pickables = SiMetaFactory.buildObjectQualifiers(dataExtr.nullaArray('pickables'));
+			objectQualifiersSelectInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+			return objectQualifiersSelectInSiField;
 
 		case SiFieldType.EMBEDDED_ENTRIES_OUT:
 			const embeddedEntryOutSiField = new EmbeddedEntriesOutSiField(prop.label, this.injector.get(SiService),

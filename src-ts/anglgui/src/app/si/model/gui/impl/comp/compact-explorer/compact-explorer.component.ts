@@ -223,34 +223,30 @@ export class CompactExplorerComponent implements OnInit, OnDestroy {
 			return;
 		}
 
+		const selection = this.model.getSiEntryQualifierSelection();
+
 		if (this.singleSelect) {
-			this.model.getSiEntryQualifierSelection().selectedQualfiers = [qualifier];
+			selection.setSelectedQualifiers([qualifier]);
 			return;
 		}
 
-		const i = this.model.getSiEntryQualifierSelection().selectedQualfiers.findIndex((selectedQualifier) => {
-			return qualifier.equals(selectedQualifier);
-		});
-
-		if (i !== -1) {
-			this.model.getSiEntryQualifierSelection().selectedQualfiers.splice(i, 1);
+		if (selection.isQualifierSelected(qualifier)) {
+			this.model.getSiEntryQualifierSelection().unselectedQualifier(qualifier);
 			return;
 		}
 
 		if (this.areMoreSelectable()) {
-			this.model.getSiEntryQualifierSelection().selectedQualfiers.push(qualifier);
+			this.model.getSiEntryQualifierSelection().selectedQualifier(qualifier);
 		}
 	}
 
 	isSelected(qualifier: SiEntryQualifier): boolean {
-		return undefined !== this.model.getSiEntryQualifierSelection().selectedQualfiers.find((selectedQualifier) => {
-			return qualifier.equals(selectedQualifier);
-		});
+		return this.model.getSiEntryQualifierSelection().isQualifierSelected(qualifier);
 	}
 
 	areMoreSelectable(): boolean {
 		return this.model.getSiEntryQualifierSelection().max === null
-				|| this.model.getSiEntryQualifierSelection().selectedQualfiers.length < this.model.getSiEntryQualifierSelection().max!;
+				|| this.model.getSiEntryQualifierSelection().selectionSize < this.model.getSiEntryQualifierSelection().max!;
 	}
 
 	drop(event: CdkDragDrop<string[]>): void {

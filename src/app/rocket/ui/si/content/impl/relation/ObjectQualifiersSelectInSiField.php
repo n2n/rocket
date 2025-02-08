@@ -22,70 +22,61 @@
 namespace rocket\ui\si\content\impl\relation;
 
 use n2n\util\type\attrs\DataSet;
-use rocket\ui\si\content\SiEntryQualifier;
-use n2n\util\uri\Url;
+use rocket\ui\si\content\SiObjectQualifier;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 use rocket\ui\si\meta\SiFrame;
 
-class QualifierSelectInSiField extends InSiFieldAdapter {
+class ObjectQualifiersSelectInSiField extends InSiFieldAdapter {
 	/**
-	 * @var SiFrame
+	 * @var SiObjectQualifier[]
 	 */
-	private $frame;
-	/**
-	 * @var SiEntryQualifier[]
-	 */
-	private $values;
+	private array $values;
 	/**
 	 * @var int
 	 */
-	private $min = 0;
+	private int $min = 0;
 	
 	/**
 	 * @var int|null
 	 */
-	private $max = null;
+	private ?int $max = null;
 	
 	/**
-	 * @var SiEntryQualifier[]
+	 * @var SiObjectQualifier[]
 	 */
-	private $pickables = null;
-	
+	private ?array $pickables = null;
+
 	/**
-	 * @param Url $apiUrl
-	 * @param SiEntryQualifier[] $values
+	 * @param SiFrame $frame
+	 * @param SiObjectQualifier[] $value
 	 */
-	function __construct(SiFrame $frame, array $values = []) {
-		$this->frame = $frame;
-		$this->setValues($values);	
+	function __construct(private SiFrame $frame, array $value = []) {
+		$this->setValue($value);
 	}
 	
 	/**
-	 * @param SiEntryQualifier[] $values
-	 * @return QualifierSelectInSiField
+	 * @param SiObjectQualifier[] $values
+	 * @return ObjectQualifiersSelectInSiField
 	 */
-	function setValues(array $values) {
-		$typeContext = $this->frame->getTypeContext();
-		foreach ($values as $value) {
-			ArgUtils::assertTrue($typeContext->containsMaskId($value->getIdentifier()->getTypeId()));
-		}
+	function setValue(array $values): static {
+		ArgUtils::valArray($values, SiObjectQualifier::class);
 		$this->values = $values;
 		return $this;
 	}
 	
 	/**
-	 * @return SiEntryQualifier[]
+	 * @return SiObjectQualifier[]
 	 */
-	function getValues() {
+	function getValue(): array {
 		return $this->values;
 	}
 	
 	/**
 	 * @param int $min
-	 * @return QualifierSelectInSiField
+	 * @return ObjectQualifiersSelectInSiField
 	 */
-	function setMin(int $min) {
+	function setMin(int $min): static {
 		$this->min = $min;
 		return $this;
 	}
@@ -93,15 +84,15 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	/**
 	 * @return int
 	 */
-	function getMin() {
+	function getMin(): int {
 		return $this->min;
 	}
 	
 	/**
 	 * @param int|null $max
-	 * @return QualifierSelectInSiField
+	 * @return ObjectQualifiersSelectInSiField
 	 */
-	function setMax(?int $max) {
+	function setMax(?int $max): static {
 		$this->max = $max;
 		return $this;
 	}
@@ -109,28 +100,24 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	/**
 	 * @return int|null
 	 */
-	function getMax() {
+	function getMax(): ?int {
 		return $this->max;
 	}
 	
 	/**
-	 * @param SiEntryQualifier[] $pickables
-	 * @return QualifierSelectInSiField
+	 * @param SiObjectQualifier[] $pickables
+	 * @return ObjectQualifiersSelectInSiField
 	 */
-	function setPickables(?array $pickables) {
-		$typeContext = $this->frame->getTypeContext();
-		foreach ((array) $pickables as $pickable) {
-			ArgUtils::assertTrue($pickable instanceof SiEntryQualifier 
-					&& $typeContext->containsMaskId($pickable->getIdentifier()->getTypeId()));
-		}
+	function setPickables(?array $pickables): static {
+		ArgUtils::valArray($pickables, SiObjectQualifier::class, true);
 		$this->pickables = $pickables;
 		return $this;
 	}
 	
 	/**
-	 * @return SiEntryQualifier[]
+	 * @return SiObjectQualifier[]
 	 */
-	function getPickables() {
+	function getPickables(): ?array {
 		return $this->pickables;
 	}
 	
@@ -139,7 +126,7 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'qualifier-select-in';
+		return 'object-qualifiers-select-in';
 	}
 	
 	/**
@@ -162,12 +149,12 @@ class QualifierSelectInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
-		$siQualifiers = [];
+		$siObjectQualifiers = [];
 		foreach ((new DataSet($data))->reqArray('values', 'array') as $data) {
-			$siQualifiers[] = SiEntryQualifier::parse($data);
+			$siObjectQualifiers[] = SiObjectQualifier::parse($data);
 		}
 		
-		$this->values = $siQualifiers;
+		$this->values = $siObjectQualifiers;
 		return true;
 	}
 }

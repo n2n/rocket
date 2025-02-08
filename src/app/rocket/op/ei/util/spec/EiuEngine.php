@@ -35,6 +35,7 @@ use n2n\l10n\Lstr;
 use rocket\ui\gui\EiGuiDeclaration;
 use InvalidArgumentException;
 use rocket\op\ei\util\gui\EiuGuiDefinition;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EiuEngine {
 
@@ -86,7 +87,8 @@ class EiuEngine {
 		
 		return new EiuEngine($this->eiEngine->getSupremeEiEngine(), null, $this->eiuAnalyst);
 	}
-	
+
+
 	public function removeGuiProp($defPropPath): void {
 		$this->eiEngine->getEiGuiDefinition()->removeGuiPropByPath(DefPropPath::create($defPropPath));
 	}

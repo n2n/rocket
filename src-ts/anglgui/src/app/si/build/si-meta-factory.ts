@@ -8,6 +8,7 @@ import { SiStructureDeclaration } from '../model/meta/si-structure-declaration';
 import { SiFrame } from '../model/meta/si-frame';
 import { SiEntryIdentifier, SiEntryQualifier } from '../model/content/si-entry-qualifier';
 import { SiControlFactory } from './si-control-factory';
+import { SiObjectQualifier } from '../model/content/si-object-qualifier';
 
 
 export class SiMetaFactory {
@@ -165,5 +166,24 @@ export class SiMetaFactory {
 
 		return new SiEntryQualifier(SiMetaFactory.createEntryIdentifier(extr.reqObject('identifier')),
 				extr.nullaString('idName'));
+	}
+
+	static buildObjectQualifiers(dataArr: any[]|null): SiObjectQualifier[] {
+		if (dataArr === null) {
+			return [];
+		}
+
+		const objectQualifiers: SiObjectQualifier[] = [];
+		for (const data of dataArr) {
+			objectQualifiers.push(SiMetaFactory.createObjectQualifier(data));
+		}
+		return objectQualifiers;
+	}
+
+	static createObjectQualifier(data: any): SiObjectQualifier {
+		const extr = new Extractor(data);
+
+		return new SiObjectQualifier(extr.reqString('superTypeId'), extr.reqString('id'),
+				extr.reqString('idName'));
 	}
 }

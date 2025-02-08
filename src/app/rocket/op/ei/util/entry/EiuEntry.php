@@ -55,6 +55,9 @@ use rocket\op\ei\manage\security\InaccessibleEiFieldException;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 use rocket\ui\gui\impl\CompactGui;
+use rocket\op\ei\manage\gui\factory\EiSiEntryQualifierFactory;
+use rocket\ui\si\content\SiObjectQualifier;
+use rocket\op\ei\manage\gui\factory\EiSiObjectQualifierFactory;
 
 
 class EiuEntry {
@@ -841,15 +844,21 @@ class EiuEntry {
 	/**
 	 * @return \rocket\ui\si\content\SiEntryQualifier
 	 */
-	function createSiEntryQualifier(): \rocket\ui\si\content\SiEntryQualifier {
-		$siMaskQualifier = $this->mask()->createSiMaskQualifier();
-		$idName = $this->createIdentityString();
-		
-		if ($this->eiuObject !== null) {
-			return $this->eiuObject->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
-		}
-		
-		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
+//	function createSiEntryQualifier(): \rocket\ui\si\content\SiEntryQualifier {
+//		$factory = new EiSiEntryQualifierFactory($this->eiuAnalyst->getN2nContext(true));
+//		$siMaskQualifier = $factory->create($this->getEiEntry(true));
+//		$idName = $this->createIdentityString();
+//
+//		if ($this->eiuObject !== null) {
+//			return $this->eiuObject->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
+//		}
+//
+//		return $this->eiEntry->getEiObject()->createSiEntryIdentifier()->toQualifier($siMaskQualifier, $idName);
+//	}
+
+	function createSiObjectQualifier(): SiObjectQualifier {
+		$factory = new EiSiObjectQualifierFactory($this->eiuAnalyst->getN2nContext(true));
+		return $factory->createFromEiEntry($this->getEiEntry(true));
 	}
 	
 	function getMessages($eiPropPath = null, bool $recursive = false) {

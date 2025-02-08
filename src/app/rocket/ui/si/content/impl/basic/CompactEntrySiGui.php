@@ -28,6 +28,10 @@ use rocket\ui\si\control\SiControl;
 use rocket\ui\si\content\SiGui;
 use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\meta\SiFrame;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\api\response\SiInputResult;
+use rocket\ui\si\api\request\SiInput;
+use n2n\util\ex\NotYetImplementedException;
 
 class CompactEntrySiGui implements SiGui {
 	private $frame;
@@ -90,5 +94,9 @@ class CompactEntrySiGui implements SiGui {
 			'valueBoundary' => $this->valueBoundary->toJsonStruct($n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
+	}
+
+	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult {
+		throw new NotYetImplementedException();
 	}
 }

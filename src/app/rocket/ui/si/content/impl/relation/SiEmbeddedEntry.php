@@ -26,8 +26,9 @@ use rocket\ui\si\content\impl\basic\CompactEntrySiGui;
 use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 use rocket\ui\si\content\SiEntryQualifier;
+use n2n\core\container\N2nContext;
 
-class SiEmbeddedEntry implements \JsonSerializable {
+class SiEmbeddedEntry  {
 	/**
 	 * @var BulkyEntrySiGui
 	 */
@@ -47,14 +48,14 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\ui\si\content\impl\basic\BulkyEntrySiGui
+	 * @return BulkyEntrySiGui
 	 */
 	function getContent() {
 		return $this->content;
 	}
 	
 	/**
-	 * @param \rocket\ui\si\content\impl\basic\BulkyEntrySiGui $content
+	 * @param BulkyEntrySiGui $content
 	 */
 	function setContent(BulkyEntrySiGui $content) {
 		$this->content = $content;
@@ -75,13 +76,13 @@ class SiEmbeddedEntry implements \JsonSerializable {
 	}
 
 	function handleInput(SiEntryQualifier $qualifier): SiValueBoundaryInput {
-		$qualifier->getIdentifier()->getId()
+		$qualifier->getIdentifier()->getId();
 	}
 
-	function jsonSerialize(): mixed {		
+	function toJsonStruct(N2nContext $n2nContext): mixed {
 		return [
-			'content' => SiPayloadFactory::buildDataFromComp($this->content),
-			'summaryContent' => SiPayloadFactory::buildDataFromComp($this->summaryContent)
+			'content' => SiPayloadFactory::buildDataFromComp($this->content, $n2nContext),
+			'summaryContent' => SiPayloadFactory::buildDataFromComp($this->summaryContent, $n2nContext)
 		];
 	}
 

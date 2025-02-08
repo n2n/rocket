@@ -19,64 +19,47 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\meta;
+namespace rocket\ui\si\content;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\err\CorruptedSiDataException;
+use rocket\ui\si\meta\SiMaskIdentifier;
+use rocket\ui\si\meta\SiMaskQualifier;
 
-class SiMaskQualifier implements \JsonSerializable {
-	private $identifier;
-	private $name;
-	private $iconClass;
-	
-	function __construct(SiMaskIdentifier $identifier, string $name, string $iconClass) {
-		$this->identifier = $identifier;
-		$this->name = $name;
-		$this->iconClass = $iconClass;
+class SiObjectQualifier implements \JsonSerializable {
+
+	function __construct(private string $superTypeId, private string $id, private string $idName) {
 	}
-	
-	/**
-	 * @return string
-	 */
-	function getName() {
-		return $this->name;
+
+	function getSuperTypeId(): string {
+		return $this->superTypeId;
 	}
-	
-	/**
-	 * @param string $name
-	 * @return \rocket\si\meta\SiMaskQualifier
-	 */
-	function setName(string $name) {
-		$this->name = $name;
-		return $this;
+
+	function getId(): string {
+		return $this->id;
 	}
-	
-	/**
-	 * @return \rocket\ui\si\meta\SiMaskIdentifier
-	 */
-	function getIdentifier() {
-		return $this->identifier;
+
+	function getIdName(): string {
+		return $this->idName;
 	}
-	
+
 	function jsonSerialize(): mixed {
 		return [
-			'identifier' => $this->identifier,
-			'name' => $this->name,
-			'iconClass' => $this->iconClass
+			'superTypeId' => $this->superTypeId,
+			'id' => $this->id,
+			'idName' => $this->idName
 		];
 	}
 
 	/**
-	 * @param array $data
 	 * @throws CorruptedSiDataException
-	 * @return \rocket\si\meta\SiMaskQualifier
 	 */
-	static function parse(array $data) {
+	static function parse(array $data): SiObjectQualifier {
 		$ds = new DataSet($data);
-	
+
 		try {
-			return new SiMaskQualifier(SiMaskIdentifier::parse($ds->reqArray('identifier')),
-					$ds->reqString('name'), $ds->reqString('iconClass'));
+			return new SiObjectQualifier($ds->reqArray('superTypeId'),
+					$ds->reqString('id'), $ds->reqString('idName'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
 			throw new CorruptedSiDataException(null, null, $e);
 		}

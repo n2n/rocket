@@ -36,6 +36,13 @@ use rocket\op\ei\manage\critmod\quick\QuickSearchProp;
 use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use rocket\impl\ei\component\prop\adapter\EditConfigTrait;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\GuiFields;
+use n2n\util\type\CastUtils;
+use rocket\op\ei\util\entry\EiuEntry;
+use rocket\ui\si\content\impl\SiFields;
+use rocket\op\ei\util\frame\EiuFrame;
+use rocket\impl\ei\component\prop\relation\model\ToOneGuiFieldFactory;
 
 
 class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
@@ -59,12 +66,33 @@ class OneToOneSelectEiPropNature extends RelationEiPropNatureAdapter {
 		return $field;
 	}
 	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->relationModel->isReadOnly()) {
-			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
+		$factory = new ToOneGuiFieldFactory($this->relationModel);
+
+		return $factory->createOutGuiField($eiu);
+	}
+
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+		$factory = new ToOneGuiFieldFactory($this->relationModel);
+
+		return $factory->createInGuiField($eiu);
+	}
+
+	private function readPickableQualifiers(Eiu $targetEiu, int $maxNum): ?array {
+		if ($maxNum <= 0) {
+			return null;
 		}
-		
-		return new ToOneGuiField($eiu, $this->getRelationModel());
+
+		$num = $targetEiu->frame()->count();
+		if ($num > $maxNum) {
+			return null;
+		}
+
+		$siEntryQualifiers = [];
+		foreach ($targetEiu->frame()->lookupObjects() as $eiuObject) {
+			$siEntryQualifiers[] = $eiuObject->createSiEntryQualifier();
+		}
+		return $siEntryQualifiers;
 	}
 	
 	function buildQuickSearchProp(Eiu $eiu): ?QuickSearchProp {

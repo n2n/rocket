@@ -10,16 +10,18 @@ use n2n\bind\mapper\impl\Mappers;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\validation\validator\impl\Validators;
+use rocket\ui\si\content\impl\relation\SiEmbeddedEntryFactory;
 
-class EmbeddedEntriesInGuiField extends InGuiFieldAdapter {
+class EmbeddedEntriesInGuiField extends InGuiFieldAdapter implements SiEmbeddedEntryFactory {
 
 	private EmbeddedEntriesInSiField $siField;
 
 	private GuiEmbeddedEntriesCollection $collection;
 
-	function __construct(private SiFrame $siFrame, private GuiEmbeddedEntryFactory $guiEmbeddedEntriesModel) {
+	function __construct(private SiFrame $siFrame, private GuiEmbeddedEntryFactory $guiEmbeddedEntriesModel,
+			private string $bulkyMaskId) {
 		$this->collection = new GuiEmbeddedEntriesCollection($guiEmbeddedEntriesModel);
-		$this->siField = new EmbeddedEntriesInSiField($this->siFrame, $this->collection);
+		$this->siField = new EmbeddedEntriesInSiField($this->siFrame, $this, $this->bulkyMaskId);
 		parent::__construct($this->siField);
 	}
 
@@ -32,7 +34,7 @@ class EmbeddedEntriesInGuiField extends InGuiFieldAdapter {
 	 * @return EmbeddedEntriesInGuiField
 	 */
 	function setValue(array $value): static {
-		ArgUtils::valArray($value, SiEmbeddedEntry::class);
+		ArgUtils::valArray($value, GuiEmbeddedEntry::class);
 		$this->siField->setValue(array_map(
 				fn (GuiEmbeddedEntry $guiEmbeddedEntry) => $this->collection->add($guiEmbeddedEntry),
 				$value));
@@ -55,5 +57,9 @@ class EmbeddedEntriesInGuiField extends InGuiFieldAdapter {
 		});
 
 		return $mappers;
+	}
+
+	function createSiEmbeddedEntry(string $maskId): SiEmbeddedEntry {
+		return $this->collection->createSiEmbeddedEntry($maskId);
 	}
 }

@@ -29,7 +29,7 @@ use rocket\ui\si\content\impl\SiFields;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
 use n2n\util\type\CastUtils;
 use rocket\op\ei\util\entry\EiuEntry;
-use rocket\ui\si\content\impl\relation\QualifierSelectInSiField;
+use rocket\ui\si\content\impl\relation\ObjectQualifiersSelectInSiField;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\gui\field\impl\InGuiFieldAdapter;
 use n2n\core\container\N2nContext;
@@ -47,7 +47,7 @@ class ToOneGuiField extends InGuiFieldAdapter {
 	 */
 	private $targetEiu;
 	/**
-	 * @var QualifierSelectInSiField
+	 * @var ObjectQualifiersSelectInSiField
 	 */
 	private $siField;
 	
@@ -60,18 +60,17 @@ class ToOneGuiField extends InGuiFieldAdapter {
 		$values = [];
 		if (null !== ($eiuEntry = $eiu->field()->getValue())) {
 			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			$values[] = $eiuEntry->createSiEntryQualifier();
+			$values[] = $eiuEntry->createSiObjectQualifier();
 		}
 		
-		$this->siField = SiFields::qualifierSelectIn($this->targetEiu->frame()->createSiFrame(),
+		$this->siField = SiFields::objectQualifiersSelectIn($this->targetEiu->frame()->createSiFrame(),
 						$values, ($relationModel->isMandatory() ? 1 : 0), 1, 
 						$this->readPickableQualifiers($relationModel->getMaxPicksNum()));
-
 
 		parent::__construct($this->siField);
 	}
 	
-	private function readPickableQualifiers(int $maxNum) {
+	private function readPickableQualifiers(int $maxNum): ?array {
 		if ($maxNum <= 0) {
 			return null;
 		}

@@ -1,15 +1,13 @@
 import { SiMaskIdentifier } from '../meta/si-mask-qualifier';
+import { SiObjectIdentifier, SiObjectQualifier } from './si-object-qualifier';
 
-export interface SiObjectIdentifier {
-	typeId: string;
-	id: string|null;
-}
+
 
 export class SiEntryIdentifier implements SiObjectIdentifier {
 	constructor(readonly maskIdentifier: SiMaskIdentifier, readonly id: string|null) {
 	}
 
-	get typeId(): string {
+	get superTypeId(): string {
 		return this.maskIdentifier.superTypeId;
 	}
 
@@ -49,5 +47,9 @@ export class SiEntryQualifier {
 
 	toString(): string {
 		return this.idName + ' (' + this.identifier.toString() + ')';
+	}
+
+	toObjectQualifier(): SiObjectQualifier {
+		return new SiObjectQualifier(this.identifier.maskIdentifier.superTypeId, this.identifier.id, this.idName);
 	}
 }

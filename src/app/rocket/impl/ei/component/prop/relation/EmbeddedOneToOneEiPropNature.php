@@ -42,6 +42,8 @@ use rocket\ui\gui\field\impl\GuiFields;
 use rocket\impl\ei\component\prop\relation\model\gui\RelationGuiEmbeddedEntryFactory;
 use n2n\bind\mapper\impl\Mappers;
 use n2n\util\col\ArrayUtils;
+use rocket\ui\gui\field\BackableGuiField;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 
@@ -65,7 +67,7 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		return $field;
 	}
 
-	function buildOutGuiField(Eiu $eiu): GuiField {
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
 		if ($eiu->guiDefinition()->isCompact()) {
 			return $this->createCompactGuiField($eiu);
 		}
@@ -78,22 +80,29 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		$targetEiuEntry = $eiu->field()->getValue();
 		$guiEmbeddedEntry = null;
 		if ($targetEiuEntry !== null) {
-			$guiEmbeddedEntry = $factory->createGuiEmbeddedEntryFromEiuEntry($targetEiuEntry)
+			$guiEmbeddedEntry = $factory->createGuiEmbeddedEntryFromEiuEntry($targetEiuEntry);
 		}
 
 		return GuiFields::guiEmbeddedEntriesOut($targetEiuFrame->createSiFrame(), $this->relationModel->isReduced(),
 				[$guiEmbeddedEntry]);
 	}
 
-	function buildInGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetEditEiCmdPath());
 
 
 		$factory = new RelationGuiEmbeddedEntryFactory($targetEiuFrame, $this->relationModel->isReduced());
 
+		$eiuMask = $targetEiuFrame->mask();
+		$bulkySiMaskId = $eiuMask->createSiMaskId(ViewMode::BULKY_EDIT);
+		$summarySiMaskId = null;
+		if ($this->relationModel->isReduced()) {
+			$summarySiMaskId = $eiuMask->createSiMaskId(ViewMode::COMPACT_READ);
+		}
+
 		$guiField = GuiFields::guiEmbeddedEntriesIn($targetEiuFrame->createSiFrame(), $factory,
-				$this->relationModel->isReduced(), $this->relationModel->isRemovable(), false,
+				$bulkySiMaskId, $summarySiMaskId, $this->relationModel->isRemovable(), false,
 				$this->relationModel->getMin(), $this->relationModel->getMax());
 
 		$targetEiuEntry = $eiu->field()->getValue();
@@ -111,9 +120,9 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return GuiField
+	 * @return BackableGuiField
 	 */
-	private function createCompactGuiField(Eiu $eiu): GuiField {
+	private function createCompactGuiField(Eiu $eiu): BackableGuiField {
 		$eiuEntry = $eiu->field()->getValue();
 		
 		if ($eiuEntry === null) {

@@ -31,10 +31,10 @@ class EiSiMaskIdentifierFactory {
 	static function create(EiMask $eiMask, int $viewMode): SiMaskIdentifier {
 		$eiSiMaskId = new EiSiMaskId($eiMask->getEiTypePath(), $viewMode);
 		return new SiMaskIdentifier($eiSiMaskId->__toString(), (string) $eiMask->getEiTypePath(),
-				self::determineTypeId($eiMask->getEiType()));
+				self::determineSuperTypeId($eiMask->getEiType()));
 	}
 
-	static function determineTypeId(EiType $eiType): string {
+	static function determineSuperTypeId(EiType $eiType): string {
 		return $eiType->getSupremeEiType()->getId();
 	}
 

@@ -38,6 +38,7 @@ use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntryFactory;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\gui\field\impl\relation\EmbeddedEntriesInGuiField;
 use rocket\ui\gui\field\impl\relation\EmbeddedEntriesOutGuiField;
+use rocket\ui\gui\field\impl\relation\ObjectQualifiersSelectInGuiField;
 
 class GuiFields {
 
@@ -98,11 +99,11 @@ class GuiFields {
 	}
 
 	static function guiEmbeddedEntriesIn(SiFrame $siFrame, GuiEmbeddedEntryFactory $embeddedEntryFactory,
-			bool $reduced = false, bool $nonNewRemovable = true, bool $sortable = true, int $min = 0, ?int $max = null): EmbeddedEntriesInGuiField {
-		$guiField = new EmbeddedEntriesInGuiField($siFrame, $embeddedEntryFactory);
+			string $bulkySiMaskId, bool $summarySiMaskId, bool $nonNewRemovable = true, bool $sortable = true, int $min = 0, ?int $max = null): EmbeddedEntriesInGuiField {
+		$guiField = new EmbeddedEntriesInGuiField($siFrame, $embeddedEntryFactory, $bulkySiMaskId);
 
 		$guiField->getSiField()
-				->setReduced($reduced)
+				->setSummaryMaskId($summarySiMaskId)
 				->setNonNewRemovable($nonNewRemovable)
 				->setSortable($sortable)
 				->setMin($min)
@@ -120,5 +121,12 @@ class GuiFields {
 				->setReduced($reduced);
 
 		return $guiField;
+	}
+
+	static function objectQualifiersSelectIn(SiFrame $siFrame, int $min = 0, ?int $max = null,
+			?array $pickables = null): ObjectQualifiersSelectInGuiField {
+		$siField = SiFields::objectQualifiersSelectIn($siFrame, [], $min, $max, $pickables);
+
+		return new ObjectQualifiersSelectInGuiField($siField);
 	}
 }

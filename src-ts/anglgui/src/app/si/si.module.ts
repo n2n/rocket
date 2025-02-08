@@ -8,8 +8,8 @@ import { TextareaInFieldComponent } from './model/content/impl/alphanum/comp/tex
 import { FileInFieldComponent } from './model/content/impl/file/comp/file-in-field/file-in-field.component';
 import { FileOutFieldComponent } from './model/content/impl/file/comp/file-out-field/file-out-field.component';
 import {
-	QualifierSelectInFieldComponent
-} from './model/content/impl/qualifier/comp/qualifier-select-in-field/qualifier-select-in-field.component';
+	ObjectQualifiersSelectInFieldComponent
+} from './model/content/impl/qualifier/comp/object-qualifiers-select-in-field/object-qualifiers-select-in-field.component';
 import { LinkOutFieldComponent } from './model/content/impl/alphanum/comp/link-out-field/link-out-field.component';
 import { StringOutFieldComponent } from './model/content/impl/alphanum/comp/string-out-field/string-out-field.component';
 import { EmbeddedEntriesInComponent } from './model/content/impl/embedded/comp/embedded-entries-in/embedded-entries-in.component';
@@ -64,7 +64,7 @@ import { SiUiFactory } from './build/si-ui-factory';
 	declarations: [
 		ButtonControlComponent, CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent,
 		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent,
-		QualifierSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
+		ObjectQualifiersSelectInFieldComponent, LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent,
 		EmbeddedEntriesSummaryInComponent, EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent,
 		ImageResizeComponent, EmbeddedEntryPanelsComponent, EntryDirective, PaginationComponent, CrumbGroupComponent,
 		AddPasteComponent, QualifierComponent, TogglerInFieldComponent, SplitComponent, SplitViewMenuComponent,
@@ -83,14 +83,14 @@ import { SiUiFactory } from './build/si-ui-factory';
 	],
 	exports: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent, InputInFieldComponent,
-		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
+		TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, ObjectQualifiersSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, SelectInFieldComponent
 	]/*,
 	entryComponents: [
 		CompactExplorerComponent, BulkyEntryComponent, StringOutFieldComponent,
-		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, QualifierSelectInFieldComponent,
+		InputInFieldComponent, TextareaInFieldComponent, FileInFieldComponent, FileOutFieldComponent, ObjectQualifiersSelectInFieldComponent,
 		LinkOutFieldComponent, CompactEntryComponent, EmbeddedEntriesInComponent, EmbeddedEntriesSummaryInComponent,
 		EmbeddedEntriesOutComponent, EmbeddedEntriesSummaryOutComponent, ImageResizeComponent,
 		EmbeddedEntryPanelsComponent, ButtonControlComponent, PaginationComponent, TogglerInFieldComponent, SplitComponent,
