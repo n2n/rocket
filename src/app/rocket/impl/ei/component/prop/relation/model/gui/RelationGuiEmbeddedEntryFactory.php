@@ -14,11 +14,11 @@ class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 
 	private Eiu $eiu;
 
-	private \WeakMap $eiuEntriesMap;
+	private \WeakMap $eiuEntriesItemsMap;
 
 	function __construct(private EiuFrame $eiuFrame, private bool $summaryRequired) {
 		$this->eiu = new Eiu($this->eiuFrame);
-		$this->eiuEntriesMap = new \WeakMap();
+		$this->eiuEntriesItemsMap = new \WeakMap();
 	}
 
 	/**
@@ -43,6 +43,15 @@ class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 		return $this->create($this->eiuFrame->newPossibleEntries());
 	}
 
+	function updateGuiEmbeddedEntrySummary(GuiEmbeddedEntry $guiEmbeddedEntry): void {
+		if (!$this->summaryRequired) {
+			return;
+		}
+
+		$item = $this->retrieveEiuEntriesItem($guiEmbeddedEntry);
+		$guiEmbeddedEntry->setSummaryGui($this->eiu->f()->gui()->createCompactGui($item->eiuEntries, true));
+	}
+
 	/**
 	 * @param EiuEntry[] $eiuEntries
 	 * @return GuiEmbeddedEntry
@@ -55,27 +64,49 @@ class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 		}
 
 		$guiEmbeddedEntry = new GuiEmbeddedEntry($bulkyGui, $summaryGui);
+		$eiuEntriesItem = new EiuEntriesItem($eiuEntries);
+		$this->eiuEntriesItemsMap->offsetSet($guiEmbeddedEntry, $eiuEntriesItem);
 
 		foreach ($eiuEntries as $eiuEntry) {
-			$eiuEntry->onValidate(fn () => $this->eiuEntriesMap->offsetSet($guiEmbeddedEntry, $eiuEntry));
+			$eiuEntry->onValidate(fn () => $eiuEntriesItem->validatedEiuEntry = $eiuEntry);
+			$eiuEntry->whenValidated(fn () => $this->updateGuiEmbeddedEntrySummary($guiEmbeddedEntry));
 		}
 
 		return $guiEmbeddedEntry;
+	}
+
+	function retrieveEiuEntriesItem(GuiEmbeddedEntry $guiEmbeddedEntry): EiuEntriesItem {
+		$item = $this->eiuEntriesItemsMap->offsetGet($guiEmbeddedEntry);
+		if ($item !== null) {
+			return $item;
+		}
+
+		throw new IllegalStateException();
 	}
 
 	/**
 	 * @param array $guiEmbeddedEntries
 	 * @return EiuEntry[]
 	 */
-	function retrieveEiuEntries(array $guiEmbeddedEntries): array {
-		return array_map(fn (GuiEmbeddedEntry $e) => $this->retrieveEiuEntry($e), $guiEmbeddedEntries);
+	function retrieveValidatedEiuEntries(array $guiEmbeddedEntries): array {
+		return array_map(fn (GuiEmbeddedEntry $e) => $this->retrieveValidatedEiuEntry($e), $guiEmbeddedEntries);
 	}
 
-	function retrieveEiuEntry(GuiEmbeddedEntry $guiEmbeddedEntry): EiuEntry {
-		$eiuEntry = $this->eiuEntriesMap->offsetGet($guiEmbeddedEntry);
+	function retrieveValidatedEiuEntry(GuiEmbeddedEntry $guiEmbeddedEntry): EiuEntry {
+		$eiuEntry = $this->retrieveEiuEntriesItem($guiEmbeddedEntry)->validatedEiuEntry;
 		if ($eiuEntry === null) {
 			throw new IllegalStateException();
 		}
 		return $eiuEntry;
 	}
+}
+
+class EiuEntriesItem {
+	/**
+	 * @param  EiuEntry[] $eiuEntries
+	 */
+	function __construct(public array $eiuEntries) {
+	}
+
+	public ?EiuEntry $validatedEiuEntry;
 }

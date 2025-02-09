@@ -17,6 +17,11 @@ class GuiEmbeddedEntry {
 		return $this->gui;
 	}
 
+	function setSummaryGui(CompactGui $summaryGui): void {
+		$this->summaryGui = $summaryGui;
+		$this->siEmbeddedEntry->setSummaryContent($summaryGui->getSiGui());
+	}
+
 	function getSiEmbeddedEntry(): SiEmbeddedEntry {
 		return $this->siEmbeddedEntry;
 	}

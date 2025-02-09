@@ -29,6 +29,8 @@ use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntry;
+use n2n\util\type\attrs\InvalidAttributeException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	/**
@@ -246,10 +248,15 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
+		try {
+			$valueBoundaryInputDatas = (new DataSet($data))->reqArray('valueBoundaryInputs', 'array');
+		} catch (InvalidAttributeException $e) {
+			throw new CorruptedSiDataException(previous: $e->getMessage());
+		}
 
 		$values = [];
-		foreach ((new DataSet($data))->reqArray('valueBoundaryInputs', 'array') as $entryInputData) {
-			$valueBoundaryInput = SiValueBoundaryInput::parse($entryInputData);
+		foreach ($valueBoundaryInputDatas as $valueBoundaryInputData) {
+			$valueBoundaryInput = SiValueBoundaryInput::parse($valueBoundaryInputData);
 			$entryInput = $valueBoundaryInput->getEntryInput();
 			$maskId = $entryInput->getMaskId();
 			$entryId = $entryInput->getEntryId();

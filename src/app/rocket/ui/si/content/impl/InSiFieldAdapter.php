@@ -43,9 +43,9 @@ abstract class InSiFieldAdapter extends SiFieldAdapter {
 		return $valueValid && $valid;
 	}
 
-	final function flush(N2nContext $n2nContext): void {
-		$this->getModel()?->save($n2nContext);
-	}
+//	final function flush(N2nContext $n2nContext): void {
+//		$this->getModel()?->save($n2nContext);
+//	}
 
 	/**
 	 * @param array $data

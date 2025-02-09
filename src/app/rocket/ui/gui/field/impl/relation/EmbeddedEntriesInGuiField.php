@@ -10,9 +10,8 @@ use n2n\bind\mapper\impl\Mappers;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
 use n2n\validation\validator\impl\Validators;
-use rocket\ui\si\content\impl\relation\SiEmbeddedEntryFactory;
 
-class EmbeddedEntriesInGuiField extends InGuiFieldAdapter implements SiEmbeddedEntryFactory {
+class EmbeddedEntriesInGuiField extends InGuiFieldAdapter {
 
 	private EmbeddedEntriesInSiField $siField;
 
@@ -21,7 +20,7 @@ class EmbeddedEntriesInGuiField extends InGuiFieldAdapter implements SiEmbeddedE
 	function __construct(private SiFrame $siFrame, private GuiEmbeddedEntryFactory $guiEmbeddedEntriesModel,
 			private string $bulkyMaskId) {
 		$this->collection = new GuiEmbeddedEntriesCollection($guiEmbeddedEntriesModel);
-		$this->siField = new EmbeddedEntriesInSiField($this->siFrame, $this, $this->bulkyMaskId);
+		$this->siField = new EmbeddedEntriesInSiField($this->siFrame, $this->collection, $this->bulkyMaskId);
 		parent::__construct($this->siField);
 	}
 
@@ -41,6 +40,10 @@ class EmbeddedEntriesInGuiField extends InGuiFieldAdapter implements SiEmbeddedE
 		return $this;
 	}
 
+	/**
+	 * @param N2nContext $n2nContext
+	 * @return Mappers[]
+	 */
 	protected function createInputMappers(N2nContext $n2nContext): array {
 		$mappers = [];
 
@@ -59,7 +62,4 @@ class EmbeddedEntriesInGuiField extends InGuiFieldAdapter implements SiEmbeddedE
 		return $mappers;
 	}
 
-	function createSiEmbeddedEntry(string $maskId): SiEmbeddedEntry {
-		return $this->collection->createSiEmbeddedEntry($maskId);
-	}
 }

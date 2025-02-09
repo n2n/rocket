@@ -76,7 +76,7 @@ class SiEmbeddedEntry  {
 	}
 
 	function handleInput(SiEntryQualifier $qualifier): SiValueBoundaryInput {
-		$qualifier->getIdentifier()->getId();
+
 	}
 
 	function toJsonStruct(N2nContext $n2nContext): mixed {

@@ -112,7 +112,7 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 
 		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::valueClosure(
 				function (array $guiEmbeddedEntries) use ($factory) {
-					return ArrayUtils::current($factory->retrieveEiuEntries($guiEmbeddedEntries));
+					return ArrayUtils::current($factory->retrieveValidatedEiuEntries($guiEmbeddedEntries));
 				})));
 
 		return $guiField;
