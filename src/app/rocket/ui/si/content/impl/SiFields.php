@@ -120,9 +120,9 @@ class SiFields {
 	 * @param SiEntryQualifier[]|null $pickables
 	 * @return ObjectQualifiersSelectInSiField
 	 */
-	static function objectQualifiersSelectIn(SiFrame $frame, array $values = [], int $min = 0, ?int $max = null,
+	static function objectQualifiersSelectIn(SiFrame $frame, string $maskId, array $values = [], int $min = 0, ?int $max = null,
 			?array $pickables = null): ObjectQualifiersSelectInSiField {
-		return (new ObjectQualifiersSelectInSiField($frame, $values))->setMin($min)->setMax($max)
+		return (new ObjectQualifiersSelectInSiField($frame, $maskId, $values))->setMin($min)->setMax($max)
 				->setPickables($pickables);
 	}
 

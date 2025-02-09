@@ -1,4 +1,5 @@
 import { SiDeclaration } from '../meta/si-declaration';
+import { $locationShim } from '@angular/common/upgrade';
 
 export class SiInput {
 

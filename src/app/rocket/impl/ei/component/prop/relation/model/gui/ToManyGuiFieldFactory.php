@@ -35,6 +35,7 @@ use rocket\ui\gui\field\BackableGuiField;
 use rocket\ui\si\content\SiObjectQualifier;
 use rocket\ui\gui\field\impl\GuiFields;
 use n2n\bind\mapper\impl\Mappers;
+use rocket\ui\gui\ViewMode;
 
 class ToManyGuiFieldFactory{
 
@@ -67,8 +68,9 @@ class ToManyGuiFieldFactory{
 		$targetEiu = $eiu->frame()->forkSelect($eiu->prop()->getPath(), $eiu->object());
 		$targetEiu->frame()->exec($this->relationModel->getTargetReadEiCmdPath());
 
-		return GuiFields::objectQualifiersSelectIn($targetEiu->frame()->createSiFrame(), $this->relationModel->getMin(),
-						$this->relationModel->getMax(),
+		return GuiFields::objectQualifiersSelectIn($targetEiu->frame()->createSiFrame(),
+						$targetEiu->mask()->createSiMaskId(ViewMode::COMPACT_READ),
+						$this->relationModel->getMin(), $this->relationModel->getMax(),
 						$this->readPickableQualifiers($targetEiu, $this->relationModel->getMaxPicksNum()))
 				->setValue($this->readValues($eiu))
 				->setModel($eiu->field()->asGuiFieldModel(

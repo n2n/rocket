@@ -176,7 +176,7 @@ export class SiFieldFactory {
 
 		case SiFieldType.OBJECT_QUALIFIERS_SELECT_IN:
 			const objectQualifiersSelectInSiField = new ObjectQualifiersSelectInSiField(
-					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), prop.label,
+					SiMetaFactory.createFrame(dataExtr.reqObject('frame')), dataExtr.reqString('maskId'), prop.label,
 					SiMetaFactory.buildObjectQualifiers(dataExtr.reqArray('values')));
 			objectQualifiersSelectInSiField.min = dataExtr.reqNumber('min');
 			objectQualifiersSelectInSiField.max = dataExtr.nullaNumber('max');

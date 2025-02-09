@@ -95,7 +95,7 @@ export class ObjectQualifiersSelectInFieldComponent implements OnInit, DoCheck {
 			this.optionsUiLayer = null;
 		});
 
-		const comp = new CompactExplorerSiGui(30, this.model.getSiFrame(), this.siService, this.siModState);
+		const comp = new CompactExplorerSiGui(30, this.model.getSiFrame(), this.model.getSiMaskId(), this.siService, this.siModState);
 
 		const popupUiZone = this.optionsUiLayer.pushRoute(null, null).zone;
 

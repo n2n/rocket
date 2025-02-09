@@ -138,21 +138,21 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 		return $this->max;
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function isReduced() {
-		return $this->reduced;
-	}
-	
-	/**
-	 * @param boolean $reduced
-	 * @return EmbeddedEntriesInSiField
-	 */
-	public function setReduced(bool $reduced) {
-		$this->reduced = $reduced;
-		return $this;
-	}
+//	/**
+//	 * @return boolean
+//	 */
+//	public function isReduced() {
+//		return $this->reduced;
+//	}
+//
+//	/**
+//	 * @param boolean $reduced
+//	 * @return EmbeddedEntriesInSiField
+//	 */
+//	public function setReduced(bool $reduced) {
+//		$this->reduced = $reduced;
+//		return $this;
+//	}
 	
 	/**
 	 * @return bool
@@ -246,6 +246,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
+
 		$values = [];
 		foreach ((new DataSet($data))->reqArray('valueBoundaryInputs', 'array') as $entryInputData) {
 			$valueBoundaryInput = SiValueBoundaryInput::parse($entryInputData);

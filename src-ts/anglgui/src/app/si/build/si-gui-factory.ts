@@ -63,11 +63,13 @@ export class SiGuiFactory {
 			case SiGuiType.COMPACT_EXPLORER:
 				frame = SiMetaFactory.createFrame(dataExtr.reqObject('frame'));
 				const compactExplorerSiGui = new CompactExplorerSiGui(dataExtr.reqNumber('pageSize'),
-						frame, this.injector.get(SiServiceType),
+						frame, null, this.injector.get(SiServiceType),
 						this.injector.get(SiModStateService));
 
 				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(
-						dataExtr.reqObject('declaration'), new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector));
+						dataExtr.reqObject('declaration'), new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector));;
+				compactExplorerSiGui.pageCollection.declaration = declaration;
+				compactExplorerSiGui.pageCollection.maskId = declaration.getBasicMask().qualifier.maskIdentifier.id;
 
 				const partialContentData = dataExtr.nullaObject('partialContent');
 				if (partialContentData) {

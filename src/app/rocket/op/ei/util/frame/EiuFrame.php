@@ -76,6 +76,7 @@ use rocket\op\ei\UnknownEiTypeExtensionException;
 use rocket\op\ei\UnknownEiTypeException;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
+use rocket\ui\si\content\SiObjectQualifier;
 
 class EiuFrame {
 	private $eiFrame;
@@ -796,16 +797,19 @@ class EiuFrame {
 	 * @param string $pid
 	 * @return mixed
 	 */
-	public function pidToId(string $pid) {
+	public function pidToId(string $pid): mixed {
 		return $this->getContextEiType()->pidToId($pid);
 	}
 
-	/**
-	 * @param SiEntryQualifier $siQualifier
-	 * @return mixed|null
-	 */
-	public function siQualifierToId(SiEntryQualifier $siQualifier) {
-		if (null !== ($pid = $siQualifier->getIdentifier()->getEntryId())) {
+	public function siQualifierToId(SiEntryQualifier|SiObjectQualifier $siQualifier): mixed {
+		$pid = null;
+		if ($siQualifier instanceof SiObjectQualifier) {
+			$pid = $siQualifier->getId();
+		} else {
+			$pid = $siQualifier->getIdentifier()->getId();
+		}
+
+		if (null !== $pid) {
 			return $this->pidToId($pid);
 		}
 		

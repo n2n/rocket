@@ -26,8 +26,8 @@ export class SiPageCollection implements SiControlBoundry {
 
 	private modSubscription: Subscription|null = null;
 
-	constructor(readonly pageSize: number, readonly siFrame: SiFrame, private siService: SiService,
-			private siModState: SiModStateService, quickSearchstr: string|null = null) {
+	constructor(readonly pageSize: number, readonly siFrame: SiFrame, public maskId: string|null,
+			private siService: SiService, private siModState: SiModStateService, quickSearchstr: string|null = null) {
 		this.pQuickSearchStr = quickSearchstr;
 	}
 

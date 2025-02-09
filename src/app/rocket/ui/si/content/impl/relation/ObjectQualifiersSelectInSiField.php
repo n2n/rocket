@@ -51,7 +51,7 @@ class ObjectQualifiersSelectInSiField extends InSiFieldAdapter {
 	 * @param SiFrame $frame
 	 * @param SiObjectQualifier[] $value
 	 */
-	function __construct(private SiFrame $frame, array $value = []) {
+	function __construct(private SiFrame $frame, private string $maskId, array $value = []) {
 		$this->setValue($value);
 	}
 	
@@ -136,6 +136,7 @@ class ObjectQualifiersSelectInSiField extends InSiFieldAdapter {
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
 			'frame' => $this->frame,
+			'maskId' => $this->maskId,
 			'values' => $this->values,
 			'min' => $this->min,
 			'max' => $this->max,

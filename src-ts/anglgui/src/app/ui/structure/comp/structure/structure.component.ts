@@ -9,8 +9,7 @@ import { StructureToolbarDirective } from './structure-toolbar.directive';
 @Component({
 	// tslint:disable-next-line:component-selector
 	selector: '[rocketUiStructure]',
-	templateUrl: './structure.component.html',
-	styleUrls: ['./structure.component.css']
+	templateUrl: './structure.component.html'
 })
 export class StructureComponent implements OnInit, OnDestroy, AfterContentInit {
 	@Input()

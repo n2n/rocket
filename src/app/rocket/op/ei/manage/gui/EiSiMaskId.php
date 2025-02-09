@@ -32,7 +32,6 @@ use rocket\op\ei\mask\EiMask;
 class EiSiMaskId implements \Stringable {
 
 	function __construct(public readonly TypePath $eiTypePath, public readonly int $viewMode) {
-
 	}
 
 	function __toString(): string {
@@ -42,7 +41,7 @@ class EiSiMaskId implements \Stringable {
 	/**
 	 * @param string $str
 	 * @return EiSiMaskId
-	 * @throws \n2n\util\type\attrs\AttributesException
+	 * @throws AttributesException
 	 */
 	static function fromString(string $str): EiSiMaskId {
 		try {

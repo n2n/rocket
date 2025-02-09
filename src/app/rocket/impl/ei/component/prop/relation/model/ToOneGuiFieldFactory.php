@@ -15,6 +15,7 @@ use n2n\bind\mapper\impl\Mappers;
 use rocket\ui\si\content\SiField;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\ui\gui\field\GuiField;
+use rocket\ui\gui\ViewMode;
 
 class ToOneGuiFieldFactory {
 
@@ -32,6 +33,7 @@ class ToOneGuiFieldFactory {
 		}
 
 		return GuiFields::objectQualifiersSelectIn($targetEiu->frame()->createSiFrame(),
+				$targetEiu->mask()->createSiMaskId(ViewMode::COMPACT_READ),
 				($this->relationModel->isMandatory() ? 1 : 0), 1,
 				$this->readPickableQualifiers($targetEiu, $this->relationModel->getMaxPicksNum()))
 				->setValue($values)

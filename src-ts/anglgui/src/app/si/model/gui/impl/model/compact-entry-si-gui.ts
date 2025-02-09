@@ -17,6 +17,7 @@ import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiControlBoundry } from '../../../control/si-control-boundry';
 import { SiControlFactory } from '../../../../build/si-control-factory';
+import { SimpleUiStructureModel } from '../../../../../ui/structure/model/impl/simple-si-structure-model';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	private valueBoundarySubject = new BehaviorSubject<SiValueBoundary|null>(null);
@@ -88,7 +89,7 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	private currentSiValueBoundary: SiValueBoundary|null = null;
 
 	constructor(private siValueBoundary$: Observable<SiValueBoundary|null>, private siDeclaration: SiDeclaration, /*private controls: SiControl[],*/
-				private siEntryMonitor: SiEntryMonitor) {
+			private siEntryMonitor: SiEntryMonitor) {
 		super();
 	}
 
@@ -111,34 +112,6 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	getMessages(): Message[] {
 		return [];
 	}
-
-
-
-	// getStructureErrors(): UiStructureError[] {
-	// 	return [];
-	// }
-
-	// getStructureErrors$(): Observable<UiStructureError[]> {
-	// 	return from([]);
-	// }
-
-	// getZoneErrors(): UiZoneError[] {
-	// 	if (!this.currentSiEntry) {
-	// 		return [];
-	// 	}
-
-	// 	const zoneErrors = new Array<UiZoneError>();
-	// 	const typeId = this.currentSiEntry.selectedTypeId;
-
-	// 	if (!typeId) {
-	// 		return zoneErrors;
-	// 	}
-
-	// 	for (const fieldUiStructure of this.fieldUiStructures) {
-	// 		zoneErrors.push(...fieldUiStructure.getZoneErrors());
-	// 	}
-	// 	return zoneErrors;
-	// }
 
 	get controls(): SiControl[] {
 		return this.siDeclaration.getBasicMask().controls!;
@@ -191,8 +164,8 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 		const siEntry = siValueBoundary.selectedEntry;
 		const siMaskDeclaration = this.siDeclaration.getMaskById(siValueBoundary.selectedEntry.getMaskId());
 
-		this.asideUiContents = siEntry.controls
-					.map(control => control.createUiContent(() => this.boundUiStructure!.getZone()!));
+		this.toolbarStructureModelsSubject.next(siEntry.controls
+					.map(control => new SimpleUiStructureModel(control.createUiContent(() => this.boundUiStructure!.getZone()!))));
 
 		const fieldUiStructures = new Array<UiStructure>();
 		for (const siProp of siMaskDeclaration.getDeclaredProps()) {

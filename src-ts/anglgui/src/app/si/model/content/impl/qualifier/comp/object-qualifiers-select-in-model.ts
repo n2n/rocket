@@ -6,6 +6,8 @@ export interface ObjectQualifiersSelectInModel extends MessageFieldModel {
 
 	getSiFrame(): SiFrame;
 
+	getSiMaskId(): string;
+
 	getMin(): number;
 
 	getMax(): number|null;

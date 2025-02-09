@@ -99,7 +99,7 @@ class GuiFields {
 	}
 
 	static function guiEmbeddedEntriesIn(SiFrame $siFrame, GuiEmbeddedEntryFactory $embeddedEntryFactory,
-			string $bulkySiMaskId, bool $summarySiMaskId, bool $nonNewRemovable = true, bool $sortable = true, int $min = 0, ?int $max = null): EmbeddedEntriesInGuiField {
+			string $bulkySiMaskId, ?string $summarySiMaskId = null, bool $nonNewRemovable = true, bool $sortable = true, int $min = 0, ?int $max = null): EmbeddedEntriesInGuiField {
 		$guiField = new EmbeddedEntriesInGuiField($siFrame, $embeddedEntryFactory, $bulkySiMaskId);
 
 		$guiField->getSiField()
@@ -123,9 +123,9 @@ class GuiFields {
 		return $guiField;
 	}
 
-	static function objectQualifiersSelectIn(SiFrame $siFrame, int $min = 0, ?int $max = null,
+	static function objectQualifiersSelectIn(SiFrame $siFrame, string $siMaskId, int $min = 0, ?int $max = null,
 			?array $pickables = null): ObjectQualifiersSelectInGuiField {
-		$siField = SiFields::objectQualifiersSelectIn($siFrame, [], $min, $max, $pickables);
+		$siField = SiFields::objectQualifiersSelectIn($siFrame, $siMaskId, [], $min, $max, $pickables);
 
 		return new ObjectQualifiersSelectInGuiField($siField);
 	}

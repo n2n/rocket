@@ -58,10 +58,10 @@ class SiObjectQualifier implements \JsonSerializable {
 		$ds = new DataSet($data);
 
 		try {
-			return new SiObjectQualifier($ds->reqArray('superTypeId'),
-					$ds->reqString('id'), $ds->reqString('idName'));
+			return new SiObjectQualifier($ds->reqString('superTypeId'),
+					$ds->optString('id'), $ds->optString('idName'));
 		} catch (\n2n\util\type\attrs\AttributesException $e) {
-			throw new CorruptedSiDataException(null, null, $e);
+			throw new CorruptedSiDataException(previous: $e);
 		}
 	}
 }

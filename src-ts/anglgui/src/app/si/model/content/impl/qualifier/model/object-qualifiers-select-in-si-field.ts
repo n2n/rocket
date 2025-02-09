@@ -22,7 +22,7 @@ export class ObjectQualifiersSelectInSiField extends InSiFieldAdapter implements
 	public max: number|null = null;
 	public pickables: SiObjectQualifier[]|null = null;
 
-	constructor(public frame: SiFrame, public label: string, public values: SiObjectQualifier[] = []) {
+	constructor(public frame: SiFrame, public maskId: string, public label: string, public values: SiObjectQualifier[] = []) {
 		super();
 	}
 
@@ -32,6 +32,10 @@ export class ObjectQualifiersSelectInSiField extends InSiFieldAdapter implements
 
 	getSiFrame(): SiFrame {
 		return this.frame;
+	}
+
+	getSiMaskId(): string {
+		return this.maskId;
 	}
 
 	getValues(): SiObjectQualifier[] {

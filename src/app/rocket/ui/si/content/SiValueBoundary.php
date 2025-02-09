@@ -32,7 +32,10 @@ use rocket\ui\si\api\request\SiValueBoundaryInput;
 class SiValueBoundary {
 
 	private $selectedTypeId = null;
-	private $entries = [];
+	/**
+	 * @var SiEntry[]
+	 */
+	private array $entries = [];
 	private $treeLevel;
 
 	function __construct() {
@@ -67,7 +70,7 @@ class SiValueBoundary {
 	function containsEntryWith(string $maskId, ?string $entryId): bool {
 		foreach ($this->entries as $entry) {
 			$identifier = $entry->getQualifier()->getIdentifier();
-			if ($identifier->getMaskIdentifier()->geId() === $maskId
+			if ($identifier->getMaskIdentifier()->getId() === $maskId
 					&& $identifier->getId() === $entryId) {
 				return true;
 			}

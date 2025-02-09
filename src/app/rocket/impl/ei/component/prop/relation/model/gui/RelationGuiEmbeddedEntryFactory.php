@@ -18,6 +18,7 @@ class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 
 	function __construct(private EiuFrame $eiuFrame, private bool $summaryRequired) {
 		$this->eiu = new Eiu($this->eiuFrame);
+		$this->eiuEntriesMap = new \WeakMap();
 	}
 
 	/**
