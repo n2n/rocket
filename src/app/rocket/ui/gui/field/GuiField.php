@@ -53,7 +53,7 @@ interface GuiField {
 
 	/**
 	 * Saves/writes the value previously read value by {@link self::prepareForSave()} to the target value container
-	 * (e. g. {@link EiEntry)
+	 * (e. g. {@link EiEntry})
 	 *
 	 * @throws \n2n\util\ex\IllegalStateException if {@link self::getSiField()::isReadOnly()} returns true or
 	 * 		{@link self::readSiAndValidate()} has never been called.

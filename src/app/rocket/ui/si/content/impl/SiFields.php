@@ -153,7 +153,7 @@ class SiFields {
 	 * @param array $panels
 	 * @return EmbeddedEntryPanelsInSiField
 	 */
-	static function embeddedEntryPanelsOut(SiFrame $frame, array $panels = []): EmbeddedEntryPanelsOutSiField|EmbeddedEntryPanelsInSiField {
+	static function embeddedEntryPanelsOut(SiFrame $frame, array $panels = []): EmbeddedEntryPanelsOutSiField {
 		return (new EmbeddedEntryPanelsOutSiField($frame, $panels));
 	}
 

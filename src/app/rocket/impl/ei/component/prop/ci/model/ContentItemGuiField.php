@@ -101,7 +101,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 	/**
 	 * @return SiPanel[]
 	 */
-	private function readValues() {
+	private function readValues(): array {
 		$this->currentPool->clear();
 				
 		foreach ($this->eiu->field()->getValue() as $eiuEntry) {
@@ -136,7 +136,7 @@ class ContentItemGuiField implements GuiField, EmbeddedEntryPanelInputHandler, S
 		return null;
 	}
 	
-	function save(): void {
+	function save(N2nContext $n2nContext): void {
 // 		IllegalStateException::assertTrue(!$this->readOnly);
 		
 // 		$values = $this->currentPool->save();

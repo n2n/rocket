@@ -15,7 +15,7 @@ export class EmbeddedEntryComponent {
 	embeStructure!: EmbeStructure;
 
 	@ContentChildren(StructureToolbarDirective)
-	private toolbarChildren?: QueryList<any>;
+	private toolbarChildren?: QueryList<StructureToolbarDirective>;
 
 	get embe(): Embe {
 		return this.embeStructure.embe;

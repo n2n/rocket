@@ -66,7 +66,8 @@ export class EmbeddedEntriesInSiField extends SiFieldAdapter implements EmbeInSo
 	}
 
 	readInput(): object {
-		return { valueBoundaryInputs: this.getTypeSelectedValues().map(embeddedEntry => embeddedEntry.valueBoundary.readInput().toJsonStruct() ) };
+		return { valueBoundaryInputs: this.getTypeSelectedValues()
+					.map(embeddedEntry => embeddedEntry.valueBoundary.readInput().toJsonStruct() ) };
 	}
 
 	createUiStructureModel(): UiStructureModel {

@@ -45,6 +45,7 @@ use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\ui\si\meta\SiStructureType;
+use rocket\ui\gui\field\impl\GuiFields;
 
 class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
@@ -172,6 +173,8 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 		}
+
+		return GuiFields::
 			
 		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
 				$this->determinePanelDeclarations($eiu), $readOnly);

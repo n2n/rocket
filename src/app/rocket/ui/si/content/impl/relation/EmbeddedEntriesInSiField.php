@@ -38,14 +38,6 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 */
 	private $frame;
 	/**
-	 * @var SiEmbeddedEntryFactory
-	 */
-	private SiEmbeddedEntryFactory $embeddedEntryFactory;
-	/**
-	 * @var SiEmbeddedEntry[]
-	 */
-	private $values;
-	/**
 	 * @var int
 	 */
 	private $min = 0;
@@ -69,6 +61,8 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * @var string[]|null
 	 */
 	private $allowedSiTypeIds = null;
+
+	private SiEmbeddedEntriesCollection $collection;
 	
 	/**
 	 * @param string $typeCateogry
@@ -78,8 +72,9 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 */
 	function __construct(SiFrame $frame, SiEmbeddedEntryFactory $embeddedEntryFactory, private string $bulkyMaskId, array $values = []) {
 		$this->frame = $frame;
-		$this->embeddedEntryFactory = $embeddedEntryFactory;
+		$this->collection = new SiEmbeddedEntriesCollection($embeddedEntryFactory);
 		$this->setValue($values);
+
 	}
 
 	/**
@@ -87,8 +82,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * @return EmbeddedEntriesInSiField
 	 */
 	function setValue(array $values): static {
-		ArgUtils::valArray($values, SiEmbeddedEntry::class);
-		$this->values = $values;
+		$this->collection->setEmbeddedEntries($values);
 		return $this;
 	}
 	
@@ -96,7 +90,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 * @return SiEmbeddedEntry[]
 	 */
 	function getValue(): array {
-		return $this->values;
+		return $this->collection->getEmbeddedEntries();
 	}
 
 	function setSummaryMaskId(?string $summaryMaskId): static {
@@ -232,16 +226,6 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 			...parent::toJsonStruct($n2nContext)
 		];
 	}
-
-	private function findExisting(string $maskId, string $entryId): ?SiEmbeddedEntry {
-		foreach ($this->values as $value) {
-			if ($value->getContent()->getValueBoundary()->containsEntryWith($maskId, $entryId)) {
-				return $value;
-			}
-		}
-
-		return null;
-	}
 	 
 	/**
 	 * {@inheritDoc}
@@ -250,34 +234,11 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
 		try {
 			$valueBoundaryInputDatas = (new DataSet($data))->reqArray('valueBoundaryInputs', 'array');
+			$valueBoundaryInputs = array_map(fn (array $d) => SiValueBoundaryInput::parse($d), $valueBoundaryInputDatas);
 		} catch (InvalidAttributeException $e) {
 			throw new CorruptedSiDataException(previous: $e->getMessage());
 		}
 
-		$values = [];
-		foreach ($valueBoundaryInputDatas as $valueBoundaryInputData) {
-			$valueBoundaryInput = SiValueBoundaryInput::parse($valueBoundaryInputData);
-			$entryInput = $valueBoundaryInput->getEntryInput();
-			$maskId = $entryInput->getMaskId();
-			$entryId = $entryInput->getEntryId();
-
-			if ($entryId !== null) {
-				$siEmbeddedEntry = $this->findExisting($maskId, $entryId);
-			} else {
-				$siEmbeddedEntry = $this->embeddedEntryFactory->createSiEmbeddedEntry($entryInput->getMaskId(), $entryInput->getEntryId());
-			}
-
-			if ($siEmbeddedEntry === null) {
-				continue;
-			}
-
-			$siEmbeddedEntry->getContent()->getValueBoundary()->handleInput($valueBoundaryInput, $n2nContext);
-			$values[] = $siEmbeddedEntry;
-		}
-
-
-		ArgUtils::valArrayReturn($values, $this->embeddedEntryFactory, 'handleInput', SiEmbeddedEntry::class);
-		$this->values = $values;
-		return true;
+		return $this->collection->handleInput($valueBoundaryInputs, $n2nContext);
 	}
 }

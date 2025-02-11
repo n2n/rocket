@@ -58,7 +58,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	 * @param SiPanel[] $panels
 	 * @return EmbeddedEntryPanelsInSiField
 	 */
-	function setPanels(array $panels) {
+	function setPanels(array $panels): static {
 		ArgUtils::valArray($panels, SiPanel::class);
 		$this->panels = $panels;
 		return $this;
@@ -67,7 +67,7 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	/**
 	 * @return SiPanel[]
 	 */
-	function getPanels() {
+	function getPanels(): array {
 		return $this->panels;
 	}
 	
@@ -96,14 +96,20 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
 	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
-		$siPanelInputs = [];
+		$valueBoundaryInputsMap = [];
 		foreach ((new DataSet($data))->reqArray('panelInputs', 'array') as $panelInputData) {
-			$siPanelInputs[] = SiPanelInput::parse($panelInputData);
+			$panelInput = SiPanelInput::parse($panelInputData);
+			$valueBoundaryInputsMap[$panelInput->getName()] = $panelInput->getValueBoundaryInputs();
 		}
-		$panels = $this->inputHandler->handleSiPanelInputs($siPanelInputs);
-		ArgUtils::valArrayReturn($panels, $this->inputHandler, 'handleInput', SiPanel::class);
-		$this->panels = $panels;
-		return true;
+
+		$valid = true;
+		foreach ($this->panels as $panel) {
+			if (!$panel->handleInput($valueBoundaryInputsMap[$panel->getName()] ?? [], $n2nContext)) {
+				$valid = false;
+			}
+		}
+
+		return $valid;
 	}
 
 	function getValue(): array {

@@ -22,18 +22,12 @@
 namespace rocket\ui\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiPanel implements \JsonSerializable {
 //	use SiFieldErrorTrait;
-	
-	/**
-	 * @var string
-	 */
-	private $name;
-	/**
-	 * @var string
-	 */
-	private $label;
+
 	/**
 	 * @var int
 	 */
@@ -62,25 +56,16 @@ class SiPanel implements \JsonSerializable {
 	 * @var SiGridPos|null
 	 */
 	private $gridPos = null;
-	/**
-	 * @var SiEmbeddedEntry[]
-	 */
-	private $values = [];
 
-	/**
-	 * @param string $name
-	 * @param string $label
-	 */
-	function __construct(string $name, string $label, private string $bulkyMaskId,
-			private ?string $summaryMaskId = null) {
-		$this->name = $name;
-		$this->label = $label;
+	function __construct(private string $name, private string $label, private string $bulkyMaskId,
+			private ?string $summaryMaskId, SiEmbeddedEntryFactory $embeddedEntryFactory) {
+		$this->collection = new SiEmbeddedEntriesCollection($embeddedEntryFactory);
 	}
 	
 	/**
 	 * @return string
 	 */
-	function getName() {
+	function getName(): string {
 		return $this->name;
 	}
 	
@@ -88,7 +73,7 @@ class SiPanel implements \JsonSerializable {
 	 * @param string $name
 	 * @return SiPanel
 	 */
-	function setName(string $name) {
+	function setName(string $name): static {
 		$this->name = $name;
 		return $this;
 	}
@@ -96,7 +81,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	function getLabel() {
+	function getLabel(): string {
 		return $this->label;
 	}
 	
@@ -104,7 +89,7 @@ class SiPanel implements \JsonSerializable {
 	 * @param string $label
 	 * @return SiPanel
 	 */
-	function setLabel(string $label) {
+	function setLabel(string $label): static {
 		$this->label = $label;
 		return $this;
 	}
@@ -112,7 +97,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return int
 	 */
-	function getMin() {
+	function getMin(): int {
 		return $this->min;
 	}
 	
@@ -120,15 +105,15 @@ class SiPanel implements \JsonSerializable {
 	 * @param int $min
 	 * @return SiPanel
 	 */
-	function setMin(int $min) {
+	function setMin(int $min): static {
 		$this->min = $min;
 		return $this;
 	}
-	
+
 	/**
-	 * @return int
+	 * @return int|null
 	 */
-	function getMax() {
+	function getMax(): ?int {
 		return $this->max;
 	}
 	
@@ -136,7 +121,7 @@ class SiPanel implements \JsonSerializable {
 	 * @param int|null $max
 	 * @return SiPanel
 	 */
-	function setMax(?int $max) {
+	function setMax(?int $max): static {
 		$this->max = $max;
 		return $this;
 	}
@@ -144,7 +129,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return boolean
 	 */
-	function isReduced() {
+	function isReduced(): bool {
 		return $this->reduced;
 	}
 	
@@ -152,7 +137,7 @@ class SiPanel implements \JsonSerializable {
 	 * @param boolean $reduced
 	 * @return SiPanel
 	 */
-	function setReduced(bool $reduced) {
+	function setReduced(bool $reduced): static {
 		$this->reduced = $reduced;
 		return $this;
 	}
@@ -160,7 +145,7 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return bool
 	 */
-	function isNonNewRemovable() {
+	function isNonNewRemovable(): bool {
 		return $this->nonNewRemovable;
 	}
 	
@@ -168,7 +153,7 @@ class SiPanel implements \JsonSerializable {
 	 * @param bool $nonNewRemovable
 	 * @return SiPanel
 	 */
-	function setNonNewRemovable(bool $nonNewRemovable) {
+	function setNonNewRemovable(bool $nonNewRemovable): static {
 		$this->nonNewRemovable = $nonNewRemovable;
 		return $this;
 	}
@@ -176,15 +161,12 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return bool
 	 */
-	function isSortable() {
+	function isSortable(): bool {
 		return $this->sortable;
 	}
 	
-	/**
-	 * @param bool $sortable
-	 * @return EmbeddedEntryPanelsInSiField
-	 */
-	function setSortable(bool $sortable) {
+
+	function setSortable(bool $sortable): static {
 		$this->sortable = $sortable;
 		return $this;
 	}
@@ -225,8 +207,8 @@ class SiPanel implements \JsonSerializable {
 	/**
 	 * @return SiEmbeddedEntry[]
 	 */
-	function getEmbedddedEntries(): array {
-		return $this->values;
+	function getEmbeddedEntries(): array {
+		return $this->collection->getEmbeddedEntries();
 	}
 	
 	/**
@@ -235,22 +217,29 @@ class SiPanel implements \JsonSerializable {
 	 */
 	function setEmbeddedEntries(array $embeddedEntries): static {
 		ArgUtils::valArray($embeddedEntries, SiEmbeddedEntry::class);
-		$this->values = $embeddedEntries;
-		return $this;
-	}
-	
-	/**
-	 * @param SiEmbeddedEntry $embeddedEntry
-	 * @return SiPanel
-	 */
-	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry) {
-		$this->values[] = $embeddedEntry;
+		$this->collection->setEmbeddedEntries($embeddedEntries);
 		return $this;
 	}
 
-	function getValue(): array {
-		return $this->values;
+	/**
+	 * @throws CorruptedSiDataException
+	 */
+	function handleInput(array $valueBoundaryInputs, N2nContext $n2nContext): bool {
+		return $this->collection->handleInput($valueBoundaryInputs, $n2nContext);
 	}
+	
+//	/**
+//	 * @param SiEmbeddedEntry $embeddedEntry
+//	 * @return SiPanel
+//	 */
+//	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry) {
+//		$this->values[] = $embeddedEntry;
+//		return $this;
+//	}
+//
+//	function getValue(): array {
+//		return $this->values;
+//	}
 	
 	/**
 	 * {@inheritDoc}
@@ -269,7 +258,7 @@ class SiPanel implements \JsonSerializable {
 			'sortable' => $this->sortable,
 			'allowedTypeIds' => $this->allowedTypeIds,
 			'gridPos' => $this->gridPos,
-			'values' => $this->values
+			'values' => $this->getEmbeddedEntries()
 		];
 	}
 }
