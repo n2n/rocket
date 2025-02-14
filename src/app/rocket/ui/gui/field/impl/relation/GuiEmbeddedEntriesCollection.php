@@ -24,6 +24,9 @@ class GuiEmbeddedEntriesCollection implements SiEmbeddedEntryFactory {
 	}
 
 	function createSiEmbeddedEntry(string $maskId): SiEmbeddedEntry {
-		return $this->model->createNewGuiEmbeddedEntry($maskId)->getSiEmbeddedEntry();
+		$guiEmbeddedEntry = $this->model->createNewGuiEmbeddedEntry($maskId);
+		$siEmbeddedEntry = $guiEmbeddedEntry->getSiEmbeddedEntry();
+		$this->siGuiMap->offsetSet($siEmbeddedEntry, $guiEmbeddedEntry);
+		return $siEmbeddedEntry;
 	}
 }

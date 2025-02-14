@@ -114,20 +114,22 @@ export class EmbeddedEntryObtainer	{
 	}
 
 	private handleValResult(siEmbeddedEntry: SiEmbeddedEntry, siValResult: SiValResult): void {
-		siEmbeddedEntry.valueBoundary.replace(siValResult.getResults[0].valueBoundary!);
+		siEmbeddedEntry.valueBoundary.replace(siValResult.valueBoundary);
 
 		if (siEmbeddedEntry.summaryComp) {
-			siEmbeddedEntry.summaryComp.valueBoundary = siValResult.getResults[1].valueBoundary;
+			siEmbeddedEntry.summaryComp.valueBoundary = siValResult.getResults[0].valueBoundary;
 		}
 	}
 
 	private createValInstruction(siEmbeddedEntry: SiEmbeddedEntry): SiValInstruction {
 		const instruction = new SiValInstruction(siEmbeddedEntry.valueBoundary.readInput());
+		instruction.declaration = siEmbeddedEntry.comp.declaration ?? null;
+		instruction.controlBoundary = siEmbeddedEntry.comp;
 
-		instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.valueBoundary.qualifier.identifier.maskIdentifier.id);
+		// instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.valueBoundary.qualifier.identifier.maskIdentifier.id);
 
 		if (siEmbeddedEntry.summaryComp) {
-			instruction.getInstructions[1] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp.valueBoundary!.qualifier.identifier.maskIdentifier.id);
+			instruction.getInstructions[0] = SiValGetInstruction.create(siEmbeddedEntry.summaryComp.valueBoundary!.qualifier.identifier.maskIdentifier.id);
 			siEmbeddedEntry.summaryComp.valueBoundary = null;
 		}
 

@@ -36,7 +36,7 @@ class SiValInstructionResult {
 	 */
 	private array $getResults = [];
 
-	function __construct(bool $valid) {
+	function __construct(bool $valid, private SiValueBoundary $valueBoundary) {
 		$this->valid = $valid;
 	}
 	
@@ -66,6 +66,7 @@ class SiValInstructionResult {
 	public function toJsonStruct(N2nContext $n2nContext): array {
 		return [
 			'valid' => $this->valid,
+			'valueBoundary' => $this->valueBoundary->toJsonStruct($n2nContext),
 			'getResults' => array_map(fn (SiValGetInstructionResult $r) => $r->toJsonStruct($n2nContext), $this->getResults)
 		];
 	}

@@ -137,6 +137,7 @@ class EiFieldMap {
 			if ($eiFieldWrapper->isIgnored() || !$eiFieldWrapper->isWritable(true)) {
 				continue;
 			}
+
 			$eiFieldWrapper->write();
 		}
 	}

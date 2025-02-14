@@ -23,6 +23,11 @@ class SiEmbeddedEntriesCollection {
 		return $this;
 	}
 
+	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry): static {
+		$this->embeddedEntries[] = $embeddedEntry;
+		return $this;
+	}
+
 	function getEmbeddedEntries(): array {
 		return $this->embeddedEntries;
 	}

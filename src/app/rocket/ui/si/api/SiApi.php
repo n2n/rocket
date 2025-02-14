@@ -230,7 +230,9 @@ class SiApi {
 			$valueBoundary = $this->model->lookupSiValueBoundary($valueBoundaryInput->getEntryInput()->getMaskId(),
 					$valueBoundaryInput->getEntryInput()->getEntryId(), null);
 
-			$valInstructionResult = new SiValInstructionResult($valueBoundary->handleInput($valueBoundaryInput, $n2nContext));
+			$valInstructionResult = new SiValInstructionResult(
+					$valueBoundary->handleInput($valueBoundaryInput, $n2nContext),
+					$valueBoundary);
 
 			foreach ($valInstruction->getGetInstructions() as $iKey => $getInstruction) {
 				$valGetInstructionResult = new SiValGetInstructionResult();

@@ -57,7 +57,9 @@ class SiPanel implements \JsonSerializable {
 	 */
 	private $gridPos = null;
 
-	function __construct(private string $name, private string $label, private string $bulkyMaskId,
+	private SiEmbeddedEntriesCollection $collection;
+
+	function __construct(private readonly string $name, private string $label, private string $bulkyMaskId,
 			private ?string $summaryMaskId, SiEmbeddedEntryFactory $embeddedEntryFactory) {
 		$this->collection = new SiEmbeddedEntriesCollection($embeddedEntryFactory);
 	}
@@ -68,16 +70,7 @@ class SiPanel implements \JsonSerializable {
 	function getName(): string {
 		return $this->name;
 	}
-	
-	/**
-	 * @param string $name
-	 * @return SiPanel
-	 */
-	function setName(string $name): static {
-		$this->name = $name;
-		return $this;
-	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -218,6 +211,11 @@ class SiPanel implements \JsonSerializable {
 	function setEmbeddedEntries(array $embeddedEntries): static {
 		ArgUtils::valArray($embeddedEntries, SiEmbeddedEntry::class);
 		$this->collection->setEmbeddedEntries($embeddedEntries);
+		return $this;
+	}
+
+	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry): static {
+		$this->collection->setEmbeddedEntries($embeddedEntry);
 		return $this;
 	}
 

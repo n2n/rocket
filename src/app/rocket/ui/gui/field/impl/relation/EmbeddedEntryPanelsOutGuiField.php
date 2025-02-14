@@ -7,19 +7,16 @@ use n2n\core\container\N2nContext;
 use n2n\bind\mapper\impl\Mappers;
 use rocket\ui\si\content\impl\SiFields;
 use rocket\ui\si\meta\SiFrame;
-use rocket\ui\si\content\impl\relation\EmbeddedEntryPanelsInSiField;
 
-class EmbeddedEntryPanelsInGuiField extends InGuiFieldAdapter {
+class EmbeddedEntryPanelsOutGuiField extends InGuiFieldAdapter {
 
 	/**
 	 * @var GuiPanel[] $guiPanels;
 	 */
 	private array $guiPanels;
 
-	private EmbeddedEntryPanelsInSiField $siField;
-
 	function __construct(SiFrame $siFrame) {
-		$this->siField = SiFields::embeddedEntryPanelsIn($siFrame);
+		$this->siField = SiFields::embeddedEntryPanelsOut($siFrame);
 		parent::__construct($this->siField);
 	}
 

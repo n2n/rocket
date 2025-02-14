@@ -71,12 +71,8 @@ class SiCrumb implements \JsonSerializable {
 	function getTitle() {
 		return $this->title;
 	}
-	
-	/**
-	 * @param string $severity
-	 * @return \rocket\si\content\impl\meta\SiCrumb
-	 */
-	function setSeverity(?string $severity) {
+
+	function setSeverity(?string $severity): static {
 		ArgUtils::valEnum($severity, self::getSeverities());
 		$this->severity = $severity;
 		return $this;

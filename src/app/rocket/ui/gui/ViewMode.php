@@ -113,4 +113,36 @@ class ViewMode {
 	static function createSiStyle(int $viewMode) {
 		return new SiStyle(ViewMode::isBulky($viewMode), ViewMode::isReadOnly($viewMode), ViewMode::isAdd($viewMode));
 	}
+
+
+	/**
+	 * @param int $viewMode
+	 * @return string[]
+	 */
+	static function names(int $viewMode): array {
+		$names = [];
+		if ($viewMode & self::COMPACT_READ) {
+			$names[] = 'COMPACT_READ';
+		}
+		if ($viewMode & self::COMPACT_EDIT) {
+			$names[] = 'COMPACT_EDIT';
+		}
+		if ($viewMode & self::COMPACT_ADD) {
+			$names[] = 'COMPACT_ADD';
+		}
+		if ($viewMode & self::BULKY_READ) {
+			$names[] = 'BULKY_READ';
+		}
+		if ($viewMode & self::BULKY_EDIT) {
+			$names[] = 'BULKY_EDIT';
+		}
+		if ($viewMode & self::BULKY_ADD) {
+			$names[] = 'BULKY_ADD';
+		}
+		return $names;
+	}
+
+	static function stringify(int $viewMode): string {
+		return join(', ', self::names($viewMode));
+	}
 }

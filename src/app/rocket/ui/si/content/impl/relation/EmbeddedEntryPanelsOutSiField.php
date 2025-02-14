@@ -45,16 +45,18 @@ class EmbeddedEntryPanelsOutSiField extends OutSiFieldAdapter {
 		$this->setPanels($panels);
 	}
 
-	/**
-	 * @param SiPanel[] $panels
-	 * @return EmbeddedEntryPanelsOutSiField
-	 */
-	function setPanels(array $panels) {
+
+	function setPanels(array $panels): static {
 		ArgUtils::valArray($panels, SiPanel::class);
 		$this->panels = $panels;
 		return $this;
 	}
-	
+
+	function putPanel(SiPanel $panel): static {
+		$this->panels[] = $panel;
+		return $this;
+	}
+
 	/**
 	 * @return SiPanel[]
 	 */

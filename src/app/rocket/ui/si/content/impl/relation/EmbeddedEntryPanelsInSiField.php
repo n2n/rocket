@@ -63,7 +63,12 @@ class EmbeddedEntryPanelsInSiField extends InSiFieldAdapter {
 		$this->panels = $panels;
 		return $this;
 	}
-	
+
+	function putPanel(SiPanel $panel): static {
+		$this->panels[] = $panel;
+		return $this;
+	}
+
 	/**
 	 * @return SiPanel[]
 	 */

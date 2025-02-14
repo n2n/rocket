@@ -172,7 +172,7 @@ class ToManyEiField extends EiFieldNatureAdapter {
 
 		$nativeValues = new \ArrayObject();
 		foreach ($value as $eiuEntry) {
-			ArgUtils::assertTrue($eiuEntry instanceof EiuEntry);
+			assert($eiuEntry instanceof EiuEntry);
 
 			$nativeValues->append($eiuEntry->getEntityObj());
 			

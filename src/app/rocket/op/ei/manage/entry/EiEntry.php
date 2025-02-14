@@ -377,7 +377,7 @@ class EiEntry implements GuiEntryModel {
 		if ($validationResult === null) {
 			$validationResult = $this->validationResult = new EiEntryValidationResult();	
 		}
-		
+
 		foreach ($this->listeners as $listener) {
 			$listener->onValidate($this);
 		}
@@ -454,7 +454,6 @@ class EiEntry implements GuiEntryModel {
 	}
 
 	function handleInput(): bool {
-
 		return $this->validate();
 	}
 }

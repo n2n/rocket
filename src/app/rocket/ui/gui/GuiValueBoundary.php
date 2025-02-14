@@ -41,7 +41,6 @@ class GuiValueBoundary {
 		$this->siValueBoundary = new SiValueBoundary();
 		$this->siValueBoundary->setTreeLevel($treeLevel);
 	}
-
 	
 	/**
 	 * @return int|null

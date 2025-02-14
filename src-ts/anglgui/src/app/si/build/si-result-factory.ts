@@ -250,7 +250,15 @@ export class SiResultFactory {
 	private createValResult(data: any, instruction: SiValInstruction): SiValResult {
 		const extr = new Extractor(data);
 
-		const result = new SiValResult(extr.reqBoolean('valid'));
+		if (!instruction.declaration) {
+			instruction.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
+					new SiControlFactory(instruction.controlBoundary!, this.injector));
+		}
+
+		const valueBoundary = new SiEntryFactory(instruction.declaration, this.apiUrl, this.injector)
+				.createValueBoundary(extr.reqObject('valueBoundary'));
+
+		const result = new SiValResult(extr.reqBoolean('valid'), valueBoundary);
 
 		const resultsData = extr.reqArray('getResults');
 		for (const key of instruction.getInstructions.keys()) {

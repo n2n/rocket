@@ -39,6 +39,8 @@ use rocket\ui\si\meta\SiFrame;
 use rocket\ui\gui\field\impl\relation\EmbeddedEntriesInGuiField;
 use rocket\ui\gui\field\impl\relation\EmbeddedEntriesOutGuiField;
 use rocket\ui\gui\field\impl\relation\ObjectQualifiersSelectInGuiField;
+use rocket\ui\gui\field\impl\relation\EmbeddedEntryPanelsInGuiField;
+use rocket\ui\gui\field\impl\relation\EmbeddedEntryPanelsOutGuiField;
 
 class GuiFields {
 
@@ -121,6 +123,14 @@ class GuiFields {
 				->setReduced($reduced);
 
 		return $guiField;
+	}
+
+	static function embeddedEntriesPanelsIn(SiFrame $siFrame): EmbeddedEntryPanelsInGuiField {
+		return new EmbeddedEntryPanelsInGuiField($siFrame);
+	}
+
+	static function embeddedEntriesPanelsOut(SiFrame $siFrame): EmbeddedEntryPanelsOutGuiField {
+		return new EmbeddedEntryPanelsOutGuiField($siFrame);
 	}
 
 	static function objectQualifiersSelectIn(SiFrame $siFrame, string $siMaskId, int $min = 0, ?int $max = null,

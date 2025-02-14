@@ -46,6 +46,9 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\ui\si\meta\SiStructureType;
 use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
+use n2n\bind\mapper\impl\Mappers;
+use rocket\impl\ei\component\prop\ci\model\ContentItemGuiFieldFactory;
 
 class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
@@ -141,9 +144,9 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 	
 	/**
 	 * @param Eiu $eiu
-	 * @return \rocket\impl\ei\component\prop\ci\model\PanelDeclaration[]
+	 * @return PanelDeclaration[]
 	 */
-	public function determinePanelDeclarations(Eiu $eiu) {
+	public function determinePanelDeclarations(Eiu $eiu): array {
 		return $this->panelDeclarations;
 	}
 	
@@ -153,61 +156,58 @@ class ContentItemsEiPropNature extends RelationEiPropNatureAdapter {
 		
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \rocket\ui\gui\GuiProp::buildGuiField()
-	 */
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {	
-		$readOnly = $readOnly || $this->relationModel->isReadOnly();
 
-		if ($readOnly && $eiu->guiDefinition()->isCompact()) {
-			return $this->createCompactGuiField($eiu);
-		}
-		
-		$targetEiuFrame = null;
-		if ($readOnly){
-			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
-		} else {
-			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
-					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+		$factory = new ContentItemGuiFieldFactory($this->relationModel, $this->determinePanelDeclarations($eiu));
+
+		if ($eiu->guiDefinition()->isCompact()) {
+			return $factory->createCompactGuiField($eiu);
 		}
 
-		return GuiFields::
-			
-		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(), 
-				$this->determinePanelDeclarations($eiu), $readOnly);
+		return $factory->createInGuiField($eiu);
 	}
+
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
+		$factory = new ContentItemGuiFieldFactory($this->relationModel, $this->determinePanelDeclarations($eiu));
+
+		if ($eiu->guiDefinition()->isCompact()) {
+			return $factory->createCompactGuiField($eiu);
+		}
+
+		return $factory->createOutGuiField($eiu);
+	}
+
+//	/**
+//	 * {@inheritDoc}
+//	 * @see \rocket\ui\gui\GuiProp::buildGuiField()
+//	 */
+//	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+//		$readOnly = $readOnly || $this->relationModel->isReadOnly();
+//
+//		if ($readOnly && $eiu->guiDefinition()->isCompact()) {
+//			return $this->createCompactGuiField($eiu);
+//		}
+//
+//		$targetEiuFrame = null;
+//		if ($readOnly){
+//			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
+//					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+//		} else {
+//			$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
+//					->exec($this->getRelationModel()->getTargetReadEiCmdPath());
+//		}
+//
+//
+//		return new ContentItemGuiField($eiu, $targetEiuFrame, $this->getRelationModel(),
+//				$this->determinePanelDeclarations($eiu), $readOnly);
+//	}
+
+
+
 	
 	/**
 	 * @param Eiu $eiu
 	 * @return \rocket\ui\si\content\SiField
 	 */
-	private function createCompactGuiField(Eiu $eiu) {
-		$siCrumbGroups = [];
-		
-		foreach ($this->determinePanelDeclarations($eiu) as $panelDeclaration) {
-			$siCrumbGroups[$panelDeclaration->getName()] = new SiCrumbGroup([]);
-		}
-		
-		foreach ($eiu->field()->getValue() as $eiuEntry) {
-			CastUtils::assertTrue($eiuEntry instanceof EiuEntry);
-			
-			$panelName = $eiuEntry->getScalarValue('panel');
-			if (isset($siCrumbGroups[$panelName])) {
-				$siCrumbGroups[$panelName]->add(SiCrumb::createIcon($eiuEntry->mask()->getIconType())
-						->setTitle($eiuEntry->createIdentityString())
-						->setSeverity(SiCrumb::SEVERITY_IMPORTANT));
-			}
-		}
-		
-		foreach ($siCrumbGroups as $siCrumbGroup) {
-			if ($siCrumbGroup->isEmpty()) {
-				$siCrumbGroup->add(SiCrumb::createLabel('0')->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT));
-			}
-		}
-		
-		return $eiu->factory()->newGuiField(SiFields::crumbOut()->setGroups($siCrumbGroups))->toGuiField();
-	}
+
 }

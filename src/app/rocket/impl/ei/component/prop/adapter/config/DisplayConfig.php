@@ -41,15 +41,15 @@ class DisplayConfig {
 		$this->defaultDisplayedViewModes = $this->compatibleViewModes;
 	}
 	
-	/**
-	 * @param int $compatibleViewModes
-	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
-	 */
-	function setCompatibleViewModes(int $compatibleViewModes) {
-		$this->compatibleViewModes = $compatibleViewModes;
-		$this->defaultDisplayedViewModes &= $compatibleViewModes; 
-		return $this;
-	}
+//	/**
+//	 * @param int $compatibleViewModes
+//	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
+//	 */
+//	function setCompatibleViewModes(int $compatibleViewModes) {
+//		$this->compatibleViewModes = $compatibleViewModes;
+//		$this->defaultDisplayedViewModes &= $compatibleViewModes;
+//		return $this;
+//	}
 	
 	/**
 	 * @param int $viewMode
@@ -72,15 +72,21 @@ class DisplayConfig {
 	public function isBulkyViewCompatible(): bool {
 		return (boolean) (ViewMode::bulky() & $this->compatibleViewModes);
 	}
-	
+
+	function areViewModesCompatible(int $viewModes): bool {
+		return 0 === ($viewModes & ~$this->compatibleViewModes);
+	}
+
 	/**
 	 * @param int $viewModes
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\impl\ei\component\prop\adapter\config\DisplayConfig
 	 */
-	public function setDefaultDisplayedViewModes(int $viewModes) {
-		if ($viewModes & ~$this->compatibleViewModes) {
-			throw new \InvalidArgumentException('View mode not allowed.');
+	public function setDefaultDisplayedViewModes(int $viewModes): static {
+		if (!$this->areViewModesCompatible($viewModes)) {
+			throw new \InvalidArgumentException('View mode not allowed. Given: '
+					. ViewMode::stringify($viewModes) . '; Allowed: '
+					. ViewMode::stringify($this->compatibleViewModes));
 		}
 		
 		$this->defaultDisplayedViewModes = $viewModes;
