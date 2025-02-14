@@ -78,7 +78,7 @@ class EmbeddedEntryPanelsOutSiField extends OutSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'panels' => $this->panels,
+			'panels' => array_map(fn (SiPanel $p) => $p->toJsonStruct($n2nContext), $this->panels),
 			'frame' => $this->frame,
 			...parent::toJsonStruct($n2nContext)
 		];

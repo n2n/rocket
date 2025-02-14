@@ -31,8 +31,6 @@ use rocket\ui\gui\field\impl\InGuiFieldAdapter;
 
 class StringInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel {
 
-	private array $messageStrs = [];
-
 	function __construct(private StringInSiField $siField) {
 		parent::__construct($this->siField);
 	}
@@ -43,7 +41,6 @@ class StringInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldMod
 	}
 
 	function setValue(?string $value): static {
-		$this->messageStrs = [];
 		$this->siField->setValue($value);
 		return $this;
 	}
@@ -60,9 +57,5 @@ class StringInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldMod
 //		return Mappers::cleanString($this->siField->isMandatory(), $this->siField->getMinlength(),
 //				$this->siField->getMaxlength());
 //	}
-
-	function getMessageStrs(): array {
-		return $this->messageStrs;
-	}
 
 }

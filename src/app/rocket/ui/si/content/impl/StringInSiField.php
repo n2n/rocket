@@ -24,6 +24,8 @@ namespace rocket\ui\si\content\impl;
 use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\content\impl\meta\AddonsSiFieldTrait;
 use n2n\core\container\N2nContext;
+use n2n\util\type\attrs\InvalidAttributeException;
+use rocket\ui\si\err\CorruptedSiDataException;
 
 class StringInSiField extends InSiFieldAdapter {
 	use AddonsSiFieldTrait;
@@ -145,7 +147,7 @@ class StringInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::toJsonStruct()
 	 */
-	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
+	function toJsonStruct(N2nContext $n2nContext): array {
 		return [
 			'value' => $this->value,
 			'minlength' => $this->minlength,
@@ -165,7 +167,11 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
 	function handleInputValue(array $data, N2nContext $n2nContext): bool {
-		$this->value = (new DataSet($data))->reqString('value', true);
+		try {
+			$this->value = (new DataSet($data))->reqString('value', true);
+		} catch (InvalidAttributeException $e) {
+			throw new CorruptedSiDataException(previous: $e);
+		}
 		return true;
 	}
 }

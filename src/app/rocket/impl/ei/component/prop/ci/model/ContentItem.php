@@ -48,7 +48,7 @@ abstract class ContentItem extends ObjectAdapter {
 	}
 
 	private $id;
-	#[EiPropString(readOnly: false, mandatory: true)]
+	#[EiPropString(readOnly: false, mandatory: false)]
 	#[EiDefaultDisplay()]
 	private string $panel;
 	private int $orderIndex;

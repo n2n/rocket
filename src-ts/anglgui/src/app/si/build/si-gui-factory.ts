@@ -67,7 +67,7 @@ export class SiGuiFactory {
 						this.injector.get(SiModStateService));
 
 				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(
-						dataExtr.reqObject('declaration'), new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector));;
+						dataExtr.reqObject('declaration'), new SiControlFactory(compactExplorerSiGui.pageCollection, this.injector));
 				compactExplorerSiGui.pageCollection.declaration = declaration;
 				compactExplorerSiGui.pageCollection.maskId = declaration.getBasicMask().qualifier.maskIdentifier.id;
 
@@ -123,6 +123,8 @@ export class SiGuiFactory {
 
 	createEmbeddedEntry(data: any): SiEmbeddedEntry {
 		const extr = new Extractor(data);
+
+		console.log(data);
 
 		return new SiEmbeddedEntry(
 				this.buildGui(extr.reqObject('content'), SiGuiType.BULKY_ENTRY) as BulkyEntrySiGui,

@@ -25,7 +25,7 @@ use n2n\util\type\ArgUtils;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\err\CorruptedSiDataException;
 
-class SiPanel implements \JsonSerializable {
+class SiPanel {
 //	use SiFieldErrorTrait;
 
 	/**
@@ -215,7 +215,7 @@ class SiPanel implements \JsonSerializable {
 	}
 
 	function addEmbeddedEntry(SiEmbeddedEntry $embeddedEntry): static {
-		$this->collection->setEmbeddedEntries($embeddedEntry);
+		$this->collection->addEmbeddedEntry($embeddedEntry);
 		return $this;
 	}
 
@@ -238,12 +238,8 @@ class SiPanel implements \JsonSerializable {
 //	function getValue(): array {
 //		return $this->values;
 //	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	function jsonSerialize(): mixed {
+
+	function toJsonStruct(N2nContext $n2nContext): array {
 		return [
 			'name' => $this->name,
 			'label' => $this->label,
@@ -256,7 +252,8 @@ class SiPanel implements \JsonSerializable {
 			'sortable' => $this->sortable,
 			'allowedTypeIds' => $this->allowedTypeIds,
 			'gridPos' => $this->gridPos,
-			'values' => $this->getEmbeddedEntries()
+			'values' => array_map(fn (SiEmbeddedEntry $e) => $e->toJsonStruct($n2nContext),
+					$this->collection->getEmbeddedEntries())
 		];
 	}
 }
