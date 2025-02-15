@@ -25,6 +25,9 @@ use rocket\ui\si\control\SiControl;
 use rocket\ui\si\control\SiButton;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\SiPayloadFactory;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\api\response\SiCallResponse;
+use n2n\util\ex\UnsupportedOperationException;
 
 class GroupSiControl implements SiControl {
 	/**
@@ -55,5 +58,9 @@ class GroupSiControl implements SiControl {
 			'button' => $this->button,
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
 		];
+	}
+
+	function handleCall(N2nContext $n2nContext): SiCallResponse {
+		throw new UnsupportedOperationException();
 	}
 }

@@ -86,7 +86,7 @@ class EditEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand 
 				->setTooltip($dtc->t('ei_impl_edit_entry_tooltip', array('entry' => $eiuEntry->getGenericLabel())));
 		
 			
-		return [$eiuControlFactory->newCmdRef(self::CONTROL_EDIT_KEY, $siButton, 
+		return [self::CONTROL_EDIT_KEY => $eiuControlFactory->newCmdRef($siButton,
 				new Path([$eiuEntry->getPid()]))];
 	}
 	

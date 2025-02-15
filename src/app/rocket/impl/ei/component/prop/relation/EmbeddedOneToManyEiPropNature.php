@@ -102,7 +102,11 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 
 		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::valueClosure(
 				function (array $guiEmbeddedEntries) use ($factory) {
-					return $factory->retrieveValidatedEiuEntries($guiEmbeddedEntries);
+					$eiuEntries = $factory->retrieveValidatedEiuEntries($guiEmbeddedEntries);
+
+					if (null !== ($orderEiPropPath = $this->relationModel->getTargetOrderEiPropPath())) {
+						$factory->applyOrderIndex($eiuEntries, $orderEiPropPath);
+					}
 				})));
 
 		return $guiField;

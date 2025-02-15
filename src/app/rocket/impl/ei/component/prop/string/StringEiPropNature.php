@@ -132,7 +132,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 		})->toIdNameProp();
 	}
 
-	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+	function buildInGuiField(Eiu $eiu): StringInGuiField {
 		$guiField = parent::buildInGuiField($eiu);
 		assert($guiField instanceof StringInGuiField);
 

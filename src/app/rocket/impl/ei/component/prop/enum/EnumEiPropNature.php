@@ -49,6 +49,7 @@ use n2n\util\EnumUtils;
 use rocket\ui\gui\field\BackableGuiField;
 use rocket\ui\gui\field\impl\GuiFields;
 use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
+use n2n\bind\mapper\impl\Mappers;
 
 class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	use QuickSearchConfigTrait;
@@ -211,19 +212,17 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$mapCb = function ($defPropPaths) {
 			return array_map(function ($defPropPath) { return (string) $defPropPath; }, $defPropPaths);
 		};
+
+		$guiField = GuiFields::enumIn($this->isMandatory(), $choicesMap,
+						emptyLabel: $this->getEmptyLabel(),
+						associatedPropIdsMap: array_map($mapCb, $this->getAssociatedDefPropPathMap()))
+				->setValue($this->unitValueToBackedValue($eiu->field()->getValue()));
 		
-		$siField = SiFields::enumIn($choicesMap, $this->unitValueToBackedValue($eiu->field()->getValue()))
-				->setMandatory($this->isMandatory())
-				->setAssociatedPropIdsMap(array_map($mapCb, $this->getAssociatedDefPropPathMap()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs())
-				->setEmptyLabel($this->getEmptyLabel());
-		
-// 		$defPropPathMap = $this->getEnumConfig()->getAssociatedDefPropPathMap();
-// 		if (empty($defPropPathMap)) {
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($eiu, $siField)  {
-					$this->saveSiField($siField, $eiu);
-				});
+		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers
+				::valueClosure(fn ($v) => $this->backedValueToUnitValue($v))));
+
+		return $guiField;
+
 // 		}
 		
 // 		$enablerMag = new EnumTogglerMag($this->getLabelLstr(), $choicesMap, null, 

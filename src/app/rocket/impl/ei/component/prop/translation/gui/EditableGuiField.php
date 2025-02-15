@@ -56,7 +56,7 @@ class EditableGuiField implements GuiField, SiFieldModel {
 		$this->lted->activateTranslations($this->siField->getActiveKeys());
 
 //		$this->forkGuiFieldMap?->save($n2nContext);
-		
+
 		$this->lted->save();
 	}
 	
@@ -65,6 +65,7 @@ class EditableGuiField implements GuiField, SiFieldModel {
 	}
 
 	function handleInput(mixed $value, N2nContext $n2nContext): bool {
+		$this->save($n2nContext);
 		return true;
 	}
 

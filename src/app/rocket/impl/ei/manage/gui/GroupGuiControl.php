@@ -34,17 +34,12 @@ use rocket\ui\si\api\response\SiCallResponse;
 use rocket\ui\gui\control\GuiControlKey;
 
 class GroupGuiControl implements GuiControl {
-	private $id;
 	private $siButton;
 	private GuiControlMap $forkGuiControlMap;
 	
-	function __construct(string $id, SiButton $siButton) {
-		$this->id = $id;
+	function __construct(SiButton $siButton) {
 		$this->siButton = $siButton;
-	}
-	
-	function getId(): string {
-		return $this->id;
+		$this->forkGuiControlMap = new GuiControlMap();
 	}
 	
 	/**

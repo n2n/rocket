@@ -21,7 +21,6 @@
  */
 namespace rocket\op\ei\util\control;
 
-use rocket\ui\si\control\SiButton;
 use rocket\op\ei\util\EiuAnalyst;
 use n2n\util\uri\Url;
 use rocket\impl\ei\manage\gui\RefGuiControl;
@@ -30,11 +29,10 @@ use rocket\impl\ei\manage\gui\GroupGuiControl;
 use rocket\impl\ei\manage\gui\DeactivatedGuiControl;
 use rocket\impl\ei\manage\gui\GuiControls;
 use n2n\util\magic\impl\MagicMethodInvoker;
-use n2n\core\container\N2nContext;
 use rocket\ui\gui\GuiCallResponse;
 use n2n\util\type\TypeConstraints;
 use rocket\op\util\OpfControlResponse;
-use rocket\op\ei\util\Eiu;
+use rocket\ui\si\control\SiButton;
 
 class EiuGuiControlFactory {
 	private $eiuAnalyst;
@@ -42,29 +40,26 @@ class EiuGuiControlFactory {
 	public function __construct(EiuAnalyst $eiuAnalyst) {
 		$this->eiuAnalyst = $eiuAnalyst;
 	}
-	
+
 	/**
-	 * @param string $id
 	 * @param SiButton $siButton
 	 * @param mixed|null $urlExt
 	 * @return RefGuiControl
 	 */
-	public function newCmdRef(string $id, SiButton $siButton, $urlExt = null): RefGuiControl {
-		return GuiControls::ref($id, $this->eiuAnalyst->getEiuFrame(true)->getCmdUrl()->ext($urlExt), $siButton);
+	public function newCmdRef(SiButton $siButton, $urlExt = null): RefGuiControl {
+		return GuiControls::ref($this->eiuAnalyst->getEiuFrame(true)->getCmdUrl()->ext($urlExt), $siButton);
 	}
-	
+
 	/**
-	 * @param string $id
 	 * @param SiButton $siButton
 	 * @param mixed|null $urlExt
 	 * @return RefGuiControl
 	 */
-	public function newCmdHref(string $id, SiButton $siButton, ?Url $urlExt = null): RefGuiControl {
-		return GuiControls::href($id, $this->eiuAnalyst->getEiuFrame(true)->getCmdUrl()->ext($urlExt), $siButton);
+	public function newCmdHref(SiButton $siButton, ?Url $urlExt = null): RefGuiControl {
+		return GuiControls::href($this->eiuAnalyst->getEiuFrame(true)->getCmdUrl()->ext($urlExt), $siButton);
 	}
-	
+
 	/**
-	 * @param string $id
 	 * @param SiButton $siButton
 	 * @param \Closure $callback
 	 * @return CallbackGuiControl
@@ -78,12 +73,12 @@ class EiuGuiControlFactory {
 	}
 	
 	/**
-	 * @param string $id
+	 *
 	 * @param SiButton $siButton
 	 * @return GroupGuiControl
 	 */
-	public function newGroup(string $id, SiButton $siButton) {
-		return GuiControls::group($id, $siButton);
+	public function newGroup(SiButton $siButton): GroupGuiControl {
+		return GuiControls::group($siButton);
 	}
 	
 	/**

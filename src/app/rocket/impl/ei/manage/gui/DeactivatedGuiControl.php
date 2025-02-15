@@ -27,7 +27,6 @@ use rocket\ui\si\api\response\SiCallResponse;
 use n2n\util\ex\NotYetImplementedException;
 use rocket\ui\si\control\SiButton;
 use rocket\op\ei\manage\api\ApiControlCallId;
-use rocket\ui\gui\EiGuiDeclaration;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\si\control\impl\DeactivatedSiControl;
 use rocket\ui\gui\control\GuiControl;
@@ -35,17 +34,11 @@ use n2n\util\uri\Url;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
 
 class DeactivatedGuiControl implements GuiControl {
-	private $id;
 	private $siButton;
 	private $childrean = [];
 	
-	function __construct(string $id, SiButton $siButton) {
-		$this->id = $id;
+	function __construct(SiButton $siButton) {
 		$this->siButton = $siButton;
-	}
-	
-	function getId(): string {
-		return $this->id;
 	}
 	
 	/**

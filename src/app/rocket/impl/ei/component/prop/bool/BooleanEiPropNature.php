@@ -156,16 +156,11 @@ class BooleanEiPropNature extends DraftablePropertyEiPropNatureAdapter implement
 	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		$mapCb = function ($defPropPath) { return (string) $defPropPath; };
 
-		$siField = SiFields::boolIn((bool) $eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setOnAssociatedPropIds(array_map($mapCb, $this->getOnAssociatedDefPropPaths()))
-				->setOffAssociatedPropIds(array_map($mapCb, $this->getOffAssociatedDefPropPaths()))
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($siField, $eiu) {
-					$eiu->field()->setValue($siField->getValue());
-				});
+		return GuiFields::boolIn($this->isMandatory(),
+						array_map($mapCb, $this->getOnAssociatedDefPropPaths()),
+						array_map($mapCb, $this->getOffAssociatedDefPropPaths()))
+				->setValue((bool) $eiu->field()->getValue());
+
 	}
 
 	function buildFilterProp(Eiu $eiu): ?FilterProp {

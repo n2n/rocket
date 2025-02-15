@@ -38,11 +38,7 @@ use rocket\ui\gui\control\GuiControlMap;
 class RefGuiControl implements GuiControl {
 	private $newWindow = false;
 
-	function __construct(private string $id, private Url $url, private SiButton $siButton, private bool $href) {
-	}
-	
-	function getId(): string {
-		return $this->id;
+	function __construct(private Url $url, private SiButton $siButton, private bool $href) {
 	}
 
 	/**

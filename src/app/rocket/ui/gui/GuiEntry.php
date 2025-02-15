@@ -176,19 +176,19 @@ class GuiEntry implements SiEntryModel {
 //			return false;
 //		}
 
-		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
-			$eiGuiValueBoundaryListener->onSave($this);
-		}
+//		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
+//			$eiGuiValueBoundaryListener->onSave($this);
+//		}
 
-		$this->guiFieldMap->save($n2nContext);
+//		$this->guiFieldMap->save($n2nContext);
 
 		if ($this->model !== null && !$this->model->handleInput()) {
 			return false;
 		}
 
-		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
-			$eiGuiValueBoundaryListener->saved($this);
-		}
+//		foreach ($this->eiGuiEntryListeners as $eiGuiValueBoundaryListener) {
+//			$eiGuiValueBoundaryListener->saved($this);
+//		}
 
 		return true;
 	}

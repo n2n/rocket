@@ -214,11 +214,11 @@ class LazyTranslationEssentialsDeterminer {
 	function save(): void {
 		$this->ensureActiveTargetEiuEntries();
 		
-		foreach (array_keys($this->activeTargetEiuEntries) as $n2nLocaleId) {
-			if (isset($this->targetGuiValueBoundaries[$n2nLocaleId])) {
-				$this->targetGuiValueBoundaries[$n2nLocaleId]->getSelectedGuiEntry()->getGuiFieldMap()->save($this->eiu->getN2nContext());
-			}
-		}
+//		foreach (array_keys($this->activeTargetEiuEntries) as $n2nLocaleId) {
+//			if (isset($this->targetGuiValueBoundaries[$n2nLocaleId])) {
+//				$this->targetGuiValueBoundaries[$n2nLocaleId]->getSelectedGuiEntry()->getGuiFieldMap()->save($this->eiu->getN2nContext());
+//			}
+//		}
 		
 		$this->eiu->field()->setValue($this->activeTargetEiuEntries);
 	}

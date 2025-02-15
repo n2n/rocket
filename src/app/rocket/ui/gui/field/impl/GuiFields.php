@@ -41,6 +41,9 @@ use rocket\ui\gui\field\impl\relation\EmbeddedEntriesOutGuiField;
 use rocket\ui\gui\field\impl\relation\ObjectQualifiersSelectInGuiField;
 use rocket\ui\gui\field\impl\relation\EmbeddedEntryPanelsInGuiField;
 use rocket\ui\gui\field\impl\relation\EmbeddedEntryPanelsOutGuiField;
+use rocket\ui\gui\field\impl\bool\BoolInGuiField;
+use n2n\web\ui\UiComponent;
+use rocket\ui\gui\field\impl\iframe\IframeInGuiField;
 
 class GuiFields {
 
@@ -77,6 +80,14 @@ class GuiFields {
 				->setArrowStep($arrowStep)
 				->setPrefixAddons($prefixAddons)
 				->setSuffixAddons($suffixAddons));
+	}
+
+	static function boolIn(bool $mandatory, array $onAssociatedPropIds = [], array $offAssociatedPropIds = []) : BoolInGuiField {
+		$siField = SiFields::boolIn(false)
+				->setOnAssociatedPropIds($onAssociatedPropIds)
+				->setOffAssociatedPropIds($offAssociatedPropIds);
+
+		return new BoolInGuiField($siField);
 	}
 
 	static function enumIn(bool $mandatory = false, array $options = [], ?string $defaultValue = null,
@@ -138,5 +149,9 @@ class GuiFields {
 		$siField = SiFields::objectQualifiersSelectIn($siFrame, $siMaskId, [], $min, $max, $pickables);
 
 		return new ObjectQualifiersSelectInGuiField($siField);
+	}
+
+	static function iframeIn(UiComponent $view): IframeInGuiField {
+		return new IframeInGuiField(SiFields::iframeIn($view));
 	}
 }

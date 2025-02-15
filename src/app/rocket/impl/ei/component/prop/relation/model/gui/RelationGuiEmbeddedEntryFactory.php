@@ -9,6 +9,7 @@ use rocket\op\ei\util\Eiu;
 use rocket\op\ei\util\entry\EiuEntry;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
+use rocket\op\ei\EiPropPath;
 
 class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 
@@ -98,6 +99,21 @@ class RelationGuiEmbeddedEntryFactory implements GuiEmbeddedEntryFactory {
 			throw new IllegalStateException();
 		}
 		return $eiuEntry;
+	}
+
+	/**
+	 * @param EiuEntry[] $eiuEntries
+	 * @param EiPropPath $orderEiPropPath
+	 * @return void
+	 */
+	function applyOrderIndex(array $eiuEntries, EiPropPath $orderEiPropPath): void {
+		ArgUtils::valArray($eiuEntries, EiuEntry::class);
+
+		$i = 0;
+		foreach ($eiuEntries as $eiuEntry) {
+			$i += 10;
+			$eiuEntry->setValue($orderEiPropPath, $i);
+		}
 	}
 }
 

@@ -34,6 +34,9 @@ use rocket\ui\gui\GuiMask;
 use rocket\op\ei\manage\gui\factory\EiSiMaskIdentifierFactory;
 use rocket\ui\gui\GuiPropForkWrapper;
 use rocket\op\spec\TypePath;
+use n2n\core\container\N2nContext;
+use rocket\op\ei\manage\entry\EiEntry;
+use n2n\util\ex\NotYetImplementedException;
 
 class EiGuiDefinition {
 
@@ -127,6 +130,15 @@ class EiGuiDefinition {
 		throw new EiGuiException('No GuiProp with path \'' . $defPropPath . '\' registered');
 	}
 
+	function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, DefPropPath $defPropPath): EiFieldAbstraction {
+		$eiPropPaths = $defPropPath->toArray();
+		$id = array_shift($eiPropPaths);
+		if (empty($eiPropPaths)) {
+			return $eiEntry->getEiField($id);
+		}
+
+		throw new NotYetImplementedException();
+	}
 
 //	/**
 //	 * @return EiPropPath[]
@@ -352,15 +364,7 @@ class EiGuiDefinition {
 //	}
 //
 //
-//	function determineEiFieldAbstraction(N2nContext $n2nContext, EiEntry $eiEntry, DefPropPath $defPropPath): EiFieldAbstraction {
-//		$eiPropPaths = $defPropPath->toArray();
-//		$id = array_shift($eiPropPaths);
-//		if (empty($eiPropPaths)) {
-//			return $eiEntry->getEiField($id);
-//		}
-//
-//		throw new NotYetImplementedException();
-//	}
+
 
 //	/**
 //	 * @return GuiPropForkWrapper[]

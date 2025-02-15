@@ -90,10 +90,11 @@ class GuiFieldModelMock implements GuiFieldModel  {
 
 	function handleInput(mixed $value, N2nContext $n2nContext): bool {
 		$this->preparedValue = $value . ' prepared';
+		$this->savedValue = $this->preparedValue ;
 		return true;
 	}
 
-	function save(N2nContext $n2nContext): void {
-		$this->savedValue = $this->preparedValue ;
-	}
+//	function save(N2nContext $n2nContext): void {
+//		$this->savedValue = $this->preparedValue ;
+//	}
 }

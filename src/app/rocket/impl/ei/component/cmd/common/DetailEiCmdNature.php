@@ -94,7 +94,7 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 		$siButton = SiButton::secondary($dtc->t('ei_impl_detail_label'), $iconType)
 				->setTooltip($dtc->t('ei_impl_detail_tooltip', array('entry' => $eiuFrame->getGenericLabel())));
 		
-		$controls = array($eiuControlFactory->newCmdRef(self::CONTROL_DETAIL_KEY, $siButton, $pathExt->toUrl()));
+		$controls = array(self::CONTROL_DETAIL_KEY => $eiuControlFactory->newCmdRef( $siButton, $pathExt->toUrl()));
 		
 		if (!$eiuEntry->isPreviewSupported()) {
 			return $controls;
@@ -106,20 +106,20 @@ class DetailEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiComman
 		$previewTypeOptions = $eiuEntry->getPreviewTypeOptions();
 		
 		if (empty($previewTypeOptions)) {
-			$controls[] = $eiuControlFactory->newDeactivated(self::CONTROL_PREVIEW_KEY, $siButton);
+			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->newDeactivated( $siButton);
 			return $controls;
 		}
 		
 		if (count($previewTypeOptions) === 1) {
-			$controls[] = $eiuControlFactory->newCmdRef(self::CONTROL_PREVIEW_KEY, $siButton, 
+			$controls[self::CONTROL_PREVIEW_KEY] = $eiuControlFactory->newCmdRef($siButton,
 					new Path(['livepreview', $eiuEntry->getPid(), $eiuEntry->getDefaultPreviewType()]));
 			return $controls;
 		}
 		
-		$controls[] = $groupControl = $eiuControlFactory->newGroup(self::CONTROL_PREVIEW_KEY, $siButton);
+		$controls[self::CONTROL_PREVIEW_KEY] = $groupControl = $eiuControlFactory->newGroup($siButton);
 		
 		foreach ($previewTypeOptions as $previewType => $label) {
-			$groupControl->putGuiControl($eiuControlFactory->newCmdRef($previewType,
+			$groupControl->putGuiControl($previewType, $eiuControlFactory->newCmdRef(
 					SiButton::success($label, SiIconType::ICON_R_EYE),
 					new Path(['livepreview', $eiuEntry->getPid(), $previewType])));
 		}

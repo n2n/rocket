@@ -33,6 +33,7 @@ use n2n\web\http\controller\Controller;
 use rocket\impl\ei\component\cmd\common\controller\AddController;
 use rocket\impl\ei\component\cmd\adapter\EiCmdNatureAdapter;
 use rocket\ui\si\control\SiNavPoint;
+use rocket\ui\gui\control\GuiControl;
 
 class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 	const ID_BASE = 'add';
@@ -131,14 +132,11 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 			return [];
 		}
 		
-		return  [$this->createAddControl($eiu)];
+		return $this->createAddControls($eiu);
 	}
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return \rocket\op\ei\util\control\RefGuiControl
-	 */
-	private function createAddControl(Eiu $eiu) {
+
+	private function createAddControls(Eiu $eiu): array {
 		$eiuControlFactory = $eiu->factory()->guiControl();
 		$dtc = $eiu->dtc(Rocket::NS);
 		
@@ -148,7 +146,7 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 		$label = $this->controlLabel ?? $dtc->t($nestedSet ? 'ei_impl_add_root_branch_label' : 'common_new_entry_label');
 		$siButton = SiButton::success($label, SiIconType::ICON_PLUS_CIRCLE)
 				->setImportant(true);
-		return $eiuControlFactory->newCmdRef($key, $siButton);
+		return [$key => $eiuControlFactory->newCmdRef($siButton)];
 	}
 	
 // 	/**
@@ -197,34 +195,35 @@ class AddEiCmdNature extends EiCmdNatureAdapter implements PrivilegedEiCommand {
 			$tooltip = $dtc->t('ei_impl_duplicate_tooltip', array('entry' => $eiuEntry->createIdentityString()));
 			$siButton = SiButton::success($name,SiIconType::ICON_R_COPY)->setTooltip($tooltip);
 			
-			return array($eiuControlFactory
-					->newCmdRef(self::CONTROL_DUPLICATE_KEY , $siButton, [$eiuEntry->getPid()]));
+			return array(self::CONTROL_DUPLICATE_KEY => $eiuControlFactory
+					->newCmdRef($siButton, [$eiuEntry->getPid()]));
 		}
 
-
-		$groupControl = $eiuControlFactory->newGroup(self::CONTROL_INSERT_BRANCH_KEY,
+		$groupControl = $eiuControlFactory->newGroup(
 				SiButton::success($dtc->t('ei_impl_insert_branch_label'), SiIconType::ICON_PLUS)
 						->setTooltip($dtc->t('ei_impl_add_branch_tooltip'))
 						->setImportant(false));
 		
-		$groupControl->putGuiControl(
-				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_BEFORE_KEY,
+		$groupControl->putGuiControl(self::CONTROL_INSERT_BEFORE_KEY,
+				$eiuControlFactory->newCmdRef(
 						SiButton::success($dtc->t('ei_impl_add_before_branch_label'), SiIconType::ICON_ANGLE_UP)
 								->setTooltip($dtc->t('ei_impl_add_before_branch_tooltip'))
 								->setImportant(TRUE),
-						['before', $eiuEntry->getPid()]),
-				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_AFTER_KEY,
+						['before', $eiuEntry->getPid()]));
+		$groupControl->putGuiControl(self::CONTROL_INSERT_AFTER_KEY,
+				$eiuControlFactory->newCmdRef(
 						SiButton::success($dtc->t('ei_impl_add_after_branch_label'), SiIconType::ICON_ANGLE_DOWN)
 								->setTooltip($dtc->t('ei_impl_add_after_branch_tooltip'))
 								->setImportant(true),
-						['after', $eiuEntry->getPid()]),
-				$eiuControlFactory->newCmdRef(self::CONTROL_INSERT_CHILD_KEY,
+						['after', $eiuEntry->getPid()]));
+		$groupControl->putGuiControl(self::CONTROL_INSERT_CHILD_KEY,
+				$eiuControlFactory->newCmdRef(
 						SiButton::success($dtc->translate('ei_impl_add_child_branch_label'), SiIconType::ICON_ANGLE_RIGHT)
 								->setTooltip($dtc->translate('ei_impl_add_child_branch_tooltip'))
 								->setImportant(true),
 						['child', $eiuEntry->getPid()]));
 		
-		return [$groupControl];
+		return [self::CONTROL_INSERT_BRANCH_KEY => $groupControl];
 	}
 
 	function buildAddNavPoint(Eiu $eiu): ?SiNavPoint {

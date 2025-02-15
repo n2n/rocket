@@ -213,7 +213,7 @@ class EmbeddedEntriesInSiField extends InSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'values' => array_map(fn (SiEmbeddedEntry $v) => $v->toJsonStruct($n2nContext), $this->values),
+			'values' => array_map(fn (SiEmbeddedEntry $v) => $v->toJsonStruct($n2nContext), $this->getValue()),
 			'frame' => $this->frame,
 			'min' => $this->min,
 			'max' => $this->max,

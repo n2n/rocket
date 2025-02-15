@@ -383,6 +383,7 @@ class EiEntry implements GuiEntryModel {
 		}
 
 		$this->eiFieldMap->validate($validationResult);
+
 		if (null !== ($eiEntryConstraint = $this->getEiEntryAccess()->getEiEntryConstraint())) {
 			$eiEntryConstraint->validate($this, $validationResult);
 		}
@@ -459,12 +460,8 @@ class EiEntry implements GuiEntryModel {
 }
 
 class OnWriteMappingListener implements EiEntryListener {
-	private $closure;
-	/**
-	 * @param \Closure $closure
-	 */
-	public function __construct(\Closure $closure) {
-		$this->closure = $closure;
+
+	public function __construct(public ?\Closure $closure) {
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\op\ei\manage\entry\EiEntryListener::onValidate()
@@ -478,7 +475,7 @@ class OnWriteMappingListener implements EiEntryListener {
 	 * @see \rocket\op\ei\manage\entry\EiEntryListener::onWrite()
 	 */
 	public function onWrite(EiEntry $eiEntry) {
-		$this->closure->__invoke($eiEntry);
+		$this->closure?->__invoke($eiEntry);
 	}
 	/* (non-PHPdoc)
 	 * @see \rocket\op\ei\manage\entry\EiEntryListener::written()

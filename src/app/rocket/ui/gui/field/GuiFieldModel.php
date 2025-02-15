@@ -33,7 +33,7 @@ interface GuiFieldModel {
 
 	function handleInput(mixed $value, N2nContext $n2nContext): bool;
 
-	function save(N2nContext $n2nContext): void;
+//	function save(N2nContext $n2nContext): void;
 
 
 }

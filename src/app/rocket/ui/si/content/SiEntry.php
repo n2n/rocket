@@ -123,7 +123,12 @@ class SiEntry {
 	function getControls(): array {
 		return $this->controls;
 	}
-	
+
+	function getControl(string $controlName): ?SiControl {
+		return $this->controls[$controlName] ?? null;
+	}
+
+
 	/**
 	 * @param SiControl[] $controls
 	 * @return SiEntry

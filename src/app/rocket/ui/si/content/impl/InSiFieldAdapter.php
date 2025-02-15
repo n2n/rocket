@@ -38,6 +38,9 @@ abstract class InSiFieldAdapter extends SiFieldAdapter {
 
 	final function handleInput(array $data, N2nContext $n2nContext): bool {
 		$valueValid = $this->handleInputValue($data, $n2nContext);
+		if (!$valueValid) {
+			return false;
+		}
 		$valid = $this->getModel()?->handleInput($this->getValue(), $n2nContext);
 
 		return $valueValid && $valid;

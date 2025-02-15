@@ -68,10 +68,12 @@ class GuiSiApiModel implements SiApiModel {
 	}
 
 	function getSiEntryControl(string $maskId, string $entryId, string $controlName): SiControl {
-		$siControl = $this->getSiMask($maskId)->getControl($controlName);
+		$siValueBoundary = $this->lookupSiValueBoundary($maskId, $entryId, null);
+
+		$siControl = $siValueBoundary->getSelectedEntry()->getControl($controlName);
 		if ($siControl === null) {
-			throw new UnknownSiElementException('Mask ' . $maskId . ' does contain any control with name '
-					. $controlName);
+			throw new UnknownSiElementException('SiEntry ' . $maskId . '#' . $entryId
+					. ' does contain any control with name ' . $controlName);
 		}
 		return $siControl;
 	}

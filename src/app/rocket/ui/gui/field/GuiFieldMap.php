@@ -89,12 +89,12 @@ class GuiFieldMap {
 		return $guiFields;
 	}
 
-	function save(N2nContext $n2nContext): void {
-		foreach ($this->guiFields as $guiField) {
-			$guiField->getForkGuiFieldMap()?->save($n2nContext);
-			$guiField->save($n2nContext);
-		}
-	}
+//	function save(N2nContext $n2nContext): void {
+//		foreach ($this->guiFields as $guiField) {
+//			$guiField->getForkGuiFieldMap()?->save($n2nContext);
+//			$guiField->save($n2nContext);
+//		}
+//	}
 
 	/**
 	 * @param GuiField[] $guiFields

@@ -592,7 +592,8 @@ class EiuEntry {
 	 * @throws EiFieldOperationFailedException
 	 */
 	public function getEiFieldAbstraction($defPropPath, bool $required = false) {
-		$guiDefinition = $this->eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition();
+		$viewMode = $this->eiuAnalyst->getEiuGuiDefinition(false)?->getViewMode() ?? ViewMode::BULKY_EDIT;
+		$guiDefinition = $this->eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition($viewMode);
 		try {
 			return $guiDefinition->determineEiFieldAbstraction($this->eiuAnalyst->getN2nContext(true),
 					$this->getEiEntry(), DefPropPath::create($defPropPath));
@@ -618,24 +619,35 @@ class EiuEntry {
 // 		return $this->getEiEntry()->isExecutableBy(EiCmdPath::create($eiCmdPath));
 // 	}
 	
-	public function onValidate(\Closure $closure) {
+	public function onValidate(\Closure $closure): void {
 		$this->getEiEntry()->registerListener(new OnValidateMappingListener($closure, $this->eiuAnalyst->getN2nContext(true)));
 	}
 	
-	public function whenValidated(\Closure $closure) {
+	public function whenValidated(\Closure $closure): void {
 		$this->getEiEntry()->registerListener(new ValidatedMappingListener($closure));
 	}
 	
-	public function onWrite(\Closure $closure) {
+	public function onWrite(\Closure $closure): void {
 		$this->getEiEntry()->registerListener(new OnWriteMappingListener($closure));
 	}
+
+	function onWriteOnce(\Closure $closure): void {
+		$eiEntry = $this->getEiEntry();
+		$listener = new OnWriteMappingListener(null);
+		$listener->closure = function () use ($eiEntry, $listener, $closure) {
+			$eiEntry->unregisterListener($listener);
+			$closure->__invoke($this);
+		};
+
+		$this->getEiEntry()->registerListener($listener);
+	}
 	
-	public function whenWritten(\Closure $closure) {
+	public function whenWritten(\Closure $closure): void {
 		$this->getEiEntry()->registerListener(new WrittenMappingListener($closure));
 	}
 	
 	
-	public function fieldMap($forkEiPropPath = null) {
+	public function fieldMap($forkEiPropPath = null): EiuFieldMap {
 		$forkEiPropPath = EiPropPath::create($forkEiPropPath);
 		$eiFieldMap = $this->eiEntry->getEiFieldMap();
 		

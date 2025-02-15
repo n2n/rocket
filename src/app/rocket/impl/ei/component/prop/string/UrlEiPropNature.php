@@ -37,6 +37,7 @@ use n2n\util\type\TypeConstraints;
 use n2n\util\type\ArgUtils;
 use rocket\ui\gui\field\BackableGuiField;
 use rocket\ui\gui\field\impl\GuiFields;
+use n2n\bind\mapper\impl\Mappers;
 
 class UrlEiPropNature extends AlphanumericEiPropNature {
 
@@ -129,20 +130,12 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		return $value;
 	}
 	
-	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setMinlength($this->getMinlength())
-				->setMaxlength($this->getMaxlength())
-				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($eiu, $siField) {
-					CastUtils::assertTrue($siField instanceof StringInSiField);
-					$eiu->field()->setValue($this->mapSiValue($siField->getValue()));
-				});
+	function buildInGuiField(Eiu $eiu): \rocket\ui\gui\field\impl\string\StringInGuiField {
+		$guiField = parent::buildInGuiField($eiu)->setValue((string) $eiu->field()->getValue());
+
+		return $guiField->setModel($eiu->field()->asGuiFieldModel(
+				Mappers::valueClosure(fn (?string $urlStr) => $this->mapGuiValue($urlStr))));
+
 				
 // 		$allowedSchemes = $this->urlConfig->getAllowedSchemes();
 // 		if (!empty($allowedSchemes)) {
@@ -157,7 +150,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		
 	}
 	
-	private function mapSiValue($value) {
+	private function mapGuiValue($value) {
 		if ($value === null) {
 			return null;
 		}

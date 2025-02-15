@@ -82,7 +82,7 @@ class OnlineNatureEiCommand extends EiCmdNatureAdapter {
 			$siButton->setIconType(SiIconType::ICON_MINUS_CIRCLE);
 		}
 		
-		$guiControl = $eiuControlFactory->newCallback(self::CONTROL_KEY, $siButton, 
+		$guiControl = $eiuControlFactory->newCallback($siButton,
 				function () use ($eiu, $eiuEntry, $status, $dtc) {
 					$eiuEntry->setValue($this->eiPropPath, !$status);
 					if (!$eiuEntry->save()) {

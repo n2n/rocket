@@ -37,6 +37,8 @@ use n2n\util\type\TypeConstraints;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeConfig;
 use rocket\ui\gui\field\impl\GuiFields;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\Gui;
+use n2n\bind\mapper\impl\Mappers;
 
 class CkeEiPropNature extends AlphanumericEiPropNature {
 
@@ -80,18 +82,16 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 				['composer' => $ckeComposer, 'config' => $this->ckeConfig, 'ckeCssConfig' => $this->ckeConfig->getCssConfig(),
 						'ckeLinkProviders' => $this->ckeConfig->getLinkProviders()]));
 
-        $iframeInField = SiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()])
-        		->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+        $iframeInField = GuiFields::iframeIn($ckeView)->setParams(['content' => $eiu->field()->getValue()]);
 
-		return $eiu->factory()->newGuiField($iframeInField)->setSaver(function () use ($iframeInField, $eiu) {
-			$eiu->field()->setValue($iframeInField->getParams()['content'] ?? null);
-		});
+		$iframeInField->setModel($eiu->field()->asGuiFieldModel(Mappers
+				::valueClosure(fn (array $params) => $params['content'] ?? null)));
 	}
 	
-	function saveSiField(SiField $siField, Eiu $eiu): void {
-		CastUtils::assertTrue($siField instanceof StringInSiField);
-		$eiu->field()->setValue($siField->getValue());
-	}
+//	function saveSiField(SiField $siField, Eiu $eiu): void {
+//		CastUtils::assertTrue($siField instanceof StringInSiField);
+//		$eiu->field()->setValue($siField->getValue());
+//	}
 
 	
 // 	/**

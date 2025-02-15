@@ -124,8 +124,6 @@ export class SiGuiFactory {
 	createEmbeddedEntry(data: any): SiEmbeddedEntry {
 		const extr = new Extractor(data);
 
-		console.log(data);
-
 		return new SiEmbeddedEntry(
 				this.buildGui(extr.reqObject('content'), SiGuiType.BULKY_ENTRY) as BulkyEntrySiGui,
 				this.buildGui(extr.nullaObject('summaryContent'), SiGuiType.COMPACT_ENTRY) as CompactEntrySiGui);
@@ -141,7 +139,6 @@ export class SiGuiFactory {
 
 	createPanel(data: any): SiPanel {
 		const extr = new Extractor(data);
-		console.log(data);
 
 		const panel = new SiPanel(extr.reqString('name'), extr.reqString('label'),
 				extr.reqString('bulkyMaskId'), extr.nullaString('summaryMaskId'));

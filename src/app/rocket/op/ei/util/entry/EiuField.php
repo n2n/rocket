@@ -145,6 +145,7 @@ class EiuGuiFieldModel implements GuiFieldModel {
 
 		if ($this->valueMapper === null) {
 			$this->preparedValue = $value;
+			$this->eiuField->setValue($this->preparedValue);
 			return true;
 		}
 
@@ -161,6 +162,7 @@ class EiuGuiFieldModel implements GuiFieldModel {
 
 		if ($bindResult->isValid()) {
 			$this->preparedValue = $bindResult->get();
+			$this->eiuField->setValue($this->preparedValue);
 			return true;
 		}
 
@@ -176,9 +178,12 @@ class EiuGuiFieldModel implements GuiFieldModel {
 		return [...$this->eiuField->getMessages(), ...$this->prepareMessages];
 	}
 
-	function save(N2nContext $n2nContext): void {
-		IllegalStateException::assertTrue($this->preparationValid, 'Preparation for ' . $this->eiuField->getEiPropPath()
-				. ' not valid.' );
-		$this->eiuField->setValue($this->preparedValue);
-	}
+//	function save(N2nContext $n2nContext): void {
+//		if ($this->preparationValid) {
+//			return;
+//		}
+////		IllegalStateException::assertTrue($this->preparationValid, 'Preparation for ' . $this->eiuField->getEiPropPath()
+////				. ' not valid.' );
+//		$this->eiuField->setValue($this->preparedValue);
+//	}
 }

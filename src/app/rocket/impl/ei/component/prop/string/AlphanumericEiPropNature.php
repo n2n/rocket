@@ -42,6 +42,7 @@ use rocket\impl\ei\component\prop\adapter\trait\QuickSearchConfigTrait;
 use rocket\op\ei\manage\critmod\quick\impl\QuickSearchProps;
 use rocket\ui\gui\field\impl\GuiFields;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\ui\gui\field\impl\string\StringInGuiField;
 
 
 abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAdapter implements AddonEiPropNature {
@@ -87,16 +88,15 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	}
 	
 	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
-		return GuiFields::out(SiFields::stringOut(StringUtils::strOf($eiu->field()->getValue(), true)))
-				->setExternalMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+		return GuiFields::out(SiFields::stringOut(StringUtils::strOf($eiu->field()->getValue(), true)));
 	}
 	
-	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField  {
 		$guiField = GuiFields::stringIn(mandatory: $this->isMandatory(),
 				minlength: $this->getMinlength() ?? 0, maxlength: $this->getMaxlength() ?? 255,
 				prefixAddons: $this->getPrefixSiCrumbGroups(), suffixAddons: $this->getSuffixSiCrumbGroups());
 
-		$guiField->setModel($eiu->field()->asGuiFieldModel());
+//		$guiField->setModel($eiu->field()->asGuiFieldModel());
 
 		return $guiField;
 	}

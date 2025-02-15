@@ -24,36 +24,34 @@ namespace rocket\impl\ei\manage\gui;
 use rocket\ui\si\control\SiButton;
 use n2n\util\uri\Url;
 use Closure;
+use rocket\ui\gui\control\GuiControl;
 
 class GuiControls {
 
 	/**
-	 * @param string $id
-	 * @param SiButton $siButton
 	 * @param Url|string $url
+	 * @param SiButton $siButton
 	 * @return RefGuiControl
 	 */
-	static function ref(string $id, Url|string $url, SiButton $siButton) {
-		return new RefGuiControl($id, Url::create($url), $siButton, false);
+	static function ref(Url|string $url, SiButton $siButton): RefGuiControl {
+		return new RefGuiControl(Url::create($url), $siButton, false);
 	}
 
 	/**
-	 * @param string $id
-	 * @param SiButton $siButton
 	 * @param Url|string $url
+	 * @param SiButton $siButton
 	 * @return RefGuiControl
 	 */
-	static function href(string $id, Url|string $url, SiButton $siButton) {
-		return new RefGuiControl($id, Url::create($url), $siButton, true);
+	static function href(Url|string $url, SiButton $siButton): RefGuiControl {
+		return new RefGuiControl(Url::create($url), $siButton, true);
 	}
 
 	/**
-	 * @param string $id
 	 * @param SiButton $siButton
 	 * @param Closure $callback
 	 * @return CallbackGuiControl
 	 */
-	static function callback(SiButton $siButton, Closure $callback) {
+	static function callback(SiButton $siButton, Closure $callback): CallbackGuiControl {
 		return new CallbackGuiControl($callback, $siButton);
 	}
 
@@ -62,16 +60,15 @@ class GuiControls {
 	 * @param SiButton $siButton
 	 * @return GroupGuiControl
 	 */
-	static function group(string $id, SiButton $siButton) {
-		return new GroupGuiControl($id, $siButton);
+	static function group(SiButton $siButton): GroupGuiControl {
+		return new GroupGuiControl($siButton);
 	}
 
 	/**
-	 * @param string $id
 	 * @param SiButton $siButton
 	 * @return DeactivatedGuiControl
 	 */
-	static function deactivated(string $id, SiButton $siButton) {
-		return new DeactivatedGuiControl($id, $siButton);
+	static function deactivated(SiButton $siButton): DeactivatedGuiControl {
+		return new DeactivatedGuiControl($siButton);
 	}
 }
