@@ -61,6 +61,7 @@ use rocket\op\ei\manage\gui\factory\EiGuiFactory;
 use rocket\op\ei\manage\ManageException;
 use n2n\util\type\ArgUtils;
 use rocket\ui\gui\control\GuiControl;
+use rocket\ui\gui\impl\IframeGui;
 
 class OpuCtrl {
 
@@ -320,6 +321,7 @@ class OpuCtrl {
 
 	/**
 	 * @throws CorruptedSiDataException
+	 * @throws StatusException
 	 */
 //	private function handleEiSiCall(Gui $gui, ZoneGuiControlsMap $zoneGuiControlsMap): ?SiCallResult {
 //		$zoneControlPath = $this->cu->getParamPost('zoneControlPath');
@@ -349,12 +351,9 @@ class OpuCtrl {
 			return;
 		}
 
-		$iframeSiGui = new IframeSiGui(IframeData::createFromUrl($url));
+		$iframeGui = new IframeGui(IframeData::createFromUrl($url));
 
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($iframeSiGui,
-						$this->opState->getBreadcrumbs(),
-						$title ?? 'Iframe'));
+		$this->forwardGui($iframeGui, $title ?? 'Iframe');
 	}
 
 	public function pushBreadcrumb(SiNavPoint $navPoint, string $label): static {

@@ -107,6 +107,8 @@ class EmbeddedOneToManyEiPropNature extends RelationEiPropNatureAdapter {
 					if (null !== ($orderEiPropPath = $this->relationModel->getTargetOrderEiPropPath())) {
 						$factory->applyOrderIndex($eiuEntries, $orderEiPropPath);
 					}
+
+					return $eiuEntries;
 				})));
 
 		return $guiField;

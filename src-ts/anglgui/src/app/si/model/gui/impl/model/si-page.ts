@@ -117,15 +117,15 @@ export class SiPage {
 		this.recalcSize();
 	}
 
-	private applyEntries(newEntries: SiValueBoundary[]|null) {
+	private applyEntries(newValueBoundaries: SiValueBoundary[]|null) {
 		this.removeEntries();
 
-		if (!newEntries) {
+		if (!newValueBoundaries) {
 			return;
 		}
 
 		this._entrySubPairs = [];
-		for (const newEntry of newEntries) {
+		for (const newEntry of newValueBoundaries) {
 			this.placeEntry(this._entrySubPairs.length, newEntry);
 		}
 

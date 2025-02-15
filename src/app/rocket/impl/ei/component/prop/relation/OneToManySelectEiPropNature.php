@@ -32,6 +32,7 @@ use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiFieldFactory;
 use rocket\ui\gui\field\GuiField;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\ui\gui\field\BackableGuiField;
 
 
 class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
@@ -52,11 +53,19 @@ class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 		return new ToManyEiField($eiu, $targetEiuFrame, $this, $this->getRelationModel());
 	}
 	
-	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
-		if ($readOnly || $this->relationModel->isReadOnly()) {
-			return new RelationLinkGuiField($eiu, $this->getRelationModel());
-		}
-		
-		return new ToManyGuiFieldFactory($eiu, $this->getRelationModel());
+//	function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
+//		if ($readOnly || $this->relationModel->isReadOnly()) {
+//			return new RelationLinkGuiField($eiu, $this->getRelationModel());
+//		}
+//
+//		return new ToManyGuiFieldFactory($eiu, $this->getRelationModel());
+//	}
+
+	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+		return (new ToManyGuiFieldFactory($this->getRelationModel()))->createInGuiField($eiu);
+	}
+
+	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {
+		return (new ToManyGuiFieldFactory($this->getRelationModel()))->createOutGuiField($eiu);
 	}
 }

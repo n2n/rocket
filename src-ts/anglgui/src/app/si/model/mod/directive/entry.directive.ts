@@ -41,8 +41,6 @@ export class EntryDirective implements DoCheck, OnInit, OnDestroy {
 		this.chStateClass(this.siValueBoundary.state);
 	}
 
-
-
 	private chHighlightedClass(highlighted: boolean) {
 		if (highlighted === this.currentlyHighlighted) {
 			return;

@@ -114,7 +114,7 @@ export class SiEntryMonitor {
 				continue;
 			}
 
-			for (const siValueBoundary of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
+			for (const siValueBoundary of this.entriesMap.get(id)!.filter(e => e.identifier.matchesTypeAndId(siEntryIdentifier))) {
 				siValueBoundary.markAsOutdated();
 				this.nextReloadJob.addSiEntry(siValueBoundary);
 				if (!shownEntryUpdated && this.modStateService.isEntryShown(siValueBoundary)) {

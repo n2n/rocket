@@ -17,8 +17,8 @@ export class SiEntryIdentifier implements SiObjectIdentifier {
 				&& this.id === (obj as SiEntryIdentifier).id;
 	}
 
-	matchesTypeAndId(otherIdentifier: SiEntryIdentifier): boolean {
-		return this.id === otherIdentifier.id && this.maskIdentifier.superTypeId === otherIdentifier.maskIdentifier.superTypeId;
+	matchesTypeAndId(otherIdentifier: SiObjectIdentifier): boolean {
+		return this.id === otherIdentifier.id && this.maskIdentifier.superTypeId === otherIdentifier.superTypeId;
 	}
 
 	toString(): string {
