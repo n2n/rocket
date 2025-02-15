@@ -265,13 +265,13 @@ abstract class EiPropRelation {
 	// 		return $this->getRelationEntityProperty()->isMaster();
 	// 	}
 	
-	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, ?EiObject $eiObject = null,
+	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, ?EiObject $eiObject,
 			ControllerContext $targetControllerContext): EiFrame {
-				$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCmdPath([]));
-				$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
-				$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
-				
-				return $targetEiFrame;
+		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCmdPath([]));
+		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
+		$this->configureTargetEiFrame($targetEiFrame, $eiFrame, $eiObject);
+
+		return $targetEiFrame;
 	}
 	
 	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, ?EiEntry $eiEntry = null): EiFrame {
@@ -286,7 +286,7 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 	
-	private function createTargetPseudoEiFrame(EiFrame $eiFrame, ?EiEntry $eiEntry = null, ?EiCmdPath $eiCmdPath): EiFrame {
+	private function createTargetPseudoEiFrame(EiFrame $eiFrame, ?EiEntry $eiEntry, ?EiCmdPath $eiCmdPath): EiFrame {
 		$eiObject = null;
 		if ($eiEntry !== null) {
 			$eiObject = $eiEntry->getEiObject();

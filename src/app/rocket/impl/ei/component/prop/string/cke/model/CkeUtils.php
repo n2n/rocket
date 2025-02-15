@@ -34,7 +34,7 @@ class CkeUtils {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider|mixed
 	 */
-	public static function lookupCkeLinkProvider(?string $ckeLinkProviderLookupId = null, N2nContext $n2nContext) {
+	public static function lookupCkeLinkProvider(?string $ckeLinkProviderLookupId, N2nContext $n2nContext) {
 		if ($ckeLinkProviderLookupId === null) return null;
 		
 		$ckeLinkProvider = null;
@@ -58,7 +58,7 @@ class CkeUtils {
 	 * @param N2nContext $n2nContext
 	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider[]
 	 */
-	public static function lookupCkeLinkProviders(?array $ckeLinkProviderLookupIds = null, N2nContext $n2nContext) {
+	public static function lookupCkeLinkProviders(?array $ckeLinkProviderLookupIds, N2nContext $n2nContext) {
 		ArgUtils::valArray($ckeLinkProviderLookupIds, 'string', true);
 		
 		$ckeLinkProviders = array();
@@ -74,7 +74,7 @@ class CkeUtils {
 	 * @throws \InvalidArgumentException
 	 * @return \rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig
 	 */
-	public static function lookupCkeCssConfig(?string $ckeCssConfigLookupId = null, N2nContext $n2nContext) {
+	public static function lookupCkeCssConfig(?string $ckeCssConfigLookupId, N2nContext $n2nContext) {
 		if ($ckeCssConfigLookupId === null) return null;
 		
 		$ckeCssConfig = null;

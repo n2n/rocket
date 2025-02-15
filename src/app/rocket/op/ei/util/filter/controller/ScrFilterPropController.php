@@ -85,7 +85,7 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 		}
 	}
 	
-	public function doSimple(string $eiTypeId, ?string $eiMaskId = null, ParamQuery $filterPropId, ParamQuery $propertyPath) {
+	public function doSimple(string $eiTypeId, ParamQuery $filterPropId, ParamQuery $propertyPath, ?string $eiMaskId = null) {
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		$filterPropId = (string) $filterPropId;
@@ -129,7 +129,7 @@ class ScrFilterPropController extends ControllerAdapter implements ScrController
 				'filterPropItemForm' => $filterPropItemForm, 'propertyPath' => $propertyPath))));
 	}
 	
-	public function doGroup(string $eiTypeId, ?string $eiMaskId = null, ParamQuery $propertyPath) {
+	public function doGroup(string $eiTypeId, ?string $eiMaskId, ParamQuery $propertyPath) {
 		$eiThing = $this->lookupEiThing($eiTypeId, $eiMaskId);
 		$propertyPath = $this->buildPropertyPath((string) $propertyPath);
 		

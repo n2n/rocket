@@ -68,7 +68,7 @@ abstract class NumericEiPropNatureAdapter extends DraftablePropertyEiPropNatureA
 		return GuiFields::out($siField);
 	}
 	
-// 	function createPreviewUiComponent(?EiFrame $eiFrame = null, HtmlView $view, $value) {
+// 	function createPreviewUiComponent(?EiFrame $eiFrame, HtmlView $view, $value) {
 // 		return $view->getHtmlBuilder()->getEsc($value);
 // 	}
 	

@@ -116,7 +116,7 @@ class OverviewController extends ControllerAdapter {
 // 		$this->delegate($filterPropController);
 // 	}
 	
-// 	public function doDrafts($pageNo = null, DynamicTextCollection $dtc) {
+// 	public function doDrafts(DynamicTextCollection $dtc, $pageNo = null) {
 // 		$eiFrame = $this->opuCtrl->frame()->getEiFrame();
 // 		$draftListModel = new DraftListModel($eiFrame, $this->listSize);
 		

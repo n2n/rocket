@@ -3,12 +3,11 @@
     use n2n\impl\web\ui\view\html\HtmlView;
 	use n2n\core\N2N;
     use n2nutil\jquery\JQueryLibrary;
-    use page\ui\PageHtmlBuilder;
     use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
     use rocket\impl\ei\component\prop\string\cke\ui\CkeComposer;
     use rocket\impl\ei\component\prop\string\cke\ui\CkeHtmlBuilder;
     use rocket\impl\ei\component\prop\string\cke\ui\CkeLibrary;
-use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
+	use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 
 $view = HtmlView::view($this);
 	$html = htmlView::html($view);
@@ -16,7 +15,6 @@ $view = HtmlView::view($this);
 
 	$formHtml = new FormHtmlBuilder($view);
     $ckeHtml = new CkeHtmlBuilder($view);
-    $pageHtml = new PageHtmlBuilder($view);
 
     /**
      * @var CkeComposer $ckeInField
