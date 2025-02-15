@@ -27,7 +27,7 @@ use rocket\op\ei\EiEngine;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\manage\critmod\filter\FilterCriteriaConstraint;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\frame\Boundary;
 use rocket\op\ei\EiCmdPath;
 use rocket\op\ei\manage\security\InaccessibleEiCmdPathException;
 use rocket\op\ei\EiException;
@@ -55,13 +55,13 @@ class EiFrameFactory {
 
 		if (null !== ($filterSettingGroup = $eiMask->getFilterSettingGroup())) {
 			$filterDefinition = $eiFrame->getFilterDefinition(); // $this->eiEngine->createFramedFilterDefinition($eiFrame);
-			$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_FILTER,
+			$eiFrame->getBoundary()->addCriteriaConstraint(Boundary::TYPE_HARD_FILTER,
 					new FilterCriteriaConstraint($filterDefinition->createComparatorConstraint($filterSettingGroup)));
 		}
 
 		if (null !== ($sortSettingGroup = $eiMask->getSortSettingGroup())) {
 			$sortDefinition = $eiFrame->getSortDefinition(); //$this->eiEngine->createFramedSortDefinition($eiFrame);
-			$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
+			$eiFrame->getBoundary()->addCriteriaConstraint(Boundary::TYPE_HARD_SORT,
 					$sortDefinition->createCriteriaConstraint($sortSettingGroup));
 		}
 

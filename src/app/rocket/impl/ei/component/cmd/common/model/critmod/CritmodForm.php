@@ -34,7 +34,7 @@ use rocket\op\ei\util\frame\EiuFrame;
 use rocket\op\ei\util\filter\controller\FilterJhtmlHook;
 use rocket\op\ei\util\filter\EiuFilterForm;
 use rocket\op\ei\util\sort\EiuSortForm;
-use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\frame\Boundary;
 
 class CritmodForm implements Dispatchable {	
 	private $critmodSaveDao;
@@ -168,15 +168,15 @@ class CritmodForm implements Dispatchable {
 
 		$comparatorConstraint = $this->getEiuFilterForm()->getFilterDefinition()
 						->createComparatorConstraint($critmodSave->readFilterSettingGroup());
-		$eiFrame->getBoundry()->addCriteriaConstraint(
-				($tmp ? Boundry::TYPE_TMP_FILTER : Boundry::TYPE_HARD_FILTER),
+		$eiFrame->getBoundary()->addCriteriaConstraint(
+				($tmp ? Boundary::TYPE_TMP_FILTER : Boundary::TYPE_HARD_FILTER),
 				new ComparatorConstraintGroup(true, array($comparatorConstraint)));
 		
 		$sortCriteriaConstraint = $this->getEiuSortForm()->getSortDefinition()
 				->createCriteriaConstraint($critmodSave->readSortSettingGroup());
 		if ($sortCriteriaConstraint !== null) {
-			$eiFrame->getBoundry()->addCriteriaConstraint(
-					($tmp ? Boundry::TYPE_TMP_SORT : Boundry::TYPE_HARD_SORT),
+			$eiFrame->getBoundary()->addCriteriaConstraint(
+					($tmp ? Boundary::TYPE_TMP_SORT : Boundary::TYPE_HARD_SORT),
 					$sortCriteriaConstraint);
 		}
 	}

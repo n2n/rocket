@@ -4,17 +4,17 @@ import { SiUiService } from 'src/app/si/manage/si-ui.service';
 import { ButtonControlUiContent } from '../comp/button-control-ui-content';
 import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { UiContent } from 'src/app/ui/structure/model/ui-content';
-import { SiControlBoundry } from '../../si-control-boundry';
+import { SiControlBoundary } from '../../si-control-boundary';
 
 export class RefSiControl implements SiControl {
 
 	constructor(public siUiService: SiUiService, public url: string, public newWindow: boolean, public siButton: SiButton,
-			public controlBoundry: SiControlBoundry) {
+			public controlBoundary: SiControlBoundary) {
 	}
 
 
 	isDisabled(): boolean {
-		return !!this.controlBoundry.getBoundValueBoundaries().find(siValueBoundary => siValueBoundary.isClaimed());
+		return !!this.controlBoundary.getBoundValueBoundaries().find(siValueBoundary => siValueBoundary.isClaimed());
 	}
 
 	exec(uiZone: UiZone): void {

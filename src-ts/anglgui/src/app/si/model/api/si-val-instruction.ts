@@ -1,12 +1,12 @@
 import { SiValGetInstruction } from './si-val-get-instruction';
 import { SiValueBoundaryInput } from '../input/si-input';
 import { SiDeclaration } from '../meta/si-declaration';
-import { SiControlBoundry } from '../control/si-control-boundry';
+import { SiControlBoundary } from '../control/si-control-boundary';
 
 export class SiValInstruction {
 
 	public declaration: SiDeclaration|null = null;
-	public controlBoundary: SiControlBoundry|null = null;
+	public controlBoundary: SiControlBoundary|null = null;
 	public getInstructions: SiValGetInstruction[];
 
 	constructor(public valueBoundaryInput: SiValueBoundaryInput, ...getInstructions: SiValGetInstruction[]) {

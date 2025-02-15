@@ -46,7 +46,7 @@ use rocket\op\ei\util\EiuPerimeterException;
 use rocket\op\ei\util\entry\EiuEntry;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use rocket\op\ei\manage\frame\CriteriaConstraint;
-use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\frame\Boundary;
 use rocket\op\ei\manage\entry\EiEntryConstraint;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\entry\EiuFieldMap;
@@ -745,20 +745,20 @@ class EiuFrame {
 	
 	/**
 	 * @param CriteriaConstraint $criteriaConstraint
-	 * @param int $type {@see Boundry::getTypes()}
-	 * @see Boundry::addCriteriaConstraint()
+	 * @param int $type {@see Boundary::getTypes()}
+	 * @see Boundary::addCriteriaConstraint()
 	 */
-	public function addCriteriaConstraint(CriteriaConstraint $criteriaConstraint, int $type = Boundry::TYPE_MANAGE) {
-		$this->eiFrame->getBoundry()->addCriteriaConstraint($type, $criteriaConstraint);
+	public function addCriteriaConstraint(CriteriaConstraint $criteriaConstraint, int $type = Boundary::TYPE_MANAGE) {
+		$this->eiFrame->getBoundary()->addCriteriaConstraint($type, $criteriaConstraint);
 	}
 	
 	/**
 	 * @param EiEntryConstraint $eiEntryConstraint
-	 * @param int $type {@see Boundry::getTypes()}
-	 * @see Boundry::addEiEntryConstraint()
+	 * @param int $type {@see Boundary::getTypes()}
+	 * @see Boundary::addEiEntryConstraint()
 	 */
-	public function addEiEntryConstraint(EiEntryConstraint $eiEntryConstraint, int $type = Boundry::TYPE_MANAGE) {
-		$this->eiFrame->getBoundry()->addEiEntryConstraint($type, $eiEntryConstraint);
+	public function addEiEntryConstraint(EiEntryConstraint $eiEntryConstraint, int $type = Boundary::TYPE_MANAGE) {
+		$this->eiFrame->getBoundary()->addEiEntryConstraint($type, $eiEntryConstraint);
 	}
 	
 	//////////////////////////
@@ -1144,7 +1144,7 @@ class EiuFrame {
 	 * @return \rocket\op\ei\util\frame\EiuFrame
 	 */
 	function setCriteriaFactory(?CriteriaFactory $criteriaFactory) {
-		$this->eiFrame->getBoundry()->setCriteriaFactory($criteriaFactory);
+		$this->eiFrame->getBoundary()->setCriteriaFactory($criteriaFactory);
 		return $this;
 	}
 	

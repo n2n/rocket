@@ -3,7 +3,7 @@ namespace rocket\op\ei\manage\frame;
 
 use rocket\op\ei\manage\entry\EiEntryConstraint;
 
-class Boundry {
+class Boundary {
 	/**
 	 * Used by relations for example.
 	 * @var int

@@ -46,9 +46,9 @@ use rocket\op\spec\TypePath;
 
 class EiFrame {
 	/**
-	 * @var Boundry
+	 * @var Boundary
 	 */
-	private $boundry;
+	private $boundary;
 	/**
 	 * @var Ability
 	 */
@@ -72,7 +72,7 @@ class EiFrame {
 
 	public function __construct(private EiEngine $contextEiEngine, private EiLaunch $eiLaunch,
 			private ?EiForkLink $eiForkLink = null) {
-		$this->boundry = new Boundry();
+		$this->boundary = new Boundary();
 		$this->ability = new Ability();
 	}
 
@@ -193,10 +193,10 @@ class EiFrame {
 	}
 	
 	/**
-	 * @return Boundry
+	 * @return Boundary
 	 */
-	public function getBoundry() {
-		return $this->boundry;
+	public function getBoundary() {
+		return $this->boundary;
 	}
 	
 	/**
@@ -285,8 +285,8 @@ class EiFrame {
 	public function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0) {
 		$em = $this->eiLaunch->getEntityManager();
 		$criteria = null;
-		$criteriaFactory = $this->boundry->getCriteriaFactory();		
-		if ($criteriaFactory !== null && !($ignoreConstraintTypes & Boundry::TYPE_MANAGE)) {
+		$criteriaFactory = $this->boundary->getCriteriaFactory();		
+		if ($criteriaFactory !== null && !($ignoreConstraintTypes & Boundary::TYPE_MANAGE)) {
 			$criteria = $criteriaFactory->create($em, $entityAlias);
 		} else {
 			$criteria = $em->createCriteria()->from(
@@ -296,16 +296,16 @@ class EiFrame {
 
 		$entityAliasCriteriaProperty = CrIt::p(array($entityAlias));
 		
-		if (!($ignoreConstraintTypes & Boundry::TYPE_SECURITY) 
+		if (!($ignoreConstraintTypes & Boundary::TYPE_SECURITY) 
 				&& null !== ($criteriaConstraint = $this->getEiExecution()->getCriteriaConstraint())) {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
 		
-		foreach ($this->boundry->filterCriteriaConstraints($ignoreConstraintTypes) as $criteriaConstraint) {
+		foreach ($this->boundary->filterCriteriaConstraints($ignoreConstraintTypes) as $criteriaConstraint) {
 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 		}
 
-// 		if (!($ignoreConstraintTypes & Boundry::TYPE_SECURITY)
+// 		if (!($ignoreConstraintTypes & Boundary::TYPE_SECURITY)
 // 				&& null !== ($criteriaConstraint = $this->getEiExecution()->getCriteriaConstraint())) {
 // 			$criteriaConstraint->applyToCriteria($criteria, $entityAliasCriteriaProperty);
 // 		}
@@ -321,7 +321,7 @@ class EiFrame {
 	 */
 	public function createEiEntry(EiObject $eiObject, ?EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0): EiEntry {
 		$eiEntry = $this->contextEiEngine->getEiMask()->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
-				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
+				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundary->filterEiEntryConstraints($ignoreConstraintTypes));
 		$eiEntry->setEiEntryAccess($this->getEiExecution()->createEiEntryAccess($eiEntry));
 		
 		foreach ($this->listeners as $listener) {

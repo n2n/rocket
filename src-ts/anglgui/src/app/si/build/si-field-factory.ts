@@ -14,7 +14,7 @@ import { SplitContextInSiField } from '../model/content/impl/split/model/split-c
 import { SplitContextOutSiField } from '../model/content/impl/split/model/split-context-out-si-field';
 import { Injector } from '@angular/core';
 import { SiDeclaration } from '../model/meta/si-declaration';
-import { SiControlBoundry } from '../model/control/si-control-boundry';
+import { SiControlBoundary } from '../model/control/si-control-boundary';
 import { TranslationService } from 'src/app/util/i18n/translation.service';
 import { CrumbOutSiField } from '../model/content/impl/meta/model/crumb-out-si-field';
 import { SiModStateService } from '../model/mod/model/si-mod-state.service';
@@ -71,8 +71,8 @@ enum SiFieldType {
 }
 
 export class SiFieldFactory {
-	constructor(private controlBoundry: SiControlBoundry, private mask: SiMask, private entry: SiEntry,
-			private injector: Injector) {
+	constructor(private controlBoundary: SiControlBoundary, private mask: SiMask, private entry: SiEntry,
+				private injector: Injector) {
 	}
 
 	createFieldMap(data: Map<string, any>): Map<string, SiField> {
@@ -140,7 +140,7 @@ export class SiFieldFactory {
 			return fileOutSiField;
 
 		case SiFieldType.FILE_IN:
-			const apiUrl = this.controlBoundry.getBoundApiUrl();
+			const apiUrl = this.controlBoundary.getBoundApiUrl();
 			if (!apiUrl) {
 				throw new Error('API Url not present for FileInSiField.');
 			}
@@ -232,7 +232,7 @@ export class SiFieldFactory {
 			splitContextInSiField.mandatoryKeys = dataExtr.reqStringArray('mandatoryKeys');
 			splitContextInSiField.min = dataExtr.reqNumber('min');
 			this.compileSplitContents(splitContextInSiField.collection,
-					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'), new SiControlFactory(this.controlBoundry, this.injector)),
+					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'), new SiControlFactory(this.controlBoundary, this.injector)),
 					SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextInSiField, prop.dependantPropIds, fieldMap$);
@@ -243,7 +243,7 @@ export class SiFieldFactory {
 			const splitContextOutSiField = new SplitContextOutSiField();
 			splitContextOutSiField.style = this.createSplitStyle(dataExtr.reqObject('style'));
 			this.compileSplitContents(splitContextOutSiField.collection,
-					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'), new SiControlFactory(this.controlBoundry, this.injector)),
+					SiMetaFactory.createDeclaration(dataExtr.reqObject('declaration'), new SiControlFactory(this.controlBoundary, this.injector)),
 					SiMetaFactory.buildFrame(dataExtr.nullaObject('frame')),
 					dataExtr.reqMap('splitContents'));
 			this.completeSplitContextSiField(splitContextOutSiField, prop.dependantPropIds, fieldMap$);
@@ -342,7 +342,7 @@ export class SiFieldFactory {
 					entryId: extr.nullaString('entryId'),
 					propIds: extr.nullaStringArray('propIds'),
 					maskId: extr.reqString('maskId'),
-					siControlBoundy: this.controlBoundry,
+					siControlBoundy: this.controlBoundary,
 					siService: this.injector.get(SiService)
 				}));
 				continue;

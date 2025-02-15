@@ -10,13 +10,13 @@ import { SiGetInstruction } from '../../../api/si-get-instruction';
 import { SiGetRequest } from '../../../api/si-get-request';
 import { SiGetResponse } from '../../../api/si-get-response';
 import { SiGetResult } from '../../../api/si-get-result';
-import { SiControlBoundry } from '../../../control/si-control-boundry';
+import { SiControlBoundary } from '../../../control/si-control-boundary';
 import { SiFrame } from '../../../meta/si-frame';
 import { SiEntryIdentifier } from '../../../content/si-entry-qualifier';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { Subscription } from 'rxjs';
 
-export class SiPageCollection implements SiControlBoundry {
+export class SiPageCollection implements SiControlBoundary {
 	public declaration: SiDeclaration|null = null;
 	// public controls: SiControl[]|null = null;
 
@@ -240,7 +240,7 @@ export class SiPageCollection implements SiControlBoundry {
 						this.quickSearchStr)
 				.setDeclaration(this.declaration!)
 				.setGeneralControlsIncluded(!this.controls)
-				.setGeneralControlsBoundry(this)
+				.setGeneralControlsBoundary(this)
 				.setEntryControlsIncluded(true);
 		const getRequest = new SiGetRequest(instruction);
 

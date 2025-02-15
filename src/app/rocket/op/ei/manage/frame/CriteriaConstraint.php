@@ -29,7 +29,7 @@ use n2n\persistence\orm\criteria\item\CriteriaProperty;
  * Among other things implementations of this Interface are usued to make modification to {@see Criteria}s created by 
  * an {@see \rocket\op\ei\manage\frame\EiFrame}.</p>
  *  
- * @see \rocket\op\ei\manage\frame\EiFrame::getBoundry()
+ * @see \rocket\op\ei\manage\frame\EiFrame::getBoundary()
  *
  */
 interface CriteriaConstraint {

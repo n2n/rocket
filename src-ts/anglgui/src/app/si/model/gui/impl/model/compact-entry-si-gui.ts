@@ -15,11 +15,11 @@ import { SiFrame } from '../../../meta/si-frame';
 import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
-import { SiControlBoundry } from '../../../control/si-control-boundry';
+import { SiControlBoundary } from '../../../control/si-control-boundary';
 import { SiControlFactory } from '../../../../build/si-control-factory';
 import { SimpleUiStructureModel } from '../../../../../ui/structure/model/impl/simple-si-structure-model';
 
-export class CompactEntrySiGui implements SiGui, SiControlBoundry {
+export class CompactEntrySiGui implements SiGui, SiControlBoundary {
 	private valueBoundarySubject = new BehaviorSubject<SiValueBoundary|null>(null);
 	public entryControlsIncluded = true;
 	public declaration?: SiDeclaration
@@ -29,7 +29,11 @@ export class CompactEntrySiGui implements SiGui, SiControlBoundry {
 	}
 
 	get valueBoundary(): SiValueBoundary|null {
-		return this.valueBoundarySubject.getValue();
+		const valueBoundary = this.valueBoundarySubject.getValue();
+		while (valueBoundary!.replacementValueBoundary) {
+			this.valueBoundary = valueBoundary!.replacementValueBoundary;
+		}
+		return valueBoundary;
 	}
 
 	set valueBoundary(valueBoundary: SiValueBoundary|null) {

@@ -1,5 +1,5 @@
 import { SiDeclaration } from '../meta/si-declaration';
-import { SiControlBoundry } from '../control/si-control-boundry';
+import { SiControlBoundary } from '../control/si-control-boundary';
 import { SiEntryIdentifier } from '../content/si-entry-qualifier';
 
 export class SiGetInstruction {
@@ -12,7 +12,7 @@ export class SiGetInstruction {
 	protected partialContentInstruction: SiPartialContentInstruction|null = null;
 	protected newEntryRequested = false;
 	protected generalControlsIncluded = false;
-	protected generalControlsBoundary: SiControlBoundry|null = null;
+	protected generalControlsBoundary: SiControlBoundary|null = null;
 	protected entryControlsIncluded = false;
 	protected allowedFieldNames: string[]|null = null;
 	protected allowedMaskIds: string[]|null = null;
@@ -67,12 +67,12 @@ export class SiGetInstruction {
 		return this;
 	}
 
-	setGeneralControlsBoundry(generalControlsBoundry: SiControlBoundry|null): SiGetInstruction {
-		this.generalControlsBoundary = generalControlsBoundry;
+	setGeneralControlsBoundary(generalControlsBoundary: SiControlBoundary|null): SiGetInstruction {
+		this.generalControlsBoundary = generalControlsBoundary;
 		return this;
 	}
 
-	getGeneralControlsBoundry(): SiControlBoundry|null {
+	getGeneralControlsBoundary(): SiControlBoundary|null {
 		return this.generalControlsBoundary;
 	}
 

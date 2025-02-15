@@ -79,7 +79,7 @@ export class SiValueBoundary {
 	}
 
 	get replacementValueBoundary(): SiValueBoundary|null {
-		return this._replacementValueBoundary;
+		return this._replacementValueBoundary?.replacementValueBoundary ?? this._replacementValueBoundary;
 	}
 
 	// markAsClean() {
@@ -347,7 +347,7 @@ export class SiValueBoundary {
 	}
 
 	createLock(): SiEntryLock {
-		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN,'SiEntry not clean: ' + this.state);
+		IllegalSiStateError.assertTrue(this.state === SiEntryState.CLEAN, 'SiEntry not clean: ' + this.state);
 
 		this.stateSubject.next(SiEntryState.LOCKED);
 		const lock = this.lock = {

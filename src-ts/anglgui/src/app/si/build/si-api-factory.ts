@@ -10,7 +10,7 @@
 // import { SiDeclaration } from '../model/meta/si-declaration';
 // import { Extractor } from 'src/app/util/mapping/extractor';
 // import { Injector } from '@angular/core';
-// import { SiControlBoundry } from '../model/control/si-control-boundry';
+// import { SiControlBoundary } from '../model/control/si-control-boundary';
 // import { SimpleSiControlBoundary } from '../model/control/impl/model/simple-si-control-boundary';
 // import { SiEntryFactory } from './si-entry-factory';
 // import { SiControlFactory } from './si-control-factory';
@@ -32,13 +32,13 @@
 // 	// 		}
 // 	//
 // 	// 		response.instructionResults[key] = this.createGetResult(resultsData[key], request.instructions[key].getDeclaration(),
-// 	// 				request.instructions[key].getGeneralControlsBoundry());
+// 	// 				request.instructions[key].getGeneralControlsBoundary());
 // 	// 	}
 // 	//
 // 	// 	return response;
 // 	// }
 // 	//
-// 	// private createGetResult(data: any, declaration: SiDeclaration|null, controlBoundry: SiControlBoundry|null): SiGetResult {
+// 	// private createGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundary|null): SiGetResult {
 // 	// 	const extr = new Extractor(data);
 // 	//
 // 	// 	const result: SiGetResult = {
@@ -49,12 +49,12 @@
 // 	//
 // 	// 	if (!declaration) {
 // 	// 		declaration = result.declaration = SiMetaFactory.createDeclaration(extr.reqObject('declaration'),
-// 	// 				new SiControlFactory(controlBoundry!, this.injector));
+// 	// 				new SiControlFactory(controlBoundary!, this.injector));
 // 	// 	}
 // 	//
 // 	// 	// let controlsData: any;
 // 	// 	// if (null !== (controlsData = extr.nullaArray('generalControls'))) {
-// 	// 	// 	const compEssentialsFactory = new SiControlFactory(controlBoundry || new SimpleSiControlBoundry([], declaration, this.apiUrl), this.injector);
+// 	// 	// 	const compEssentialsFactory = new SiControlFactory(controlBoundary || new SimpleSiControlBoundary([], declaration, this.apiUrl), this.injector);
 // 	// 	// 	result.generalControls = compEssentialsFactory.createControls(controlsData);
 // 	// 	// }
 // 	//
@@ -107,7 +107,7 @@
 // 	// 	return result;
 // 	// }
 // 	//
-// 	// private createValGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundry): SiValGetResult {
+// 	// private createValGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundary): SiValGetResult {
 // 	// 	const extr = new Extractor(data);
 // 	//
 // 	// 	const result: SiValGetResult = {

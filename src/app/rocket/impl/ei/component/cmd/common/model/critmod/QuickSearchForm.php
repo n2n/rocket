@@ -27,7 +27,7 @@
 //use rocket\op\ei\manage\critmod\save\CritmodSaveDao;
 //use rocket\op\ei\util\frame\EiuFrame;
 //use rocket\op\spec\TypePath;
-//use rocket\op\ei\manage\frame\Boundry;
+//use rocket\op\ei\manage\frame\Boundary;
 //
 //class QuickSearchForm implements Dispatchable {
 //	private $quickSearchDefinition;
@@ -74,8 +74,8 @@
 //		if ($this->searchStr === null) return;
 //
 //		if (null !== ($cc = $this->quickSearchDefinition->buildCriteriaConstraint($this->searchStr))) {
-//			$eiFrame->getBoundry()->addCriteriaConstraint(
-//					($tmp ? Boundry::TYPE_TMP_FILTER : Boundry::TYPE_HARD_FILTER),
+//			$eiFrame->getBoundary()->addCriteriaConstraint(
+//					($tmp ? Boundary::TYPE_TMP_FILTER : Boundary::TYPE_HARD_FILTER),
 //					$cc);
 //		}
 //	}

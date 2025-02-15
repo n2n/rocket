@@ -28,7 +28,7 @@ use rocket\op\ei\manage\critmod\sort\SortCriteriaConstraintGroup;
 use rocket\op\ei\manage\critmod\sort\SimpleSortConstraint;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\op\ei\util\Eiu;
-use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\frame\Boundary;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\util\entry\EiuObject;
 
@@ -47,7 +47,7 @@ class OrderEiModificator extends EiModNatureAdapter {
 	 * @see \rocket\impl\ei\component\mod\adapter\EiModNatureAdapter::setupEiFrame()
 	 */
 	public function setupEiFrame(Eiu $eiu): void {
-		$eiu->frame()->getEiFrame()->getBoundry()->addCriteriaConstraint(Boundry::TYPE_HARD_SORT,
+		$eiu->frame()->getEiFrame()->getBoundary()->addCriteriaConstraint(Boundary::TYPE_HARD_SORT,
 				new SortCriteriaConstraintGroup(array(
 						new SimpleSortConstraint(CrIt::p($this->eiProp->getEntityProperty()), 'ASC'))));
 

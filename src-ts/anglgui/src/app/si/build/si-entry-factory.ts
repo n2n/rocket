@@ -5,7 +5,7 @@ import { SiEntry } from '../model/content/si-entry';
 import { Extractor } from 'src/app/util/mapping/extractor';
 import { SiControlFactory } from './si-control-factory';
 import { Injector } from '@angular/core';
-import { SiControlBoundry } from '../model/control/si-control-boundry';
+import { SiControlBoundary } from '../model/control/si-control-boundary';
 import { SimpleSiControlBoundary } from '../model/control/impl/model/simple-si-control-boundary';
 import { Message } from '../../util/i18n/message';
 import { SiMetaFactory } from './si-meta-factory';
@@ -41,9 +41,9 @@ export class SiEntryFactory {
 				SiMetaFactory.createStyle(extr.reqObject('style'))*/);
 		siValueBoundary.treeLevel = extr.nullaNumber('treeLevel');
 
-		const controlBoundry = new SimpleSiControlBoundary([siValueBoundary], this.declaration, this.apiUrl);
+		const controlBoundary = new SimpleSiControlBoundary([siValueBoundary], this.declaration, this.apiUrl);
 		for (const [typeId, entryData] of extr.reqMap('entries')) {
-			siValueBoundary.addEntry(this.createEntry(typeId, entryData, controlBoundry));
+			siValueBoundary.addEntry(this.createEntry(typeId, entryData, controlBoundary));
 		}
 
 		siValueBoundary.selectedTypeId = extr.nullaString('selectedTypeId');
@@ -51,7 +51,7 @@ export class SiEntryFactory {
 		return siValueBoundary;
 	}
 
-	private createEntry(typeId: string, data: any, controlBoundary: SiControlBoundry): SiEntry {
+	private createEntry(typeId: string, data: any, controlBoundary: SiControlBoundary): SiEntry {
 		const extr = new Extractor(data);
 
 		const entryQualifier = SiMetaFactory.createEntryQualifier(extr.reqObject('qualifier'));

@@ -56,7 +56,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * Button will be colored according to the type color.
 	 * @param bool $important
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setImportant(bool $important) {
 		$this->important = $important;
@@ -70,7 +70,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * Button text.
 	 * @param string $name
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setName(?string $name = null) {
 		$this->name = $name;
@@ -86,7 +86,7 @@ class SiButton implements \JsonSerializable {
 	
 	/**
 	 * @param string $type
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setType(string $type) {
 		$this->type = $type;
@@ -102,7 +102,7 @@ class SiButton implements \JsonSerializable {
 	
 	/**
 	 * @param string $iconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setIconType(string $iconType) {
 		$this->iconType = $iconType;
@@ -118,7 +118,7 @@ class SiButton implements \JsonSerializable {
 	
 	/**
 	 * @param string $tooltip
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setTooltip(?string $tooltip) {
 		$this->tooltip = $tooltip;
@@ -135,7 +135,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * Icon will always be colored.
 	 * @param bool $iconImportant
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setIconImportant(bool $iconImportant) {
 		$this->iconImportant = $iconImportant;
@@ -152,7 +152,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * Icon will always be displayed.
 	 * @param bool $iconImportant
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setIconAlways(bool $iconAlways) {
 		$this->iconAlways = $iconAlways;
@@ -169,7 +169,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * Button text will always be displayed.
 	 * @param bool $labelAlways
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setLabelAlways(bool $labelAlways) {
 		$this->labelAlawys = $labelAlways;
@@ -178,7 +178,7 @@ class SiButton implements \JsonSerializable {
 	
 	/**
 	 * @param SiConfirm $confirm
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	public function setConfirm(?SiConfirm $confirm) {
 		$this->confirm = $confirm;
@@ -227,7 +227,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @param string $name
 	 * @param string $siIconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	static function primary(string $name, ?string $siIconType = null) {
 		return new SiButton($name, $siIconType, self::TYPE_PRIMARY, );
@@ -236,7 +236,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @param string $name
 	 * @param string $siIconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	static function secondary(string $name, ?string $siIconType = null) {
 		return new SiButton($name, $siIconType, self::TYPE_SECONDARY);
@@ -245,7 +245,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @param string $name
 	 * @param string $siIconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	static function success(string $name, ?string $siIconType = null) {
 		return new SiButton($name, $siIconType, self::TYPE_SUCCESS);
@@ -254,7 +254,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @param string $name
 	 * @param string $siIconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	static function danger(string $name, ?string $siIconType = null) {
 		return new SiButton($name, $siIconType, self::TYPE_DANGER );
@@ -263,7 +263,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @param string $name
 	 * @param string $siIconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	static function info(string $name, ?string $siIconType = null) {
 		return new SiButton($name, $siIconType, self::TYPE_INFO);
@@ -272,7 +272,7 @@ class SiButton implements \JsonSerializable {
 	/**
 	 * @param string $name
 	 * @param string $siIconType
-	 * @return \rocket\si\control\SiButton
+	 * @return \rocket\ui\si\control\SiButton
 	 */
 	static function warning(string $name, ?string $siIconType = null) {
 		return new SiButton($name, $siIconType, self::TYPE_WARNING);

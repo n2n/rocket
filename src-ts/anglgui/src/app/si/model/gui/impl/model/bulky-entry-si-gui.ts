@@ -11,7 +11,7 @@ import { SiField } from '../../../content/si-field';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { SiStructureDeclaration, UiStructureType, UiStructureTypeUtils } from '../../../meta/si-structure-declaration';
 import { PlainContentComponent } from 'src/app/ui/structure/comp/plain-content/plain-content.component';
-import { SiControlBoundry } from '../../../control/si-control-boundry';
+import { SiControlBoundary } from '../../../control/si-control-boundary';
 import { SiFrame } from '../../../meta/si-frame';
 import { SiEntryMonitor } from '../../../mod/model/si-entry-monitor';
 import { SiService } from 'src/app/si/manage/si.service';
@@ -28,7 +28,7 @@ import { Message } from 'src/app/util/i18n/message';
 import { SiMaskQualifier } from '../../../meta/si-mask-qualifier';
 import { IllegalStateError } from '../../../../../util/err/illegal-state-error';
 
-export class BulkyEntrySiGui implements SiGui, SiControlBoundry {
+export class BulkyEntrySiGui implements SiGui, SiControlBoundary {
 	private _valueBoundary: SiValueBoundary|null = null;
 	public entryControlsIncluded = true;
 	public controls: Array<SiControl> = [];

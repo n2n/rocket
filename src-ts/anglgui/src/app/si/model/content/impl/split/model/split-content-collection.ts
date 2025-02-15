@@ -1,7 +1,7 @@
 import { SplitOption } from './split-option';
 import { SiValueBoundary } from '../../../si-value-boundary';
 import { SiService } from '../../../../../manage/si.service';
-import { SiControlBoundry } from '../../../../control/si-control-boundry';
+import { SiControlBoundary } from '../../../../control/si-control-boundary';
 import { SiGetInstruction } from '../../../../api/si-get-instruction';
 import { SiGetRequest } from '../../../../api/si-get-request';
 import { map } from 'rxjs/operators';
@@ -117,7 +117,7 @@ export interface LazyDef {
 	propIds: string[]|null;
 	maskId: string;
 	siService: SiService;
-	siControlBoundy: SiControlBoundry;
+	siControlBoundy: SiControlBoundary;
 }
 
 

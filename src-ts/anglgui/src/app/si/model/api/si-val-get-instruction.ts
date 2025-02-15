@@ -1,10 +1,10 @@
 import { SiDeclaration } from '../meta/si-declaration';
-import { SiControlBoundry } from '../control/si-control-boundry';
+import { SiControlBoundary } from '../control/si-control-boundary';
 
 export class SiValGetInstruction {
 
 	protected declaration: SiDeclaration|null = null;
-	protected controlBoundary: SiControlBoundry|null = null;
+	protected controlBoundary: SiControlBoundary|null = null;
 	protected controlsIncluded = false;
 
 	constructor(protected maskId: string) {
@@ -18,7 +18,7 @@ export class SiValGetInstruction {
 		return new SiValGetInstruction(maskId);
 	}
 
-	// static createFromDeclaration(declaration: SiDeclaration, controlBoundary: SiControlBoundry): SiValGetInstruction {
+	// static createFromDeclaration(declaration: SiDeclaration, controlBoundary: SiControlBoundary): SiValGetInstruction {
 	// 	const instruction = new SiValGetInstruction();
 	// 	instruction.declaration = declaration;
 	// 	instruction.controlBoundary = controlBoundary;
@@ -34,7 +34,7 @@ export class SiValGetInstruction {
 	// 	return this;
 	// }
 
-	getControlBoundary(): SiControlBoundry|null {
+	getControlBoundary(): SiControlBoundary|null {
 		return this.controlBoundary;
 	}
 

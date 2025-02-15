@@ -28,7 +28,7 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\security\EiPermissionManager;
 use rocket\op\spec\TypePath;
 use rocket\user\bo\EiGrant;
-use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\frame\Boundary;
 use rocket\op\ei\manage\security\EiEntryAccess;
 use rocket\op\ei\manage\ManageState;
 use rocket\op\ei\manage\security\EiExecution;
@@ -148,8 +148,8 @@ class RocketUserEiPermissionManager implements EiPermissionManager {
 // 				$eiEntryAccessFactory);
 		
 // 		$eiFrame->setEiExecution($ree);
-// 		$eiFrame->getBoundry()->addCriteriaConstraint(Boundry::TYPE_SECURITY, $ree->getCriteriaConstraint());
-// 		$eiFrame->getBoundry()->addEiEntryConstraint(Boundry::TYPE_SECURITY, $ree->getEiEntryConstraint());
+// 		$eiFrame->getBoundary()->addCriteriaConstraint(Boundary::TYPE_SECURITY, $ree->getCriteriaConstraint());
+// 		$eiFrame->getBoundary()->addEiEntryConstraint(Boundary::TYPE_SECURITY, $ree->getEiEntryConstraint());
 	}
 	
 	/**

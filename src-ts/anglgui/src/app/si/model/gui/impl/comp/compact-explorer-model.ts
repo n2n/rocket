@@ -10,7 +10,7 @@ export interface CompactExplorerModel {
 
 	getStructurePageManager(): StructurePageManager;
 
-	// getSiControlBoundry(): SiControlBoundry;
+	// getSiControlBoundary(): SiControlBoundary;
 
 	getSiEntryQualifierSelection(): SiEntryQualifierSelection;
 

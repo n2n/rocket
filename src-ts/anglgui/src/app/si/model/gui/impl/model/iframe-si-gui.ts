@@ -5,11 +5,11 @@ import { SimpleUiStructureModel } from 'src/app/ui/structure/model/impl/simple-s
 import { TypeUiContent } from 'src/app/ui/structure/model/impl/type-si-content';
 import { IframeOutComponent } from '../../../content/impl/iframe/comp/iframe-out/iframe-out.component';
 import { Message } from 'src/app/util/i18n/message';
-import { SiControlBoundry } from '../../../control/si-control-boundry';
+import { SiControlBoundary } from '../../../control/si-control-boundary';
 import { SiDeclaration } from '../../../meta/si-declaration';
 import { SiValueBoundary } from '../../../content/si-value-boundary';
 
-export class IframeSiGui implements SiGui, IframeOutModel, SiControlBoundry {
+export class IframeSiGui implements SiGui, IframeOutModel, SiControlBoundary {
 
 	constructor(public url: string|null, public srcDoc: string|null) {
 	}

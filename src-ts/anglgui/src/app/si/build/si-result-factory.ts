@@ -22,7 +22,7 @@ import { SiValRequest } from '../model/api/si-val-request';
 import { SiValResponse } from '../model/api/si-val-response';
 import { SiValInstruction } from '../model/api/si-val-instruction';
 import { SiValResult } from '../model/api/si-val-result';
-import { SiControlBoundry } from '../model/control/si-control-boundry';
+import { SiControlBoundary } from '../model/control/si-control-boundary';
 import { SiValGetResult } from '../model/api/si-val-get-result';
 import { SiObjectIdentifier } from '../model/content/si-object-qualifier';
 
@@ -198,7 +198,7 @@ export class SiResultFactory {
 		let declaration: SiDeclaration|null = null;
 		let newControlBoundary: SimpleSiControlBoundary|null = null;
 		if (null === getInstruction.getDeclaration()) {
-			let controlBoundary = getInstruction.getGeneralControlsBoundry()
+			let controlBoundary = getInstruction.getGeneralControlsBoundary()
 			if (!controlBoundary) {
 				newControlBoundary = controlBoundary = new SimpleSiControlBoundary([], undefined, this.apiUrl);
 			}
@@ -273,7 +273,7 @@ export class SiResultFactory {
 		return result;
 	}
 
-	private createValGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundry): SiValGetResult {
+	private createValGetResult(data: any, declaration: SiDeclaration|null, controlBoundary: SiControlBoundary): SiValGetResult {
 		const extr = new Extractor(data);
 
 		const result: SiValGetResult = {

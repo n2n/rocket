@@ -334,7 +334,7 @@ abstract class EiPropRelation {
 				if ($eiObject === null) return $targetEiFrame;
 				
 				if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiObject))) {
-					$targetEiFrame->getBoundry()->setCriteriaFactory($targetCriteriaFactory);
+					$targetEiFrame->getBoundary()->setCriteriaFactory($targetCriteriaFactory);
 				}
 				
 				$this->applyTargetModificators($targetEiFrame, $eiFrame, $eiObject);

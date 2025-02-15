@@ -28,7 +28,7 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\security\EiPermissionManager;
 use rocket\op\spec\TypePath;
 use rocket\user\bo\EiGrant;
-use rocket\op\ei\manage\frame\Boundry;
+use rocket\op\ei\manage\frame\Boundary;
 use rocket\op\ei\manage\security\EiEntryAccess;
 use rocket\op\ei\manage\ManageState;
 use rocket\op\ei\manage\security\EiExecution;

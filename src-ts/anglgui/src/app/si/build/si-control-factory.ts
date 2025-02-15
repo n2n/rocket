@@ -4,7 +4,7 @@ import { ApiCallSiControl } from '../model/control/impl/model/api-call-si-contro
 import { RefSiControl } from '../model/control/impl/model/ref-si-control';
 import { SiButton, SiConfirm } from '../model/control/impl/model/si-button';
 import { Injector } from '@angular/core';
-import { SiControlBoundry } from '../model/control/si-control-boundry';
+import { SiControlBoundary } from '../model/control/si-control-boundary';
 import { GroupSiControl } from '../model/control/impl/model/group-si-control';
 import { SimpleSiControl } from '../model/control/impl/model/simple-si-control';
 import { SiUiService } from '../manage/si-ui.service';
@@ -18,7 +18,7 @@ enum SiControlType {
 
 export class SiControlFactory {
 
-	constructor(private controlBoundry: SiControlBoundry, private injector: Injector) {
+	constructor(private controlBoundary: SiControlBoundary, private injector: Injector) {
 	}
 
 	createControls(maskId: string|null, entryId: string|null, dataArr: Map<string, any>): SiControl[] {
@@ -40,13 +40,13 @@ export class SiControlFactory {
 						dataExtr.reqString('url'),
 						dataExtr.reqBoolean('newWindow'),
 						this.createButton(dataExtr.reqObject('button')),
-						this.controlBoundry);
+						this.controlBoundary);
 			case SiControlType.API_CALL:
 				const apiControl = new ApiCallSiControl(
 						this.injector.get(SiUiService),
 						maskId, entryId, controlName,
 						this.createButton(dataExtr.reqObject('button')),
-						this.controlBoundry);
+						this.controlBoundary);
 				apiControl.inputSent = dataExtr.reqBoolean('inputHandled');
 				return apiControl;
 			case SiControlType.GROUP:

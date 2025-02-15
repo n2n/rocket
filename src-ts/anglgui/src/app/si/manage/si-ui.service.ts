@@ -9,7 +9,7 @@ import { UiZone } from 'src/app/ui/structure/model/ui-zone';
 import { SiCommandError } from '../util/si-command-error';
 import { UiLayer } from 'src/app/ui/structure/model/ui-layer';
 import { SiDirective } from './si-control-result';
-import { SiControlBoundry } from '../model/control/si-control-boundry';
+import { SiControlBoundary } from '../model/control/si-control-boundary';
 import { PlatformService } from 'src/app/util/nav/platform.service';
 import { SiNavPoint } from '../model/control/si-nav-point';
 import { IllegalStateError } from '../../util/err/illegal-state-error';
@@ -88,7 +88,7 @@ export class SiUiService {
 	// 	return obs;
 	// }
 
-	// execSelectionControl(apiUrl: string, callId: object, controlBoundry: SiControlBoundry, entries: SiEntry[],
+	// execSelectionControl(apiUrl: string, callId: object, controlBoundary: SiControlBoundary, entries: SiEntry[],
 	// 		includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 	// 	throw new Error('not yet implemented');
 	// // 	const entryIds: string[] = [];
@@ -117,14 +117,14 @@ export class SiUiService {
 	// // 	}));
 	// }
 
-	execControl(maskId: string|null, entryId: string|null, controlName: string, controlBoundry: SiControlBoundry,
+	execControl(maskId: string|null, entryId: string|null, controlName: string, controlBoundary: SiControlBoundary,
 			includeInput: boolean, uiLayer: UiLayer): Observable<void> {
 		let input: SiInput|null = null;
 
 		const valueBoundaries: SiValueBoundary[] = [];
 		if (includeInput) {
-			input = new SiInput(controlBoundry.getBoundDeclaration());
-			for (const valueBoundary of controlBoundry.getBoundValueBoundaries()) {
+			input = new SiInput(controlBoundary.getBoundDeclaration());
+			for (const valueBoundary of controlBoundary.getBoundValueBoundaries()) {
 				// if (valueBoundary.style.readOnly) {
 				// 	continue;
 				// }
@@ -134,7 +134,7 @@ export class SiUiService {
 			}
 		}
 
-		const apiUrl = controlBoundry.getBoundApiUrl();
+		const apiUrl = controlBoundary.getBoundApiUrl();
 		IllegalStateError.assertTrue(apiUrl !== null);
 
 		const obs = this.service.controlCall(apiUrl!, maskId, entryId, controlName, input);
