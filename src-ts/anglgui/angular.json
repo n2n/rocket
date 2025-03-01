@@ -11,11 +11,11 @@
       "prefix": "rocket",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/anglgui",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -47,7 +47,7 @@
                   "maximumError": "4kB"
                 }
               ],
-              "outputHashing": "all"
+              "extractLicenses": false
             },
             "development": {
               "optimization": false,
