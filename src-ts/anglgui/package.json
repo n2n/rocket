@@ -7,7 +7,8 @@
     "dev": "npx ng build --watch --configuration development --output-hashing none --output-path=../../src/public/assets/rocket/angl-dev",
     "build": "npx ng build --output-hashing none --output-path=../../src/public/assets/rocket/angl",
     "vendor-build": "npx ng build --output-hashing none --output-path=../../../../../public/assets/rocket/angl",
-    "test": "ng test"
+    "test": "ng test",
+    "test-ci": "npx ng test --browsers=ChromeHeadlessCI --watch=false"
   },
   "private": true,
   "dependencies": {
