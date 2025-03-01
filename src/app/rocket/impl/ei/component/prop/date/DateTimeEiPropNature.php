@@ -45,6 +45,8 @@ use rocket\ui\si\content\impl\SiFields;
 use n2n\l10n\DateTimeFormat;
 use n2n\util\type\TypeConstraints;
 use n2n\reflection\property\PropertyAccessProxy;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\BackableGuiField;
 
 class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 
@@ -75,27 +77,16 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 	
 	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$dateTime = $eiu->field()->getValue();
-		
-		return $eiu->factory()->newGuiField(SiFields::stringOut($dateTime === null ? ''
+
+		return GuiFields::out(SiFields::stringOut($dateTime === null ? ''
 				: L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->getDateStyle(), $this->getTimeStyle())));
 	}
 	
 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		$siField = SiFields::dateTimeIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setDateChoosable($this->getDateStyle() !== DateTimeFormat::STYLE_NONE)
-				->setTimeChoosable($this->getTimeStyle() !== DateTimeFormat::STYLE_NONE)
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)->setSaver(function () use ($siField, $eiu) {
-			$eiu->field()->setValue($siField->getValue());	
-		});
-		
-// 		$iconElem = new HtmlElement('i', array('class' => SiIconType::ICON_CALENDAR), '');
-		
-// 		return new DateTimePickerMag($this->getLabelLstr(), $iconElem, $this->getDateStyle(), $this->getTimeStyle(), null, null, 
-// 				$this->isMandatory($eiu), array('placeholder' => $this->getLabelLstr(),
-// 						'class' => 'form-control rocket-date-picker'));
+		return GuiFields::dateTimeIn($this->isMandatory(),
+						$this->getDateStyle() !== DateTimeFormat::STYLE_NONE,
+						$this->getTimeStyle() !== DateTimeFormat::STYLE_NONE)
+				->setValue($eiu->field()->getValue());
 	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
