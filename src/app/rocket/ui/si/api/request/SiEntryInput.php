@@ -111,6 +111,7 @@ class SiEntryInput implements \JsonSerializable {
 
 	public function jsonSerialize(): mixed {
 		return [
+			'maskId' => $this->maskId,
 			'entryId' => $this->entryId,
 			'fieldInputMap' => $this->fieldInputs
 		];

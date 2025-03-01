@@ -27,6 +27,7 @@ use n2n\web\http\Method;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\web\http\StatusException;
 use n2n\web\http\BadRequestException;
+use rocket\ui\si\control\SiControl;
 
 class SiZoneCall implements \JsonSerializable {
 
@@ -78,7 +79,7 @@ class SiZoneCall implements \JsonSerializable {
 
 	public function jsonSerialize(): mixed {
 		return [
-			'zoneControlName' => $this->zoneControlName,
+			'controlCall' => new SiControlCall(null, null, $this->zoneControlName),
 			'input' => $this->input
 		];
 	}

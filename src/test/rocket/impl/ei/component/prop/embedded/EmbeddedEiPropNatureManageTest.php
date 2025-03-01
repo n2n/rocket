@@ -104,18 +104,18 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 //		$eiGuiDefinition = $eiEntry->getEiMask()->getEiEngine()->getEiGuiDefinition(ViewMode::determine(true, false, true))
 
 		$factory = new EiGuiValueBoundaryFactory($this->eiFrame);
-		$eiGuiValueBoundary = $factory->create(null, [$eiEntry],
+		$guiValueBoundary = $factory->create(null, [$eiEntry],
 				ViewMode::determine(true, false, true));
 
-//		$siEntryIdentifier = $eiGuiValueBoundary->getSelectedGuiEntry()->getSiEntryQualifier()->getIdentifier();
-		$siEntryInput = new SiEntryInput(null);
+		$siEntryIdentifier = $guiValueBoundary->getSelectedGuiEntry()->getSiEntryQualifier()->getIdentifier();
+		$siEntryInput = new SiEntryInput($siEntryIdentifier->getMaskIdentifier()->getId(), null);
 		$siGuiValueBoundaryInput = new SiValueBoundaryInput(
-				$eiGuiValueBoundary->getSiValueBoundary()->getSelectedTypeId(),
+				$guiValueBoundary->getSiValueBoundary()->getSelectedTypeId(),
 				$siEntryInput);
 		$guiFieldPath = new GuiPropPath([(new EiPropPath(['reqEditEmbeddable', 'someProp']))->toGuiFieldKey()]);
 		$siEntryInput->putFieldInput($guiFieldPath->__toString(), new SiFieldInput(['value' => 'some value']));
 
-		$this->assertTrue($eiGuiValueBoundary->getSiValueBoundary()->handleInput($siGuiValueBoundaryInput,
+		$this->assertTrue($guiValueBoundary->getSiValueBoundary()->handleInput($siGuiValueBoundaryInput,
 				$this->createMock(N2nContext::class)));
 
 //		$guiField->getSiField()->handleInput(, $this->createMock(N2nContext::class));

@@ -44,6 +44,7 @@ class EmbeddedEiField extends EiFieldNatureAdapter {
 	 * @param EmbeddedEiPropNature $eiProp
 	 */
 	public function __construct(Eiu $eiu, EmbeddedEiPropNature $eiProp) {
+		parent::__construct();
 		$this->eiu = $eiu;
 		$this->eiProp = $eiProp;
 	}
@@ -52,8 +53,9 @@ class EmbeddedEiField extends EiFieldNatureAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\impl\ei\component\prop\adapter\entry\EiFieldNatureAdapter::checkValue()
 	 */
-	protected function checkValue($value) {
-		ArgUtils::assertTrue($value === null || $value instanceof EiuFieldMap);	
+	protected function checkValue(mixed $value): mixed {
+		ArgUtils::assertTrue($value === null || $value instanceof EiuFieldMap);
+		return $value;
 	}
 	
 	/**

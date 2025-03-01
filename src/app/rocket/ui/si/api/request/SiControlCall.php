@@ -25,7 +25,7 @@ use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\util\type\attrs\DataMap;
 use n2n\util\type\attrs\AttributesException;
 
-class SiControlCall {
+class SiControlCall implements \JsonSerializable {
 
 	/**
 	 * @param string|null $maskId

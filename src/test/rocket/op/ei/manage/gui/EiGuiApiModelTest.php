@@ -90,9 +90,9 @@ class EiGuiApiModelTest extends TestCase {
 		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiMask);
 		$maskId = (string) new EiSiMaskId($eiMask->getEiTypePath(), ViewMode::BULKY_ADD);
 
-		$siEntryInput = new SiEntryInput(null);
+		$siEntryInput = new SiEntryInput($maskId, null);
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
-		$siValueBoundaryInput = new SiValueBoundaryInput($maskId, $siEntryInput);
+		$siValueBoundaryInput = new SiValueBoundaryInput((string) $eiMask->getEiTypePath(), $siEntryInput);
 
 		$siInput = new SiInput();
 		$siInput->putValueBoundaryInput('key', $siValueBoundaryInput);
@@ -122,9 +122,9 @@ class EiGuiApiModelTest extends TestCase {
 		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiMask);
 		$maskId = (string) new EiSiMaskId($eiMask->getEiTypePath(), ViewMode::BULKY_EDIT);
 
-		$siEntryInput = new SiEntryInput($this->basicTestObj2Id);
+		$siEntryInput = new SiEntryInput($maskId, $this->basicTestObj2Id);
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
-		$siValueBoundaryInput = new SiValueBoundaryInput($maskId, $siEntryInput);
+		$siValueBoundaryInput = new SiValueBoundaryInput((string) $eiMask->getEiTypePath(), $siEntryInput);
 
 		$siInput = new SiInput();
 		$siInput->putValueBoundaryInput('key', $siValueBoundaryInput);
@@ -183,10 +183,9 @@ class EiGuiApiModelTest extends TestCase {
 		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiMask);
 		$maskId = (string) new EiSiMaskId($eiMask->getEiTypePath(), ViewMode::BULKY_EDIT);
 
-
-		$siEntryInput = new SiEntryInput($this->basicTestObj2Id);
+		$siEntryInput = new SiEntryInput($maskId, $this->basicTestObj2Id);
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
-		$siValueBoundaryInput = new SiValueBoundaryInput($maskId, $siEntryInput);
+		$siValueBoundaryInput = new SiValueBoundaryInput((string) $eiMask->getEiTypePath(), $siEntryInput);
 
 		$siValGetInstruction = new SiValInstruction($siValueBoundaryInput);
 		$siValGetInstruction->putGetInstruction('copy', new SiValGetInstruction(new EiSiMaskId($eiMask->getEiTypePath(), ViewMode::COMPACT_READ)));

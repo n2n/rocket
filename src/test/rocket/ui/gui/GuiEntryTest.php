@@ -45,7 +45,7 @@ class GuiEntryTest extends TestCase {
 	private static SiEntryQualifier $siEntryQualifier1;
 
 	static function setUpBeforeClass(): void {
-		self::$siMaskIdentifier1 = new SiMaskIdentifier('mask-1', 'type-1');
+		self::$siMaskIdentifier1 = new SiMaskIdentifier('mask-1', 'type-1', 'super-type-1');
 		self::$siMaskQualifier1 = new SiMaskQualifier(self::$siMaskIdentifier1, 'Mask 1', 'icon-1');
 		self::$siEntryIdentifier1 = new SiEntryIdentifier(self::$siMaskIdentifier1, 2);
 		self::$siEntryQualifier1 = new SiEntryQualifier(self::$siEntryIdentifier1, 'entry-1');
@@ -64,7 +64,8 @@ class GuiEntryTest extends TestCase {
 				->setModel($guiFieldModel));
 		$guiEntry->init($guiFieldMap, null);
 
-		$siEntryInput = new SiEntryInput(self::$siEntryIdentifier1->getId());
+		$siEntryInput = new SiEntryInput(self::$siEntryIdentifier1->getMaskIdentifier()->getId(),
+				self::$siEntryIdentifier1->getId());
 		$siEntryInput->putFieldInput('prop1', new SiFieldInput(['value' => 'new-value']));
 
 		$this->assertTrue($guiEntry->getSiEntry(N2nLocale::getDefault())->handleEntryInput($siEntryInput,

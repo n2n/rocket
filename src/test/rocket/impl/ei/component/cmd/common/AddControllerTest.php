@@ -95,12 +95,14 @@ class AddControllerTest extends TestCase {
 	function testHandleSaveCall(): void {
 
 		$eiGuiDefinition = $this->eiMask->getEiEngine()->getEiGuiDefinition(ViewMode::BULKY_ADD);
+		$siMaskIdentifier = $eiGuiDefinition->createSiMaskIdentifier();
+
 
 		$siInput = new SiInput();
-		$siEntryInput = new SiEntryInput(null);
+		$siEntryInput = new SiEntryInput($siMaskIdentifier->getId(), null);
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'nv']));
-		$siValueBoundaryInput = new SiValueBoundaryInput($eiGuiDefinition->createSiMaskIdentifier()->getId(), $siEntryInput);
+		$siValueBoundaryInput = new SiValueBoundaryInput($siMaskIdentifier->getTypeId(), $siEntryInput);
 
 		$siInput->putValueBoundaryInput('0', $siValueBoundaryInput);
 

@@ -246,7 +246,9 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$guiEntry = (new EiGuiEntryFactory($eiFrame))
 				->createGuiEntry($eiEntry, ViewMode::BULKY_EDIT, false);
 
-		$siEntryInput = new SiEntryInput($guiEntry->getSiEntry()->getQualifier()->getIdentifier()->getId());
+		$siEntryIndentifier = $guiEntry->getSiEntry()->getQualifier()->getIdentifier();
+		$siEntryInput = new SiEntryInput($siEntryIndentifier->getMaskIdentifier()->getId(),
+				$siEntryIndentifier->getId());
 		$siEntryInput->putFieldInput('holeradio', new SiFieldInput(['value' => 'new-value']));
 		$siEntryInput->putFieldInput('holeradioObj', new SiFieldInput(['value' => 'new-ov']));
 

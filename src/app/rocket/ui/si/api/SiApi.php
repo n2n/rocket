@@ -101,7 +101,7 @@ class SiApi {
 		foreach ($siInput->getValueBoundaryInputs() as $valueBoundaryInput) {
 			$entryInput = $valueBoundaryInput->getEntryInput();
 			$valueBoundaries[] = $valueBoundary = $this->model
-					->lookupSiValueBoundary($valueBoundaryInput->getSelectedTypeId(), $entryInput->getEntryId(), null);
+					->lookupSiValueBoundary($entryInput->getMaskId(), $entryInput->getEntryId(), null);
 			$entryInputValid = $valueBoundary->handleInput($valueBoundaryInput, $n2nContext);
 			if (!$entryInputValid) {
 				$valid = false;
