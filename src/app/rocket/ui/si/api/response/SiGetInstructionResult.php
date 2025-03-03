@@ -130,7 +130,7 @@ class SiGetInstructionResult {
 			'declaration' => $this->declaration,
 			'generalControls' => ($this->generalControls !== null ? SiPayloadFactory::createDataFromControls($this->generalControls) : null),
 			'entry' => $this->valueBoundary?->toJsonStruct($n2nContext),
-			'partialContent' => $this->partialContent
+			'partialContent' => $this->partialContent?->toDataStruct($n2nContext)
 		];
 	}	
 }
