@@ -16,7 +16,7 @@ use rocket\ui\si\content\impl\relation\EmbeddedEntriesOutSiField;
 
 class EmbeddedEntriesOutGuiField extends OutGuiFieldAdapter {
 
-	private EmbeddedEntriesInSiField $siField;
+	private EmbeddedEntriesOutSiField $siField;
 
 	function __construct(private SiFrame $siFrame) {
 		$this->siField = new EmbeddedEntriesOutSiField($this->siFrame);
@@ -33,7 +33,7 @@ class EmbeddedEntriesOutGuiField extends OutGuiFieldAdapter {
 	 */
 	function setValue(array $value): static {
 		ArgUtils::valArray($value, GuiEmbeddedEntry::class);
-		$this->siField->setValue(array_map(
+		$this->siField->setValues(array_map(
 				fn (GuiEmbeddedEntry $guiEmbeddedEntry) => $guiEmbeddedEntry->getSiEmbeddedEntry(),
 				$value));
 		return $this;
