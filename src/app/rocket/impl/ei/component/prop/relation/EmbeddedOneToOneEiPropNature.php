@@ -31,8 +31,6 @@ use rocket\ui\si\meta\SiStructureType;
 use rocket\impl\ei\component\prop\relation\model\ToOneEiField;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
-use rocket\ui\gui\field\GuiField;
-use rocket\impl\ei\component\prop\relation\model\gui\SiEmbeddedToOneGuiField;
 use n2n\util\type\CastUtils;
 use rocket\ui\si\content\impl\meta\SiCrumb;
 use rocket\ui\si\content\impl\SiFields;
@@ -43,7 +41,6 @@ use rocket\impl\ei\component\prop\relation\model\gui\RelationGuiEmbeddedEntryFac
 use n2n\bind\mapper\impl\Mappers;
 use n2n\util\col\ArrayUtils;
 use rocket\ui\gui\field\BackableGuiField;
-use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 
@@ -126,8 +123,8 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		$eiuEntry = $eiu->field()->getValue();
 		
 		if ($eiuEntry === null) {
-			return GuiFields
-					::out(SiCrumb::createLabel('0')->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT))
+			return GuiFields::out(SiFields
+					::crumbOut(SiCrumb::createLabel('0')->setSeverity(SiCrumb::SEVERITY_UNIMPORTANT)))
 					->setModel($eiu->field()->asGuiFieldModel());
 		}
 		
