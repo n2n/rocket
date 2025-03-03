@@ -158,12 +158,11 @@ class EiGuiApiModelTest extends TestCase {
 
 		$called = false;
 		$eiCmdNature = EiCmdNatures::callback()
-				->addGeneralGuiControl(GuiControls::callback(SiButton::info('holeradio'), function () use (&$called) {
+				->putGeneralGuiControl('some-name', GuiControls::callback(SiButton::info('holeradio'), function () use (&$called) {
 					$called = true;
-
 				}));
 		$eiMask->getEiCmdCollection()->add('some-cmd-id', $eiCmdNature);
-		$siApiCall = new SiApiCall(controlCall: new SiControlCall($maskId, null, 'some-cmd-id.0'));
+		$siApiCall = new SiApiCall(controlCall: new SiControlCall($maskId, null, 'some-cmd-id.some-name'));
 
 		$eiGuiApiModel = new EiGuiApiModel($eiFrame);
 		$siApi = new SiApi(new GuiSiApiModel($eiGuiApiModel));

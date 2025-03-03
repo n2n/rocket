@@ -97,12 +97,12 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 		return parent::buildQuickSearchProp($eiu);
 	}
 
-	function createEifField(Eiu $eiu): EifField {
-		return parent::createEifField($eiu)
-				->setReadMapper(function ($value) { return $this->readMap($value); })
-				->setWriteMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
-				->val(Validators::url(!$this->isRelativeAllowed(), $this->getAllowedSchemes()));
-	}
+//	function createEifField(Eiu $eiu): EifField {
+//		return parent::createEifField($eiu)
+//				->setReadMapper(function ($value) { return $this->readMap($value); })
+//				->setWriteMapper(function ($value) use ($eiu) { return $this->writeMap($eiu, $value); })
+//				->val(Validators::url(!$this->isRelativeAllowed(), $this->getAllowedSchemes()));
+//	}
 	
 	/**
 	 * @param string|Url|null $value
@@ -171,7 +171,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 			return GuiFields::out(SiFields::stringOut(null));
 		}
 		
-		$label = $this->buildLabel(Url::create($value, true), $eiu->guiEntry()->isBulky());
+		$label = $this->buildLabel(Url::create($value, true), $eiu->guiDefinition()->isBulky());
 		return GuiFields::out(
 				SiFields::linkOut(SiNavPoint::href(Url::create($value, true)), $label)
 						->setLytebox($this->isLytebox()));
