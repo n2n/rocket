@@ -35,8 +35,8 @@ class ModTestMod {
 	#[EiSetup]
 	private function setup(Eiu $eiu): void {
 		$eiu->mask()->addCmd(EiCmdNatures::callback()
-				->putEntryGuiControl(function (Eiu $eiu) {
-					return GuiControls::href('hc2', 'https://www.hippocrocodiles.com',
+				->putEntryGuiControl('hc2', function (Eiu $eiu) {
+					return GuiControls::href('https://www.hippocrocodiles.com',
 							SiButton::secondary('login'));
 				}));
 
