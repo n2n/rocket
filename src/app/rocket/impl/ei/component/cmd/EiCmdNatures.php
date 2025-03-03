@@ -28,7 +28,7 @@ class EiCmdNatures {
 	/**
 	 * @return CallbackEiCmdNature
 	 */
-	static function callback() {
+	static function callback(): CallbackEiCmdNature {
 		return new CallbackEiCmdNature();
 	}
 }

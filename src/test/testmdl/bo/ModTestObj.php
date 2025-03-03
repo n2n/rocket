@@ -38,7 +38,7 @@ class ModTestObj {
 
 	#[EiSetup]
 	private static function setup(Eiu $eiu): void {
-		$eiu->mask()->addCmd(EiCmdNatures::callback()->addGeneralGuiControl(function (Eiu $eiu) {
+		$eiu->mask()->addCmd(EiCmdNatures::callback()->putGeneralGuiControl(function (Eiu $eiu) {
 			return $eiu->f()->gc()->newCallback('hc', SiButton::danger('Super duper danger!'),
 					function (Eiu $eiu) {
 						return $eiu->factory()->newControlResponse()->redirectToHref('https://n2n.rocks/');

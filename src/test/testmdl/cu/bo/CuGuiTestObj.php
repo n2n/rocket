@@ -41,7 +41,7 @@ class CuGuiTestObj {
 	static function eiSetup(Eiu $eiu): void {
 		$eiu->mask()->addCmd(EiCmdNatures::callback()
 				->setController(fn (Eiu $eiu) => $eiu->lookup(CuGuiTestController::class))
-				->addEntryGuiControl(function (Eiu $eiu) {
+				->putEntryGuiControl(function (Eiu $eiu) {
 					return GuiControls::ref('cu-id', $eiu->frame()->getCmdUrl($eiu->cmd()->getEiCmdPath()),
 							SiButton::warning('Warning', SiIconType::ICON_BAN));
 				}));

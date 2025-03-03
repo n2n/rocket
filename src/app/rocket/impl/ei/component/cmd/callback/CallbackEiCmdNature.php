@@ -57,18 +57,18 @@ class CallbackEiCmdNature extends EiCmdNatureAdapter {
 		return $mmi->invoke();
 	}
 
-	function addGeneralGuiControl(Closure|GuiControl $callback): static {
-		$this->generalCallbacks[] = $callback;
+	function putGeneralGuiControl(string $name, Closure|GuiControl $callback): static {
+		$this->generalCallbacks[$name] = $callback;
 		return $this;
 	}
 
-	function addEntryGuiControl(Closure|GuiControl $callback): static {
-		$this->entryCallbacks[] = $callback;
+	function putEntryGuiControl(string $name, Closure|GuiControl $callback): static {
+		$this->entryCallbacks[$name] = $callback;
 		return $this;
 	}
 
-	function addSelectionGuiControl(Closure|GuiControl $callback): static {
-		$this->selectionCallbacks[] = $callback;
+	function putSelectionGuiControl(string $name, Closure|GuiControl $callback): static {
+		$this->selectionCallbacks[$name] = $callback;
 		return $this;
 	}
 

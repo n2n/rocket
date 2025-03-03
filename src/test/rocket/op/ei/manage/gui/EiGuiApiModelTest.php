@@ -158,7 +158,7 @@ class EiGuiApiModelTest extends TestCase {
 
 		$called = false;
 		$eiCmdNature = EiCmdNatures::callback()
-				->addGeneralGuiControl(GuiControls::callback(SiButton::info('holeradio'), function () use (&$called) {
+				->putGeneralGuiControl(GuiControls::callback(SiButton::info('holeradio'), function () use (&$called) {
 					$called = true;
 
 				}));
