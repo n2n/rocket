@@ -57,4 +57,8 @@ class IframeInSiField extends InSiFieldAdapter {
 		$this->params = $ds->reqScalarArray('params', false, true);
 		return true;
 	}
+
+	function getValue(): array {
+		return $this->params;
+	}
 }
