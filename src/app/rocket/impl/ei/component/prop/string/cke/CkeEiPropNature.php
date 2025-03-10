@@ -86,6 +86,8 @@ class CkeEiPropNature extends AlphanumericEiPropNature {
 
 		$iframeInField->setModel($eiu->field()->asGuiFieldModel(Mappers
 				::valueClosure(fn (array $params) => $params['content'] ?? null)));
+
+		return $iframeInField;
 	}
 	
 //	function saveSiField(SiField $siField, Eiu $eiu): void {
