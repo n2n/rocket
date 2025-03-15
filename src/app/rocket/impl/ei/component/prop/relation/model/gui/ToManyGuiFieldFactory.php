@@ -119,7 +119,7 @@ class ToManyGuiFieldFactory{
 		$targetEiuFrame = $targetEiu->frame();
 
 		$values = [];
-		foreach ($this->siField->getValues() as $siQualifier) {
+		foreach ($siObjectQualifiers as $siQualifier) {
 			$id = $targetEiuFrame->siQualifierToId($siQualifier);
 			$values[] = $targetEiuFrame->lookupEntry($id);
 		}
