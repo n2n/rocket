@@ -98,7 +98,7 @@ class EmbeddedEntriesOutSiField extends OutSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'values' => $this->values,
+			'values' => array_map(fn (SiEmbeddedEntry $e) => $e->toJsonStruct($n2nContext), $this->values),
 			'frame' => $this->frame,
 			'reduced' => $this->reduced,
 			...parent::toJsonStruct($n2nContext)

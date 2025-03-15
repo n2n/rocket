@@ -64,7 +64,8 @@ class RocketController extends ControllerAdapter {
 				. " script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
 				. " script-src-elem 'self' 'unsafe-inline' 'unsafe-eval'; "
 				. " script-src-attr 'unsafe-inline'; "
-				. " style-src-elem 'self' 'unsafe-inline' " . $this->getRequest()->getHostUrl());
+				. " style-src-elem 'self' 'unsafe-inline'; "
+				. " style-src-attr 'unsafe-inline' " . $this->getRequest()->getHostUrl());
 	}
 
 	/**
