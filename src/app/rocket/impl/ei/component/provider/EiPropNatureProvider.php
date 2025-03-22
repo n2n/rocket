@@ -427,7 +427,7 @@ class EiPropNatureProvider {
 				$nature = new OrderEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
 			case 'string':
-				if ($eiPresetProp->getEiPropPath() === 'pathPart') {
+				if ($eiPresetProp->getEiPropPath()->getLastId() === 'pathPart') {
 					$nature = new PathPartEiPropNature($eiPresetProp->getPropertyAccessProxy(), $eiPresetProp->getEntityProperty());
 				} else if (StringUtils::endsWith('Html', $eiPresetProp->getEiPropPath())) {
 					$nature = new CkeEiPropNature($eiPresetProp->getPropertyAccessProxy());

@@ -35,6 +35,7 @@ use rocket\op\ei\util\spec\EiuEngine;
 use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
 use test\model\Entity;
 use n2n\util\type\TypeConstraints;
+use rocket\ui\gui\field\impl\string\StringInGuiField;
 
 class PathPartEiPropNature extends AlphanumericEiPropNature {
 
@@ -133,22 +134,31 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 //		return $attrs;
 //	}
 	
-	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setMinlength($this->getMinlength())
-				->setMaxlength($this->getMaxlength())
-				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($eiu, $siField) {
-					$this->saveSiField($siField, $eiu);
-				});
-	}
-	
-	function saveSiField(SiField $siField, Eiu $eiu) {
-		$eiu->field()->setValue($siField->getValue());
+//	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+//		$siField = SiFields::stringIn($eiu->field()->getValue())
+//				->setMandatory($this->isMandatory())
+//				->setMinlength($this->getMinlength())
+//				->setMaxlength($this->getMaxlength())
+//				->setPrefixAddons($this->getPrefixSiCrumbGroups())
+//				->setSuffixAddons($this->getSuffixSiCrumbGroups())
+//				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+//
+//		return $eiu->factory()->newGuiField($siField)
+//				->setSaver(function () use ($eiu, $siField) {
+//					$this->saveSiField($siField, $eiu);
+//				});
+//	}
+//
+//	function saveSiField(SiField $siField, Eiu $eiu) {
+//		$eiu->field()->setValue($siField->getValue());
+//	}
+
+	function buildInGuiField(Eiu $eiu): StringInGuiField {
+		$guiField = parent::buildInGuiField($eiu);
+		assert($guiField instanceof StringInGuiField);
+
+		$guiField->setValue($eiu->field()->getValue());
+
+		return $guiField;
 	}
 }
