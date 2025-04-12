@@ -104,7 +104,7 @@ abstract class EiPropNatureAdapter extends EiComponentNatureAdapter implements E
 		return null;
 	}
 
-	public function getGenericEiProperty(): ?GenericEiProperty {
+	public function buildGenericEiProperty(Eiu $eiu): ?GenericEiProperty {
 		return null;
 	}
 

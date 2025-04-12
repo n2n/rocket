@@ -330,7 +330,10 @@ class EiEntry implements GuiEntryModel {
 	public function getEiObject(): EiObject {
 		return $this->eiObject;
 	}
-	
+
+	/**
+	 * @throws UnknownEiFieldExcpetion
+	 */
 	public function getValue(EiPropPath $eiPropPath) {
 		return $this->getEiField($eiPropPath)->getValue();
 	}
@@ -338,6 +341,7 @@ class EiEntry implements GuiEntryModel {
 	/**
 	 * @throws ValueIncompatibleWithConstraintsException
 	 * @throws InaccessibleEiFieldException
+	 * @throws UnknownEiFieldExcpetion
 	 */
 	public function setValue(EiPropPath $eiPropPath, $value, bool $regardSecurity = true): void {
 		$this->getEiField($eiPropPath)->setValue($value, $regardSecurity);

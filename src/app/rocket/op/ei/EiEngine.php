@@ -94,7 +94,7 @@ class EiEngine {
 		}
 
 		$this->genericEiDefinition = new GenericEiDefinition();
-		$this->eiMask->getEiPropCollection()->supplyGenericEiDefinition($this->genericEiDefinition);
+		$this->eiMask->getEiPropCollection()->supplyGenericEiDefinition($this->genericEiDefinition, $this->n2nContext);
 		return $this->genericEiDefinition;
 	}
 

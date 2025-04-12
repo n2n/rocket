@@ -100,3 +100,15 @@ CREATE TABLE `string_test_obj` (
                                         `anno_holeradio_obj` VARCHAR(255) NULL DEFAULT NULL,
                                         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci ;
+
+
+DROP TABLE IF EXISTS `path_part_test_obj`;
+CREATE TABLE `path_part_test_obj` (
+                                   `id` INT NOT NULL AUTO_INCREMENT,
+                                   `name` VARCHAR(255) NULL DEFAULT NULL,
+                                   `path_part` VARCHAR(255) NULL DEFAULT NULL,
+                                   `mandatory_path_part` VARCHAR(255) NULL DEFAULT NULL,
+                                   `unique_per_path_part` VARCHAR(255) NULL DEFAULT NULL,
+                                   `anno_path_part` VARCHAR(255) NULL DEFAULT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci ;

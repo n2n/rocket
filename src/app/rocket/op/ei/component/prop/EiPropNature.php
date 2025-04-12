@@ -97,10 +97,7 @@ interface EiPropNature extends EiComponentNature {
 	 */
 	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp;
 
-	/**
-	 * @return GenericEiProperty|null
-	 */
-	function getGenericEiProperty(): ?GenericEiProperty;
+	function buildGenericEiProperty(Eiu $eiu): ?GenericEiProperty;
 
 	function buildScalarEiProperty(Eiu $eiu): ?ScalarEiProperty;
 

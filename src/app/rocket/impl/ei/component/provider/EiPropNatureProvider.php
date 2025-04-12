@@ -95,6 +95,7 @@ use n2n\spec\valobj\scalar\StringValueObject;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\attribute\impl\EiDefaultDisplay;
 use rocket\ui\gui\ViewMode;
+use rocket\op\ei\EiPropPath;
 
 class EiPropNatureProvider {
 
@@ -208,6 +209,7 @@ class EiPropNatureProvider {
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropPathPart::class)
 				 as $attribute) {
 			$eiPropPathPart = $attribute->getInstance();
+			assert($eiPropPathPart instanceof EiPropPathPart);
 			$propertyName = $attribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute, $eiPropPathPart->readOnly);
 
@@ -215,8 +217,12 @@ class EiPropNatureProvider {
 					$this->eiTypeClassSetup->getEntityProperty($propertyName, true));
 			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
 					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
-			$nature->setBaseEiPropPath($eiPropPathPart->baseEiPropPath);
-			$nature->setUniquePerEiPropPath($eiPropPathPart->uniquePerEiPropPath);
+			try {
+				$nature->setBaseEiPropPath(EiPropPath::build($eiPropPathPart->baseProp));
+				$nature->setUniquePerEiPropPath(EiPropPath::build($eiPropPathPart->uniquePerProp));
+			} catch (\InvalidArgumentException $e) {
+				throw $this->eiTypeSetup->createPropertyAttributeError($attribute, $e);
+			}
 
 			$this->configureDisplayConfig($propertyAccessProxy, $nature->getDisplayConfig(), $nature);
 			$this->configureEditiable($eiPropPathPart->constant, $eiPropPathPart->readOnly, $eiPropPathPart->mandatory,

@@ -45,6 +45,7 @@ use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 use rocket\op\ei\mask\EiMask;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\EiPropPath;
+use rocket\attribute\EiPreview;
 
 class EiTypeFactory {
 
@@ -65,7 +66,7 @@ class EiTypeFactory {
 	 * @param \ReflectionClass $class
 	 * @return EiType|null
 	 */
-	public function build(\ReflectionClass $class, Spec $spec, bool $required) {
+	public function build(\ReflectionClass $class, Spec $spec, bool $required): ?EiType {
 		$attributeSet = ReflectionContext::getAttributeSet($class);
 		$eiTypeAttribute = $attributeSet->getClassAttribute(\rocket\attribute\EiType::class);
 		if ($eiTypeAttribute === null) {
@@ -88,6 +89,7 @@ class EiTypeFactory {
 					return $this->getEntityModel($class);
 				},
 				function (EiType $eiType) {
+					$this->checkForPreview($eiType);
 					$this->checkForInheritance($eiType);
 					$this->checkForNestedSet($eiType);
 					$this->checkForDefaultSort($eiType);
@@ -160,6 +162,16 @@ class EiTypeFactory {
 		$displayScheme->setEditDisplayStructure($displaySchemeA->bulkyEditDisplayStructure);
 		$displayScheme->setAddDisplayStructure($displaySchemeA->bulkyAddDisplayStructure);
 
+	}
+
+	private function checkForPreview(EiType $eiType): void {
+		$entityModel = $eiType->getEntityModel();
+		$class = $entityModel->getClass();
+		$attributeSet = ReflectionContext::getAttributeSet($class);
+		$eiPreviewAttribute = $attributeSet->getClassAttribute(EiPreview::class);
+
+		$eiType->getEiMask()->getDef()->setPreviewControllerLookupId(
+				$eiPreviewAttribute?->getInstance()->previewControllerLookupId);
 	}
 
 	private function checkForInheritance(EiType $eiType) {

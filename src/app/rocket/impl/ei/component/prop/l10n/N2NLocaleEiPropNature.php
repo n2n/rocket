@@ -161,7 +161,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		return new SimpleSortProp(CrIt::p($this->entityProperty), $this->getLabelLstr());
 	}
 	
-	public function getGenericEiProperty(): ?GenericEiProperty {
+	public function buildGenericEiProperty(): ?GenericEiProperty {
 		if ($this->entityProperty === null) return null;
 		
 		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty));

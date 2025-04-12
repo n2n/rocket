@@ -20,35 +20,33 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace testmdl\test\string;
+namespace rocket\op\ei\manage\preview;
 
+use PHPUnit\Framework\TestCase;
+use rocket\test\SpecTestEnv;
+use testmdl\bo\SortTestObj;
+use testmdl\test\TestMdlTestEnv;
 use n2n\test\TestEnv;
-use testmdl\string\bo\StringTestObj;
-use testmdl\string\bo\PathPartTestObj;
+use rocket\op\ei\manage\EiLaunch;
+use rocket\user\model\security\FullEiPermissionManager;
+use rocket\op\spec\Spec;
+use rocket\test\GeneralTestEnv;
+use testmdl\bo\PreviewTestObj;
+use rocket\op\ei\UnknownEiTypeException;
 
-enum StringTestEnv {
+class PreviewTest extends TestCase {
+	private Spec $spec;
 
-	static function setUpStringTestObj(): StringTestObj {
-		$obj = new StringTestObj();
-
-		TestEnv::em()->persist($obj);
-
-		return $obj;
+	function setUp(): void {
+		GeneralTestEnv::teardown();
+		$this->spec = SpecTestEnv::setUpSpec([PreviewTestObj::class]);
 	}
 
-	static function findStringTestObj(int $id): ?StringTestObj {
-		return TestEnv::em()->find(StringTestObj::class, $id);
-	}
-
-	static function setUpPathPartTestObj(): PathPartTestObj {
-		$obj = new PathPartTestObj();
-
-		TestEnv::em()->persist($obj);
-
-		return $obj;
-	}
-
-	static function findPathPartTestObj(int $id): ?PathPartTestObj {
-		return TestEnv::em()->find(PathPartTestObj::class, $id);
+	/**
+	 * @throws UnknownEiTypeException
+	 */
+	function testSpec() {
+		$this->assertEquals('tbd', $this->spec->getEiTypeByClassName(PreviewTestObj::class)
+				->getEiMask()->getDef()->getPreviewControllerLookupId());
 	}
 }

@@ -111,10 +111,11 @@ class EiPropCollection extends EiComponentCollection {
 		return parent::toArray($includeInherited);
 	}
 
-	function supplyGenericEiDefinition(GenericEiDefinition $genericEiDefinition): GenericEiDefinition {
+	function supplyGenericEiDefinition(GenericEiDefinition $genericEiDefinition, N2nContext $n2nContext): GenericEiDefinition {
 		$genericEiPropertyMap = $genericEiDefinition->getMap();
 		foreach ($this as $eiProp) {
-			if (null !== ($genericEiProperty = $eiProp->getNature()->getGenericEiProperty())) {
+			$eiu = new Eiu($this, $eiProp, $n2nContext);
+			if (null !== ($genericEiProperty = $eiProp->getNature()->buildGenericEiProperty($eiu))) {
 				$genericEiPropertyMap->offsetSet($eiProp->getEiPropPath(), $genericEiProperty);
 			}
 		}
