@@ -7,10 +7,8 @@ use rocket\ui\si\api\response\SiInputResult;
 use rocket\ui\si\api\request\SiInput;
 
 class IframeSiGui implements SiGui {
-	private $iframeData;
-	
-	public function __construct(IframeData $iframeData) {
-		$this->iframeData = $iframeData;
+
+	public function __construct(private IframeData $iframeData) {
 	}
 	
 	function getTypeName(): string {

@@ -287,35 +287,37 @@ class OpuCtrl {
 		$this->cu->sendJson($siZone->toJsonStruct($this->eiu->getN2nContext()));
 	}
 
-	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, ?string $title = null): void {
+	/**
+	 * @throws StatusException
+	 */
+	function forwardIframeZone(UiComponent $uiComponent, bool $useTemplate = true, ?string $title = null,
+			array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
-		$iframeSiGui = null;
+		$iframeData = null;
 		if ($useTemplate) {
-			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponentWithTemplate($uiComponent, $this->eiu->getN2nContext()));
+			$iframeData = IframeData::createFromUiComponentWithTemplate($uiComponent, $this->eiu->getN2nContext());
 		} else {
-			$iframeSiGui = new IframeSiGui(IframeData::createFromUiComponent($uiComponent));
+			$iframeData = IframeData::createFromUiComponent($uiComponent);
 		}
 
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($iframeSiGui,
-						$this->opState->getBreadcrumbs(),
-						$title ?? 'Iframe'));
+		$this->forwardGui(new IframeGui($iframeData), $title, $zoneGuiControls);
+
 	}
 
-	function forwardIframeUrlZone(Url $url, ?string $title = null): void {
+	/**
+	 * @throws StatusException
+	 */
+	function forwardIframeUrlZone(Url $url, ?string $title = null,
+			array $zoneGuiControls = []): void {
 		if ($this->forwardHtml()) {
 			return;
 		}
 
-		$iframeSiGui = new IframeSiGui(IframeData::createFromUrl($url));
-
-		$this->httpContext->getResponse()->send(
-				SiPayloadFactory::create($iframeSiGui,
-						$this->opState->getBreadcrumbs(),
-						$title ?? 'Iframe'));
+		$iframeData = IframeData::createFromUrl($url);
+		$this->forwardGui(new IframeGui($iframeData), $title, $zoneGuiControls);
 	}
 
 
