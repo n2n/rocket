@@ -102,9 +102,9 @@ class EiuProp {
 	 * @param Throwable|null $previous
 	 * @return mixed
 	 */
-	function createConfigException(?string $message = null, ?Throwable $previous = null) {
+	function createConfigException(?string $message = null, ?Throwable $previous = null): InvalidEiConfigurationException {
 		throw new InvalidEiConfigurationException('Invalid configuration for EiProp ' . $this->getEiProp()
-				. ' Reason: ' . ($message ?? $previous?->getMessage() ?? 'unknown'), $previous);
+				. ' Reason: ' . ($message ?? $previous?->getMessage() ?? 'unknown'), previous: $previous);
 	}
 
 	function getNativeReadTypeConstraint(): ?TypeConstraint {

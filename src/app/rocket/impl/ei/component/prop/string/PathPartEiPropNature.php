@@ -24,24 +24,22 @@ namespace rocket\impl\ei\component\prop\string;
 use n2n\persistence\orm\property\EntityProperty;
 use rocket\op\ei\util\Eiu;
 use rocket\ui\gui\ViewMode;
-use rocket\ui\si\content\SiField;
-use rocket\ui\si\content\impl\SiFields;
-use rocket\op\ei\util\factory\EifGuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\generic\UnknownScalarEiPropertyException;
 use rocket\op\ei\manage\generic\UnknownGenericEiPropertyException;
 use rocket\op\ei\util\spec\EiuEngine;
-use rocket\impl\ei\component\prop\string\modificator\PathPartEiModNature;
-use test\model\Entity;
 use n2n\util\type\TypeConstraints;
+use rocket\ui\gui\field\impl\string\StringInGuiField;
+use n2n\bind\mapper\impl\Mappers;
+use rocket\impl\ei\component\prop\string\modificator\PathPartUtil;
 
 class PathPartEiPropNature extends AlphanumericEiPropNature {
 
 	private ?EiPropPath $baseEiPropPath = null;
 	private ?EiPropPath $uniquePerEiPropPath = null;
 
-	private bool $allowsNull = true;
+	private PathPartUtil $pathPartUtil;
 
 	public function __construct(PropertyAccessProxy $propertyAccessProxy, EntityProperty $entityProperty) {
 		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::string(true)));
@@ -49,28 +47,19 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 		$this->setEntityProperty($entityProperty);
 
 		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
-		parent::setMandatory(false);
 	}
 
-	function isMandatory(): bool {
-		return false;
-	}
-
-	function setMandatory(bool $nullAllowed): static {
-		$this->allowsNull = $nullAllowed;
-		return $this;
-	}
 
 	function setup(Eiu $eiu): void {
 		parent::setup($eiu);
 
-		$eiu->mask()->addMod($mod = new PathPartEiModNature($eiu->prop()->getPath(), $eiu->mask(),
-				$this->requireEntityProperty(), $this->allowsNull));
+		$this->pathPartUtil = new PathPartUtil($this->requireEntityProperty(),
+				$eiu->mask()->getEiMask()->getEiType()->getEntityModel()->getIdDef()->getEntityProperty());
 
-		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu, $mod) {
+		$eiu->mask()->onEngineReady(function (EiuEngine $eiuEngine) use ($eiu) {
 			if ($this->baseEiPropPath !== null) {
 				try {
-					$mod->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty($this->baseEiPropPath));
+					$this->pathPartUtil->setBaseScalarEiProperty($eiuEngine->getScalarEiProperty($this->baseEiPropPath));
 				} catch (UnknownScalarEiPropertyException $e) {
 					throw $eiu->prop()->createConfigException(null, $e);
 				}
@@ -78,7 +67,7 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 
 			if ($this->uniquePerEiPropPath !== null) {
 				try {
-					$mod->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty($this->uniquePerEiPropPath));
+					$this->pathPartUtil->setUniquePerGenericEiProperty($eiuEngine->getGenericEiProperty($this->uniquePerEiPropPath));
 				} catch (UnknownGenericEiPropertyException $e) {
 					throw $eiu->prop()->createConfigException(null, $e);
 				}
@@ -133,22 +122,41 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 //		return $attrs;
 //	}
 	
-	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		$siField = SiFields::stringIn($eiu->field()->getValue())
-				->setMandatory($this->isMandatory())
-				->setMinlength($this->getMinlength())
-				->setMaxlength($this->getMaxlength())
-				->setPrefixAddons($this->getPrefixSiCrumbGroups())
-				->setSuffixAddons($this->getSuffixSiCrumbGroups())
-				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
-		
-		return $eiu->factory()->newGuiField($siField)
-				->setSaver(function () use ($eiu, $siField) {
-					$this->saveSiField($siField, $eiu);
-				});
-	}
-	
-	function saveSiField(SiField $siField, Eiu $eiu) {
-		$eiu->field()->setValue($siField->getValue());
+//	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
+//		$siField = SiFields::stringIn($eiu->field()->getValue())
+//				->setMandatory($this->isMandatory())
+//				->setMinlength($this->getMinlength())
+//				->setMaxlength($this->getMaxlength())
+//				->setPrefixAddons($this->getPrefixSiCrumbGroups())
+//				->setSuffixAddons($this->getSuffixSiCrumbGroups())
+//				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
+//
+//		return $eiu->factory()->newGuiField($siField)
+//				->setSaver(function () use ($eiu, $siField) {
+//					$this->saveSiField($siField, $eiu);
+//				});
+//	}
+//
+//	function saveSiField(SiField $siField, Eiu $eiu) {
+//		$eiu->field()->setValue($siField->getValue());
+//	}
+
+	function buildInGuiField(Eiu $eiu): StringInGuiField {
+		$guiField = parent::buildInGuiField($eiu);
+		assert($guiField instanceof StringInGuiField);
+
+		$baseName = null;
+		if ($this->isMandatory() && $this->baseEiPropPath !== null) {
+			$baseName = $this->pathPartUtil->determineBaseName($eiu, $this->baseEiPropPath);
+			$guiField->getSiField()->setMandatory(false);
+		}
+
+		$guiField->setValue($eiu->field()->getValue());
+
+		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::pathPart(
+				fn (string $pathPart) => !$this->pathPartUtil->containsPathPart($eiu, $pathPart),
+				$baseName, mandatory: $this->isMandatory())));
+
+		return $guiField;
 	}
 }

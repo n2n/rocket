@@ -23,19 +23,61 @@
 namespace rocket\ui\gui\impl;
 
 use rocket\ui\gui\Gui;
-use rocket\ui\si\content\impl\iframe\IframeSiGui;
 use rocket\ui\si\content\impl\iframe\IframeData;
+use rocket\ui\si\content\impl\iframe\IframeSiGui;
 use rocket\ui\si\content\SiGui;
 
 class IframeGui implements Gui {
-	private SiGui $siGui;
+
+	private IframeSiGui $siGui;
 
 	function __construct(IframeData $iframeData) {
 		$this->siGui = new IframeSiGui($iframeData);
 	}
 
-	function getSiGui(): IframeSiGui {
+	function getSiGui(): SiGui {
 		return $this->siGui;
 	}
+
+//	function handleSiGuiOperation(?SiInput $siInput, SiZoneCall $siGuiCall): SiCallResult {
+//		$siInput->getValueBoundaryInputs();
+//		$this->guiValueBoundary->handleSiEntryInput();
+//	}
+
+//	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): ?SiInputError {
+//		$entryInputs = $siInput->getValueBoundaryInputs();
+//		if (count($entryInputs) > 1) {
+//			throw new CorruptedSiDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
+//		}
+//
+//		$this->inputSiValueBoundaries = [];
+//		$this->inputEiEntries = [];
+//
+//		foreach ($entryInputs as $siEntryInput) {
+//			if (!$this->guiValueBoundary->getSiValueBoundary()->handleEntryInput($siEntryInput)
+//					|| !$this->guiValueBoundary->save($n2nContext)) {
+//				return new SiInputError([$this->guiValueBoundary->getSiValueBoundary()]);
+//			}
+//
+//			if ($this->guiValueBoundary->getSelectedEiEntry()->validate()) {
+//				$this->inputSiValueBoundaries = [$this->guiValueBoundary->getSiValueBoundary()];
+//				$this->inputEiEntries = [$this->guiValueBoundary->getSelectedEiEntry()];
+//				return null;
+//			}
+//
+//			return new SiInputError([$this->guiValueBoundary->getSiValueBoundary($n2nLocale)]);
+//		}
+//
+//		throw new IllegalStateException();
+//	}
+
+//	/**
+//	 * @throws CorruptedSiDataException
+//	 */
+//	function handleSiCall(ZoneApiControlCallId $zoneControlCallId): SiCallResponse {
+//		return $this->zoneGuiControlsMap->handleSiCall($zoneControlCallId, $this->eiFrame, $this->eiGuiDeclaration,
+//				$this->inputEiEntries);
+//	}
+
 
 }

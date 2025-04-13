@@ -28,6 +28,7 @@ use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\component\prop\EiPropNature;
 use rocket\op\ei\EiPropPath;
+use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
 
 class CommonGenericEiProperty implements GenericEiProperty {
 	private $eiProp;
@@ -35,28 +36,30 @@ class CommonGenericEiProperty implements GenericEiProperty {
 	private $entityValueBuilder;
 	private $eiFieldValueBuilder;
 	
-	public function __construct(EiPropNature $eiProp, CriteriaProperty $criteriaProperty,
+	public function __construct(private EiPropPath $eiPropPath, private Lstr $labelLstr, CriteriaProperty $criteriaProperty,
 			?\Closure $entityValueBuilder = null, ?\Closure $eiFieldValueBuilder = null) {
-		$this->eiProp = $eiProp;
 		$this->criteriaProperty = $criteriaProperty;
 		$this->entityValueBuilder = $entityValueBuilder;
 		$this->eiFieldValueBuilder = $eiFieldValueBuilder;
 	}
 
 	public function getLabelLstr(): Lstr {
-		return $this->eiProp->getLabelLstr();
+		return $this->labelLstr;
 	}
 	
 	public function getEiPropPath(): EiPropPath {
-		return EiPropPath::from($this->eiProp);
+		return $this->eiPropPath;
 	}
 	
 	public function createCriteriaItem(CriteriaProperty $alias): CriteriaItem {
 		return CrIt::p($alias, $this->criteriaProperty);
 	}
-	
+
+	/**
+	 * @throws UnknownEiFieldExcpetion
+	 */
 	public function buildEntityValue(EiEntry $eiEntry) {
-		return $this->eiFieldValueToEntityValue($eiEntry->getValue(EiPropPath::create($this->eiProp)));
+		return $this->eiFieldValueToEntityValue($eiEntry->getValue($this->eiPropPath));
 	}
 	
 	public function eiFieldValueToEntityValue($eiFieldValue) {

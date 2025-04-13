@@ -134,7 +134,7 @@ class EiMaskDef {
 	/**
 	 * @param string $previewControllerLookupId
 	 */
-	public function setPreviewControllerLookupId($previewControllerLookupId) {
+	public function setPreviewControllerLookupId(?string $previewControllerLookupId): void {
 		$this->previewControllerLookupId = $previewControllerLookupId;
 	}
 	

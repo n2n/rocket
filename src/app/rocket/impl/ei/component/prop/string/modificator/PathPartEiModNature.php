@@ -44,10 +44,10 @@ class PathPartEiModNature extends EiModNatureAdapter {
 	private ?GenericEiProperty $uniquePerGenericEiProperty = null;
 
 	public function __construct(private EiPropPath $eiPropPath, private EiuMask $eiuMask,
-			private EntityProperty $entityProperty, private bool $nullAllowed, ) {
+			private EntityProperty $entityProperty, private bool $nullAllowed) {
 	}
 	
-	public function setupEiEntry(Eiu $eiu) {
+	public function setupEiEntry(Eiu $eiu): void {
 		$pathPartPurify = new PathPartPurifier($eiu->frame()->getEiFrame(), $eiu->entry()->getEiEntry(), 
 				$this->eiPropPath, $this->eiuMask, $this->entityProperty, $this->nullAllowed,
 				$this->baseScalarEiProperty, $this->uniquePerGenericEiProperty);

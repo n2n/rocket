@@ -57,8 +57,6 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	 */
 	private ?int $maxlength = null;
 
-
-
 	/**
 	 * @return int|null
 	 */
@@ -69,7 +67,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	/**
 	 * @param int|null $minlength
 	 */
-	function setMinlength(?int $minlength) {
+	function setMinlength(?int $minlength): void {
 		$this->minlength = $minlength;
 	}
 
@@ -83,7 +81,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	/**
 	 * @param int|null $maxlength
 	 */
-	function setMaxlength(?int $maxlength) {
+	function setMaxlength(?int $maxlength): void {
 		$this->maxlength = $maxlength;
 	}
 	
@@ -130,11 +128,12 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 		return null;
 	}
 	
-	public function getGenericEiProperty(): ?GenericEiProperty {
+	public function buildGenericEiProperty(Eiu $eiu): ?GenericEiProperty {
 		if ($this->entityProperty === null) return null;
 		
-		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty));
+		return new CommonGenericEiProperty($eiu->prop()->getPath(), $this->getLabelLstr(), CrIt::p($this->entityProperty));
 	}
+
 	/**
 	 * {}
 	 * @see \rocket\op\ei\component\prop\ScalarEiProp::buildScalarValue()

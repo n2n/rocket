@@ -20,35 +20,31 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace testmdl\test\string;
+namespace testmdl\string\bo;
 
-use n2n\test\TestEnv;
-use testmdl\string\bo\StringTestObj;
-use testmdl\string\bo\PathPartTestObj;
+use rocket\attribute\EiType;
+use rocket\attribute\EiMenuItem;
+use rocket\attribute\impl\EiPropString;
+use rocket\attribute\EiPreset;
+use rocket\op\spec\setup\EiPresetMode;
+use rocket\attribute\impl\EiPropPathPart;
 
-enum StringTestEnv {
+#[EiType]
+#[EiPreset(EiPresetMode::EDIT_CMDS, editProps: ['name', 'pathPart', 'mandatoryPathPart', 'annoPathPart'])]
+class PathPartTestObj {
 
-	static function setUpStringTestObj(): StringTestObj {
-		$obj = new StringTestObj();
+	public int $id;
+	public string $name = 'Holeradio';
+	public ?string $pathPart = null;
+	#[EiPropPathPart(baseProp: 'name')]
+	public string $mandatoryPathPart = 'mandatory-holeradio';
+	#[EiPropPathPart(baseProp: 'name', uniquePerProp: 'pathPart')]
+	public mixed $uniquePerPathPart = 'unique-per-holeradio';
 
-		TestEnv::em()->persist($obj);
+	#[EiPropPathPart(baseProp: 'name', uniquePerProp: 'pathPart', constant: true, readOnly: true, mandatory: true)]
+	public mixed $annoPathPart = 'anno-holeradio';
 
-		return $obj;
+	function __construct() {
 	}
 
-	static function findStringTestObj(int $id): ?StringTestObj {
-		return TestEnv::em()->find(StringTestObj::class, $id);
-	}
-
-	static function setUpPathPartTestObj(): PathPartTestObj {
-		$obj = new PathPartTestObj();
-
-		TestEnv::em()->persist($obj);
-
-		return $obj;
-	}
-
-	static function findPathPartTestObj(int $id): ?PathPartTestObj {
-		return TestEnv::em()->find(PathPartTestObj::class, $id);
-	}
 }

@@ -77,6 +77,7 @@ use rocket\op\ei\UnknownEiTypeException;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 use rocket\ui\si\content\SiObjectQualifier;
+use n2n\persistence\orm\criteria\Criteria;
 
 class EiuFrame {
 	private $eiFrame;
@@ -431,6 +432,10 @@ class EiuFrame {
 	public function createCountCriteria(string $entityAlias, int $ignoreConstraintTypes = 0) {
 		return $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes)
 				->select('COUNT(1)');
+	}
+
+	function createCriteria(string $entityAlias, int $ignoreConstraintTypes = 0): Criteria {
+		return $this->eiFrame->createCriteria($entityAlias, $ignoreConstraintTypes);
 	}
 	
 	/**

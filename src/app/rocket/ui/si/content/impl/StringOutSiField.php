@@ -48,15 +48,12 @@ class StringOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @return bool
 	 */
-	function isMultiline() {
+	function isMultiline(): bool {
 		return $this->multiline;
 	}
 	
-	/**
-	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringOutSiField
-	 */
-	function setMultiline(bool $multiline) {
+
+	function setMultiline(bool $multiline): static {
 		$this->multiline = $multiline;
 		return $this;
 	}

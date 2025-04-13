@@ -20,35 +20,18 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace testmdl\test\string;
+namespace testmdl\bo;
 
-use n2n\test\TestEnv;
-use testmdl\string\bo\StringTestObj;
-use testmdl\string\bo\PathPartTestObj;
+use rocket\attribute\EiType;
+use rocket\attribute\EiDefaultSort;
+use rocket\attribute\EiPreset;
+use rocket\op\spec\setup\EiPresetMode;
+use rocket\attribute\EiPreview;
 
-enum StringTestEnv {
-
-	static function setUpStringTestObj(): StringTestObj {
-		$obj = new StringTestObj();
-
-		TestEnv::em()->persist($obj);
-
-		return $obj;
-	}
-
-	static function findStringTestObj(int $id): ?StringTestObj {
-		return TestEnv::em()->find(StringTestObj::class, $id);
-	}
-
-	static function setUpPathPartTestObj(): PathPartTestObj {
-		$obj = new PathPartTestObj();
-
-		TestEnv::em()->persist($obj);
-
-		return $obj;
-	}
-
-	static function findPathPartTestObj(int $id): ?PathPartTestObj {
-		return TestEnv::em()->find(PathPartTestObj::class, $id);
-	}
+#[EiType]
+#[EiPreview('tbd')]
+#[EiPreset(EiPresetMode::READ)]
+class PreviewTestObj {
+	public int $id;
+	public ?string $text = 'holeradio';
 }
