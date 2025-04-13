@@ -23,6 +23,9 @@ namespace rocket\ui\si\control\impl;
 
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\control\SiButton;
+use n2n\core\container\N2nContext;
+use rocket\ui\si\api\response\SiCallResponse;
+use n2n\util\ex\UnsupportedOperationException;
 
 class DeactivatedSiControl implements SiControl {
 	/**
@@ -45,5 +48,9 @@ class DeactivatedSiControl implements SiControl {
 		return [
 			'button' => $this->button
 		];
+	}
+
+	function handleCall(N2nContext $n2nContext): SiCallResponse {
+		throw new UnsupportedOperationException();
 	}
 }
