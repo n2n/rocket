@@ -296,7 +296,6 @@ class OpuCtrl {
 			return;
 		}
 
-		$iframeData = null;
 		if ($useTemplate) {
 			$iframeData = IframeData::createFromUiComponentWithTemplate($uiComponent, $this->eiu->getN2nContext());
 		} else {

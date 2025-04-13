@@ -70,7 +70,7 @@ class SiZone {
 
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'title' => $this->title,
+			'title' => $this->title ?? 'Zone Title',
 			'breadcrumbs' => $this->breadcrumbs,
 			'gui' => SiPayloadFactory::buildDataFromComp($this->gui, $n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
