@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, LOCALE_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { InputInFieldModel } from '../input-in-field-model';
 
 @Component({
@@ -98,7 +98,6 @@ export class NumberInComponent implements OnInit {
 	}
 
 	validate(event: any): void {
-		console.log(typeof event);
 		if (!this.isValueValid(this.parseValue(event.target.value))) {
 			event.target.value = this.parsedValue;
 		} else {

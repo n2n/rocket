@@ -44,6 +44,7 @@ use rocket\ui\gui\field\impl\relation\EmbeddedEntryPanelsOutGuiField;
 use rocket\ui\gui\field\impl\bool\BoolInGuiField;
 use n2n\web\ui\UiComponent;
 use rocket\ui\gui\field\impl\iframe\IframeInGuiField;
+use rocket\ui\gui\field\impl\string\PathPartInGuiField;
 
 class GuiFields {
 
@@ -56,6 +57,16 @@ class GuiFields {
 		return new StringInGuiField(SiFields::stringIn(null)
 				->setMandatory($mandatory)
 				->setMultiline($multiline)
+				->setMinlength($minlength)
+				->setMaxlength($maxlength)
+				->setPrefixAddons($prefixAddons)
+				->setSuffixAddons($suffixAddons));
+	}
+
+	static function pathPartIn(bool $mandatory, int $minlength = 3, int $maxlength = 150,
+			array $prefixAddons = [], array $suffixAddons = []): PathPartInGuiField {
+		return new PathPartInGuiField(SiFields::pathPartIn(null)
+				->setMandatory($mandatory)
 				->setMinlength($minlength)
 				->setMaxlength($maxlength)
 				->setPrefixAddons($prefixAddons)

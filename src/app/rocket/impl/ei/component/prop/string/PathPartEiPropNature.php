@@ -33,6 +33,9 @@ use n2n\util\type\TypeConstraints;
 use rocket\ui\gui\field\impl\string\StringInGuiField;
 use n2n\bind\mapper\impl\Mappers;
 use rocket\impl\ei\component\prop\string\modificator\PathPartUtil;
+use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\si\content\impl\string\PathPartInSiField;
+use rocket\ui\gui\field\impl\string\PathPartInGuiField;
 
 class PathPartEiPropNature extends AlphanumericEiPropNature {
 
@@ -141,21 +144,20 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 //		$eiu->field()->setValue($siField->getValue());
 //	}
 
-	function buildInGuiField(Eiu $eiu): StringInGuiField {
-		$guiField = parent::buildInGuiField($eiu);
-		assert($guiField instanceof StringInGuiField);
+	function buildInGuiField(Eiu $eiu): PathPartInGuiField {
+		$guiField = GuiFields::pathPartIn(mandatory: $this->isMandatory(),
+				minlength: $this->getMinlength() ?? 3, maxlength: $this->getMaxlength() ?? 150,
+				prefixAddons: $this->getPrefixSiCrumbGroups(), suffixAddons: $this->getSuffixSiCrumbGroups());
 
-		$baseName = null;
-		if ($this->isMandatory() && $this->baseEiPropPath !== null) {
-			$baseName = $this->pathPartUtil->determineBaseName($eiu, $this->baseEiPropPath);
-			$guiField->getSiField()->setMandatory(false);
+		if ($this->baseEiPropPath !== null && $eiu->entry()->isNew()) {
+			$guiField->getSiField()->setBasedOnPropName($this->baseEiPropPath);
 		}
 
 		$guiField->setValue($eiu->field()->getValue());
 
 		$guiField->setModel($eiu->field()->asGuiFieldModel(Mappers::pathPart(
 				fn (string $pathPart) => !$this->pathPartUtil->containsPathPart($eiu, $pathPart),
-				$baseName, mandatory: $this->isMandatory())));
+				null, mandatory: $this->isMandatory())));
 
 		return $guiField;
 	}
