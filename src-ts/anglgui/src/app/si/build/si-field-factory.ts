@@ -44,10 +44,12 @@ import { SiFrame } from '../model/meta/si-frame';
 import { SiGuiFactory } from './si-gui-factory';
 import { SiControlFactory } from './si-control-factory';
 import { SiEntry } from '../model/content/si-entry';
+import { PathPartInSiField } from '../model/content/impl/alphanum/model/path-part-in-si-field';
 
 enum SiFieldType {
 	STRING_OUT = 'string-out',
 	STRING_IN = 'string-in',
+	PATH_PART_IN = 'path-part-in',
 	NUMBER_IN = 'number-in',
 	BOOLEAN_IN = 'boolean-in',
 	FILE_OUT = 'file-out',
@@ -107,7 +109,22 @@ export class SiFieldFactory {
 			stringInSiField.prefixAddons = SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
 			stringInSiField.suffixAddons = SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
 			stringInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+
 			return stringInSiField;
+
+		case SiFieldType.PATH_PART_IN:
+			const pathPartInSiField = new PathPartInSiField(prop.label, dataExtr.nullaString('value'));
+			pathPartInSiField.minlength = dataExtr.nullaNumber('minlength');
+			pathPartInSiField.maxlength = dataExtr.nullaNumber('maxlength');
+			pathPartInSiField.mandatory = dataExtr.reqBoolean('mandatory');
+			pathPartInSiField.prefixAddons = SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('prefixAddons'));
+			pathPartInSiField.suffixAddons = SiEssentialsFactory.createCrumbGroups(dataExtr.reqArray('suffixAddons'));
+			pathPartInSiField.handleError(Message.createTexts(dataExtr.reqStringArray('messages')));
+
+			this.resolvePathPartDependencies(pathPartInSiField, dataExtr.nullaString('basedOnPropName'),
+					fieldMap$);
+
+			return pathPartInSiField;
 
 		case SiFieldType.NUMBER_IN:
 			const numberInSiField = new NumberInSiField(prop.label, this.injector.get(AppStateService).localeId);
@@ -342,7 +359,7 @@ export class SiFieldFactory {
 					entryId: extr.nullaString('entryId'),
 					propIds: extr.nullaStringArray('propIds'),
 					maskId: extr.reqString('maskId'),
-					siControlBoundy: this.controlBoundary,
+					siControlBoundary: this.controlBoundary,
 					siService: this.injector.get(SiService)
 				}));
 				continue;
@@ -389,5 +406,16 @@ export class SiFieldFactory {
 					.map(propId => fieldMap.get(propId)!)
 					.filter(field => !!field));
 		}
+	}
+
+	private resolvePathPartDependencies(pathPartInSiField: PathPartInSiField, basedOnPropName: string|null,
+		   fieldMapObservable: Observable<Map<string, SiField>>): void {
+		if (!basedOnPropName) {
+			return;
+		}
+
+		fieldMapObservable.subscribe((fieldMap) => {
+			pathPartInSiField.basedOnField = fieldMap.get(basedOnPropName) ?? null;
+		});
 	}
 }

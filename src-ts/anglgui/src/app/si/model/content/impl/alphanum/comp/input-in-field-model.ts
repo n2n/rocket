@@ -25,4 +25,15 @@ export interface InputInFieldModel extends MessageFieldModel {
 	onFocus(): void;
 
 	onBlur(): void;
+
+	getAutoConfig?: () => AutoConfig|null;
+
+	isAuto?: () => boolean;
+
+	setAuto?: (enabled: boolean) => void;
+}
+
+export interface AutoConfig {
+	enabledTextCode: string;
+	disabledTextCode: string;
 }

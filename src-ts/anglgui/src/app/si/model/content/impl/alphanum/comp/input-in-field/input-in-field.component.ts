@@ -28,4 +28,26 @@ export class InputInFieldComponent implements OnInit {
 		}
 		this.model.setValue(value);
 	}
+
+	get autoerAvailable(): boolean {
+		if (this.model.getAutoConfig) {
+			return !!this.model.getAutoConfig();
+		}
+
+		return false;
+	}
+
+	set auto(auto: boolean) {
+		if (this.model.setAuto) {
+			this.model.setAuto(auto);
+		}
+	}
+
+	get auto(): boolean {
+		if (this.model.isAuto) {
+			return this.model.isAuto();
+		}
+
+		return false;
+	}
 }

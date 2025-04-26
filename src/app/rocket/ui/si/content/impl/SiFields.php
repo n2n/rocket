@@ -48,18 +48,20 @@ use rocket\ui\si\content\impl\date\DateTimeInSiField;
 use rocket\ui\si\content\impl\string\StringArrayInSiField;
 use rocket\ui\si\content\impl\string\PasswordInSiField;
 use n2n\io\managed\File;
+use rocket\ui\si\content\impl\string\PathPartInSiField;
 
 class SiFields {
-	
-	/**
-	 * @return \rocket\ui\si\content\impl\StringInSiField
-	 */
-	static function stringIn(?string $value) {
+
+	static function stringIn(?string $value): StringInSiField {
 		return new StringInSiField($value);
 	}
 
 	static function stringOut(?string $value): StringOutSiField {
 		return new StringOutSiField($value);
+	}
+
+	static function pathPartIn(?string $value): PathPartInSiField {
+		return new PathPartInSiField($value);
 	}
 
 	static function numberIn(?float $value): NumberInSiField {

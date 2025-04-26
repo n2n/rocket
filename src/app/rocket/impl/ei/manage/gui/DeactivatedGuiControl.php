@@ -32,6 +32,7 @@ use rocket\ui\si\control\impl\DeactivatedSiControl;
 use rocket\ui\gui\control\GuiControl;
 use n2n\util\uri\Url;
 use rocket\op\ei\manage\api\ZoneApiControlCallId;
+use rocket\ui\gui\control\GuiControlMap;
 
 class DeactivatedGuiControl implements GuiControl {
 	private $siButton;
@@ -52,8 +53,8 @@ class DeactivatedGuiControl implements GuiControl {
 	function getChildById(string $id): ?GuiControl {
 		return null;
 	}
-	
-	function getSiControl(Url $apiUrl, ApiControlCallId|ZoneApiControlCallId $siApiCallId): SiControl {
+
+	function getSiControl(): SiControl {
 		return new DeactivatedSiControl($this->siButton);
 	}
 	
@@ -61,11 +62,15 @@ class DeactivatedGuiControl implements GuiControl {
 		throw new NotYetImplementedException();
 	}
 
-	public function handleCall(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, array $inputEiEntries): SiCallResponse {
+	public function handleCall(): SiCallResponse {
 		throw new NotYetImplementedException();
 	}
 
 	public function handleEntry(EiFrame $eiFrame, EiGuiDeclaration $eiGuiDeclaration, EiEntry $eiEntry): SiCallResponse {
 		throw new NotYetImplementedException();
+	}
+
+	function getForkGuiControlMap(): ?GuiControlMap {
+		return null;
 	}
 }

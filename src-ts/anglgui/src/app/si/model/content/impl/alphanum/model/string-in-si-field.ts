@@ -78,6 +78,13 @@ export class StringInSiField extends InSiFieldAdapter implements InputInFieldMod
 		return this.suffixAddons;
 	}
 
+	readValue(): SiGenericValue {
+		if (this.tmpValue === '') {
+			return new SiGenericValue(null);
+		}
+		return new SiGenericValue(this.tmpValue ?? this.value);
+	}
+
 	private validate(): void {
 		this.messagesCollection.clear();
 

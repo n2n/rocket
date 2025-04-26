@@ -80,13 +80,12 @@ class EiuGuiControlFactory {
 	public function newGroup(SiButton $siButton): GroupGuiControl {
 		return GuiControls::group($siButton);
 	}
-	
+
 	/**
-	 * @param string $id
 	 * @param SiButton $siButton
 	 * @return DeactivatedGuiControl
 	 */
-	public function newDeactivated(string $id, SiButton $siButton) {
-		return new DeactivatedGuiControl($id, $siButton);
+	public function newDeactivated(SiButton $siButton): DeactivatedGuiControl {
+		return new DeactivatedGuiControl($siButton);
 	}
 }

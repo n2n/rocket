@@ -18,6 +18,8 @@ export interface SiField {
 
 	readInput(): object;
 
+	readValue?: () => SiGenericValue;
+
 	createInputResetPoint(): Promise<SiInputResetPoint>;
 
 	// handleError(error: SiFieldError): void;

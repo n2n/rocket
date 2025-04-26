@@ -16,7 +16,7 @@ export class TogglerComponent implements OnInit {
 
 	@Input() enabledTextCode: string|null = 'enabled_txt';
 	@Input() disabledTextCode: string|null = 'disabled_txt';
-	@Input() mode: string|null = 'toggler';
+	@Input() mode: 'toggler'|'checkbox'|null = 'toggler';
 
 	ngOnInit(): void {
 	}

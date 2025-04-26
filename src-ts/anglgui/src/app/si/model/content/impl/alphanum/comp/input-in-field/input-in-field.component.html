@@ -1,3 +1,9 @@
+
+<rocket-ui-toggler *ngIf="autoerAvailable" [(enabled)]="auto"
+		[labeled]="true"
+		[enabledTextCode]="model.getAutoConfig!()!.enabledTextCode"
+		[disabledTextCode]="model.getAutoConfig!()!.disabledTextCode"></rocket-ui-toggler>
+
 <div [class.input-group]="grouped">
 	<div *ngIf="model.getPrefixAddons().length > 0" class="input-group-prepend">
 		<rocket-crumb-group *ngFor="let crumbGroup of model.getPrefixAddons()" 
@@ -7,7 +13,7 @@
 
 	<input [type]="model.getType()" class="form-control" [(ngModel)]="value"
 			[maxlength]="model.getMaxlength()" [min]="model.getMin()" [max]="model.getMax()" [step]="model.getStep()"
-			(focus)="model.onFocus()" (blur)="model.onBlur()"/>
+			(focus)="model.onFocus()" (blur)="model.onBlur()" [disabled]="autoerAvailable && auto" />
 
 	<div *ngIf="model.getSuffixAddons().length > 0" class="input-group-append">
 		<rocket-crumb-group *ngFor="let crumbGroup of model.getSuffixAddons()" 

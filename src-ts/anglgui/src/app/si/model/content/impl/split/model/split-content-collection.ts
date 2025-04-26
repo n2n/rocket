@@ -117,7 +117,7 @@ export interface LazyDef {
 	propIds: string[]|null;
 	maskId: string;
 	siService: SiService;
-	siControlBoundy: SiControlBoundary;
+	siControlBoundary: SiControlBoundary;
 }
 
 

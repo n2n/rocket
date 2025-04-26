@@ -19,16 +19,16 @@
  * Bert Hofmänner.............: Idea, Frontend UI, Design, Marketing, Concept
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
-namespace rocket\ui\si\content\impl;
+namespace rocket\ui\si\content\impl\string;
 
 use n2n\util\type\attrs\DataSet;
 use rocket\ui\si\content\impl\meta\AddonsSiFieldTrait;
 use n2n\core\container\N2nContext;
 use n2n\util\type\attrs\InvalidAttributeException;
 use rocket\ui\si\err\CorruptedSiDataException;
-use rocket\ui\si\content\impl\string\MinMaxLengthTrait;
+use rocket\ui\si\content\impl\InSiFieldAdapter;
 
-class StringInSiField extends InSiFieldAdapter {
+class PathPartInSiField extends InSiFieldAdapter {
 	use MinMaxLengthTrait, AddonsSiFieldTrait;
 	
 	/**
@@ -38,21 +38,19 @@ class StringInSiField extends InSiFieldAdapter {
 	/**
 	 * @var bool
 	 */
-	private $multiline = false;
-	/**
-	 * @var bool
-	 */
 	private $mandatory = false;
+
+	private ?string $basedOnPropName = null;
 
 	function __construct(?string $value) {
 		$this->value = $value;	
 	}
-	
+
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return PathPartInSiField
 	 */
-	function setValue(?string $value) {
+	function setValue(?string $value): static {
 		$this->value = $value;
 		return $this;
 	}
@@ -64,23 +62,6 @@ class StringInSiField extends InSiFieldAdapter {
 		return $this->value;
 	}
 
-	
-	/**
-	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringInSiField
-	 */
-	function setMultiline(bool $multiline) {
-		$this->multiline = $multiline;
-		return $this;
-	}
-	
-	/**
-	 * @return bool
-	 */
-	function isMultiline() {
-		return $this->multiline;
-	}
-	
 	/**
 	 * @param bool $mandatory
 	 * @return \rocket\si\content\impl\StringInSiField
@@ -102,7 +83,16 @@ class StringInSiField extends InSiFieldAdapter {
 	 * @see \rocket\ui\si\content\SiField::getType()
 	 */
 	function getType(): string {
-		return 'string-in';
+		return 'path-part-in';
+	}
+
+	function getBasedOnPropName(): ?string {
+		return $this->basedOnPropName;
+	}
+
+	function setBasedOnPropName(?string $basedOnPropName): static {
+		$this->basedOnPropName = $basedOnPropName;
+		return $this;
 	}
 	
 	/**
@@ -114,10 +104,10 @@ class StringInSiField extends InSiFieldAdapter {
 			'value' => $this->value,
 			'minlength' => $this->minlength,
 			'maxlength' => $this->maxlength,
-			'multiline' => $this->multiline,
 			'mandatory' => $this->mandatory,
 			'prefixAddons' => $this->prefixAddons,
 			'suffixAddons' => $this->suffixAddons,
+			'basedOnPropName' => $this->basedOnPropName,
 			...parent::toJsonStruct($n2nContext)
 		];
 	}
