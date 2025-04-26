@@ -215,7 +215,7 @@ class PathPartEiPropNatureLiveTest extends TestCase {
 
 		$this->assertTrue(assert($fields['mandatoryPathPart'] instanceof StringInSiField));
 		$this->assertFalse($fields['mandatoryPathPart']->isReadOnly());
-		$this->assertFalse($fields['mandatoryPathPart']->isMandatory()); // because field is generated
+		$this->assertTrue($fields['mandatoryPathPart']->isMandatory()); // because field is generated
 		$this->assertEquals('mandatory-holeradio', $fields['mandatoryPathPart']->getValue());
 
 		$this->assertTrue(assert($fields['annoPathPart'] instanceof StringInSiField));
@@ -253,12 +253,12 @@ class PathPartEiPropNatureLiveTest extends TestCase {
 		$guiEntry = (new EiGuiEntryFactory($eiFrame))
 				->createGuiEntry($eiEntry, ViewMode::BULKY_EDIT, false);
 
-		$siEntryIndentifier = $guiEntry->getSiEntry()->getQualifier()->getIdentifier();
-		$siEntryInput = new SiEntryInput($siEntryIndentifier->getMaskIdentifier()->getId(),
-				$siEntryIndentifier->getId());
+		$siEntryIdentifier = $guiEntry->getSiEntry()->getQualifier()->getIdentifier();
+		$siEntryInput = new SiEntryInput($siEntryIdentifier->getMaskIdentifier()->getId(),
+				$siEntryIdentifier->getId());
 		$siEntryInput->putFieldInput('name', new SiFieldInput(['value' => 'Pretty Name like Holeradio']));
 		$siEntryInput->putFieldInput('pathPart', new SiFieldInput(['value' => null]));
-		$siEntryInput->putFieldInput('mandatoryPathPart', new SiFieldInput(['value' => null]));
+		$siEntryInput->putFieldInput('mandatoryPathPart', new SiFieldInput(['value' => 'other-path-part']));
 		$siEntryInput->putFieldInput('uniquePerPathPart', new SiFieldInput(['value' => 'sanitized-path-part']));
 
 		$this->assertTrue($guiEntry->getSiEntry()->handleEntryInput($siEntryInput,
