@@ -24,15 +24,16 @@ namespace rocket\impl\ei\component\prop\relation;
 use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\conf\RelationModel;
-use rocket\impl\ei\component\prop\adapter\config\EditAdapter;
 use rocket\op\ei\util\Eiu;
 use rocket\op\ei\manage\entry\EiFieldNature;
 use rocket\impl\ei\component\prop\relation\model\ToManyEiField;
-use rocket\impl\ei\component\prop\relation\model\gui\RelationLinkGuiField;
 use rocket\impl\ei\component\prop\relation\model\gui\ToManyGuiFieldFactory;
-use rocket\ui\gui\field\GuiField;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\ui\gui\field\BackableGuiField;
+use rocket\impl\ei\component\prop\adapter\config\EditConfig;
+use n2n\util\ex\UnsupportedOperationException;
+use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
+use rocket\ui\gui\ViewMode;
 
 
 class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
@@ -43,7 +44,8 @@ class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 		parent::__construct($entityProperty, $accessProxy,
 				new RelationModel($this, false, true, RelationModel::MODE_SELECT));
 
-		$this->relationModel->setReadOnly(true);
+		$this->displayConfig = new DisplayConfig(ViewMode::read());
+		$this->editConfig = new EditConfig(true, false, true, false);
 	}
 	
 	function buildEiField(Eiu $eiu): ?EiFieldNature {
@@ -62,7 +64,8 @@ class OneToManySelectEiPropNature extends RelationEiPropNatureAdapter {
 //	}
 
 	function buildInGuiField(Eiu $eiu): ?BackableGuiField {
-		return (new ToManyGuiFieldFactory($this->getRelationModel()))->createInGuiField($eiu);
+		throw new UnsupportedOperationException('OneToManySelectEiPropNature is always read-only.');
+//		return (new ToManyGuiFieldFactory($this->getRelationModel()))->createInGuiField($eiu);
 	}
 
 	function buildOutGuiField(Eiu $eiu): ?BackableGuiField {

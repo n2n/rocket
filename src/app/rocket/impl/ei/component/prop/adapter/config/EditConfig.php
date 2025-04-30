@@ -21,12 +21,13 @@
  */
 namespace rocket\impl\ei\component\prop\adapter\config;
 
-use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
+use n2n\util\ex\UnsupportedOperationException;
 
 class EditConfig {
-	protected bool $constant = false;
-	protected bool $readOnly = false;
-	protected bool $mandatory = false;
+
+	function __construct(protected bool $constant = false, protected bool $constantChoosable = true,
+			protected bool $readOnly = false, protected bool $readOnlyChoosable = true,
+			protected bool $mandatory = false, protected bool $mandatoryChoosable = true) {}
 
 	/**
 	 * @return bool
@@ -40,6 +41,7 @@ class EditConfig {
 	 * @return $this
 	 */
 	function setConstant(bool $constant): static {
+		UnsupportedOperationException::assertTrue($this->constantChoosable, 'Constant is not modifiable');
 		$this->constant = $constant;
 		return $this;
 	}
@@ -56,6 +58,7 @@ class EditConfig {
 	 * @return $this
 	 */
 	function setReadOnly(bool $readOnly): static {
+		UnsupportedOperationException::assertTrue($this->readOnlyChoosable, 'ReadOnly is not modifiable');
 		$this->readOnly = (bool) $readOnly;
 		return $this;
 	}
@@ -72,6 +75,7 @@ class EditConfig {
 	 * @return $this
 	 */
 	function setMandatory(bool $mandatory): static {
+		UnsupportedOperationException::assertTrue($this->mandatoryChoosable, 'Mandatory is not modifiable');
 		$this->mandatory = $mandatory;
 		return $this;
 	}
