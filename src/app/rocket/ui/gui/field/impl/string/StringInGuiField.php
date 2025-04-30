@@ -37,7 +37,7 @@ class StringInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldMod
 
 	protected function createInputMappers(N2nContext $n2nContext): array {
 		return [Mappers::cleanString($this->siField->isMandatory(), $this->siField->getMinlength(),
-				$this->siField->getMaxlength(), $this->siField->isMultiline())];
+				$this->siField->getMaxlength(), !$this->siField->isMultiline())];
 	}
 
 	function setValue(?string $value): static {
