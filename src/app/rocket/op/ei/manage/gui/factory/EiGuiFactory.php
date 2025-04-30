@@ -15,6 +15,7 @@ use rocket\op\ei\manage\frame\EiObjectSelector;
 use rocket\ui\gui\GuiValueBoundary;
 use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\gui\impl\CompactGui;
+use rocket\op\ei\manage\gui\EiSiMaskId;
 
 class EiGuiFactory {
 
@@ -25,8 +26,11 @@ class EiGuiFactory {
 	function createCompactExplorerGui(int $pageSize = 30, bool $populateFirstPage = true): CompactExplorerGui {
 		$guiMasks = [];
 
+		$eiSiMaskId = new EiSiMaskId($this->eiFrame->getContextEiEngine()->getEiMask()->getEiTypePath(), ViewMode::COMPACT_READ);
+
 		if (!$populateFirstPage) {
-			return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize, new SiDeclaration([]), null);
+			return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize, $eiSiMaskId,
+					new SiDeclaration([]), null);
 		}
 
 		$eiObjectSelector = new EiObjectSelector($this->eiFrame);
@@ -49,7 +53,7 @@ class EiGuiFactory {
 
 		$count = $eiObjectSelector->count();
 
-		return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize,
+		return new CompactExplorerGui($this->eiFrame->createSiFrame(), $pageSize, $eiSiMaskId,
 				new SiDeclaration(array_map(fn (GuiMask $m) => $m->getSiMask(), $guiMasks)),
 				new SiPartialContent($count,
 						array_map(fn (GuiValueBoundary $b) => $b->getSiValueBoundary(), $guiValueBoundaries)));

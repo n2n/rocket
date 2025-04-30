@@ -65,7 +65,7 @@ class CompactExplorerSiGui implements SiGui {
 	 * @param SiDeclaration|null $declaration
 	 * @param SiPartialContent|null $partialContent
 	 */
-	public function __construct(SiFrame $frame, int $pageSize, ?SiDeclaration $declaration = null,
+	public function __construct(SiFrame $frame, int $pageSize, private string $siMaskId, ?SiDeclaration $declaration = null,
 			?SiPartialContent $partialContent = null) {
 		$this->frame = $frame;
 		$this->pageSize = $pageSize;
@@ -81,12 +81,12 @@ class CompactExplorerSiGui implements SiGui {
 		return 'compact-explorer';
 	}
 	
-	/**
-	 * @return Url
-	 */
-	public function getApiUrl(): Url {
-		return $this->frame;
-	}
+//	/**
+//	 * @return Url
+//	 */
+//	public function getApiUrl(): Url {
+//		return $this->frame;
+//	}
 	
 	/**
 	 * @return int
@@ -148,6 +148,7 @@ class CompactExplorerSiGui implements SiGui {
 		return [
 			'frame' => $this->frame,
 			'pageSize' => $this->pageSize,
+			'maskId' => $this->siMaskId,
 			'declaration' => $this->declaration,
 			'partialContent' => $this->partialContent->toDataStruct($n2nContext),
 			'controls' => SiPayloadFactory::createDataFromControls($this->controls)
