@@ -30,67 +30,66 @@ use rocket\ui\si\content\SiPartialContent;
 use rocket\ui\si\content\impl\basic\CompactExplorerSiGui;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\meta\SiDeclaration;
-use rocket\impl\ei\manage\gui\SiInputError;
 
 class CompactExplorerGui implements Gui {
 
 	private SiGui $siGui;
 
-	function __construct(private SiFrame $siFrame, private int $pageSize, private SiDeclaration $siDeclaration,
+	function __construct(private SiFrame $siFrame, private int $pageSize, private string $siMaskId, private SiDeclaration $siDeclaration,
 			private ?SiPartialContent $partialContent) {
 
-		$this->siGui = new CompactExplorerSiGui($this->siFrame, $pageSize, $this->siDeclaration,
+		$this->siGui = new CompactExplorerSiGui($this->siFrame, $pageSize, $this->siMaskId, $this->siDeclaration,
 				$this->partialContent);
 
 	}
 
-	function handleSiInput(SiInput $siInput): ?SiInputError {
-		throw new NotYetImplementedException();
-
-//		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
+//	function handleSiInput(SiInput $siInput): ?SiInputError {
+//		throw new NotYetImplementedException();
 //
-//		foreach ($siInput->getEntryInputs() as $entryInput) {
-//			if (null !== ($pid = $entryInput->getIdentifier()->getId())) {
-//				$eiObject = $eiFrameUtil->lookupEiObject($eiFrameUtil->pidToId($pid));
-//			} else {
-//				$eiObject = $eiFrameUtil->createNewEiObject($entryInput->getMaskId());
-//			}
-//
-//			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
-//			$inputEiGuiDeclaration = $eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), $this->eiGuiDeclaration->getViewMode());
-////$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $this->eiGui);
-////$eiGuiValueBoundary->handleSiEntryInput($entryInput);
-//			//
-//
-////}
+////		$eiFrameUtil = new EiFrameUtil($this->eiFrame);
 ////
-////$eiGuiValueBoundary->save();
+////		foreach ($siInput->getEntryInputs() as $entryInput) {
+////			if (null !== ($pid = $entryInput->getIdentifier()->getId())) {
+////				$eiObject = $eiFrameUtil->lookupEiObject($eiFrameUtil->pidToId($pid));
+////			} else {
+////				$eiObject = $eiFrameUtil->createNewEiObject($entryInput->getMaskId());
+////			}
 ////
-////$this->inputEiEntries[$key] = $eiEntry;
-////$this->inputEiGuiDeclarations[$key] = $inputEiGuiDeclaration;
+////			$eiEntry = $this->eiFrame->createEiEntry($eiObject);
+////			$inputEiGuiDeclaration = $eiGuiDeclaration = $eiFrameUtil->createEiGuiDeclaration($eiEntry->getEiMask(), $this->eiGuiDeclaration->getViewMode());
+//////$eiGuiValueBoundary = $eiGuiDeclaration->createEiGuiValueBoundary($this->eiFrame, [$eiEntry], $this->eiGui);
+//////$eiGuiValueBoundary->handleSiEntryInput($entryInput);
+////			//
 ////
-////if ($eiEntry->validate()) {
-////	continue;
-////}
+//////}
+//////
+//////$eiGuiValueBoundary->save();
+//////
+//////$this->inputEiEntries[$key] = $eiEntry;
+//////$this->inputEiGuiDeclarations[$key] = $inputEiGuiDeclaration;
+//////
+//////if ($eiEntry->validate()) {
+//////	continue;
+//////}
+//////
+//////$errorEntries[$key] = $eiGuiDeclaration->createSiEntry($this->eiFrameUtil->getEiFrame(), $eiGuiValueBoundary, false);
+//////}
 ////
-////$errorEntries[$key] = $eiGuiDeclaration->createSiEntry($this->eiFrameUtil->getEiFrame(), $eiGuiValueBoundary, false);
-////}
+////			$this->eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
+////
+////			$this->eiGuiValueBoundary->save();
+////
+////			if ($this->eiGuiValueBoundary->getSelectedEiEntry()->validate()) {
+////				$this->inputSiValueBoundaries = [$this->eiGuiValueBoundary->createSiValueBoundary()];
+////				return null;
+////			}
+////
+////			return new SiInputError([$this->eiGuiValueBoundary->createSiValueBoundary()]);
+////		}
+////
+////		$eiObject = null;
 //
-//			$this->eiGuiValueBoundary->handleSiEntryInput($siEntryInput);
-//
-//			$this->eiGuiValueBoundary->save();
-//
-//			if ($this->eiGuiValueBoundary->getSelectedEiEntry()->validate()) {
-//				$this->inputSiValueBoundaries = [$this->eiGuiValueBoundary->createSiValueBoundary()];
-//				return null;
-//			}
-//
-//			return new SiInputError([$this->eiGuiValueBoundary->createSiValueBoundary()]);
-//		}
-//
-//		$eiObject = null;
-
-	}
+//	}
 
 
 	function getSiGui(): SiGui {

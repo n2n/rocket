@@ -33,6 +33,10 @@ trait InEiGuiPropTrait {
 
 	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp {
 		$displayConfig = $this->getDisplayConfig();
+		if (!$displayConfig->isViewModeCompatible($eiu->guiDefinition()->getViewMode())) {
+			return null;
+		}
+
 		return $eiu->factory()
 				->newGuiProp(fn (Eiu $eiu, bool $readOnly) => $this->buildGuiField($eiu, $readOnly))
 				->setDefaultDisplayed($displayConfig->isViewModeDefaultDisplayed($eiu->guiDefinition()->getViewMode()))

@@ -30,6 +30,9 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\op\ei\EiPropPath;
 use rocket\ui\gui\GuiStructureDeclaration;
 use rocket\op\ei\manage\gui\EiGuiDefinition;
+use rocket\op\ei\manage\gui\EiGuiException;
+use rocket\op\ei\component\InvalidEiConfigurationException;
+use rocket\ui\gui\ViewMode;
 
 class EiGuiDefinitionFactory {
 
@@ -144,7 +147,15 @@ class EiGuiDefinitionFactory {
 			}
 
 			$defPropPath = $displayItem->getDefPropPath();
-			$guiPropWrapper = $eiGuiDefinition->getGuiPropWrapperByPath($defPropPath);
+			try {
+				$guiPropWrapper = $eiGuiDefinition->getGuiPropWrapperByPath($defPropPath);
+			} catch (EiGuiException $e) {
+				throw new InvalidEiConfigurationException('DisplayScheme provided for '
+								. $eiGuiDefinition->getEiMask() . ' (View mode: '
+								. ViewMode::stringify($eiGuiDefinition->getViewMode()) . ') contains errors: '
+								. $e->getMessage(),
+						previous: $e);
+			}
 			$displayDefinition = $guiPropWrapper->getDisplayDefinition();
 			$siStructureType = $displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType();
 			if (null === $siStructureType) {

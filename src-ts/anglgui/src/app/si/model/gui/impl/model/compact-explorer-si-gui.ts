@@ -27,7 +27,7 @@ export class CompactExplorerSiGui implements SiGui {
 	pageCollection: SiPageCollection;
 	partialContent: SiPartialContent|null = null;
 
-	constructor(pageSize: number, frame: SiFrame, maskId: string|null, siService: SiService,
+	constructor(pageSize: number, frame: SiFrame, maskId: string, siService: SiService,
 			siModState: SiModStateService) {
 
 		this.pageCollection = new SiPageCollection(pageSize, frame, maskId, siService, siModState);

@@ -49,7 +49,7 @@ export class SiGuiFactory {
 
 		const extr = new Extractor(data);
 		const dataExtr = extr.reqExtractor('data');
-		let compEssentialsFactory: SiControlFactory;
+
 		let declaration: SiDeclaration;
 		let frame: SiFrame|null;
 
@@ -63,7 +63,7 @@ export class SiGuiFactory {
 			case SiGuiType.COMPACT_EXPLORER:
 				frame = SiMetaFactory.createFrame(dataExtr.reqObject('frame'));
 				const compactExplorerSiGui = new CompactExplorerSiGui(dataExtr.reqNumber('pageSize'),
-						frame, null, this.injector.get(SiServiceType),
+						frame, dataExtr.reqString('maskId'), this.injector.get(SiServiceType),
 						this.injector.get(SiModStateService));
 
 				declaration = compactExplorerSiGui.pageCollection.declaration = SiMetaFactory.createDeclaration(

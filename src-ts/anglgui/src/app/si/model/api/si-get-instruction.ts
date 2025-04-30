@@ -53,7 +53,7 @@ export class SiGetInstruction {
 		return this.declaration;
 	}
 
-	setDeclaration(declaration: SiDeclaration): SiGetInstruction {
+	setDeclaration(declaration: SiDeclaration|null): SiGetInstruction {
 		this.declaration = declaration;
 		return this;
 	}

@@ -71,6 +71,7 @@ class PathPartEiPropNatureLiveTest extends TestCase {
 	 * @throws ValueIncompatibleWithConstraintsException
 	 * @throws UnknownEiTypeException
 	 * @throws InaccessibleEiFieldException
+	 * @throws UnknownEiFieldExcpetion
 	 */
 	function testEiField(): void {
 		$eiType = $this->spec->getEiTypeByClassName(PathPartTestObj::class);

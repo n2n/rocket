@@ -26,7 +26,7 @@ export class SiPageCollection implements SiControlBoundary {
 
 	private modSubscription: Subscription|null = null;
 
-	constructor(readonly pageSize: number, readonly siFrame: SiFrame, public maskId: string|null,
+	constructor(readonly pageSize: number, readonly siFrame: SiFrame, public maskId: string,
 			private siService: SiService, private siModState: SiModStateService, quickSearchstr: string|null = null) {
 		this.pQuickSearchStr = quickSearchstr;
 	}
@@ -236,9 +236,9 @@ export class SiPageCollection implements SiControlBoundary {
 		}
 
 		const instruction = SiGetInstruction.partialContent(
-						this.declaration!.getBasicMask().qualifier.maskIdentifier.id, siPage.offset, this.pageSize,
+						this.maskId, siPage.offset, this.pageSize,
 						this.quickSearchStr)
-				.setDeclaration(this.declaration!)
+				.setDeclaration(this.declaration)
 				.setGeneralControlsIncluded(!this.controls)
 				.setGeneralControlsBoundary(this)
 				.setEntryControlsIncluded(true);
