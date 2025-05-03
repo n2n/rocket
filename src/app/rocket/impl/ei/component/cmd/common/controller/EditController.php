@@ -93,8 +93,8 @@ class EditController extends ControllerAdapter {
 					->setInputHandled(true),
 			self::CONTROL_CANCEL_KEY => $eiuControlFactory->newCallback(
 					SiButton::primary($dtc->t('common_cancel_label'), SiIconType::ICON_ARROW_LEFT),
-					function (Eiu $eiu) {
-						return $eiu->factory()->newControlResponse()->redirectBack();
+					function () {
+						return $this->opuCtrl->eiu()->factory()->newControlResponse()->redirectBack();
 					})
 		];
 	}

@@ -6,8 +6,8 @@ export class DateUtils {
 
 		const date = new Date(sqlDateString);
 		if (DateUtils.dateToSql(date) !== sqlDateString) {
-			throw new Error('invalid sql date format. The format must be like ' + DateUtils.dateToSql(new Date())
-					+ '.');
+			throw new Error('Invalid sql date format: "' + sqlDateString + '". The format must be like '
+					+ DateUtils.dateToSql(date) + '.');
 		}
 
 		return date;
