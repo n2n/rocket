@@ -49,7 +49,7 @@ class PathPartEiPropNature extends AlphanumericEiPropNature {
 
 		$this->setEntityProperty($entityProperty);
 
-		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
+		$this->getDisplayConfig()->setDefaultDisplayedViewModes(ViewMode::BULKY_ADD | ViewMode::BULKY_EDIT | ViewMode::COMPACT_READ);
 	}
 
 
