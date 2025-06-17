@@ -5,7 +5,7 @@ namespace rocket\ui\si\content\impl\iframe\ui;
 use n2n\impl\web\ui\view\html\HtmlView;
 
 class IframeHtmlBuilderMeta {
-	const TEMPLATE_FILE_LOCATION =  '\rocket\si\content\impl\iframe\view\iframeTemplate.html';
+	const TEMPLATE_FILE_LOCATION =  '\rocket\ui\si\content\impl\iframe\view\iframeTemplate.html';
 
 	private $view;
 
