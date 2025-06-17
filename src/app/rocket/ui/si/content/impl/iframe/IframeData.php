@@ -33,7 +33,7 @@ class IframeData {
 		$viewFactory = $n2nContext->lookup(ViewFactory::class);
 		CastUtils::assertTrue($viewFactory instanceof ViewFactory);
 		
-		$view = $viewFactory->create('rocket\si\content\impl\iframe\view\iframeTemplate.html',
+		$view = $viewFactory->create('rocket\ui\si\content\impl\iframe\view\iframeTemplate.html',
 				['uiComponent' => $uiComponent]);
 
 		return new IframeData(null, $view->getContents());
