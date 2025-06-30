@@ -74,7 +74,7 @@ class N2NLocaleEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 		$options = $this->buildN2nLocaleOptions($eiu->lookup(WebConfig::class), $eiu->frame()->getN2nLocale());
 		$value = $eiu->field()->getValue();
 
-		GuiFields::enumIn($this->isMandatory(), $options, ($value !== null ? (string) $value : null))
+		return GuiFields::enumIn($this->isMandatory(), $options, ($value !== null ? (string) $value : null))
 				->setModel($eiu->field()->asGuiFieldModel(Mappers::n2nLocale()));
 
 //		$siField = SiFields::enumIn($options, )
