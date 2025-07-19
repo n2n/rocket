@@ -93,14 +93,16 @@ export class SiEntryMonitor {
 	}
 
 	private handleEvent(modEvent: SiModEvent): { shownEntryUpdated: boolean } {
-		for (const siEntryIdentifier of modEvent.removed || []) {
-			IllegalSiStateError.assertTrue(siEntryIdentifier.id !== null);
-			const id = siEntryIdentifier.id!;
+		for (const siObjectIdentifier of modEvent.removed || []) {
+			IllegalSiStateError.assertTrue(siObjectIdentifier.id !== null);
+			const id = siObjectIdentifier.id!;
+
 			if (!this.entriesMap.has(id)) {
 				continue;
 			}
 
-			for (const siValueBoundary of this.entriesMap.get(id)!.filter(e => e.identifier.equals(siEntryIdentifier))) {
+			for (const siValueBoundary of this.entriesMap.get(id)!
+					.filter(e => e.identifier.matchesTypeAndId(siObjectIdentifier))) {
 				siValueBoundary.markAsRemoved();
 			}
 		}
