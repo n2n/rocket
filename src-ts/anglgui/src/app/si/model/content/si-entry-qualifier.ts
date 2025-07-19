@@ -17,6 +17,10 @@ export class SiEntryIdentifier implements SiObjectIdentifier {
 				&& this.id === (obj as SiEntryIdentifier).id;
 	}
 
+	matches(otherEntryIdentifier: SiEntryIdentifier): boolean {
+		return this.equals(otherEntryIdentifier);
+	}
+
 	matchesTypeAndId(otherIdentifier: SiObjectIdentifier): boolean {
 		return this.id === otherIdentifier.id && this.maskIdentifier.superTypeId === otherIdentifier.superTypeId;
 	}
