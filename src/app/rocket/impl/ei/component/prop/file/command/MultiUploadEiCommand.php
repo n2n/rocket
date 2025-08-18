@@ -40,6 +40,7 @@ class MultiUploadEiCommand extends EiCommandAdapter {
 	 */
 	private $fileModel;
 	private $namingEiPropPath;
+	private $order;
 	
 	public function __construct(FileModel $fileModel, EiPropPath $namingEiPropPath = null, string $order = null) {
 		$this->fileModel = $fileModel;
