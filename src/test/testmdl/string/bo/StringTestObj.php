@@ -35,7 +35,7 @@ class StringTestObj {
 	public int $id;
 	public ?string $holeradio = null;
 	public string $mandatoryHoleradio = 'holeradio';
-	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true)]
+	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true, minlength: 2, maxlength: 512)]
 	public $annoHoleradio = 'asd';
 
 	public ?StrObjMock $holeradioObj = null;
