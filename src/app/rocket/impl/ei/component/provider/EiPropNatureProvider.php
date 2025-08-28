@@ -78,7 +78,6 @@ use rocket\impl\ei\component\prop\ci\model\ContentItem;
 use rocket\impl\ei\component\prop\ci\ContentItemsEiPropNature;
 use rocket\attribute\impl\EiPropOrder;
 use rocket\attribute\impl\EiPropString;
-use n2n\util\type\CastUtils;
 use n2n\impl\persistence\orm\property\ToManyEntityProperty;
 use n2n\impl\persistence\orm\property\ToOneEntityProperty;
 use n2n\util\EnumUtils;
@@ -244,6 +243,8 @@ class EiPropNatureProvider {
 			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
 					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
 			$nature->setMultiline($eiPropString->multiline);
+			$nature->setMinlength($eiPropString->minlength);
+			$nature->setMaxlength($eiPropString->maxlength);
 
 			$this->configureDisplayConfig($propertyAccessProxy, $nature->getDisplayConfig(), $nature);
 			$this->configureEditiable($eiPropString->constant, $eiPropString->readOnly, $eiPropString->mandatory,

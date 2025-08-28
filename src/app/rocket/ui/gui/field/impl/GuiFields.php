@@ -52,7 +52,7 @@ class GuiFields {
 		return new OutGuiField($siField);
 	}
 
-	static function stringIn(bool $mandatory, bool $multiline = false, int $minlength = 0, int $maxlength = 255,
+	static function stringIn(bool $mandatory, bool $multiline = false, int $minlength = 1, int $maxlength = 255,
 			array $prefixAddons = [], array $suffixAddons = []): StringInGuiField {
 		return new StringInGuiField(SiFields::stringIn(null)
 				->setMandatory($mandatory)

@@ -91,7 +91,7 @@ abstract class AlphanumericEiPropNature extends DraftablePropertyEiPropNatureAda
 	
 	function buildInGuiField(Eiu $eiu): ?BackableGuiField  {
 		$guiField = GuiFields::stringIn(mandatory: $this->isMandatory(),
-				minlength: $this->getMinlength() ?? 0, maxlength: $this->getMaxlength() ?? 255,
+				minlength: $this->getMinlength() ?? 1, maxlength: $this->getMaxlength() ?? 255,
 				prefixAddons: $this->getPrefixSiCrumbGroups(), suffixAddons: $this->getSuffixSiCrumbGroups());
 
 //		$guiField->setModel($eiu->field()->asGuiFieldModel());
