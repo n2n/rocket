@@ -61,6 +61,7 @@ class StringEiPropNatureSetupTest extends TestCase {
 		$this->assertFalse($nature->isConstant());
 		$this->assertFalse($nature->isReadOnly());
 		$this->assertTrue($nature->isMandatory());
+		$this->assertSame(255, $nature->getMaxlength());
 		$this->assertNull($nature->getStringValueObjectTypeName());
 
 		$nature = $eiProps['annoHoleradio']->getNature();

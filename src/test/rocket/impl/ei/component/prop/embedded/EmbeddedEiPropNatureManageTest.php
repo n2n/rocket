@@ -45,6 +45,9 @@ use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\gui\ViewMode;
 use rocket\op\ei\manage\gui\factory\EiGuiValueBoundaryFactory;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
+use n2n\util\type\ValueIncompatibleWithConstraintsException;
+use rocket\op\ei\manage\security\InaccessibleEiFieldException;
+use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
 
 class EmbeddedEiPropNatureManageTest extends TestCase {
 	private Spec $spec;
@@ -73,6 +76,11 @@ class EmbeddedEiPropNatureManageTest extends TestCase {
 		return $this->eiFrame->createEiEntry($eiObject);
 	}
 
+	/**
+	 * @throws ValueIncompatibleWithConstraintsException
+	 * @throws InaccessibleEiFieldException
+	 * @throws UnknownEiFieldExcpetion
+	 */
 	function testEiField(): void {
 		$eiEntry = $this->createEiEntry();
 
