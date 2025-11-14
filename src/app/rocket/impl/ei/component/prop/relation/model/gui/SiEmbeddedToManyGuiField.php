@@ -36,6 +36,8 @@ use rocket\ui\si\content\impl\relation\SiEmbeddedEntryFactory;
 use rocket\ui\gui\field\GuiFieldMap;
 use n2n\util\ex\IllegalStateException;
 use rocket\ui\si\content\impl\relation\SiEmbeddedEntry;
+use rocket\op\ei\manage\gui\EiSiMaskId;
+use rocket\ui\gui\ViewMode;
 
 class SiEmbeddedToManyGuiField implements GuiField, SiEmbeddedEntryFactory {
 	/**
@@ -76,10 +78,16 @@ class SiEmbeddedToManyGuiField implements GuiField, SiEmbeddedEntryFactory {
 					->setReduced($this->relationModel->isReduced());
 			return;
 		}
-		
+
+		$bulkySiMaskId = $this->targetEiuFrame->mask()->createSiMaskId(ViewMode::BULKY_EDIT);
+		$summarySiMaskId = null;
+		if ($this->relationModel->isReduced()) {
+			$summarySiMaskId = $this->targetEiuFrame->mask()->createSiMaskId(ViewMode::COMPACT_READ);
+		}
+
 		$this->siField = SiFields::embeddedEntriesIn($this->targetEiuFrame->createSiFrame(),
-						$this, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
-				->setReduced($this->relationModel->isReduced())
+						$this, $bulkySiMaskId, $this->readValues(), (int) $relationModel->getMin(), $relationModel->getMax())
+				->setSummaryMaskId($summarySiMaskId)
 				->setNonNewRemovable($this->relationModel->isRemovable())
 				->setSortable(($relationModel->getMax() === null || $relationModel->getMax() > 1) 
 						&& $relationModel->getTargetOrderEiPropPath() !== null)

@@ -131,7 +131,7 @@ class GuiFieldMap {
 	}
 	
 	function containsKey(GuiPropKey $key): bool {
-		return isset($this->guiFields[$key]);
+		return isset($this->guiFields[(string) $key]);
 	}
 	
 //	/**
