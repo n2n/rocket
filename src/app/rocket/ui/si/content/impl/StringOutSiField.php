@@ -38,10 +38,10 @@ class StringOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringOutSiField
+	 * @return \rocket\ui\si\content\impl\StringOutSiField
 	 */
 	function setValue(?string $value) {
-		$this->value = $value;;
+		$this->value = $value;
 		return $this;
 	}
 	

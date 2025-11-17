@@ -65,7 +65,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param float|null $value
-	 * @return \rocket\si\content\impl\NumberInSiField
+	 * @return \rocket\ui\si\content\impl\NumberInSiField
 	 */
 	function setValue(?float $value) {
 		$this->value = $value ;
@@ -81,7 +81,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $min
-	 * @return \rocket\si\content\impl\NumberInSiField
+	 * @return \rocket\ui\si\content\impl\NumberInSiField
 	 */
 	function setMin(?float $min) {
 		$this->min = $min;
@@ -97,7 +97,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int $max
-	 * @return \rocket\si\content\impl\NumberInSiField
+	 * @return \rocket\ui\si\content\impl\NumberInSiField
 	 */
 	function setMax(?float $max) {
 		$this->max = $max;
@@ -135,7 +135,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $fixed
-	 * @return \rocket\si\content\impl\NumberInSiField
+	 * @return \rocket\ui\si\content\impl\NumberInSiField
 	 */
 	function setFixed(bool $fixed) {
 		$this->fixed = $fixed;
@@ -151,7 +151,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param float|null $arrowStep
-	 * @return \rocket\si\content\impl\NumberInSiField
+	 * @return \rocket\ui\si\content\impl\NumberInSiField
 	 */
 	function setArrowStep(?float $arrowStep) {
 		$this->arrowStep = $arrowStep;
@@ -160,7 +160,7 @@ class NumberInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\NumberInSiField
+	 * @return \rocket\ui\si\content\impl\NumberInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;

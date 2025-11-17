@@ -76,7 +76,7 @@ class AdaptableEiConfigurator extends EiConfiguratorAdapter implements EiConfigu
 	
 	/**
 	 * @param EiConfiguratorAdaption $adaption
-	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 * @return \rocket\impl\ei\component\config\AdaptableEiConfigurator
 	 */
 	protected function registerAdaption(EiConfiguratorAdaption $adaption) {
 		$this->adapations[spl_object_hash($adaption)] = $adaption;
@@ -85,7 +85,7 @@ class AdaptableEiConfigurator extends EiConfiguratorAdapter implements EiConfigu
 	
 	/**
 	 * @param EiConfiguratorAdaption $adaption
-	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 * @return \rocket\impl\ei\component\config\AdaptableEiConfigurator
 	 */
 	protected function unregisterAdaption(EiConfiguratorAdaption $adaption) {
 		unset($this->adapations[spl_object_hash($adaption)]);
@@ -98,7 +98,7 @@ class AdaptableEiConfigurator extends EiConfiguratorAdapter implements EiConfigu
 	
 	/**
 	 * @param \Closure $setupCallback
-	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 * @return \rocket\impl\ei\component\config\AdaptableEiConfigurator
 	 */
 	protected function registerSetupCallback(\Closure $setupCallback) {
 		$this->setupCallbacks[spl_object_hash($setupCallback)] = $setupCallback;
@@ -107,7 +107,7 @@ class AdaptableEiConfigurator extends EiConfiguratorAdapter implements EiConfigu
 	
 	/**
 	 * @param \Closure $setupCallback
-	 * @return \rocket\impl\ei\component\prop\adapter\config\AdaptableEiPropConfigurator
+	 * @return \rocket\impl\ei\component\config\AdaptableEiConfigurator
 	 */
 	protected function unregisterSetupCallback(\Closure $setupCallback) {
 		unset($this->setupCallbacks[spl_object_hash($setupCallback)]);

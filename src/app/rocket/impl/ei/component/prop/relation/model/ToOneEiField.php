@@ -79,10 +79,8 @@ class ToOneEiField extends EiFieldNatureAdapter {
 		$this->mandatory = $mandatory;
 	}
 	
-	/**
-	 * @return \rocket\impl\ei\component\prop\relation\conf\RelationModel
-	 */
-	function isMandatory() {
+
+	function isMandatory(): bool {
 		return $this->mandatory;
 	}
 	

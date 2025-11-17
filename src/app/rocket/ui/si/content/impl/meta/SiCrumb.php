@@ -58,10 +58,10 @@ class SiCrumb implements \JsonSerializable {
 	function getIconClass() {
 		return $this->iconClass;
 	}
-	
+
 	/**
-	 * @param string $title
-	 * @return \rocket\si\content\impl\meta\SiCrumb
+	 * @param null|string $title
+	 * @return \rocket\ui\si\content\impl\meta\SiCrumb
 	 */
 	function setTitle(?string $title) {
 		$this->title = $title;
@@ -101,7 +101,7 @@ class SiCrumb implements \JsonSerializable {
 	
 	/**
 	 * @param string $label
-	 * @return \rocket\si\content\impl\meta\SiCrumb
+	 * @return \rocket\ui\si\content\impl\meta\SiCrumb
 	 */
 	static function createLabel(string $label) {
 		$addon = new SiCrumb();
@@ -112,7 +112,7 @@ class SiCrumb implements \JsonSerializable {
 	
 	/**
 	 * @param string $iconClass
-	 * @return \rocket\si\content\impl\meta\SiCrumb
+	 * @return \rocket\ui\si\content\impl\meta\SiCrumb
 	 */
 	static function createIcon(string $iconClass) {
 		$addon = new SiCrumb();

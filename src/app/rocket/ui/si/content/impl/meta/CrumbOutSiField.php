@@ -48,8 +48,8 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	}
 	
 	/**
-	 * @param SiCrumbGroup ...$group
-	 * @return \rocket\si\content\impl\meta\CrumbOutSiField
+	 * @param SiCrumbGroup ...$groups
+	 * @return \rocket\ui\si\content\impl\meta\CrumbOutSiField
 	 */
 	function addGroup(SiCrumbGroup ...$groups) {
 		array_push($this->groups, ...$groups);
@@ -58,7 +58,7 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param SiCrumbGroup[] $groups
-	 * @return \rocket\si\content\impl\meta\CrumbOutSiField
+	 * @return \rocket\ui\si\content\impl\meta\CrumbOutSiField
 	 */
 	function addGroups(array $groups) {
 		ArgUtils::valArray($groups, SiCrumbGroup::class);
@@ -68,7 +68,7 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param SiCrumb[] $crumbs
-	 * @return \rocket\si\content\impl\meta\CrumbOutSiField
+	 * @return \rocket\ui\si\content\impl\meta\CrumbOutSiField
 	 */
 	function addNewGroup(array $crumbs) {
 		return $this->addGroup(new SiCrumbGroup($crumbs));
@@ -76,7 +76,7 @@ class CrumbOutSiField extends OutSiFieldAdapter {
 	
 	/**
 	 * @param SiCrumb ...$crumbs
-	 * @return \rocket\si\content\impl\meta\CrumbOutSiField
+	 * @return \rocket\ui\si\content\impl\meta\CrumbOutSiField
 	 */
 	function addCrumbsAsGroup(SiCrumb ...$crumbs) {
 		return $this->addGroup(new SiCrumbGroup($crumbs));

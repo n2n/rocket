@@ -399,11 +399,11 @@ class EiType extends Type {
 	 * @param object $object
 	 * @return boolean
 	 */
-	public function isObjectValid($object) {
+	public function isObjectValid($object): bool {
 		return is_object($object) && ReflectionUtils::isObjectA($object, $this->getClass());
 	}
 	
-	public function isA(EiType $eiType) {
+	public function isA(EiType $eiType): bool {
 		return $this->equals($eiType) || $this->getClass()->isSubclassOf($eiType->getClass());
 	}
 
@@ -411,7 +411,7 @@ class EiType extends Type {
 	 * 
 	 * @return EiMask
 	 */
-	public function getEiMask() {
+	public function getEiMask(): EiMask {
 		$this->ensureInitialized();
 
 		return $this->eiMask;

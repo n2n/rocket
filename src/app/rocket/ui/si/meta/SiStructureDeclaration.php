@@ -45,7 +45,7 @@ class SiStructureDeclaration implements \JsonSerializable {
 	/**
 	 * @param string $structureType
 	 * @param string $propId
-	 * @return \rocket\si\meta\SiStructureDeclaration
+	 * @return \rocket\ui\si\meta\SiStructureDeclaration
 	 */
 	static function createProp(string $structureType, string $propId) {
 		return new SiStructureDeclaration($structureType, $propId, null, null);
@@ -55,7 +55,7 @@ class SiStructureDeclaration implements \JsonSerializable {
 	 * @param string $structureType
 	 * @param string $label
 	 * @param string $helpText
-	 * @return \rocket\si\meta\SiStructureDeclaration
+	 * @return \rocket\ui\si\meta\SiStructureDeclaration
 	 */
 	static function createGroup(string $structureType, ?string $label, ?string $helpText) {
 		return new SiStructureDeclaration($structureType, null, $label, $helpText);

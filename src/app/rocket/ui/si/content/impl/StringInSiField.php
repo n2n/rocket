@@ -50,7 +50,7 @@ class StringInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\ui\si\content\impl\StringInSiField
 	 */
 	function setValue(?string $value) {
 		$this->value = $value;
@@ -67,7 +67,7 @@ class StringInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $multiline
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\ui\si\content\impl\StringInSiField
 	 */
 	function setMultiline(bool $multiline) {
 		$this->multiline = $multiline;
@@ -83,7 +83,7 @@ class StringInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\ui\si\content\impl\StringInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;

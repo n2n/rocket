@@ -21,12 +21,10 @@
  */
 namespace rocket\ui\gui\field\impl\string;
 
-use rocket\ui\si\content\impl\StringInSiField;
 use n2n\bind\mapper\impl\Mappers;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\content\SiFieldModel;
 use rocket\ui\gui\field\GuiField;
-use n2n\bind\mapper\Mapper;
 use rocket\ui\gui\field\impl\InGuiFieldAdapter;
 use rocket\ui\si\content\impl\string\PathPartInSiField;
 

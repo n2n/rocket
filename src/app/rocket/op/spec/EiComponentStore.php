@@ -190,7 +190,7 @@ class EiComponentStore {
 	}
 	
 	/**
-	 * @return EiCommandGroup
+	 * @return EiCommandGroup[]
 	 */
 	public function getEiCommandGroups() {
 		return $this->eiCmdGroups;

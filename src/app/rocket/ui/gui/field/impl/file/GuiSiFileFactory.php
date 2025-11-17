@@ -40,6 +40,7 @@ use rocket\ui\si\content\impl\SiFileFactory;
 use n2n\l10n\DynamicTextCollection;
 use rocket\ui\gui\res\GuiResourceRegistry;
 use rocket\ui\gui\res\GuiResourceController;
+use rocket\ui\si\content\impl\SiImageDimension;
 
 class GuiSiFileFactory implements SiFileFactory {
 	

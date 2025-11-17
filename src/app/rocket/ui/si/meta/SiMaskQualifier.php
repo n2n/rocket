@@ -44,7 +44,7 @@ class SiMaskQualifier implements \JsonSerializable {
 	
 	/**
 	 * @param string $name
-	 * @return \rocket\si\meta\SiMaskQualifier
+	 * @return \rocket\ui\si\meta\SiMaskQualifier
 	 */
 	function setName(string $name) {
 		$this->name = $name;
@@ -69,7 +69,7 @@ class SiMaskQualifier implements \JsonSerializable {
 	/**
 	 * @param array $data
 	 * @throws CorruptedSiDataException
-	 * @return \rocket\si\meta\SiMaskQualifier
+	 * @return \rocket\ui\si\meta\SiMaskQualifier
 	 */
 	static function parse(array $data) {
 		$ds = new DataSet($data);

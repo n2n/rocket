@@ -56,7 +56,7 @@ class SiCallResponse implements \JsonSerializable {
 	
 	/**
 	 * @param string|null $directive
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return \rocket\ui\si\api\response\SiCallResponse
 	 */
 	function setDirective(?string $directive) {
 		ArgUtils::valEnum($directive, [self::DIRECTIVE_REDIRECT_BACK, self::DIRECTIVE_REDIRECT], null, true);
@@ -66,7 +66,7 @@ class SiCallResponse implements \JsonSerializable {
 	
 	/**
 	 * @param \rocket\ui\si\control\SiNavPoint|null $navPoint
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return \rocket\ui\si\api\response\SiCallResponse
 	 */
 	function setNavPoint(?\rocket\ui\si\control\SiNavPoint $navPoint) {
 		$this->navPoint = $navPoint;
@@ -76,7 +76,7 @@ class SiCallResponse implements \JsonSerializable {
 	/**
 	 * @param string $category
 	 * @param string $id
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return \rocket\ui\si\api\response\SiCallResponse
 	 */
 	function addHighlight(string $category, string $id) {
 		if (!isset($this->highlightMap[$category])) {
@@ -91,7 +91,7 @@ class SiCallResponse implements \JsonSerializable {
 	 * @param string $category
 	 * @param string $id
 	 * @param string $modType
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return \rocket\ui\si\api\response\SiCallResponse
 	 */
 	function addEvent(string $typeId, string $entryId, string $modType) {
 		ArgUtils::valEnum($modType, [self::EVENT_TYPE_ADDED, self::EVENT_TYPE_CHANGED, self::EVENT_TYPE_REMOVED]);
@@ -112,7 +112,7 @@ class SiCallResponse implements \JsonSerializable {
 	/**
 	 * @param Message $message
 	 * @param N2nLocale $n2nLocale
-	 * @return \rocket\si\control\SiCallResponse
+	 * @return \rocket\ui\si\api\response\SiCallResponse
 	 */
 	function addMessage(Message $message, N2nLocale $n2nLocale) {
 		$severity = null;

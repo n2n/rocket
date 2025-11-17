@@ -93,7 +93,7 @@ interface EiPropNature extends EiComponentNature {
 	function buildEiField(Eiu $eiu): ?EiFieldNature;
 
 	/**
-	 * @return GuiProp|null null if not displayable
+	 * @return EiGuiProp|null null if not displayable
 	 */
 	function buildEiGuiProp(Eiu $eiu): ?EiGuiProp;
 
@@ -115,7 +115,7 @@ interface EiPropNature extends EiComponentNature {
 	/**
 	 * @param Eiu $eiu EiFrame {@see Eiu::frame()} is not available if the FilteProp is created for a filter to restrict
 	 * {@see EiTypeExtension}s.
-	 * @return SortProp
+	 * @return null|SortProp
 	 */
 	public function buildSortProp(Eiu $eiu): ?SortProp;
 

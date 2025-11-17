@@ -88,7 +88,7 @@ class SiFields {
 	 * @param string|null $value
 	 * @return EnumInSiField
 	 */
-	static function enumIn(array $options, ?string $value) {
+	static function enumIn(array $options, ?string $value): EnumInSiField {
 		return new EnumInSiField($options, $value);
 	}
 
@@ -133,7 +133,7 @@ class SiFields {
 	 * @param array $values
 	 * @return \rocket\ui\si\content\impl\relation\EmbeddedEntriesOutSiField
 	 */
-	static function embeddedEntriesOut(SiFrame $frame, array $values = []) {
+	static function embeddedEntriesOut(SiFrame $frame, array $values = []): EmbeddedEntriesOutSiField {
 		return new EmbeddedEntriesOutSiField($frame, $values);
 	}
 
@@ -147,7 +147,7 @@ class SiFields {
 	 */
 	static function embeddedEntriesIn(SiFrame $frame, SiEmbeddedEntryFactory $inputHandler, string $bulkyMaskId, array $values = [],
 			int $min = 0, ?int $max = null): EmbeddedEntriesInSiField {
-		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $bulkyMaskId, $values))->setMin($min)->setMax($max);
+		return (new EmbeddedEntriesInSiField($frame, $inputHandler,'bulkyMaskId', $bulkyMaskId, $values))->setMin($min)->setMax($max);
 	}
 	
 	/**
@@ -194,10 +194,10 @@ class SiFields {
 
 	/**
 	 * @param UiComponent $uiComponent
-	 * @param N2nContext $templateN2nContext
+	 * @param null|N2nContext $templateN2nContext
 	 * @return \rocket\ui\si\content\impl\iframe\IframeOutSiField
 	 */
-	static function iframeOut(UiComponent $uiComponent, ?N2nContext $templateN2nContext = null) {
+	static function iframeOut(UiComponent $uiComponent, ?N2nContext $templateN2nContext = null): IframeOutSiField {
 		return new IframeOutSiField($templateN2nContext === null 
 				? IframeData::createFromUiComponent($uiComponent)
 				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
@@ -207,16 +207,16 @@ class SiFields {
 	 * @param Url $url
 	 * @return \rocket\ui\si\content\impl\iframe\IframeOutSiField
 	 */
-	static function iframeUrlOut(Url $url) {
+	static function iframeUrlOut(Url $url): IframeOutSiField {
 		return new IframeOutSiField(IframeData::createFromUrl($url));
 	}
 
 	/**
 	 * @param UiComponent $uiComponent
-	 * @param N2nContext $templateN2nContext
+	 * @param null|N2nContext $templateN2nContext
 	 * @return \rocket\ui\si\content\impl\iframe\IframeInSiField
 	 */
-	static function iframeIn(UiComponent $uiComponent, ?N2nContext $templateN2nContext = null) {
+	static function iframeIn(UiComponent $uiComponent, ?N2nContext $templateN2nContext = null): IframeInSiField {
 		return new IframeInSiField($templateN2nContext === null
 				? IframeData::createFromUiComponent($uiComponent)
 				: IframeData::createFromUiComponentWithTemplate($uiComponent, $templateN2nContext));
@@ -225,14 +225,14 @@ class SiFields {
 	/**
 	 * @return StringArrayInSiField
 	 */
-	static function stringArrayIn(array $values) {
+	static function stringArrayIn(array $values): StringArrayInSiField {
 		return new StringArrayInSiField($values);
 	}
 	
 	/**
 	 * @return \rocket\ui\si\content\impl\string\PasswordInSiField
 	 */
-	static function passwordIn() {
+	static function passwordIn(): PasswordInSiField {
 		return new PasswordInSiField();
 	}
 }

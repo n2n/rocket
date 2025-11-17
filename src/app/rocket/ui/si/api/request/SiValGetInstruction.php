@@ -71,7 +71,7 @@ class SiValGetInstruction {
 	
 	/**
 	 * @param array $data
-	 * @return \rocket\ui\si\api\SiValRequest
+	 * @return \rocket\ui\si\api\request\SiValGetInstruction
 	 *@throws \InvalidArgumentException
 	 */
 	static function createFromData(array $data) {

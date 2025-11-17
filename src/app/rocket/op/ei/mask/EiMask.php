@@ -676,13 +676,7 @@ class EiMask {
 		return $previewController;
 	}
 
-	/**
-	 * @param N2nLocale $n2nLocale
-	 * @return \rocket\ui\si\meta\SiMaskQualifier
-	 */
-
-
-	function equals($obj) {
+	function equals($obj): bool {
 		return $obj instanceof EiMask && $obj->getEiTypePath()->equals($this->getEiTypePath());
 	}
 

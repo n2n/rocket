@@ -65,7 +65,7 @@ class BoolInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @return \rocket\ui\si\content\impl\BoolInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -85,7 +85,7 @@ class BoolInSiField extends InSiFieldAdapter {
 
 	/**
 	 * @param string[] $onAssociatedPropIds
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @return \rocket\ui\si\content\impl\BoolInSiField
 	 */
 	function setOnAssociatedPropIds(array $onAssociatedPropIds) {
 		ArgUtils::valArray($onAssociatedPropIds, 'string');
@@ -102,7 +102,7 @@ class BoolInSiField extends InSiFieldAdapter {
 
 	/**
 	 * @param string[] $offAssociatedPropIds
-	 * @return \rocket\si\content\impl\BoolInSiField
+	 * @return \rocket\ui\si\content\impl\BoolInSiField
 	 */
 	function setOffAssociatedPropIds(array $offAssociatedPropIds) {
 		ArgUtils::valArray($offAssociatedPropIds, 'string');

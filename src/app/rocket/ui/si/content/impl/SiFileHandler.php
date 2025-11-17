@@ -82,7 +82,7 @@ class SiUploadResult {
 	
 	/**
 	 * @param File $file
-	 * @return \rocket\si\content\impl\SiUploadResult
+	 * @return \rocket\ui\si\content\impl\SiUploadResult
 	 */
 	static function createSuccess(File $file) {
 		return new SiUploadResult($file, null);
@@ -90,7 +90,7 @@ class SiUploadResult {
 	
 	/**
 	 * @param string $errorMessage
-	 * @return \rocket\si\content\impl\SiUploadResult
+	 * @return \rocket\ui\si\content\impl\SiUploadResult
 	 */
 	static function createError(string $errorMessage) {
 		return new SiUploadResult(null, $errorMessage);

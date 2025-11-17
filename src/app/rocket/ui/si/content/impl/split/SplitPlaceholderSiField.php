@@ -70,7 +70,7 @@ class SplitPlaceholderSiField extends SiFieldAdapter {
 // 	/**
 // 	 * @param string $key
 // 	 * @param SiField $field
-// 	 * @return \rocket\si\content\impl\split\SplitPlaceholderSiField
+// 	 * @return \rocket\ui\si\content\impl\split\SplitPlaceholderSiField
 // 	 */
 // 	function putInputHandler(string $key, SiLazyInputHandler $inputHandler) {
 // 		$this->inputHandlers[$key] = $inputHandler;

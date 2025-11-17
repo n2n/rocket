@@ -42,9 +42,9 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	 * @var bool
 	 */
 	private $timeChoosable = true;
-	
+
 	/**
-	 * @param int $value
+	 * @param \DateTime|null $value
 	 */
 	function __construct(?\DateTime $value) {
 		$this->value = $value;	
@@ -52,7 +52,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param \DateTime|null $value
-	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 * @return \rocket\ui\si\content\impl\date\DateTimeInSiField
 	 */
 	function setValue(?\DateTime $value) {
 		$this->value = $value;
@@ -68,7 +68,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 * @return \rocket\ui\si\content\impl\date\DateTimeInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -84,7 +84,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $dateChoosable
-	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 * @return \rocket\ui\si\content\impl\date\DateTimeInSiField
 	 */
 	function setDateChoosable(bool $dateChoosable) {
 		$this->dateChoosable = $dateChoosable;
@@ -100,7 +100,7 @@ class DateTimeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $timeChoosable
-	 * @return \rocket\si\content\impl\date\DateTimeInSiField
+	 * @return \rocket\ui\si\content\impl\date\DateTimeInSiField
 	 */
 	function setTimeChoosable(bool $timeChoosable) {
 		$this->timeChoosable = $timeChoosable;

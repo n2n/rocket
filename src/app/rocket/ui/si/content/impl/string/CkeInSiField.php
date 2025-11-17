@@ -59,7 +59,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string|null $value
-	 * @return \rocket\si\content\impl\string\CkeInSiField
+	 * @return \rocket\ui\si\content\impl\string\CkeInSiField
 	 */
 	function setValue(?string $value) {
 		$this->value = $value;
@@ -69,13 +69,13 @@ class CkeInSiField extends InSiFieldAdapter {
 	/**
 	 * @return string|null
 	 */
-	function getValue() {
+	function getValue(): ?string {
 		return $this->value;
 	}
 	
 	/**
 	 * @param int|null $minlength
-	 * @return \rocket\si\content\impl\string\CkeInSiField
+	 * @return \rocket\ui\si\content\impl\string\CkeInSiField
 	 */
 	function setMinlength(?int $minlength) {
 		$this->minlength = $minlength;
@@ -91,7 +91,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param int|null $maxlength
-	 * @return \rocket\si\content\impl\string\CkeInSiField
+	 * @return \rocket\ui\si\content\impl\string\CkeInSiField
 	 */
 	function setMaxlength(?int $maxlength) {
 		$this->maxlength = $maxlength;
@@ -107,7 +107,7 @@ class CkeInSiField extends InSiFieldAdapter {
 
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\string\CkeInSiField
+	 * @return \rocket\ui\si\content\impl\string\CkeInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -146,7 +146,7 @@ class CkeInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param CkeStyle[] $styles
-	 * @return \rocket\si\content\impl\string\CkeInSiField
+	 * @return \rocket\ui\si\content\impl\string\CkeInSiField
 	 */
 	function setCkeStyles(array $styles) {
 		ArgUtils::valArray($styles, CkeStyle::class);

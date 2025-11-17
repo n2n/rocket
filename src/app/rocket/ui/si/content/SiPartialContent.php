@@ -25,8 +25,8 @@ use n2n\util\type\ArgUtils;
 use n2n\core\container\N2nContext;
 
 class SiPartialContent {
-	private $count;
-	private $offset = 0;
+	private int $count;
+	private int $offset = 0;
 	private $valueBoundaries;
 	
 
@@ -63,7 +63,7 @@ class SiPartialContent {
 	
 	/**
 	 * @param int $count
-	 * @return \rocket\si\content\SiPartialContent
+	 * @return \rocket\ui\si\content\SiPartialContent
 	 */
 	function setCount(int $count) {
 		$this->count = $count;

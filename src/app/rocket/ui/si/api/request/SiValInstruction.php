@@ -53,14 +53,14 @@ class SiValInstruction {
 	}
 
 	/**
-	 * @return \rocket\ui\si\api\SiValGetInstruction[]
+	 * @return \rocket\ui\si\api\request\SiValGetInstruction[]
 	 */
 	public function getGetInstructions() {
 		return $this->getInstructions;
 	}
 
 	/**
-	 * @param \rocket\ui\si\api\SiValGetInstruction[]  $getInstructions
+	 * @param \rocket\ui\si\api\request\SiValGetInstruction[]  $getInstructions
 	 */
 	public function setGetInstructions(array $getInstructions) {
 		ArgUtils::valArray($getInstructions, SiValGetInstruction::class);
@@ -77,7 +77,7 @@ class SiValInstruction {
 
 	/**
 	 * @param array $data
-	 * @return \rocket\ui\si\api\SiValRequest
+	 * @return \rocket\ui\si\api\request\SiValInstruction
 	 * @throws \InvalidArgumentException
 	 * @throws CorruptedSiDataException
 	 */

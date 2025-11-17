@@ -32,7 +32,7 @@ class SiFile implements \JsonSerializable {
 	private $url;
 	private $thumbUrl;
 	private $mimeType;
-	private $imageDimensions = [];
+	private array $imageDimensions = [];
 	
 	/**
 	 * @param string $name
@@ -98,18 +98,18 @@ class SiFile implements \JsonSerializable {
 	}
 	
 	/**
-	 * @return \rocket\si\content\impl\SiImageDimension
+	 * @return \rocket\ui\si\content\impl\SiImageDimension[]
 	 */
 	function getImageDimensions() {
 		return $this->imageDimensions;
 	}
 	
 	/**
-	 * @param \rocket\si\content\impl\SiImageDimension $imageDimensions
-	 * @return \rocket\si\content\impl\SiFile
+	 * @param \rocket\ui\si\content\impl\SiImageDimension[] $imageDimensions
+	 * @return \rocket\ui\si\content\impl\SiFile
 	 */
 	function setImageDimensions(array $imageDimensions) {
-		ArgUtils::valArray($imageDimensions, \rocket\si\content\impl\SiImageDimension::class);
+		ArgUtils::valArray($imageDimensions, \rocket\ui\si\content\impl\SiImageDimension::class);
 		$this->imageDimensions = $imageDimensions;
 		return $this;
 	}

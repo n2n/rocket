@@ -44,7 +44,7 @@ class SiProp implements \JsonSerializable {
 
 	/**
 	 * @param string $id
-	 * @return \rocket\si\meta\SiProp
+	 * @return \rocket\ui\si\meta\SiProp
 	 */
 	public function setPropId(string $id) {
 		$this->id = $id;
@@ -60,7 +60,7 @@ class SiProp implements \JsonSerializable {
 
 	/**
 	 * @param string $label
-	 * @return \rocket\si\meta\SiProp
+	 * @return \rocket\ui\si\meta\SiProp
 	 */
 	public function setLabel(string $label) {
 		$this->label = $label;
@@ -88,7 +88,7 @@ class SiProp implements \JsonSerializable {
 	
 	/**
 	 * @param string[] $descendantPropIds
-	 * @return \rocket\si\meta\SiProp
+	 * @return \rocket\ui\si\meta\SiProp
 	 */
 	function setDescendantPropNames(array $descendantPropIds) {
 		$this->descendantPropIds = $descendantPropIds;

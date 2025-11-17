@@ -41,11 +41,11 @@ class LinkOutSiField extends OutSiFieldAdapter {
 	}
 	
 	/**
-	 * @param string|null $label
+	 * @param string $label
 	 * @return LinkOutSiField
 	 */
 	function setLabel(string $label) {
-		$this->label = $label;;
+		$this->label = $label;
 		return $this;
 	}
 	

@@ -122,7 +122,7 @@ class SiEmbeddedToManyGuiField implements GuiField, SiEmbeddedEntryFactory {
 	
 // 	/**
 // 	 * @param EiuGuiEntryTypeDef $eiuGuiEntryMulti
-// 	 * @return \rocket\si\content\impl\relation\SiEmbeddedEntry
+// 	 * @return \rocket\ui\si\content\impl\relation\SiEmbeddedEntry
 // 	 */
 // 	private function createSiEmbeddeEntryFromMulti($eiuGuiEntryMulti) {
 // 		return new SiEmbeddedEntry(

@@ -46,9 +46,10 @@ class EnumInSiField extends InSiFieldAdapter {
 	 * @param string|null
 	 */
 	private $emptyLabel = null;
-	
+
 	/**
-	 * @param int $value
+	 * @param array $options
+	 * @param string|null $value
 	 */
 	function __construct(array $options, ?string $value) {
 		$this->setOptions($options);
@@ -57,7 +58,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string[] $options
-	 * @return \rocket\si\content\impl\EnumInSiField
+	 * @return \rocket\ui\si\content\impl\EnumInSiField
 	 */
 	function setOptions(array $options): static {
 		ArgUtils::valArray($options, 'string');
@@ -90,7 +91,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\EnumInSiField
+	 * @return \rocket\ui\si\content\impl\EnumInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;
@@ -131,7 +132,7 @@ class EnumInSiField extends InSiFieldAdapter {
 	
 	/**
 	 * @param string|null $emptyLabel
-	 * @return \rocket\si\content\impl\EnumInSiField
+	 * @return \rocket\ui\si\content\impl\EnumInSiField
 	 */
 	function setEmptyLabel(?string $emptyLabel) {
 		$this->emptyLabel = $emptyLabel;

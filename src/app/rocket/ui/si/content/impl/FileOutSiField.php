@@ -49,7 +49,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @return File|null
 	 */
-	function getValue() {
+	function getValue(): ?File {
 		return $this->value;
 	}
 	

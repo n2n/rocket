@@ -64,7 +64,7 @@ class PathPartInSiField extends InSiFieldAdapter {
 
 	/**
 	 * @param bool $mandatory
-	 * @return \rocket\si\content\impl\StringInSiField
+	 * @return \rocket\ui\si\content\impl\string\PathPartInSiField
 	 */
 	function setMandatory(bool $mandatory) {
 		$this->mandatory = $mandatory;

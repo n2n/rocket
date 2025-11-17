@@ -29,7 +29,6 @@ use n2n\util\type\ArgUtils;
 use rocket\ui\si\SiPayloadFactory;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\err\CorruptedSiDataException;
-use rocket\ui\si\input\SiInputError;
 use rocket\ui\si\api\request\SiInput;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\api\response\SiInputResult;
@@ -83,7 +82,7 @@ class BulkyEntrySiGui implements SiGui {
 	
 	/**
 	 * @param bool $entryControlsIncluded
-	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
+	 * @return \rocket\ui\si\content\impl\basic\BulkyEntrySiGui
 	 */
 	function setEntryControlsIncluded(bool $entryControlsIncluded) {
 		$this->entryControlsIncluded = $entryControlsIncluded;
@@ -101,12 +100,12 @@ class BulkyEntrySiGui implements SiGui {
 
 
 	function handleSiInput(SiInput $siInput, N2nContext $n2nContext): SiInputResult {
-		$valueBoundaryInput = $siInput->getValueBoundaryInputs();
-		if (count($valueBoundaryInput) > 1) {
+		$valueBoundaryInputs = $siInput->getValueBoundaryInputs();
+		if (count($valueBoundaryInputs) > 1) {
 			throw new CorruptedSiDataException('BulkyEiGui can not handle multiple SiEntryInputs.');
 		}
 
-		foreach ($valueBoundaryInput as $valueBoundaryInput) {
+		foreach ($valueBoundaryInputs as $valueBoundaryInput) {
 			if ($this->valueBoundary->handleInput($valueBoundaryInput, $n2nContext)) {
 				return SiInputResult::valid([$this->valueBoundary]);
 			}

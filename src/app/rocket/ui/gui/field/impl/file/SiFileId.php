@@ -86,7 +86,7 @@ class SiFileId implements \JsonSerializable {
 	
 	/**
 	 * @param File $file
-	 * @return \rocket\impl\ei\component\prop\file\conf\SiFileId
+	 * @return \rocket\ui\gui\field\impl\file\SiFileId
 	 */
 	static function create(File $file) {
 		$fileSource = $file->getFileSource();

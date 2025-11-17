@@ -117,7 +117,7 @@
 //	/**
 //	 * @param bool $generalSiControlsIncluded
 //	 * @param bool $entrySiControlsIncluded
-//	 * @return \rocket\si\content\impl\basic\CompactEntrySiGui
+//	 * @return \rocket\ui\si\content\impl\basic\CompactEntrySiGui
 //	 */
 //	function createCompactEntrySiGui(/*bool $generalSiControlsIncluded = true,*/ bool $entrySiControlsIncluded = true) {
 //		if (!ViewMode::isCompact($this->eiGui->getEiGuiDeclaration()->getViewMode())) {
@@ -131,7 +131,7 @@
 //	/**
 //	 * @param bool $generalSiControlsIncluded
 //	 * @param bool $entrySiControlsIncluded
-//	 * @return \rocket\si\content\impl\basic\BulkyEntrySiGui
+//	 * @return \rocket\ui\si\content\impl\basic\BulkyEntrySiGui
 //	 */
 //	function createBulkyEntrySiGui(bool $generalSiControlsIncluded = true, bool $entrySiControlsIncluded = true,
 //			array $generalGuiControls = []) {
