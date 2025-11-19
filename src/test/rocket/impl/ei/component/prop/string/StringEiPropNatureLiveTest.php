@@ -42,6 +42,9 @@ use rocket\ui\si\api\request\SiFieldInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\gui\factory\EiGuiEntryFactory;
+use rocket\op\ei\UnknownEiTypeException;
+use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
+use rocket\ui\si\content\impl\StringOutSiField;
 
 class StringEiPropNatureLiveTest extends TestCase {
 
@@ -64,6 +67,12 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->stringTestObj1Id = $stringTestObj->id;
 	}
 
+	/**
+	 * @throws ValueIncompatibleWithConstraintsException
+	 * @throws UnknownEiTypeException
+	 * @throws UnknownEiFieldExcpetion
+	 * @throws InaccessibleEiFieldException
+	 */
 	function testEiField(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
 		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiType->getEiMask());
@@ -80,8 +89,10 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertEquals(new StrObjMock('default'), $eiEntry->getValue(new EiPropPath(['annoHoleradioObj'])));
 
 		$eiEntry->setValue(new EiPropPath(['holeradio']), 'new-value');
-		$this->assertFalse($eiEntry->getEiField(new EiPropPath(['annoHoleradio']))->isWritable(false));
-		$eiEntry->setValue(new EiPropPath(['annoHoleradio']), 'new-anno-value');
+		$this->assertTrue($eiEntry->getEiField(new EiPropPath(['annoHoleradio']))->isWritable(false));
+		$eiEntry->setValue(new EiPropPath(['annoHoleradio']), 'new-anno-write-value');
+		$this->assertFalse($eiEntry->getEiField(new EiPropPath(['annoReadonlyHoleradio']))->isWritable(false));
+		$eiEntry->setValue(new EiPropPath(['annoReadonlyHoleradio']), 'new-anno-value');
 		$eiEntry->setValue(new EiPropPath(['holeradioObj']), new StrObjMock('new-v'));
 		$this->assertFalse($eiEntry->getEiField(new EiPropPath(['annoHoleradioObj']))->isWritable(false));
 		$eiEntry->setValue(new EiPropPath(['annoHoleradioObj']), new StrObjMock('new-ov'));
@@ -96,12 +107,19 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$this->assertEquals('new-value', $stringTestObj->holeradio);
 		$this->assertEquals('holeradio value', $stringTestObj->mandatoryHoleradio);
-		$this->assertEquals('asd', $stringTestObj->annoHoleradio);
+		$this->assertEquals('new-anno-write-value', $stringTestObj->annoHoleradio);
+		$this->assertEquals('read asd', $stringTestObj->annoReadonlyHoleradio);
 		$this->assertEquals(new StrObjMock('new-v'), $stringTestObj->holeradioObj);
 		$this->assertEquals(new StrObjMock('value'), $stringTestObj->mandatoryHoleradioObj);
 		$this->assertEquals(new StrObjMock('default'), $stringTestObj->getAnnoHoleradioObj());
 	}
 
+	/**
+	 * @throws ValueIncompatibleWithConstraintsException
+	 * @throws UnknownEiTypeException
+	 * @throws UnknownEiFieldExcpetion
+	 * @throws InaccessibleEiFieldException
+	 */
 	function testEiFieldValidator(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
 		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiType->getEiMask());
@@ -109,10 +127,12 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$eiObject = $eiType->createEiObject(StringTestEnv::findStringTestObj($this->stringTestObj1Id));
 		$eiEntry = $eiFrame->createEiEntry($eiObject);
 		$eiEntry->setValue(new EiPropPath(['annoHoleradio']), null);
+		$eiEntry->setValue(new EiPropPath(['annoReadonlyHoleradio']), null);
 		$eiEntry->setValue(new EiPropPath(['annoHoleradioObj']), null);
 
 		$this->assertTrue($eiEntry->getEiFieldNature(new EiPropPath(['holeradio']))->isValid());
 		$this->assertTrue($eiEntry->getEiFieldNature(new EiPropPath(['mandatoryHoleradio']))->isValid());
+		$this->assertFalse($eiEntry->getEiFieldNature(new EiPropPath(['annoReadonlyHoleradio']))->isValid());
 		$this->assertFalse($eiEntry->getEiFieldNature(new EiPropPath(['annoHoleradio']))->isValid());
 		$this->assertTrue($eiEntry->getEiFieldNature(new EiPropPath(['holeradioObj']))->isValid());
 		$this->assertTrue($eiEntry->getEiFieldNature(new EiPropPath(['mandatoryHoleradioObj']))->isValid());
@@ -120,9 +140,11 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$this->assertFalse($eiEntry->save());
 
-		$this->assertCount(2, $eiEntry->getValidationResult()->getMessages(true));
+		$this->assertCount(3, $eiEntry->getValidationResult()->getMessages(true));
 
 		$result = $eiEntry->getValidationResult()->getEiFieldValidationResult(new EiPropPath(['annoHoleradio']));
+		$this->assertStringContainsStringIgnoringCase('mandatory', (string) $result->getMessages(true)[0]);
+		$result = $eiEntry->getValidationResult()->getEiFieldValidationResult(new EiPropPath(['annoReadonlyHoleradio']));
 		$this->assertStringContainsStringIgnoringCase('mandatory', (string) $result->getMessages(true)[0]);
 		$result = $eiEntry->getValidationResult()->getEiFieldValidationResult(new EiPropPath(['annoHoleradioObj']));
 		$this->assertStringContainsStringIgnoringCase('mandatory', (string) $result->getMessages(true)[0]);
@@ -131,6 +153,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 	/**
 	 * @return void
 	 * @throws InaccessibleEiFieldException
+	 * @throws UnknownEiTypeException|UnknownEiFieldExcpetion
 	 */
 	function testEiFieldConstraint(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
@@ -161,6 +184,9 @@ class StringEiPropNatureLiveTest extends TestCase {
 		}
 	}
 
+	/**
+	 * @throws UnknownEiTypeException
+	 */
 	function testIdentityString(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
 
@@ -175,12 +201,13 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 	/**
 	 * @throws ValueIncompatibleWithConstraintsException
+	 * @throws UnknownEiTypeException
 	 */
 	function testScalar(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
 
 		$props = $eiType->getEiMask()->getEiEngine()->getScalarEiDefinition()->getScalarEiProperties();
-		$this->assertcount(6, $props);
+		$this->assertcount(7, $props);
 
 		$this->assertEquals('value', $props['holeradio']->eiFieldValueToScalarValue('value'));
 		$this->assertEquals('value', $props['holeradio']->scalarValueToEiFieldValue('value'));
@@ -189,6 +216,9 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertEquals(new StrObjMock('value'), $props['holeradioObj']->scalarValueToEiFieldValue('value'));
 	}
 
+	/**
+	 * @throws UnknownEiTypeException
+	 */
 	function testSiEntry(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);
 		$eiFrame = SpecTestEnv::setUpEiFrame($this->spec, $eiType->getEiMask());
@@ -201,7 +231,7 @@ class StringEiPropNatureLiveTest extends TestCase {
 
 		$siEntry = $eiGuiEntry->getSiEntry(N2nLocale::getDefault());
 		$fields = $siEntry->getFields();
-		$this->assertCount(6, $fields);
+		$this->assertCount(7, $fields);
 
 		$this->assertTrue(assert($fields['holeradio'] instanceof StringInSiField));
 		$this->assertFalse($fields['holeradio']->isReadOnly());
@@ -214,8 +244,12 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertEquals('holeradio value', $fields['mandatoryHoleradio']->getValue());
 
 		$this->assertTrue(assert($fields['annoHoleradio'] instanceof StringInSiField));
-		$this->assertTrue($fields['annoHoleradio']->isReadOnly());
+		$this->assertFalse($fields['annoHoleradio']->isReadOnly());
 		$this->assertEquals('asd', $fields['annoHoleradio']->getValue());
+
+		$this->assertTrue(assert($fields['annoReadonlyHoleradio'] instanceof StringOutSiField));
+		$this->assertTrue($fields['annoReadonlyHoleradio']->isReadOnly());
+		$this->assertEquals('read asd', $fields['annoReadonlyHoleradio']->getValue());
 
 		$this->assertTrue(assert($fields['holeradioObj'] instanceof StringInSiField));
 		$this->assertFalse($fields['holeradioObj']->isReadOnly());
@@ -227,14 +261,14 @@ class StringEiPropNatureLiveTest extends TestCase {
 		$this->assertTrue($fields['mandatoryHoleradioObj']->isMandatory());
 		$this->assertEquals('value', $fields['mandatoryHoleradioObj']->getValue());
 
-		$this->assertTrue(assert($fields['annoHoleradioObj'] instanceof StringInSiField));
+		$this->assertTrue(assert($fields['annoHoleradioObj'] instanceof StringOutSiField));
 		$this->assertTrue($fields['annoHoleradioObj']->isReadOnly());
 		$this->assertEquals('default', $fields['annoHoleradioObj']->getValue());
 	}
 
 	/**
-	 * @throws AttributesException
 	 * @throws CorruptedSiDataException
+	 * @throws UnknownEiTypeException|UnknownEiFieldExcpetion
 	 */
 	function testSiEntryInput(): void {
 		$eiType = $this->spec->getEiTypeByClassName(StringTestObj::class);

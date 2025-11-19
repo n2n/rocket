@@ -5,7 +5,6 @@ use n2n\util\type\ArgUtils;
 use rocket\op\ei\EiCmdPath;
 use n2n\util\type\attrs\DataSet;
 use rocket\op\ei\EiPropPath;
-use n2n\util\type\attrs\DataSet;
 
 class PrivilegeSetting {
 	const ATTR_EXECUTABLE_EI_COMMAND_PATHS_KEY = 'executableEiCmdPaths';

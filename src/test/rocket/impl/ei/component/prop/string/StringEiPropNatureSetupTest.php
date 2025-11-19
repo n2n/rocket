@@ -45,7 +45,7 @@ class StringEiPropNatureSetupTest extends TestCase {
 		$eiType = $spec->getEiTypeByClassName(StringTestObj::class);
 
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
-		$this->assertCount(6, $eiProps);
+		$this->assertCount(7, $eiProps);
 
 		$nature = $eiProps['holeradio']->getNature();
 		$this->assertInstanceOf(StringEiPropNature::class, $nature);
@@ -65,6 +65,16 @@ class StringEiPropNatureSetupTest extends TestCase {
 		$this->assertNull($nature->getStringValueObjectTypeName());
 
 		$nature = $eiProps['annoHoleradio']->getNature();
+		$this->assertInstanceOf(StringEiPropNature::class, $nature);
+		$this->assertTrue($nature->isMultiline());
+		$this->assertSame(2, $nature->getMinlength());
+		$this->assertSame(512, $nature->getMaxlength());
+		$this->assertFalse($nature->isConstant());
+		$this->assertFalse($nature->isReadOnly());
+		$this->assertTrue($nature->isMandatory());
+		$this->assertNull($nature->getStringValueObjectTypeName());
+
+		$nature = $eiProps['annoReadonlyHoleradio']->getNature();
 		$this->assertInstanceOf(StringEiPropNature::class, $nature);
 		$this->assertTrue($nature->isMultiline());
 		$this->assertSame(2, $nature->getMinlength());

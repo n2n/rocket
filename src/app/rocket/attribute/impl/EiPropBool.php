@@ -35,12 +35,10 @@ class EiPropBool {
 	public readonly array $offAssociatedDefPropPaths;
 
 	/**
-	 * @param bool|null $mandatory
 	 * @param array $onGuiProps e.g. ['property1', 'property2']
 	 * @param array $offGuiProps
 	 */
-	function __construct(public ?bool $constant = null, public ?bool $readOnly = null, public ?bool $mandatory = null,
-			array $onGuiProps = [], array $offGuiProps = []) {
+	function __construct(array $onGuiProps = [], array $offGuiProps = []) {
 		$this->onAssociatedDefPropPaths = DefPropPath::buildArray($onGuiProps);
 		$this->offAssociatedDefPropPaths = DefPropPath::buildArray($offGuiProps);
 	}

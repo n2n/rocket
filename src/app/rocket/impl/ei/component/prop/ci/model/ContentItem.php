@@ -36,6 +36,7 @@ use rocket\attribute\impl\EiPropDecimal;
 use rocket\attribute\impl\EiPropString;
 use rocket\attribute\impl\EiDefaultDisplay;
 use rocket\ui\gui\ViewMode;
+use rocket\attribute\impl\EiEditConfig;
 
 #[Table('rocket_content_item')]
 #[Inheritance(InheritanceType::JOINED)]
@@ -48,7 +49,8 @@ abstract class ContentItem extends ObjectAdapter {
 	}
 
 	private $id;
-	#[EiPropString(readOnly: false, mandatory: false)]
+	#[EiPropString()]
+	#[EiEditConfig()]
 	#[EiDefaultDisplay()]
 	private string $panel;
 	private int $orderIndex;

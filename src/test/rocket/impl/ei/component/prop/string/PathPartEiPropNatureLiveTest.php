@@ -44,6 +44,8 @@ use n2n\core\container\N2nContext;
 use rocket\op\ei\manage\gui\factory\EiGuiEntryFactory;
 use rocket\op\ei\UnknownEiTypeException;
 use rocket\op\ei\manage\entry\UnknownEiFieldExcpetion;
+use rocket\ui\si\content\impl\string\PathPartInSiField;
+use rocket\ui\si\content\impl\StringOutSiField;
 
 class PathPartEiPropNatureLiveTest extends TestCase {
 
@@ -209,17 +211,17 @@ class PathPartEiPropNatureLiveTest extends TestCase {
 		$fields = $siEntry->getFields();
 		$this->assertCount(5, $fields);
 
-		$this->assertTrue(assert($fields['pathPart'] instanceof StringInSiField));
+		$this->assertTrue(assert($fields['pathPart'] instanceof PathPartInSiField));
 		$this->assertFalse($fields['pathPart']->isReadOnly());
 		$this->assertFalse($fields['pathPart']->isMandatory());
 		$this->assertNull($fields['pathPart']->getValue());
 
-		$this->assertTrue(assert($fields['mandatoryPathPart'] instanceof StringInSiField));
+		$this->assertTrue(assert($fields['mandatoryPathPart'] instanceof PathPartInSiField));
 		$this->assertFalse($fields['mandatoryPathPart']->isReadOnly());
 		$this->assertTrue($fields['mandatoryPathPart']->isMandatory()); // because field is generated
 		$this->assertEquals('mandatory-holeradio', $fields['mandatoryPathPart']->getValue());
 
-		$this->assertTrue(assert($fields['annoPathPart'] instanceof StringInSiField));
+		$this->assertTrue(assert($fields['annoPathPart'] instanceof StringOutSiField));
 		$this->assertTrue($fields['annoPathPart']->isReadOnly());
 		$this->assertEquals('anno-holeradio', $fields['annoPathPart']->getValue());
 

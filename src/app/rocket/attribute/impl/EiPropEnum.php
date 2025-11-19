@@ -35,14 +35,10 @@ class EiPropEnum {
 
 	/**
 	 * @param string[] $options e.g. ['small' => 'Small Article', 'other-value' => 'Other Label']
-	 * @param bool|null $constant
-	 * @param bool|null $readOnly
-	 * @param bool|null $mandatory
 	 * @param string|null $emptyLabel
 	 * @param array $guiPropsMap e.g. ['small' => [ 'mode' ], 'other-value' => ['additionalInfo', 'otherProperty']]
 	 */
 	function __construct(public readonly array $options,
-			public ?bool $constant = null, public ?bool $readOnly = null, public ?bool $mandatory = null,
 			public ?string $emptyLabel = null, array $guiPropsMap = []) {
 		ArgUtils::valArray($this->options, 'string');
 		ArgUtils::valArray($guiPropsMap, 'array');

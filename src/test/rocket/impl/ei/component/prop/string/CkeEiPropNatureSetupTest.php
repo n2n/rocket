@@ -47,7 +47,7 @@ class CkeEiPropNatureSetupTest extends TestCase {
 		$eiType = $spec->getEiTypeByClassName(CkeTestObj::class);
 		$eiProps = $eiType->getEiMask()->getEiPropCollection()->toArray();
 
-		$this->assertCount(1, $eiProps);
+		$this->assertCount(2, $eiProps);
 
 		$ckeEiPropNature = $eiProps['ckeStr1']->getNature();
 		assert($ckeEiPropNature instanceof CkeEiPropNature);

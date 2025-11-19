@@ -94,6 +94,7 @@ CREATE TABLE `string_test_obj` (
                                         `id` INT NOT NULL AUTO_INCREMENT,
                                         `holeradio` VARCHAR(255) NULL DEFAULT NULL,
                                         `mandatory_holeradio` VARCHAR(255) NULL DEFAULT NULL,
+                                        `anno_readonly_holeradio` VARCHAR(255) NULL DEFAULT NULL,
                                         `anno_holeradio` VARCHAR(255) NULL DEFAULT NULL,
                                         `holeradio_obj` VARCHAR(255) NULL DEFAULT NULL,
                                         `mandatory_holeradio_obj` VARCHAR(255) NULL DEFAULT NULL,

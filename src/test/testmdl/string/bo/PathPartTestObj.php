@@ -28,9 +28,10 @@ use rocket\attribute\impl\EiPropString;
 use rocket\attribute\EiPreset;
 use rocket\op\spec\setup\EiPresetMode;
 use rocket\attribute\impl\EiPropPathPart;
+use rocket\attribute\impl\EiEditConfig;
 
 #[EiType]
-#[EiPreset(EiPresetMode::EDIT_CMDS, editProps: ['name', 'pathPart', 'mandatoryPathPart', 'annoPathPart'])]
+#[EiPreset(EiPresetMode::EDIT_CMDS, editProps: ['name',  'mandatoryPathPart', 'pathPart', 'annoPathPart'])]
 class PathPartTestObj {
 
 	public int $id;
@@ -41,7 +42,8 @@ class PathPartTestObj {
 	#[EiPropPathPart(baseProp: 'name', uniquePerProp: 'pathPart')]
 	public mixed $uniquePerPathPart = 'unique-per-holeradio';
 
-	#[EiPropPathPart(baseProp: 'name', uniquePerProp: 'pathPart', constant: true, readOnly: true, mandatory: true)]
+	#[EiEditConfig(mandatory: true, readOnly: true, constant: true)]
+	#[EiPropPathPart(baseProp: 'name', uniquePerProp: 'pathPart')]
 	public mixed $annoPathPart = 'anno-holeradio';
 
 	function __construct() {

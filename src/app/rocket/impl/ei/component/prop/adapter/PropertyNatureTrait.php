@@ -25,6 +25,7 @@ namespace rocket\impl\ei\component\prop\adapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\IllegalStateException;
+use n2n\reflection\property\PropertyAccessProxy;
 
 trait PropertyNatureTrait {
 	protected ?EntityProperty $entityProperty = null;
@@ -42,9 +43,9 @@ trait PropertyNatureTrait {
 	}
 
 	/**
-	 * @return AccessProxy|null
+	 * @return PropertyAccessProxy|null
 	 */
-	public function getPropertyAccessProxy(): ?AccessProxy {
+	public function getPropertyAccessProxy(): ?PropertyAccessProxy {
 		return $this->propertyAccessProxy;
 	}
 

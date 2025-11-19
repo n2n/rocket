@@ -27,20 +27,27 @@ use rocket\attribute\EiMenuItem;
 use rocket\attribute\impl\EiPropString;
 use rocket\attribute\EiPreset;
 use rocket\op\spec\setup\EiPresetMode;
+use rocket\attribute\impl\EiEditConfig;
 
 #[EiType]
-#[EiPreset(EiPresetMode::EDIT_CMDS, editProps: ['holeradio', 'mandatoryHoleradio', 'holeradioObj', 'mandatoryHoleradioObj'])]
+#[EiPreset(EiPresetMode::EDIT_CMDS, editProps: ['holeradio', 'mandatoryHoleradio', 'annoHoleradio', 'holeradioObj', 'mandatoryHoleradioObj'])]
 class StringTestObj {
 
 	public int $id;
 	public ?string $holeradio = null;
 	public string $mandatoryHoleradio = 'holeradio';
-	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true, minlength: 2, maxlength: 512)]
+	#[EiPropString(multiline: true, minlength: 2, maxlength: 512)]
+	#[EiEditConfig(mandatory: true, readOnly: true, constant: true)]
+	public $annoReadonlyHoleradio = 'read asd';
+
+	#[EiPropString(multiline: true, minlength: 2, maxlength: 512)]
+	#[EiEditConfig(mandatory: true, readOnly: false, constant: false)]
 	public $annoHoleradio = 'asd';
 
 	public ?StrObjMock $holeradioObj = null;
 	public StrObjMock $mandatoryHoleradioObj;
-	#[EiPropString(multiline: true, constant: true, readOnly: true, mandatory: true)]
+	#[EiPropString(multiline: true)]
+	#[EiEditConfig(mandatory: true, readOnly: true, constant: true)]
 	private ?StrObjMock $annoHoleradioObj;
 
 	function __construct() {
