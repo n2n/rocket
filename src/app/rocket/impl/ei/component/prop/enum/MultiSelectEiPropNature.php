@@ -55,7 +55,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->propertyAccessProxy = $propertyAccessProxy;
+		$this->nativeAccessProxy = $propertyAccessProxy;
 	}
 
 	function prepare() {
@@ -63,7 +63,7 @@ class MultiSelectEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	
 	public function setup(Eiu $eiu, DataSet $dataSet) {
 		try {
-			$this->propertyAccessProxy->setConstraints(TypeConstraint::createSimple(null, true));
+			$this->nativeAccessProxy->setConstraints(TypeConstraint::createSimple(null, true));
 		} catch (ConstraintsConflictException $e) {
 			$setupProcess->failedE($this, $e);
 		}

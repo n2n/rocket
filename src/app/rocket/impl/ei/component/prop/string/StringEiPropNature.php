@@ -92,7 +92,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 			return Bind::values($value)->toValue($value)->map(Mappers::marshal())
 					->exec($eiu->getN2nContext());
 		} catch (BindException $e) {
-			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
+			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->nativeAccessProxy
 					. ' was not able to marshal value for StringInSiField.', previous: $e);
 		}
 	}
@@ -107,7 +107,7 @@ class StringEiPropNature extends AlphanumericEiPropNature {
 					->map(Mappers::unmarshal($this->stringValueObjectTypeName))
 					->exec($eiu->getN2nContext());
 		} catch (BindException $e) {
-			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->propertyAccessProxy
+			throw new InvalidEiConfigurationException('StringEiPropNature for ' . $this->nativeAccessProxy
 					. ' was not able to marshal value for StringInSiField.', previous: $e);
 		}
 	}

@@ -24,14 +24,9 @@ namespace rocket\impl\ei\component\prop\string;
 
 use rocket\test\GeneralTestEnv;
 use rocket\test\SpecTestEnv;
-use testmdl\enum\bo\EnumTestObj;
 use PHPUnit\Framework\TestCase;
-use testmdl\enum\bo\InvalidEnumTestObj;
-use n2n\util\ex\err\ConfigurationError;
-use rocket\impl\ei\component\prop\enum\EnumEiPropNature;
 use testmdl\string\bo\CkeTestObj;
 use rocket\impl\ei\component\prop\string\cke\CkeEiPropNature;
-use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use testmdl\string\bo\CkeCssConfigMock;
 use testmdl\string\bo\CkeLinkProviderMock;
 

@@ -123,7 +123,7 @@ class UrlEiPropNature extends AlphanumericEiPropNature {
 	 */
 	private function writeMap(Eiu $eiu, $value) {
 		if ($value instanceof Url
-				&& $this->getPropertyAccessProxy()->getConstraint()->getTypeName() != Url::class) {
+				&& $this->getNativeAccessProxy()->getConstraint()->getTypeName() != Url::class) {
 			return (string) $value;
 		}
 		

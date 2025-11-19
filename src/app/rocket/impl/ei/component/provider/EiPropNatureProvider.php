@@ -92,7 +92,7 @@ use n2n\util\magic\MagicContext;
 use n2n\util\magic\MagicLookupFailedException;
 use n2n\spec\valobj\scalar\StringValueObject;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
-use rocket\attribute\impl\EiDefaultDisplay;
+use rocket\attribute\impl\EiDisplayConfig;
 use rocket\ui\gui\ViewMode;
 use rocket\op\ei\EiPropPath;
 use rocket\attribute\impl\EiEditConfig;
@@ -122,8 +122,8 @@ class EiPropNatureProvider {
 					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
 			$this->configureDisplayConfig($propertyAccessProxy, $nature->getDisplayConfig(), $nature);
 //			$this->configureEditiable($eiPropBool->constant, $eiPropBool->readOnly, $eiPropBool->mandatory,
-//					$nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
-			$this->configureEditConfig($nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
+//					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
+			$this->configureEditConfig($propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
 
 			$nature->setOnAssociatedDefPropPaths($eiPropBool->onAssociatedDefPropPaths);
 			$nature->setOffAssociatedDefPropPaths($eiPropBool->offAssociatedDefPropPaths);
@@ -156,8 +156,8 @@ class EiPropNatureProvider {
 
 			$this->configureDisplayConfig($propertyAccessProxy, $nature->getDisplayConfig(), $nature);
 //			$this->configureEditiable($eiPropEnum->constant, $eiPropEnum->readOnly, $eiPropEnum->mandatory,
-//					$nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
-			$this->configureEditConfig($nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
+//					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
+			$this->configureEditConfig($propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}
@@ -176,8 +176,8 @@ class EiPropNatureProvider {
 
 			$this->configureDisplayConfig($propertyAccessProxy, $nature->getDisplayConfig(), $nature);
 //			$this->configureEditiable($eiPropDecimal->constant, $eiPropDecimal->readOnly, $eiPropDecimal->mandatory,
-//					$nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
-			$this->configureEditConfig($nature->getPropertyAccessProxy(), $nature->getEntityProperty(), $nature->getEditConfig());
+//					$propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
+			$this->configureEditConfig($propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig());
 			$this->configureAddons($propertyAccessProxy, $nature);
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
@@ -505,8 +505,6 @@ class EiPropNatureProvider {
 
 		$displayConfig = $nature->getDisplayConfig();
 		$editConfig = $nature->getEditConfig();
-		$editConfig->setMandatory(!$nullAllowed);
-		$editConfig->setReadOnly(!$eiPresetProp->isEditable());
 		
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
 		$this->configureLabel($eiPresetProp->getPropertyAccessProxy(), $nature->getLabelConfig(),
@@ -563,17 +561,17 @@ class EiPropNatureProvider {
 		$labelConfig->setHelpText($helpText);
 	}
 
-	private function configureEditiable(?bool $constant, ?bool $readOnly, ?bool $mandatory, AccessProxy $accessProxy,
-			?EntityProperty $entityProperty, EditConfig $nature): void {
-
-		$idDef = $this->eiTypeClassSetup->getIdDef();
-		$isId = $entityProperty !== null && $entityProperty === $idDef->getEntityProperty();
-
-		$nature->setConstant($isId || ($constant ?? false));
-		$nature->setReadOnly(($isId && $idDef->isGenerated()) || ($readOnly ?? !$accessProxy->isWritable()));
-		$nature->setMandatory(!($isId && $idDef->isGenerated())
-				&& ($mandatory ?? !$accessProxy->getSetterConstraint()->allowsNull()));
-	}
+//	private function configureEditiable(?bool $constant, ?bool $readOnly, ?bool $mandatory, AccessProxy $accessProxy,
+//			?EntityProperty $entityProperty, EditConfig $nature): void {
+//
+//		$idDef = $this->eiTypeClassSetup->getIdDef();
+//		$isId = $entityProperty !== null && $entityProperty === $idDef->getEntityProperty();
+//
+//		$nature->setConstant($isId || ($constant ?? false));
+//		$nature->setReadOnly(($isId && $idDef->isGenerated()) || ($readOnly ?? !$accessProxy->isWritable()));
+//		$nature->setMandatory(!($isId && $idDef->isGenerated())
+//				&& ($mandatory ?? !$accessProxy->getSetterConstraint()->allowsNull()));
+//	}
 
 	private function obtainEiEditConfig(string $propertyName): ?EiEditConfig {
 		return $this->eiTypeClassSetup->getAttributeSet()->getPropertyAttribute($propertyName,
@@ -583,19 +581,19 @@ class EiPropNatureProvider {
 	private function configureEditConfig(PropertyAccessProxy $propertyAccessProxy,
 			?EntityProperty $entityProperty, EditConfig $editConfig,
 			bool $eiPresetReadOnly = false, bool $fallbackNullAllowed = false): void {
-		$property = $propertyAccessProxy->getProperty();
-		if ($property == null) {
-			return;
+
+		$eiEditConfig = null;
+		if (null !== ($property = $propertyAccessProxy->getProperty())) {
+			$eiEditConfig = $this->obtainEiEditConfig($property->getName());
 		}
-		$eiEditConfig = $this->obtainEiEditConfig($property->getName());
+
 
 		$idDef = $this->eiTypeClassSetup->getIdDef();
 		$isId = $entityProperty !== null && $entityProperty === $idDef->getEntityProperty();
 
 		$editConfig->setConstant($isId || ($eiEditConfig?->constant ?? false));
 		$editConfig->setReadOnly(($isId && $idDef->isGenerated())
-				|| ($eiEditConfig?->readOnly ?? !$propertyAccessProxy->isWritable())
-				|| $eiPresetReadOnly);
+				|| ($eiEditConfig?->readOnly ?? ($eiPresetReadOnly || !$propertyAccessProxy->isWritable())));
 		$editConfig->setMandatory(!($isId && $idDef->isGenerated())
 				&& ($eiEditConfig?->mandatory ?? !($propertyAccessProxy->getSetterConstraint()?->allowsNull()
 						?? $fallbackNullAllowed)));
@@ -611,15 +609,15 @@ class EiPropNatureProvider {
 		}
 
 		$attribute = $this->eiTypeClassSetup->getAttributeSet()->getPropertyAttribute($property->getName(),
-				EiDefaultDisplay::class);
+				EiDisplayConfig::class);
 		if ($attribute === null) {
 			return;
 		}
 
-		$eiDefaultDisplay = $attribute->getInstance();
-		assert($eiDefaultDisplay instanceof EiDefaultDisplay);
+		$eiDisplayConfig = $attribute->getInstance();
+		assert($eiDisplayConfig instanceof EiDisplayConfig);
 
-		$viewModes = $eiDefaultDisplay->viewModes;
+		$viewModes = $eiDisplayConfig->defaultViewModes;
 
 		if (!$displayConfig->areViewModesCompatible($viewModes)) {
 			throw $this->eiTypeSetup->createPropertyAttributeError($attribute, null,
@@ -628,7 +626,7 @@ class EiPropNatureProvider {
 					. '; Compatible view modes: ' . ViewMode::stringify($viewModes));
 		}
 
-		$displayConfig->setDefaultDisplayedViewModes($eiDefaultDisplay->viewModes);
+		$displayConfig->setDefaultDisplayedViewModes($eiDisplayConfig->defaultViewModes);
 	}
 
 	private function configureAddons(PropertyAccessProxy $propertyAccessProxy, AddonEiPropNature $nature): void {

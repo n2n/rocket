@@ -25,40 +25,31 @@ namespace rocket\impl\ei\component\prop\adapter;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\IllegalStateException;
-use n2n\reflection\property\PropertyAccessProxy;
 
 trait PropertyNatureTrait {
 	protected ?EntityProperty $entityProperty = null;
-	protected ?AccessProxy $propertyAccessProxy = null;
+	protected ?AccessProxy $nativeAccessProxy = null;
 
 	/**
-	 * @param AccessProxy|null $propertyAccessProxy
+	 * @param AccessProxy|null $nativeAccessProxy
 	 */
-	function __construct(?AccessProxy $propertyAccessProxy) {
-		$this->propertyAccessProxy = $propertyAccessProxy;
+	function __construct(?AccessProxy $nativeAccessProxy) {
+		$this->nativeAccessProxy = $nativeAccessProxy;
 	}
 
 	function getNativeAccessProxy(): ?AccessProxy {
-		return $this->propertyAccessProxy;
+		return $this->nativeAccessProxy;
 	}
 
 	/**
-	 * @return PropertyAccessProxy|null
+	 * @return AccessProxy|null
 	 */
-	public function getPropertyAccessProxy(): ?PropertyAccessProxy {
-		return $this->propertyAccessProxy;
-	}
-
-	/**
-	 * @throws IllegalStateException
-	 * @return AccessProxy
-	 */
-	protected function requirePropertyAccessProxy(): ?AccessProxy {
-		if ($this->propertyAccessProxy === null) {
+	protected function requireNativeAccessProxy(): ?AccessProxy {
+		if ($this->nativeAccessProxy === null) {
 			throw new IllegalStateException('No PropertyAccessProxy assigned to ' . $this . '.');
 		}
 
-		return $this->propertyAccessProxy;
+		return $this->nativeAccessProxy;
 	}
 
 	/**

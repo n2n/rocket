@@ -95,7 +95,7 @@ abstract class DraftablePropertyEiPropNatureAdapter extends EditablePropertyEiPr
 	}
 	
 	public function writeDraftValue($object, $value) {
-		$this->getPropertyAccessProxy()->setValue($object, $value);
+		$this->getNativeAccessProxy()->setValue($object, $value);
 	}
 	
 // 	public function getDraftColumnName() {
