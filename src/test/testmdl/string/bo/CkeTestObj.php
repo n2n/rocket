@@ -27,6 +27,7 @@ use rocket\attribute\EiMenuItem;
 use rocket\attribute\impl\EiPropCke;
 use rocket\impl\ei\component\prop\string\cke\ui\CkeMode;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
+use rocket\attribute\impl\EiEditConfig;
 
 #[EiType]
 
@@ -36,5 +37,10 @@ class CkeTestObj {
 	#[EiPropCke(CkeMode::NORMAL, true, true, cssConfig: CkeCssConfigMock::class,
 			linkProviders: [CkeLinkProviderMock::class])]
 	public ?string $ckeStr1 = null;
+
+	#[EiEditConfig(mandatory: true, readOnly: true, constant: true)]
+	#[EiPropCke(CkeMode::NORMAL, true, true, cssConfig: CkeCssConfigMock::class,
+			linkProviders: [CkeLinkProviderMock::class])]
+	public ?string $ckeStr2 = 'blubb';
 
 }

@@ -728,7 +728,7 @@ class EiuEntry {
 //			return;
 //		}
 		
-		$propertyAccessProxy = $eiProp->getNature()->getPropertyAccessProxy();
+		$propertyAccessProxy = $eiProp->getNature()->getNativeAccessProxy();
 		if ($propertyAccessProxy !== null) {
 			$propertyAccessProxy->setValue($this->getForkObject($eiProp), $value);
 			return;

@@ -164,13 +164,13 @@ class EnumEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 			if (!$typeConstraint->isEmpty()) {
 				$typeConstraint->setConvertable(true);
 			}
-			$this->propertyAccessProxy = $propertyAccessProxy;
+			$this->nativeAccessProxy = $propertyAccessProxy;
 			return;
 		}
 		
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
-		$this->propertyAccessProxy = $propertyAccessProxy;
+		$this->nativeAccessProxy = $propertyAccessProxy;
 	}
 
 	public function buildEiField(Eiu $eiu): ?EiFieldNature {

@@ -85,7 +85,7 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 	public function setPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('float',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull(), true));
-		$this->propertyAccessProxy = $propertyAccessProxy;
+		$this->nativeAccessProxy = $propertyAccessProxy;
 	}
 
 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {

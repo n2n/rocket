@@ -28,36 +28,28 @@ use n2n\util\ex\IllegalStateException;
 
 trait PropertyNatureTrait {
 	protected ?EntityProperty $entityProperty = null;
-	protected ?AccessProxy $propertyAccessProxy = null;
+	protected ?AccessProxy $nativeAccessProxy = null;
 
 	/**
-	 * @param AccessProxy|null $propertyAccessProxy
+	 * @param AccessProxy|null $nativeAccessProxy
 	 */
-	function __construct(?AccessProxy $propertyAccessProxy) {
-		$this->propertyAccessProxy = $propertyAccessProxy;
+	function __construct(?AccessProxy $nativeAccessProxy) {
+		$this->nativeAccessProxy = $nativeAccessProxy;
 	}
 
 	function getNativeAccessProxy(): ?AccessProxy {
-		return $this->propertyAccessProxy;
+		return $this->nativeAccessProxy;
 	}
 
 	/**
 	 * @return AccessProxy|null
 	 */
-	public function getPropertyAccessProxy(): ?AccessProxy {
-		return $this->propertyAccessProxy;
-	}
-
-	/**
-	 * @throws IllegalStateException
-	 * @return AccessProxy
-	 */
-	protected function requirePropertyAccessProxy(): ?AccessProxy {
-		if ($this->propertyAccessProxy === null) {
+	protected function requireNativeAccessProxy(): ?AccessProxy {
+		if ($this->nativeAccessProxy === null) {
 			throw new IllegalStateException('No PropertyAccessProxy assigned to ' . $this . '.');
 		}
 
-		return $this->propertyAccessProxy;
+		return $this->nativeAccessProxy;
 	}
 
 	/**

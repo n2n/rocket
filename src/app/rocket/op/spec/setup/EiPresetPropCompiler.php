@@ -21,22 +21,16 @@
  */
 namespace rocket\op\spec\setup;
 
-use rocket\attribute\EiPreset;
-use n2n\persistence\orm\model\EntityModel;
 use n2n\reflection\property\PropertiesAnalyzer;
-use n2n\reflection\property\AccessProxy;
 use n2n\util\ex\err\ConfigurationError;
 use n2n\util\type\TypeUtils;
 use n2n\util\type\ArgUtils;
-use n2n\reflection\attribute\Attribute;
-use Throwable;
 use n2n\util\ex\IllegalStateException;
 use n2n\util\StringUtils;
 use n2n\reflection\property\PropertyAccessProxy;
 use n2n\persistence\orm\model\EntityPropertyCollection;
 use rocket\op\ei\EiPropPath;
-use n2n\persistence\orm\property\EntityProperty;
-use n2n\reflection\ReflectionUtils;
+use n2n\reflection\property\UninitializedBehaviour;
 
 class EiPresetPropCompiler {
 	private PropertiesAnalyzer $propertiesAnalyzer;
@@ -46,7 +40,8 @@ class EiPresetPropCompiler {
 	function __construct(private readonly EnhancedEiPreset $enhancedEiPreset,
 			private readonly EntityPropertyCollection $entityPropertyCollection,
 			private readonly EiPropPath $parentEiPropPath) {
-		$this->propertiesAnalyzer = new PropertiesAnalyzer($this->entityPropertyCollection->getClass());
+		$this->propertiesAnalyzer = new PropertiesAnalyzer($this->entityPropertyCollection->getClass(),
+				uninitializedBehaviour: UninitializedBehaviour::RETURN_NULL);
 	}
 
 	/**

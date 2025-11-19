@@ -26,7 +26,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class EiPropDecimal {
 
-	function __construct(public int $decimalPlaces = 2, public ?bool $constant = null, public ?bool $readOnly = null,
-			public ?bool $mandatory = null) {
+	function __construct(public int $decimalPlaces = 2) {
 	}
 }

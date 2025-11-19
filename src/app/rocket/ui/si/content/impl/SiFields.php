@@ -145,9 +145,9 @@ class SiFields {
 	 * @param int|null $max
 	 * @return EmbeddedEntriesInSiField
 	 */
-	static function embeddedEntriesIn(SiFrame $frame, SiEmbeddedEntryFactory $inputHandler, array $values = [],
+	static function embeddedEntriesIn(SiFrame $frame, SiEmbeddedEntryFactory $inputHandler, string $bulkyMaskId, array $values = [],
 			int $min = 0, ?int $max = null): EmbeddedEntriesInSiField {
-		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $values))->setMin($min)->setMax($max);
+		return (new EmbeddedEntriesInSiField($frame, $inputHandler, $bulkyMaskId, $values))->setMin($min)->setMax($max);
 	}
 	
 	/**

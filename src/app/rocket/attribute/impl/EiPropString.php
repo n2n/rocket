@@ -26,8 +26,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class EiPropString {
 
-	function __construct(public bool $multiline = false,
-			public ?bool $constant = null, public ?bool $readOnly = null, public ?bool $mandatory = null,
-			public ?int $minlength = null, public ?int $maxlength = null) {
+	function __construct(public bool $multiline = false, public ?int $minlength = null, public ?int $maxlength = null) {
 	}
 }

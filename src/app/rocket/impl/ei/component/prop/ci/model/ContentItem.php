@@ -31,11 +31,9 @@ use rocket\attribute\EiType;
 use n2n\persistence\orm\attribute\Inheritance;
 use n2n\persistence\orm\attribute\Table;
 use rocket\attribute\EiPreset;
-use n2n\util\ex\IllegalStateException;
-use rocket\attribute\impl\EiPropDecimal;
 use rocket\attribute\impl\EiPropString;
-use rocket\attribute\impl\EiDefaultDisplay;
-use rocket\ui\gui\ViewMode;
+use rocket\attribute\impl\EiDisplayConfig;
+use rocket\attribute\impl\EiEditConfig;
 
 #[Table('rocket_content_item')]
 #[Inheritance(InheritanceType::JOINED)]
@@ -48,8 +46,9 @@ abstract class ContentItem extends ObjectAdapter {
 	}
 
 	private $id;
-	#[EiPropString(readOnly: false, mandatory: false)]
-	#[EiDefaultDisplay()]
+	#[EiPropString()]
+	#[EiEditConfig(readOnly: false, mandatory: false)]
+	#[EiDisplayConfig()]
 	private string $panel;
 	private int $orderIndex;
 // 	private $online;
