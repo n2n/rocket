@@ -1,6 +1,6 @@
 <?php
-
 namespace rocket\attribute\impl;
+
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class EiEditConfig {
 

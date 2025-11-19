@@ -467,9 +467,6 @@ class EiPropNatureProvider {
 		}
 
 		$editConfig = $nature->getEditConfig();
-		$editConfig->setMandatory(!$nullAllowed);
-		$editConfig->setReadOnly(!$eiPresetProp->isEditable());
-
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
 		$this->configureLabel($eiPresetProp->getPropertyAccessProxy(), $nature->getLabelConfig(),
 				$eiPresetProp->getLabel());
@@ -477,7 +474,7 @@ class EiPropNatureProvider {
 //		$this->configureEditiable(null, !$eiPresetProp->isEditable(), !$nullAllowed, $eiPresetProp->getPropertyAccessProxy(),
 //				$eiPresetProp->getEntityProperty(), $nature->getEditConfig());
 		$this->configureEditConfig($eiPresetProp->getPropertyAccessProxy(),
-				$eiPresetProp->getEntityProperty(), $editConfig);
+				$eiPresetProp->getEntityProperty(), $editConfig, !$eiPresetProp->isEditable(), $nullAllowed);
 
 		$this->eiTypeClassSetup->addEiPropNature($eiPresetProp->getEiPropPath(), $nature);
 
@@ -505,6 +502,7 @@ class EiPropNatureProvider {
 			default:
 				return false;
 		}
+
 		$displayConfig = $nature->getDisplayConfig();
 		$editConfig = $nature->getEditConfig();
 		$editConfig->setMandatory(!$nullAllowed);
@@ -517,7 +515,7 @@ class EiPropNatureProvider {
 //		$this->configureEditiable(null, !$eiPresetProp->isEditable(), !$nullAllowed, $eiPresetProp->getPropertyAccessProxy(),
 //				$eiPresetProp->getEntityProperty(), $editConfig);
 		$this->configureEditConfig($eiPresetProp->getPropertyAccessProxy(),
-				$eiPresetProp->getEntityProperty(), $editConfig);
+				$eiPresetProp->getEntityProperty(), $editConfig, !$eiPresetProp->isEditable(), $nullAllowed);
 		$this->configureAddons($eiPresetProp->getPropertyAccessProxy(), $nature);
 
 		$this->eiTypeClassSetup->addEiPropNature($eiPresetProp->getEiPropPath(), $nature);
@@ -583,7 +581,8 @@ class EiPropNatureProvider {
 	}
 
 	private function configureEditConfig(PropertyAccessProxy $propertyAccessProxy,
-			?EntityProperty $entityProperty, EditConfig $editConfig): void {
+			?EntityProperty $entityProperty, EditConfig $editConfig,
+			bool $eiPresetReadOnly = false, bool $fallbackNullAllowed = false): void {
 		$property = $propertyAccessProxy->getProperty();
 		if ($property == null) {
 			return;
@@ -594,9 +593,12 @@ class EiPropNatureProvider {
 		$isId = $entityProperty !== null && $entityProperty === $idDef->getEntityProperty();
 
 		$editConfig->setConstant($isId || ($eiEditConfig?->constant ?? false));
-		$editConfig->setReadOnly(($isId && $idDef->isGenerated()) || ($eiEditConfig?->readOnly ?? !$propertyAccessProxy->isWritable()));
+		$editConfig->setReadOnly(($isId && $idDef->isGenerated())
+				|| ($eiEditConfig?->readOnly ?? !$propertyAccessProxy->isWritable())
+				|| $eiPresetReadOnly);
 		$editConfig->setMandatory(!($isId && $idDef->isGenerated())
-				&& ($eiEditConfig?->mandatory ?? !$propertyAccessProxy->getSetterConstraint()?->allowsNull()) ?? false);
+				&& ($eiEditConfig?->mandatory ?? !($propertyAccessProxy->getSetterConstraint()?->allowsNull()
+						?? $fallbackNullAllowed)));
 
 
 	}
