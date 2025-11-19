@@ -128,7 +128,7 @@ class GuiSiFileFactory implements SiFileFactory {
 
 		$tmpQualifiedName = null;
 		if ($n2nContext->lookup(TmpFileManager::class)
-				->containsSessionFile($file, $n2nContext->getHttpContext()->getSession())) {
+				->containsSessionFile($file, $n2nContext->lookup(\n2n\web\http\HttpContext::class)->getSession())) {
 			$tmpQualifiedName = $fileSource->getQualifiedName();
 		}
 
@@ -189,7 +189,7 @@ class GuiSiFileFactory implements SiFileFactory {
 		CastUtils::assertTrue($tfm instanceof TmpFileManager);
 
 		$file = $tfm->getSessionFile($fileId->getQualifiedName(),
-				$n2nContext->getHttpContext()->getSession());
+				$n2nContext->lookup(\n2n\web\http\HttpContext::class)->getSession());
 		// Could be a FileId of unupdated but already save frontend entry. In this case there will be no matching
 		// session file and the current field value should be returned.
 		if ($file !== null) {

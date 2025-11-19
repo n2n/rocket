@@ -44,7 +44,7 @@ class GuiSiFileHandler implements SiFileHandler {
 			return SiUploadResult::createError($message->t($n2nContext->getN2nLocale()));
 		}
 
-		$tmpFileManager->add($file, $n2nContext->getHttpContext()->getSession());
+		$tmpFileManager->add($file, $n2nContext->lookup(\n2n\web\http\HttpContext::class)->getSession());
 
 		return SiUploadResult::createSuccess($file);
 	}
