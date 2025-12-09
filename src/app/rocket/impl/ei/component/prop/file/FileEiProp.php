@@ -138,8 +138,12 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 // 		return $this->multiUploadEiCommand;
 // 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {
-		ArgUtils::assertTrue($entityProperty instanceof FileEntityProperty 
+	public function setEntityProperty(EntityProperty $entityProperty = null) {		
+		if (null === $entityProperty) {
+			return;
+		}
+		
+		ArgUtils::assertTrue($entityProperty instanceof FileEntityProperty
 				|| $entityProperty instanceof ManagedFileEntityProperty);
 		$this->entityProperty = $entityProperty;
 	}
@@ -262,3 +266,4 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		return $tmpFileManager->createCopyFromFile($value, $copyEiu->lookup(Session::class, false));
 	}
 }
+
