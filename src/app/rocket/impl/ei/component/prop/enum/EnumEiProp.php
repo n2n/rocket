@@ -72,15 +72,14 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		ArgUtils::assertTrue($propertyAccessProxy !== null);
 		
 		if (null !== ($typeConstraint = $propertyAccessProxy->getConstraint())) {
-			$typeConstraint->isPassableTo(TypeConstraints::scalar(true), true);
-			if (!$typeConstraint->isEmpty()) {
+			if ($typeConstraint->isPassableTo(TypeConstraints::scalar(true), true) && !$typeConstraint->isEmpty()) {
 				$typeConstraint->setConvertable(true);
 			}
 			$this->objectPropertyAccessProxy = $propertyAccessProxy;
 			return;
 		}
 		
-		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar', 
+		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('scalar',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
 	}
@@ -232,3 +231,4 @@ class EnumEiProp extends DraftablePropertyEiPropAdapter implements FilterableEiP
 		return $this->associatedGuiFieldPathMap;
 	}
 }
+
