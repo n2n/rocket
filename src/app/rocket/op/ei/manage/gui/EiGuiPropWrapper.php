@@ -38,7 +38,7 @@ class EiGuiPropWrapper {
 
 
 	function __construct(private EiGuiDefinition $eiGuiDefinition, private EiPropPath $eiPropPath,
-			private ?EiGuiProp $eiGuiProp) {
+			private EiGuiProp $eiGuiProp) {
 	}
 	
 	/**
@@ -48,24 +48,22 @@ class EiGuiPropWrapper {
 		return $this->eiPropPath;
 	}
 
-	function isEmpty(): bool {
-		return $this->eiGuiProp === null;
-	}
-
 	function getEiGuiProp(): EiGuiProp {
-		if ($this->eiGuiProp === null) {
-			throw new EiGuiException('Property "' . $this->eiPropPath . '" does not provide a EiGuiProp.');
-		}
-
 		return $this->eiGuiProp;
 	}
 
 	function getDisplayDefinition(): ?DisplayDefinition {
-		return $this->getEiGuiProp()->getDisplayDefinition();
+		return $this->eiGuiProp->getDisplayDefinition();
+	}
+
+	function getGuiProp(): GuiProp {
+
+
+		return $this->eiGuiProp->getGuiProp();
 	}
 
 	function getChildEiGuiPropMap(): ?EiGuiPropMap {
-		return $this->getEiGuiProp()->getForkEiGuiPropMap();
+		return $this->eiGuiProp->getForkEiGuiPropMap();
 	}
 
 //	/**
@@ -132,7 +130,7 @@ class EiGuiPropWrapper {
 		$readOnly = ViewMode::isReadOnly($this->eiGuiDefinition->getViewMode())
 				|| !$eiEntry->getEiEntryAccess()->isEiPropWritable($this->eiPropPath);
 		$eiu = new Eiu($eiFrame, $this->eiGuiDefinition, $eiEntry, $this->eiPropPath, new DefPropPath([$this->eiPropPath]));
-		$guiField = $this->getEiGuiProp()->buildGuiField($eiu, $readOnly);
+		$guiField = $this->eiGuiProp->buildGuiField($eiu, $readOnly);
 
 		if ($guiField === null) {
 			return null;
