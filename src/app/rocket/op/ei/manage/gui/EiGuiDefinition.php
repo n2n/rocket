@@ -116,10 +116,15 @@ class EiGuiDefinition {
 
 		foreach ($defPropPath->toArray() as $eiPropPath) {
 			if ($eiGuiPropMap === null) {
-				break;
+				throw new EiGuiException('No GuiProp with path \'' . $defPropPath . '\' registered');
 			}
 
-			$guiPropWrapper = $eiGuiPropMap->getGuiPropWrapper($eiPropPath);
+			try {
+				$guiPropWrapper = $eiGuiPropMap->getGuiPropWrapper($eiPropPath);
+			} catch (EiGuiException $e) {
+				throw new EiGuiException('No GuiProp with path \'' . $defPropPath . '\' registered', previous: $e);
+			}
+
 			$eiGuiPropMap = $guiPropWrapper->getChildEiGuiPropMap();
 		}
 

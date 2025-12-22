@@ -30,15 +30,16 @@ class DisplayStructure {
 	 * @var DisplayItem[]
 	 */
 	private $displayItems = array();
-	
+
 	/**
 	 * @param DefPropPath $defPropPath
 	 * @param string $type
-	 * @param string $label
-	 * @param string $moduleNamespace
+	 * @param string|null $label
+	 * @return DisplayStructure
 	 */
-	public function addDefPropPath(DefPropPath $defPropPath, string $type, ?string $label = null) {
+	public function addDefPropPath(DefPropPath $defPropPath, string $type, ?string $label = null): static {
 		$this->displayItems[] = DisplayItem::create($defPropPath, $type, $label);
+		return $this;
 	}
 	
 	/**
