@@ -28,7 +28,7 @@ class EiGuiPropMap {
 	 * @param EiPropPath $eiPropPath
 	 * @param EiGuiProp $eiGuiProp
 	 */
-	function putEiGuiProp(EiPropPath $eiPropPath, EiGuiProp $eiGuiProp): void {
+	function putEiGuiProp(EiPropPath $eiPropPath, ?EiGuiProp $eiGuiProp): void {
 		$eiPropPathStr = (string) $eiPropPath;
 
 		if (isset($this->eiGuiPropWrappers[$eiPropPathStr])) {

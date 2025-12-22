@@ -156,6 +156,11 @@ class EiGuiDefinitionFactory {
 								. $e->getMessage(),
 						previous: $e);
 			}
+
+			if ($guiPropWrapper->isEmpty()) {
+				continue;
+			}
+
 			$displayDefinition = $guiPropWrapper->getDisplayDefinition();
 			$siStructureType = $displayItem->getSiStructureType() ?? $displayDefinition->getSiStructureType();
 			if (null === $siStructureType) {
