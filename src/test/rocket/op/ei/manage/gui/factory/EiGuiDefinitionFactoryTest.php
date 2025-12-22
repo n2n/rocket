@@ -7,7 +7,6 @@ use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\EiType;
 use rocket\ui\si\control\SiIconType;
 use rocket\op\ei\manage\gui\factory\mock\EiPropNatureMock;
-use rocket\ui\gui\GuiProp;
 use n2n\test\TestEnv;
 use rocket\ui\gui\ViewMode;
 use rocket\impl\ei\component\prop\adapter\gui\EiGuiPropProxy;
@@ -21,7 +20,7 @@ use rocket\ui\si\meta\SiStructureType;
 
 class EiGuiDefinitionFactoryTest extends TestCase {
 
-	function testIsEmpty(): void {
+	function testWithDisplayScheme(): void {
 		$eiMask = new EiMask($this->createMock(EiType::class), 'Holeradio', 'Holeradios',
 				SiIconType::ICON_AD);
 
@@ -30,17 +29,21 @@ class EiGuiDefinitionFactoryTest extends TestCase {
 
 		$displayScheme = new DisplayScheme();
 		$displayScheme->setBulkyDisplayStructure((new DisplayStructure())
-				->addDefPropPath($prop1Path, SiStructureType::ITEM)
-				->addDefPropPath($prop2Path, SiStructureType::ITEM));
+				->addDefPropPath($prop1Path, SiStructureType::ITEM));
 		$eiMask->setDisplayScheme($displayScheme);
 
 		$mock = new EiPropNatureMock();
 		$mock->buildEiGuiPropClosure = fn () => new EiGuiPropProxy(
 				fn () => $this->createMock(GuiField::class),
 				new DisplayDefinition(null, true));
-
 		$eiMask->getEiPropCollection()->add('prop1', $mock);
-		$eiMask->getEiPropCollection()->add('prop2', new EiPropNatureMock());
+
+		$mock = new EiPropNatureMock();
+		$mock->buildEiGuiPropClosure = fn () => new EiGuiPropProxy(
+				fn () => $this->createMock(GuiField::class),
+				new DisplayDefinition(null, true));
+		$eiMask->getEiPropCollection()->add('prop2', $mock);
+
 
 		$factory = new EiGuiDefinitionFactory($eiMask, TestEnv::getN2nContext());
 
