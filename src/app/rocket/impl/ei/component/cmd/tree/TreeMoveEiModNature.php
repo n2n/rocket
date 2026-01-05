@@ -28,9 +28,9 @@ use rocket\op\ei\util\entry\EiuObject;
 use rocket\op\ei\util\frame\EiuFrame;
 use rocket\impl\ei\component\mod\adapter\EiModNatureAdapter;
 
-class TreeMoveEiModificator extends EiModNatureAdapter {
+class TreeMoveEiModNature extends EiModNatureAdapter {
 	
-	function setupEiFrame(Eiu $eiu) {
+	function setupEiFrame(Eiu $eiu): void {
 		$eiu->frame()->setSortAbility(
 				function (array $eiuObjects, EiuObject $afterEiuObject) use ($eiu) {
 					foreach ($eiuObjects as $eiuObject) {
@@ -106,7 +106,7 @@ class TreeMoveEiModificator extends EiModNatureAdapter {
 			return;
 		}
 
-		$nsu = new NestedSetUtils($eiuFrame->em(), $eiuFrame->getContextClass());
+		$nsu = new NestedSetUtils($eiuFrame->em(), $eiuFrame->getContextClass(), $nestedSetStrategy);
 		
 		try {
 			if ($before === true) {

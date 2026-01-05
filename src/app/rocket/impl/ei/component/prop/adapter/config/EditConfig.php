@@ -29,6 +29,10 @@ class EditConfig {
 			protected bool $readOnly = false, protected bool $readOnlyChoosable = true,
 			protected bool $mandatory = false, protected bool $mandatoryChoosable = true) {}
 
+	function isConstantChoosable(): bool {
+		return $this->constantChoosable;
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -46,6 +50,10 @@ class EditConfig {
 		return $this;
 	}
 
+	function isReadOnlyChoosable(): bool {
+		return $this->readOnlyChoosable;
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -61,6 +69,10 @@ class EditConfig {
 		UnsupportedOperationException::assertTrue($this->readOnlyChoosable, 'ReadOnly is not modifiable');
 		$this->readOnly = (bool) $readOnly;
 		return $this;
+	}
+
+	function isMandatoryChoosable(): bool {
+		return $this->mandatoryChoosable;
 	}
 
 	/**

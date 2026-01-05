@@ -240,6 +240,21 @@ class EiuMask  {
 		
 		return new EiuProp($eiPropPath, $this, $this->eiuAnalyst);
 	}
+
+	/**
+	 * @param string $class
+	 * @return EiuProp[]
+	 */
+	function findPropsByNatureClass(string $class): array {
+		$eiProps = [];
+		foreach ($this->eiMask->getEiPropCollection() as $eiProp) {
+			if ($eiProp->getNature() instanceof $class) {
+				$eiProps[] = $eiProp;
+			}
+		}
+		return array_map(fn (EiProp $eiProp) => new EiuProp($eiProp->getEiPropPath(), $this, $this->eiuAnalyst),
+				$eiProps);
+	}
 	
 	/**
 	 * @return boolean
