@@ -31,6 +31,7 @@ use rocket\ajah\JhtmlEvent;
 class OrderController extends ControllerAdapter {	
 	private $orderEiProp;
 	private $eiuCtrl;
+	private $eiType;
 	
 	private function _init(EiuCtrl $eiCtrl) {
 		$this->eiuCtrl = $eiCtrl;
@@ -89,3 +90,4 @@ class OrderController extends ControllerAdapter {
 		$em->flush();
 	}
 }
+
