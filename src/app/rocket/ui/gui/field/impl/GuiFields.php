@@ -110,12 +110,14 @@ class GuiFields {
 	}
 
 	static function fileOut(?File $file): OutGuiField {
-		return new OutGuiField(SiFields::fileOut($file, new GuiSiFileHandler(new GuiSiFileFactory(), new GuiFileVerificator())));
+		return new OutGuiField(SiFields::fileOut($file, new GuiSiFileHandler(
+				new GuiSiFileFactory(null, true), new GuiFileVerificator(null, true))));
 	}
 
 	static function fileIn(bool $mandatory = false, ?int $maxSize = null, ?array $allowedExtensions = null,
-			?array $allowedMimeTypes = null): FileInGuiField {
-		return new FileInGuiField(SiFields::fileIn(null, new GuiSiFileHandler(new GuiSiFileFactory(), new GuiFileVerificator()))
+			?array $allowedMimeTypes = null, bool $imageRecognized = true): FileInGuiField {
+		return new FileInGuiField(SiFields
+				::fileIn(null, null)
 				->setMandatory($mandatory)
 				->setMaxSize($maxSize)
 				->setAcceptedExtensions($allowedExtensions ?? [])

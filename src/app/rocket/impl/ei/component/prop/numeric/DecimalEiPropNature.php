@@ -59,7 +59,7 @@ class DecimalEiPropNature extends NumericEiPropNatureAdapter {
 	/**
 	 * @param int $decimalPlaces
 	 */
-	public function setDecimalPlaces(int $decimalPlaces) {
+	public function setDecimalPlaces(int $decimalPlaces): void {
 		$this->decimalPlaces = $decimalPlaces;
 	}
 //	/**

@@ -31,18 +31,15 @@ use rocket\op\ei\EiPropPath;
 use rocket\op\ei\manage\entry\EiFieldValidationResult;
 use rocket\op\ei\util\Eiu;
 use rocket\impl\ei\component\prop\adapter\DraftablePropertyEiPropNatureAdapter;
-use rocket\ui\gui\field\impl\file\SiFileId;
-use rocket\ui\gui\field\impl\file\FileVerificator;
-use rocket\ui\gui\field\impl\file\ThumbResolver;
-use rocket\ui\si\content\impl\FileInSiField;
 use rocket\ui\si\content\impl\SiFile;
-use rocket\si\content\impl\SiUploadResult;
-use n2n\io\managed\img\ImageFile;
 use n2n\io\managed\img\ImageDimension;
 use rocket\op\ei\manage\idname\IdNameProp;
 use n2n\reflection\property\PropertyAccessProxy;
 use rocket\ui\gui\field\BackableGuiField;
 use rocket\ui\gui\field\impl\GuiFields;
+use rocket\ui\gui\field\impl\file\ImageDimensionsImportMode;
+use n2n\persistence\orm\property\EntityProperty;
+use n2n\io\orm\ManagedFileEntityProperty;
 
 class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 
@@ -58,7 +55,37 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	 * @var FileVerificator
 	 */
 //	private $fileVerificator;
-	
+
+	private ?ManagedFileEntityProperty $fileEntityProperty = null;
+	public bool $imageRecognized = true;
+
+	public ?array $allowedExtensions = null {
+		get => $this->allowedExtensions;
+		set (?array $allowedExtensions) {
+			ArgUtils::valArray($allowedExtensions, 'string', true);
+			$this->allowedExtensions = $allowedExtensions;
+		}
+	}
+
+	public ?array $allowedMimeTypes = null {
+		get => $this->allowedMimeTypes;
+		set (?array $allowedMimeTypes) {
+			ArgUtils::valArray($allowedMimeTypes, 'string', true);
+			$this->allowedMimeTypes = $allowedMimeTypes;
+		}
+	}
+
+	public ?int $maxSize = null;
+
+	public ImageDimensionsImportMode $dimensionImportMode = ImageDimensionsImportMode::ALL;
+
+	public array $extraThumbDimensions = [] {
+		get => $this->extraThumbDimensions;
+		set (array $extraThumbDimensions) {
+			ArgUtils::valArray($extraThumbDimensions, ImageDimension::class);
+			$this->extraThumbDimensions = $extraThumbDimensions;
+		}
+	}
 	
 	function __construct(PropertyAccessProxy $propertyAccessProxy) {
 		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::namedType(File::class, true)));
@@ -70,6 +97,12 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 	function setup(Eiu $eiu): void {
 //		$thumbEiCmdPath = $eiu->mask()->addCmd(new ThumbNatureEiCommand($eiu->prop()->getPath()))->getEiCmdPath();
 //		$this->thumbResolver->setThumbEiCmdPath($thumbEiCmdPath);
+	}
+
+	public function setEntityProperty(?EntityProperty $entityProperty): void {
+		ArgUtils::assertTrue($entityProperty instanceof ManagedFileEntityProperty);
+		parent::setEntityProperty($entityProperty);
+		$this->fileEntityProperty = $entityProperty;
 	}
 
 	/**
@@ -212,7 +245,14 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 //				->setAcceptedMimeTypes($this->fileVerificator->getAllowedMimeTypes())
 //				->setMessagesCallback(fn () => $eiu->field()->getMessagesAsStrs());
 
-		return GuiFields::fileIn($this->isMandatory())
+		return GuiFields::fileIn($this->isMandatory(), $this->maxSize, $this->allowedExtensions, $this->allowedMimeTypes,
+					$this->imageRecognized)
+				->setTargetFileLocator($this->fileEntityProperty?->getFileLocator())
+				->setTargetFileManager($this->fileEntityProperty === null
+						? null
+						: $eiu->lookup($this->fileEntityProperty->getFileManagerClassName()))
+				->setImageDimensionsImportMode($this->dimensionImportMode)
+				->setExtraImageDimensions($this->extraThumbDimensions)
 				->setValue($eiu->field()->getValue())
 				->setModel($eiu->field()->asGuiFieldModel());
 
@@ -228,92 +268,93 @@ class FileEiPropNature extends DraftablePropertyEiPropNatureAdapter {
 // 				$this->isMandatory($eiu));
 	}
 
-	function determineImageDimensions(File $file) {
-		$imageDimensions = array();
+//	function determineImageDimensions(File $file) {
+//		$imageDimensions = array();
+//
+//		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
+//			return $imageDimensions;
+//		}
+//
+//		foreach ($this->extraImageDimensions as $imageDimension) {
+//			$imageDimensions[(string) $imageDimension] = $imageDimension;
+//		}
+//
+//		$autoImageDimensions = array();
+//		switch ($this->imageDimensionsImportMode) {
+//			case self::DIM_IMPORT_MODE_ALL:
+//				if ($this->targetFileManager !== null) {
+//					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
+//				}
+//
+//				break;
+//			case self::DIM_IMPORT_MODE_USED_ONLY:
+//				$thumbEngine = $file->getFileSource()->getAffiliationEngine()->getThumbManager();
+//				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
+//				break;
+//		}
+//
+//		$rocketImageDimensionStr = (string) SiFile::getThumbStrategy()->getImageDimension();
+//
+//		foreach ($autoImageDimensions as $autoImageDimension) {
+//			$autoImageDimensionStr = (string) $autoImageDimension;
+//
+//			if ($autoImageDimensionStr == $rocketImageDimensionStr) {
+//				continue;
+//			}
+//
+//			$imageDimensions[$autoImageDimensionStr] = $autoImageDimension;
+//		}
+//
+//		return $imageDimensions;
+//	}
 
-		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
-			return $imageDimensions;
-		}
-
-		foreach ($this->extraImageDimensions as $imageDimension) {
-			$imageDimensions[(string) $imageDimension] = $imageDimension;
-		}
-
-		$autoImageDimensions = array();
-		switch ($this->imageDimensionsImportMode) {
-			case self::DIM_IMPORT_MODE_ALL:
-				if ($this->targetFileManager !== null) {
-					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
-				}
-
-				break;
-			case self::DIM_IMPORT_MODE_USED_ONLY:
-				$thumbEngine = $file->getFileSource()->getAffiliationEngine()->getThumbManager();
-				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
-				break;
-		}
-
-		$rocketImageDimensionStr = (string) SiFile::getThumbStrategy()->getImageDimension();
-
-		foreach ($autoImageDimensions as $autoImageDimension) {
-			$autoImageDimensionStr = (string) $autoImageDimension;
-
-			if ($autoImageDimensionStr == $rocketImageDimensionStr) {
-				continue;
-			}
-
-			$imageDimensions[$autoImageDimensionStr] = $autoImageDimension;
-		}
-
-		return $imageDimensions;
-	}
-
-	function saveSiField(FileInSiField $siField, Eiu $eiu) {
-		
-		$siFile = $siField->getValue();
-		if ($siFile === null) {
-			$eiu->field()->setValue(null);
-			return;
-		}
-		
-		$fileId = $siFile->getId();
-		CastUtils::assertTrue($fileId instanceof SiFileId);
-		
-		$eiu->field()->setValue($file = $this->thumbResolver->determineFile($fileId, $eiu));
-		
-		$siImageDimensions = $siFile->getImageDimensions();
-		if (empty($siImageDimensions) || !$file->getFileSource()->isImage()) {
-			return;
-		}
-		
-		$imageFile = new ImageFile($file);
-		
-		foreach ($siImageDimensions as $siImageDimension) {
-			$imageDimension = ImageDimension::createFromString($siImageDimension->getId());
-			
-			$thumbFileSource = $file->getFileSource()->getAffiliationEngine()->getThumbManager()
-					->getByDimension($imageDimension);
-			if ($thumbFileSource !== null) {
-				$thumbFileSource->delete();
-			}
-			
-			$imageFile->setThumbCut($imageDimension, $siImageDimension->getThumbCut());
-		}
-	}
+//	function saveSiField(FileInSiField $siField, Eiu $eiu) {
+//
+//		$siFile = $siField->getValue();
+//		if ($siFile === null) {
+//			$eiu->field()->setValue(null);
+//			return;
+//		}
+//
+//		$fileId = $siFile->getId();
+//		CastUtils::assertTrue($fileId instanceof SiFileId);
+//
+//		$eiu->field()->setValue($file = $this->thumbResolver->determineFile($fileId, $eiu));
+//
+//		$siImageDimensions = $siFile->getImageDimensions();
+//		if (empty($siImageDimensions) || !$file->getFileSource()->isImage()) {
+//			return;
+//		}
+//
+//		$imageFile = new ImageFile($file);
+//
+//		foreach ($siImageDimensions as $siImageDimension) {
+//			$imageDimension = ImageDimension::createFromString($siImageDimension->getId());
+//
+//			$thumbFileSource = $file->getFileSource()->getAffiliationEngine()->getThumbManager()
+//					->getByDimension($imageDimension);
+//			if ($thumbFileSource !== null) {
+//				$thumbFileSource->delete();
+//			}
+//
+//			$imageFile->setThumbCut($imageDimension, $siImageDimension->getThumbCut());
+//		}
+//	}
 	
-	/**
-	 * @param Eiu $eiu
-	 * @return SiFile|null
-	 */
-	private function buildSiFileFromEiu(Eiu $eiu): ?SiFile {
-		$file = $eiu->field()->getValue();
-		if ($file === null) {
-			return null;
-		}
-		
-		CastUtils::assertTrue($file instanceof File);
-		return $this->thumbResolver->createSiFile($file, $eiu, $this->fileVerificator->isImageRecognized());
-	}
+//	/**
+//	 * @param Eiu $eiu
+//	 * @return SiFile|null
+//	 */
+//	private function buildSiFileFromEiu(Eiu $eiu): ?SiFile {
+//		$file = $eiu->field()->getValue();
+//		if ($file === null) {
+//			return null;
+//		}
+//
+//		CastUtils::assertTrue($file instanceof File);
+//
+//		return $this->thumbResolver->createSiFile($file, $eiu, $this->fileVerificator->isImageRecognized());
+//	}
 	
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {

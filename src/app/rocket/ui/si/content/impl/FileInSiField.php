@@ -30,10 +30,10 @@ use n2n\io\managed\img\ThumbCut;
 use n2n\util\type\attrs\DataMap;
 use n2n\web\http\UploadDefinition;
 use n2n\core\container\N2nContext;
+use n2n\util\ex\IllegalStateException;
 
 class FileInSiField extends InSiFieldAdapter {
 
-	private ?File $value = null;
 	/**
 	 * @var Url
 	 */
@@ -43,10 +43,6 @@ class FileInSiField extends InSiFieldAdapter {
 	 * @var \JsonSerializable
 	 */
 	private $apiCallId;
-	/**
-	 * @var SiFileHandler
-	 */
-	private $fileHandler;
 	/**
 	 * @var bool
 	 */
@@ -68,9 +64,8 @@ class FileInSiField extends InSiFieldAdapter {
 	/**
 	 * @param File|null $value
 	 */
-	function __construct(?File $value, SiFileHandler $fileHandler) {
-		$this->value = $value;
-		$this->fileHandler = $fileHandler;
+	function __construct(private ?File $value, private ?SiFileHandler $fileHandler = null) {
+
 	}
 
 	function setFileHandler(SiFileHandler $fileHandler): static {
@@ -79,6 +74,8 @@ class FileInSiField extends InSiFieldAdapter {
 	}
 
 	function getFileHandler(): SiFileHandler {
+		IllegalStateException::assertTrue($this->fileHandler !== null, 'No SiFileHandler defined for'
+				. self::class);
 		return $this->fileHandler;
 	}
 
@@ -182,7 +179,7 @@ class FileInSiField extends InSiFieldAdapter {
 	 * {@inheritDoc}
 	 * @see \rocket\ui\si\content\SiField::handleInput()
 	 */
-	function handleInputValue(array $data, \n2n\core\container\N2nContext $n2nContext): bool {
+	function handleInputValue(array $data, N2nContext $n2nContext): bool {
 		$valueId = (new DataSet($data))->optArray('valueId', null, [], true);
 		if ($valueId === null) {
 			$this->value = null;
@@ -193,16 +190,12 @@ class FileInSiField extends InSiFieldAdapter {
 		if ($this->value === null || !isset($data['imageCuts'])) {
 			return true;
 		}
-		
-		foreach ($this->value->getImageDimensions() as $imgDim) {
-			$id = $imgDim->getId();
-			
-			if (!isset($data['imageCuts'][$id])) {
-				return true;
-			}
-			
-			$imgDim->setThumbCut(ThumbCut::fromArray($data['imageCuts'][$id]));
+
+		$thumbCuts = [];
+		foreach ($data['imageCuts'] as $id => $imageCutData) {
+			$thumbCuts[$id] = ThumbCut::fromArray($imageCutData);
 		}
+		$this->fileHandler->applyThumbCuts($this->value, $thumbCuts);
 
 		return true;
 	}

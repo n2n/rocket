@@ -14,6 +14,9 @@ use n2n\io\IncompleteFileUploadException;
 use rocket\ui\si\content\impl\SiUploadResult;
 use n2n\core\container\N2nContext;
 use n2n\io\managed\File;
+use n2n\util\type\CastUtils;
+use n2n\io\managed\img\ImageFile;
+use n2n\io\managed\img\ImageDimension;
 
 class GuiSiFileHandler implements SiFileHandler {
 	private $eiu;
@@ -50,7 +53,7 @@ class GuiSiFileHandler implements SiFileHandler {
 	}
 
 	function createSiFile(File $file, N2nContext $n2nContext): SiFile {
-		return $this->guiSiFileFactory->createSiFile($file, $this->fileVerificator->isImageRecognized(), $n2nContext);
+		return $this->guiSiFileFactory->createSiFile($file, $this->fileVerificator->imageRecognized, $n2nContext);
 	}
 
 	function determineFileByRawId(array $siFileId, ?File $currentValue, N2nContext $n2nContext): ?File {
@@ -68,6 +71,26 @@ class GuiSiFileHandler implements SiFileHandler {
 		}
 
 		return null;
+	}
+
+	function applyThumbCuts(File $file, array $thumbCuts): void {
+		if (empty($thumbCuts) || !$file->getFileSource()->isImage()) {
+			return;
+		}
+
+		$imageFile = new ImageFile($file);
+
+		foreach ($thumbCuts as $id => $thumbCut) {
+			$imageDimension = ImageDimension::createFromString($id);
+
+			$thumbFileSource = $file->getFileSource()->getAffiliationEngine()->getThumbManager()
+					->getByDimension($imageDimension);
+			if ($thumbFileSource !== null) {
+				$thumbFileSource->delete();
+			}
+
+			$imageFile->setThumbCut($imageDimension, $thumbCut);
+		}
 	}
 
 // 	function createTmpSiFile(File $file, string $qualifiedName) {

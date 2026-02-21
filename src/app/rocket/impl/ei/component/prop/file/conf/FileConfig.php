@@ -48,6 +48,7 @@ use n2n\impl\web\dispatch\mag\model\MagForm;
 use rocket\op\ei\util\spec\EiuMask;
 use rocket\ui\gui\field\impl\file\ThumbResolver;
 use rocket\ui\gui\field\impl\file\FileVerificator;
+use rocket\ui\gui\field\impl\file\GuiFileVerificator;
 
 class FileConfig {
 	const ATTR_IMAGE_RECOGNIZED_KEY = 'imageRecognized';
@@ -77,7 +78,7 @@ class FileConfig {
 	/**
 	 * @var FileVerificator
 	 */
-	private $fileVerificator;
+	private GuiFileVerificator $fileVerificator;
 	
 	public function __construct(FileModel $fileModel, ThumbResolver $thumbResolver, FileVerificator $fileVerificator) {
 		$this->fileModel = $fileModel;

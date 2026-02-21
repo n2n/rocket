@@ -9,14 +9,16 @@ use n2n\core\container\N2nContext;
 use rocket\ui\si\content\impl\FileInSiField;
 use n2n\io\managed\File;
 use n2n\io\managed\FileLocator;
+use n2n\io\managed\FileManager;
 
 class FileInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel {
 
 	private GuiSiFileFactory $guiSiFileFactory;
 
-	function __construct(private readonly FileInSiField $siField) {
+	function __construct(private readonly FileInSiField $siField, bool $imageRecognized = true) {
 		parent::__construct($siField);
-		$this->siField->setFileHandler(new GuiSiFileHandler($this->guiSiFileFactory = new GuiSiFileFactory(), new GuiFileVerificator()));
+		$this->siField->setFileHandler(new GuiSiFileHandler($this->guiSiFileFactory = new GuiSiFileFactory(),
+				new GuiFileVerificator($siField, $imageRecognized)));
 	}
 
 	function setValue(?File $file): static {
@@ -40,6 +42,11 @@ class FileInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel
 
 	function setTargetFileLocator(?FileLocator $fileLocator): static {
 		$this->guiSiFileFactory->setTargetFileLocator($fileLocator);
+		return $this;
+	}
+
+	function setTargetFileManager(?FileManager $fileManager): static {
+		$this->guiSiFileFactory->setTargetFileManager($fileManager);
 		return $this;
 	}
 

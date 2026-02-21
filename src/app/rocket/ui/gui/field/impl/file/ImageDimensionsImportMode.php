@@ -2,8 +2,9 @@
 
 namespace rocket\ui\gui\field\impl\file;
 
-enum ImageDimensionsImportMode {
+enum ImageDimensionsImportMode: string {
 
-	const ALL = 'all';
-	const USED_ONLY = 'usedOnly';
+	case ALL = 'all';
+	case USED_ONLY = 'usedOnly';
+	case NONE = 'none';
 }

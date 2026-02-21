@@ -40,6 +40,8 @@ interface SiFileHandler {
 	function determineFileByRawId(array $fileId, ?File $currentValue, N2nContext $n2nContext): ?File;
 
 	function createSiFile(File $file, N2nContext $n2nContext): SiFile;
+
+	function applyThumbCuts(File $file, array $thumbCuts): void;
 }
 
 class SiUploadResult {

@@ -96,12 +96,12 @@ class SiFields {
 		return new DateTimeInSiField($value);
 	}
 
-	static function fileIn(?SiFile $file, SiFileHandler $fileHandle): FileInSiField {
-		return new FileInSiField($file, $fileHandle);
+	static function fileIn(?SiFile $file, ?SiFileHandler $fileHandler): FileInSiField {
+		return new FileInSiField($file, $fileHandler);
 	}
 
 
-	static function fileOut(?File $file, SiFileHandler $siFileHandler): FileOutSiField {
+	static function fileOut(?File $file, ?SiFileHandler $siFileHandler): FileOutSiField {
 		return new FileOutSiField($file, $siFileHandler);
 	}
 

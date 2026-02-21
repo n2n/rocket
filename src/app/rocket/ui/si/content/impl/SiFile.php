@@ -103,13 +103,9 @@ class SiFile implements \JsonSerializable {
 	function getImageDimensions() {
 		return $this->imageDimensions;
 	}
-	
-	/**
-	 * @param \rocket\si\content\impl\SiImageDimension $imageDimensions
-	 * @return \rocket\si\content\impl\SiFile
-	 */
-	function setImageDimensions(array $imageDimensions) {
-		ArgUtils::valArray($imageDimensions, \rocket\si\content\impl\SiImageDimension::class);
+
+	function setImageDimensions(array $imageDimensions): static {
+		ArgUtils::valArray($imageDimensions, SiImageDimension::class);
 		$this->imageDimensions = $imageDimensions;
 		return $this;
 	}

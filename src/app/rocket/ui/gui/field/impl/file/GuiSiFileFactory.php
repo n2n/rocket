@@ -40,6 +40,7 @@ use rocket\ui\si\content\impl\SiFileFactory;
 use n2n\l10n\DynamicTextCollection;
 use rocket\ui\gui\res\GuiResourceRegistry;
 use rocket\ui\gui\res\GuiResourceController;
+use rocket\ui\si\content\impl\SiImageDimension;
 
 class GuiSiFileFactory implements SiFileFactory {
 	
@@ -47,7 +48,7 @@ class GuiSiFileFactory implements SiFileFactory {
 //	const DIM_IMPORT_MODE_USED_ONLY = 'usedOnly';
 	
 	private $thumbEiCmdPath;
-	private $imageDimensionsImportMode = null;
+	private ImageDimensionsImportMode $imageDimensionsImportMode = ImageDimensionsImportMode::USED_ONLY ;
 	/**
 	 * @var ImageDimension[]
 	 */
@@ -62,7 +63,7 @@ class GuiSiFileFactory implements SiFileFactory {
 		$this->thumbEiCmdPath = $thumbEiCmdPath;
 	}
 	
-	function setTargetFileManager(?FileManager $fileManager) {
+	function setTargetFileManager(?FileManager $fileManager): void {
 		$this->targetFileManager = $fileManager;
 	}
 	
@@ -278,7 +279,7 @@ class GuiSiFileFactory implements SiFileFactory {
 	 * @return SiImageDimension[]
 	 */
 	private function createSiImageDimensions(ImageFile $imageFile, $imageDimensions) {
-		$siImageDimensions = []; 
+		$siImageDimensions = [];
 		foreach ($imageDimensions as $id => $imageDimension) {
 			$thumbCut = $imageFile->getThumbCut($imageDimension);
 			
@@ -312,21 +313,21 @@ class GuiSiFileFactory implements SiFileFactory {
 		foreach ($this->extraImageDimensions as $imageDimension) {
 			$imageDimensions[(string) $imageDimension] = $imageDimension;
 		}
-		
+
 		$autoImageDimensions = array();
 		switch ($this->imageDimensionsImportMode) {
 			case ImageDimensionsImportMode::ALL:
 				if ($this->targetFileManager !== null) {
 					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
 				}
-				
+
 				break;
 			case ImageDimensionsImportMode::USED_ONLY:
 				$thumbEngine = $file->getFileSource()->getAffiliationEngine()->getThumbManager();
 				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
 				break;
 		}
-		
+
 		$rocketImageDimensionStr = (string) SiFile::getThumbStrategy()->getImageDimension();
 		
 		foreach ($autoImageDimensions as $autoImageDimension) {
@@ -338,7 +339,7 @@ class GuiSiFileFactory implements SiFileFactory {
 			
 			$imageDimensions[$autoImageDimensionStr] = $autoImageDimension;
 		}
-		
+
 		return $imageDimensions;
 	}
 

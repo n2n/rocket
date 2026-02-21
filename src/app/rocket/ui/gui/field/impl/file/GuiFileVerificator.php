@@ -26,50 +26,13 @@ use n2n\validation\lang\ValidationMessages;
 use n2n\io\managed\File;
 use n2n\io\managed\img\ImageFile;
 use n2n\validation\validator\impl\ValidationUtils;
+use rocket\ui\si\content\impl\FileInSiField;
 
 class GuiFileVerificator {
-	
-	private $imageRecognized = true;
-	private $allowedExtensions = [];
-	private $allowedMimeTypes = [];
-	private $maxSize;
-	
-	function __construct() {
+
+	function __construct(private ?FileInSiField $siField, public bool $imageRecognized) {
 		
 	}
-	
-	function getAllowedExtensions() {
-		return $this->allowedExtensions;
-	}
-	
-	function setAllowedExtensions(array $allowedExtensions) {
-		$this->allowedExtensions = $allowedExtensions;
-	}
-	
-	function getAllowedMimeTypes() {
-		return $this->allowedMimeTypes;
-	}
-	
-	function setAllowedMimeTypes(array $allowedMimeTypes) {
-		$this->allowedMimeTypes = $allowedMimeTypes;
-	}
-	
-	function setMaxSize(?int $maxSize = null) {
-		$this->maxSize = $maxSize;
-	}
-	
-	function getMaxSize() {
-		return $this->maxSize;
-	}
-
-	function isImageRecognized(): bool {
-		return $this->imageRecognized;
-	}
-	
-	function setImageRecognized(bool $imageRecognized) {
-		$this->imageRecognized = $imageRecognized;
-	}
-	
 	
 	public function test(File $file): bool {
 		return $this->testSize($file) && $this->testType($file) && $this->testResolution($file);
@@ -78,13 +41,13 @@ class GuiFileVerificator {
 	
 	public function validate(File $file): ?Message {
 		if (!$this->testSize($file)) {
-			return ValidationMessages::uploadMaxSize($this->maxSize, $file->getOriginalName(), 
+			return ValidationMessages::uploadMaxSize($this->siField->getMaxSize(), $file->getOriginalName(),
 					$file->getFileSource()->getSize());
 		}
 		
 		if (!$this->testType($file)) {
 			return ValidationMessages::fileType($file, 
-					array_merge($this->allowedExtensions, $this->allowedMimeTypes));
+					array_merge($this->siField->getAcceptedExtensions(), $this->siField->getAcceptedMimeTypes()));
 		}
 		
 		if (!$this->testResolution($file)) {
@@ -98,25 +61,28 @@ class GuiFileVerificator {
 	 * @param File $file
 	 * @return boolean
 	 */
-	private function testType($file) {
+	private function testType(File $file): bool {
+		$allowedMimeTypes = $this->siField->getAcceptedMimeTypes();
+		$allowedExtensions = $this->siField->getAcceptedExtensions();
 		return ValidationUtils::isFileTypeSupported($file,
-				(empty($this->allowedMimeTypes) ? null : $this->allowedMimeTypes),
-				(empty($this->allowedExtensions) ? null : $this->allowedExtensions));
+				(empty($allowedMimeTypes) ? null : $allowedMimeTypes),
+				(empty($allowedExtensions) ? null : $allowedExtensions));
 	}
 	
 	/**
 	 * @param File $file
 	 * @return boolean
 	 */
-	private function testSize($file) {
-		return $this->maxSize === null || $file->getFileSource()->getSize() <= $this->maxSize;
+	private function testSize(File $file): bool {
+		$maxSize = $this->siField->getMaxSize();
+		return  $maxSize === null || $file->getFileSource()->getSize() <= $maxSize;
 	}
 	
 	/**
 	 * @param File $file
 	 * @return boolean
 	 */
-	private function testResolution($file) {
+	private function testResolution(File $file): bool {
 		return !$this->imageRecognized || !$file->getFileSource()->isImage()
 				|| ValidationUtils::isImageResolutionManagable(new ImageFile($file));
 	}

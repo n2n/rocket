@@ -22,6 +22,7 @@
 namespace rocket\ui\si\content\impl;
 
 use n2n\io\managed\File;
+use n2n\util\ex\IllegalStateException;
 
 class FileOutSiField extends OutSiFieldAdapter {
 	/**
@@ -31,9 +32,9 @@ class FileOutSiField extends OutSiFieldAdapter {
 
 	/**
 	 * @param File|null $value
-	 * @param SiFileHandler $siFileHandler
+	 * @param SiFileHandler $fileHandler
 	 */
-	function __construct(?File $value, private SiFileHandler $siFileHandler) {
+	function __construct(?File $value, private ?SiFileHandler $fileHandler) {
 		$this->value = $value;	
 	}
 
@@ -49,8 +50,19 @@ class FileOutSiField extends OutSiFieldAdapter {
 	/**
 	 * @return File|null
 	 */
-	function getValue() {
+	function getValue(): ?File {
 		return $this->value;
+	}
+
+	function setFileHandler(SiFileHandler $fileHandler): static {
+		$this->fileHandler = $fileHandler;
+		return $this;
+	}
+
+	function getFileHandler(): SiFileHandler {
+		IllegalStateException::assertTrue($this->fileHandler !== null, 'No SiFileHandler defined for'
+				. self::class);
+		return $this->fileHandler;
 	}
 	
 	/**
@@ -67,7 +79,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'value' => ($this->value === null ? null : $this->siFileHandler->createSiFile($this->value, $n2nContext)),
+			'value' => ($this->value === null ? null : $this->getFileHandler()->createSiFile($this->value, $n2nContext)),
 			...parent::toJsonStruct($n2nContext)
 		];
 	}
