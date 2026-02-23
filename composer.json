@@ -59,7 +59,7 @@
 		}
 	},
 	"require-dev" : {
-        "n2n/n2n-test": "^7.4",
+        "n2n/n2n-test": "~7.4.0",
 		"phpunit/phpunit" : "^9.6.29"
 	}
 }
