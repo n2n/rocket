@@ -2,6 +2,7 @@
 
 use n2n\core\N2N;
 use n2n\util\io\IoUtils;
+use n2n\persistence\ext\PdoPool;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -38,4 +39,4 @@ $testSqlFsPath = __DIR__ . DIRECTORY_SEPARATOR . 'install.my.sql';
  $sql = str_replace('UNSIGNED ', '', $sql);
 // file_put_contents('huii.sql', $sql);
 
- N2N::getPdoPool()->getPdo()->exec($sql);
+ N2N::getN2nContext()->lookup(PdoPool::class)->getPdo()->exec($sql);

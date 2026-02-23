@@ -96,6 +96,9 @@ use rocket\op\ei\EiPropPath;
 use rocket\attribute\impl\EiEditConfig;
 use rocket\impl\ei\component\prop\numeric\NestedSetEiPropNature;
 use rocket\impl\ei\component\prop\numeric\NestedSetAttribute;
+use rocket\attribute\impl\EiPropFile;
+use rocket\op\ei\component\prop\EiProp;
+use rocket\attribute\impl\EiPropImageFile;
 
 class EiPropNatureProvider {
 
@@ -291,6 +294,35 @@ class EiPropNatureProvider {
 					array_map(
 							fn (string $n) => $this->lookup($n, CkeLinkProvider::class, $attribute),
 							$eiPropCke->linkProviders)));
+
+			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
+		}
+
+		$attributes = [
+			...$this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropFile::class),
+			...$this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropImageFile::class)
+		];
+		foreach ($attributes as $attribute) {
+			$eiPropFile = $attribute->getInstance();
+			assert($eiPropFile instanceof EiPropFile);
+			$propertyName = $attribute->getProperty()->getName();
+			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute,
+					$this->obtainEiEditConfig($propertyName)?->readOnly);
+
+			$nature = new FileEiPropNature($propertyAccessProxy);
+			$nature->setEntityProperty($this->eiTypeClassSetup->getEntityProperty($propertyName, false));
+			$this->configureLabel($propertyAccessProxy, $nature->getLabelConfig(),
+					$this->eiTypeClassSetup->getPropertyLabel($propertyName));
+			$this->configureDisplayConfig($propertyAccessProxy, $nature->getDisplayConfig(), $nature);
+			$this->configureEditConfig($propertyAccessProxy, $nature->getEntityProperty(), $nature->getEditConfig(),
+					$nature);
+
+			$nature->maxSize = $eiPropFile->maxSize;
+			$nature->allowedExtensions = $eiPropFile->allowedExtensions;
+			$nature->allowedMimeTypes = $eiPropFile->allowedMimeTypes;
+			$nature->dimensionImportMode = $eiPropFile->dimensionImportMode;
+			$nature->extraThumbDimensions = $eiPropFile->extraThumbDimensions;
+			$nature->imageRecognized = $eiPropFile->imageRecognized;
 
 			$this->eiTypeClassSetup->addEiPropNature($this->eiPropPath($propertyName), $nature);
 		}

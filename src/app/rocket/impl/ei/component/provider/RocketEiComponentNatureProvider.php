@@ -46,37 +46,7 @@ use n2n\context\attribute\Inject;
 use rocket\attribute\impl\EiModCallback;
 use rocket\impl\ei\component\mod\callback\StaticCallbackEiModNature;
 use n2n\util\magic\MagicLookupFailedException;
-use n2n\util\StringUtils;
-use rocket\impl\ei\component\prop\string\cke\CkeEiPropNature;
-use n2n\io\managed\File;
-use rocket\impl\ei\component\prop\file\FileEiPropNature;
-use rocket\impl\ei\component\prop\adapter\PropertyEiPropNature;
-use n2n\impl\persistence\orm\property\RelationEntityProperty;
-use rocket\impl\ei\component\prop\relation\ManyToManySelectEiPropNature;
-use rocket\impl\ei\component\prop\relation\OneToManySelectEiPropNature;
-use rocket\impl\ei\component\prop\relation\OneToOneSelectEiPropNature;
-use rocket\impl\ei\component\prop\relation\ManyToOneSelectEiPropNature;
-use n2n\util\ex\IllegalStateException;
-use n2n\util\type\TypeConstraints;
 use n2n\context\attribute\ThreadScoped;
-use rocket\impl\ei\component\prop\meta\AddonEiPropNature;
-use n2n\persistence\orm\property\ClassSetup;
-use rocket\attribute\impl\Addon;
-use rocket\impl\ei\component\prop\meta\SiCrumbGroupFactory;
-use n2n\reflection\property\PropertyAccessProxy;
-use rocket\impl\ei\component\prop\translation\Translatable;
-use rocket\impl\ei\component\prop\translation\TranslationEiPropNature;
-use n2n\persistence\orm\attribute\OneToMany;
-use n2n\reflection\attribute\Attribute;
-use n2n\persistence\orm\CascadeType;
-use rocket\op\ei\component\prop\EiProp;
-use n2n\reflection\attribute\PropertyAttribute;
-use rocket\impl\ei\component\prop\relation\RelationEiProp;
-use rocket\attribute\impl\EiPropBool;
-use rocket\impl\ei\component\prop\enum\EnumEiPropNature;
-use rocket\attribute\impl\EiPropEnum;
-use rocket\op\ei\component\InvalidEiConfigurationException;
-use n2n\reflection\property\AccessProxy;
 
 #[ThreadScoped]
 class RocketEiComponentNatureProvider implements EiComponentNatureProvider {

@@ -55,6 +55,7 @@ use n2n\util\uri\Url;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\veto\EiLifecycleMonitor;
+use n2n\core\ext\N2nBatch;
 
 class SpecTestEnv {
 
@@ -175,6 +176,10 @@ class N2nContextMock extends SimpleMagicContext implements N2nContext {
 	}
 
 	function dispatchThrowable(\Throwable $throwable): void {
+		throw new UnsupportedOperationException();
+	}
+
+	function getBatch(): ?N2nBatch {
 		throw new UnsupportedOperationException();
 	}
 }
