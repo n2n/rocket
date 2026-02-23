@@ -101,8 +101,8 @@ class SiFields {
 	}
 
 
-	static function fileOut(?File $file, ?SiFileHandler $siFileHandler): FileOutSiField {
-		return new FileOutSiField($file, $siFileHandler);
+	static function fileOut(?File $file, ?SiFileFactory $siFileFactory): FileOutSiField {
+		return new FileOutSiField($file, $siFileFactory);
 	}
 
 	/**

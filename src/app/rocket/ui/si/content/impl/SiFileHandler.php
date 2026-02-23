@@ -26,7 +26,7 @@ use n2n\core\container\N2nContext;
 use n2n\io\managed\File;
 use rocket\ui\si\err\CorruptedSiDataException;
 
-interface SiFileHandler {
+interface SiFileHandler extends SiFileFactory {
 
 	function upload(UploadDefinition $uploadDefinition, N2nContext $n2nContext): SiUploadResult;
 	
@@ -39,7 +39,6 @@ interface SiFileHandler {
 	 */
 	function determineFileByRawId(array $fileId, ?File $currentValue, N2nContext $n2nContext): ?File;
 
-	function createSiFile(File $file, N2nContext $n2nContext): SiFile;
 
 	function applyThumbCuts(File $file, array $thumbCuts): void;
 }
@@ -81,20 +80,12 @@ class SiUploadResult {
 	function getErrorMessage() {
 		return $this->errorMessage;
 	}
-	
-	/**
-	 * @param File $file
-	 * @return \rocket\si\content\impl\SiUploadResult
-	 */
-	static function createSuccess(File $file) {
+
+	static function createSuccess(File $file): SiUploadResult {
 		return new SiUploadResult($file, null);
 	}
-	
-	/**
-	 * @param string $errorMessage
-	 * @return \rocket\si\content\impl\SiUploadResult
-	 */
-	static function createError(string $errorMessage) {
+
+	static function createError(string $errorMessage): SiUploadResult {
 		return new SiUploadResult(null, $errorMessage);
 	}
 }

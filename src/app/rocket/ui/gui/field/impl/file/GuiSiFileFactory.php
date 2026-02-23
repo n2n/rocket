@@ -47,77 +47,68 @@ class GuiSiFileFactory implements SiFileFactory {
 //	const DIM_IMPORT_MODE_ALL = 'all';
 //	const DIM_IMPORT_MODE_USED_ONLY = 'usedOnly';
 	
-	private $thumbEiCmdPath;
-	private ImageDimensionsImportMode $imageDimensionsImportMode = ImageDimensionsImportMode::USED_ONLY ;
-	/**
-	 * @var ImageDimension[]
-	 */
-	private array $extraImageDimensions = [];
-	private $targetFileManager;
-	private $targetFileLocator = null;
+//	private $thumbEiCmdPath;
+//
+//	private bool $imageAllowed = true;
 
-	private bool $imageAllowed = true;
-
-	public function setThumbEiCmdPath(EiCmdPath $thumbEiCmdPath) {
-// 		$thumbEiCommand->setFileEiProp($this);
-		$this->thumbEiCmdPath = $thumbEiCmdPath;
-	}
-	
-	function setTargetFileManager(?FileManager $fileManager): void {
-		$this->targetFileManager = $fileManager;
-	}
-	
-	function getTargetFileManager(): ?FileLocator {
-		return $this->targetFileManager;
-	}
-	
-	function setTargetFileLocator(?FileLocator $fileLocator): void {
-		$this->targetFileLocator = $fileLocator;
-	}
-	
-	function getTargetFileLocator() {
-		return $this->targetFileLocator;
+	function __construct(public bool $imageRecognized) {
 	}
 
-	public function getThumbEiCmdPath() {
-		return $this->thumbEiCmdPath;
-	}
-	
-	public function getImageDimensionImportMode() {
-		return $this->imageDimensionsImportMode;
-	}
-	
-	public function setImageDimensionImportMode(?string $imageDimensionImportMode) {
-		ArgUtils::valEnum($imageDimensionImportMode, self::getImageDimensionImportModes(), null, true);
-		$this->imageDimensionsImportMode = $imageDimensionImportMode;
-	}
-	
-	public static function getImageDimensionImportModes(): array {
-		return array(self::DIM_IMPORT_MODE_ALL, self::DIM_IMPORT_MODE_USED_ONLY);
-	}
+//	public function setThumbEiCmdPath(EiCmdPath $thumbEiCmdPath) {
+//// 		$thumbEiCommand->setFileEiProp($this);
+//		$this->thumbEiCmdPath = $thumbEiCmdPath;
+//	}
+//
+//	function setTargetFileManager(?FileManager $fileManager): void {
+//		$this->targetFileManager = $fileManager;
+//	}
+//
+//	function getTargetFileManager(): ?FileLocator {
+//		return $this->targetFileManager;
+//	}
+//
+//	function setTargetFileLocator(?FileLocator $fileLocator): void {
+//		$this->targetFileLocator = $fileLocator;
+//	}
+//
+//	function getTargetFileLocator() {
+//		return $this->targetFileLocator;
+//	}
+//
+//	public function getThumbEiCmdPath() {
+//		return $this->thumbEiCmdPath;
+//	}
+//
+//	public function getImageDimensionImportMode() {
+//		return $this->imageDimensionsImportMode;
+//	}
+//
+//	public function setImageDimensionImportMode(?string $imageDimensionImportMode) {
+//		ArgUtils::valEnum($imageDimensionImportMode, self::getImageDimensionImportModes(), null, true);
+//		$this->imageDimensionsImportMode = $imageDimensionImportMode;
+//	}
+//
+//	public static function getImageDimensionImportModes(): array {
+//		return array(self::DIM_IMPORT_MODE_ALL, self::DIM_IMPORT_MODE_USED_ONLY);
+//	}
+//
+//	/**
+//	 * @return ImageDimension[]
+//	 */
+//	public function getExtraImageDimensions(): array {
+//		return $this->extraImageDimensions;
+//	}
+//
+//	/**
+//	 * @param array $extraImageDimensions
+//	 * @return void
+//	 */
+//	public function setExtraImageDimensions(array $extraImageDimensions) {
+//		ArgUtils::valArray($extraImageDimensions, ImageDimension::class);
+//		$this->extraImageDimensions = $extraImageDimensions;
+//	}
 
-	/**
-	 * @return ImageDimension[]
-	 */
-	public function getExtraImageDimensions(): array {
-		return $this->extraImageDimensions;
-	}
-
-	/**
-	 * @param array $extraImageDimensions
-	 * @return void
-	 */
-	public function setExtraImageDimensions(array $extraImageDimensions) {
-		ArgUtils::valArray($extraImageDimensions, ImageDimension::class);
-		$this->extraImageDimensions = $extraImageDimensions;
-	}
-	
-	/**
-	 * @param File $file
-	 * @param Eiu $eiu
-	 * @return \rocket\ui\si\content\impl\SiFile
-	 */
-	function createSiFile(File $file, bool $imageSupported, N2nContext $n2nContext): SiFile {
+	function createSiFile(File $file, N2nContext $n2nContext): SiFile {
 		if (!$file->isValid()) {
 			$dtc = new DynamicTextCollection('rocket', $n2nContext->getN2nLocale());
 			return new SiFile(SiFileId::create($file), $dtc->t('missing_file_err'));
@@ -127,11 +118,7 @@ class GuiSiFileFactory implements SiFileFactory {
 
 		$siFile = new SiFile(SiFileId::create($file), $file->getOriginalName());
 
-		$tmpQualifiedName = null;
-		if ($n2nContext->lookup(TmpFileManager::class)
-				->containsSessionFile($file, $n2nContext->lookup(\n2n\web\http\HttpContext::class)->getSession())) {
-			$tmpQualifiedName = $fileSource->getQualifiedName();
-		}
+		$tmpQualifiedName = $this->determineTmpQualifiedNameIfExists($file, $n2nContext);
 
 		if ($fileSource->isHttpAccessible()) {
 			$siFile->setUrl($fileSource->getUrl());
@@ -147,7 +134,7 @@ class GuiSiFileFactory implements SiFileFactory {
 			$siFile->setUrl(GuiResourceController::determineFileUrl($fileAccessToken, $n2nContext));
 		}
 
-		if (!$imageSupported) {
+		if (!$this->imageRecognized) {
 			return $siFile;
 		}
 
@@ -176,9 +163,30 @@ class GuiSiFileFactory implements SiFileFactory {
 		}
 
 		$siFile->setMimeType($thumbImageFile->getImageSource()->getMimeType());
-		$siFile->setImageDimensions($this->createSiImageDimensions(new ImageFile($file), $this->determineImageDimensions($file)));
 
 		return $siFile;
+	}
+
+	function determineTmpQualifiedNameIfExists(File $file, N2nContext $n2nContext): ?string {
+		if ($n2nContext->lookup(TmpFileManager::class)
+				->containsSessionFile($file, $n2nContext->lookup(\n2n\web\http\HttpContext::class)->getSession())) {
+			return $file->getFileSource()->getQualifiedName();
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param File $file
+	 * @return ImageFile|null
+	 */
+	private function buildThumb(File $file): ?ImageFile {
+		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
+			return null;
+		}
+
+		$thumbStrategy = SiFile::getThumbStrategy();
+		return (new ImageFile($file))->getOrCreateThumb($thumbStrategy);
 	}
 	
 	function determineTmpFile(SiFileId $fileId, N2nContext $n2nContext): ?File {
@@ -200,151 +208,73 @@ class GuiSiFileFactory implements SiFileFactory {
 		return null;
 	}
 		
-	/**
-	 * @param File $file
-	 * @return ImageFile|null
-	 */
-	private function buildThumb(File $file) {
-		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
-			return null;
-		}
-		
-		$thumbStartegy = SiFile::getThumbStrategy();
-		return (new ImageFile($file))->getOrCreateThumb($thumbStartegy);
-	}
-	
-	function createFileUrl(Eiu $eiu, string $pid) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['file', $pid]);
-	}
-		
-	/**
-	 * @param EiuFrame $eiuFrame
-	 * @param ImageDimension $imageDimension
-	 * @return \n2n\util\uri\Url
-	 */
-	function createThumbUrl(Eiu $eiu, ImageDimension $imageDimension) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)
-				->extR(['thumb', $eiu->entry()->getPid()], ['imgDim' => $imageDimension->__toString()]);
-	}
-	
-	/**
-	 * @param Eiu $eiu
-	 * @param string $qualifiedName
-	 * @return \n2n\util\uri\Url
-	 */
-	function createTmpUrl(Eiu $eiu, string $qualifiedName) {
-		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['tmp'], ['qn' => $qualifiedName]);
-	}
-	
-	/**
-	 * @param Eiu $eiu
-	 * @param string $qualifiedName
-	 * @param ImageDimension $thumbImgDim
-	 * @return \n2n\util\uri\Url
-	 */
-	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim/*, ?ImageDimension $variationImgDim = null*/) {
-		$query = ['qn' => $qualifiedName, 'imgDim' => $thumbImgDim->__toString()];
-		
-// 		if ($variationImgDim !== null) {
-// 			$query['variationImgDim'] = (string) $variationImgDim;
-// 		}
-		
-		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['tmpthumb'], $query);
-	}
-	
-	/**
-	 * @param File $file
-	 * @return boolean
-	 */
-	function isThumbCreationEnabled(File $file) {
-		if ($this->thumbEiCmdPath === null
-				|| !$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) return false;
-				
-		if (!empty($this->extraImageDimensions)) return true;
-		
-		$thumbEngine = $file->getFileSource()->getThumbManager();
-		switch ($this->imageDimensionsImportMode) {
-			case self::DIM_IMPORT_MODE_ALL:
-				return !empty($thumbEngine->getPossibleImageDimensions());
-			case self::DIM_IMPORT_MODE_USED_ONLY:
-				return !empty($thumbEngine->getUsedImageDimensions());
-			default:
-				return false;
-		}
-	}
-	
-	/**
-	 * @param ImageFile $imageFile
-	 * @param ImageDimension[] $imageDimensions
-	 * @return SiImageDimension[]
-	 */
-	private function createSiImageDimensions(ImageFile $imageFile, $imageDimensions) {
-		$siImageDimensions = [];
-		foreach ($imageDimensions as $id => $imageDimension) {
-			$thumbCut = $imageFile->getThumbCut($imageDimension);
-			
-			$imageDimension = ImageDimension::createFromString($imageDimension);
-			$exits = true;
-			if ($thumbCut === null) {
-				$thumbCut = ThumbCut::auto($imageFile->getImageSource(), $imageDimension);
-				$exits = false;
-			}
-			$ratioFixed = $imageDimension->isCropped();
-			$idExt = $imageDimension->getIdExt();
-			
-			$siImageDimensions[] = new SiImageDimension($id, ($idExt !== null ? StringUtils::pretty($idExt) : null), 
-					$imageDimension->getWidth(), $imageDimension->getHeight(), $ratioFixed,
-					$thumbCut, $exits);
-		}
-		return $siImageDimensions;
-	}
-	
-	/**
-	 * @param File $file
-	 * @return ImageDimension[]
-	 */
-	function determineImageDimensions(File $file): array {
-		$imageDimensions = array();
-		
-		if (!$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) {
-			return $imageDimensions;
-		}
-		
-		foreach ($this->extraImageDimensions as $imageDimension) {
-			$imageDimensions[(string) $imageDimension] = $imageDimension;
-		}
 
-		$autoImageDimensions = array();
-		switch ($this->imageDimensionsImportMode) {
-			case ImageDimensionsImportMode::ALL:
-				if ($this->targetFileManager !== null) {
-					$autoImageDimensions = $this->targetFileManager->getPossibleImageDimensions($file, $this->targetFileLocator);
-				}
-
-				break;
-			case ImageDimensionsImportMode::USED_ONLY:
-				$thumbEngine = $file->getFileSource()->getAffiliationEngine()->getThumbManager();
-				$autoImageDimensions = $thumbEngine->getUsedImageDimensions();
-				break;
-		}
-
-		$rocketImageDimensionStr = (string) SiFile::getThumbStrategy()->getImageDimension();
-		
-		foreach ($autoImageDimensions as $autoImageDimension) {
-			$autoImageDimensionStr = (string) $autoImageDimension;
-			
-			if ($autoImageDimensionStr == $rocketImageDimensionStr) {
-				continue;
-			}
-			
-			$imageDimensions[$autoImageDimensionStr] = $autoImageDimension;
-		}
-
-		return $imageDimensions;
-	}
-
-	public function setImageDimensionsImportMode(ImageDimensionsImportMode $imageDimensionsImportMode): void {
-		$this->imageDimensionsImportMode = $imageDimensionsImportMode;
-	}
+//	function createFileUrl(Eiu $eiu, string $pid) {
+//		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['file', $pid]);
+//	}
+//
+//	/**
+//	 * @param EiuFrame $eiuFrame
+//	 * @param ImageDimension $imageDimension
+//	 * @return \n2n\util\uri\Url
+//	 */
+//	function createThumbUrl(Eiu $eiu, ImageDimension $imageDimension) {
+//		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)
+//				->extR(['thumb', $eiu->entry()->getPid()], ['imgDim' => $imageDimension->__toString()]);
+//	}
+//
+//	/**
+//	 * @param Eiu $eiu
+//	 * @param string $qualifiedName
+//	 * @return \n2n\util\uri\Url
+//	 */
+//	function createTmpUrl(Eiu $eiu, string $qualifiedName) {
+//		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['tmp'], ['qn' => $qualifiedName]);
+//	}
+//
+//	/**
+//	 * @param Eiu $eiu
+//	 * @param string $qualifiedName
+//	 * @param ImageDimension $thumbImgDim
+//	 * @return \n2n\util\uri\Url
+//	 */
+//	function createTmpThumbUrl(Eiu $eiu, string $qualifiedName, ImageDimension $thumbImgDim/*, ?ImageDimension $variationImgDim = null*/) {
+//		$query = ['qn' => $qualifiedName, 'imgDim' => $thumbImgDim->__toString()];
+//
+//// 		if ($variationImgDim !== null) {
+//// 			$query['variationImgDim'] = (string) $variationImgDim;
+//// 		}
+//
+//		return $eiu->frame()->getCmdUrl($this->thumbEiCmdPath)->extR(['tmpthumb'], $query);
+//	}
+//
+//	/**
+//	 * @param File $file
+//	 * @return boolean
+//	 */
+//	function isThumbCreationEnabled(File $file) {
+//		if ($this->thumbEiCmdPath === null
+//				|| !$file->getFileSource()->getAffiliationEngine()->hasThumbSupport()) return false;
+//
+//		if (!empty($this->extraImageDimensions)) return true;
+//
+//		$thumbEngine = $file->getFileSource()->getThumbManager();
+//		switch ($this->imageDimensionsImportMode) {
+//			case self::DIM_IMPORT_MODE_ALL:
+//				return !empty($thumbEngine->getPossibleImageDimensions());
+//			case self::DIM_IMPORT_MODE_USED_ONLY:
+//				return !empty($thumbEngine->getUsedImageDimensions());
+//			default:
+//				return false;
+//		}
+//	}
+//
+//
+//
+//
+//
+//	public function setImageDimensionsImportMode(ImageDimensionsImportMode $imageDimensionsImportMode): void {
+//		$this->imageDimensionsImportMode = $imageDimensionsImportMode;
+//	}
 
 }

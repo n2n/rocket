@@ -13,11 +13,11 @@ use n2n\io\managed\FileManager;
 
 class FileInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel {
 
-	private GuiSiFileFactory $guiSiFileFactory;
+	private GuiSiFileHandler $guiSiFileHandler;
 
 	function __construct(private readonly FileInSiField $siField, bool $imageRecognized = true) {
 		parent::__construct($siField);
-		$this->siField->setFileHandler(new GuiSiFileHandler($this->guiSiFileFactory = new GuiSiFileFactory(),
+		$this->siField->setFileHandler($this->guiSiFileHandler = new GuiSiFileHandler(new GuiSiFileFactory($imageRecognized),
 				new GuiFileVerificator($siField, $imageRecognized)));
 	}
 
@@ -31,22 +31,22 @@ class FileInGuiField extends InGuiFieldAdapter implements GuiField, SiFieldModel
 	}
 
 	function setExtraImageDimensions(array $extraImageDimensions): static {
-		$this->guiSiFileFactory->setExtraImageDimensions($extraImageDimensions);
+		$this->guiSiFileHandler->extraImageDimensions = $extraImageDimensions;
 		return $this;
 	}
 
 	function setImageDimensionsImportMode(ImageDimensionsImportMode $imageDimensionsImportMode): static {
-		$this->guiSiFileFactory->setImageDimensionsImportMode($imageDimensionsImportMode);
+		$this->guiSiFileHandler->imageDimensionsImportMode = $imageDimensionsImportMode;
 		return $this;
 	}
 
 	function setTargetFileLocator(?FileLocator $fileLocator): static {
-		$this->guiSiFileFactory->setTargetFileLocator($fileLocator);
+		$this->guiSiFileHandler->targetFileLocator = $fileLocator;
 		return $this;
 	}
 
 	function setTargetFileManager(?FileManager $fileManager): static {
-		$this->guiSiFileFactory->setTargetFileManager($fileManager);
+		$this->guiSiFileHandler->targetFileManager = $fileManager;
 		return $this;
 	}
 

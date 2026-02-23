@@ -30,7 +30,7 @@ use rocket\ui\si\content\impl\FileInSiField;
 
 class GuiFileVerificator {
 
-	function __construct(private ?FileInSiField $siField, public bool $imageRecognized) {
+	function __construct(private FileInSiField $siField, public bool $imageRecognized) {
 		
 	}
 	

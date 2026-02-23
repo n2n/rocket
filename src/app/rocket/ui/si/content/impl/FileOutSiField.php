@@ -30,11 +30,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 */
 	private ?File $value = null;
 
-	/**
-	 * @param File|null $value
-	 * @param SiFileHandler $fileHandler
-	 */
-	function __construct(?File $value, private ?SiFileHandler $fileHandler) {
+	function __construct(?File $value, private ?SiFileFactory $fileFactory) {
 		$this->value = $value;	
 	}
 
@@ -54,15 +50,15 @@ class FileOutSiField extends OutSiFieldAdapter {
 		return $this->value;
 	}
 
-	function setFileHandler(SiFileHandler $fileHandler): static {
-		$this->fileHandler = $fileHandler;
+	function setFileFactory(SiFileHandler $fileFactory): static {
+		$this->fileFactory = $fileFactory;
 		return $this;
 	}
 
-	function getFileHandler(): SiFileHandler {
-		IllegalStateException::assertTrue($this->fileHandler !== null, 'No SiFileHandler defined for'
+	function getFileFactory(): SiFileFactory {
+		IllegalStateException::assertTrue($this->fileFactory !== null, 'No SiFileFactory defined for'
 				. self::class);
-		return $this->fileHandler;
+		return $this->fileFactory;
 	}
 	
 	/**
@@ -79,7 +75,7 @@ class FileOutSiField extends OutSiFieldAdapter {
 	 */
 	function toJsonStruct(\n2n\core\container\N2nContext $n2nContext): array {
 		return [
-			'value' => ($this->value === null ? null : $this->getFileHandler()->createSiFile($this->value, $n2nContext)),
+			'value' => ($this->value === null ? null : $this->getFileFactory()->createSiFile($this->value, $n2nContext)),
 			...parent::toJsonStruct($n2nContext)
 		];
 	}
