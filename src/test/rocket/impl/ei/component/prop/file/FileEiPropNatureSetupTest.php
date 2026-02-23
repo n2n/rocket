@@ -20,14 +20,13 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 
-namespace rocket\impl\ei\component\prop\relation;
+namespace rocket\impl\ei\component\prop\file;
 
 use PHPUnit\Framework\TestCase;
 use rocket\test\SpecTestEnv;
 use rocket\test\GeneralTestEnv;
 use testmdl\string\bo\FileTestObj;
 use rocket\op\ei\UnknownEiTypeException;
-use rocket\impl\ei\component\prop\file\FileEiPropNature;
 use rocket\ui\gui\field\impl\file\ImageDimensionsImportMode;
 use n2n\io\managed\img\ImageDimension;
 use n2n\io\img\impl\ImageSourceFactory;
