@@ -76,8 +76,17 @@ class GuiSiFileHandler implements SiFileHandler {
 
 	function createSiFile(File $file, N2nContext $n2nContext): SiFile {
 		$siFile = $this->guiSiFileFactory->createSiFile($file, $n2nContext);
-		$siFile->setImageDimensions($this->createSiImageDimensions(new ImageFile($file), $this->determineImageDimensions($file)));
 
+		if (!$this->guiSiFileFactory->imageRecognized) {
+			return $siFile;
+		}
+
+		$imageDimensions = $this->determineImageDimensions($file);
+		if (empty($imageDimensions)) {
+			return $siFile;
+		}
+
+		$siFile->setImageDimensions($this->createSiImageDimensions(new ImageFile($file), $imageDimensions));
 		return $siFile;
 	}
 
