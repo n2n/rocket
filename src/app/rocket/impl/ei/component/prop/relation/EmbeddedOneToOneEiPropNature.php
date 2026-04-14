@@ -69,6 +69,11 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 			return $this->createCompactGuiField($eiu);
 		}
 
+		// enables fields of embedded entries to be edited.
+		if (!$eiu->guiDefinition()->isReadOnly()) {
+			return $this->buildInGuiField($eiu);
+		}
+
 		$targetEiuFrame = $eiu->frame()->forkDiscover($eiu->prop(), $eiu->object())->frame()
 				->exec($this->getRelationModel()->getTargetReadEiCmdPath());
 

@@ -9,7 +9,7 @@ export interface EmbeddedEntriesInModel extends MessageFieldModel {
 
 	getMax(): number|null;
 
-	// isNonNewRemovable(): boolean;
+	isNonNewRemovable(): boolean;
 
 	isSortable(): boolean;
 

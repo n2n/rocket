@@ -36,6 +36,10 @@ export class EmbeddedEntriesInComponent implements OnInit {
 		return this.model.getEmbeStructures();
 	}
 
+	isEmbeStructureRemovable(embeStructure: EmbeStructure): boolean {
+		return this.model.isNonNewRemovable() || embeStructure.embe.siValueBoundary.isNew();
+	}
+
 	// add(siEmbeddedEntry: SiEmbeddedEntry) {
 	// 	this.embeCol.createEmbe(siEmbeddedEntry);
 	// 	this.embeCol.writeEmbes();

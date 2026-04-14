@@ -5,7 +5,8 @@
 
 		<rocket-embedded-entry [embeStructure]="embeStructure">
 			<div rocketUiStructureToolbar class="rocket-simple-commands">
-				<button class="btn btn-danger" (click)="model.remove(embeStructure)">
+				<button *ngIf="isEmbeStructureRemovable(embeStructure)" class="btn btn-danger"
+						(click)="model.remove(embeStructure)">
 					<span>{{ 'common_delete_label' | translate }}</span>
 					<i class="fa fa-trash-alt"></i>
 				</button>
