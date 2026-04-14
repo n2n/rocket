@@ -104,7 +104,8 @@ class EmbeddedOneToOneEiPropNature extends RelationEiPropNatureAdapter {
 		}
 
 		$guiField = GuiFields::guiEmbeddedEntriesIn($targetEiuFrame->createSiFrame(), $factory,
-				$bulkySiMaskId, $summarySiMaskId, $this->relationModel->isRemovable(), false,
+				$bulkySiMaskId, $summarySiMaskId,
+				!$eiu->guiDefinition()->isReadOnly() || $this->relationModel->isRemovable(), false,
 				$this->relationModel->getMin(), $this->relationModel->getMax());
 
 		$targetEiuEntry = $eiu->field()->getValue();
