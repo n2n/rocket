@@ -156,4 +156,7 @@ class EmbeddedEiField extends EiFieldNatureAdapter {
 		return false;
 	}
 
+	protected function prepareValueForWrite(mixed $value): void {
+		// TODO: Implement prepareValueForWrite() method.
+	}
 }

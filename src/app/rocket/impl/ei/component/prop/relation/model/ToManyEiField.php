@@ -212,4 +212,8 @@ class ToManyEiField extends EiFieldNatureAdapter {
 		}
 		return $copiedValues;
 	}
+
+	protected function prepareValueForWrite(mixed $value): void {
+		// TODO: Implement prepareValueForWrite() method.
+	}
 }

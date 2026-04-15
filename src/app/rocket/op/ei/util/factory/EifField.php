@@ -301,4 +301,8 @@ class FabricatedEiField extends EiFieldNatureAdapter {
 	protected function getChildEiFieldMaps(): array {
 		return [];
 	}
+
+	protected function prepareValueForWrite(mixed $value): void {
+		// TODO: Implement prepareValueForWrite() method.
+	}
 }
