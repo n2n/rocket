@@ -128,16 +128,22 @@ class ToOneEiField extends EiFieldNatureAdapter {
 	public function isWritable(): bool {
 		return $this->eiu->object()->isNativeWritable($this->eiu->prop()->getEiProp());
 	}
-	
-	protected function writeValue($value) {
+
+	protected function prepareValueForWrite(mixed $value): void {
+		if ($value === null) {
+			return;
+		}
+
+		ArgUtils::assertTrue($value instanceof EiuEntry);
+		if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
+			$value->getEiEntry()->write();
+		}
+	}
+
+	protected function writeValue(mixed $value): void {
 		$nativeValue = null;
 		if ($value !== null) {
 			ArgUtils::assertTrue($value instanceof EiuEntry);
-			
-			if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
-				$value->getEiEntry()->write();
-			}
-			
 			$nativeValue = $value->getEntityObj();
 		}
 		
