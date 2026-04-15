@@ -60,14 +60,20 @@ interface EiFieldNature {
 	public function validate(EiFieldValidationResult $eiEiFieldValidationResult);
 	
 	function read();
-	
+
+	/**
+	 * Will be called before {@link self::write()} even if {@link self::isWritable()} returns false.
+	 *
+	 * @return void
+	 */
+	function prepareWrite(): void;
+
 	/**
 	 * Security can be ignored
 	 * @return boolean
 	 */
 	public function isWritable(): bool;
-	
-	
+
 	/**
 	 * 
 	 */

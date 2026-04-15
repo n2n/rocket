@@ -137,7 +137,7 @@ class EiField implements EiFieldAbstraction {
 	 * @param bool $regardSecurity
 	 * @return bool
 	 */
-	function isWritable(bool $regardSecurity): bool {
+	function isWritable(bool $regardSecurity = true): bool {
 		return $this->eiFieldNature->isWritable()
 				&& (!$regardSecurity || $this->getEiFieldMap()->getEiEntry()->getEiEntryAccess()
 						->isEiPropWritable($this->eiPropPath));
@@ -145,12 +145,20 @@ class EiField implements EiFieldAbstraction {
 	/**
 	 * @param EiFieldValidationResult $eiEiFieldValidationResult
 	 */
-	function validate(EiFieldValidationResult $eiEiFieldValidationResult) {
+	function validate(EiFieldValidationResult $eiEiFieldValidationResult): void {
 		$this->eiFieldNature->validate($eiEiFieldValidationResult);
 	}
 	
-	function write() {
-		$this->eiFieldNature->write();
+	function write(): void {
+		if ($this->isIgnored()) {
+			return;
+		}
+
+		$this->eiFieldNature->prepareWrite();
+
+		if ($this->isWritable()) {
+			$this->eiFieldNature->write();
+		}
 	}
 	
 // 	/**

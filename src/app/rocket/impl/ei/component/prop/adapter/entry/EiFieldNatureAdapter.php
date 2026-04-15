@@ -151,8 +151,14 @@ abstract class EiFieldNatureAdapter implements EiFieldNature {
 	 * @param EiFieldValidationResult $validationResult
 	 */
 	protected abstract function validateValue($value, EiFieldValidationResult $validationResult);
+
+	final function prepareWrite(): void {
+		$this->prepareValueForWrite($this->value);
+	}
+
+	protected abstract function prepareValueForWrite(mixed $value): void;
 	
-	public final function write() {
+	public final function write(): void {
 		IllegalStateException::assertTrue($this->isWritable());
 		if (!$this->valueLoaded || !$this->hasChanges()) {
 			return;

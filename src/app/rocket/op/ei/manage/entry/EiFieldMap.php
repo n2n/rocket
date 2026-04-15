@@ -132,12 +132,8 @@ class EiFieldMap {
 		}
 	}
 	
-	function write() {
+	function write(): void {
 		foreach ($this->eiFieldWrappers as $key => $eiFieldWrapper) {
-			if ($eiFieldWrapper->isIgnored() || !$eiFieldWrapper->isWritable(true)) {
-				continue;
-			}
-
 			$eiFieldWrapper->write();
 		}
 	}
@@ -151,5 +147,14 @@ class EiFieldMap {
 			return false;
 		}
 	}
-	
+
+	function isWritable(bool $regardSecurity = true): bool {
+		foreach ($this->eiFieldWrappers as $eiFieldWrapper) {
+			if ($eiFieldWrapper->isWritable($regardSecurity)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

@@ -221,7 +221,7 @@ class FabricatedEiField extends EiFieldNatureAdapter {
 		}
 		return $value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldNature::isWritable()
