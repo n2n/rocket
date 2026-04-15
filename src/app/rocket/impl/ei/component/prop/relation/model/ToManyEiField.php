@@ -155,6 +155,19 @@ class ToManyEiField extends EiFieldNatureAdapter {
 		}
 	}
 
+
+	protected function prepareValueForWrite(mixed $value): void {
+		if (!$this->relationModel->isEmbedded() && !$this->relationModel->isIntegrated()) {
+			return;
+		}
+
+		ArgUtils::assertTrue(is_array($value));
+		foreach ($value as $eiuEntry) {
+			assert($eiuEntry instanceof EiuEntry);
+			$eiuEntry->getEiEntry()->write();
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @see \rocket\op\ei\manage\entry\EiFieldNature::isWritable()
@@ -173,12 +186,7 @@ class ToManyEiField extends EiFieldNatureAdapter {
 		$nativeValues = new \ArrayObject();
 		foreach ($value as $eiuEntry) {
 			assert($eiuEntry instanceof EiuEntry);
-
 			$nativeValues->append($eiuEntry->getEntityObj());
-			
-			if ($this->relationModel->isEmbedded() || $this->relationModel->isIntegrated()) {
-				$eiuEntry->getEiEntry()->write();
-			}
 		}
 		
 		$this->eiu->object()->writeNativeValue($nativeValues, $this->eiu->prop()->getEiProp());
@@ -213,7 +221,4 @@ class ToManyEiField extends EiFieldNatureAdapter {
 		return $copiedValues;
 	}
 
-	protected function prepareValueForWrite(mixed $value): void {
-		// TODO: Implement prepareValueForWrite() method.
-	}
 }
