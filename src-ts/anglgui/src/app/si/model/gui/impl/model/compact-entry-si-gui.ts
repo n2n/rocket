@@ -16,7 +16,6 @@ import { SiModStateService } from '../../../mod/model/si-mod-state.service';
 import { SiService } from 'src/app/si/manage/si.service';
 import { IllegalStateError } from 'src/app/util/err/illegal-state-error';
 import { SiControlBoundary } from '../../../control/si-control-boundary';
-import { SiControlFactory } from '../../../../build/si-control-factory';
 import { SimpleUiStructureModel } from '../../../../../ui/structure/model/impl/simple-si-structure-model';
 
 export class CompactEntrySiGui implements SiGui, SiControlBoundary {
@@ -182,14 +181,14 @@ class CompactUiStructureModel extends UiStructureModelAdapter implements Compact
 	}
 
 	private monitorEntry(siValueBoundary: SiValueBoundary) {
-		if (!siValueBoundary.isNew()) {
+		if (siValueBoundary.entrySelected && !siValueBoundary.isNew()) {
 			this.siEntryMonitor.registerEntry(siValueBoundary);
 		}
 
 		const sub = siValueBoundary.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					if (!siValueBoundary.isNew()) {
+					if (siValueBoundary.entrySelected && !siValueBoundary.isNew()) {
 						this.siEntryMonitor.unregisterEntry(siValueBoundary);
 					}
 					this.subscription!.remove(sub);

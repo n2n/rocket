@@ -149,14 +149,14 @@ class BulkyUiStructureModel extends UiStructureModelAdapter implements BulkyEntr
 	}
 
 	private monitorEntry() {
-		if (!this.siValueBoundary.isNew()) {
+		if (this.siValueBoundary.entrySelected && !this.siValueBoundary.isNew()) {
 			this.siEntryMonitor?.registerEntry(this.siValueBoundary);
 		}
 
 		const sub = this.siValueBoundary.state$.subscribe((state) => {
 			switch (state) {
 				case SiEntryState.REPLACED:
-					if (!this.siValueBoundary.isNew()) {
+					if (this.siValueBoundary.entrySelected && !this.siValueBoundary.isNew()) {
 						this.siEntryMonitor?.unregisterEntry(this.siValueBoundary);
 					}
 					this.siValueBoundary = this.siValueBoundary.replacementValueBoundary!;
