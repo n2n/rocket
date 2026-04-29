@@ -46,10 +46,11 @@ class EiGuiFactory {
 		$guiMasks = $eiGuiMaskFactory->createGuiMasksOfEiEntries(array_map(fn ($r) => $r->eiEntry, $records),
 				ViewMode::COMPACT_READ);
 
-		if (empty($guiMasks)) {
-			$guiMasks[] = $this->eiFrame->getContextEiEngine()->getEiGuiDefinition(ViewMode::COMPACT_READ)
-					->createGuiMask($this->eiFrame);
-		}
+//		if (empty($guiMasks)) {
+			array_unshift($guiMasks,
+					$this->eiFrame->getContextEiEngine()->getEiGuiDefinition(ViewMode::COMPACT_READ)
+							->createGuiMask($this->eiFrame));
+//		}
 
 		$count = $eiObjectSelector->count();
 
@@ -112,12 +113,6 @@ class EiGuiFactory {
 
 		$eiGuiMaskFactory = new EiGuiMaskFactory($this->eiFrame);
 		$guiMasks = $eiGuiMaskFactory->createGuiMasksOfEiEntries($eiEntries, $viewMode);
-
-//		if (empty($guiMasks)) {
-			array_unshift($guiMasks,
-					$this->eiFrame->getContextEiEngine()->getEiGuiDefinition(ViewMode::COMPACT_READ)
-							->createGuiMask($this->eiFrame));
-//		}
 
 		return new CompactGui($this->eiFrame->createSiFrame(),
 				new SiDeclaration(array_map(fn (GuiMask $m) => $m->getSiMask(), $guiMasks)),
