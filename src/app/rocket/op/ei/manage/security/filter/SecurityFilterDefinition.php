@@ -27,7 +27,7 @@ use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\manage\entry\EiEntryConstraint;
 use rocket\op\ei\manage\entry\EiFieldConstraint;
 use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 
 class SecurityFilterDefinition {
 	/**

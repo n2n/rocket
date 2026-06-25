@@ -23,7 +23,7 @@ namespace rocket\impl\ei\component\prop\string\conf;
 
 
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;

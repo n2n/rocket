@@ -21,7 +21,7 @@
  */
 namespace rocket\ui\si\meta;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiMaskQualifier implements \JsonSerializable {
@@ -77,7 +77,7 @@ class SiMaskQualifier implements \JsonSerializable {
 		try {
 			return new SiMaskQualifier(SiMaskIdentifier::parse($ds->reqArray('identifier')),
 					$ds->reqString('name'), $ds->reqString('iconClass'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new CorruptedSiDataException(null, null, $e);
 		}
 	}

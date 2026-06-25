@@ -21,7 +21,7 @@
  */
 namespace rocket\ui\si\content\impl\string;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 use n2n\util\type\ArgUtils;
 

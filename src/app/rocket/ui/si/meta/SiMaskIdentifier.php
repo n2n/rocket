@@ -21,8 +21,8 @@
  */
 namespace rocket\ui\si\meta;
 
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\DataSet;
+use n2n\util\attr\AttributesException;
 
 class SiMaskIdentifier implements \JsonSerializable {
 

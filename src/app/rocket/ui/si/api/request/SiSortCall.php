@@ -20,9 +20,9 @@
  * Thomas Günther.............: Developer, Frontend UI, Rocket Capability for Hangar
  */
 namespace rocket\ui\si\api\request;
-use n2n\util\type\attrs\DataMap;
+use n2n\util\attr\DataMap;
 use rocket\ui\si\err\CorruptedSiDataException;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 
 class SiSortCall {
 

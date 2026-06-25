@@ -22,7 +22,7 @@
 
 namespace rocket\op\cu\gui\control;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 
 class CuControlCallId implements \JsonSerializable {
 
@@ -45,7 +45,7 @@ class CuControlCallId implements \JsonSerializable {
 
 		try {
 			return new CuControlCallId($ds->reqString('controlId'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

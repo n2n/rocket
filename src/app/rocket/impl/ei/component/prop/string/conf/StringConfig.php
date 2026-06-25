@@ -26,7 +26,7 @@ use n2n\util\StringUtils;
 use n2n\spec\dbo\meta\structure\Column;
 
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\impl\ei\component\prop\adapter\config\DisplayConfig;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;

@@ -22,7 +22,7 @@
 namespace rocket\op\ei\manage\api;
 
 use rocket\ui\gui\control\GuiControlPath;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\spec\TypePath;
 use rocket\op\ei\mask\EiMask;
 use rocket\op\ei\manage\entry\EiEntry;
@@ -104,7 +104,7 @@ class ApiControlCallId implements \JsonSerializable {
 					GuiControlPath::create($ds->reqString('guiControlPath')),
 					new TypePath($ds->reqString('eiTypeId')), $ds->optString('pid'),
 					$ds->optString('newEiTypeId'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

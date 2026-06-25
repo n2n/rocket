@@ -3,7 +3,7 @@ namespace rocket\op\ei\manage\security\privilege\data;
 
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\EiCmdPath;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\EiPropPath;
 
 class PrivilegeSetting {
@@ -49,7 +49,7 @@ class PrivilegeSetting {
 	}
 	
 	/**
-	 * @return \n2n\util\type\attrs\DataSet
+	 * @return \n2n\util\attr\DataSet
 	 */
 	function getWritableEiPropPaths() {
 		return $this->writableEiPropPaths;

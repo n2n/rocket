@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\op\ei\util\frame\EiuFrame;
@@ -33,7 +33,7 @@ use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\manage\entry\UnknownEiObjectException;
 use n2n\util\type\TypeConstraint;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use rocket\op\ei\manage\critmod\filter\FilterProp;
 use rocket\op\ei\manage\critmod\filter\FilterDefinition;
 use rocket\op\ei\util\filter\controller\FilterJhtmlHook;

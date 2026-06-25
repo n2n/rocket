@@ -21,7 +21,7 @@
  */
 namespace rocket\ui\si\content;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\si\meta\SiMaskQualifier;
 use rocket\ui\si\meta\SiMaskIdentifier;
 
@@ -66,7 +66,7 @@ class SiEntryQualifier implements \JsonSerializable {
 			return new SiEntryQualifier(
 					SiEntryIdentifier::parse($ds->reqArray('identifier')),
 					$ds->optString('idName'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

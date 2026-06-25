@@ -29,7 +29,7 @@ use rocket\op\ei\manage\DefPropPath;
 use rocket\ui\gui\GuiException;
 use rocket\ui\gui\control\GuiControlPath;
 use rocket\ui\gui\control\UnknownGuiControlException;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use rocket\ui\si\api\request\SiInput;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\gui\EiGuiValueBoundary;

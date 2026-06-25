@@ -26,7 +26,7 @@
 //use rocket\op\ei\EiType;
 //use rocket\si\input\SiEntryInput;
 //use n2n\util\ex\IllegalStateException;
-//use n2n\util\type\attrs\AttributesException;
+//use n2n\util\attr\AttributesException;
 //use rocket\op\ei\mask\EiMask;
 //use rocket\op\ei\manage\gui\control\GuiControl;
 //use rocket\op\ei\manage\frame\EiFrame;

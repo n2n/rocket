@@ -22,14 +22,14 @@
 namespace rocket\ui\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\uri\Url;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\meta\SiFrame;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 use rocket\ui\gui\field\impl\relation\GuiEmbeddedEntry;
-use n2n\util\type\attrs\InvalidAttributeException;
+use n2n\util\attr\InvalidAttributeException;
 use rocket\ui\si\err\CorruptedSiDataException;
 
 class EmbeddedEntriesInSiField extends InSiFieldAdapter {

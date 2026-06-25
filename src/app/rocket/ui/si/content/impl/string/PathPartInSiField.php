@@ -21,10 +21,10 @@
  */
 namespace rocket\ui\si\content\impl\string;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\si\content\impl\meta\AddonsSiFieldTrait;
 use n2n\core\container\N2nContext;
-use n2n\util\type\attrs\InvalidAttributeException;
+use n2n\util\attr\InvalidAttributeException;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 

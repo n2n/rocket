@@ -21,7 +21,7 @@
  */
 namespace rocket\impl\ei\component\prop\relation\model\filter;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\manage\critmod\filter\ComparatorConstraint;
 use rocket\op\ei\manage\entry\EiFieldConstraint;
 

@@ -21,7 +21,7 @@
  */
 namespace rocket\op\ei\manage\api;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\manage\DefPropPath;
 use rocket\op\spec\TypePath;
 
@@ -93,7 +93,7 @@ class ApiFieldCallId implements \JsonSerializable {
 					new TypePath($ds->reqString('eiTypeId')),
 					$ds->reqInt('viewMode'),
 					$ds->optString('pid'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

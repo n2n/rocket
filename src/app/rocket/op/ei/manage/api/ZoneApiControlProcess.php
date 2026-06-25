@@ -29,7 +29,7 @@
 //use rocket\op\ei\manage\gui\EiGuiValueBoundary;
 //use rocket\si\control\SiCallResponse;
 //use rocket\si\input\SiInputFactory;
-//use n2n\util\type\attrs\AttributesException;
+//use n2n\util\attr\AttributesException;
 //use rocket\op\ei\mask\EiMask;
 //use rocket\op\ei\EiException;
 //use rocket\op\ei\manage\entry\UnknownEiObjectException;

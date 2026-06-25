@@ -23,7 +23,7 @@ namespace rocket\ui\si\content;
 
 use n2n\util\ex\IllegalStateException;
 use n2n\web\http\UploadDefinition;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use n2n\core\container\N2nContext;
 use InvalidArgumentException;
 use rocket\ui\si\err\CorruptedSiDataException;

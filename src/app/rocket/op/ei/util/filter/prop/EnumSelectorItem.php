@@ -24,7 +24,7 @@ namespace rocket\op\ei\util\filter\prop;
 // use n2n\util\ex\IllegalStateException;
 // use n2n\l10n\Message;
 // use rocket\op\ei\manage\critmod\SelectorConstraint;
-// use n2n\util\type\attrs\DataSet;
+// use n2n\util\attr\DataSet;
 // use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 
 // class EnumSelectorItem extends EnumFilterProp implements SelectorItem {

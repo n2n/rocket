@@ -24,7 +24,7 @@ namespace rocket\op\ei\manage\gui;
 
 use rocket\ui\gui\GuiMask;
 use rocket\op\ei\manage\frame\EiFrame;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use rocket\ui\gui\err\UnknownGuiElementException;
 use rocket\op\ei\EiException;
 use rocket\ui\gui\GuiValueBoundary;

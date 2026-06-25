@@ -21,7 +21,7 @@
  */
 namespace rocket\op\ei\manage\critmod\filter;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagDispatchable;
 
 interface FilterProp {

@@ -27,8 +27,8 @@ use n2n\util\StringUtils;
 use n2n\persistence\orm\annotation\AnnoTable;
 use n2n\persistence\orm\annotation\AnnoManyToOne;
 use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\DataSet;
+use n2n\util\attr\AttributesException;
 use rocket\op\ei\manage\security\privilege\data\PrivilegeSetting;
 use n2n\persistence\orm\annotation\AnnoTransient;
 

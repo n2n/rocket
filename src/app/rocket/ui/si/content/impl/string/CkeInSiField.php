@@ -21,7 +21,7 @@
  */
 namespace rocket\ui\si\content\impl\string;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\string\cke\conf\CkeEditorConfig;
 use rocket\ui\si\content\impl\InSiFieldAdapter;

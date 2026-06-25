@@ -22,7 +22,7 @@
 namespace rocket\op\ei\util\filter\prop;
 
 use n2n\web\dispatch\mag\MagCollection;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\impl\web\dispatch\mag\model\EnumMag;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use rocket\op\ei\manage\critmod\filter\FilterProp;

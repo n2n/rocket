@@ -22,11 +22,11 @@
 
 namespace rocket\op\ei\manage\gui;
 
-use n2n\util\type\attrs\DataMap;
+use n2n\util\attr\DataMap;
 use n2n\util\StringUtils;
 use rocket\op\spec\TypePath;
 use JsonException;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use rocket\op\ei\mask\EiMask;
 
 class EiSiMaskId implements \Stringable {

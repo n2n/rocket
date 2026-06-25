@@ -22,7 +22,7 @@
 namespace rocket\op\ei\manage\critmod\filter;
 
 use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 
 class FilterDefinition {
 	private $filterProps = array();

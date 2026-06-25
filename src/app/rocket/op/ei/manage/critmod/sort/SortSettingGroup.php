@@ -21,7 +21,7 @@
  */
 namespace rocket\op\ei\manage\critmod\sort;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\type\ArgUtils;
 use n2n\persistence\orm\criteria\Criteria;
 use n2n\util\col\GenericArrayObject;

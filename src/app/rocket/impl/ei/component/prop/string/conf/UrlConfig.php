@@ -27,12 +27,12 @@ use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringArrayMag;
 use n2n\util\type\TypeConstraint;
-use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\attr\LenientAttributeReader;
 use n2n\spec\dbo\meta\structure\Column;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\ArgUtils;
 

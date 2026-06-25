@@ -23,7 +23,7 @@ namespace rocket\ui\si\content\impl\relation;
 
 use rocket\ui\si\api\request\SiEntryInput;
 use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\si\err\CorruptedSiDataException;
 use rocket\ui\si\api\request\SiValueBoundaryInput;
 
@@ -86,7 +86,7 @@ class SiPanelInput {
 			}
 			$panelInput->setValueBoundaryInputs($valueBoundaryInputs);
 			return $panelInput;
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new CorruptedSiDataException(null, 0, $e);
 		}
 	}

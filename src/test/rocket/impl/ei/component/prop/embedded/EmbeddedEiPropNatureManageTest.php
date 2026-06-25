@@ -37,7 +37,7 @@ use rocket\op\ei\manage\entry\EiEntry;
 use rocket\op\ei\EiType;
 use rocket\op\ei\manage\frame\EiFrame;
 use rocket\ui\si\err\CorruptedSiDataException;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use rocket\ui\gui\field\GuiPropPath;
 use n2n\core\container\N2nContext;
 use rocket\ui\si\api\request\SiEntryInput;

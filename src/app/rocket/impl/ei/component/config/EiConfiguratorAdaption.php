@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\config;
 
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 
 interface EiConfiguratorAdaption {
