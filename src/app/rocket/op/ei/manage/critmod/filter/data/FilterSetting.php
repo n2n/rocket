@@ -21,7 +21,7 @@
  */
 namespace rocket\op\ei\manage\critmod\filter\data;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 
 class FilterSetting {
 	const ATTR_ITEM_ID_KEY = 'prop';

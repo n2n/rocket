@@ -4,7 +4,7 @@ namespace rocket\impl\ei\component\prop\iframe;
 use n2n\impl\web\dispatch\mag\model\BoolMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 use n2n\spec\dbo\meta\structure\Column;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\uri\Url;
 use n2n\web\dispatch\mag\MagCollection;
 use rocket\op\ei\util\Eiu;

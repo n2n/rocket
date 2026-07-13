@@ -27,7 +27,7 @@ use rocket\op\ei\manage\critmod\filter\FilterDefinition;
 use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\reflection\annotation\AnnoInit;
 use n2n\web\dispatch\annotation\AnnoDispObjectArray;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\map\bind\BindingDefinition;
 use rocket\op\ei\manage\critmod\filter\UnknownFilterPropException;
 

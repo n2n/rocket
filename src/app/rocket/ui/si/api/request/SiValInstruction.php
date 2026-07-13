@@ -22,8 +22,8 @@
 namespace rocket\ui\si\api\request;
 
 use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\DataSet;
+use n2n\util\attr\AttributesException;
 use rocket\ui\si\api\request\SiEntryInput;
 use rocket\ui\si\err\CorruptedSiDataException;
 

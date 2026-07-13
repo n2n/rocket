@@ -21,7 +21,7 @@
  */
 namespace rocket\ui\si\content\impl;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\si\content\impl\meta\AddonsSiFieldTrait;
 
 class NumberInSiField extends InSiFieldAdapter {

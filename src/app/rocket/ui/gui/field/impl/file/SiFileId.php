@@ -22,8 +22,8 @@
 namespace rocket\ui\gui\field\impl\file;
 
 use n2n\io\managed\File;
-use n2n\util\type\attrs\DataSet;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\DataSet;
+use n2n\util\attr\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiFileId implements \JsonSerializable {

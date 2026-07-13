@@ -1,7 +1,7 @@
 <?php
 namespace rocket\ui\si\content\impl\iframe;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 

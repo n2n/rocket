@@ -25,7 +25,7 @@ use rocket\op\ei\component\EiConfigurator;
 use n2n\core\container\N2nContext;
 use rocket\op\launch\LaunchPad;
 use rocket\op\launch\UnknownLaunchPadException;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use n2n\reflection\property\PropertiesAnalyzer;
 use rocket\op\ei\component\InvalidEiConfigurationException;
 use n2n\config\InvalidConfigurationException;

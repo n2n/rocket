@@ -25,7 +25,7 @@ namespace rocket\impl\ei\component\prop\relation\model\filter;
 use rocket\op\ei\manage\security\filter\SecurityFilterDefinition;
 use rocket\op\ei\manage\entry\EiFieldConstraint;
 use n2n\util\ex\IllegalStateException;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\persistence\orm\criteria\compare\CriteriaComparator;
 use n2n\util\type\ArgUtils;
 use rocket\impl\ei\component\prop\relation\model\RelationEntry;

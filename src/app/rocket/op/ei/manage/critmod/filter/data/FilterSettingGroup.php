@@ -22,7 +22,7 @@
 namespace rocket\op\ei\manage\critmod\filter\data;
 
 use n2n\util\col\GenericArrayObject;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\type\TypeConstraint;
 
 class FilterSettingGroup {

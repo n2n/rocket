@@ -34,7 +34,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use rocket\op\ei\component\CritmodFactory;
 use rocket\op\ei\util\filter\form\FilterPropItemForm;
 use rocket\op\ei\manage\critmod\filter\data\FilterSetting;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\util\filter\form\FilterGroupForm;
 use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\web\http\controller\impl\ScrRegistry;

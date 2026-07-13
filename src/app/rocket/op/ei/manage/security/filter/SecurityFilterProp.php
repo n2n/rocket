@@ -2,9 +2,9 @@
 namespace rocket\op\ei\manage\security\filter;
 
 use rocket\op\ei\manage\critmod\filter\FilterProp;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\manage\entry\EiFieldConstraint;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 
 interface SecurityFilterProp extends FilterProp {
 	

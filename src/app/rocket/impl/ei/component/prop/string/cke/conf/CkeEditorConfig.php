@@ -29,7 +29,7 @@ use rocket\op\ei\component\EiSetup;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use n2n\util\StringUtils;
-use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\attr\LenientAttributeReader;
 use n2n\util\magic\MagicObjectUnavailableException;
 use rocket\impl\ei\component\prop\string\cke\model\CkeCssConfig;
 use rocket\impl\ei\component\prop\string\cke\model\CkeLinkProvider;
@@ -38,7 +38,7 @@ use n2n\spec\dbo\meta\structure\Column;
 use rocket\impl\ei\component\prop\string\cke\model\CkeState;
 use n2n\util\type\CastUtils;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\col\GenericArrayObject;

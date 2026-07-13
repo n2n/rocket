@@ -26,12 +26,12 @@ use n2n\util\type\CastUtils;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use rocket\op\spec\UnknownTypeException;
 use n2n\impl\web\dispatch\mag\model\MagForm;
-use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\attr\LenientAttributeReader;
 use rocket\op\ei\component\prop\indepenent\CompatibilityLevel;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;
 
 use rocket\impl\ei\component\prop\ci\model\PanelDeclaration;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\util\Eiu;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\util\type\ArgUtils;

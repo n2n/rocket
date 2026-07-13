@@ -24,7 +24,7 @@ namespace rocket\op\ei\manage\api;
 use rocket\op\ei\IdPath;
 use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\ui\gui\control\GuiControl;
 
 class ZoneApiControlCallId extends IdPath implements  \JsonSerializable {
@@ -83,7 +83,7 @@ class ZoneApiControlCallId extends IdPath implements  \JsonSerializable {
 		
 		try {
 			return ZoneApiControlCallId::create($ds->reqString('controlIdPath'));
-		} catch (\n2n\util\type\attrs\AttributesException $e) {
+		} catch (\n2n\util\attr\AttributesException $e) {
 			throw new \InvalidArgumentException(null, null, $e);
 		}
 	}

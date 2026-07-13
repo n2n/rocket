@@ -21,8 +21,8 @@
  */
 namespace rocket\ui\si\api\request;
 
-use n2n\util\type\attrs\DataMap;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\DataMap;
+use n2n\util\attr\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
 
 class SiFieldCall {

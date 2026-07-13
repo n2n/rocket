@@ -24,11 +24,11 @@ namespace rocket\impl\ei\component\prop\numeric\conf;
 use n2n\impl\web\dispatch\mag\model\NumericMag;
 use n2n\util\type\CastUtils;
 use rocket\impl\ei\component\prop\numeric\DecimalEiPropNature;
-use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\attr\LenientAttributeReader;
 use n2n\impl\web\dispatch\mag\model\StringMag;
 
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\web\dispatch\mag\MagCollection;
 use hangar\api\CompatibilityLevel;
 use rocket\op\ei\component\prop\indepenent\PropertyAssignation;

@@ -23,7 +23,7 @@ namespace rocket\ui\si\content;
 
 use rocket\ui\si\control\SiControl;
 use rocket\ui\si\SiPayloadFactory;
-use n2n\util\type\attrs\AttributesException;
+use n2n\util\attr\AttributesException;
 use rocket\ui\si\err\CorruptedSiDataException;
 use n2n\l10n\Message;
 use n2n\core\container\N2nContext;

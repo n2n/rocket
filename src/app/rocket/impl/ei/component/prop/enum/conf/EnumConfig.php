@@ -22,7 +22,7 @@
 namespace rocket\impl\ei\component\prop\enum\conf;
 
 use n2n\web\dispatch\mag\MagDispatchable;
-use n2n\util\type\attrs\LenientAttributeReader;
+use n2n\util\attr\LenientAttributeReader;
 use n2n\web\dispatch\mag\MagCollection;
 use n2n\impl\web\dispatch\mag\model\MagCollectionArrayMag;
 use n2n\impl\web\dispatch\mag\model\StringMag;
@@ -33,7 +33,7 @@ use n2n\impl\web\dispatch\mag\model\MultiSelectMag;
 use rocket\op\ei\manage\DefPropPath;
 
 use rocket\op\ei\util\Eiu;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\type\TypeConstraints;
 
 // @todo validate if dataSet are arrays

@@ -22,7 +22,7 @@
 namespace rocket\ui\si\content\impl\relation;
 
 use n2n\util\type\ArgUtils;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\uri\Url;
 use rocket\ui\si\content\impl\InSiFieldAdapter;
 use rocket\ui\si\meta\SiFrame;

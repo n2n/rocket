@@ -21,7 +21,7 @@
  */
 namespace rocket\op\spec\extr;
 
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\type\ArgUtils;
 use rocket\op\ei\mask\model\DisplayScheme;
 use rocket\op\ei\mask\model\DisplayStructure;

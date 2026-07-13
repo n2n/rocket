@@ -23,11 +23,11 @@ namespace rocket\ui\si\content\impl;
 
 use n2n\io\managed\File;
 use n2n\util\uri\Url;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use n2n\util\io\IoUtils;
 use n2n\util\type\ArgUtils;
 use n2n\io\managed\img\ThumbCut;
-use n2n\util\type\attrs\DataMap;
+use n2n\util\attr\DataMap;
 use n2n\web\http\UploadDefinition;
 use n2n\core\container\N2nContext;
 use n2n\util\ex\IllegalStateException;

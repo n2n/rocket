@@ -46,7 +46,7 @@ trait InEiGuiPropTrait {
 
 	protected function buildGuiField(Eiu $eiu, bool $readOnly): ?GuiField {
 		if ($readOnly || $this->isReadOnly() || $eiu->guiDefinition()->isReadOnly()
-				|| ($eiu->entry()->isNew() && $this->isConstant())) {
+				|| (!$eiu->entry()->isNew() && $this->isConstant())) {
 			$guiField = $this->buildOutGuiField($eiu);
 		} else {
 			$guiField = $this->buildInGuiField($eiu);

@@ -27,7 +27,7 @@ use n2n\reflection\annotation\AnnoInit;
 use n2n\persistence\orm\annotation\AnnoTable;
 use rocket\op\ei\manage\critmod\filter\data\FilterSettingGroup;
 use n2n\util\JsonDecodeFailedException;
-use n2n\util\type\attrs\DataSet;
+use n2n\util\attr\DataSet;
 use rocket\op\ei\manage\critmod\sort\SortSettingGroup;
 
 class CritmodSave extends ObjectAdapter {
