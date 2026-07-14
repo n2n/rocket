@@ -422,7 +422,7 @@ class EiuHtmlBuilder {
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $attrs, $this->uiOutfitter);
 	}
 	
-	private function createOutputFieldOpen($tagName, GuiFieldDisplayable $guiFieldDisplayable, ?ValidationResult $validationResult = null, array $attrs = null) {
+	private function createOutputFieldOpen($tagName, GuiFieldDisplayable $guiFieldDisplayable, ?ValidationResult $validationResult = null, ?array $attrs = null) {
 		$attrs = HtmlUtils::mergeAttrs($attrs, $guiFieldDisplayable->getHtmlContainerAttrs(), true);
 		if ($validationResult !== null && !$validationResult->isValid(true)) {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));

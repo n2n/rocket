@@ -192,7 +192,7 @@ class DisplayStructure {
 		}
 	}
 	
-	public function withContainer(string $type, string $label, array $attrs = null) {
+	public function withContainer(string $type, string $label, ?array $attrs = null) {
 		if (count($this->displayItems) != 1 
 				|| $this->displayItems[0]->getType() != $type) {
 			$ds = new DisplayStructure();
