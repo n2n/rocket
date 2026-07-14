@@ -81,7 +81,7 @@ class ToOneForm implements Dispatchable {
 		return $this->selectionModeEnabled;
 	}
 	
-	public function setOriginalEntryPid(string $originalEntryPid = null) {
+	public function setOriginalEntryPid(?string $originalEntryPid = null) {
 		$this->originalEntryPid = $originalEntryPid;
 	}
 	
@@ -89,7 +89,7 @@ class ToOneForm implements Dispatchable {
 		return $this->originalEntryPid;
 	}
 
-	public function setSelectedEntryPid(string $selectedEntryPid = null) {
+	public function setSelectedEntryPid(?string $selectedEntryPid = null) {
 		$this->selectedEntryPid = $selectedEntryPid;
 	}
 
@@ -105,7 +105,7 @@ class ToOneForm implements Dispatchable {
 		$this->eiuEntryFormFactory->setDraftMode($draftMode);
 	}
 
-	public function setEiEntry(EiEntry $eiEntry = null) {
+	public function setEiEntry(?EiEntry $eiEntry = null) {
 		$this->eiuEntryFormFactory->setEiEntry($eiEntry);
 		$this->currentMappingForm = $this->eiuEntryFormFactory->getCurrentMappingForm();
 		$this->newMappingForm = $this->eiuEntryFormFactory->getNewMappingForm();
@@ -115,7 +115,7 @@ class ToOneForm implements Dispatchable {
 		return $this->currentMappingForm;
 	}
 
-	public function setCurrentMappingForm(MappingForm $currentMappingForm = null) {
+	public function setCurrentMappingForm(?MappingForm $currentMappingForm = null) {
 		$this->currentMappingForm = $currentMappingForm;
 	}
 
@@ -131,7 +131,7 @@ class ToOneForm implements Dispatchable {
 		return $this->newMappingForm;
 	}
 
-	public function setNewMappingForm(MappingForm $newMappingForm = null) {
+	public function setNewMappingForm(?MappingForm $newMappingForm = null) {
 		$this->newMappingForm = $newMappingForm;
 	}
 	

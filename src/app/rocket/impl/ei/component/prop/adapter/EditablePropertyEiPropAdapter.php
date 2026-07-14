@@ -98,7 +98,7 @@ abstract class EditablePropertyEiPropAdapter extends PropertyDisplayableEiPropAd
 				$this, $this, $this, ($this->isReadOnly($eiu) ? null : $this));
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
+	public function buildEiFieldFork(EiObject $eiObject, ?EiField $eiField = null) {
 		return null;
 	}
 

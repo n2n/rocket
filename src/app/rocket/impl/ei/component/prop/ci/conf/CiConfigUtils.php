@@ -150,7 +150,7 @@ class CiConfigUtils {
 	 * @throws AttributesException
 	 * @return \rocket\impl\ei\component\prop\ci\model\PanelConfig
 	 */
-	public static function createPanelConfig(array $panelAttrs, string $panelName = null) {
+	public static function createPanelConfig(array $panelAttrs, ?string $panelName = null) {
 		$panelAttributes = new Attributes($panelAttrs);
 		
 		if ($panelName === null) {

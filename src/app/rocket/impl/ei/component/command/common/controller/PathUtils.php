@@ -44,7 +44,7 @@ class PathUtils {
 	}
 	
 	
-	public static function createPathExt($pid, N2nLocale $translationN2nLocale = null, $previewType = null) {
+	public static function createPathExt($pid, ?N2nLocale $translationN2nLocale = null, $previewType = null) {
 		$pathParts = array('live');
 		if (isset($previewType)) {
 			$pathParts[] = 'preview';

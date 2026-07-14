@@ -60,7 +60,7 @@ class EiPropCollection extends EiComponentCollection {
 	 * @param EiPropPath $forkEiPropPath
 	 * @return \rocket\ei\component\prop\EiPropWrapper
 	 */
-	public function add(EiProp $eiProp, string $id = null, EiPropPath $forkEiPropPath = null) {
+	public function add(EiProp $eiProp, ?string $id = null, ?EiPropPath $forkEiPropPath = null) {
 		$id = $this->makeId($id, $eiProp);
 		
 		$eiPropPath = null;
@@ -85,7 +85,7 @@ class EiPropCollection extends EiComponentCollection {
 	 * @param EiPropPath $forkEiPropPath
 	 * @return \rocket\ei\component\prop\EiPropWrapper
 	 */
-	public function addIndependent(string $id, EiProp $eiProp, EiPropPath $forkEiPropPath = null) {
+	public function addIndependent(string $id, EiProp $eiProp, ?EiPropPath $forkEiPropPath = null) {
 		$eiPropWrapper = $this->add($eiProp, $id, $forkEiPropPath);
 		$this->addIndependentElement($eiPropWrapper->getEiPropPath(), $eiProp);
 		return $eiPropWrapper;

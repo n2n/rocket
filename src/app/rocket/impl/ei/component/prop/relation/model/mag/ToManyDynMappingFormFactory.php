@@ -95,7 +95,7 @@ class ToManyDynMappingFormFactory {
 	/**
 	 * @param array|null $allowedEiTypeIds
 	 */
-	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+	public function setAllowedNewEiTypeIds(?array $allowedEiTypeIds = null) {
 		$this->allowedNewEiTypeIds = $allowedEiTypeIds;
 	}
 	

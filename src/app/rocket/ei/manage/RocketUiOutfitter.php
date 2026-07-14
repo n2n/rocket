@@ -65,7 +65,7 @@ class RocketUiOutfitter implements UiOutfitter {
 	 * @param null $contents
 	 * @return HtmlElement
 	 */
-	public function createElement(int $elemNature, array $attrs = null, $contents = ''): UiComponent {
+	public function createElement(int $elemNature, ?array $attrs = null, $contents = ''): UiComponent {
 		if ($attrs === null) {
 			$attrs = array();
 		}
@@ -122,7 +122,7 @@ class RocketUiOutfitter implements UiOutfitter {
 		return new HtmlSnippet($contents);
 	}
 
-	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
+	public function createMagDispatchableView(?PropertyPath $propertyPath, HtmlView $contextView): UiComponent {
 		return $contextView->getImport('\rocket\ei\manage\gui\view\magForm.html',
 			array('propertyPath' => $propertyPath, 'uo' => $this));
 	}

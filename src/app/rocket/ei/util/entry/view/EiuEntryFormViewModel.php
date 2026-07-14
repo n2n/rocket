@@ -43,7 +43,7 @@ class EiuEntryFormViewModel {
 	private $displayContainerAttrs = null;
 	private $grouped = false;
 	
-	public function __construct(EiuEntryForm $eiuEntryForm, bool $grouped, string $type = null, string $label = null) {
+	public function __construct(EiuEntryForm $eiuEntryForm, bool $grouped, ?string $type = null, ?string $label = null) {
 		$this->eiuEntryForm = $eiuEntryForm;
 		$this->setGrouped($grouped);
 		if ($type !== null && $label !== null) {
@@ -63,7 +63,7 @@ class EiuEntryFormViewModel {
 	 * @param string $type
 	 * @return EiuEntryFormViewModel
 	 */
-	public function addDisplayContainer(string $label, string $type = DisplayItem::TYPE_SIMPLE_GROUP, array $attrs = null) {
+	public function addDisplayContainer(string $label, string $type = DisplayItem::TYPE_SIMPLE_GROUP, ?array $attrs = null) {
 		$this->displayContainerType = $type;
 		$this->displayContainerLabel = $label;
 		$this->displayContainerAttrs = $attrs;
@@ -144,7 +144,7 @@ class EiuEntryFormViewModel {
 	/**
 	 * @return array
 	 */
-	private function createEntryAttrs(array $attrs = null) {
+	private function createEntryAttrs(?array $attrs = null) {
 		$cattrs = (array) $this->displayContainerAttrs;
 		
 		if ($attrs !== null) {

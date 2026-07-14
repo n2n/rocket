@@ -114,7 +114,7 @@ class EiEntryFactory {
 		return $eiFieldMap;
 	}
 	
-	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, EiEntry $fromEiEntry = null) {
+	private function assembleMappingProfile(Eiu $eiu, EiFieldMap $eiFieldMap, EiEntry $eiEntry, ?EiEntry $fromEiEntry = null) {
 // 		$eiObject = $eiEntry->getEiObject();
 		$forkEiPropPath = $eiFieldMap->getForkEiPropPath();
 		

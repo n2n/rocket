@@ -30,8 +30,8 @@ class PropertyAssignation {
 	private $failed = false;
 	private $exception = null;
 	
-	public function __construct(EntityProperty $entityProperty = null, 
-			AccessProxy $objectPropertyAccessProxy = null) {
+	public function __construct(?EntityProperty $entityProperty = null, 
+			?AccessProxy $objectPropertyAccessProxy = null) {
 		$this->entityProperty = $entityProperty;
 		$this->objectPropertyAccessProxy = $objectPropertyAccessProxy;
 	}
@@ -76,7 +76,7 @@ class PropertyAssignation {
 		return $this->objectPropertyAccessProxy;
 	}
 		
-	public function createEntityPropertyException($reason = null, \Exception $e = null) {
+	public function createEntityPropertyException($reason = null, ?\Exception $e = null) {
 		if ($this->entityProperty === null) {
 			throw new IncompatiblePropertyException('EiProp must be assigned to a EntityProperty'
 					. ($reason ? ' Reason: ' . $reason : ''), 0, $e);
@@ -87,7 +87,7 @@ class PropertyAssignation {
 						. ($reason ? ' Reason: ' . $reason : ''), 0, $e);
 	}
 	
-	public function createAccessProxyException($reason = null, \Exception $e = null) {
+	public function createAccessProxyException($reason = null, ?\Exception $e = null) {
 		if ($this->objectPropertyAccessProxy === null) {
 			throw new IncompatiblePropertyException(
 					'EiProp must be assigned to a accessible object property');

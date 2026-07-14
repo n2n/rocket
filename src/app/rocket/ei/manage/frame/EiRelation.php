@@ -28,7 +28,7 @@ class EiRelation {
 	private $eiFrame;
 	private $eiObject;
 	
-	public function __construct(EiFrame $eiFrame, EiObject $eiObject = null) {
+	public function __construct(EiFrame $eiFrame, ?EiObject $eiObject = null) {
 		$this->eiFrame = $eiFrame;
 		$this->eiObject = $eiObject;
 	}

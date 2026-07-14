@@ -64,7 +64,7 @@ class QuickSearchDefinition {
 	 * @param EiPropPath[] $eiPropPaths
 	 * @return null|\rocket\ei\manage\critmod\filter\ComparatorConstraintGroup
 	 */
-	public function buildCriteriaConstraint(string $searchStr, array $eiPropPaths = null) {
+	public function buildCriteriaConstraint(string $searchStr, ?array $eiPropPaths = null) {
 		$quickSearchFields = null;
 		if ($eiPropPaths === null) {
 			$quickSearchFields = $this->quickSearchFields;

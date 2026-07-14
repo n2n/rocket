@@ -137,7 +137,7 @@ class StringDisplayEiProp extends PropertyEiPropAdapter implements ObjectPropert
 	 * {@inheritDoc}
 	 * @see \rocket\ei\component\prop\FieldEiProp::buildEiFieldFork($eiObject, $eiField)
 	 */
-	public function buildEiFieldFork(\rocket\ei\manage\EiObject $eiObject, \rocket\ei\manage\entry\EiField $eiField = null) {
+	public function buildEiFieldFork(\rocket\ei\manage\EiObject $eiObject, ?\rocket\ei\manage\entry\EiField $eiField = null) {
 		return null;
 	}
 

@@ -18,7 +18,7 @@ class PrivilegeSetting {
 	 * @param EiCommandPath[] $eiCommandPaths
 	 * @param Attributes $eiPropAttributes
 	 */
-	function __construct(array $eiCommandPaths = array(), Attributes $eiPropAttributes = null) {
+	function __construct(array $eiCommandPaths = array(), ?Attributes $eiPropAttributes = null) {
 		$this->setEiCommandPaths($eiCommandPaths);
 		$this->setEiPropAttributes($eiPropAttributes ?? new Attributes());
 	}

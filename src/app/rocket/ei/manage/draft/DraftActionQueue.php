@@ -48,7 +48,7 @@ class DraftActionQueue {
 		return $this->em;
 	}
 	
-	public function persist(Draft $draft, DraftDefinition $draftDefinition = null): DraftAction {
+	public function persist(Draft $draft, ?DraftDefinition $draftDefinition = null): DraftAction {
 		$objHash = spl_object_hash($draft);
 		if (isset($this->persistActions[$objHash])) {
 			return $this->persistActions[$objHash];

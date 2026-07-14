@@ -50,7 +50,7 @@ class EiuEntryTypeForm implements Dispatchable {
 		return $this->dispatchable;
 	}
 
-	public function setDispatchable(Dispatchable $dispatchable = null) {
+	public function setDispatchable(?Dispatchable $dispatchable = null) {
 		$this->dispatchable = $dispatchable;
 	}
 

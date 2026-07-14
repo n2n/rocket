@@ -34,7 +34,7 @@ class EiuEngine {
 	private $eiuMask;
 	private $eiuAnalyst;
 	
-	public function __construct(EiEngine $eiEngine, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
+	public function __construct(EiEngine $eiEngine, ?EiuMask $eiuMask, EiuAnalyst $eiuAnalyst) {
 		$this->eiEngine = $eiEngine;
 		$this->eiuMask = $eiuMask;
 		$this->eiuAnalyst = $eiuAnalyst;
@@ -248,7 +248,7 @@ class EiuEngine {
 	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
 	 */
-	public function newFilterForm(FilterSettingGroup $rootGroup = null) {
+	public function newFilterForm(?FilterSettingGroup $rootGroup = null) {
 		return $this->createEiuFilterForm(
 				$this->getFilterDefinition(),
 				ScrFilterPropController::buildFilterJhtmlHook(
@@ -262,7 +262,7 @@ class EiuEngine {
 	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
 	 */
-	public function newSecurityFilterForm(FilterSettingGroup $rootGroup = null) {
+	public function newSecurityFilterForm(?FilterSettingGroup $rootGroup = null) {
 		return $this->createEiuFilterForm(
 				$this->getSecurityFilterDefinition()->toFilterDefinition(),
 				ScrFilterPropController::buildSecurityFilterJhtmlHook(
@@ -279,7 +279,7 @@ class EiuEngine {
 	 * @return EiuFilterForm
 	 */
 	private function createEiuFilterForm(FilterDefinition $fd, FilterJhtmlHook $fjh, 
-			FilterSettingGroup $rg = null) {
+			?FilterSettingGroup $rg = null) {
 		return new EiuFilterForm($fd, $fjh, $rg, $this->eiuAnalyst);
 	}
 	
@@ -288,7 +288,7 @@ class EiuEngine {
 	 * @param SortSettingGroup|null $sortSetting
 	 * @return \rocket\ei\util\sort\EiuSortForm
 	 */
-	public function newSortForm(SortSettingGroup $sortSetting = null) {
+	public function newSortForm(?SortSettingGroup $sortSetting = null) {
 		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
 	}
 	
@@ -303,7 +303,7 @@ class EiuEngine {
 	 * @param PrivilegeSetting|null $privilegeSetting
 	 * @return \rocket\ei\util\privilege\EiuPrivilegeForm
 	 */
-	public function newPrivilegeForm(PrivilegeSetting $privilegeSetting = null) {
+	public function newPrivilegeForm(?PrivilegeSetting $privilegeSetting = null) {
 		return new EiuPrivilegeForm($this->getPrivilegeDefinition(), $privilegeSetting, $this->eiuAnalyst);	
 	}
 	
@@ -312,7 +312,7 @@ class EiuEngine {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(object $eiObjectArg, N2nLocale $n2nLocale = null): string {
+	public function createIdentityString(object $eiObjectArg, ?N2nLocale $n2nLocale = null): string {
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiObjectArg, 'eiObjectArg', $this->eiuMask->getEiMask()->getEiType());
 		return $this->getGuiDefinition()
 				->createIdentityString($eiObject, $this->eiuAnalyst->getN2nContext(true),

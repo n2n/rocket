@@ -342,7 +342,7 @@ class EiuFrame {
 		return $this->entry($this->createEiEntryCopy($fromEiuEntry, $eiObject));
 	}
 	
-	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, array $eiPropPaths = null) {
+	public function copyEntryValuesTo($fromEiEntryArg, $toEiEntryArg, ?array $eiPropPaths = null) {
 		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiEntryArg, $this, 'fromEiEntryArg');
 		$toEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($toEiEntryArg, $this, 'toEiEntryArg');
 		
@@ -355,7 +355,7 @@ class EiuFrame {
 	 * @param EiObject $to
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
-	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null, array $eiPropPaths = null) {
+	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null, ?array $eiPropPaths = null) {
 		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');
 		
 		if ($to === null) {
@@ -375,7 +375,7 @@ class EiuFrame {
 	 * @return EiuEntryForm
 	 */
 	public function newEntryForm(bool $draft = false, $copyFromEiObjectObj = null, 
-			PropertyPath $contextPropertyPath = null, array $allowedEiTypeIds = null,
+			?PropertyPath $contextPropertyPath = null, ?array $allowedEiTypeIds = null,
 			array $eiEntries = array()) {
 		$eiuEntryTypeForms = array();
 		$labels = array();
@@ -450,7 +450,7 @@ class EiuFrame {
 	 * @param PropertyPath $contextPropertyPath
 	 * @return \rocket\ei\util\entry\form\EiuEntryForm
 	 */
-	public function entryForm($eiEntryArg, PropertyPath $contextPropertyPath = null) {
+	public function entryForm($eiEntryArg, ?PropertyPath $contextPropertyPath = null) {
 		$eiEntry = EiuAnalyst::buildEiEntryFromEiArg($eiEntryArg);
 // 		$contextEiMask = $this->eiFrame->getContextEiEngine()->getEiMask();
 		$eiuEntryForm = new EiuEntryForm($this);
@@ -464,7 +464,7 @@ class EiuFrame {
 		return $eiuEntryForm;
 	}
 	
-	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, PropertyPath $contextPropertyPath = null) {
+	private function createEiuEntryTypeForm(EiType $eiType, EiEntry $eiEntry, ?PropertyPath $contextPropertyPath = null) {
 		$eiMask = $this->getEiFrame()->determineEiMask($eiType);
 		$eiGui = $eiMask->createEiGui($this->eiFrame, $eiEntry->isNew() ? ViewMode::BULKY_ADD : ViewMode::BULKY_EDIT, true);
 		
@@ -694,7 +694,7 @@ class EiuFrame {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getGenericLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
+	public function getGenericLabel($eiObjectObj = null, ?N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiObjectObj)->getLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 
@@ -703,7 +703,7 @@ class EiuFrame {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getGenericPluralLabel($eiObjectObj = null, N2nLocale $n2nLocale = null): string {
+	public function getGenericPluralLabel($eiObjectObj = null, ?N2nLocale $n2nLocale = null): string {
 		return $this->determineEiMask($eiObjectObj)->getPluralLabelLstr()->t($n2nLocale ?? $this->getN2nLocale());
 	}
 
@@ -722,7 +722,7 @@ class EiuFrame {
 	 * @return string
 	 */
 	public function createIdentityString(EiObject $eiObject, bool $determineEiMask = true,
-			N2nLocale $n2nLocale = null): string {
+			?N2nLocale $n2nLocale = null): string {
 		$eiMask = null;
 		if ($determineEiMask) {
 			$eiMask = $this->determineEiMask($eiObject);
@@ -837,7 +837,7 @@ class EiuFrame {
 	 * @param int $num
 	 * @return array
 	 */
-	public function lookupDraftsByEntityObjId($entityObjId, int $limit = null, int $num = null): array {
+	public function lookupDraftsByEntityObjId($entityObjId, ?int $limit = null, ?int $num = null): array {
 		return $this->getDraftManager()->findByEntityObjId($this->getClass(), $entityObjId, $limit, $num,
 				$this->getContextEiMask()->getEiEngine()->getDraftDefinition());
 	}
@@ -880,7 +880,7 @@ class EiuFrame {
 	 * @param EiType $eiType
 	 * @return EiObject
 	 */
-	public function createNewEiObject(bool $draft = false, EiType $eiType = null): EiObject {
+	public function createNewEiObject(bool $draft = false, ?EiType $eiType = null): EiObject {
 		if ($eiType === null) {
 			$eiType = $this->getContextEiType();
 		}
@@ -1043,7 +1043,7 @@ class EiuFrame {
 	 * @param FilterSettingGroup|null $rootGroup
 	 * @return \rocket\ei\util\filter\EiuFilterForm
 	 */
-	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, FilterSettingGroup $rootGroup = null) {
+	public function newFilterForm(FilterJhtmlHook $filterJhtmlHook, ?FilterSettingGroup $rootGroup = null) {
 		return new EiuFilterForm($this->getFilterDefinition(), $filterJhtmlHook, $rootGroup, $this->eiuAnalyst);
 	}
 	
@@ -1051,7 +1051,7 @@ class EiuFrame {
 	 * @param SortSettingGroup|null $sortSetting
 	 * @return \rocket\ei\util\sort\EiuSortForm
 	 */
-	public function newSortForm(SortSettingGroup $sortSetting = null) {
+	public function newSortForm(?SortSettingGroup $sortSetting = null) {
 		return new EiuSortForm($this->getSortDefinition(), $sortSetting, $this->eiuAnalyst);
 	}
 }

@@ -57,7 +57,7 @@ class HrefControl implements Control {
 		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('href' => $this->href), $attrs));
 	}
 	
-	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, Url $urlExt = null, 
+	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, Url ?$urlExt = null, 
 			ControlButton $controlButton) {
 		return new HrefControl(
 				$eiFrame->getN2nContext()->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())

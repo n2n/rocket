@@ -65,7 +65,7 @@ class LayoutExtractionManager {
 				0, $previous);
 	}
 	
-	public function rawStartLaunchPadId(string $startLaunchPadId = null) {
+	public function rawStartLaunchPadId(?string $startLaunchPadId = null) {
 		$this->attributes->set(self::START_MENU_ITEM_ID_KEY, $startLaunchPadId);
 	}
 	

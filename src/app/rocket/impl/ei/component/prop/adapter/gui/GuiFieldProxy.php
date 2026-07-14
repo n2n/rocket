@@ -43,7 +43,7 @@ class GuiFieldProxy implements GuiField, GuiFieldDisplayable, GuiFieldEditable {
 	 * @param Eiu $eiu
 	 */
 	public function __construct(Eiu $eiu, StatelessGuiFieldDisplayable $statelessGuiFieldDisplayable, 
-			StatelessGuiFieldEditable $statelessGuiFieldEditable = null) {
+			?StatelessGuiFieldEditable $statelessGuiFieldEditable = null) {
 		$this->eiu = $eiu;
 		$this->statelessGuiFieldDisplayable = $statelessGuiFieldDisplayable;
 		$this->statelessGuiFieldEditable = $statelessGuiFieldEditable;

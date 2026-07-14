@@ -209,7 +209,7 @@ class EiEngine {
 	 * @param EiEntry $to
 	 * @param array $eiPropPaths
 	 */
-	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, array $eiPropPaths = null) {
+	public function copyValues(EiFrame $eiFrame, EiEntry $from, EiEntry $to, ?array $eiPropPaths = null) {
 		ArgUtils::valArray($eiPropPaths, EiPropPath::class, true, 'eiPropPaths');
 		$mappingFactory = new EiEntryFactory($this->eiMask, $this->eiMask->getEiPropCollection(), 
 				$this->eiMask->getEiModificatorCollection());

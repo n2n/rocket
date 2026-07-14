@@ -46,7 +46,7 @@ class OverviewDraftJhtmlController extends ControllerAdapter {
 		$this->manageState = $manageState;
 	}
 	
-	public function doSelect(string $stateKey, ParamQuery $pageNo, ParamQuery $pids = null) {
+	public function doSelect(string $stateKey, ParamQuery $pageNo, ?ParamQuery $pids = null) {
 		$eiFrame = $this->manageState->peakEiFrame();
 
 		$draftListModel = new DraftListModel($eiFrame, $this->listSize);

@@ -32,8 +32,8 @@ class CommonScalarEiProperty implements ScalarEiProperty {
 	private $scalarValueBuilder;
 	private $eiFieldValueBuilder;
 
-	public function __construct(EiProp $eiProp, \Closure $scalarValueBuilder = null, 
-			\Closure $eiFieldValueBuilder = null) {
+	public function __construct(EiProp $eiProp, ?\Closure $scalarValueBuilder = null, 
+			?\Closure $eiFieldValueBuilder = null) {
 		$this->eiProp = $eiProp;
 		$this->scalarValueBuilder = $scalarValueBuilder;
 		$this->eiFieldValueBuilder = $eiFieldValueBuilder;

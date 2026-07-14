@@ -53,11 +53,11 @@ class ToOneEditable implements GuiFieldEditable {
 		return $this->mandatory;
 	}
 	
-	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
+	public function setSelectOverviewToolsUrl(?Url $selectOverviewToolsUrl = null) {
 		$this->selectOverviewToolsUrl = $selectOverviewToolsUrl;
 	}
 		
-	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
+	public function setNewMappingFormUrl(?Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	

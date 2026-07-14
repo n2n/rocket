@@ -32,7 +32,7 @@ class EntryCommandViewModel {
 	private $cancelUrl;
 	private $eiuEntry;
 	
-	public function __construct(EiuFrame $eiuFrame, Url $cancelUrl = null, EiuEntry $eiuEntry = null) {
+	public function __construct(EiuFrame $eiuFrame, ?Url $cancelUrl = null, ?EiuEntry $eiuEntry = null) {
 		$this->eiuFrame = $eiuFrame;
 		$this->cancelUrl = $cancelUrl;
 		$this->eiuEntry = $eiuEntry;

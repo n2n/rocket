@@ -49,7 +49,7 @@ class CustomTypeFactory {
 		return new CustomType($customTypeExtraction->getId(), $customTypeExtraction->getModuleNamespace(), $controllerClass->getName());
 	}
 	
-	private static function createControllerException(CustomTypeExtraction $customTypeExtraction, string $reason = null, 
+	private static function createControllerException(CustomTypeExtraction $customTypeExtraction, ?string $reason = null, 
 			\Exception $e = null): \Exception {
 		return new InvalidSpecConfigurationException('Invalid Controller defined for ' 
 				. $customTypeExtraction->toSpecString() . ($reason !== null ? ' Reason: ' . $reason : ''), 0, $e);

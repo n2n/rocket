@@ -59,7 +59,7 @@ class EiSetup {
 	 * @param \Exception $previous
 	 * @return \rocket\ei\component\InvalidEiComponentConfigurationException
 	 */
-	public function createException(string $reason = null, \Exception $previous = null) {
+	public function createException(?string $reason = null, ?\Exception $previous = null) {
 		$message = $this->eiComponent . ' invalid configured.';
 		
 		return new InvalidEiComponentConfigurationException($message

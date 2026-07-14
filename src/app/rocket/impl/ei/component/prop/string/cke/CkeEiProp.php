@@ -91,7 +91,7 @@ class CkeEiProp extends AlphanumericEiProp {
 		return $this->ckeCssConfig;
 	}
 	
-	public function setCkeCssConfig(CkeCssConfig $ckeCssConfig = null) {
+	public function setCkeCssConfig(?CkeCssConfig $ckeCssConfig = null) {
 		$this->ckeCssConfig = $ckeCssConfig;
 	}
 	

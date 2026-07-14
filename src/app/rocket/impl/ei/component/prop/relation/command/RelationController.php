@@ -124,7 +124,7 @@ class RelationController extends ControllerAdapter {
 		$this->delegateToControllerContext($targetControllerContext);
 	}
 	
-	private function applyBreadcrumb(EiObject $eiObject = null) {
+	private function applyBreadcrumb(?EiObject $eiObject = null) {
 		if (!$this->eiFrame->isOverviewDisabled()) {
 			$this->rocketState->addBreadcrumb($this->eiFrame->createOverviewBreadcrumb($this->getHttpContext()));
 		}

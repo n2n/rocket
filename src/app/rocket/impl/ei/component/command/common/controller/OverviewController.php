@@ -53,7 +53,7 @@ class OverviewController extends ControllerAdapter {
 		$this->eiuCtrl = $eiuCtrl;
 	}
 	
-	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ParamQuery $numPages = null, ParamQuery $stateKey = null) {
+	public function index(CritmodSaveDao $critmodSaveDao, $pageNo = null, ?ParamQuery $numPages = null, ?ParamQuery $stateKey = null) {
 		$eiuFrame = $this->eiuCtrl->frame();
 		$eiFrame = $eiuFrame->getEiFrame();
 		if ($stateKey !== null) {
@@ -95,7 +95,7 @@ class OverviewController extends ControllerAdapter {
 	}
 	
 	public function doAjah(OverviewJhtmlController $ajahOverviewController, array $delegateCmds = array(), 
-			ParamQuery $pageNo = null) {
+			?ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$pageNo = $pageNo->toNumericOrReject();
 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(

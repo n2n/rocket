@@ -79,7 +79,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		return $this->baseScalarEiProperty;
 	}
 
-	public function setBaseScalarEiProperty(ScalarEiProperty $baseScalarEiProperty = null) {
+	public function setBaseScalarEiProperty(?ScalarEiProperty $baseScalarEiProperty = null) {
 		$this->baseScalarEiProperty = $baseScalarEiProperty;
 	}
 
@@ -90,7 +90,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		return $this->uniquePerGenericEiProperty;
 	}
 
-	public function setUniquePerGenericEiProperty(GenericEiProperty $uniquePerCriteriaProperty = null) {
+	public function setUniquePerGenericEiProperty(?GenericEiProperty $uniquePerCriteriaProperty = null) {
 		$this->uniquePerGenericEiProperty = $uniquePerCriteriaProperty;
 	}
 
@@ -106,7 +106,7 @@ class PathPartEiProp extends AlphanumericEiProp  {
 		return $this->criticalMessage;
 	}
 
-	public function setCriticalMessage(string $criticalMessage = null) {
+	public function setCriticalMessage(?string $criticalMessage = null) {
 		$this->criticalMessage = $criticalMessage;
 	}
 

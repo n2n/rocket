@@ -120,7 +120,7 @@ class EiuHtmlBuilderMeta {
 	 * @param mixed $eiEntryGui
 	 * @return Control[]
 	 */
-	public function createEntryControls($eiEntryGui = null, int $max = null) {
+	public function createEntryControls($eiEntryGui = null, ?int $max = null) {
 		if ($eiEntryGui === null) {
 			$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		} else {

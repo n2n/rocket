@@ -55,7 +55,7 @@ class SimpleFetchDraftStmtBuilder extends DraftStmtBuilderAdapter implements Fet
 	private $boundUserIdRawValue;
 	private $draftValueSelections = array();
 	
-	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, string $tableAlias = null) {
+	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, ?string $tableAlias = null) {
 		parent::__construct($pdo, $tableName);
 		
 		$this->idEntityProperty = $idEntityProperty;

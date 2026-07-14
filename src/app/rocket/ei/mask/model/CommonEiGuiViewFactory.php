@@ -18,7 +18,7 @@ class CommonEiGuiViewFactory implements EiGuiViewFactory {
 	private $guiDefinition;
 	private $displayStructure;
 	
-	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, DisplayStructure $displayStructure = null) {
+	public function __construct(EiGui $eiGui, GuiDefinition $guiDefinition, ?DisplayStructure $displayStructure = null) {
 		$this->eiGui = $eiGui;
 		$this->guiDefinition = $guiDefinition;
 		$this->displayStructure = $displayStructure;

@@ -52,8 +52,8 @@ abstract class SimpleRelationEiPropAdapter extends RelationEiPropAdapter impleme
 		DraftProperty, FilterableEiProp {
 	protected $displayConfig;
 
-	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null, 
-			DisplayConfig $displayDefinition = null) {
+	protected function initialize(EiPropRelation $eiPropRelation, ?EditConfig $editConfig = null, 
+			?DisplayConfig $displayDefinition = null) {
 		parent::initialize($eiPropRelation, $editConfig);
 
 		if ($displayDefinition !== null) {

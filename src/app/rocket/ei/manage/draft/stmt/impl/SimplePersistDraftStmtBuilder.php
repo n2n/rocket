@@ -36,7 +36,7 @@ class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements P
 	
 	private $boundCallbacks = array();
 	
-	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, int $draftId = null) {
+	public function __construct(Pdo $pdo, string $tableName, BasicEntityProperty $idEntityProperty, ?int $draftId = null) {
 		parent::__construct($pdo, $tableName);
 
 		$this->idEntityProperty = $idEntityProperty;
@@ -72,7 +72,7 @@ class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements P
 				->getOrmDialectConfig()->buildDateTimeRawValue($dateTime));
 	}
 	
-	public function setType(string $type = null) {
+	public function setType(?string $type = null) {
 		$this->setRawValue(DraftMetaInfo::COLUMN_TYPE, $type);
 	}
 	
@@ -97,7 +97,7 @@ class SimplePersistDraftStmtBuilder extends DraftStmtBuilderAdapter implements P
 		return $placeholderName;
 	}
 	
-	public function registerColumnRawValue(EiPropPath $eiPropPath, string $rawValue = null) {
+	public function registerColumnRawValue(EiPropPath $eiPropPath, ?string $rawValue = null) {
 		return $this->setRawValue(DraftMetaInfo::buildDraftColumnName($eiPropPath), $rawValue);
 	}
 	

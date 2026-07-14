@@ -46,7 +46,7 @@ class MailArchiveBatchController implements Lookupable {
 		$this->createMailArchive();
 	}
 
-	public static function dateToFileName(\DateTime $date, int $index = null): string {
+	public static function dateToFileName(\DateTime $date, ?int $index = null): string {
 		$nameParts = [self::FILE_NAME_PREFIX, $date->format('Y'), $date->format('m')];
 		if (null !== $index)  {
 			$nameParts[] = $index;

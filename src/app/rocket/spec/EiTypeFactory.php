@@ -196,7 +196,7 @@ class EiTypeFactory {
 	 * @param EiPropExtraction[] $eiPropExtractions
 	 */
 	private function applyEiProps(array $eiPropExtractions, EiPropCollection $eiPropCollection, array $contextEntityPropertyNames = array(), 
-			EiPropPath $contextEiPropPath = null) {
+			?EiPropPath $contextEiPropPath = null) {
 		foreach ($eiPropExtractions as $eiPropExtraction) {
 			try {
 				$eiPropWrapper = null;

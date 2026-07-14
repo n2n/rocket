@@ -46,7 +46,7 @@ class AddModel implements Dispatchable  {
 	private $beforeEntityObj;
 	private $afterEntityObj;
 	
-	public function __construct(EiFrame $eiFrame, EiuEntryForm $eiuEntryForm, NestedSetStrategy $nestedSetStrategy = null) {
+	public function __construct(EiFrame $eiFrame, EiuEntryForm $eiuEntryForm, ?NestedSetStrategy $nestedSetStrategy = null) {
 		$this->eiFrame = $eiFrame;
 		$this->eiuEntryForm = $eiuEntryForm;
 		$this->nestedSetStrategy = $nestedSetStrategy;

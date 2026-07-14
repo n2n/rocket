@@ -14,7 +14,7 @@ class TypePath {
 	 * @param string $eiTypeId
 	 * @param string|null $eiTypeExtensionId
 	 */
-	function __construct(string $typeId, string $typeExtensionId = null) {
+	function __construct(string $typeId, ?string $typeExtensionId = null) {
 		ArgUtils::assertTrue(!IoUtils::hasSpecialChars($typeId));
 		ArgUtils::assertTrue($typeExtensionId === null || !IoUtils::hasSpecialChars($typeExtensionId));
 		

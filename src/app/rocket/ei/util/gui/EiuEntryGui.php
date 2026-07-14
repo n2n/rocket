@@ -88,7 +88,7 @@ class EiuEntryGui {
 	 * @throws GuiException
 	 * @return string|null
 	 */
-	public function getFieldLabel($eiPropPath, N2nLocale $n2nLocale = null, bool $required = false) {
+	public function getFieldLabel($eiPropPath, ?N2nLocale $n2nLocale = null, bool $required = false) {
 		return $this->gui()->getPropLabel($eiPropPath, $n2nLocale, $required);
 	}
 	
@@ -240,7 +240,7 @@ class EiuEntryGui {
 	/**
 	 * @param PropertyPath|null $propertyPath
 	 */
-	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
+	public function setContextPropertyPath(?PropertyPath $propertyPath = null) {
 		$this->eiEntryGui->setContextPropertyPath($propertyPath);
 	}
 	
@@ -315,7 +315,7 @@ class EiuEntryGui {
 	 * 
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
-	public function createView(HtmlView $contextView = null) {
+	public function createView(?HtmlView $contextView = null) {
 		return $this->gui()->createView($contextView);
 	}
 	
@@ -360,8 +360,8 @@ class ClosureGuiListener implements EiEntryGuiListener {
 	 * @param \Closure $onSaveClosure
 	 * @param \Closure $savedClosure
 	 */
-	public function __construct(Eiu $eiu, \Closure $whenReadyClosure = null, \Closure $onSaveClosure = null,
-			\Closure $savedClosure = null) {
+	public function __construct(Eiu $eiu, ?\Closure $whenReadyClosure = null, ?\Closure $onSaveClosure = null,
+			?\Closure $savedClosure = null) {
 		$this->eiu = $eiu;
 		$this->whenReadyClosure = $whenReadyClosure;
 		$this->onSaveClosure = $onSaveClosure;

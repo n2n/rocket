@@ -25,7 +25,7 @@ class EiuProp {
 	 * @param N2nLocale|null $n2nLocale
 	 * @return string
 	 */
-	public function getLabel(N2nLocale $n2nLocale = null) {
+	public function getLabel(?N2nLocale $n2nLocale = null) {
 		return $this->eiuMask->getPropLabel($this->eiPropPath);
 	}
 	
@@ -33,7 +33,7 @@ class EiuProp {
 	 * @param N2nLocale|null $n2nLocale
 	 * @return string
 	 */
-	public function getPluralLabel(N2nLocale $n2nLocale = null) {
+	public function getPluralLabel(?N2nLocale $n2nLocale = null) {
 		return $this->eiuMask->getPropPluralLabel($this->eiPropPath);
 	}
 	

@@ -59,18 +59,18 @@ class ToolController extends ControllerAdapter {
 		$this->forward('..\view\toolsOverview.html');
 	}
 	
-	public function backupOverview(array $params = null) {
+	public function backupOverview(?array $params = null) {
 		$this->applyBreadCrumbs(self::ACTION_BACKUP_OVERVIEW);
 		$this->delegate(new BackupController());
 	}
 	
-	public function mailCenter(MailCenterController $mailCenterController, array $params = null) {
+	public function mailCenter(MailCenterController $mailCenterController, ?array $params = null) {
 		$this->applyBreadCrumbs(self::ACTION_MAIL_CENTER);
 		
 		$this->delegate($mailCenterController);
 	}
 	
-	public function clearCache(MessageContainer $mc, ResponseCacheStore $responseCacheStore = null, ViewCacheStore $viewCacheStore = null) {
+	public function clearCache(MessageContainer $mc, ?ResponseCacheStore $responseCacheStore = null, ?ViewCacheStore $viewCacheStore = null) {
 		if ($responseCacheStore !== null) {
 			$responseCacheStore->clear();
 		}

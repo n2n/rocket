@@ -105,7 +105,7 @@ class GlobalOverviewJhtmlController extends ControllerAdapter implements ScrCont
 		$this->delegateToControllerContext($controllerContext);
 	}
 
-	public static function buildToolsAjahUrl(ScrRegistry $scrRegistry, EiType $eiType, EiMask $eiMask = null): Url {
+	public static function buildToolsAjahUrl(ScrRegistry $scrRegistry, EiType $eiType, ?EiMask $eiMask = null): Url {
 		$contextUrl = $scrRegistry->registerSessionScrController(GlobalOverviewJhtmlController::class);
 		if ($eiMask !== null) {
 			$contextUrl = $contextUrl->extR(array('eim', $eiType->getId(), $eiMask->getExtension()->getId()));

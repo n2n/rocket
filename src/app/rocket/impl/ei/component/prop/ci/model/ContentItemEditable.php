@@ -47,7 +47,7 @@ class ContentItemEditable implements GuiFieldEditable {
 		$this->panelConfigs = $panelConfigs;
 	}
 
-	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
+	public function setNewMappingFormUrl(?Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	

@@ -67,7 +67,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		return $this->allowedExtensions;
 	}
 	
-	public function setAllowedExtensions(array $allowedExtensions = null) {
+	public function setAllowedExtensions(?array $allowedExtensions = null) {
 		$this->allowedExtensions = $allowedExtensions;
 	}
 	
@@ -75,7 +75,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		return $this->imageDimensionsImportMode;
 	}
 	
-	public function setImageDimensionImportMode(string $imageDimensionImportMode = null) {
+	public function setImageDimensionImportMode(?string $imageDimensionImportMode = null) {
 		$this->imageDimensionsImportMode = $imageDimensionImportMode;
 	}
 	
@@ -91,7 +91,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$this->extraImageDimensions = $extraImageDimensions;
 	}
 	
-	public function setMaxSize(int $maxSize = null) {
+	public function setMaxSize(?int $maxSize = null) {
 		$this->maxSize = $maxSize;
 	}
 	
@@ -138,7 +138,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 // 		return $this->multiUploadEiCommand;
 // 	}
 	
-	public function setEntityProperty(EntityProperty $entityProperty = null) {		
+	public function setEntityProperty(?EntityProperty $entityProperty = null) {		
 		if (null === $entityProperty) {
 			return;
 		}
@@ -148,7 +148,7 @@ class FileEiProp extends DraftablePropertyEiPropAdapter {
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('n2n\io\managed\File',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;

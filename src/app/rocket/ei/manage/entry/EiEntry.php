@@ -303,7 +303,7 @@ class EiEntry {
 		return true;
 	}
 	
-	public function validate(EiEntryValidationResult $validationResult = null): bool {
+	public function validate(?EiEntryValidationResult $validationResult = null): bool {
 		if ($validationResult === null) {
 			$validationResult = $this->validationResult = new EiEntryValidationResult();	
 		}

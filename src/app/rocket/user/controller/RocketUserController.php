@@ -159,7 +159,7 @@ class RocketUserController extends ControllerAdapter {
 		$this->redirectToController();
 	}
 	
-	private function applyBreadcrumbs(RocketUserForm $userForm = null) {
+	private function applyBreadcrumbs(?RocketUserForm $userForm = null) {
 		$httpContext = $this->getHttpContext();
 	
 		$this->rocketState->addBreadcrumb(new Breadcrumb(

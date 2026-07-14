@@ -52,7 +52,7 @@ class EiuCommand {
 	 * @param string $label
 	 * @return EiuCommandPrivilege
 	 */
-	function newPrivilegeCommand(string $label = null) {
+	function newPrivilegeCommand(?string $label = null) {
 		return (new EiuFactory())->newCommandPrivilege($label ?? $this->getTypeName());
 	}
 }

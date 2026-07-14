@@ -53,7 +53,7 @@ class EiuCtrl implements Lookupable {
 		$this->init($manageState, $httpContext);
 	}
 	
-	protected function init(ManageState $manageState, HttpContext $httpContext, EiFrame $eiFrame = null) {
+	protected function init(ManageState $manageState, HttpContext $httpContext, ?EiFrame $eiFrame = null) {
 		if ($eiFrame === null) {
 			$eiFrame = $manageState->peakEiFrame();
 		}
@@ -157,7 +157,7 @@ class EiuCtrl implements Lookupable {
 	 * @param EiJhtmlEventInfo $ajahEventInfo
 	 * @return \rocket\ei\util\EiJhtmlEventInfo|\rocket\ajah\JhtmlEventInfo
 	 */
-	private function completeEventInfo(EiJhtmlEventInfo $ajahEventInfo = null) {
+	private function completeEventInfo(?EiJhtmlEventInfo $ajahEventInfo = null) {
 		if ($ajahEventInfo === null) {
 			$ajahEventInfo = new EiJhtmlEventInfo();
 		}
@@ -174,7 +174,7 @@ class EiuCtrl implements Lookupable {
 		return $ajahEventInfo;
 	}
 	
-	public function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	public function redirectToReferer(string $fallbackUrl, ?EiJhtmlEventInfo $ajahEventInfo = null, ?JhtmlExec $ajahExec = null) {
 	    $refererUrl = $this->httpContext->getRequest()->getHeader('Referer');
 	    if ($refererUrl === null) {
 	        $refererUrl = $fallbackUrl;
@@ -191,7 +191,7 @@ class EiuCtrl implements Lookupable {
 	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
 	}
 	
-	public function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	public function redirectBack(string $fallbackUrl, ?EiJhtmlEventInfo $ajahEventInfo = null, ?JhtmlExec $ajahExec = null) {
 	    $response = $this->httpContext->getResponse();
 	    $acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 	    if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
@@ -203,7 +203,7 @@ class EiuCtrl implements Lookupable {
 	    		$this->completeEventInfo($ajahEventInfo), $ajahExec));
 	}
 	
-	public function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $ajahExec = null) {
+	public function redirect(string $url, ?EiJhtmlEventInfo $ajahEventInfo = null, ?JhtmlExec $ajahExec = null) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		if ('application/json' != $acceptRange->bestMatch(['text/html', 'application/json'])) {
@@ -215,7 +215,7 @@ class EiuCtrl implements Lookupable {
 				$this->completeEventInfo($ajahEventInfo), $ajahExec));
 	}
 	
-	public function forwardView(HtmlView $view, EiJhtmlEventInfo $ajahEventInfo = null) {
+	public function forwardView(HtmlView $view, ?EiJhtmlEventInfo $ajahEventInfo = null) {
 		$response = $this->httpContext->getResponse();
 		$acceptRange = $this->httpContext->getRequest()->getAcceptRange();
 		
@@ -246,7 +246,7 @@ class EiuCtrl implements Lookupable {
 		return $eiFrame->getOverviewUrl($this->httpContext);
 	}
 	
-	public function parseRefUrl(ParamQuery $refPath = null) {
+	public function parseRefUrl(?ParamQuery $refPath = null) {
 		if ($refPath === null) return null;
 		
 		try {
@@ -259,7 +259,7 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function buildRefRedirectUrl(Url $redirectUrl = null, EiObject $eiObject = null) {
+	public function buildRefRedirectUrl(?Url $redirectUrl = null, ?EiObject $eiObject = null) {
 		if ($redirectUrl !== null) {
 			return $redirectUrl;	
 		}
@@ -267,7 +267,7 @@ class EiuCtrl implements Lookupable {
 		return $this->buildRedirectUrl($eiObject);
 	}
 	
-	public function applyCommonBreadcrumbs($eiObjectObj = null, string $currentBreadcrumbLabel = null) {
+	public function applyCommonBreadcrumbs($eiObjectObj = null, ?string $currentBreadcrumbLabel = null) {
 		$eiFrame = $this->eiuFrame->getEiFrame();
 		$rocketState = $eiFrame->getN2nContext()->lookup(RocketState::class);
 		CastUtils::assertTrue($rocketState instanceof RocketState);
@@ -305,12 +305,12 @@ class EiuCtrl implements Lookupable {
 		}
 	}
 	
-	public function redirectToOverview(int $status = null) {
+	public function redirectToOverview(?int $status = null) {
 		$this->httpContext->getResponse()->send(
 				new Redirect($this->eiuFrame->getEiFrame()->getOverviewUrl($this->httpContext), $status));
 	}
 	
-	public static function from(HttpContext $httpContext, EiFrame $eiFrame = null) {
+	public static function from(HttpContext $httpContext, ?EiFrame $eiFrame = null) {
 		$manageState = $httpContext->getN2nContext()->lookup(ManageState::class);
 		CastUtils::assertTrue($manageState instanceof ManageState);
 		

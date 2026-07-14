@@ -52,8 +52,8 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectBack(string $fallbackUrl, EiJhtmlEventInfo $eventInfo = null,
-			JhtmlExec $jhtmlExec = null) {
+	public static function redirectBack(string $fallbackUrl, ?EiJhtmlEventInfo $eventInfo = null,
+			?JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 
 		if ($eventInfo !== null) {
@@ -69,8 +69,8 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirectToReferer(string $fallbackUrl, EiJhtmlEventInfo $ajahEventInfo = null,
-			JhtmlExec $jhtmlExec = null) {
+	public static function redirectToReferer(string $fallbackUrl, ?EiJhtmlEventInfo $ajahEventInfo = null,
+			?JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 
 		if ($ajahEventInfo !== null) {
@@ -86,7 +86,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 	 * @param JhtmlExec $jhtmlExec
 	 * @return BufferedPayload
 	 */
-	public static function redirect(string $url, EiJhtmlEventInfo $ajahEventInfo = null, JhtmlExec $jhtmlExec = null) {
+	public static function redirect(string $url, ?EiJhtmlEventInfo $ajahEventInfo = null, ?JhtmlExec $jhtmlExec = null) {
 		$attrs = array();
 
 		if ($ajahEventInfo !== null) {

@@ -15,7 +15,7 @@ use n2n\l10n\IllegalN2nLocaleFormatException;
 class TranslationCopyController extends ControllerAdapter {
 	
 	public function doLive(EiuCtrl $eiuCtrl, ParamQuery $guiFieldPaths, ParamQuery $propertyPath, ParamQuery $bulky,
-			ParamQuery $n2nLocale, ParamQuery $pid = null) {
+			ParamQuery $n2nLocale, ?ParamQuery $pid = null) {
 		try {
 			$guiFieldPaths = $this->parseGuiFieldPaths($guiFieldPaths);
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
@@ -61,7 +61,7 @@ class TranslationCopyController extends ControllerAdapter {
 	}
 	
 	public function doLiveCopy(EiuCtrl $eiuCtrl, ParamQuery $guiFieldPaths, ParamQuery $propertyPath, ParamQuery $bulky,
-			ParamQuery $toN2nLocale, ParamQuery $fromPid, ParamQuery $toPid = null) {
+			ParamQuery $toN2nLocale, ParamQuery $fromPid, ?ParamQuery $toPid = null) {
 				
 		try {
 			$guiFieldPath = current($this->parseGuiFieldPaths($guiFieldPaths));

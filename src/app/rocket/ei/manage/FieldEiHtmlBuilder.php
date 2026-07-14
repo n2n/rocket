@@ -61,8 +61,8 @@ class FieldEiHtmlBuilder {
 		return $attrs;
 	}
 	
-	private function pushGuiPropInfo($tagName, EiFieldValidationResult $validationResult, GuiFieldDisplayable $guiField = null, 
-			PropertyPath $propertyPath = null) {
+	private function pushGuiPropInfo($tagName, EiFieldValidationResult $validationResult, ?GuiFieldDisplayable $guiField = null, 
+			?PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $guiField,
 				'validationResult' => $validationResult, 'propertyPath' => $propertyPath);
 	}
@@ -80,12 +80,12 @@ class FieldEiHtmlBuilder {
 	}
 	
 	public function openInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $validationResult, 
-			array $attrs = null, bool $mandatory = false) {
+			?array $attrs = null, bool $mandatory = false) {
 		$this->view->out($this->getOpenInputField($tagName, $magPropertyPath, $validationResult, $attrs, $mandatory));
 	}
 	
 	public function getOpenInputField(string $tagName, $magPropertyPath, EiFieldValidationResult $validationResult, 
-			array $attrs = null, bool $mandatory = false) {
+			?array $attrs = null, bool $mandatory = false) {
 		$magPropertyPath = $this->formHtml->meta()->createPropertyPath($magPropertyPath);
 		
 		if ($this->formHtml->meta()->hasErrors($magPropertyPath) || !$validationResult->isValid()) {
@@ -97,11 +97,11 @@ class FieldEiHtmlBuilder {
 				$this->buildContainerAttrs((array) $attrs, false, $mandatory), $this->uiOutfitter);
 	}
 	
-	public function openOutputField($tagName, GuiFieldDisplayable $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
+	public function openOutputField($tagName, GuiFieldDisplayable $displayable, EiFieldValidationResult $validationResult, ?array $attrs = null) {
 		$this->view->out($this->getOpenOutputField($tagName, $displayable, $validationResult, $attrs));
 	}
 	
-	public function getOpenOutputField($tagName, GuiFieldDisplayable $displayable, EiFieldValidationResult $validationResult, array $attrs = null) {
+	public function getOpenOutputField($tagName, GuiFieldDisplayable $displayable, EiFieldValidationResult $validationResult, ?array $attrs = null) {
 		$this->pushGuiPropInfo($tagName, $validationResult, $displayable);
 		
 		return new Raw('<' . HtmlUtils::hsc($tagName) . HtmlElement::buildAttrsHtml(
@@ -121,11 +121,11 @@ class FieldEiHtmlBuilder {
 		return new Raw('</' . HtmlUtils::hsc($eiPropInfo['tagName']) . '>');
 	}
 	
-	public function label(array $attrs = null, $label = null) {
+	public function label(?array $attrs = null, $label = null) {
 		$this->view->out($this->getLabel($attrs, $label));
 	}
 	
-	public function getLabel(array $attrs = null, $label = null) {
+	public function getLabel(?array $attrs = null, $label = null) {
 		$eiPropInfo = $this->peakEiPropInfo(false);
 	
 		if (isset($eiPropInfo['propertyPath'])) {

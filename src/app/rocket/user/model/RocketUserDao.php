@@ -124,7 +124,7 @@ class RocketUserDao implements RequestScoped {
 	 * @param string $rawPassword
 	 * @param RocketUser $user
 	 */
-	public function createLogin($nick, $rawPassword, RocketUser $user = null) {
+	public function createLogin($nick, $rawPassword, ?RocketUser $user = null) {
 		$login = new Login();
 		$login->setNick(StringUtils::reduce($nick, 255));
 // 		$login->setWrongPassword($user !== null ? null : StringUtils::reduce((string) $rawPassword, 255));

@@ -40,7 +40,7 @@ class TranslationComparatorConstraint implements ComparatorConstraint {
 	private $targetComparatorConstraint;
 	
 	public function __construct(EntityProperty $entityProperty, \ReflectionClass $targetEntityClass, 
-			ComparatorConstraint $targetComparatorConstraint = null) {
+			?ComparatorConstraint $targetComparatorConstraint = null) {
 		$this->entityProperty = $entityProperty;
 		$this->targetEntityClass = $targetEntityClass;
 		$this->targetComparatorConstraint = $targetComparatorConstraint;

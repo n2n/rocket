@@ -43,7 +43,7 @@ class ToManyEditable implements GuiFieldEditable {
 	private $targetOrderEiPropPath;
 	
 	public function __construct(string $label, ToManyEiField $toManyEiField,
-			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, int $min, int $max = null) {
+			EiFrame $targetReadEiFrame, EiFrame $targetEditEiFrame, int $min, ?int $max = null) {
 		$this->label = $label;
 		$this->min = $min;
 		$this->max = $max;
@@ -76,11 +76,11 @@ class ToManyEditable implements GuiFieldEditable {
 		$this->sortable = $sortable;
 	}
 	
-	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
+	public function setSelectOverviewToolsUrl(?Url $selectOverviewToolsUrl = null) {
 		$this->selectOverviewToolsUrl = $selectOverviewToolsUrl;
 	}
 		
-	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
+	public function setNewMappingFormUrl(?Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	
@@ -88,7 +88,7 @@ class ToManyEditable implements GuiFieldEditable {
 		$this->draftMode = $draftMode;
 	}
 
-	public function setTargetOrderEiPropPath(EiPropPath $targetOrderEiPropPath = null) {
+	public function setTargetOrderEiPropPath(?EiPropPath $targetOrderEiPropPath = null) {
 		$this->targetOrderEiPropPath = $targetOrderEiPropPath;
 	}
 	

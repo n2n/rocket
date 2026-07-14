@@ -33,8 +33,8 @@ use rocket\impl\ei\component\prop\adapter\entry\Copyable;
 class ToManyEiField extends CrwvEiField {
 	private $copyable = null;
 	
-	public function __construct(Eiu $eiu, Readable $readable = null, Writable $writable = null, 
-			Copyable $copyable = null) {
+	public function __construct(Eiu $eiu, ?Readable $readable = null, ?Writable $writable = null, 
+			?Copyable $copyable = null) {
 		parent::__construct(null, $eiu, $readable, $writable);
 		
 		$this->copyable = $copyable;

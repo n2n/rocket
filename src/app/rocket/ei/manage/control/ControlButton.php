@@ -48,8 +48,8 @@ class ControlButton {
 	private $confirmOkButtonLabel;
 	private $confirmCancelButtonLabel;
 	
-	public function __construct(string $name, string $tooltip = null, bool $important = false, string $type = null, 
-			string $iconType = null, array $attrs = null, bool $iconImportant = false, bool $static = true) {
+	public function __construct(string $name, ?string $tooltip = null, bool $important = false, ?string $type = null, 
+			?string $iconType = null, ?array $attrs = null, bool $iconImportant = false, bool $static = true) {
 		$this->name = $name;
 		$this->tooltip = $tooltip;
 		$this->important = $important;
@@ -83,7 +83,7 @@ class ControlButton {
 	 * @param string $name
 	 * @return \rocket\ei\manage\control\ControlButton
 	 */
-	public function setName(string $name = null) {
+	public function setName(?string $name = null) {
 		$this->name = $name;
 		return $this;
 	}
@@ -96,7 +96,7 @@ class ControlButton {
 	 * @param string $type
 	 * @return \rocket\ei\manage\control\ControlButton
 	 */
-	public function setType(string $type = null) {
+	public function setType(?string $type = null) {
 		$this->type = $type;
 		return $this;
 	}
@@ -109,7 +109,7 @@ class ControlButton {
 	 * @param string $iconType
 	 * @return \rocket\ei\manage\control\ControlButton
 	 */
-	public function setIconType(string $iconType = null) {
+	public function setIconType(?string $iconType = null) {
 		$this->iconType = $iconType;
 		return $this;
 	}
@@ -122,7 +122,7 @@ class ControlButton {
 	 * @param string $tooltip
 	 * @return \rocket\ei\manage\control\ControlButton
 	 */
-	public function setTooltip(string $tooltip = null) {
+	public function setTooltip(?string $tooltip = null) {
 		$this->tooltip = $tooltip;
 		return $this;
 	}

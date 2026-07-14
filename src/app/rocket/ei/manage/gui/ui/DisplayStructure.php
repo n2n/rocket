@@ -35,7 +35,7 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null) {
+	public function addGuiFieldPath(GuiFieldPath $guiFieldPath, ?string $type = null) {
 		$this->displayItems[] = DisplayItem::create($guiFieldPath, $type);
 	}
 	
@@ -45,8 +45,8 @@ class DisplayStructure {
 	 * @param string $label
 	 * @param string $moduleNamespace
 	 */
-	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, string $label = null, 
-			string $moduleNamespace = null) {
+	public function addDisplayStructure(DisplayStructure $displayStructure, string $type, ?string $label = null, 
+			?string $moduleNamespace = null) {
 		$this->displayItems[] = DisplayItem::createFromDisplayStructure($displayStructure, $type, $label, $moduleNamespace);
 	}
 	

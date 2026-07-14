@@ -44,8 +44,8 @@ class RelationJhtmlController extends ControllerAdapter {
 		$this->delegate($delegateController);
 	}
 	
-	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ParamQuery $chooseableEiTypeIds = null,
-			ParamQuery $grouped = null) {
+	public function doNewMappingForm(ParamQuery $propertyPath, ParamQuery $draft, ?ParamQuery $chooseableEiTypeIds = null,
+			?ParamQuery $grouped = null) {
 		try {
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 		} catch (InvalidPropertyExpressionException $e) {
@@ -70,8 +70,8 @@ class RelationJhtmlController extends ControllerAdapter {
 		$this->send(JhtmlResponse::view($view));
 	}
 	
-	public function doCopyMappingForm(ParamQuery $propertyPath, ParamQuery $pid = null, ParamQuery $draftId = null,
-			array $chooseableEiTypeIds = null, ParamQuery $grouped = null) {
+	public function doCopyMappingForm(ParamQuery $propertyPath, ?ParamQuery $pid = null, ?ParamQuery $draftId = null,
+			?array $chooseableEiTypeIds = null, ?ParamQuery $grouped = null) {
 		try {
 			$propertyPath = PropertyPath::createFromPropertyExpression((string) $propertyPath);
 		} catch (InvalidPropertyExpressionException $e) {

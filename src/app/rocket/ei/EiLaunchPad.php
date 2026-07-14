@@ -40,7 +40,7 @@ class EiLaunchPad implements LaunchPad {
 	private $eiMask;
 	private $label;
 	
-	public function __construct(string $id, EiMask $eiMask, string $label = null) {
+	public function __construct(string $id, EiMask $eiMask, ?string $label = null) {
 		$this->id = $id;
 		$this->eiMask = $eiMask;
 		$this->label = $label;

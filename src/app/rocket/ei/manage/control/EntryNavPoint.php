@@ -28,7 +28,7 @@ class EntryNavPoint {
 	private $draftId;
 	private $previewType;
 	
-	public function __construct(string $liveId = null, string $draftId = null, $previewType = null) {
+	public function __construct(?string $liveId = null, ?string $draftId = null, $previewType = null) {
 		$this->liveId = $liveId;
 		$this->draftId = $draftId;
 		$this->previewType = $previewType;

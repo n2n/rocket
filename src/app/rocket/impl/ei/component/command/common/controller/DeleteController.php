@@ -42,7 +42,7 @@ class DeleteController extends ControllerAdapter {
 		$this->eiuCtrl = $eiuCtrl;
 	}
 	
-	public function doLive($pid, ParamQuery $refPath = null, MessageContainer $mc) {
+	public function doLive($pid, ?ParamQuery $refPath, MessageContainer $mc) {
 		$redirectUrl = $this->eiuCtrl->buildRefRedirectUrl($this->eiuCtrl->parseRefUrl($refPath));
 		
 		$eiObject = null;

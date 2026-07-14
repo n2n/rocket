@@ -122,7 +122,7 @@ class EiGui {
 	 * @param EiGuiViewFactory $eiGuiViewFactory
 	 * @param GuiFieldPath[]
 	 */
-	public function init(EiGuiViewFactory $eiGuiViewFactory, array $guiFieldPaths = null) {
+	public function init(EiGuiViewFactory $eiGuiViewFactory, ?array $guiFieldPaths = null) {
 		if ($this->eiGuiViewFactory !== null) {
 			throw new IllegalStateException('EiGui already initialized.');
 		}
@@ -184,7 +184,7 @@ class EiGui {
 	 * @param bool $append
 	 * @return EiEntryGui
 	 */
-	public function createEiEntryGui(EiEntry $eiEntry, int $treeLevel = null, bool $append = true): EiEntryGui {
+	public function createEiEntryGui(EiEntry $eiEntry, ?int $treeLevel = null, bool $append = true): EiEntryGui {
 		$this->ensureInit();
 		
 		

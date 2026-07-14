@@ -270,7 +270,7 @@ abstract class EiPropRelation {
 // 		return $this->getRelationEntityProperty()->isMaster();
 // 	}
 		
-	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, EiObject $eiObject = null, 
+	public function createTargetEiFrame(ManageState $manageState, EiFrame $eiFrame, ?EiObject $eiObject, 
 			ControllerContext $targetControllerContext): EiFrame {
 		$targetEiFrame = $manageState->createEiFrame($this->getTargetEiMask()->getEiEngine(), $targetControllerContext, new EiCommandPath([]));
 		$targetEiFrame->setSubEiTypeExtensions($this->targetSubEiTypeExtensions);
@@ -279,7 +279,7 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 	
-	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null): EiFrame {
+	public function createTargetReadPseudoEiFrame(EiFrame $eiFrame, ?EiEntry $eiEntry = null): EiFrame {
 		$targetEiFrame = $this->createTargetPseudoEiFrame($eiFrame, $eiEntry, new EiCommandPath(array()));
 		
 		return $targetEiFrame;
@@ -291,7 +291,7 @@ abstract class EiPropRelation {
 		return $targetEiFrame;
 	}
 	
-	private function createTargetPseudoEiFrame(EiFrame $eiFrame, EiEntry $eiEntry = null, ?EiCommandPath $eiCommandPath): EiFrame {
+	private function createTargetPseudoEiFrame(EiFrame $eiFrame, ?EiEntry $eiEntry, ?EiCommandPath $eiCommandPath): EiFrame {
 	    $eiObject = null;
 	    if ($eiEntry !== null) {
 	        $eiObject = $eiEntry->getEiObject();
@@ -335,7 +335,7 @@ abstract class EiPropRelation {
 	}
 	
 	protected function configureTargetEiFrame(EiFrame $targetEiFrame, EiFrame $eiFrame, 
-			EiObject $eiObject = null/*, $editCommandRequired = null*/) {
+			?EiObject $eiObject = null/*, $editCommandRequired = null*/) {
 		if ($eiObject === null) return $targetEiFrame;
 				
 		if (null !== ($targetCriteriaFactory = $this->createTargetCriteriaFactory($eiObject))) {

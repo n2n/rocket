@@ -58,7 +58,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		$this->entityProperty = $entityProperty;
 	}
 	
-	public function setObjectPropertyAccessProxy(AccessProxy $propertyAccessProxy = null) {
+	public function setObjectPropertyAccessProxy(?AccessProxy $propertyAccessProxy = null) {
 		$propertyAccessProxy->setConstraint(TypeConstraint::createSimple('n2n\\l10n\\N2nLocale',
 				$propertyAccessProxy->getBaseConstraint()->allowsNull()));
 		$this->objectPropertyAccessProxy = $propertyAccessProxy;
@@ -68,7 +68,7 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 		return $this->definedN2nLocales;
 	}
 
-	public function setDefinedN2nLocales(array $definedN2nLocales = null) {
+	public function setDefinedN2nLocales(?array $definedN2nLocales = null) {
 		$this->definedN2nLocales = $definedN2nLocales;
 	}
 
@@ -174,12 +174,12 @@ class N2nLocaleEiProp extends DraftablePropertyEiPropAdapter implements Filterab
 
 	public function getScalarEiProperty(): ?ScalarEiProperty {
 		return new CommonScalarEiProperty($this,
-				function (N2nLocale $n2nLocale = null) {
+				function (?N2nLocale $n2nLocale = null) {
 					if ($n2nLocale === null) return null;
 
 					return (string) $n2nLocale;
 				},
-				function (string $n2nLocaleId = null) {
+				function (?string $n2nLocaleId = null) {
 					if ($n2nLocaleId === null) return null;
 
 					try {

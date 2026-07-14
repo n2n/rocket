@@ -38,7 +38,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		return $this->min;
 	}
 	
-	public function setMin(int $min = null) {
+	public function setMin(?int $min = null) {
 		$this->min = $min;
 		if ($min !== null && $min > 0) {
 			$this->editConfig->setMandatory(true);
@@ -49,7 +49,7 @@ abstract class ToManyEiPropAdapter extends SimpleRelationEiPropAdapter implement
 		return $this->max;
 	}
 	
-	public function setMax(int $max = null) {
+	public function setMax(?int $max = null) {
 		$this->max = $max;
 	}
 	

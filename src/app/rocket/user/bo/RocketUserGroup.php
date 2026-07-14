@@ -95,7 +95,7 @@ class RocketUserGroup extends ObjectAdapter {
 		return $this->accessibleLaunchPadIds = StringUtils::jsonDecode($this->navJson, true);
 	}
 	
-	public function setAccessibleLaunchPadIds(array $launchPadIds = null) {
+	public function setAccessibleLaunchPadIds(?array $launchPadIds = null) {
 		if ($launchPadIds === null) {
 			$this->navJson = null;
 			$this->accessibleLaunchPadIds = null;

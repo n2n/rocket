@@ -55,7 +55,7 @@ class ContentItemGuiField implements GuiField, GuiFieldDisplayable {
 	 * @param GuiFieldEditable $editable
 	 */
 	public function __construct(Lstr $labelLstr, array $panelConfigs, ToManyEiField $toManyEiField, EiFrame $targetEiFrame,
-			bool $compact, GuiFieldEditable $editable = null) {
+			bool $compact, ?GuiFieldEditable $editable = null) {
 		$this->labelLstr = $labelLstr;
 		$this->panelConfigs = $panelConfigs;
 		$this->toManyEiField = $toManyEiField;

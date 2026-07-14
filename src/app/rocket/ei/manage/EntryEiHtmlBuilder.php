@@ -47,7 +47,7 @@ class EntryEiHtmlBuilder {
 	private $eiEntryGuis;
 	private $meta;
 	
-	public function __construct(HtmlView $view, $eiuFrame, array $eiuEntryGuis = null) {
+	public function __construct(HtmlView $view, $eiuFrame, ?array $eiuEntryGuis = null) {
 		$this->view = $view;
 		$this->html = $view->getHtmlBuilder();
 		$this->formHtml = $view->getFormHtmlBuilder();
@@ -69,7 +69,7 @@ class EntryEiHtmlBuilder {
 	}
 	
 	private function pushGuiPropInfo($tagName, GuiField $guiField, EiFieldValidationResult $validationResult, 
-			PropertyPath $propertyPath = null) {
+			?PropertyPath $propertyPath = null) {
 		$this->eiPropInfoStack[] = array('tagName' => $tagName, 'displayable' => $guiField, 
 				'validationResult' => $validationResult, 'propertyPath' => $propertyPath);
 	}
@@ -88,11 +88,11 @@ class EntryEiHtmlBuilder {
 	
 	private $openEntryTagName = null;
 	
-	public function entryOpen(string $tagName, array $attrs = null) {
+	public function entryOpen(string $tagName, ?array $attrs = null) {
 		$this->view->out($this->getEntryOpen($tagName, $attrs));
 	}
 	
-	public function getEntryOpen(string $tagName, array $attrs = null) {
+	public function getEntryOpen(string $tagName, ?array $attrs = null) {
 		$this->openEntryTagName = $tagName;
 		
 		$entryAttrs = array(
@@ -120,11 +120,11 @@ class EntryEiHtmlBuilder {
 	}
 	
 	
-	public function selector(string $containerTagName, array $containerAttrs = null, $content = '') {
+	public function selector(string $containerTagName, ?array $containerAttrs = null, $content = '') {
 		$this->view->out($this->getSelector($containerTagName, $containerAttrs, $content));
 	}
 	
-	public function getSelector(string $containerTagName, array $containerAttrs = null, $content = ''): UiComponent {
+	public function getSelector(string $containerTagName, ?array $containerAttrs = null, $content = ''): UiComponent {
 		$eiObject = $this->meta->getCurrentEiuEntryGui()->entry()->object()->getEiObject();
 		$draftId = null;
 		if ($eiObject->isDraft() && !$eiObject->getDraft()->isNew()) {
@@ -144,11 +144,11 @@ class EntryEiHtmlBuilder {
 		return array('class' => 'rocket-gui-field-' . implode('-', $guiFieldPath->toArray()));
 	}
 	
-	public function openInputField($tagName, $guiFieldPath, array $attrs = null) {
+	public function openInputField($tagName, $guiFieldPath, ?array $attrs = null) {
 		$this->view->out($this->getOpenInputField($tagName, $guiFieldPath, $attrs));
 	}
 	
-	public function getOpenInputField($tagName, $eiPropPath, array $attrs = null) {
+	public function getOpenInputField($tagName, $eiPropPath, ?array $attrs = null) {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		
@@ -170,11 +170,11 @@ class EntryEiHtmlBuilder {
 				$this->buildAttrs($eiPropPath), $editableInfo->isMandatory());
 	}
 		
-	public function openOutputField($tagName, $eiPropPath, array $attrs = null) {
+	public function openOutputField($tagName, $eiPropPath, ?array $attrs = null) {
 		$this->view->out($this->getOpenOutputField($tagName, $eiPropPath, $attrs));
 	}
 	
-	public function getOpenOutputField($tagName, $eiPropPath, array $attrs = null) {
+	public function getOpenOutputField($tagName, $eiPropPath, ?array $attrs = null) {
 		$eiuEntryGui = $this->meta->getCurrentEiuEntryGui();
 		$eiPropPath = GuiFieldPath::create($eiPropPath);
 		$displayable = $eiuEntryGui->getEiEntryGui()->getDisplayableByGuiFieldPath($eiPropPath);
@@ -193,11 +193,11 @@ class EntryEiHtmlBuilder {
 		return $this->fieldEiHtml->getCloseField();
 	}
 	
-	public function label(array $attrs = null, $label = null) {
+	public function label(?array $attrs = null, $label = null) {
 		$this->html->out($this->getLabel($attrs, $label));
 	}
 	
-	public function getLabel(array $attrs = null, $label = null) {
+	public function getLabel(?array $attrs = null, $label = null) {
 		return $this->fieldEiHtml->getLabel($attrs, $label);
 	} 
 	

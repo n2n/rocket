@@ -11,7 +11,7 @@ class GuiFieldForkAssembly {
 	 * @param MagAssembly[] $magAssemblies
 	 * @param GuiFieldEditable $guiFieldForkEditable
 	 */
-	public function __construct(array $magAssemblies, GuiFieldForkEditable $editable = null) {
+	public function __construct(array $magAssemblies, ?GuiFieldForkEditable $editable = null) {
 		ArgUtils::valArray($magAssemblies, MagAssembly::class);
 		$this->magAssemblies = $magAssemblies;
 		$this->editable = $editable;

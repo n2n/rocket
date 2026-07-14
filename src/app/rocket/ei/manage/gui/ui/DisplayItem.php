@@ -30,7 +30,7 @@ class DisplayItem {
 	 * @param GuiFieldPath $guiFieldPath
 	 * @return DisplayItem
 	 */
-	public static function create(GuiFieldPath $guiFieldPath, string $type = null) {
+	public static function create(GuiFieldPath $guiFieldPath, ?string $type = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
@@ -43,7 +43,7 @@ class DisplayItem {
 	 * @return DisplayItem
 	 * @deprecated
 	 */
-	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, string $type = null) {
+	public static function createFromGuiFieldPath(GuiFieldPath $guiFieldPath, ?string $type = null) {
 		$orderItem = new DisplayItem();
 		ArgUtils::valEnum($type, self::getTypes(), null, true);
 		$orderItem->type = $type;
@@ -55,8 +55,8 @@ class DisplayItem {
 	 * @param DisplayStructure $displayStructure
 	 * @return DisplayItem
 	 */
-	public static function createFromDisplayStructure(DisplayStructure $displayStructure, string $type, 
-			string $label = null, string $moduleNamespace = null) {
+	public static function createFromDisplayStructure(DisplayStructure $displayStructure, ?string $type, 
+			?string $label = null, ?string $moduleNamespace = null) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $displayStructure;
 		ArgUtils::valEnum($type, self::getTypes());
@@ -71,7 +71,7 @@ class DisplayItem {
 	 * @param string|null $labelLstr
 	 * @return DisplayItem
 	 */
-	public function copy(string $type = null, array $attrs = null/*, Lstr $labelLstr = null*/) {
+	public function copy(?string $type = null, ?array $attrs = null/*, Lstr $labelLstr = null*/) {
 		$displayItem = new DisplayItem();
 		$displayItem->displayStructure = $this->displayStructure;
 		$displayItem->guiFieldPath = $this->guiFieldPath;

@@ -24,7 +24,7 @@ class SummarizedStringBuilder {
 		$this->n2nLocale = $n2nLocale;
 	}
 	
-	public function replaceFields(array $baseIds, GuiDefinition $guiDefinition, EiObject $eiObject = null) {
+	public function replaceFields(array $baseIds, GuiDefinition $guiDefinition, ?EiObject $eiObject = null) {
 		$eiu = null;
 		if ($eiObject !== null) {
 			$eiu = new Eiu($this->n2nContext, $eiObject);

@@ -38,7 +38,7 @@ class EiuMask  {
 	private $eiuEngine;
 	private $eiuAnalyst;
 	
-	public function __construct(EiMask $eiMask, EiuEngine $eiuEngine = null, EiuAnalyst $eiuAnalyst = null) {
+	public function __construct(EiMask $eiMask, ?EiuEngine $eiuEngine = null, ?EiuAnalyst $eiuAnalyst = null) {
 		$this->eiMask = $eiMask;
 		$this->eiuEngine = $eiuEngine;
 		$this->eiuAnalyst = $eiuAnalyst;
@@ -138,12 +138,12 @@ class EiuMask  {
 		return $this->eiuEngine = new EiuEngine($this->eiMask->getEiEngine(), $this, $this->eiuAnalyst);
 	}
 	
-	public function getPropLabel($eiPropPath, N2nLocale $n2nLocale = null) {
+	public function getPropLabel($eiPropPath, ?N2nLocale $n2nLocale = null) {
 		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
 	
-	public function getPropPluralLabel($eiPropPath, N2nLocale $n2nLocale = null) {
+	public function getPropPluralLabel($eiPropPath, ?N2nLocale $n2nLocale = null) {
 		return $this->eiMask->getEiPropCollection()->getByPath(EiPropPath::create($eiPropPath))->getPluralLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}

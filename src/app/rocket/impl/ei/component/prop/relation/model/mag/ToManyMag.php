@@ -57,7 +57,7 @@ class ToManyMag extends MagAdapter {
 	private $targetEiEntrys = array();
 	
 	public function __construct(string $label, EiFrame $targetReadEiFrame, 
-			EiFrame $targetEditEiFrame, int $min, int $max = null) {
+			EiFrame $targetEditEiFrame, int $min, ?int $max = null) {
 		parent::__construct($label);
 	
 		$this->targetReadUtils = (new Eiu($targetReadEiFrame))->frame();
@@ -76,25 +76,25 @@ class ToManyMag extends MagAdapter {
 		$this->reduced = $reduced;
 	}
 	
-	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
+	public function setSelectOverviewToolsUrl(?Url $selectOverviewToolsUrl = null) {
 		$this->selectOverviewToolsUrl = $selectOverviewToolsUrl;
 		
 		$this->updateContainerAttrs($selectOverviewToolsUrl === null);
 	}
 	
-	public function getSelectOverviewToolsUrl(): Url {
+	public function getSelectOverviewToolsUrl(): ?Url {
 		return $this->selectOverviewToolsUrl;
 	}
 	
-	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
+	public function setNewMappingFormUrl(?Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	
-	public function getNewMappingFormUrl(): Url {
+	public function getNewMappingFormUrl(): ?Url {
 		return $this->newMappingFormUrl;
 	}
 	
-	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+	public function setAllowedNewEiTypeIds(?array $allowedEiTypeIds = null) {
 		$this->allowedNewEiTypeIds = $allowedEiTypeIds;
 	}
 	
@@ -109,7 +109,7 @@ class ToManyMag extends MagAdapter {
 		$this->draftMode = $draftMode;
 	}
 	
-	public function setTargetOrderEiPropPath(EiPropPath $targetOrderEiPropPath = null) {
+	public function setTargetOrderEiPropPath(?EiPropPath $targetOrderEiPropPath = null) {
 		$this->targetOrderEiPropPath = $targetOrderEiPropPath;
 	}
 	

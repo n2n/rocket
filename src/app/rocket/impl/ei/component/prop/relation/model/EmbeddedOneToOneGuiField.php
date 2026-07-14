@@ -47,7 +47,7 @@ class EmbeddedOneToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $newMappingFormPathExt;
 
 	public function __construct(Lstr $labelLstr, bool $reduced, ToOneEiField $toOneEiField, EiFrame $targetEiFrame,
-			bool $compact, GuiFieldEditable $editable = null) {
+			bool $compact, ?GuiFieldEditable $editable = null) {
 		$this->labelLstr = $labelLstr;
 		$this->reduced = $reduced;
 		$this->toOneEiField = $toOneEiField;

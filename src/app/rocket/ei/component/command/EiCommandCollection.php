@@ -61,7 +61,7 @@ class EiCommandCollection extends EiComponentCollection {
 	 * @param bool $prepend
 	 * @return EiCommandWrapper
 	 */
-	public function add(EiCommand $eiCommand, string $id = null, bool $prepend = false) {
+	public function add(EiCommand $eiCommand, ?string $id = null, bool $prepend = false) {
 		$eiCommandPath = new EiCommandPath([$this->makeId($id, $eiCommand)]);
 		$eiCommandWrapper = new EiCommandWrapper($eiCommandPath, $eiCommand, $this);
 		

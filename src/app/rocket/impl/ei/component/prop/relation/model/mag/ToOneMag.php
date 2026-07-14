@@ -69,7 +69,7 @@ class ToOneMag extends MagAdapter {
 // 		}
 // 	}
 	
-	public function setSelectOverviewToolsUrl(Url $selectOverviewToolsUrl = null) {
+	public function setSelectOverviewToolsUrl(?Url $selectOverviewToolsUrl = null) {
 		$this->selectOverviewToolsUrl = $selectOverviewToolsUrl;
 
 // 		$this->updateContainerAttrs($selectOverviewToolsUrl === null);
@@ -79,7 +79,7 @@ class ToOneMag extends MagAdapter {
 		return $this->selectOverviewToolsUrl;
 	}
 	
-	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
+	public function setNewMappingFormUrl(?Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	

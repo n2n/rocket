@@ -39,7 +39,7 @@ class ManyToOneGuiField implements GuiField, GuiFieldDisplayable {
 	private $toOneMag;
 	
 	public function __construct(string $label, ToOneEiField $toOneEiField, EiFrame $targetEiFrame, 
-			GuiFieldEditable $editable = null) {
+			?GuiFieldEditable $editable = null) {
 		$this->label = $label;
 		$this->toOneEiField = $toOneEiField;
 		$this->targetEiFrame = $targetEiFrame;

@@ -115,7 +115,7 @@ class EmbeddedOneToManyEiProp extends ToManyEiPropAdapter /*implements Draftable
 	
 	
 	
-	public function setTargetOrderEiPropPath(EiPropPath $targetOrderEiPropPath = null) {
+	public function setTargetOrderEiPropPath(?EiPropPath $targetOrderEiPropPath = null) {
 		$this->targetOrderEiPropPath = $targetOrderEiPropPath;
 	}
 	

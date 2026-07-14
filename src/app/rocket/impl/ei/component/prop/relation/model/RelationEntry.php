@@ -29,7 +29,7 @@ class RelationEntry {
 	private $eiObject;
 	private $eiEntry;
 
-	private function __construct(EiObject $eiObject, EiEntry $eiEntry = null) {
+	private function __construct(EiObject $eiObject, ?EiEntry $eiEntry = null) {
 		$this->eiObject = $eiObject;
 		$this->eiEntry = $eiEntry;
 	}

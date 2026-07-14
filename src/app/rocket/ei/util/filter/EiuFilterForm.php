@@ -117,7 +117,7 @@ class EiuFilterForm implements Dispatchable, UiComponent {
 	 * @param HtmlView $contextView
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
-	function createView(HtmlView $contextView = null) {
+	function createView(?HtmlView $contextView = null) {
 		if ($contextView !== null) {
 			return $contextView->getImport('\rocket\ei\util\filter\view\eiuFilterForm.html',
 					array('eiuFilterForm' => $this));

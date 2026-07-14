@@ -75,7 +75,7 @@ class ContentItemMag extends MagAdapter {
 		$this->reduced = $reduced;
 	}
 
-	public function setNewMappingFormUrl(Url $newMappingFormUrl = null) {
+	public function setNewMappingFormUrl(?Url $newMappingFormUrl = null) {
 		$this->newMappingFormUrl = $newMappingFormUrl;
 	}
 	

@@ -51,7 +51,7 @@ class ThumbController extends ControllerAdapter {
 		$this->fileEiProp = $fileEiProp;
 	}
 	
-	public function index($pid, ParamQuery $refPath, ParamQuery $selected = null) {
+	public function index($pid, ParamQuery $refPath, ?ParamQuery $selected = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		$eiuEntry = $this->eiuCtrl->lookupEntry($pid);
 		

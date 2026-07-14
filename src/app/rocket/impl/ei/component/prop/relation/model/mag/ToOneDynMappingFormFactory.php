@@ -39,7 +39,7 @@ class ToOneDynMappingFormFactory {
 		$this->genericLabel = $genericLabel;
 	}
 	
-	public function setEiEntry(EiEntry $eiEntry = null) {
+	public function setEiEntry(?EiEntry $eiEntry = null) {
 		$this->currentMappingForm = null;
 		$this->newMappingForm = null;
 		

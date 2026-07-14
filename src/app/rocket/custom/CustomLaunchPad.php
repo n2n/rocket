@@ -32,7 +32,7 @@ class CustomLaunchPad implements LaunchPad {
 	private $customSpec;
 	private $label;
 	
-	public function __construct(string $id, CustomType $customSpec, string $label = null) {
+	public function __construct(string $id, CustomType $customSpec, ?string $label = null) {
 		$this->id = $id;
 		$this->customSpec = $customSpec;
 		$this->label = $label;

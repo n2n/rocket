@@ -45,7 +45,7 @@ class MailCenter {
 	private int $numItemsTotal = 0;
 	private ?array $currentItems = null;
 
-	public function __construct(VarStore $varStore, FsPath $mailXmlFilePath = null) {
+	public function __construct(VarStore $varStore, ?FsPath $mailXmlFilePath = null) {
 		$this->varStore = $varStore;
 		$this->mailXmlFilePath = $mailXmlFilePath;
 	}
@@ -89,7 +89,7 @@ class MailCenter {
 		return ceil(($this->getNumItemsTotal() / self::NUM_MAILS_PER_PAGE));
 	}
 
-	public function getAttachment(int $itemIndex, int $attachmentIndex = null): ?CommonFile {
+	public function getAttachment(int $itemIndex, ?int $attachmentIndex = null): ?CommonFile {
 		$items = $this->getAllItems($itemIndex);
 		if (!isset($items[$itemIndex]))	return null;
 		$attachments = $items[$itemIndex]->getAttachments();

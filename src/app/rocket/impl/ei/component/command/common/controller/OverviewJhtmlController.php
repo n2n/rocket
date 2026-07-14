@@ -114,7 +114,7 @@ class OverviewJhtmlController extends ControllerAdapter {
 		return FramedFilterPropController::buildFilterJhtmlHook($this->getControllerPath()->ext('filter')->toUrl());
 	}
 
-	public function doSelect(string $stateKey, ParamQuery $pageNo = null, ParamQuery $pids = null) {
+	public function doSelect(string $stateKey, ?ParamQuery $pageNo = null, ?ParamQuery $pids = null) {
 		$eiuFrame = $this->eiuCtrl->frame();
 		
 		$filterJhtmlHook = $this->buildFilterJhtmlHook();

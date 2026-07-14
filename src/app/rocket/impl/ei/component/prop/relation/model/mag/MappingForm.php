@@ -41,8 +41,8 @@ class MappingForm implements Dispatchable {
 	private $eiuEntryForm;
 	private $orderIndex;
 	
-	public function __construct(string $entryLabel, string $iconType, EiEntry $eiEntry = null, 
-			EiuEntryForm $eiuEntryForm = null, int $orderIndex = null) {
+	public function __construct(string $entryLabel, string $iconType, ?EiEntry $eiEntry = null, 
+			?EiuEntryForm $eiuEntryForm = null, ?int $orderIndex = null) {
 		ArgUtils::assertTrue($eiEntry !== null || $eiuEntryForm !== null);
 		
 		$this->entryLabel = $entryLabel;

@@ -1033,7 +1033,7 @@ class EiuAnalyst {
 						. implode(', ', self::EI_FIELD_TYPES));
 	}
 	
-	public static function buildEiuFrameFormEiArg($eiArg, string $argName = null, bool $required = false) {
+	public static function buildEiuFrameFormEiArg($eiArg, ?string $argName = null, bool $required = false) {
 		if ($eiArg instanceof EiuFrame) {
 			return $eiArg;
 		}
@@ -1076,7 +1076,7 @@ class EiuAnalyst {
 	 * @param bool $required
 	 * @return \rocket\ei\util\entry\EiuEntry|NULL
 	 */
-	public static function buildEiuEntryFromEiArg($eiArg, EiuFrame $eiuFrame = null, string $argName = null, bool $required = false) {
+	public static function buildEiuEntryFromEiArg($eiArg, ?EiuFrame $eiuFrame = null, ?string $argName = null, bool $required = false) {
 		if ($eiArg instanceof EiuEntry) {
 			return $eiArg;
 		}
@@ -1182,7 +1182,7 @@ class EiuAnalyst {
 				. implode(', ', array_merge(self::EI_FRAME_TYPES, EI_ENTRY_TYPES)));
 	}
 	
-	public static function buildEiTypeFromEiArg($eiTypeArg, string $argName = null, bool $required = true) {
+	public static function buildEiTypeFromEiArg($eiTypeArg, ?string $argName = null, bool $required = true) {
 		if ($eiTypeArg === null && !$required) {
 			return null;
 		}
@@ -1204,7 +1204,7 @@ class EiuAnalyst {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
-	public static function buildEiEntryFromEiArg($eiEntryArg, string $argName = null, bool $required = true) {
+	public static function buildEiEntryFromEiArg($eiEntryArg, ?string $argName = null, bool $required = true) {
 		if ($eiEntryArg instanceof EiEntry) {
 			return $eiEntryArg;
 		}
@@ -1227,7 +1227,7 @@ class EiuAnalyst {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\manage\gui\EiEntryGui
 	 */
-	public static function buildEiEntryGuiFromEiArg($eiEntryGuiArg, string $argName = null, bool $required = true) {
+	public static function buildEiEntryGuiFromEiArg($eiEntryGuiArg, ?string $argName = null, bool $required = true) {
 		if ($eiEntryGuiArg instanceof EiEntryGui) {
 			return $eiEntryGuiArg;
 		}
@@ -1255,7 +1255,7 @@ class EiuAnalyst {
 				. TypeUtils::getTypeInfo($eiEntryGuiArg) . ' given.');
 	}
 	
-	public static function buildEiGuiFromEiArg($eiGuiArg, string $argName = null, bool $required = true) {
+	public static function buildEiGuiFromEiArg($eiGuiArg, ?string $argName = null, bool $required = true) {
 		if ($eiGuiArg instanceof EiGui) {
 			return $eiGuiArg;
 		}
@@ -1282,7 +1282,7 @@ class EiuAnalyst {
 				. TypeUtils::getTypeInfo($eiGuiArg) . ' given.');
 	}
 	
-	public static function buildEiObjectFromEiArg($eiObjectObj, string $argName = null, EiType $eiType = null, 
+	public static function buildEiObjectFromEiArg($eiObjectObj, ?string $argName = null, ?EiType $eiType = null, 
 			bool $required = true, &$eiEntry = null, &$eiGuiArg = null) {
 		if (!$required && $eiObjectObj === null) {
 			return null;

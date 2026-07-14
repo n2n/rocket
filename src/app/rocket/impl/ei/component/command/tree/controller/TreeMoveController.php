@@ -66,7 +66,7 @@ class TreeMoveController extends ControllerAdapter {
 		$this->eiCtrl->redirectToReferer($refUrl, JhtmlEvent::ei()->noAutoEvents());
 	}
 
-	private function move(string $pid, string $targetPid, bool $before = null) {
+	private function move(string $pid, string $targetPid, ?bool $before = null) {
 		if ($pid === $targetPid) return;
 
 		$eiUtils = $this->eiCtrl->frame();

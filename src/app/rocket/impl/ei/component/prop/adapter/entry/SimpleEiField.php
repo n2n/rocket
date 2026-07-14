@@ -32,7 +32,7 @@ class SimpleEiField extends CrwvEiField {
 	private $nullReadAllowed = true;
 	
 	public function __construct(Eiu $eiu, TypeConstraint $typeConstraint, 
-			Readable $readable = null, Writable $writable = null, Validatable $validatable = null, Copyable $copyable = null) {
+			?Readable $readable = null, ?Writable $writable = null, ?Validatable $validatable = null, ?Copyable $copyable = null) {
 		parent::__construct($typeConstraint, $eiu, $readable, $writable, $validatable);
 		$this->copyable = $copyable;
 	}

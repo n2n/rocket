@@ -39,8 +39,8 @@ class PanelConfig {
 	 * @param int|null $max
 	 * @param GridPos|null $gridPos
 	 */
-	public function __construct(string $name, string $label, array $allowedContentItemIds = null,
-			int $min = 0, int $max = null, GridPos $gridPos = null) {
+	public function __construct(string $name, string $label, ?array $allowedContentItemIds = null,
+			?int $min = 0, ?int $max = null, ?GridPos $gridPos = null) {
 		$this->name = $name;
 		$this->label = $label;
 		$this->allowedContentItemIds = $allowedContentItemIds;
@@ -98,7 +98,7 @@ class PanelConfig {
 	/**
 	 * @param string[] $allowedContentItemIds
 	 */
-	public function setAllowedContentItemIds(array $allowedContentItemIds = null) {
+	public function setAllowedContentItemIds(?array $allowedContentItemIds = null) {
 		$this->allowedContentItemIds = $allowedContentItemIds;
 	}
 	

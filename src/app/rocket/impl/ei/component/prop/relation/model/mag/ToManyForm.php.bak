@@ -60,7 +60,7 @@ class ToManyForm implements Dispatchable {
 		return $this->entryFormFactory !== null;
 	}
 	
-	public function setEntryFormFactory(EntryFormFactory $entryFormFactory = null) {
+	public function setEntryFormFactory(?EntryFormFactory $entryFormFactory = null) {
 		$this->entryFormFactory = $entryFormFactory;
 	}
 	

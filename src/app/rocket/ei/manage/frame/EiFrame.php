@@ -122,7 +122,7 @@ class EiFrame {
 	/**
 	 * @param EiFrame $parent
 	 */
-	public function setParent(EiFrame $parent = null) {
+	public function setParent(?EiFrame $parent = null) {
 		$this->parent = $parent;
 	}
 	
@@ -257,7 +257,7 @@ class EiFrame {
 	 * @param int $ignoreConstraintTypes
 	 * @return EiEntry
 	 */
-	public function createEiEntry(EiObject $eiObject, EiEntry $copyFrom = null, int $ignoreConstraintTypes = 0) {
+	public function createEiEntry(EiObject $eiObject, ?EiEntry $copyFrom = null, ?int $ignoreConstraintTypes = 0) {
 		$eiEntry = $this->determineEiMask($eiObject->getEiEntityObj()->getEiType())->getEiEngine()
 				->createFramedEiEntry($this, $eiObject, $copyFrom, $this->boundry->filterEiEntryConstraints($ignoreConstraintTypes));
 		
@@ -350,7 +350,7 @@ class EiFrame {
 		}
 	}
 	
-	public function setOverviewBreadcrumbLabelOverride(string $overviewBreadcrumbLabel = null) {
+	public function setOverviewBreadcrumbLabelOverride(?string $overviewBreadcrumbLabel = null) {
 		$this->overviewBreadcrumbLabelOverride = $overviewBreadcrumbLabel;
 	}
 	
@@ -368,7 +368,7 @@ class EiFrame {
 		return $this->getContextEiEngine()->getEiMask()->getPluralLabelLstr();
 	}
 	
-	public function setOverviewUrlExt(Url $overviewUrlExt = null) {
+	public function setOverviewUrlExt(?Url $overviewUrlExt = null) {
 		ArgUtils::assertTrue($overviewUrlExt->isRelative(), 'Url must be relative.');
 		$this->overviewUrlExt = $overviewUrlExt;
 	}
@@ -421,7 +421,7 @@ class EiFrame {
 		return $this->detailDisabled;
 	}
 	
-	public function setDetailBreadcrumbLabelOverride(string $detailBreadcrumbLabelOverride = null) {
+	public function setDetailBreadcrumbLabelOverride(?string $detailBreadcrumbLabelOverride = null) {
 		$this->detailBreadcrumbLabelOverride = $detailBreadcrumbLabelOverride;
 	}
 	

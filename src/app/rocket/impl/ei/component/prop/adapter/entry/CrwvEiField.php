@@ -36,8 +36,8 @@ abstract class CrwvEiField extends EiFieldAdapter {
 	protected $writable;
 	protected $validatable;
 
-	public function __construct(TypeConstraint $typeConstriant = null, Eiu $eiu = null, Readable $readable = null, 
-			Writable $writable = null, Validatable $validatable = null) {
+	public function __construct(?TypeConstraint $typeConstriant = null, ?Eiu $eiu = null, ?Readable $readable = null, 
+			?Writable $writable = null, ?Validatable $validatable = null) {
 		$this->typeConstraint = $typeConstriant;
 		ArgUtils::assertTrue($eiu === null || $readable !== null || $writable !== null || $validatable !== null);
 		$this->eiu = $eiu;

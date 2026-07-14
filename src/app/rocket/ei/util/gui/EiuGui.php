@@ -71,7 +71,7 @@ class EiuGui {
 	 * @param bool $required
 	 * @return string|null
 	 */
-	public function getPropLabel($guiFieldPath, N2nLocale $n2nLocale = null, bool $required = false) {
+	public function getPropLabel($guiFieldPath, ?N2nLocale $n2nLocale = null, bool $required = false) {
 		$guiFieldPath = GuiFieldPath::create($guiFieldPath);
 		if ($n2nLocale === null) {
 			$n2nLocale = $this->eiGui->getEiFrame()->getN2nContext()->getN2nLocale();
@@ -200,7 +200,7 @@ class EiuGui {
 	 * @param int $treeLevel
 	 * @return EiuEntryGui
 	 */
-	public function appendNewEntryGui($eiEntryArg, int $treeLevel = null) {
+	public function appendNewEntryGui($eiEntryArg, ?int $treeLevel = null) {
 		$eiEntry = null;
 		$eiObject = EiuAnalyst::buildEiObjectFromEiArg($eiEntryArg, 'eiEntryArg', $this->eiuFrame->getContextEiType(), true, 
 				$eiEntry);
@@ -272,7 +272,7 @@ class EiuGui {
 	 * @return HtmlView|null $contextView
 	 * @return \n2n\impl\web\ui\view\html\HtmlView
 	 */
-	public function createView(HtmlView $contextView = null) {
+	public function createView(?HtmlView $contextView = null) {
 		return $this->eiGui->createUiComponent($contextView);
 	}
 }

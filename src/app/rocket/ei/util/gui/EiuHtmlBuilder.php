@@ -111,11 +111,11 @@ class EiuHtmlBuilder {
 	
 	private $collectionTagName = null;
 	
-	public function collectionOpen(string $tagName, $eiTypeArg, array $attrs = null) {
+	public function collectionOpen(string $tagName, $eiTypeArg, ?array $attrs = null) {
 		$this->view->out($this->getCollectionOpen($tagName, $eiTypeArg, $attrs));
 	}
 	
-	public function getCollectionOpen(string $tagName, $eiTypeArg, array $attrs = null) {
+	public function getCollectionOpen(string $tagName, $eiTypeArg, ?array $attrs = null) {
 		if ($this->collectionTagName !== null) {
 			throw new IllegalStateException('Collection already open');
 		}
@@ -147,11 +147,11 @@ class EiuHtmlBuilder {
 		return $raw;
 	}
 	
-	public function entryOpen(string $tagName, $eiEntryGuiArg, string $displayItemType = null, array $attrs = null) {
+	public function entryOpen(string $tagName, $eiEntryGuiArg, ?string $displayItemType = null, ?array $attrs = null) {
 		$this->view->out($this->getEntryOpen($tagName, $eiEntryGuiArg, $displayItemType, $attrs));
 	}
 	
-	public function getEntryOpen(string $tagName, $eiEntryGuiArg, string $displayItemType = null, array $attrs = null) {
+	public function getEntryOpen(string $tagName, $eiEntryGuiArg, ?string $displayItemType = null, ?array $attrs = null) {
 		$eiEntryGui = EiuAnalyst::buildEiEntryGuiFromEiArg($eiEntryGuiArg, 'eiEntryGuiArg');
 		$eiObject = $eiEntryGui->getEiEntry()->getEiObject();
 		$pid = null;
@@ -191,11 +191,11 @@ class EiuHtmlBuilder {
 		return new Raw('</' . HtmlUtils::hsc($tagName) . '>');
 	}
 	
-	public function entryMessages(array $attrs = null) {
+	public function entryMessages(?array $attrs = null) {
 		$this->view->out($this->getEntryMessages($attrs));
 	}
 	
-	public function getEntryMessages(array $attrs = null) {
+	public function getEntryMessages(?array $attrs = null) {
 		$messages = $this->meta->getEntryMessages();
 		if (empty($messages)) return null;
 		
@@ -207,11 +207,11 @@ class EiuHtmlBuilder {
 		return $hs;
 	}
 	
-	public function entryForkControls(array $attrs = null) {
+	public function entryForkControls(?array $attrs = null) {
 		$this->view->out($this->getEntryForkControls($attrs));
 	}
 	
-	public function getEntryForkControls(array $attrs = null) {
+	public function getEntryForkControls(?array $attrs = null) {
 		$info = $this->state->peakEntry();
 		$eiEntryGui = $info['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
@@ -228,7 +228,7 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	public function getEntryForkControlsFor(DisplayStructure $displayStructure, array $attrs = null) {
+	public function getEntryForkControlsFor(DisplayStructure $displayStructure, ?array $attrs = null) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		
 		$forkMagAssemblies = array();
@@ -275,11 +275,11 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	public function entryCommands(bool $iconOnly = false, int $max = null) {
+	public function entryCommands(bool $iconOnly = false, ?int $max = null) {
 		$this->view->out($this->getEntryCommands($iconOnly, $max));
 	}
 	
-	public function getEntryCommands(bool $iconOnly = false, int $max = null) {
+	public function getEntryCommands(bool $iconOnly = false, ?int $max = null) {
 		return $this->getCommands($this->meta->createEntryControls(null, $max), $iconOnly);
 	}
 	
@@ -308,7 +308,7 @@ class EiuHtmlBuilder {
 	 * @param array $containerAttrs
 	 * @param string $content
 	 */
-	public function entrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
+	public function entrySelector(string $containerTagName, ?array $containerAttrs = null, $content = '') {
 		$this->view->out($this->getEntrySelector($containerTagName, $containerAttrs, $content));
 	}
 	
@@ -319,7 +319,7 @@ class EiuHtmlBuilder {
 	 * @param string $content
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
+	public function getEntrySelector(string $containerTagName, ?array $containerAttrs = null, $content = '') {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		
 		return new HtmlElement($containerTagName,
@@ -352,7 +352,7 @@ class EiuHtmlBuilder {
 	 * @param string|bool|null $displayItemType
 	 * @param array|null $attrs
 	 */
-	public function fieldOpen(string $tagName, $guiFieldPath, $displayItemType = null, array $attrs = null, 
+	public function fieldOpen(string $tagName, $guiFieldPath, $displayItemType = null, ?array $attrs = null, 
 			bool $forceReadOnly = false) {
 		$this->view->out($this->getFieldOpen($tagName, $guiFieldPath, $displayItemType, $attrs, $forceReadOnly));
 	}
@@ -363,7 +363,7 @@ class EiuHtmlBuilder {
 	 * @param string|bool|null $displayItemType
 	 * @param array|null $attrs
 	 */
-	public function getFieldOpen(string $tagName, $guiFieldPath, $displayItemType = null, array $attrs = null, 
+	public function getFieldOpen(string $tagName, $guiFieldPath, $displayItemType = null, ?array $attrs = null, 
 			bool $forceReadOnly = false) {
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
 		CastUtils::assertTrue($eiEntryGui instanceof EiEntryGui);
@@ -422,7 +422,7 @@ class EiuHtmlBuilder {
 		return $this->formHtml->getMagOpen($tagName, $magPropertyPath, $attrs, $this->uiOutfitter);
 	}
 	
-	private function createOutputFieldOpen($tagName, GuiFieldDisplayable $guiFieldDisplayable, ValidationResult $validationResult = null, array $attrs = null) {
+	private function createOutputFieldOpen($tagName, GuiFieldDisplayable $guiFieldDisplayable, ?ValidationResult $validationResult = null, array $attrs = null) {
 		$attrs = HtmlUtils::mergeAttrs($attrs, $guiFieldDisplayable->getHtmlContainerAttrs(), true);
 		if ($validationResult !== null && !$validationResult->isValid(true)) {
 			$attrs = HtmlUtils::mergeAttrs((array) $attrs, array('class' => 'rocket-has-error'));
@@ -440,11 +440,11 @@ class EiuHtmlBuilder {
 		return new Raw('</' . $info['tagName'] . '>');
 	}
 	
-	public function fieldLabel(array $attrs = null, $label = null) {
+	public function fieldLabel(?array $attrs = null, $label = null) {
 		$this->html->out($this->getFieldLabel($attrs, $label));
 	}
 	
-	public function getFieldLabel(array $attrs = null, $label = null) {
+	public function getFieldLabel(?array $attrs = null, $label = null) {
 		$fieldInfo = $this->state->peakField(false);
 		
 		if (isset($fieldInfo['propertyPath'])) {
@@ -513,11 +513,11 @@ class EiuHtmlBuilder {
 	}
 	
 	
-	public function fieldControls(array $attrs = null) {
+	public function fieldControls(?array $attrs = null) {
 		$this->view->out($this->getFieldControls());
 	}
 	
-	public function getFieldControls(array $attrs = null) {
+	public function getFieldControls(?array $attrs = null) {
 		$fieldInfo = $this->state->peakField(false);
 		
 		$eiEntryGui = $this->state->peakEntry()['eiEntryGui'];
@@ -592,7 +592,7 @@ class EiuHtmlBuilder {
 	 * @param DisplayItem|string $displayItem
 	 * @param array $attrs
 	 */
-	public function displayItemOpen(string $tagName, $displayItem, array $attrs = null) {
+	public function displayItemOpen(string $tagName, $displayItem, ?array $attrs = null) {
 		$this->view->out($this->getDisplayItemOpen($tagName, $displayItem, $attrs));
 	}
 	
@@ -603,7 +603,7 @@ class EiuHtmlBuilder {
 	 * @param array $attrs
 	 * @return \n2n\web\ui\UiComponent
 	 */
-	public function getDisplayItemOpen(string $tagName, $displayItem, array $attrs = null) {
+	public function getDisplayItemOpen(string $tagName, $displayItem, ?array $attrs = null) {
 		if ($displayItem instanceof DisplayItem) {
 			$attrs = EiuHtmlBuilderMeta::createDisplayItemAttrs($displayItem->getType(), 
 					HtmlUtils::mergeAttrs((array) $displayItem->getAttrs(), (array) $attrs));
@@ -636,7 +636,7 @@ class EiuHtmlBuilder {
 	 * @param array $containerAttrs
 	 * @param string $content
 	 */
-	public function generalEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
+	public function generalEntrySelector(string $containerTagName, ?array $containerAttrs = null, $content = '') {
 		$this->view->out($this->getGeneralEntrySelector($containerTagName, $containerAttrs, $content));
 	}
 	
@@ -646,7 +646,7 @@ class EiuHtmlBuilder {
 	 * @param string $content
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getGeneralEntrySelector(string $containerTagName, array $containerAttrs = null, $content = '') {
+	public function getGeneralEntrySelector(string $containerTagName, ?array $containerAttrs = null, $content = '') {
 		return new HtmlElement($containerTagName,
 				HtmlUtils::mergeAttrs(array('class' => 'rocket-general-entry-selector'), (array) $containerAttrs),
 				$content);

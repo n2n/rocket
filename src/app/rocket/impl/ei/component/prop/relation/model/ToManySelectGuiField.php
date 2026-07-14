@@ -41,7 +41,7 @@ class ToManySelectGuiField implements GuiField, GuiFieldDisplayable {
 	private $toOneMag;
 	
 	public function __construct(EiProp $eiProp, Eiu $eiu, EiFrame $targetEiFrame, 
-			GuiFieldEditable $editable = null) {
+			?GuiFieldEditable $editable = null) {
 		$this->eiProp = $eiProp;
 		$this->eiu = $eiu;
 		$this->targetEiFrame = $targetEiFrame;

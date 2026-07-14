@@ -44,26 +44,26 @@ class AddController extends ControllerAdapter {
 		$this->eiuCtrl = $eiCtrl;
 	}
 		
-	public function index($copyPid = null, ParamGet $refPath = null) {	
+	public function index($copyPid = null, ?ParamGet $refPath = null) {	
 		$this->live($refPath, $copyPid);
 	}
 	
-	public function doChild($parentPid, $copyPid = null, ParamGet $refPath = null) {
+	public function doChild($parentPid, $copyPid = null, ?ParamGet $refPath = null) {
 		$this->parentEiObject = $this->eiuCtrl->lookupEiObject($parentPid);	
 		$this->live($refPath, $copyPid);	
 	}
 	
-	public function doBefore($beforePid, $copyPid = null, ParamGet $refPath = null) {
+	public function doBefore($beforePid, $copyPid = null, ?ParamGet $refPath = null) {
 		$this->beforeEiObject = $this->eiuCtrl->lookupEiObject($beforePid);	
 		$this->live($refPath, $copyPid);
 	}
 	
-	public function doAfter($afterPid, $copyPid = null, ParamGet $refPath = null) {
+	public function doAfter($afterPid, $copyPid = null, ?ParamGet $refPath = null) {
 		$this->afterEiObject = $this->eiuCtrl->lookupEiObject($afterPid);	
 		$this->live($refPath, $copyPid);
 	}
 	
-	private function live(ParamGet $refPath = null, $copyPid = null) {
+	private function live(?ParamGet $refPath = null, $copyPid = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 		$eiuFrame = $this->eiuCtrl->frame();
 		
@@ -104,7 +104,7 @@ class AddController extends ControllerAdapter {
 		$this->eiuCtrl->forwardView($view);
 	}
 	
-	public function doDraft(ParamGet $refPath = null) {
+	public function doDraft(?ParamGet $refPath = null) {
 		$redirectUrl = $this->eiuCtrl->parseRefUrl($refPath);
 			
 		$eiuEntryForm = $this->eiuCtrl->frame()->newEntryForm(true);

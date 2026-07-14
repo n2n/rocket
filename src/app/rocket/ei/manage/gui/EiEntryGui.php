@@ -73,7 +73,7 @@ class EiEntryGui {
 	 * @param int $viewMode
 	 * @param int|null $treeLevel
 	 */
-	public function __construct(EiGui $eiGui, EiEntry $eiEntry, int $treeLevel = null) {
+	public function __construct(EiGui $eiGui, EiEntry $eiEntry, ?int $treeLevel = null) {
 		$this->eiGui = $eiGui;
 		$this->eiEntry = $eiEntry;
 		$this->treeLevel = $treeLevel;

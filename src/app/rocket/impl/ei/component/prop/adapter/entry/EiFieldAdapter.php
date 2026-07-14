@@ -35,7 +35,7 @@ abstract class EiFieldAdapter implements EiField {
 	protected $orgValueLoaded = false;
 	protected $orgValue;
 
-	public function __construct(TypeConstraint $typeConstraint = null) {
+	public function __construct(?TypeConstraint $typeConstraint = null) {
 		$this->typeConstraint = $typeConstraint;
 // 		$this->eiFieldConstraintSet = new HashSet(EiFieldConstraint::class);
 	}

@@ -71,7 +71,7 @@ class EiuEntryForm implements Dispatchable {
 	 * @param PropertyPath $propertyPath
 	 * @return \rocket\ei\util\entry\form\EiuEntryForm
 	 */
-	public function setContextPropertyPath(PropertyPath $propertyPath = null) {
+	public function setContextPropertyPath(?PropertyPath $propertyPath = null) {
 		$this->contextPropertyPath = $propertyPath;
 		return $this;
 	}
@@ -200,8 +200,8 @@ class EiuEntryForm implements Dispatchable {
 		return $this->eiuEntryTypeForms[$this->chosenId];
 	}
 	
-	public function createView(HtmlView $contextView = null, bool $groupRequired = false, string $displayContainerType = null,
-			string $displayContainerLabel = null, array $displayContainerAttrs = null) {
+	public function createView(?HtmlView $contextView = null, bool $groupRequired = false, ?string $displayContainerType = null,
+			?string $displayContainerLabel = null, ?array $displayContainerAttrs = null) {
 		if ($contextView !== null) {
 			return $contextView->getImport('\rocket\ei\util\entry\view\eiuEntryForm.html',
 					array('eiuEntryFormViewModel' => new EiuEntryFormViewModel($this, $groupRequired,

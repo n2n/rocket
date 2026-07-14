@@ -35,12 +35,12 @@ class EiController extends ControllerAdapter {
 	private $eiMask;	
 	private $eiFrame;
 	
-	public function __construct(EiMask $eiMask, EiFrame $eiFrame = null) {
+	public function __construct(EiMask $eiMask, ?EiFrame $eiFrame = null) {
 		$this->eiMask = $eiMask;
 		$this->eiFrame = $eiFrame;
 	}
 	
-	public function index(ManageState $manageState, $eiCommandId, array $delegateCmds = null) {		
+	public function index(ManageState $manageState, $eiCommandId, ?array $delegateCmds = null) {		
 		$eiCommand = null;
 		try {
 			$eiCommand = $this->eiMask->getEiCommandCollection()->getByPath(EiCommandPath::create($eiCommandId));

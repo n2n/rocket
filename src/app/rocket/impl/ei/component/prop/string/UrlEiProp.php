@@ -87,7 +87,7 @@ class UrlEiProp extends AlphanumericEiProp {
 		$this->relativeAllowed = $relativeAllowed;
 	}
 	
-	public function setAutoScheme(string $autoScheme = null) {
+	public function setAutoScheme(?string $autoScheme = null) {
 		$this->autoScheme = $autoScheme;
 	}
 	

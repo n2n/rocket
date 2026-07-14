@@ -59,7 +59,7 @@ class ToManyForm implements Dispatchable {
 	private $newMappingForms = array();
 
 	public function __construct(string $label, EiuFrame $readUtils, EiuFrame $editUtils, 
-			int $min, int $max = null) {
+			int $min, ?int $max = null) {
 		$this->label = $label;
 		$this->readUtils = $readUtils;
 		$this->min = $min;
@@ -96,7 +96,7 @@ class ToManyForm implements Dispatchable {
 		return $this->selectionModeEnabled;
 	}
 	
-	public function setOriginalEntryPids(array $originalEntryPids = null) {
+	public function setOriginalEntryPids(?array $originalEntryPids = null) {
 		$this->originalEntryPids = $originalEntryPids;
 	}
 	
@@ -104,7 +104,7 @@ class ToManyForm implements Dispatchable {
 		return $this->originalEntryPids;
 	}
 
-	public function setSelectedEntryPids(array $selectedEntryPid = null) {
+	public function setSelectedEntryPids(?array $selectedEntryPid = null) {
 		$this->selectedEntryPids = $selectedEntryPid;
 	}
 
@@ -144,7 +144,7 @@ class ToManyForm implements Dispatchable {
 	/**
 	 * @param array|null $allowedEiTypeIds
 	 */
-	public function setAllowedNewEiTypeIds(array $allowedEiTypeIds = null) {
+	public function setAllowedNewEiTypeIds(?array $allowedEiTypeIds = null) {
 		$this->eiuEntryFormFactory->setAllowedNewEiTypeIds($allowedEiTypeIds);
 	}
 

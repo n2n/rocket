@@ -52,7 +52,7 @@ class CkeHtmlBuilder {
 	 * @param string|UiComponent|null $contentsHtml
 	 * @param N2nLocale|null $n2nLocale
 	 */
-	public function out($contentsHtml = null, N2nLocale $n2nLocale = null) {
+	public function out($contentsHtml = null, ?N2nLocale $n2nLocale = null) {
 		$this->view->out($this->getOut($contentsHtml, $n2nLocale));
 	}
 
@@ -61,7 +61,7 @@ class CkeHtmlBuilder {
 	 * @param N2nLocale|null $n2nLocale
 	 * @return \n2n\web\ui\Raw
 	 */
-	public function getOut($contentsHtml = null, N2nLocale $n2nLocale = null) {
+	public function getOut($contentsHtml = null, ?N2nLocale $n2nLocale = null) {
 		ArgUtils::valType($contentsHtml, array('string', UiComponent::class), true, 'contentsHtml');
 		$n2nLocale = $n2nLocale ?? $this->view->getN2nLocale();
 		$that = $this;
@@ -109,8 +109,8 @@ class CkeHtmlBuilder {
 	 * @param CkeCssConfig $ckeCssConfig
 	 * @param CkeCssConfig[] $linkProviders
 	 */
-	public function editor($propertyPath = null, CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null,
-			array $linkProviders = array(), array $attrs = null) {
+	public function editor($propertyPath = null, ?CkeComposer $ckeComposer = null, ?CkeCssConfig $ckeCssConfig = null,
+			?array $linkProviders = array(), ?array $attrs = null) {
 		$this->view->out($this->getEditor($propertyPath, $ckeComposer, $ckeCssConfig, $linkProviders, $attrs));
 	}
 
@@ -121,8 +121,8 @@ class CkeHtmlBuilder {
 	 * @param CkeCssConfig[] $linkProviders
 	 * @return \n2n\impl\web\ui\view\html\HtmlElement
 	 */
-	public function getEditor($propertyExpression = null, CkeComposer $ckeComposer = null, 
-			CkeCssConfig $ckeCssConfig = null, array $linkProviders = array(), array $attrs = null) {
+	public function getEditor($propertyExpression = null, ?CkeComposer $ckeComposer = null, 
+			?CkeCssConfig $ckeCssConfig = null, array $linkProviders = array(), ?array $attrs = null) {
 		$this->html->meta()->addLibrary(new CkeLibrary());
 
 		
@@ -139,7 +139,7 @@ class CkeHtmlBuilder {
 	 * @param CkeCssConfig|null $ckeCssConfig
 	 * @param CkeLinkProvider[] $linkProviders
 	 */
-	public function iframe($contentsHtml = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders = null) {
+	public function iframe($contentsHtml = null, ?CkeCssConfig $ckeCssConfig = null, ?array $linkProviders = null) {
 		$this->view->out($this->getIframe($contentsHtml, $ckeCssConfig, $linkProviders));
 	}
 	
@@ -149,7 +149,7 @@ class CkeHtmlBuilder {
 	 * @param CkeLinkProvider[] $linkProviders
 	 * @return \n2n\web\ui\Raw
 	 */
-	public function getIframe($contentsHtml = null, CkeCssConfig $ckeCssConfig = null, array $linkProviders = null) {
+	public function getIframe($contentsHtml = null, ?CkeCssConfig $ckeCssConfig = null, ?array $linkProviders = null) {
 		ArgUtils::valType($contentsHtml, array('string', UiComponent::class), true, 'contentsHtml');
 		ArgUtils::valArray($linkProviders, CkeLinkProvider::class, true, 'linkProviders');
 		
@@ -184,7 +184,7 @@ class CkeHtmlBuilder {
 	}
 	
 	
-	private function buildEditorAttrs(CkeComposer $ckeComposer = null, CkeCssConfig $ckeCssConfig = null) {
+	private function buildEditorAttrs(?CkeComposer $ckeComposer = null, ?CkeCssConfig $ckeCssConfig = null) {
 		$ckeConfig = ($ckeComposer !== null) ? $ckeComposer->toCkeConfig() : $ckeConfig = CkeConfig::createDefault();
 		
 		$attrs = array('mode' => $ckeConfig->getMode(),
@@ -231,7 +231,7 @@ class CkeHtmlBuilder {
 		}, $contentCssUrls);
 	}
 
-	private function buildLinkConfigData(array $ckeLinkProviders, N2nLocale $linkN2nLocale = null) {
+	private function buildLinkConfigData(array $ckeLinkProviders, ?N2nLocale $linkN2nLocale = null) {
 		$linkN2nLocale = (null !== $linkN2nLocale) ? $linkN2nLocale : $this->view->getN2nLocale();
 		$linkConfigData = array();
 		foreach ($ckeLinkProviders as $providerName => $ckeLinkProvider) {
@@ -260,7 +260,7 @@ class CkeHtmlBuilder {
 		}
 	}
 
-	private function prepareAdditionalStyles(array $additionalStyles = null) {
+	private function prepareAdditionalStyles(?array $additionalStyles = null) {
 		if (empty($additionalStyles)) return [];
 		
 		$encodable = array();

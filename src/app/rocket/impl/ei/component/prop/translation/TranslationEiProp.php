@@ -103,7 +103,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 		return $this->n2nLocaleDefs;
 	}
 	
-	public function setCopyCommand(TranslationCopyCommand $translationCopyCommand = null) {
+	public function setCopyCommand(?TranslationCopyCommand $translationCopyCommand = null) {
 		$this->copyCommand = $translationCopyCommand;
 	}
 	
@@ -139,7 +139,7 @@ class TranslationEiProp extends EmbeddedOneToManyEiProp implements GuiEiPropFork
 				($readOnly ? null : $this), $this);
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
+	public function buildEiFieldFork(EiObject $eiObject, ?EiField $eiField = null) {
 		return null;
 	}
 	

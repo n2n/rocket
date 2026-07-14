@@ -19,7 +19,7 @@ class StringArrayEiProp extends DraftablePropertyEiPropAdapter {
 		$this->entityPropertyRequired = false;
 	}
 
-	public function setObjectPropertyAccessProxy(AccessProxy $objectPropertyAccessProxy = null) {
+	public function setObjectPropertyAccessProxy(?AccessProxy $objectPropertyAccessProxy = null) {
 		parent::setObjectPropertyAccessProxy($objectPropertyAccessProxy);
 
 		$objectPropertyAccessProxy->setConstraint(TypeConstraint::createArrayLike('array',false,

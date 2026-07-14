@@ -142,7 +142,7 @@ class DetailController extends ControllerAdapter {
 		$this->delegate($previewController);
 	}
 	
-	private function applyBreadcrumbs(EiObject $eiObject, string $previewType = null) {
+	private function applyBreadcrumbs(EiObject $eiObject, ?string $previewType = null) {
 		$this->eiuCtrl->applyCommonBreadcrumbs();
 		
 		$eiFrame = $this->eiuCtrl->frame()->getEiFrame();

@@ -46,7 +46,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 	protected $draftable = false;
 	protected $editConfig;
 	
-	protected function initialize(EiPropRelation $eiPropRelation, EditConfig $editConfig = null) {
+	protected function initialize(EiPropRelation $eiPropRelation, ?EditConfig $editConfig = null) {
 		$this->eiPropRelation = $eiPropRelation;
 		
 		if ($editConfig !== null) {
@@ -76,7 +76,7 @@ abstract class RelationEiPropAdapter extends PropertyEiPropAdapter implements Re
 		return true;
 	}
 	
-	public function buildEiFieldFork(EiObject $eiObject, EiField $eiField = null) {
+	public function buildEiFieldFork(EiObject $eiObject, ?EiField $eiField = null) {
 		return null;
 	}
 	

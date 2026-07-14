@@ -60,7 +60,7 @@ class EiuEntry {
 	 * @param EiuMask|null $eiuMask
 	 * @param EiuAnalyst $eiuAnalyst
 	 */
-	public function __construct(EiEntry $eiEntry = null, EiuObject $eiuObject = null, EiuMask $eiuMask = null, EiuAnalyst $eiuAnalyst) {
+	public function __construct(?EiEntry $eiEntry, ?EiuObject $eiuObject, ?EiuMask $eiuMask, EiuAnalyst $eiuAnalyst) {
 		ArgUtils::assertTrue($eiEntry !== null || $eiuObject !== null);
 		$this->eiEntry = $eiEntry;
 		$this->eiuObject = $eiuObject;
@@ -315,7 +315,7 @@ class EiuEntry {
 	 * @throws EiuPerimeterException
 	 * @return \rocket\ei\util\gui\EiuEntryGui
 	 */
-	public function newEntryGui(bool $bulky = true, bool $editable = false, int $treeLevel = null, 
+	public function newEntryGui(bool $bulky = true, bool $editable = false, ?int $treeLevel = null, 
 			bool $determineEiMask = true) {
 		$eiEntry = $eiMask = $this->getEiEntry(true);
 		$eiMask = null;
@@ -334,7 +334,7 @@ class EiuEntry {
 	}
 	
 	public function newCustomEntryGui(\Closure $uiFactory, array $guiFieldPaths, bool $bulky = true, 
-			bool $editable = false, int $treeLevel = null, bool $determineEiMask = true) {
+			bool $editable = false, ?int $treeLevel = null, bool $determineEiMask = true) {
 // 		$eiMask = null;
 // 		if ($determineEiMask) {
 // 			$eiMask = $this->determineEiMask();
@@ -447,7 +447,7 @@ class EiuEntry {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getGenericLabel(N2nLocale $n2nLocale = null) {
+	public function getGenericLabel(?N2nLocale $n2nLocale = null) {
 		return $this->mask()->getEiMask()->getLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
@@ -456,7 +456,7 @@ class EiuEntry {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function getGenericPluralLabel(N2nLocale $n2nLocale = null) {
+	public function getGenericPluralLabel(?N2nLocale $n2nLocale = null) {
 		return $this->mask()->getEiMask()->getPluralLabelLstr()
 				->t($n2nLocale ?? $this->eiuAnalyst->getN2nContext(true)->getN2nLocale());
 	}
@@ -477,7 +477,7 @@ class EiuEntry {
 		return $this->getEiuFrame()->copyEntry($this, $draft, $eiTypeArg);
 	}
 	
-	public function copyValuesTo($toEiEntryArg, array $eiPropPaths = null) {
+	public function copyValuesTo($toEiEntryArg, ?array $eiPropPaths = null) {
 		$this->getEiuFrame()->copyEntryValuesTo($this, $toEiEntryArg, $eiPropPaths);
 	}
 	
@@ -509,7 +509,7 @@ class EiuEntry {
 	 * @param N2nLocale $n2nLocale
 	 * @return string
 	 */
-	public function createIdentityString(bool $useEntryEiMask = true, N2nLocale $n2nLocale = null) {
+	public function createIdentityString(bool $useEntryEiMask = true, ?N2nLocale $n2nLocale = null) {
 		if ($useEntryEiMask) {
 			return $this->mask()->engine()->createIdentityString($this, $n2nLocale);
 		}
@@ -525,7 +525,7 @@ class EiuEntry {
 	 * @param int $num
 	 * @return \rocket\ei\manage\draft\Draft[]
 	 */
-	public function lookupDrafts(int $limit = null, int $num = null) {
+	public function lookupDrafts(?int $limit = null, ?int $num = null) {
 		return $this->eiuFrame->lookupDraftsByEntityObjId($this->getId(), $limit, $num);
 	}
 	

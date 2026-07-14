@@ -127,11 +127,11 @@ class Spec {
 				. $launchPadId, 0, $previous);
 	}
 	
-	private function createCustomLaunchPad(TypePath $typePath, CustomType $customType, string $label = null) {
+	private function createCustomLaunchPad(TypePath $typePath, CustomType $customType, ?string $label = null) {
 		return $this->launchPads[(string) $typePath] = new CustomLaunchPad($typePath, $customType, $label);
 	}
 	
-	private function createEiLaunchPad(TypePath $typePath, EiMask $eiMask, string $label = null) {
+	private function createEiLaunchPad(TypePath $typePath, EiMask $eiMask, ?string $label = null) {
 		return $this->launchPads[(string) $typePath] = new EiLaunchPad($typePath, $eiMask, $label);
 	}
 	
@@ -485,7 +485,7 @@ class EiSetupQueue {
 		$this->eiCommandSetupTasks = array();
 	}
 		
-	public function trigger(N2nContext $n2nContext, EiErrorResult $eiErrorResult = null) {
+	public function trigger(N2nContext $n2nContext, ?EiErrorResult $eiErrorResult = null) {
 		$this->propIns($eiErrorResult);
 				
 // 		while (null !== ($eiConfigurator = array_shift($this->eiConfigurators))) {
@@ -603,7 +603,7 @@ class EiSetupQueue {
 		}
 	}
 	
-	public function propIns(EiErrorResult $eiErrorResult = null) {
+	public function propIns(?EiErrorResult $eiErrorResult = null) {
 		while (null !== ($propIns = array_shift($this->propIns))) {
 			$propIns->invoke($eiErrorResult);
 		}
@@ -629,7 +629,7 @@ class EiMaskCallbackProcess {
 		$this->spec = $spec;
 	}
 	
-	function check(EiProp $eiProp = null, EiModificator $eiModificator = null, EiCommand $eiCommand = null) {
+	function check(?EiProp $eiProp = null, ?EiModificator $eiModificator = null, ?EiCommand $eiCommand = null) {
 		foreach ($this->spec->getEiTypes() as $eiType) {
 			$this->checkCallbacks($eiType->getEiMask(), $eiProp, $eiModificator, $eiCommand);
 			
@@ -640,7 +640,7 @@ class EiMaskCallbackProcess {
 		}
 	}
 	
-	function run(EiErrorResult $eiErrorResult = null) {
+	function run(?EiErrorResult $eiErrorResult = null) {
 		foreach ($this->callbackConfigurations as $callbackConfiguration) {
 			try {
 				try {
@@ -668,8 +668,8 @@ class EiMaskCallbackProcess {
 		}
 	}
 	
-	private function checkCallbacks(EiMask $eiMask, EiProp $eiProp = null, 
-			EiModificator $eiModificator = null, EiCommand $eiCommand = null) {
+	private function checkCallbacks(EiMask $eiMask, ?EiProp $eiProp = null, 
+			?EiModificator $eiModificator = null, ?EiCommand $eiCommand = null) {
 		//$newCallbacks = [];
 		foreach ($eiMask->getEiEngineSetupCallbacks() as $objHash => $callback) {
 			if (isset($this->callbackConfigurations[$objHash])) {
@@ -704,7 +704,7 @@ class PropIn {
 		return $this->eiType;
 	}
 	
-	public function invoke(EiErrorResult $eiErrorResult = null) {
+	public function invoke(?EiErrorResult $eiErrorResult = null) {
 		$entityPropertyCollection = $this->eiType->getEntityModel();
 		$class = $entityPropertyCollection->getClass();
 		
@@ -746,7 +746,7 @@ class PropIn {
 // 		}
 	}
 	
-	private function handleException($e, EiErrorResult $eiErrorResult = null) {
+	private function handleException($e, ?EiErrorResult $eiErrorResult = null) {
 		$e = $this->createException($e);
 		if (null !== $eiErrorResult) {
 			$eiErrorResult->putEiPropError(EiPropError::fromEiProp(
