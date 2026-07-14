@@ -473,7 +473,7 @@ class EiuEntry {
 	 * @param mixed $eiTypeArg
 	 * @return \rocket\ei\util\entry\EiuEntry
 	 */
-	public function copy(bool $draft = null, $eiTypeArg = null) {
+	public function copy(?bool $draft = null, $eiTypeArg = null) {
 		return $this->getEiuFrame()->copyEntry($this, $draft, $eiTypeArg);
 	}
 	

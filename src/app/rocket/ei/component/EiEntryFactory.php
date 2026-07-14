@@ -157,7 +157,7 @@ class EiEntryFactory {
 	
 	
 	public function copyValues(EiFrame $eiFrame, EiEntry $fromEiEntry, EiEntry $toEiEntry,
-			array $eiPropPaths = null) {
+			?array $eiPropPaths = null) {
 		if ($eiPropPaths === null) {
 			$this->copyAllValues($eiFrame, $fromEiEntry, $toEiEntry);
 		} else {
