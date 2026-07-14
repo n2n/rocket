@@ -118,8 +118,8 @@ class DraftManager {
 		return $draftFetcher->fetch();
 	}
 	
-	public function findByFilter(\ReflectionClass $class, $entityObjId = null, int $type = null,
-			int $userId = null, int $limit = null, int $num = null, DraftDefinition $draftDefinition = null) {
+	public function findByFilter(\ReflectionClass $class, $entityObjId = null, ?int $type = null,
+			?int $userId = null, ?int $limit = null, ?int $num = null, ?DraftDefinition $draftDefinition = null) {
 		$this->ensureDraftManagerOpen();
 
 		$eiType = $this->spec->getEiTypeByClass($class);

@@ -137,7 +137,7 @@ class OverviewController extends ControllerAdapter {
 	}
 
 	public function doDraftAjah(OverviewDraftJhtmlController $overviewDraftJhtmlController, array $delegateCmds = array(),
-			ParamQuery $pageNo = null) {
+			?ParamQuery $pageNo = null) {
 		if ($pageNo !== null) {
 			$this->eiuCtrl->frame()->getEiFrame()->setCurrentUrlExt(
 					$this->getControllerContext()->getCmdContextPath()->ext('drafts', $pageNo->toNumericOrReject())->toUrl());
