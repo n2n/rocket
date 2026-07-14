@@ -105,7 +105,7 @@ class RocketJhtmlResponse extends BufferedPayload {
 				self::ATTR_EI_EVENT => $ajahEventInfo === null ? array() : $ajahEventInfo->toAttrs()));
 	}
 
-	public static function view(HtmlView $htmlView, EiJhtmlEventInfo $ajahEventInfo = null) {
+	public static function view(HtmlView $htmlView, ?EiJhtmlEventInfo $ajahEventInfo = null) {
 		return JhtmlResponse::view($htmlView,
 				($ajahEventInfo !== null ? array(self::ATTR_EI_EVENT => $ajahEventInfo->toAttrs()) : array()));
 	}

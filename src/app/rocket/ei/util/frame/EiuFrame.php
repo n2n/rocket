@@ -73,6 +73,7 @@ use rocket\ei\manage\entry\EiEntryConstraint;
 use rocket\ei\EiPropPath;
 use rocket\ei\util\entry\EiuFieldMap;
 use rocket\ei\util\entry\EiuObject;
+use n2n\web\http\HttpContext;
 
 class EiuFrame {
 	private $eiFrame;
@@ -95,7 +96,7 @@ class EiuFrame {
 	 * @return \n2n\web\http\HttpContext
 	 */
 	public function getHttpContext() {
-		return $this->eiFrame->getN2nContext()->getHttpContext();
+		return $this->eiFrame->getN2nContext()->lookup(HttpContext::class);
 	}
 	
 	/**
@@ -328,7 +329,7 @@ class EiuFrame {
 		return $this->createEiEntryCopy($fromEiObjectArg, EiuAnalyst::buildEiObjectFromEiArg($toEiObjectArg, 'toEiObjectArg'));
 	}
 	
-	public function copyEntry($fromEiObjectArg, bool $draft = null, $eiTypeArg = null) {
+	public function copyEntry($fromEiObjectArg, ?bool $draft = null, $eiTypeArg = null) {
 		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectArg, $this, 'fromEiObjectArg');
 		$draft = $draft ?? $fromEiuEntry->isDraft();
 		
@@ -355,7 +356,7 @@ class EiuFrame {
 	 * @param EiObject $to
 	 * @return \rocket\ei\manage\entry\EiEntry
 	 */
-	private function createEiEntryCopy($fromEiObjectObj, EiObject $to = null, ?array $eiPropPaths = null) {
+	private function createEiEntryCopy($fromEiObjectObj, ?EiObject $to = null, ?array $eiPropPaths = null) {
 		$fromEiuEntry = EiuAnalyst::buildEiuEntryFromEiArg($fromEiObjectObj, $this, 'fromEiObjectObj');
 		
 		if ($to === null) {
@@ -585,7 +586,7 @@ class EiuFrame {
 	 * @return \n2n\util\uri\Url
 	 */
 	public function getCurrentUrl() {
-		return $this->eiFrame->getCurrentUrl($this->getN2nContext()->getHttpContext());
+		return $this->eiFrame->getCurrentUrl($this->getN2nContext()->lookup(HttpContext::class));
 	}
 	
 	/**

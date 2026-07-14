@@ -27,6 +27,7 @@ use n2n\util\uri\Url;
 use rocket\ei\component\command\EiCommand;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use rocket\ei\EiCommandPath;
+use n2n\web\http\HttpContext;
 
 class HrefControl implements Control {
 	private $href;
@@ -57,10 +58,10 @@ class HrefControl implements Control {
 		return $this->controlButton->toButton(HtmlUtils::mergeAttrs(array('href' => $this->href), $attrs));
 	}
 	
-	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, Url ?$urlExt = null, 
+	public static function create(EiFrame $eiFrame, EiCommand $eiCommand, ?Url $urlExt, 
 			ControlButton $controlButton) {
 		return new HrefControl(
-				$eiFrame->getN2nContext()->getHttpContext()->getControllerContextPath($eiFrame->getControllerContext())
+				$eiFrame->getN2nContext()->lookup(HttpContext::class)->getControllerContextPath($eiFrame->getControllerContext())
 						->ext(EiCommandPath::from($eiCommand))->toUrl()->ext($urlExt), 
 				$controlButton);
 	}
