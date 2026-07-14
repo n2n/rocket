@@ -52,6 +52,10 @@ trait InEiGuiPropTrait {
 			$guiField = $this->buildInGuiField($eiu);
 		}
 
+		if ($guiField === null) {
+			return null;
+		}
+
 		if ($guiField->getModel() === null) {
 			$guiField->setModel($eiu->field()->asGuiFieldModel());
 		}
