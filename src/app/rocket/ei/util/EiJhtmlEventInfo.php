@@ -29,7 +29,7 @@ class EiJhtmlEventInfo extends JhtmlEventInfo {
 	 * @param string $entryId
 	 * @param string $modType
 	 */
-	private function evMapEiObject(string $eiTypeId, ?string $pid = null, ?int $draftId = null, string $modType) {
+	private function evMapEiObject(string $eiTypeId, ?string $pid, ?int $draftId, string $modType) {
 	    if (!isset($this->eventMap[$eiTypeId])) {
 	        $this->eventMap[$eiTypeId] = array('pids' => [], 'draftIds' => []);
 	    }
