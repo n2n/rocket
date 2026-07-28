@@ -36,10 +36,14 @@ class SaxParser {
 	public function parse(FsPath $xmlPath, SaxHandler $saxHandler) {
 		$parser = xml_parser_create();
 		$this->saxHandler = $saxHandler;
-		xml_set_object($parser, $this);
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, false);
-		xml_set_element_handler($parser, "startElement", "endElement");
-		xml_set_character_data_handler($parser, "cdata");
+		xml_set_element_handler($parser, 
+				fn(\XMLParser $parser, string $tagName, array $attrs) 
+						=> $this->startElement($parser, $tagName, $attrs),
+				fn(\XMLParser $parser, string $tagName) 
+						=> $this->endElement($parser, $tagName));
+		
+		xml_set_character_data_handler($parser, fn ($parser, mixed $cdata) => $this->cdata($parser, $cdata));
 		
 		$fileRes = IoUtils::fopen($xmlPath, 'rb');
 		while(null != ($data = IoUtils::fread($fileRes, 4096))) {

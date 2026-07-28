@@ -25,6 +25,7 @@ use n2n\io\fs\FileResourceStream;
 use n2n\core\VarStore;
 use n2n\core\N2N;
 use n2n\io\managed\impl\FileFactory;
+use n2n\core\container\PdoPool;
 
 class BackupManager {
 	const PREFIX_FILE_NAME = 'backup';
@@ -33,7 +34,8 @@ class BackupManager {
 	const MODULE_DIR = 'rocket';
 	
 	public static function createBackup($fileName = null) {
-		$backuper = N2N::getPdoPool()->getPdo()->getMetaData()->getMetaManager()->createBackuper();
+		$backuper = N2N::getN2nContext()->lookup(PdoPool::class)
+				->getPdo()->getMetaData()->getMetaManager()->createBackuper();
 		$backuper->setBackupDataEnabled(true);
 		$backuper->setReplaceTableEnabled(true);
 		$backuper->setOutputStream(new FileResourceStream(self::generateFile($fileName), 'w'));
