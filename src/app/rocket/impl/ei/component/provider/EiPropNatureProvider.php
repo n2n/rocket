@@ -113,7 +113,7 @@ class EiPropNatureProvider {
 	function provideAnnotateds(): void {
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropBool::class)
-				 as $attribute) {
+		         as $attribute) {
 			$eiPropBool = $attribute->getInstance();
 			$propertyName = $attribute->getProperty()->getName();
 
@@ -136,7 +136,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropEnum::class)
-				 as $attribute) {
+		         as $attribute) {
 			$eiPropEnum = $attribute->getInstance();
 			$propertyName = $attribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute,
@@ -168,7 +168,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropDecimal::class)
-				 as $attribute) {
+		         as $attribute) {
 			$eiPropDecimal = $attribute->getInstance();
 			$propertyName = $attribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($attribute,
@@ -190,7 +190,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropOnlineStatus::class)
-				 as $eiPropOnlineAttribute) {
+		         as $eiPropOnlineAttribute) {
 			$propertyName = $eiPropOnlineAttribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($eiPropOnlineAttribute, false);
 
@@ -204,7 +204,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropOrder::class)
-				 as $eiPropOrderAttribute) {
+		         as $eiPropOrderAttribute) {
 			$propertyName = $eiPropOrderAttribute->getProperty()->getName();
 			$propertyAccessProxy = $this->getPropertyAccessProxy($eiPropOrderAttribute, false);
 
@@ -218,7 +218,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropPathPart::class)
-				 as $attribute) {
+		         as $attribute) {
 			$eiPropPathPart = $attribute->getInstance();
 			assert($eiPropPathPart instanceof EiPropPathPart);
 			$propertyName = $attribute->getProperty()->getName();
@@ -248,7 +248,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropString::class)
-				 as $attribute) {
+		         as $attribute) {
 			$eiPropString = $attribute->getInstance();
 			$propertyName = $attribute->getProperty()->getName();
 
@@ -272,7 +272,7 @@ class EiPropNatureProvider {
 		}
 
 		foreach ($this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropCke::class)
-				 as $attribute) {
+		         as $attribute) {
 			$eiPropCke = $attribute->getInstance();
 			assert($eiPropCke instanceof EiPropCke);
 			$propertyName = $attribute->getProperty()->getName();
@@ -299,8 +299,8 @@ class EiPropNatureProvider {
 		}
 
 		$attributes = [
-			...$this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropFile::class),
-			...$this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropImageFile::class)
+				...$this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropFile::class),
+				...$this->eiTypeClassSetup->getAttributeSet()->getPropertyAttributesByName(EiPropImageFile::class)
 		];
 		foreach ($attributes as $attribute) {
 			$eiPropFile = $attribute->getInstance();
@@ -463,7 +463,10 @@ class EiPropNatureProvider {
 				$nature = new N2NLocaleEiPropNature($eiPresetProp->getPropertyAccessProxy());
 				break;
 			case \DateTime::class:
-				$nature = new DateTimeEiPropNature($eiPresetProp->getPropertyAccessProxy());
+				$nature = new DateTimeEiPropNature($eiPresetProp->getPropertyAccessProxy(), false);
+				break;
+			case \DateTimeImmutable::class:
+				$nature = new DateTimeEiPropNature($eiPresetProp->getPropertyAccessProxy(), true);
 				break;
 			case Url::class:
 				$nature = new UrlEiPropNature($eiPresetProp->getPropertyAccessProxy());
@@ -555,7 +558,7 @@ class EiPropNatureProvider {
 
 		$displayConfig = $nature->getDisplayConfig();
 		$editConfig = $nature->getEditConfig();
-		
+
 		$nature->setEntityProperty($eiPresetProp->getEntityProperty());
 		$this->configureLabel($eiPresetProp->getPropertyAccessProxy(), $nature->getLabelConfig(),
 				$eiPresetProp->getLabel());
