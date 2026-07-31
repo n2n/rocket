@@ -40,7 +40,7 @@ class UniqueEiConfigurator extends EiConfiguratorAdapter {
 		$this->attributes->set(self::ATTR_UNIQUE_PROPS_KEY,
 				$magDispatchable->getPropertyValue(self::ATTR_UNIQUE_PROPS_KEY));
 		$this->attributes->set(self::ATTR_UNIQUE_PER_PROPS_KEY,
-				$magDispatchable->getPropertyValue(self::ATTR_UNIQUE_PROPS_KEY));
+				$magDispatchable->getPropertyValue(self::ATTR_UNIQUE_PER_PROPS_KEY));
 	}
 	
 	function setup(EiSetup $eiSetupProcess) {
