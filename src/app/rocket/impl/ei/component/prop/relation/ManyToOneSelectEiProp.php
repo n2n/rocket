@@ -49,6 +49,7 @@ use n2n\impl\persistence\orm\property\RelationEntityProperty;
 use n2n\persistence\orm\property\EntityProperty;
 use n2n\web\http\HttpContext;
 use rocket\ei\manage\draft\stmt\RemoveDraftStmtBuilder;
+use rocket\ei\manage\generic\GenericEiProperty;
 use rocket\ei\manage\gui\ui\DisplayItem;
 use rocket\ei\manage\gui\GuiField;
 use rocket\ei\manage\critmod\filter\FilterProp;
@@ -56,8 +57,12 @@ use rocket\ei\manage\security\filter\SecurityFilterProp;
 use rocket\ei\manage\gui\DisplayDefinition;
 use rocket\ei\manage\frame\Boundry;
 use rocket\ei\manage\security\InaccessibleEiCommandPathException;
+use rocket\ei\component\prop\GenericEiProp;
+use rocket\ei\manage\generic\CommonGenericEiProperty;
+use n2n\persistence\orm\criteria\item\CrIt;
+use rocket\impl\ei\component\prop\relation\model\RelationEntry;
 
-class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
+class ManyToOneSelectEiProp extends ToOneEiPropAdapter implements GenericEiProp {
 
 	public function __construct() {
 		parent::__construct();
@@ -305,6 +310,26 @@ class ManyToOneSelectEiProp extends ToOneEiPropAdapter {
 		});
 				
 		return $eiEntryFilterProp;
+	}
+	
+	public function getGenericEiProperty(): ?GenericEiProperty {
+		if ($this->entityProperty === null) return null;
+		
+		return new CommonGenericEiProperty($this, CrIt::p($this->entityProperty), 
+				function(?RelationEntry $entry) {
+					$targetEntityObj = null;
+					if ($entry !== null) {
+						$targetEntityObj = $entry->getEiObject()->getEiEntityObj()->getEntityObj();
+					}
+					
+					return $targetEntityObj;
+				}, 
+				function(?object $targetEntityObj) {
+					if ($targetEntityObj === null) return null;
+					
+					
+					return RelationEntry::from(LiveEiObject::create($this->eiPropRelation->getTargetEiType(), $targetEntityObj));
+				});
 	}
 }
 
