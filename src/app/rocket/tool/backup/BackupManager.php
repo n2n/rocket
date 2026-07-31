@@ -21,42 +21,44 @@
  */
 namespace rocket\tool\backup;
 
-use n2n\util\io\stream\impl\FileResourceStream;
+use n2n\io\fs\FileResourceStream;
 use n2n\core\VarStore;
 use n2n\core\N2N;
 use n2n\io\managed\impl\FileFactory;
+use n2n\core\container\PdoPool;
 
 class BackupManager {
 	const PREFIX_FILE_NAME = 'backup';
 	const SUFFIX_FILE_NAME = 'full-manual.sql';
 	const DATE_TIME_FORMAT = 'Y-m-d-H-i-s';
 	const MODULE_DIR = 'rocket';
-	
+
 	public static function createBackup($fileName = null) {
-		$backuper = N2N::getPdoPool()->getPdo()->getMetaData()->getMetaManager()->createBackuper();
+		$backuper = N2N::getN2nContext()->lookup(PdoPool::class)
+				->getPdo()->getMetaData()->getMetaManager()->createBackuper();
 		$backuper->setBackupDataEnabled(true);
 		$backuper->setReplaceTableEnabled(true);
 		$backuper->setOutputStream(new FileResourceStream(self::generateFile($fileName), 'w'));
 		$backuper->start();
 	}
-	
+
 	public static function deleteBackups($pattern) {
 		foreach (self::getBackupDir()->getChildren($pattern) as $fsPath) {
 			$fsPath->delete();
 		}
 	}
-	
+
 	public static function requestBackupFile($fileName) {
 		return FileFactory::createFromFs(N2N::getVarStore()->requestFileFsPath(
 				VarStore::CATEGORY_BAK, self::MODULE_DIR, null, $fileName), $fileName);
 	}
 	/**
-	 * @return \n2n\util\io\fs\FsPath
+	 * @return \n2n\io\fs\FsPath
 	 */
 	public static function getBackupDir() {
 		return N2N::getVarStore()->requestDirFsPath(VarStore::CATEGORY_BAK, self::MODULE_DIR, null, true);
 	}
-	
+
 	private static function generateFile($fileName = null) {
 		if (is_null($fileName)) {
 			$fileName = implode('-', array(self::PREFIX_FILE_NAME, date(self::DATE_TIME_FORMAT), self::SUFFIX_FILE_NAME));
