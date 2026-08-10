@@ -36,11 +36,9 @@ use rocket\op\ei\manage\draft\PersistDraftAction;
 use rocket\op\ei\EiPropPath;
 use n2n\persistence\orm\criteria\item\CrIt;
 use rocket\op\ei\util\Eiu;
-use n2nutil\jquery\datepicker\mag\DateTimePickerMag;
 use rocket\op\ei\manage\critmod\sort\SortProp;
 use rocket\ui\si\content\SiField;
 use rocket\op\ei\manage\idname\IdNameProp;
-use rocket\op\ei\util\factory\EifGuiField;
 use rocket\ui\si\content\impl\SiFields;
 use n2n\l10n\DateTimeFormat;
 use n2n\util\type\TypeConstraints;
@@ -53,8 +51,9 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 	private $dateStyle = DateTimeFormat::STYLE_MEDIUM;
 	private $timeStyle = DateTimeFormat::STYLE_NONE;
 
-	function __construct(PropertyAccessProxy $propertyAccessProxy) {
-		parent::__construct($propertyAccessProxy->createRestricted(TypeConstraints::namedType(\DateTime::class, true)));
+	function __construct(PropertyAccessProxy $propertyAccessProxy, private bool $immutable) {
+		parent::__construct($propertyAccessProxy->createRestricted(
+				TypeConstraints::namedType(\DateTimeInterface::class, true)));
 	}
 
 	function getDateStyle() {
@@ -74,42 +73,42 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 		ArgUtils::valEnum($timeStyle, DateTimeFormat::getStyles());
 		$this->timeStyle = $timeStyle;
 	}
-	
+
 	public function buildOutGuiField(Eiu $eiu): ?BackableGuiField  {
 		$dateTime = $eiu->field()->getValue();
 
 		return GuiFields::out(SiFields::stringOut($dateTime === null ? ''
 				: L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->getDateStyle(), $this->getTimeStyle())));
 	}
-	
+
 	public function buildInGuiField(Eiu $eiu): ?BackableGuiField {
 		return GuiFields::dateTimeIn($this->isMandatory(),
-						$this->getDateStyle() !== DateTimeFormat::STYLE_NONE,
-						$this->getTimeStyle() !== DateTimeFormat::STYLE_NONE)
+				$this->getDateStyle() !== DateTimeFormat::STYLE_NONE,
+				$this->getTimeStyle() !== DateTimeFormat::STYLE_NONE)
 				->setValue($eiu->field()->getValue());
 	}
-	
+
 	function buildIdNameProp(Eiu $eiu): ?IdNameProp  {
 		return $eiu->factory()->newIdNameProp(function (Eiu $eiu) {
 			if (null !== ($dateTime = $eiu->object()->readNativeValue($eiu->prop()->getEiProp()))) {
 				return L10nUtils::formatDateTime($dateTime, $eiu->getN2nLocale(), $this->getDateStyle(), $this->getTimeStyle());
 			}
-			
+
 			return null;
 		})->toIdNameProp();
 	}
-	
-	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm, 
+
+	public function createDraftValueSelection(FetchDraftStmtBuilder $selectDraftStmtBuilder, DraftManager $dm,
 			N2nContext $n2nContext): DraftValueSelection {
 		return new DateTimeDraftValueSelection($selectDraftStmtBuilder->requestColumn(EiPropPath::from($this)),
 				$selectDraftStmtBuilder->getPdo()->getMetaData()->getDialect()->getOrmDialectConfig());
 	}
-	
+
 	public function supplyPersistDraftStmtBuilder($value, $oldValue, PersistDraftStmtBuilder $persistDraftStmtBuilder,
 			PersistDraftAction $persistDraftAction) {
-		ArgUtils::valType($value, 'DateTime', true);
-				
-		$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this), 
+		ArgUtils::valType($value, [\DateTime::class, \DateTimeImmutable::class], true);
+
+		$persistDraftStmtBuilder->registerColumnRawValue(EiPropPath::from($this),
 				$persistDraftStmtBuilder->getPdo()->getMetaData()->getDialect()->getOrmDialectConfig()
 						->buildDateTimeRawValue($value));
 	}
@@ -124,7 +123,7 @@ class DateTimeEiPropNature extends DraftablePropertyEiPropNatureAdapter  {
 
 class DateTimeDraftValueSelection extends SimpleDraftValueSelection {
 	private $ormDialectConfig;
-	
+
 	public function __construct($columnAlias, OrmDialectConfig $ormDialectConfig) {
 		parent::__construct($columnAlias);
 		$this->ormDialectConfig = $ormDialectConfig;

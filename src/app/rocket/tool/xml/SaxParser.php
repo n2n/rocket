@@ -27,7 +27,7 @@ use n2n\util\io\fs\FsPath;
 class SaxParser {
 	private $saxHandler;
 	/**
-	 * 
+	 *
 	 * @param \n2n\util\io\fs\FsPath $xmlPath
 	 * @param \rocket\tool\xml\SaxHandler $saxHandler
 	 * @throws \rocket\tool\xml\SaxParsingException
@@ -39,18 +39,18 @@ class SaxParser {
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, false);
 		xml_set_element_handler($parser, "startElement", "endElement");
 		xml_set_character_data_handler($parser, "cdata");
-		
+
 		$fileRes = IoUtils::fopen($xmlPath, 'rb');
 		while(null != ($data = IoUtils::fread($fileRes, 4096))) {
 			if (!xml_parse($parser, $data, feof($fileRes))) {
 				throw new SaxParsingException(sprintf("XML error: %s at line %d",
-					xml_error_string(xml_get_error_code($parser)),
-					xml_get_current_line_number($parser)));
+						xml_error_string(xml_get_error_code($parser)),
+						xml_get_current_line_number($parser)));
 			}
 		}
 	}
 	/**
-	 * 
+	 *
 	 * @param resource $parser
 	 * @param string $tag
 	 * @param array $attrs
@@ -59,7 +59,7 @@ class SaxParser {
 		$this->saxHandler->startElement($tagName, $attrs);
 	}
 	/**
-	 * 
+	 *
 	 * @param mixed $parser
 	 * @param mixed $cdata
 	 */
@@ -67,7 +67,7 @@ class SaxParser {
 		$this->saxHandler->cdata($cdata);
 	}
 	/**
-	 * 
+	 *
 	 * @param resource $parser
 	 * @param string $tag
 	 */
