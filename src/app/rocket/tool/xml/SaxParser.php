@@ -21,24 +21,33 @@
  */
 namespace rocket\tool\xml;
 
-use n2n\util\io\IoUtils;
 use n2n\util\io\fs\FsPath;
+use n2n\util\io\IoUtils;
+use n2n\util\io\IoException;
+
 
 class SaxParser {
-	private $saxHandler;
+	private SaxHandler $saxHandler;
+
 	/**
 	 *
-	 * @param \n2n\util\io\fs\FsPath $xmlPath
-	 * @param \rocket\tool\xml\SaxHandler $saxHandler
-	 * @throws \rocket\tool\xml\SaxParsingException
+	 * @param \n2n\io\fs\FsPath $xmlPath
+	 * @param SaxHandler $saxHandler
+	 * @throws SaxParsingException
+	 * @throws IoException
 	 */
-	public function parse(FsPath $xmlPath, SaxHandler $saxHandler) {
+	public function parse(FsPath $xmlPath, SaxHandler $saxHandler): void {
 		$parser = xml_parser_create();
 		$this->saxHandler = $saxHandler;
-		xml_set_object($parser, $this);
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, false);
-		xml_set_element_handler($parser, "startElement", "endElement");
-		xml_set_character_data_handler($parser, "cdata");
+		xml_set_element_handler($parser,
+				fn(\XMLParser $parser, string $tagName, array $attrs)
+						=> $this->startElement($tagName, $attrs),
+				fn(\XMLParser $parser, string $tagName)
+						=> $this->endElement($tagName));
+
+		xml_set_character_data_handler($parser, fn ($parser, mixed $cdata)
+				=> $this->cdata($cdata));
 
 		$fileRes = IoUtils::fopen($xmlPath, 'rb');
 		while(null != ($data = IoUtils::fread($fileRes, 4096))) {
@@ -49,29 +58,29 @@ class SaxParser {
 			}
 		}
 	}
+
 	/**
 	 *
-	 * @param resource $parser
-	 * @param string $tag
+	 * @param string $tagName
 	 * @param array $attrs
 	 */
-	private function startElement($parser, $tagName, array $attrs) {
+	private function startElement(string $tagName, array $attrs): void {
 		$this->saxHandler->startElement($tagName, $attrs);
 	}
+
 	/**
 	 *
-	 * @param mixed $parser
 	 * @param mixed $cdata
 	 */
-	private function cdata($parser, $cdata) {
+	private function cdata(mixed $cdata): void {
 		$this->saxHandler->cdata($cdata);
 	}
+
 	/**
 	 *
-	 * @param resource $parser
-	 * @param string $tag
+	 * @param string $tagName
 	 */
-	private function endElement($parser, $tagName) {
+	private function endElement(string $tagName): void {
 		$this->saxHandler->endElement($tagName);
 	}
 }

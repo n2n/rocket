@@ -45,7 +45,8 @@
 		"n2n/n2n-impl-web-ui" : "^7.5",
         "n2n/n2n-validation" : "^7.5",
         "n2n/n2n-bind" : "^7.5",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-xml": "*"
     },
 	"autoload" : {
 		"psr-4" : {
