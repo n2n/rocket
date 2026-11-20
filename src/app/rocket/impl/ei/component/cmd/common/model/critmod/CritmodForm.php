@@ -113,7 +113,7 @@ class CritmodForm implements Dispatchable {
 	}
 
 	public function getSelectedCritmodSaveIdOptions(): array {
-		$options = array(null => '');
+		$options = array('' => '');
 		foreach ($this->critmodSaveDao->getCritmodSaves($this->eiTypePath) as $critmodSave) {
 			$options[$critmodSave->getId()] = $critmodSave->getName();
 		}
