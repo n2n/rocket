@@ -125,12 +125,12 @@ class ThumbModel implements Dispatchable{
 	
 	public function save() {
 		$imageDimensions = [];
-		if (isset($this->groupedImageDimensionOptions[$this->selectedStr])) {
-			foreach (array_keys($this->groupedImageDimensionOptions[$this->selectedStr]) as $imageDimensionStr) {
+		if (isset($this->groupedImageDimensionOptions[(string) $this->selectedStr])) {
+			foreach (array_keys($this->groupedImageDimensionOptions[(string) $this->selectedStr]) as $imageDimensionStr) {
 				$imageDimensions[] = $this->imageDimensions[$imageDimensionStr];
 			}
-		} else if (isset($this->imageDimensions[$this->selectedStr])) {
-			$imageDimensions[] = $this->imageDimensions[$this->selectedStr];
+		} else if (isset($this->imageDimensions[(string) $this->selectedStr])) {
+			$imageDimensions[] = $this->imageDimensions[(string) $this->selectedStr];
 		}
 		
 		foreach ($imageDimensions as $imageDimension) {

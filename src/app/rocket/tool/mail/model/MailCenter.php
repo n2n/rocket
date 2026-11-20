@@ -91,7 +91,7 @@ class MailCenter {
 		$items = $this->getAllItems();
 		if (!isset($items[$itemIndex]))	return null;
 		$attachments = $items[$itemIndex]->getAttachments();
-		$fsPath = new FsPath($attachments[$attachmentIndex]->getPath());
+		$fsPath = new FsPath($attachments[(string) $attachmentIndex]->getPath());
 		return new CommonFile(new FsFileSource($fsPath), $fsPath->getFileName());
 	}
 	

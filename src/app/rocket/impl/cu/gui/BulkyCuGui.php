@@ -60,7 +60,7 @@ class BulkyCuGui implements CuGui {
 	}
 
 	function setSelectedMaskId(?string $maskId): static {
-		if (!isset($this->cuMaskedEntries[$maskId])) {
+		if (!isset($this->cuMaskedEntries[(string) $maskId])) {
 			throw new IllegalStateException('Unknown mask id: ' . $maskId);
 		}
 
@@ -124,7 +124,7 @@ class BulkyCuGui implements CuGui {
 		$controlId = $cuControlCallId->getControlId();
 
 		if (isset($this->cuControls[$controlId])) {
-			return $this->cuControls[$controlId]->handle(new Cuu($cuu, $this->cuMaskedEntries[$this->selectedMaskId]?->getCuEntry()));
+			return $this->cuControls[$controlId]->handle(new Cuu($cuu, $this->cuMaskedEntries[(string) $this->selectedMaskId]?->getCuEntry()));
 		}
 
 		throw new CorruptedSiDataException('Unknown control id: ' . $controlId);
