@@ -103,14 +103,14 @@ class EiLifecycleMonitor implements LifecycleListener {
 	 * @return boolean
 	 */
 	public function containsEntityObj($entityObj) {
-		$objHash = spl_object_hash($entityObj);
+		$objHash = spl_object_id($entityObj);
 		
 		return isset($this->persistActions[$objHash]) || isset($this->updateActions[$objHash]) 
 			|| isset($this->removeActions[$objHash]);
 	}
 	
 	public function isEntityObjRemoved($entityObj) {
-		$objHash = spl_object_hash($entityObj);
+		$objHash = spl_object_id($entityObj);
 		
 		return isset($this->removeActions[$objHash]);
 	}
@@ -211,7 +211,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 			throw new NotYetImplementedException();
 		}
 		
-		$objHash = spl_object_hash($eiObject->getEiEntityObj()->getEntityObj());
+		$objHash = spl_object_id($eiObject->getEiEntityObj()->getEntityObj());
 		if (isset($this->removeActions[$objHash])) return;
 		
 		$vla = new VetoableLifecycleAction($eiObject, $this, VetoableLifecycleAction::TYPE_REMOVE);
@@ -246,7 +246,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 	}
 	
 	private function persist(EiType $eiType, $entityObj) {
-		$objHash = spl_object_hash($entityObj);
+		$objHash = spl_object_id($entityObj);
 		
 		if (isset($this->persistActions[$objHash])) return;
 		
@@ -260,7 +260,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 	}
 	
 	private function postPersist(EiType $eiType, $entityObj) {
-		$objHash = spl_object_hash($entityObj);
+		$objHash = spl_object_id($entityObj);
 		
 		if (!isset($this->persistActions[$objHash])) {
 			return;
@@ -276,7 +276,7 @@ class EiLifecycleMonitor implements LifecycleListener {
 	}
 	
 	private function update(EiType $eiType, $entityObj) {
-		$objHash = spl_object_hash($entityObj);
+		$objHash = spl_object_id($entityObj);
 		
 		if (isset($this->updateActions[$objHash]) || isset($this->persistActions[$objHash])) {
 			return;

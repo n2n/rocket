@@ -38,7 +38,7 @@ class MappedRelationEiModificator implements EiFrameListener {
 		$this->targetEiFrame = $targetEiFrame;
 		$this->relationEiuObj = $relationEiuObj;
 		$this->targetEiPropPath = $targetEiPropPath;
-		$this->sourceMany = (boolean) $sourceMany;
+		$this->sourceMany = (bool) $sourceMany;
 	}
 	
 	public function onNewEiEntry(EiEntry $eiEntry) {

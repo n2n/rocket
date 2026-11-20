@@ -142,7 +142,7 @@ abstract class IdPath implements Hashable {
 	 * @return boolean
 	 */
 	public static function constainsSpecialIdChars($str) {
-		return (boolean) preg_match('#[^a-zA-Z0-9\\-]#', $str);
+		return (bool) preg_match('#[^a-zA-Z0-9\\-]#', $str);
 	}
 	
 	/**

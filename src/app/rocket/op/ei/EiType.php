@@ -537,11 +537,11 @@ class EiType extends Type {
 	}
 	
 	public function registerVetoableActionListener(EiLifecycleListener $eiLifecycleListener) {
-		$this->eiLifecycleListeners[spl_object_hash($eiLifecycleListener)] = $eiLifecycleListener;
+		$this->eiLifecycleListeners[spl_object_id($eiLifecycleListener)] = $eiLifecycleListener;
 	}
 	
 	public function unregisterVetoableActionListener(EiLifecycleListener $eiLifecycleListener) {
-		unset($this->eiLifecycleListeners[spl_object_hash($eiLifecycleListener)]);
+		unset($this->eiLifecycleListeners[spl_object_id($eiLifecycleListener)]);
 	}
 	
 	public function validateLifecycleAction(VetoableLifecycleAction $vetoableLifecycleAction, N2nContext $n2nContext) {

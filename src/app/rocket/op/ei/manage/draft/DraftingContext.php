@@ -31,7 +31,7 @@ class DraftingContext {
 	private $draftMap = array();
 	
 	public function add(DraftDefinition $draftDefinition, Draft $draft, ?DraftValuesResult $draftValuesResult = null) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		$this->drafts[$objHash] = $draft;
 		$this->draftDefinitions[$objHash] = $draftDefinition;
 		$this->draftValuesResults[$objHash] = $draftValuesResult;
@@ -42,7 +42,7 @@ class DraftingContext {
 	}
 	
 	public function setDraftValuesResult(Draft $draft, DraftValuesResult $draftValuesResult) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		
 		if (!isset($this->drafts[$objHash])) {
 			throw new DraftingException('DraftingContext contains no such Draft.');
@@ -52,7 +52,7 @@ class DraftingContext {
 	}
 	
 	public function identifyDraft(Draft $draft) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		
 		if (!isset($this->drafts[$objHash])) {
 			throw new DraftingException('DraftingContext contains no such Draft.');
@@ -85,7 +85,7 @@ class DraftingContext {
 	}
 	
 	public function getDraftDefinitionByDraft(Draft $draft) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		if (isset($this->draftDefinitions[$objHash])) {
 			return $this->draftDefinitions[$objHash];
 		}
@@ -98,7 +98,7 @@ class DraftingContext {
 	 * @return DraftValuesResult
 	 */
 	public function getDraftValuesResultByDraft(Draft $draft) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		if (isset($this->draftValuesResults[$objHash])) {
 			return $this->draftValuesResults[$objHash];
 		}

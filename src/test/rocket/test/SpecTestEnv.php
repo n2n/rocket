@@ -69,7 +69,6 @@ class SpecTestEnv {
 
 		$class = new ReflectionClass($natureProvider);
 		$property = $class->getProperty('magicContext');
-		$property->setAccessible(true);
 		$property->setValue($natureProvider, $n2nContext);
 
 		$scl = new SpecConfigLoader(new TestModuleConfigSource(['rocket', 'testmdl']), ['rocket', 'testmdl'],

@@ -124,17 +124,20 @@ class EiEntityObj {
 			return $this;
 		}
 
-		$this->idCallbacks[spl_object_hash($closure)] = $closure;
+		$this->idCallbacks[spl_object_id($closure)] = $closure;
 		return $this;
 	}
 
 	function offId(\Closure $closure): static {
-		unset($this->idCallbacks[spl_object_hash($closure)]);
+		unset($this->idCallbacks[spl_object_id($closure)]);
 		return $this;
 	}
 
 	private function triggerIdCallbacks(): void {
-		while (null !== ($callback = array_shift($this->idCallbacks))) {
+		// array_shift() would renumber the int keys (spl_object_id())
+		while (null !== ($key = array_key_first($this->idCallbacks))) {
+			$callback = $this->idCallbacks[$key];
+			unset($this->idCallbacks[$key]);
 			$callback($this->id);
 		}
 	}

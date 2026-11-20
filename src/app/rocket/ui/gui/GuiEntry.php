@@ -260,11 +260,11 @@ class GuiEntry implements SiEntryModel {
 //	}
 
 //	public function registerEiGuiEntryListener(EiGuiEntryListener $eiGuiEntryListener): void {
-//		$this->eiGuiEntryListeners[spl_object_hash($eiGuiEntryListener)] = $eiGuiEntryListener;
+//		$this->eiGuiEntryListeners[spl_object_id($eiGuiEntryListener)] = $eiGuiEntryListener;
 //	}
 	
 //	public function unregisterEiGuiEntryListener(EiGuiEntryListener $eiGuiEntryListener): void {
-//		unset($this->eiGuiEntryListeners[spl_object_hash($eiGuiEntryListener)]);
+//		unset($this->eiGuiEntryListeners[spl_object_id($eiGuiEntryListener)]);
 //	}
 	
 	public function __toString() {

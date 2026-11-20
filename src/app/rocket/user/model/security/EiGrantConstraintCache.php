@@ -183,7 +183,7 @@ class EiGrantConstraintCache {
 	private function getCriteriaConstraint(EiGrantPrivilege $eiGrantPrivilege) {
 		ArgUtils::assertTrue($eiGrantPrivilege->isRestricted());
 		
-		$objHash = spl_object_hash($eiGrantPrivilege);
+		$objHash = spl_object_id($eiGrantPrivilege);
 		
 		if (isset($this->criteriaConstraints[$objHash])) {
 			return $this->criteriaConstraints[$objHash];
@@ -201,7 +201,7 @@ class EiGrantConstraintCache {
 	private function getEiEntryConstraint(EiGrantPrivilege $eiGrantPrivilege) {
 		ArgUtils::assertTrue($eiGrantPrivilege->isRestricted());
 		
-		$objHash = spl_object_hash($eiGrantPrivilege);
+		$objHash = spl_object_id($eiGrantPrivilege);
 		
 		if (isset($this->eiEntryConstraints[$objHash])) {
 			return $this->eiEntryConstraints[$objHash];

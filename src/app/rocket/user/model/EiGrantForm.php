@@ -76,7 +76,7 @@ class EiGrantForm implements Dispatchable {
 	}
 	
 	public function setUsed($used) {
-		$this->used = (boolean) $used;
+		$this->used = (bool) $used;
 	}
 	
 	public function isFullAccess() {
@@ -84,7 +84,7 @@ class EiGrantForm implements Dispatchable {
 	}
 	
 	public function setFullAccess($fullAccess) {
-		$this->eiGrant->setFull((boolean) $fullAccess);
+		$this->eiGrant->setFull((bool) $fullAccess);
 	}
 	
 	public function getEiGrantPrivilegeForms() {

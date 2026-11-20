@@ -324,11 +324,11 @@ abstract class EiComponentCollection implements \IteratorAggregate, \Countable {
 	private $listeners = [];
 
 	function registerListener(EiComponentCollectionListener $listener) {
-		$this->listeners[spl_object_hash($listener)] = $listener;
+		$this->listeners[spl_object_id($listener)] = $listener;
 	}
 
 	function unregisterListener(EiComponentCollectionListener $listener) {
-		unset($this->listeners[spl_object_hash($listener)]);
+		unset($this->listeners[spl_object_id($listener)]);
 	}
 
 	private function triggerChanged() {

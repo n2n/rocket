@@ -544,14 +544,14 @@
 //	 * @param EiGuiListener $eiGuiMaskDeclarationListener
 //	 */
 //	function registerEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener) {
-//		$this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)] = $eiGuiMaskDeclarationListener;
+//		$this->eiGuiMaskDeclarationListeners[spl_object_id($eiGuiMaskDeclarationListener)] = $eiGuiMaskDeclarationListener;
 //	}
 //
 //	/**
 //	 * @param EiGuiListener $eiGuiMaskDeclarationListener
 //	 */
 //	function unregisterEiGuiListener(EiGuiListener $eiGuiMaskDeclarationListener): void {
-//		unset($this->eiGuiMaskDeclarationListeners[spl_object_hash($eiGuiMaskDeclarationListener)]);
+//		unset($this->eiGuiMaskDeclarationListeners[spl_object_id($eiGuiMaskDeclarationListener)]);
 //	}
 //}
 ////

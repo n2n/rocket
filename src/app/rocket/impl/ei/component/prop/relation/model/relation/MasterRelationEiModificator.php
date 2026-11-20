@@ -38,7 +38,7 @@ class MasterRelationEiModificator implements EiFrameListener {
 		$this->targetEiFrame = $targetEiFrame;
 		$this->entityObj = $entityObj;
 		$this->propertyAccessProxy = $propertyAccessProxy;
-		$this->targetMany = (boolean) $targetMany;
+		$this->targetMany = (bool) $targetMany;
 	}
 
 	public function onNewEiEntry(EiEntry $eiEntry) {

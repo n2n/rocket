@@ -129,7 +129,7 @@ class Rocket implements RequestScoped {
 // 	 * @return TranslationManager
 // 	 */
 // 	public function getOrCreateTranslationManager(EntityManager $em) {
-// 		$emObjHash = spl_object_hash($em);
+// 		$emObjHash = spl_object_id($em);
 // 		if (!isset($this->translationManagers[$emObjHash])) {
 // 			$this->translationManagers[$emObjHash] = new ScriptTranslationManager($this->getSpec(), $em);
 // 		}
@@ -138,7 +138,7 @@ class Rocket implements RequestScoped {
 // 	}
 	
 	public function getOrCreateDraftManager(EntityManager $em) {
-		$emObjHash = spl_object_hash($em);
+		$emObjHash = spl_object_id($em);
 		if (!isset($this->draftManagers[$emObjHash])) {
 			$this->draftManagers[$emObjHash] = new DraftManager($this->getSpec(), $em, $this->n2nContext);
 		}

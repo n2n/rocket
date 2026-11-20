@@ -518,11 +518,11 @@ class EiFrame {
 	}
 	
 	public function registerListener(EiFrameListener $listener) {
-		$this->listeners[spl_object_hash($listener)] = $listener;
+		$this->listeners[spl_object_id($listener)] = $listener;
 	}
 	
 	public function unregisterListener(EiFrameListener $listener) {
-		unset($this->listeners[spl_object_hash($listener)]);		
+		unset($this->listeners[spl_object_id($listener)]);		
 	}
 	
 	/**

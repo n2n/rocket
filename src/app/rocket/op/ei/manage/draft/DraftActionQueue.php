@@ -47,7 +47,7 @@ class DraftActionQueue {
 	}
 	
 	public function persist(Draft $draft, ?DraftDefinition $draftDefinition = null): DraftAction {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		if (isset($this->persistActions[$objHash])) {
 			return $this->persistActions[$objHash];
 		}
@@ -77,7 +77,7 @@ class DraftActionQueue {
 	}
 	
 	public function remove(Draft $draft, bool $important = false) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		
 		if (isset($this->removeActions[$objHash])) {
 			return $this->removeActions[$objHash];
@@ -108,7 +108,7 @@ class DraftActionQueue {
 	}
 	
 	public function containsDraft(Draft $draft) {
-		$objHash = spl_object_hash($draft);
+		$objHash = spl_object_id($draft);
 		return isset($this->persistActions[$objHash]) || isset($this->removeActions[$objHash]);
 	}
 	
@@ -136,7 +136,7 @@ class DraftActionQueue {
 	}
 	
 	public function addDraftAction(DraftAction $draftAction) {
-	    $this->draftActions[spl_object_hash($draftAction)] = $draftAction;
+	    $this->draftActions[spl_object_id($draftAction)] = $draftAction;
 	}
 	
 	public function execute() {

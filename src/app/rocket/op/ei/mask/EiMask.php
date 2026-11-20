@@ -330,14 +330,14 @@ class EiMask {
 			return;
 		}
 
-		$this->eiEngineCallbacks[spl_object_hash($callback)] = $callback;
+		$this->eiEngineCallbacks[spl_object_id($callback)] = $callback;
 	}
 
 	/**
 	 * @param \Closure $callback
 	 */
 	public function offEiEngineSetup(\Closure $callback) {
-		unset($this->eiEngineCallbacks[spl_object_hash($callback)]);
+		unset($this->eiEngineCallbacks[spl_object_id($callback)]);
 	}
 
 	/**

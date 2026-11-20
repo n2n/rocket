@@ -254,7 +254,7 @@ class EiEntry implements GuiEntryModel {
 	
 	
 	public function registerListener(EiEntryListener $listener, $relatedFieldId = null) {
-		$objectHash = spl_object_hash($listener);
+		$objectHash = spl_object_id($listener);
 		$this->listeners[$objectHash] = $listener;
 		if (!isset($this->listenerBindings[$relatedFieldId])) {
 			$this->listenerBindings[$relatedFieldId][$objectHash] = $listener;
@@ -270,7 +270,7 @@ class EiEntry implements GuiEntryModel {
 // 	}
 	
 	public function unregisterListener(EiEntryListener $listener) {
-		$objectHash = spl_object_hash($listener);
+		$objectHash = spl_object_id($listener);
 		unset($this->listeners[$objectHash]);
 		foreach ($this->listenerBindings as $fieldId => $listeners) {
 			unset($this->listenerBindings[$fieldId][$objectHash]);

@@ -16,7 +16,7 @@ class EiErrorResult {
 	 * @param EiPropError $eiPropError
 	 */
 	public function putEiPropError(EiPropError $eiPropError) {
-		$this->eiPropErrors[spl_object_hash($eiPropError)] = $eiPropError;
+		$this->eiPropErrors[spl_object_id($eiPropError)] = $eiPropError;
 	}
 	
 // 	/**
@@ -44,7 +44,7 @@ class EiErrorResult {
 	 * @param EiModificatorError $eiModificatorError
 	 */
 	public function putEiModificatorError(EiModificatorError $eiModificatorError) {
-		$this->eiModificatorErrors[spl_object_hash($eiModificatorError)] = $eiModificatorError;
+		$this->eiModificatorErrors[spl_object_id($eiModificatorError)] = $eiModificatorError;
 	}
 	
 // 	/**
@@ -72,7 +72,7 @@ class EiErrorResult {
 	 * @param EiCommandError $eiCmdError
 	 */
 	public function putEiCommandError(EiCommandError $eiCmdError) {
-		$this->eiCmdErrors[spl_object_hash($eiCmdError)] = $eiCmdError;
+		$this->eiCmdErrors[spl_object_id($eiCmdError)] = $eiCmdError;
 	}
 	
 // 	/**

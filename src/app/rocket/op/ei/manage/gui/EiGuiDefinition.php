@@ -1062,11 +1062,11 @@ class EiGuiDefinition {
 //	private array $guiDefinitionListeners = array();
 //
 //	function registerEiGuiDefinitionListener(\rocket\op\ei\manage\gui\EiGuiDefinitionListener $guiDefinitionListener) {
-//		$this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)] = $guiDefinitionListener;
+//		$this->guiDefinitionListeners[spl_object_id($guiDefinitionListener)] = $guiDefinitionListener;
 //	}
 //
 //	function unregisterEiGuiDefinitionListener(\rocket\op\ei\manage\gui\EiGuiDefinitionListener $guiDefinitionListener) {
-//		unset($this->guiDefinitionListeners[spl_object_hash($guiDefinitionListener)]);
+//		unset($this->guiDefinitionListeners[spl_object_id($guiDefinitionListener)]);
 //	}
 //
 //	/**
