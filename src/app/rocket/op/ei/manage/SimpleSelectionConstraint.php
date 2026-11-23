@@ -59,7 +59,7 @@
 // 	 * @see \rocket\op\ei\manage\SelectorConstraint::match()
 // 	 */
 // 	public function matches($entity) {
-// 		return (boolean)$this->matcher->__invoke($this->value,
+// 		return (bool)$this->matcher->__invoke($this->value,
 // 				$this->entityProperty->getAccessProxy()->getValue($entity));
 // 	}
 

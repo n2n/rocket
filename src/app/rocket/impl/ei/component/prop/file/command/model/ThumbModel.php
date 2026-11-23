@@ -163,7 +163,7 @@ class ThumbModel implements Dispatchable{
 // 	} else {
 // 		// @todo: @_POST['anschneiden'] has to be inverted, in order to give correct result!
 // 		$resizeModel->updateThumb($dimension, $_POST['xwert'], $_POST['ywert'], $_POST['ausschnittbreite'],
-// 				$_POST['ausschnitthoehe'], !(boolean) $_POST['anschneiden']);
+// 				$_POST['ausschnitthoehe'], !(bool) $_POST['anschneiden']);
 	
 // 		$mc->addInfo($text->get('image_resize_thumb_created',
 // 				array('width' => $dimension->getWidth(), 'height' => $dimension->getHeight())));
